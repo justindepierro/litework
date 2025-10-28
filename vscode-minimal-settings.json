@@ -1,0 +1,27 @@
+{
+  "git.confirmSync": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "git.autofetch": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.autoSave": "afterDelay",
+  "workbench.localHistory.enabled": false,
+  
+  // Disable problematic features that request permissions
+  "terminal.integrated.automationProfile.osx": null,
+  "github.copilot.chat.agent.terminal.allowList": {},
+  "github.copilot.chat.agent.terminal.denyList": {},
+  "chat.tools.terminal.autoApprove": {},
+  
+  // Reduce extension permission requests  
+  "git.terminalAuthentication": false,
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  "update.mode": "manual",
+  
+  // Disable telemetry that might request permissions
+  "telemetry.telemetryLevel": "off",
+  "crash.submitURL": "",
+  "crash.uploadURL": ""
+}
