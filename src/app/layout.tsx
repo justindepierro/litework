@@ -49,8 +49,8 @@ export const viewport = {
   userScalable: false,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#1e3a8a' }, // Navy blue
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },  // Darker navy
+    { media: '(prefers-color-scheme: light)', color: '#334155' }, // Navy-700 from design tokens
+    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },  // Navy-900 from design tokens
   ],
 };
 

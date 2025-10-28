@@ -108,11 +108,11 @@ export default function DashboardPage() {
               <div className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="text-sm font-medium text-navy mb-1">
-                      <span className="text-accent-yellow">🏆</span> New Personal Record: Deadlift
+                    <div className="text-body-primary text-sm font-medium mb-1">
+                      <span className="workout-accent-warning">🏆</span> New Personal Record: Deadlift
                     </div>
-                    <div className="text-xs text-navy-600">
-                      225 lbs × 1 rep (Previous: 215 lbs)
+                    <div className="text-body-small">
+                      You lifted 315 lbs - that&apos;s 25 lbs more than your previous best!
                     </div>
                   </div>
                   <div className="text-xs text-silver-600 whitespace-nowrap ml-2">
@@ -127,20 +127,20 @@ export default function DashboardPage() {
         {/* Upcoming Workouts - Mobile Optimized */}
         {user.role === 'member' && (
           <div>
-            <h2 className="text-xl font-heading text-navy mb-4">Upcoming Workouts</h2>
-            <div className="bg-white shadow rounded-lg overflow-hidden border border-silver-300">
+            <h2 className="text-heading-secondary text-xl mb-4">Upcoming Workouts</h2>
+            <div className="card-primary overflow-hidden">
               <div className="divide-y divide-silver-300">
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="text-sm font-medium text-navy mb-1">
-                        <span className="text-accent-blue">🦵</span> Lower Body Power
+                      <div className="text-body-primary text-sm font-medium mb-1">
+                        <span className="workout-accent-schedule">🦵</span> Lower Body Power
                       </div>
-                      <div className="text-xs text-navy-600">
+                      <div className="text-body-small">
                         Squats, Deadlifts, Leg Press
                       </div>
                     </div>
-                    <div className="text-xs text-silver-600 whitespace-nowrap ml-2">
+                    <div className="text-body-small whitespace-nowrap ml-2">
                       Tomorrow 3:00 PM
                     </div>
                   </div>
@@ -148,14 +148,14 @@ export default function DashboardPage() {
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="text-sm font-medium text-navy mb-1">
-                        <span className="text-accent-orange">💪</span> Upper Body Hypertrophy
+                      <div className="text-body-primary text-sm font-medium mb-1">
+                        <span className="workout-accent-strength">💪</span> Upper Body Hypertrophy
                       </div>
-                      <div className="text-xs text-navy-600">
+                      <div className="text-body-small">
                         Bench Press, Rows, Shoulder Press
                       </div>
                     </div>
-                    <div className="text-xs text-silver-600 whitespace-nowrap ml-2">
+                    <div className="text-body-small whitespace-nowrap ml-2">
                       Friday 3:00 PM
                     </div>
                   </div>

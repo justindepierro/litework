@@ -43,7 +43,7 @@ export default function Navigation() {
                 </Link>
                 <button
                   onClick={logout}
-                  className="btn-secondary text-white hover:bg-navy-900"
+                  className="px-3 py-1 rounded text-sm transition-colors text-white bg-navy-800 hover:bg-navy-900"
                 >
                   Logout
                 </button>

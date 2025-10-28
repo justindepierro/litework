@@ -101,7 +101,7 @@ export default function LoginPage() {
         </form>
         
         <div className="text-center">
-          <Link href="/" className="text-sm text-accent-blue hover:text-accent-blue transition-colors">
+          <Link href="/" className="text-body-secondary text-sm hover:text-accent-blue transition-colors">
             ← Back to home
           </Link>
         </div>
