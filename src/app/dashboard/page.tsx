@@ -80,6 +80,110 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Assigned Workouts for Members */}
+        {user.role === "member" && (
+          <div className="mb-8">
+            <h2 className="text-heading-secondary text-xl mb-4">
+              📋 Your Assigned Workouts
+            </h2>
+            <div className="space-y-4">
+              <div className="card-primary">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-heading-secondary text-lg">
+                      Upper Body Strength
+                    </h3>
+                    <p className="text-body-secondary text-sm mt-1">
+                      Scheduled for today • 45 minutes • 4 exercises
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-body-small px-2 py-1 bg-accent-green/10 text-accent-green rounded">
+                        Ready to Start
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-body-small mb-2">Progress</div>
+                    <div className="text-heading-primary text-lg">0%</div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="text-body-small text-navy-600 mb-1">Exercises:</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <span className="bg-silver-100 px-2 py-1 rounded">3×10 Bench Press (75%)</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">3×10 Shoulder Shrug</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">3×8 Tricep Extension</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">10 Jump Squats</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Link
+                    href="/workouts/view/session-1"
+                    className="btn-secondary flex-1 text-sm"
+                  >
+                    👀 View Details
+                  </Link>
+                  <Link
+                    href="/workouts/live/session-1"
+                    className="btn-primary flex-1 text-sm"
+                  >
+                    🚀 Start Live
+                  </Link>
+                </div>
+              </div>
+
+              <div className="card-primary">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-heading-secondary text-lg">
+                      Lower Body Power
+                    </h3>
+                    <p className="text-body-secondary text-sm mt-1">
+                      Scheduled for tomorrow • 60 minutes • 6 exercises
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-body-small px-2 py-1 bg-silver-300 text-navy-600 rounded">
+                        Upcoming
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-body-small mb-2">Progress</div>
+                    <div className="text-heading-primary text-lg">-</div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="text-body-small text-navy-600 mb-1">Exercises:</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <span className="bg-silver-100 px-2 py-1 rounded">5×5 Squats (80%)</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">3×8 Deadlifts</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">3×12 Leg Press</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">+ 3 more</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Link
+                    href="/workouts/view/session-2"
+                    className="btn-secondary flex-1 text-sm"
+                  >
+                    👀 View Details
+                  </Link>
+                  <button
+                    disabled
+                    className="btn-secondary flex-1 text-sm opacity-50 cursor-not-allowed"
+                  >
+                    ⏳ Not Ready
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Recent Activity - Mobile Optimized */}
         <div className="mb-8">
           <h2 className="text-heading-secondary text-xl mb-4">
