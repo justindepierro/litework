@@ -1,44 +1,64 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-        <nav className="bg-color-navy-800 border-b border-color-navy-600 shadow-sm">
+    <nav className="bg-color-navy-800 border-b border-color-navy-600 shadow-sm">
       <div className="container-responsive">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
-          <Link href="/" className="text-heading-primary text-xl font-bold text-white hover:text-accent-orange transition-colors">
+          <Link
+            href="/"
+            className="text-heading-primary text-xl font-bold text-white hover:text-accent-orange transition-colors"
+          >
             💪 LiteWork
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-body-small hidden lg:block text-silver-200">Welcome, {user.name}</span>
-                <Link href="/dashboard" className="hover:text-accent-green px-2 py-1 rounded transition-colors text-white">
+                <span className="text-body-small hidden lg:block text-silver-200">
+                  Welcome, {user.name}
+                </span>
+                <Link
+                  href="/dashboard"
+                  className="hover:text-accent-green px-2 py-1 rounded transition-colors text-white"
+                >
                   Dashboard
                 </Link>
-                {(user.role === 'admin' || user.role === 'coach') && (
+                {(user.role === "admin" || user.role === "coach") && (
                   <>
-                    <Link href="/workouts" className="hover:text-accent-orange px-2 py-1 rounded transition-colors text-white">
+                    <Link
+                      href="/workouts"
+                      className="hover:text-accent-orange px-2 py-1 rounded transition-colors text-white"
+                    >
                       Workouts
                     </Link>
-                    <Link href="/members" className="hover:text-accent-purple px-2 py-1 rounded transition-colors text-white">
+                    <Link
+                      href="/members"
+                      className="hover:text-accent-purple px-2 py-1 rounded transition-colors text-white"
+                    >
                       Members
                     </Link>
                   </>
                 )}
-                <Link href="/schedule" className="hover:text-accent-blue px-2 py-1 rounded transition-colors text-white">
+                <Link
+                  href="/schedule"
+                  className="hover:text-accent-blue px-2 py-1 rounded transition-colors text-white"
+                >
                   Schedule
                 </Link>
-                <Link href="/progress" className="hover:text-accent-pink px-2 py-1 rounded transition-colors text-white">
+                <Link
+                  href="/progress"
+                  className="hover:text-accent-pink px-2 py-1 rounded transition-colors text-white"
+                >
                   Progress
                 </Link>
                 <button
@@ -49,7 +69,10 @@ export default function Navigation() {
                 </button>
               </>
             ) : (
-              <Link href="/login" className="hover:text-accent-green px-2 py-1 rounded transition-colors">
+              <Link
+                href="/login"
+                className="hover:text-accent-green px-2 py-1 rounded transition-colors"
+              >
                 Login
               </Link>
             )}
@@ -64,25 +87,35 @@ export default function Navigation() {
               <span className="sr-only">Open main menu</span>
               {/* Hamburger icon */}
               <svg
-                className={`${isMobileMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
+                className={`${isMobileMenuOpen ? "hidden" : "block"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
               {/* Close icon */}
               <svg
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
+                className={`${isMobileMenuOpen ? "block" : "hidden"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -90,7 +123,9 @@ export default function Navigation() {
       </div>
 
       {/* Mobile menu */}
-      <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:hidden bg-navy-800`}>
+      <div
+        className={`${isMobileMenuOpen ? "block" : "hidden"} md:hidden bg-navy-800`}
+      >
         <div className="px-2 pt-2 pb-3 space-y-1">
           {user ? (
             <>
@@ -104,7 +139,7 @@ export default function Navigation() {
               >
                 <span className="text-accent-green">📊</span> Dashboard
               </Link>
-              {(user.role === 'admin' || user.role === 'coach') && (
+              {(user.role === "admin" || user.role === "coach") && (
                 <>
                   <Link
                     href="/workouts"

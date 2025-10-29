@@ -9,7 +9,7 @@
   /* ===========================
      COLOR TOKENS
      =========================== */
-  
+
   /* Primary Navy Scale */
   --color-navy-50: #f8fafc;
   --color-navy-100: #f1f5f9;
@@ -22,7 +22,7 @@
   --color-navy-800: #1e293b;
   --color-navy-900: #0f172a;
   --color-navy: #334155;
-  
+
   /* Primary Silver Scale */
   --color-silver-100: #ffffff;
   --color-silver-200: #f9fafb;
@@ -34,10 +34,10 @@
   --color-silver-800: #4b5563;
   --color-silver-900: #374151;
   --color-silver: #e5e7eb;
-  
+
   /* Off-white */
   --color-off-white: #fefefe;
-  
+
   /* Accent Colors */
   --color-accent-orange: #ff6b35;
   --color-accent-green: #00d4aa;
@@ -46,37 +46,40 @@
   --color-accent-yellow: #fbbf24;
   --color-accent-red: #ef4444;
   --color-accent-blue: #3b82f6;
-  
+
   /* Semantic Colors */
   --color-success: #00d4aa;
   --color-warning: #fbbf24;
   --color-error: #ef4444;
   --color-info: #3b82f6;
-  
+
   /* Text Colors */
   --color-text-primary: #334155;
   --color-text-secondary: #475569;
   --color-text-tertiary: #64748b;
   --color-text-inverse: #ffffff;
   --color-text-accent: #ff6b35;
-  
+
   /* Background Colors */
-  --color-bg-primary: #fefefe;
+  /* Page background: pure white for light mode default */
+  --color-bg-primary: #ffffff;
+  /* Secondary / panel backgrounds */
   --color-bg-secondary: #f9fafb;
   --color-bg-tertiary: #f1f5f9;
-  --color-bg-surface: #ffffff;
+  /* Surface: slightly off-white / light silver for cards & panels */
+  --color-bg-surface: #f9fafb;
   --color-bg-overlay: rgba(15, 23, 42, 0.75);
-  
+
   /* Border Colors */
   --color-border-primary: #e5e7eb;
   --color-border-secondary: #d1d5db;
   --color-border-accent: #ff6b35;
   --color-border-focus: #3b82f6;
-  
+
   /* ===========================
      SPACING TOKENS
      =========================== */
-  
+
   --spacing-0: 0;
   --spacing-px: 1px;
   --spacing-0-5: 0.125rem;
@@ -101,16 +104,18 @@
   --spacing-24: 6rem;
   --spacing-28: 7rem;
   --spacing-32: 8rem;
-  
+
   /* ===========================
      TYPOGRAPHY TOKENS
      =========================== */
-  
+
   /* Font Families */
-  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-family-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-family-display: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  
+  --font-family-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-heading:
+    "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-display:
+    "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+
   /* Font Sizes */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -121,36 +126,40 @@
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
   --font-size-5xl: 3rem;
-  
+
   /* Font Weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
-  
+
   /* Line Heights */
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
-  
+
   /* ===========================
      SHADOW TOKENS
      =========================== */
-  
+
   --shadow-none: none;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-base:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-  
+
   /* ===========================
      BORDER RADIUS TOKENS
      =========================== */
-  
+
   --radius-none: 0;
   --radius-sm: 0.125rem;
   --radius-base: 0.25rem;
@@ -160,48 +169,64 @@
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
   --radius-full: 9999px;
-  
+
   /* ===========================
      LAYOUT TOKENS
      =========================== */
-  
+
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
   --container-2xl: 1536px;
-  
+
   --layout-header-height: 4rem;
   --layout-nav-width: 16rem;
   --layout-footer-height: 6rem;
-  
+
   /* ===========================
      ANIMATION TOKENS
      =========================== */
-  
+
   --duration-fast: 150ms;
   --duration-normal: 250ms;
   --duration-slow: 350ms;
-  
+
   --easing-linear: linear;
   --easing-ease: ease;
   --easing-ease-in: ease-in;
   --easing-ease-out: ease-out;
   --easing-ease-in-out: ease-in-out;
-  
-  --transition-colors: color 250ms ease-in-out, background-color 250ms ease-in-out, border-color 250ms ease-in-out;
+
+  --transition-colors:
+    color 250ms ease-in-out, background-color 250ms ease-in-out,
+    border-color 250ms ease-in-out;
   --transition-transform: transform 250ms ease-in-out;
   --transition-opacity: opacity 250ms ease-in-out;
   --transition-all: all 250ms ease-in-out;
-  
+
   /* ===========================
      COMPONENT TOKENS
      =========================== */
-  
-  /* Background Gradients */
-  --bg-gradient-primary: linear-gradient(135deg, var(--color-silver-200) 0%, var(--color-silver-100) 50%, var(--color-navy-100) 100%);
-  --bg-gradient-secondary: linear-gradient(135deg, var(--color-navy-100) 0%, var(--color-off-white) 50%, var(--color-silver-200) 100%);
-  --bg-gradient-dark: linear-gradient(135deg, var(--color-navy-800) 0%, var(--color-navy-700) 100%);
+
+  /* Background Gradients - Light Mode Default */
+  --bg-gradient-primary: linear-gradient(
+    135deg,
+    var(--color-bg-primary) 0%,
+    var(--color-silver-200) 30%,
+    var(--color-bg-primary) 100%
+  );
+  --bg-gradient-secondary: linear-gradient(
+    135deg,
+    var(--color-silver-200) 0%,
+    var(--color-bg-primary) 50%,
+    var(--color-silver-300) 100%
+  );
+  --bg-gradient-dark: linear-gradient(
+    135deg,
+    var(--color-navy-800) 0%,
+    var(--color-navy-700) 100%
+  );
 }
 
 /* ===========================
@@ -419,13 +444,27 @@
 }
 
 /* Workout Specific Utilities */
-.workout-accent-strength { color: var(--color-accent-orange); }
-.workout-accent-progress { color: var(--color-accent-green); }
-.workout-accent-achievement { color: var(--color-accent-purple); }
-.workout-accent-motivation { color: var(--color-accent-pink); }
-.workout-accent-schedule { color: var(--color-accent-blue); }
-.workout-accent-warning { color: var(--color-accent-yellow); }
-.workout-accent-intensity { color: var(--color-accent-red); }
+.workout-accent-strength {
+  color: var(--color-accent-orange);
+}
+.workout-accent-progress {
+  color: var(--color-accent-green);
+}
+.workout-accent-achievement {
+  color: var(--color-accent-purple);
+}
+.workout-accent-motivation {
+  color: var(--color-accent-pink);
+}
+.workout-accent-schedule {
+  color: var(--color-accent-blue);
+}
+.workout-accent-warning {
+  color: var(--color-accent-yellow);
+}
+.workout-accent-intensity {
+  color: var(--color-accent-red);
+}
 
 /* Focus States */
 input:focus,
@@ -441,7 +480,7 @@ select:focus {
   .container-responsive {
     padding: 0 var(--spacing-4);
   }
-  
+
   .hide-mobile {
     display: none;
   }

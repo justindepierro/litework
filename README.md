@@ -1,14 +1,8 @@
 # Workout Tracker - Weight Lifting Club# Workout Tracker - Weight Lifting ClubThis is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-
-
 A modern, **mobile-first** web application for tracking workouts, progress, and schedules for weight lifting club members and coaches.
 
-
-
 ## 📱 Mobile-First FeaturesA modern web application for tracking workouts, progress, and schedules for weight lifting club members and coaches.## Getting Started
-
-
 
 - **PWA Ready**: Installable as a mobile app with offline capabilities
 
@@ -40,8 +34,6 @@ A modern, **mobile-first** web application for tracking workouts, progress, and 
 
 - ✅ Quick action buttons and floating action button (FAB)- ✅ Monitor personal statistics and improvements# or
 
-
-
 ### For Coaches/Admins:pnpm dev
 
 - ✅ Create and manage workout plans
@@ -52,11 +44,7 @@ A modern, **mobile-first** web application for tracking workouts, progress, and 
 
 - ✅ Manage user accounts- ✅ Create and manage workout plansbun dev
 
-
-
 ## 🛠️ Technology Stack- ✅ Set schedules for members```
-
-
 
 - **Frontend**: Next.js 16 with React- ✅ View member progress and statistics
 
@@ -73,8 +61,6 @@ A modern, **mobile-first** web application for tracking workouts, progress, and 
 ## Technology StackYou can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 ## 📲 Getting Started
-
-
 
 ### Prerequisites
 
@@ -98,11 +84,9 @@ cd LiteWork- **State Management**: React Context APITo learn more about Next.js,
 
 ```
 
-
-
 2. Install dependencies:
 
-```bash## Getting Started- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+````bash## Getting Started- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 
 npm install
 
@@ -116,7 +100,7 @@ npm install
 
 npm run dev- Node.js 18+ You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-```
+````
 
 - npm or yarn
 
@@ -138,7 +122,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 The app is designed mobile-first with these key optimizations:
 
-```bashCheck out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+````bashCheck out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 - **Touch-friendly interface** with proper touch target sizes
 
@@ -156,9 +140,9 @@ The app is designed mobile-first with these key optimizations:
 
 ## 🏗️ Project Structurenpm install
 
-```
+````
 
-```
+````
 
 src/3. Run the development server:
 
@@ -186,31 +170,31 @@ src/3. Run the development server:
 
     └── index.ts            # Shared types
 
-``````
+````
 
 src/
 
-## 📱 Mobile Features├── app/                    # Next.js app router pages
+## 📱 Mobile Features├── app/ # Next.js app router pages
 
-│   ├── dashboard/          # Dashboard page
+│ ├── dashboard/ # Dashboard page
 
-### Navigation│   ├── login/              # Login page
+### Navigation│ ├── login/ # Login page
 
-- Hamburger menu for mobile devices│   ├── layout.tsx          # Root layout
+- Hamburger menu for mobile devices│ ├── layout.tsx # Root layout
 
-- Touch-friendly navigation items│   └── page.tsx            # Home page
+- Touch-friendly navigation items│ └── page.tsx # Home page
 
-- Emoji icons for better visual hierarchy├── components/             # Reusable UI components
+- Emoji icons for better visual hierarchy├── components/ # Reusable UI components
 
-- Sticky header for easy access│   └── Navigation.tsx      # Navigation component
+- Sticky header for easy access│ └── Navigation.tsx # Navigation component
 
-├── contexts/               # React contexts
+├── contexts/ # React contexts
 
-### Dashboard│   └── AuthContext.tsx     # Authentication context
+### Dashboard│ └── AuthContext.tsx # Authentication context
 
-- Mobile-optimized card layout└── types/                  # TypeScript type definitions
+- Mobile-optimized card layout└── types/ # TypeScript type definitions
 
-- Quick stats with large touch targets    └── index.ts            # Shared types
+- Quick stats with large touch targets └── index.ts # Shared types
 
 - Floating Action Button (FAB) for quick workout creation```
 
@@ -228,11 +212,7 @@ src/
 
 - Clear visual feedback- `npm run lint` - Run ESLint
 
-
-
 ## 🚀 Available Scripts## Features to Implement
-
-
 
 - `npm run dev` - Start development server### Next Steps:
 
@@ -272,8 +252,6 @@ src/
 
 5. **Apple Health/Google Fit**: Integration with fitness platforms## Contributing
 
-
-
 ### API Routes to Add:1. Fork the repository
 
 - `/api/auth` - Authentication endpoints2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -287,8 +265,6 @@ src/
 - `/api/progress` - Progress tracking
 
 - `/api/schedules` - Schedule management## License
-
-
 
 ## 📱 PWA InstallationThis project is licensed under the MIT License - see the LICENSE file for details.
 

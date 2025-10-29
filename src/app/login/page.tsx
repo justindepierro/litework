@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
@@ -16,14 +16,14 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     const success = await login(email, password);
-    
+
     if (success) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     } else {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
     }
     setIsLoading(false);
   };
@@ -44,10 +44,13 @@ export default function LoginPage() {
             <p className="text-body-primary text-xs">password</p>
           </div>
         </div>
-        
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="text-body-primary block text-sm font-medium mb-1">
+            <label
+              htmlFor="email"
+              className="text-body-primary block text-sm font-medium mb-1"
+            >
               Email address
             </label>
             <input
@@ -61,9 +64,12 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          
+
           <div>
-            <label htmlFor="password" className="text-body-primary block text-sm font-medium mb-1">
+            <label
+              htmlFor="password"
+              className="text-body-primary block text-sm font-medium mb-1"
+            >
               Password
             </label>
             <input
@@ -95,13 +101,16 @@ export default function LoginPage() {
                 Signing in...
               </div>
             ) : (
-              'Sign in'
+              "Sign in"
             )}
           </button>
         </form>
-        
+
         <div className="text-center">
-          <Link href="/" className="text-body-secondary text-sm hover:text-accent-blue transition-colors">
+          <Link
+            href="/"
+            className="text-body-secondary text-sm hover:text-accent-blue transition-colors"
+          >
             ← Back to home
           </Link>
         </div>

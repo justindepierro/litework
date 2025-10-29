@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
   const { user } = useAuth();
@@ -14,27 +14,26 @@ export default function Home() {
           <div className="text-center">
             <h1 className="text-heading-primary text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
               <span className="block">Weight Lifting Club</span>
-              <span className="block text-heading-accent mt-1">Workout Tracker</span>
+              <span className="block text-heading-accent mt-1">
+                Workout Tracker
+              </span>
             </h1>
             <p className="mt-4 text-body-secondary text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Track your workouts, monitor progress, and stay on schedule with your weight lifting goals.
+              Track your workouts, monitor progress, and stay on schedule with
+              your weight lifting goals.
             </p>
-            
+
             {/* CTA Button - Mobile Optimized */}
             <div className="mt-8 w-full max-w-sm mx-auto">
               {user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-primary w-full"
-                >
-                  <span className="workout-accent-progress">📊</span> Go to Dashboard
+                <Link href="/dashboard" className="btn-primary w-full">
+                  <span className="workout-accent-progress">📊</span> Go to
+                  Dashboard
                 </Link>
               ) : (
-                <Link
-                  href="/login"
-                  className="btn-primary w-full"
-                >
-                  <span className="workout-accent-progress">🚀</span> Get Started
+                <Link href="/login" className="btn-primary w-full">
+                  <span className="workout-accent-progress">🚀</span> Get
+                  Started
                 </Link>
               )}
             </div>
@@ -48,7 +47,7 @@ export default function Home() {
           <h2 className="text-heading-secondary text-2xl text-center mb-8 sm:text-3xl">
             Everything you need to track your fitness
           </h2>
-          
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Feature 1 - Progress Tracking */}
             <div className="card-primary">
@@ -59,7 +58,8 @@ export default function Home() {
                 Track Progress
               </h3>
               <p className="text-body-secondary text-center text-sm leading-relaxed">
-                Monitor your strength gains and personal records over time with detailed analytics and visual charts.
+                Monitor your strength gains and personal records over time with
+                detailed analytics and visual charts.
               </p>
               <div className="mt-3 text-center">
                 <span className="status-success inline-block px-2 py-1 text-xs rounded-full font-medium">
@@ -77,7 +77,8 @@ export default function Home() {
                 Smart Scheduling
               </h3>
               <p className="text-body-secondary text-center text-sm leading-relaxed">
-                View your workout schedule and get reminders so you never miss a training session.
+                View your workout schedule and get reminders so you never miss a
+                training session.
               </p>
               <div className="mt-3 text-center">
                 <span className="status-info inline-block px-2 py-1 text-xs rounded-full font-medium">
@@ -95,7 +96,8 @@ export default function Home() {
                 Team Management
               </h3>
               <p className="text-body-secondary text-center text-sm leading-relaxed">
-                Coaches can create workouts and track member progress across the entire team.
+                Coaches can create workouts and track member progress across the
+                entire team.
               </p>
               <div className="mt-3 text-center">
                 <span className="inline-block px-2 py-1 bg-purple-100 workout-accent-achievement text-xs rounded-full font-medium">
@@ -119,29 +121,45 @@ export default function Home() {
                 href="/dashboard"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-green"
               >
-                <span className="text-2xl mb-2 workout-accent-progress">📊</span>
-                <span className="text-body-primary text-sm font-medium">Dashboard</span>
+                <span className="text-2xl mb-2 workout-accent-progress">
+                  📊
+                </span>
+                <span className="text-body-primary text-sm font-medium">
+                  Dashboard
+                </span>
               </Link>
               <Link
                 href="/workout/new"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-orange"
               >
-                <span className="text-2xl mb-2 workout-accent-strength">💪</span>
-                <span className="text-body-primary text-sm font-medium">New Workout</span>
+                <span className="text-2xl mb-2 workout-accent-strength">
+                  💪
+                </span>
+                <span className="text-body-primary text-sm font-medium">
+                  New Workout
+                </span>
               </Link>
               <Link
                 href="/progress"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-pink"
               >
-                <span className="text-2xl mb-2 workout-accent-motivation">📈</span>
-                <span className="text-body-primary text-sm font-medium">Progress</span>
+                <span className="text-2xl mb-2 workout-accent-motivation">
+                  📈
+                </span>
+                <span className="text-body-primary text-sm font-medium">
+                  Progress
+                </span>
               </Link>
               <Link
                 href="/schedule"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-blue"
               >
-                <span className="text-2xl mb-2 workout-accent-schedule">📅</span>
-                <span className="text-body-primary text-sm font-medium">Schedule</span>
+                <span className="text-2xl mb-2 workout-accent-schedule">
+                  📅
+                </span>
+                <span className="text-body-primary text-sm font-medium">
+                  Schedule
+                </span>
               </Link>
             </div>
           </div>

@@ -5,6 +5,7 @@ This is a web-based workout tracking application designed for a weight lifting c
 ## Project Structure
 
 This is a full-stack web application with:
+
 - **Frontend**: React.js with modern UI components
 - **Backend**: Node.js with Express.js API
 - **Database**: MongoDB for storing user data, workouts, and progress
@@ -13,12 +14,14 @@ This is a full-stack web application with:
 ## Key Features
 
 ### For Coaches/Admins:
+
 - Create and manage workout plans
 - Set schedules for members
 - View member progress and statistics
 - Manage user accounts
 
 ### For Members:
+
 - Record workout sessions (sets, reps, weight)
 - Track personal progress over time
 - View assigned workout schedules

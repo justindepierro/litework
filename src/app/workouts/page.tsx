@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function WorkoutsPage() {
   const { user, isLoading } = useAuth();
@@ -10,10 +10,10 @@ export default function WorkoutsPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
-    if (!isLoading && user && user.role === 'member') {
-      router.push('/dashboard'); // Only coaches/admins can access this page
+    if (!isLoading && user && user.role === "member") {
+      router.push("/dashboard"); // Only coaches/admins can access this page
     }
   }, [user, isLoading, router]);
 
@@ -25,7 +25,7 @@ export default function WorkoutsPage() {
     );
   }
 
-  if (!user || user.role === 'member') {
+  if (!user || user.role === "member") {
     return null;
   }
 
@@ -35,9 +35,11 @@ export default function WorkoutsPage() {
         <h1 className="text-heading-primary text-3xl mb-6">
           Workout Management
         </h1>
-        
+
         <div className="card-primary mb-8">
-          <h2 className="text-heading-secondary text-xl mb-4">Create New Workout</h2>
+          <h2 className="text-heading-secondary text-xl mb-4">
+            Create New Workout
+          </h2>
           <p className="text-body-secondary mb-4">
             Design custom workout plans for your team members.
           </p>
@@ -48,22 +50,30 @@ export default function WorkoutsPage() {
         </div>
 
         <div className="card-primary">
-          <h2 className="text-heading-secondary text-xl mb-4">Recent Workouts</h2>
+          <h2 className="text-heading-secondary text-xl mb-4">
+            Recent Workouts
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-silver-200 rounded-lg">
               <div>
-                <h3 className="text-body-primary font-medium">Upper Body Strength</h3>
-                <p className="text-body-small">Bench Press, Rows, Shoulder Press</p>
+                <h3 className="text-body-primary font-medium">
+                  Upper Body Strength
+                </h3>
+                <p className="text-body-small">
+                  Bench Press, Rows, Shoulder Press
+                </p>
               </div>
               <div className="flex space-x-2">
                 <button className="btn-secondary">Edit</button>
                 <button className="btn-primary">Assign</button>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-4 bg-silver-200 rounded-lg">
               <div>
-                <h3 className="text-body-primary font-medium">Lower Body Power</h3>
+                <h3 className="text-body-primary font-medium">
+                  Lower Body Power
+                </h3>
                 <p className="text-body-small">Squats, Deadlifts, Leg Press</p>
               </div>
               <div className="flex space-x-2">

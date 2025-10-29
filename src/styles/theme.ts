@@ -3,15 +3,15 @@
  * Provides semantic design system built on design tokens
  */
 
-import { 
-  colors, 
-  typography, 
-  spacing, 
-  shadows, 
-  borderRadius, 
-  layout, 
-  animations 
-} from './tokens';
+import {
+  colors,
+  typography,
+  spacing,
+  shadows,
+  borderRadius,
+  layout,
+  animations,
+} from "./tokens";
 
 // ===========================
 // SEMANTIC COLOR SYSTEM
@@ -35,41 +35,41 @@ export const theme = {
     heading: {
       primary: {
         color: colors.text.primary,
-        fontFamily: typography.fontFamily.heading.join(', '),
+        fontFamily: typography.fontFamily.heading.join(", "),
         fontWeight: typography.fontWeight.bold,
         lineHeight: typography.lineHeight.tight,
       },
       secondary: {
         color: colors.text.secondary,
-        fontFamily: typography.fontFamily.heading.join(', '),
+        fontFamily: typography.fontFamily.heading.join(", "),
         fontWeight: typography.fontWeight.semibold,
         lineHeight: typography.lineHeight.tight,
       },
       accent: {
         color: colors.text.accent,
-        fontFamily: typography.fontFamily.heading.join(', '),
+        fontFamily: typography.fontFamily.heading.join(", "),
         fontWeight: typography.fontWeight.bold,
         lineHeight: typography.lineHeight.tight,
       },
     },
-    
+
     // Body Text
     body: {
       primary: {
         color: colors.text.primary,
-        fontFamily: typography.fontFamily.primary.join(', '),
+        fontFamily: typography.fontFamily.primary.join(", "),
         fontWeight: typography.fontWeight.normal,
         lineHeight: typography.lineHeight.normal,
       },
       secondary: {
         color: colors.text.secondary,
-        fontFamily: typography.fontFamily.primary.join(', '),
+        fontFamily: typography.fontFamily.primary.join(", "),
         fontWeight: typography.fontWeight.normal,
         lineHeight: typography.lineHeight.normal,
       },
       small: {
         color: colors.text.tertiary,
-        fontFamily: typography.fontFamily.primary.join(', '),
+        fontFamily: typography.fontFamily.primary.join(", "),
         fontWeight: typography.fontWeight.normal,
         lineHeight: typography.lineHeight.normal,
         fontSize: typography.fontSize.sm,
@@ -80,12 +80,12 @@ export const theme = {
     navigation: {
       primary: {
         color: colors.text.inverse,
-        fontFamily: typography.fontFamily.primary.join(', '),
+        fontFamily: typography.fontFamily.primary.join(", "),
         fontWeight: typography.fontWeight.medium,
       },
       secondary: {
         color: colors.primary.silver[200],
-        fontFamily: typography.fontFamily.primary.join(', '),
+        fontFamily: typography.fontFamily.primary.join(", "),
         fontWeight: typography.fontWeight.normal,
       },
     },
@@ -106,22 +106,22 @@ export const theme = {
         transition: animations.transitions.all,
         shadow: shadows.sm,
         hover: {
-          background: '#e55a2b',
-          transform: 'translateY(-1px)',
+          background: "#e55a2b",
+          transform: "translateY(-1px)",
           shadow: shadows.md,
         },
         active: {
-          transform: 'translateY(0)',
+          transform: "translateY(0)",
         },
         disabled: {
           background: colors.primary.silver[400],
           color: colors.text.tertiary,
-          cursor: 'not-allowed',
+          cursor: "not-allowed",
         },
       },
-      
+
       secondary: {
-        background: 'transparent',
+        background: "transparent",
         color: colors.text.primary,
         border: `1px solid ${colors.border.primary}`,
         borderRadius: borderRadius.md,
@@ -146,8 +146,8 @@ export const theme = {
         transition: animations.transitions.all,
         shadow: shadows.sm,
         hover: {
-          background: '#00b894',
-          transform: 'translateY(-1px)',
+          background: "#00b894",
+          transform: "translateY(-1px)",
           shadow: shadows.md,
         },
       },
@@ -163,8 +163,8 @@ export const theme = {
         transition: animations.transitions.all,
         shadow: shadows.sm,
         hover: {
-          background: '#7c3aed',
-          transform: 'translateY(-1px)',
+          background: "#7c3aed",
+          transform: "translateY(-1px)",
           shadow: shadows.md,
         },
       },
@@ -183,7 +183,7 @@ export const theme = {
         placeholder: colors.text.tertiary,
         focus: {
           borderColor: colors.border.focus,
-          outline: 'none',
+          outline: "none",
           ring: `0 0 0 3px rgba(59, 130, 246, 0.1)`,
         },
       },
@@ -193,18 +193,18 @@ export const theme = {
     links: {
       primary: {
         color: colors.accent.blue,
-        textDecoration: 'none',
+        textDecoration: "none",
         fontWeight: typography.fontWeight.medium,
         transition: animations.transitions.colors,
         hover: {
-          color: '#2563eb',
-          textDecoration: 'underline',
+          color: "#2563eb",
+          textDecoration: "underline",
         },
       },
-      
+
       navigation: {
         color: colors.text.inverse,
-        textDecoration: 'none',
+        textDecoration: "none",
         fontWeight: typography.fontWeight.medium,
         transition: animations.transitions.all,
         hover: {
@@ -225,7 +225,7 @@ export const theme = {
       transition: animations.transitions.all,
       hover: {
         shadow: shadows.md,
-        transform: 'translateY(-2px)',
+        transform: "translateY(-2px)",
       },
     },
 
@@ -247,7 +247,7 @@ export const theme = {
       transition: animations.transitions.all,
       hover: {
         shadow: shadows.md,
-        transform: 'translateY(-2px)',
+        transform: "translateY(-2px)",
       },
     },
 
@@ -298,7 +298,7 @@ export const theme = {
   layout: {
     container: {
       maxWidth: layout.container.xl,
-      margin: '0 auto',
+      margin: "0 auto",
       padding: `0 ${spacing[4]}`,
     },
 
@@ -386,30 +386,30 @@ export const theme = {
 export const generateUtilityClasses = () => {
   return {
     // Text utilities
-    '.text-heading-primary': theme.text.heading.primary,
-    '.text-heading-secondary': theme.text.heading.secondary,
-    '.text-heading-accent': theme.text.heading.accent,
-    '.text-body-primary': theme.text.body.primary,
-    '.text-body-secondary': theme.text.body.secondary,
-    '.text-body-small': theme.text.body.small,
-    
+    ".text-heading-primary": theme.text.heading.primary,
+    ".text-heading-secondary": theme.text.heading.secondary,
+    ".text-heading-accent": theme.text.heading.accent,
+    ".text-body-primary": theme.text.body.primary,
+    ".text-body-secondary": theme.text.body.secondary,
+    ".text-body-small": theme.text.body.small,
+
     // Button utilities
-    '.btn-primary': theme.interactive.buttons.primary,
-    '.btn-secondary': theme.interactive.buttons.secondary,
-    '.btn-success': theme.interactive.buttons.success,
-    '.btn-accent': theme.interactive.buttons.accent,
-    
+    ".btn-primary": theme.interactive.buttons.primary,
+    ".btn-secondary": theme.interactive.buttons.secondary,
+    ".btn-success": theme.interactive.buttons.success,
+    ".btn-accent": theme.interactive.buttons.accent,
+
     // Card utilities
-    '.card-primary': theme.cards.primary,
-    '.card-elevated': theme.cards.elevated,
-    '.card-accent': theme.cards.accent,
-    '.card-stat': theme.cards.stat,
-    
+    ".card-primary": theme.cards.primary,
+    ".card-elevated": theme.cards.elevated,
+    ".card-accent": theme.cards.accent,
+    ".card-stat": theme.cards.stat,
+
     // Status utilities
-    '.status-success': theme.status.success,
-    '.status-warning': theme.status.warning,
-    '.status-error': theme.status.error,
-    '.status-info': theme.status.info,
+    ".status-success": theme.status.success,
+    ".status-warning": theme.status.warning,
+    ".status-error": theme.status.error,
+    ".status-info": theme.status.info,
   };
 };
 
@@ -426,18 +426,18 @@ const breakpoints = {
 export const responsive = {
   // Breakpoint utilities
   ...breakpoints,
-  
+
   // Common responsive patterns
   hideOnMobile: {
     [breakpoints.mobile]: {
-      display: 'none',
+      display: "none",
     },
   },
-  
+
   showOnMobile: {
-    display: 'none',
+    display: "none",
     [breakpoints.mobile]: {
-      display: 'block',
+      display: "block",
     },
   },
 };

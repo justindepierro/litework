@@ -109,11 +109,13 @@ const MyCard = () => {
 ### Colors
 
 #### Primary Colors
+
 - **Navy Scale**: `--color-navy-50` to `--color-navy-900`
 - **Silver Scale**: `--color-silver-100` to `--color-silver-900`
 - **Off White**: `--color-off-white`
 
 #### Accent Colors (Workout Themed)
+
 - **Orange** (`--color-accent-orange`): Strength/Energy
 - **Green** (`--color-accent-green`): Progress/Success
 - **Purple** (`--color-accent-purple`): Achievement/Premium
@@ -123,6 +125,7 @@ const MyCard = () => {
 - **Red** (`--color-accent-red`): High Intensity/Error
 
 #### Semantic Colors
+
 - **Text**: `--color-text-primary`, `--color-text-secondary`, `--color-text-tertiary`
 - **Background**: `--color-bg-primary`, `--color-bg-secondary`, `--color-bg-surface`
 - **Border**: `--color-border-primary`, `--color-border-focus`, `--color-border-accent`
@@ -130,19 +133,23 @@ const MyCard = () => {
 ### Typography
 
 #### Font Families
+
 - **Primary**: `--font-family-primary` (Inter)
 - **Heading**: `--font-family-heading` (Poppins)
 - **Display**: `--font-family-display` (Poppins)
 
 #### Font Sizes
+
 - **Scale**: `--font-size-xs` (12px) to `--font-size-5xl` (48px)
 
 #### Font Weights
+
 - **Range**: `--font-weight-normal` (400) to `--font-weight-extrabold` (800)
 
 ### Spacing
 
 #### Base Scale
+
 - **Micro**: `--spacing-px`, `--spacing-0-5`, `--spacing-1`
 - **Small**: `--spacing-2`, `--spacing-3`, `--spacing-4`
 - **Medium**: `--spacing-5`, `--spacing-6`, `--spacing-8`
@@ -152,6 +159,7 @@ const MyCard = () => {
 ### Shadows
 
 #### Elevation Scale
+
 - **Subtle**: `--shadow-sm`
 - **Default**: `--shadow-base`
 - **Medium**: `--shadow-md`
@@ -180,18 +188,24 @@ Our design tokens include mobile-first responsive utilities:
 ```css
 /* Mobile-first approach */
 @media (max-width: 640px) {
-  .hide-mobile { display: none; }
+  .hide-mobile {
+    display: none;
+  }
 }
 
 @media (min-width: 641px) {
-  .show-mobile { display: none; }
+  .show-mobile {
+    display: none;
+  }
 }
 ```
 
 ## ✨ Best Practices
 
 ### 1. Always Use Tokens
+
 ❌ **Don't**: Hard-code values
+
 ```css
 .my-element {
   color: #ff6b35;
@@ -201,6 +215,7 @@ Our design tokens include mobile-first responsive utilities:
 ```
 
 ✅ **Do**: Use design tokens
+
 ```css
 .my-element {
   color: var(--color-accent-orange);
@@ -210,48 +225,60 @@ Our design tokens include mobile-first responsive utilities:
 ```
 
 ### 2. Prefer Utility Classes
+
 ❌ **Don't**: Create custom CSS for common patterns
+
 ```jsx
-<div style={{backgroundColor: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}>
+<div
+  style={{
+    backgroundColor: "white",
+    padding: "24px",
+    borderRadius: "8px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  }}
+>
   Content
 </div>
 ```
 
 ✅ **Do**: Use utility classes
+
 ```jsx
-<div className="card-primary">
-  Content
-</div>
+<div className="card-primary">Content</div>
 ```
 
 ### 3. Use Semantic Classes for Text
+
 ❌ **Don't**: Mix typography properties
+
 ```jsx
-<h1 style={{color: '#334155', fontFamily: 'Poppins', fontWeight: 700}}>
+<h1 style={{ color: "#334155", fontFamily: "Poppins", fontWeight: 700 }}>
   Heading
 </h1>
 ```
 
 ✅ **Do**: Use semantic text classes
+
 ```jsx
-<h1 className="text-heading-primary">
-  Heading
-</h1>
+<h1 className="text-heading-primary">Heading</h1>
 ```
 
 ### 4. Consistent Button Styling
+
 ❌ **Don't**: Create custom button styles
+
 ```jsx
-<button style={{backgroundColor: '#ff6b35', color: 'white', padding: '12px 24px'}}>
+<button
+  style={{ backgroundColor: "#ff6b35", color: "white", padding: "12px 24px" }}
+>
   Click me
 </button>
 ```
 
 ✅ **Do**: Use button utilities
+
 ```jsx
-<button className="btn-primary">
-  Click me
-</button>
+<button className="btn-primary">Click me</button>
 ```
 
 ## 🔧 Extending the Design System
@@ -273,6 +300,7 @@ Our design tokens include mobile-first responsive utilities:
 ## 🎯 Token Reference Quick Guide
 
 ### Common Color Tokens
+
 - `--color-accent-orange` - Primary accent (strength/energy)
 - `--color-accent-green` - Success/progress
 - `--color-text-primary` - Main text color
@@ -281,12 +309,14 @@ Our design tokens include mobile-first responsive utilities:
 - `--color-border-primary` - Default borders
 
 ### Common Spacing Tokens
+
 - `--spacing-2` (8px) - Small spacing
 - `--spacing-4` (16px) - Medium spacing
 - `--spacing-6` (24px) - Large spacing
 - `--spacing-8` (32px) - Extra large spacing
 
 ### Common Typography Tokens
+
 - `--font-family-primary` - Body text font
 - `--font-family-heading` - Heading font
 - `--font-size-base` (16px) - Default text size

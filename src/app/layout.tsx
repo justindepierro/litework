@@ -7,50 +7,53 @@ import Navigation from "@/components/Navigation";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: 'swap',
+  display: "swap",
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-poppins", 
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Workout Tracker - Weight Lifting Club",
-  description: "Track workouts, progress, and schedules for weight lifting club members",
-  keywords: "workout, fitness, weight lifting, gym, progress tracking, mobile app",
+  description:
+    "Track workouts, progress, and schedules for weight lifting club members",
+  keywords:
+    "workout, fitness, weight lifting, gym, progress tracking, mobile app",
   authors: [{ name: "Weight Lifting Club" }],
-  
+
   // PWA manifest
-  manifest: '/manifest.json',
-  
+  manifest: "/manifest.json",
+
   // Mobile app capabilities
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
-    title: 'Workout Tracker',
+    statusBarStyle: "default",
+    title: "Workout Tracker",
   },
-  
+
   // Open Graph for social sharing
   openGraph: {
-    title: 'Workout Tracker - Weight Lifting Club',
-    description: 'Track workouts, progress, and schedules for weight lifting club members',
-    type: 'website',
-    siteName: 'Workout Tracker',
+    title: "Workout Tracker - Weight Lifting Club",
+    description:
+      "Track workouts, progress, and schedules for weight lifting club members",
+    type: "website",
+    siteName: "Workout Tracker",
   },
 };
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover',
+  viewportFit: "cover",
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#334155' }, // Navy-700 from design tokens
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },  // Navy-900 from design tokens
+    { media: "(prefers-color-scheme: light)", color: "#334155" }, // Navy-700 from design tokens
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" }, // Navy-900 from design tokens
   ],
 };
 
@@ -62,11 +65,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${poppins.variable} font-sans antialiased`}
+        className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}
       >
         <AuthProvider>
           <Navigation />
-          <main>{children}</main>
+          <main className="bg-white">{children}</main>
         </AuthProvider>
       </body>
     </html>

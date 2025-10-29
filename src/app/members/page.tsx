@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function MembersPage() {
   const { user, isLoading } = useAuth();
@@ -10,10 +10,10 @@ export default function MembersPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
-    if (!isLoading && user && user.role === 'member') {
-      router.push('/dashboard'); // Only coaches/admins can access this page
+    if (!isLoading && user && user.role === "member") {
+      router.push("/dashboard"); // Only coaches/admins can access this page
     }
   }, [user, isLoading, router]);
 
@@ -25,17 +25,15 @@ export default function MembersPage() {
     );
   }
 
-  if (!user || user.role === 'member') {
+  if (!user || user.role === "member") {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gradient-primary container-responsive section-spacing">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-heading-primary text-3xl mb-6">
-          Team Members
-        </h1>
-        
+        <h1 className="text-heading-primary text-3xl mb-6">Team Members</h1>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Member Card 1 */}
           <div className="card-primary">

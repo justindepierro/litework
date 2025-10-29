@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
-import { User } from '@/types';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User } from "@/types";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface AuthContextType {
   user: User | null;
@@ -19,15 +25,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       // Check for stored auth token and validate
-      const token = localStorage.getItem('auth-token');
+      const token = localStorage.getItem("auth-token");
       if (token) {
         // In a real app, validate the token with your backend
         // For now, we'll create a mock user
         const mockUser: User = {
-          id: '1',
-          email: 'coach@example.com',
-          name: 'Coach Smith',
-          role: 'coach',
+          id: "1",
+          email: "coach@example.com",
+          name: "Coach Smith",
+          role: "coach",
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -42,29 +48,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       // Mock login - replace with actual API call
-      if (email === 'coach@example.com' && password === 'password') {
+      if (email === "coach@example.com" && password === "password") {
         const mockUser: User = {
-          id: '1',
-          email: 'coach@example.com',
-          name: 'Coach Smith',
-          role: 'coach',
+          id: "1",
+          email: "coach@example.com",
+          name: "Coach Smith",
+          role: "coach",
           createdAt: new Date(),
           updatedAt: new Date(),
         };
         setUser(mockUser);
-        localStorage.setItem('auth-token', 'mock-token');
+        localStorage.setItem("auth-token", "mock-token");
         return true;
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return false;
     }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('auth-token');
+    localStorage.removeItem("auth-token");
   };
 
   return (
@@ -77,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

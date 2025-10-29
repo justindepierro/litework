@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, isLoading, router]);
 
@@ -31,9 +31,10 @@ export default function DashboardPage() {
     <div className="container-responsive section-spacing min-h-screen bg-gradient-primary">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-heading-primary text-2xl mb-6 sm:text-3xl">
-          Welcome back, <span className="text-heading-accent">{user.name}</span>!
+          Welcome back, <span className="text-heading-accent">{user.name}</span>
+          !
         </h1>
-        
+
         {/* Quick Stats - Mobile First Grid */}
         <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-3">
           <div className="card-stat">
@@ -44,9 +45,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small">
-                  This Week
-                </dt>
+                <dt className="text-body-small">This Week</dt>
                 <dd className="text-heading-primary text-2xl">3 workouts</dd>
               </div>
             </div>
@@ -60,9 +59,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small">
-                  Personal Records
-                </dt>
+                <dt className="text-body-small">Personal Records</dt>
                 <dd className="text-heading-primary text-2xl">12</dd>
               </div>
             </div>
@@ -76,9 +73,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small">
-                  Streak Days
-                </dt>
+                <dt className="text-body-small">Streak Days</dt>
                 <dd className="text-heading-primary text-2xl">7</dd>
               </div>
             </div>
@@ -87,14 +82,17 @@ export default function DashboardPage() {
 
         {/* Recent Activity - Mobile Optimized */}
         <div className="mb-8">
-          <h2 className="text-heading-secondary text-xl mb-4">Recent Activity</h2>
+          <h2 className="text-heading-secondary text-xl mb-4">
+            Recent Activity
+          </h2>
           <div className="card-primary overflow-hidden">
             <div className="divide-y divide-silver-300">
               <div className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-progress">💪</span> Completed: Upper Body Strength
+                      <span className="workout-accent-progress">💪</span>{" "}
+                      Completed: Upper Body Strength
                     </div>
                     <div className="text-body-small">
                       3 sets × 8 reps Bench Press at 185 lbs
@@ -109,10 +107,12 @@ export default function DashboardPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-warning">🏆</span> New Personal Record: Deadlift
+                      <span className="workout-accent-warning">🏆</span> New
+                      Personal Record: Deadlift
                     </div>
                     <div className="text-body-small">
-                      You lifted 315 lbs - that&apos;s 25 lbs more than your previous best!
+                      You lifted 315 lbs - that&apos;s 25 lbs more than your
+                      previous best!
                     </div>
                   </div>
                   <div className="text-xs text-silver-600 whitespace-nowrap ml-2">
@@ -125,16 +125,19 @@ export default function DashboardPage() {
         </div>
 
         {/* Upcoming Workouts - Mobile Optimized */}
-        {user.role === 'member' && (
+        {user.role === "member" && (
           <div>
-            <h2 className="text-heading-secondary text-xl mb-4">Upcoming Workouts</h2>
+            <h2 className="text-heading-secondary text-xl mb-4">
+              Upcoming Workouts
+            </h2>
             <div className="card-primary overflow-hidden">
               <div className="divide-y divide-silver-300">
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="text-body-primary text-sm font-medium mb-1">
-                        <span className="workout-accent-schedule">🦵</span> Lower Body Power
+                        <span className="workout-accent-schedule">🦵</span>{" "}
+                        Lower Body Power
                       </div>
                       <div className="text-body-small">
                         Squats, Deadlifts, Leg Press
@@ -149,7 +152,8 @@ export default function DashboardPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="text-body-primary text-sm font-medium mb-1">
-                        <span className="workout-accent-strength">💪</span> Upper Body Hypertrophy
+                        <span className="workout-accent-strength">💪</span>{" "}
+                        Upper Body Hypertrophy
                       </div>
                       <div className="text-body-small">
                         Bench Press, Rows, Shoulder Press
@@ -170,7 +174,7 @@ export default function DashboardPage() {
           <Link
             href="/workout/new"
             className="flex items-center justify-center w-14 h-14 bg-accent-orange hover:bg-accent-orange text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
-            style={{ filter: 'brightness(0.9)' }}
+            style={{ filter: "brightness(0.9)" }}
           >
             <span className="text-xl font-bold">+</span>
           </Link>
