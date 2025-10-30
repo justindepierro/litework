@@ -1,21 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useAnyUserGuard } from "@/hooks/use-auth-guard";
 import CalendarView from "@/components/CalendarView";
 import { Dumbbell, Trophy, Flame, Hand, ClipboardList, CheckCircle, Eye, Rocket, PartyPopper, Clock, TrendingUp, Calendar, Zap } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, isLoading, router]);
+  const { user, isLoading } = useAnyUserGuard();
 
   if (isLoading) {
     return (

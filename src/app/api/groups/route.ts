@@ -1,58 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canManageGroups, canViewAllAthletes } from "@/lib/auth";
 import { AthleteGroup } from "@/types";
-
-// Mock groups database - in production, this would be a real database
-const mockGroups: AthleteGroup[] = [
-  {
-    id: "1",
-    name: "Football Linemen",
-    description: "Offensive and defensive linemen",
-    sport: "Football",
-    category: "Linemen",
-    coachId: "1",
-    athleteIds: ["2", "4"],
-    color: "#ff6b35",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "2",
-    name: "Football Receivers",
-    description: "Wide receivers and tight ends",
-    sport: "Football",
-    category: "Receivers",
-    coachId: "1",
-    athleteIds: [],
-    color: "#00d4aa",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "3",
-    name: "Volleyball Girls",
-    description: "Girls varsity volleyball team",
-    sport: "Volleyball",
-    category: "Girls",
-    coachId: "1",
-    athleteIds: ["3"],
-    color: "#8b5cf6",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "4",
-    name: "Cross Country Boys",
-    description: "Boys cross country team",
-    sport: "Cross Country",
-    category: "Boys",
-    coachId: "1",
-    athleteIds: [],
-    color: "#3b82f6",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import { 
+  mockGroups, 
+  addGroup, 
+  updateGroup,
+  deleteGroup
+} from "@/lib/mock-database";
 
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
 export async function GET(request: NextRequest) {
@@ -122,8 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newGroup: AthleteGroup = {
-      id: `group-${Date.now()}`,
+    const newGroup = addGroup({
       name,
       description,
       sport,
@@ -131,12 +84,7 @@ export async function POST(request: NextRequest) {
       coachId: auth.user.userId,
       athleteIds: athleteIds || [],
       color: color || "#3b82f6",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    // In production, save to database
-    mockGroups.push(newGroup);
+    });
 
     return NextResponse.json({
       success: true,

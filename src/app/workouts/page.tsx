@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useCoachGuard } from "@/hooks/use-auth-guard";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
 import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
 import ExerciseLibrary from "@/components/ExerciseLibrary";
@@ -27,8 +26,7 @@ interface LibraryExercise {
 }
 
 export default function WorkoutsPage() {
-  const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useCoachGuard();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,13 +47,6 @@ export default function WorkoutsPage() {
     exercises: [],
     estimatedDuration: 30,
   });
-
-  // Authentication guard
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, isLoading, router]);
 
   // Load workouts from API
   useEffect(() => {

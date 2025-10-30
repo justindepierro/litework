@@ -1,57 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canManageGroups } from "@/lib/auth";
-
-// Mock groups database - same as in route.ts (in production, this would be shared)
-const mockGroups = [
-  {
-    id: "1",
-    name: "Football Linemen",
-    description: "Offensive and defensive linemen",
-    sport: "Football",
-    category: "Linemen",
-    coachId: "1",
-    athleteIds: ["2", "4"],
-    color: "#ff6b35",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "2",
-    name: "Football Receivers",
-    description: "Wide receivers and tight ends",
-    sport: "Football",
-    category: "Receivers",
-    coachId: "1",
-    athleteIds: [],
-    color: "#00d4aa",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "3",
-    name: "Volleyball Girls",
-    description: "Girls varsity volleyball team",
-    sport: "Volleyball",
-    category: "Girls",
-    coachId: "1",
-    athleteIds: ["3"],
-    color: "#8b5cf6",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "4",
-    name: "Cross Country Boys",
-    description: "Boys cross country team",
-    sport: "Cross Country",
-    category: "Boys",
-    coachId: "1",
-    athleteIds: [],
-    color: "#3b82f6",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import { 
+  mockGroups, 
+  getGroupById, 
+  updateGroup, 
+  deleteGroup 
+} from "@/lib/mock-database";
 
 // PUT /api/groups/[id] - Update group (coaches only)
 export async function PUT(
