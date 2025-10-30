@@ -5,14 +5,57 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
 
-  // Optimize for mobile performance
+  // Development server stability improvements
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ["@heroicons/react"],
   },
 
-  // Turbopack configuration (empty for now)
-  turbopack: {},
+  // Production optimizations
+  output: "standalone",
+  
+  // Development server configuration
+  devIndicators: {
+    appIsrStatus: false, // Reduces noise in development
+  },
+
+  // Simplified development configuration
+  webpack: (config, { dev, isServer }) => {
+    // Only add polling in development to prevent file watching issues
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: ['**/node_modules/**', '**/.git/**', '**/.next/**']
+      };
+      
+      // Reduce memory usage in development
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: isServer ? false : {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            framework: {
+              chunks: 'all',
+              name: 'framework',
+              test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+          },
+        },
+      };
+    }
+    return config;
+  },
+
+  // Turbopack configuration for better performance
+  turbopack: {
+    // Set correct root directory to avoid lockfile warning
+    root: __dirname,
+  },
 
   // PWA-ready configuration
   headers: async () => {

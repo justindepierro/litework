@@ -127,12 +127,12 @@
   --font-size-4xl: 2.25rem;
   --font-size-5xl: 3rem;
 
-  /* Font Weights */
+  /* Font Weights - Optimized for loaded fonts */
   --font-weight-normal: 400;
-  --font-weight-medium: 500;
+  --font-weight-medium: 600; /* Changed from 500 to 600 since 500 is not loaded */
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
+  --font-weight-extrabold: 700; /* Changed from 800 to 700 since 800 is not loaded */
 
   /* Line Heights */
   --line-height-tight: 1.25;
@@ -561,5 +561,33 @@ select:focus {
 
   .nav-container {
     padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Touch manipulation utilities */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.touch-pan-x {
+  touch-action: pan-x;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+.touch-none {
+  touch-action: none;
+}
+
+/* Enhanced mobile touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .touch-manipulation:active,
+  button:active,
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
   }
 }

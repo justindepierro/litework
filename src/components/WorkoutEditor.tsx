@@ -100,7 +100,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
           <div className="flex-1">
             {isEditing ? (
-              <div className="space-y-3">
+                            <div className="space-y-4">
+                {/* Enhanced mobile exercise name input */}
                 <input
                   type="text"
                   value={editedExercise.exerciseName}
@@ -110,11 +111,12 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       exerciseName: e.target.value,
                     })
                   }
-                  className="w-full p-2 border border-silver-300 rounded text-sm"
-                  placeholder="Exercise name"
+                  className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                  placeholder="Exercise Name"
                 />
 
-                <div className="grid grid-cols-3 gap-2">
+                {/* Enhanced mobile input grid */}
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="number"
                     value={editedExercise.sets}
@@ -124,7 +126,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         sets: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="p-2 border border-silver-300 rounded text-sm"
+                    className="p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                     placeholder="Sets"
                     min="1"
                   />
@@ -137,7 +139,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         reps: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="p-2 border border-silver-300 rounded text-sm"
+                    className="p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                     placeholder="Reps"
                     min="1"
                   />
@@ -151,23 +153,24 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           weight: parseFloat(e.target.value) || 0,
                         })
                       }
-                      className="p-2 border border-silver-300 rounded text-sm"
-                      placeholder="Weight"
+                      className="col-span-2 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="Weight (lbs)"
                       min="0"
                     />
                   )}
                 </div>
 
-                <div className="flex space-x-2">
+                {/* Enhanced mobile action buttons */}
+                <div className="flex gap-3">
                   <button
                     onClick={saveExercise}
-                    className="btn-primary text-sm px-3 py-1"
+                    className="btn-primary flex-1 py-4 sm:py-3 text-lg sm:text-base font-bold rounded-xl sm:rounded-lg touch-manipulation"
                   >
-                    Save
+                    Save Changes
                   </button>
                   <button
                     onClick={cancelEdit}
-                    className="btn-secondary text-sm px-3 py-1"
+                    className="btn-secondary flex-1 py-4 sm:py-3 text-lg sm:text-base font-medium rounded-xl sm:rounded-lg touch-manipulation"
                   >
                     Cancel
                   </button>
@@ -196,24 +199,25 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center space-x-1">
+        {/* Enhanced mobile action buttons */}
+        <div className="flex items-center gap-2">
           <div className="relative">
             <button
               onClick={() => setShowMoveMenu(!showMoveMenu)}
-              className="p-1 text-silver-500 hover:text-accent-blue"
+              className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
               title="Move to group"
             >
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-5 h-5 sm:w-4 sm:h-4" />
             </button>
 
             {showMoveMenu && (
-              <div className="absolute right-0 top-6 bg-white border border-silver-300 rounded-lg shadow-lg z-10 min-w-32">
+              <div className="absolute right-0 top-12 sm:top-8 bg-white border-2 border-silver-300 rounded-xl shadow-lg z-10 min-w-48 sm:min-w-32">
                 <button
                   onClick={() => {
                     onMoveToGroup(undefined);
                     setShowMoveMenu(false);
                   }}
-                  className="block w-full text-left px-3 py-2 text-sm hover:bg-silver-100"
+                  className="block w-full text-left px-4 py-3 sm:px-3 sm:py-2 hover:bg-silver-100 rounded-t-xl touch-manipulation"
                 >
                   Remove from group
                 </button>
@@ -224,7 +228,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       onMoveToGroup(group.id);
                       setShowMoveMenu(false);
                     }}
-                    className="block w-full text-left px-3 py-2 text-sm hover:bg-silver-100"
+                    className="block w-full text-left px-4 py-3 sm:px-3 sm:py-2 hover:bg-silver-100 touch-manipulation"
                   >
                     Move to {group.name}
                   </button>
@@ -235,15 +239,15 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="p-1 text-silver-500 hover:text-accent-blue"
+            className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
           >
-            <Edit3 className="w-4 h-4" />
+            <Edit3 className="w-5 h-5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => onDelete(exercise.id)}
-            className="p-1 text-silver-500 hover:text-red-500"
+            className="p-3 sm:p-2 text-silver-500 hover:text-red-500 rounded-xl sm:rounded-lg hover:bg-red-50 transition-colors touch-manipulation"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
@@ -586,37 +590,37 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   const ungroupedExercises = localWorkout.exercises.filter((ex) => !ex.groupId);
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-silver-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-heading-primary text-xl">
+    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="bg-white rounded-2xl sm:rounded-lg max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+        {/* Enhanced mobile header */}
+        <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-heading-primary text-xl sm:text-lg font-bold truncate pr-4">
               Edit: {localWorkout.name}
             </h2>
             <button
               onClick={onClose}
-              className="text-silver-500 hover:text-silver-700 text-2xl"
+              className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation"
             >
               ×
             </button>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-2 mt-4">
+          {/* Enhanced mobile action buttons */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2">
             <button
               onClick={addExercise}
-              className="btn-primary flex items-center space-x-2"
+              className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
               <span>Add Exercise</span>
             </button>
 
             <button
               onClick={() => addGroup("superset")}
-              className="btn-secondary flex items-center space-x-2"
+              className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
             >
-              <Zap className="w-4 h-4" />
+              <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
               <span>Add Superset</span>
             </button>
 
@@ -638,9 +642,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-4">
+        {/* Enhanced mobile content area */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="space-y-6 sm:space-y-4">
             {/* Ungrouped Exercises */}
             {ungroupedExercises.map((exercise, index) => (
               <ExerciseItem
@@ -674,15 +678,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               />
             ))}
 
-            {/* Empty State */}
+            {/* Enhanced mobile empty state */}
             {ungroupedExercises.length === 0 &&
               (!localWorkout.groups || localWorkout.groups.length === 0) && (
-                <div className="text-center text-body-secondary py-12">
-                  <Dumbbell className="w-12 h-12 mx-auto mb-4 text-silver-400" />
-                  <p className="text-lg">No exercises added yet</p>
-                  <p className="text-sm">
-                    Click &quot;Add Exercise&quot; to start building your
-                    workout
+                <div className="text-center text-body-secondary py-16 sm:py-12">
+                  <Dumbbell className="w-16 h-16 sm:w-12 sm:h-12 mx-auto mb-6 sm:mb-4 text-silver-400" />
+                  <p className="text-xl sm:text-lg font-medium mb-2">No exercises added yet</p>
+                  <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto">
+                    Click &quot;Add Exercise&quot; to start building your workout
                   </p>
                 </div>
               )}

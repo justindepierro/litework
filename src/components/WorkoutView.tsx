@@ -1,128 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutSession, WorkoutPlan } from "@/types";
-import { Dumbbell, Calendar, Clock, Target, Weight, Check } from "lucide-react";
-
-// Mock assigned workouts for demonstration
-const mockAssignedWorkouts: WorkoutSession[] = [
-  {
-    id: "1",
-    userId: "member1",
-    workoutPlanId: "1",
-    workoutPlanName: "Upper Body Strength",
-    workoutAssignmentId: "assign1",
-    date: new Date(),
-    mode: "view",
-    exercises: [
-      {
-        id: "1",
-        workoutExerciseId: "1",
-        exerciseName: "Bench Press",
-        targetSets: 3,
-        completedSets: 0,
-        setRecords: [],
-        started: false,
-        completed: false,
-        isModified: false,
-      },
-      {
-        id: "2",
-        workoutExerciseId: "2",
-        exerciseName: "Shoulder Shrug",
-        targetSets: 3,
-        completedSets: 0,
-        setRecords: [],
-        started: false,
-        completed: false,
-        isModified: false,
-      },
-      {
-        id: "3",
-        workoutExerciseId: "3",
-        exerciseName: "Tricep Extension",
-        targetSets: 3,
-        completedSets: 0,
-        setRecords: [],
-        started: false,
-        completed: false,
-        isModified: false,
-      },
-      {
-        id: "4",
-        workoutExerciseId: "4",
-        exerciseName: "Jump Squats",
-        targetSets: 1,
-        completedSets: 0,
-        setRecords: [],
-        started: false,
-        completed: false,
-        isModified: false,
-      },
-    ],
-    started: false,
-    completed: false,
-    progressPercentage: 65,
-    appliedModifications: [],
-  },
-];
-
-const sampleWorkoutPlan: WorkoutPlan = {
-  id: "1",
-  name: "Upper Body Strength",
-  description: "Focus on bench press, shoulders, and triceps",
-  exercises: [
-    {
-      id: "1",
-      exerciseId: "bench-press",
-      exerciseName: "Bench Press",
-      sets: 3,
-      reps: 10,
-      weightType: "percentage",
-      percentage: 75,
-      restTime: 180,
-      order: 1,
-    },
-    {
-      id: "2",
-      exerciseId: "shoulder-shrug",
-      exerciseName: "Shoulder Shrug",
-      sets: 3,
-      reps: 10,
-      weightType: "fixed",
-      weight: 135,
-      restTime: 120,
-      order: 2,
-    },
-    {
-      id: "3",
-      exerciseId: "tricep-extension",
-      exerciseName: "Tricep Extension",
-      sets: 3,
-      reps: 8,
-      weightType: "fixed",
-      weight: 25,
-      restTime: 90,
-      order: 3,
-    },
-    {
-      id: "4",
-      exerciseId: "jump-squats",
-      exerciseName: "Jump Squats",
-      sets: 1,
-      reps: 10,
-      weightType: "bodyweight",
-      restTime: 60,
-      order: 4,
-    },
-  ],
-  estimatedDuration: 45,
-  createdBy: "coach1",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+import { Dumbbell, Calendar, Clock, Target, Weight, Check, Rocket } from "lucide-react";
 
 interface WorkoutViewProps {
   sessionId: string;
@@ -130,8 +12,42 @@ interface WorkoutViewProps {
 
 export default function WorkoutView({ sessionId }: WorkoutViewProps) {
   const { user } = useAuth();
-  const [workout] = useState<WorkoutSession>(mockAssignedWorkouts[0]);
-  const [workoutPlan] = useState<WorkoutPlan>(sampleWorkoutPlan);
+  const [workout, setWorkout] = useState<WorkoutSession | null>(null);
+  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load workout session from API
+  useEffect(() => {
+    const loadWorkoutSession = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        // TODO: Implement actual API call to fetch workout session
+        // const response = await apiClient.getWorkoutSession(sessionId);
+        // if (response.success && response.data) {
+        //   setWorkout(response.data.workout);
+        //   setWorkoutPlan(response.data.workoutPlan);
+        // } else {
+        //   setError(response.error || "Failed to load workout");
+        // }
+        
+        // For now, just set null until API is implemented
+        setWorkout(null);
+        setWorkoutPlan(null);
+        setError("No workout session found. Please check back later.");
+      } catch (err) {
+        setError("Failed to load workout session");
+        console.error("Error loading workout session:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (sessionId && user) {
+      loadWorkoutSession();
+    }
+  }, [sessionId, user]);
 
   const formatWeight = (exercise: {
     weightType: string;
@@ -160,96 +76,135 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-gray-600 text-lg">Loading workout...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !workout || !workoutPlan) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center p-8">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Dumbbell className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Workout Not Found</h3>
+          <p className="text-gray-600 mb-6">
+            {error || "The requested workout session could not be found."}
+          </p>
+          <Link 
+            href="/dashboard"
+            className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl"
+          >
+            Return to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <div className="container-responsive section-spacing">
+      <div className="container-responsive px-4 py-6">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <div>
-              <h1 className="text-heading-primary text-2xl sm:text-3xl flex items-center gap-2">
-                <Dumbbell className="w-7 h-7 text-accent-orange" />
+          {/* Mobile-optimized header */}
+          <div className="flex flex-col gap-6 mb-8">
+            <div className="text-center sm:text-left">
+              <h1 className="text-heading-primary text-3xl sm:text-2xl flex items-center justify-center sm:justify-start gap-3 mb-3 font-bold">
+                <Dumbbell className="w-8 h-8 sm:w-7 sm:h-7 text-accent-orange" />
                 {workoutPlan.name}
               </h1>
-              <p className="text-body-secondary mt-1">
+              <p className="text-body-secondary text-lg sm:text-base leading-relaxed mb-4">
                 {workoutPlan.description}
               </p>
-              <div className="flex items-center gap-4 text-body-small">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {workout.date.toLocaleDateString()}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />~{workoutPlan.estimatedDuration}{" "}
-                  min
-                </span>
-                <span className="flex items-center gap-1">
-                  <Target className="w-4 h-4" />
-                  {workoutPlan.exercises.length} exercises
-                </span>
+              
+              {/* Enhanced mobile workout info */}
+              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center justify-center gap-2 text-body-small">
+                  <Calendar className="w-5 h-5 text-accent-blue" />
+                  <span className="font-medium">{workout.date.toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-body-small">
+                  <Clock className="w-5 h-5 text-accent-green" />
+                  <span className="font-medium">~{workoutPlan.estimatedDuration} min</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-body-small">
+                  <Target className="w-5 h-5 text-accent-purple" />
+                  <span className="font-medium">{workoutPlan.exercises.length} exercises</span>
+                </div>
               </div>
             </div>
-            <div className="flex gap-3">
-              <Link
-                href={`/workouts/live/${sessionId}`}
-                className="btn-primary"
-              >
-                <span className="workout-accent-strength">🚀</span> Start Live
-                Mode
-              </Link>
-            </div>
+            
+            {/* Large mobile-friendly start button */}
+            <Link
+              href={`/workouts/live/${sessionId}`}
+              className="btn-primary w-full sm:w-auto sm:self-center text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation flex items-center justify-center gap-3"
+            >
+              <Rocket className="w-6 h-6" />
+              Start Live Workout
+            </Link>
           </div>
 
-          {/* Progress Overview */}
-          <div className="card-primary mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-heading-secondary text-lg">
+          {/* Enhanced mobile progress overview */}
+          <div className="card-primary mb-8 rounded-2xl border-2 border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h2 className="text-heading-secondary text-xl font-bold">
                 Progress Overview
               </h2>
-              <span className="text-body-small px-3 py-1 bg-silver-200 rounded-full">
+              <span className="text-body-small px-4 py-2 bg-accent-green bg-opacity-10 text-accent-green rounded-xl font-bold border border-accent-green">
                 {workout.progressPercentage}% Complete
               </span>
             </div>
-            <div className="w-full bg-silver-300 rounded-full h-3 mb-4">
+            
+            {/* Enhanced progress bar */}
+            <div className="w-full bg-silver-300 rounded-full h-4 mb-6 shadow-inner">
               <div
-                className="bg-accent-green h-3 rounded-full transition-all duration-300"
+                className="bg-linear-to-r from-accent-green to-green-600 h-4 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${workout.progressPercentage}%` }}
               ></div>
             </div>
+            
+            {/* Mobile-optimized stats grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-heading-primary text-xl">
+              <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-green-800">
                   {workout.exercises.filter((e) => e.completed).length}
                 </div>
-                <div className="text-body-small">Completed</div>
+                <div className="text-body-small font-medium text-green-600 mt-1">Completed</div>
               </div>
-              <div className="text-center">
-                <div className="text-heading-primary text-xl">
+              <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-blue-800">
                   {workout.exercises.length}
                 </div>
-                <div className="text-body-small">Total Exercises</div>
+                <div className="text-body-small font-medium text-blue-600 mt-1">Total Exercises</div>
               </div>
-              <div className="text-center">
-                <div className="text-heading-primary text-xl">
+              <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
+                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-purple-800">
                   {workout.exercises.reduce(
                     (acc, e) => acc + e.completedSets,
                     0
                   )}
                 </div>
-                <div className="text-body-small">Sets Done</div>
+                <div className="text-body-small font-medium text-purple-600 mt-1">Sets Done</div>
               </div>
-              <div className="text-center">
-                <div className="text-heading-primary text-xl">
+              <div className="text-center p-4 bg-orange-50 rounded-xl border border-orange-200">
+                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-orange-800">
                   {workout.exercises.reduce((acc, e) => acc + e.targetSets, 0)}
                 </div>
-                <div className="text-body-small">Total Sets</div>
+                <div className="text-body-small font-medium text-orange-600 mt-1">Total Sets</div>
               </div>
             </div>
           </div>
 
-          {/* Exercise List */}
-          <div className="space-y-4">
-            <h2 className="text-heading-secondary text-xl">
+          {/* Mobile-optimized exercise list */}
+          <div className="space-y-6">
+            <h2 className="text-heading-secondary text-2xl sm:text-xl font-bold text-center sm:text-left">
               Workout Exercises
             </h2>
 
@@ -262,56 +217,63 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
               return (
                 <div
                   key={exercise.id}
-                  className={`card-primary transition-all ${
-                    isCompleted ? "border-accent-green bg-green-50" : ""
+                  className={`card-primary rounded-2xl border-2 transition-all touch-manipulation ${
+                    isCompleted 
+                      ? "border-accent-green bg-green-50 shadow-lg" 
+                      : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
+                  {/* Enhanced exercise header */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+                    <div className="flex items-start gap-4 w-full sm:w-auto">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        className={`w-12 h-12 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-lg sm:text-base font-bold shadow-md ${
                           isCompleted
                             ? "bg-accent-green text-white"
-                            : "bg-silver-300 text-navy-700"
+                            : "bg-linear-to-br from-gray-200 to-gray-300 text-navy-700"
                         }`}
                       >
                         {isCompleted ? (
-                          <Check className="w-4 h-4" />
+                          <Check className="w-6 h-6 sm:w-5 sm:h-5" />
                         ) : (
                           index + 1
                         )}
                       </div>
-                      <div>
-                        <h3 className="text-heading-secondary text-lg">
+                      <div className="flex-1">
+                        <h3 className="text-heading-secondary text-xl sm:text-lg font-bold mb-2">
                           {exercise.exerciseName}
                         </h3>
-                        <div className="flex items-center gap-4 text-body-small mt-1">
-                          <span className="flex items-center gap-1">
-                            <Target className="w-4 h-4" /> {exercise.sets} sets
-                            × {exercise.reps} reps
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Weight className="w-4 h-4" />{" "}
-                            {formatWeight(exercise)}
-                          </span>
+                        
+                        {/* Mobile-friendly exercise details */}
+                        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">
+                          <div className="flex items-center gap-2 text-body-small bg-blue-50 rounded-lg px-3 py-2">
+                            <Target className="w-4 h-4 text-blue-600" /> 
+                            <span className="font-medium">{exercise.sets} sets × {exercise.reps} reps</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-body-small bg-orange-50 rounded-lg px-3 py-2">
+                            <Weight className="w-4 h-4 text-orange-600" />
+                            <span className="font-medium">{formatWeight(exercise)}</span>
+                          </div>
                           {exercise.restTime && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />{" "}
-                              {formatTime(exercise.restTime)} rest
-                            </span>
+                            <div className="flex items-center gap-2 text-body-small bg-green-50 rounded-lg px-3 py-2">
+                              <Clock className="w-4 h-4 text-green-600" />
+                              <span className="font-medium">{formatTime(exercise.restTime)} rest</span>
+                            </div>
                           )}
                         </div>
                       </div>
                     </div>
+                    
                     {isCompleted && (
-                      <span className="text-accent-green text-sm font-medium flex items-center gap-1">
-                        <Check className="w-4 h-4" /> Complete
-                      </span>
+                      <div className="flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-200 rounded-xl text-accent-green font-bold">
+                        <Check className="w-5 h-5" />
+                        <span>Complete</span>
+                      </div>
                     )}
                   </div>
 
-                  {/* Set Breakdown */}
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {/* Enhanced set breakdown for mobile */}
+                  <div className="grid gap-3 grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
                     {Array.from({ length: exercise.sets }, (_, setIndex) => {
                       const setRecord = sessionExercise?.setRecords.find(
                         (r) => r.setNumber === setIndex + 1
@@ -321,28 +283,26 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                       return (
                         <div
                           key={setIndex}
-                          className={`p-3 rounded-md border-2 ${
+                          className={`p-4 rounded-xl border-2 transition-all touch-manipulation ${
                             isSetComplete
-                              ? "border-accent-green bg-green-50"
-                              : "border-silver-300 bg-silver-100"
+                              ? "border-accent-green bg-green-50 shadow-md"
+                              : "border-gray-300 bg-gray-50 hover:bg-gray-100"
                           }`}
                         >
-                          <div className="flex justify-between items-center">
-                            <span className="text-body-primary font-medium text-sm">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-body-primary font-bold">
                               Set {setIndex + 1}
                             </span>
                             {isSetComplete && (
-                              <Check className="w-3 h-3 text-accent-green" />
+                              <Check className="w-4 h-4 text-accent-green" />
                             )}
                           </div>
-                          <div className="text-body-small text-xs mt-1">
-                            Target: {exercise.reps} reps @{" "}
-                            {formatWeight(exercise)}
+                          <div className="text-body-small text-sm mb-1">
+                            <strong>Target:</strong> {exercise.reps} reps @ {formatWeight(exercise)}
                           </div>
                           {setRecord && (
-                            <div className="text-body-small text-xs mt-1 text-accent-green">
-                              Actual: {setRecord.actualReps} reps @{" "}
-                              {setRecord.actualWeight} lbs
+                            <div className="text-body-small text-sm font-medium text-accent-green">
+                              <strong>Actual:</strong> {setRecord.actualReps} reps @ {setRecord.actualWeight} lbs
                             </div>
                           )}
                         </div>
@@ -350,11 +310,12 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                     })}
                   </div>
 
-                  {/* Exercise Notes/Instructions */}
+                  {/* Exercise notes with better mobile formatting */}
                   {exercise.notes && (
-                    <div className="mt-4 p-3 bg-silver-100 rounded-md">
+                    <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                       <div className="text-body-small">
-                        <strong>Notes:</strong> {exercise.notes}
+                        <strong className="text-blue-800">Exercise Notes:</strong> 
+                        <span className="ml-2 text-blue-700">{exercise.notes}</span>
                       </div>
                     </div>
                   )}
@@ -363,16 +324,19 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
             })}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 mt-8 justify-center">
-            <Link href="/dashboard" className="btn-secondary">
+          {/* Enhanced mobile action buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center">
+            <Link 
+              href="/dashboard" 
+              className="btn-secondary py-4 px-6 rounded-xl font-medium touch-manipulation order-2 sm:order-1"
+            >
               ← Back to Dashboard
             </Link>
             <Link
               href={`/workouts/live/${sessionId}`}
-              className="btn-primary text-lg px-8 py-4"
+              className="btn-primary text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation order-1 sm:order-2 flex items-center justify-center gap-3"
             >
-              <span className="workout-accent-strength text-xl">🚀</span>
+              <Rocket className="w-6 h-6" />
               Start Live Workout
             </Link>
           </div>

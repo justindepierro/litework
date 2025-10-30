@@ -19,92 +19,12 @@ interface GroupAssignmentModalProps {
   ) => void;
 }
 
-// Mock workout plans for the demo
-const mockWorkoutPlans: WorkoutPlan[] = [
-  {
-    id: "1",
-    name: "Upper Body Strength",
-    description: "Focus on bench press, rows, and shoulder development",
-    exercises: [
-      {
-        id: "1",
-        exerciseId: "bench-press",
-        exerciseName: "Bench Press",
-        sets: 3,
-        reps: 8,
-        weightType: "percentage",
-        percentage: 80,
-        restTime: 180,
-        order: 1,
-      },
-      {
-        id: "2",
-        exerciseId: "bent-row",
-        exerciseName: "Bent Over Row",
-        sets: 3,
-        reps: 8,
-        weightType: "percentage",
-        percentage: 75,
-        restTime: 150,
-        order: 2,
-      },
-      {
-        id: "3",
-        exerciseId: "shoulder-press",
-        exerciseName: "Overhead Press",
-        sets: 3,
-        reps: 10,
-        weightType: "percentage",
-        percentage: 70,
-        restTime: 120,
-        order: 3,
-      },
-    ],
-    estimatedDuration: 45,
-    createdBy: "coach1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "2",
-    name: "Lower Body Power",
-    description: "Explosive leg development with squats and deadlifts",
-    exercises: [
-      {
-        id: "4",
-        exerciseId: "squat",
-        exerciseName: "Back Squat",
-        sets: 5,
-        reps: 5,
-        weightType: "percentage",
-        percentage: 85,
-        restTime: 240,
-        order: 1,
-      },
-      {
-        id: "5",
-        exerciseId: "deadlift",
-        exerciseName: "Deadlift",
-        sets: 3,
-        reps: 5,
-        weightType: "percentage",
-        percentage: 80,
-        restTime: 300,
-        order: 2,
-      },
-    ],
-    estimatedDuration: 60,
-    createdBy: "coach1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
 export default function GroupAssignmentModal({
   isOpen,
   onClose,
   selectedDate,
   groups,
+  workoutPlans,
   athletes,
   onAssignWorkout,
 }: GroupAssignmentModalProps) {
@@ -122,7 +42,7 @@ export default function GroupAssignmentModal({
   if (!isOpen) return null;
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
-  const selectedWorkout = mockWorkoutPlans.find(
+  const selectedWorkout = workoutPlans.find(
     (w) => w.id === selectedWorkoutId
   );
   const groupAthletes = selectedGroup
@@ -227,7 +147,7 @@ export default function GroupAssignmentModal({
                     className="w-full p-3 border border-silver-400 rounded-md"
                   >
                     <option value="">Choose a workout...</option>
-                    {mockWorkoutPlans.map((workout) => (
+                    {workoutPlans.map((workout) => (
                       <option key={workout.id} value={workout.id}>
                         {workout.name} ({workout.estimatedDuration} min)
                       </option>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { AthleteGroup, WorkoutAssignment } from "@/types";
+import { useState, useEffect } from "react";
+import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import GroupAssignmentModal from "./GroupAssignmentModal";
 import GroupFormModal from "./GroupFormModal";
-import { useGroups, useAssignments, mockAthletes } from "@/hooks/api-hooks";
+import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus } from "lucide-react";
 
 export default function CalendarView() {
@@ -15,6 +15,7 @@ export default function CalendarView() {
   const [showGroupFormModal, setShowGroupFormModal] = useState(false);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [athletes, setAthletes] = useState<User[]>([]);
 
   // API hooks
   const {
@@ -23,6 +24,17 @@ export default function CalendarView() {
     refetch: refetchGroups,
   } = useGroups();
   const { assignments, loading: assignmentsLoading } = useAssignments();
+
+  // Load athletes data
+  useEffect(() => {
+    const loadAthletes = async () => {
+      // TODO: Load athletes from API
+      // For now, set empty array
+      setAthletes([]);
+    };
+    
+    loadAthletes();
+  }, []);
 
   const isLoading = groupsLoading || assignmentsLoading;
 
@@ -100,9 +112,15 @@ export default function CalendarView() {
 
   const getAssignmentsForDate = (date: Date) => {
     return assignments.filter(
-      (assignment: WorkoutAssignment) =>
-        assignment.scheduledDate.toDateString() === date.toDateString() &&
-        (selectedGroup === "all" || assignment.groupId === selectedGroup)
+      (assignment: WorkoutAssignment) => {
+        // Ensure scheduledDate is a Date object (it might come as a string from API)
+        const scheduledDate = assignment.scheduledDate instanceof Date 
+          ? assignment.scheduledDate 
+          : new Date(assignment.scheduledDate);
+        
+        return scheduledDate.toDateString() === date.toDateString() &&
+          (selectedGroup === "all" || assignment.groupId === selectedGroup);
+      }
     );
   };
 
@@ -321,8 +339,8 @@ export default function CalendarView() {
                           </div>
                           <div className="space-y-1">
                             {group.athleteIds.map((athleteId) => {
-                              const athlete = mockAthletes.find(
-                                (a) => a.id === athleteId
+                              const athlete = athletes.find(
+                                (a: User) => a.id === athleteId
                               );
                               return athlete ? (
                                 <div
@@ -372,7 +390,7 @@ export default function CalendarView() {
               selectedDate={selectedDate}
               groups={groups}
               workoutPlans={[]}
-              athletes={mockAthletes}
+              athletes={athletes}
               onAssignWorkout={handleAssignWorkout}
             />
           )}

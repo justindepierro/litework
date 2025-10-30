@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
-import { AthleteGroup, User, WorkoutPlan, WorkoutAssignment } from "@/types";
+import { AthleteGroup, WorkoutPlan, WorkoutAssignment } from "@/types";
 
 // Custom hooks for API data
 export function useGroups() {
@@ -100,37 +100,3 @@ export function useAssignments(params?: {
 
   return { assignments, loading, error, refetch: loadAssignments };
 }
-
-// Mock athletes data - in production this would come from an API
-export const mockAthletes: User[] = [
-  {
-    id: "2",
-    name: "John Athlete",
-    email: "athlete@example.com",
-    role: "athlete",
-    groupIds: ["1"],
-    coachId: "1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "3",
-    name: "Sarah Miller",
-    email: "sarah@example.com",
-    role: "athlete",
-    groupIds: ["3"],
-    coachId: "1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "4",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    role: "athlete",
-    groupIds: ["1"],
-    coachId: "1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];

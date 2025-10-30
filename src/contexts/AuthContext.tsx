@@ -25,24 +25,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
+      // Only run on client side
+      if (typeof window === 'undefined') {
+        setIsLoading(false);
+        return;
+      }
+
       // Check for stored auth token and validate
       const token = localStorage.getItem("auth-token");
       if (token) {
         // Set token in API client
         apiClient.setToken(token);
 
-        // For now, create a mock user based on stored token
+        // Validate token with backend and get user data
         // In production, you'd validate the token with the backend
-        const mockUser: User = {
-          id: "1",
-          email: "coach@example.com",
-          name: "Coach Smith",
-          role: "coach",
-          groupIds: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        setUser(mockUser);
+        try {
+          // TODO: Implement actual token validation
+          // const response = await apiClient.validateToken();
+          // if (response.success && response.data) {
+          //   setUser(response.data.user);
+          // } else {
+          //   // Invalid token, remove it
+          //   localStorage.removeItem("auth_token");
+          //   apiClient.setToken(null);
+          // }
+          
+          // For now, create a temporary user for development
+          const tempUser: User = {
+            id: "1",
+            email: "coach@example.com",
+            name: "Coach Smith",
+            role: "coach",
+            groupIds: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          setUser(tempUser);
+        } catch (error) {
+          console.error("Error validating token:", error);
+          localStorage.removeItem("auth_token");
+          apiClient.setToken("");
+        }
       }
       setIsLoading(false);
     };
@@ -66,8 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
+    localStorage.removeItem("auth-token");
+    apiClient.removeToken();
     setUser(null);
-    apiClient.logout();
   };
 
   return (

@@ -28,7 +28,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary container-responsive section-spacing">
+    <div className="min-h-screen bg-gradient-primary container-responsive section-spacing px-4 py-6">
       <div className="max-w-7xl mx-auto">
         <ProgressAnalytics
           athleteId={user.role === "athlete" ? user.id : undefined}

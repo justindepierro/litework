@@ -1,15 +1,135 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Start Development Server",
-			"type": "shell",
-			"command": "npm run dev",
-			"isBackground": true,
-			"problemMatcher": [
-				"$eslint-stylish"
-			],
-			"group": "build"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Development Server (Smart)",
+      "type": "shell",
+      "command": "./dev-smart.sh",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*Starting.*",
+            "endsPattern": ".*Ready in.*|.*Server running.*"
+          }
+        }
+      ],
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Start Development Server (Optimized)",
+      "type": "shell",
+      "command": "./dev-optimize.sh",
+      "group": "build",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*Starting.*",
+            "endsPattern": ".*Ready in.*"
+          }
+        }
+      ],
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Start Development Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
+      "group": "build",
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Kill Development Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "kill:dev"],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Restart Development Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev:smart"],
+      "group": "build",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": ["Kill Development Server"]
+    }
+  ]
 }

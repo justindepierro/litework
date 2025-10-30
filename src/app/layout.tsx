@@ -10,13 +10,15 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  preload: true,
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700"], // Reduced weights to only essential ones
   display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {

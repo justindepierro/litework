@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
-import { mockAthletes } from "@/hooks/api-hooks";
 import { X } from "lucide-react";
 
 interface GroupFormModalProps {
@@ -26,19 +25,9 @@ const predefinedColors = [
 ];
 
 const sportOptions = [
-  "Football",
-  "Volleyball", 
-  "Basketball",
-  "Soccer",
-  "Cross Country",
-  "Track & Field",
-  "Wrestling",
-  "Tennis",
-  "Swimming",
-  "Baseball",
-  "Softball",
-  "Golf",
-  "Other"
+  "Football", "Volleyball", "Basketball", "Soccer", "Cross Country",
+  "Track & Field", "Wrestling", "Tennis", "Swimming", "Baseball",
+  "Softball", "Golf", "Other"
 ];
 
 export default function GroupFormModal({
@@ -56,11 +45,11 @@ export default function GroupFormModal({
     color: predefinedColors[0].value,
     athleteIds: [] as string[],
   });
+  const [availableAthletes, setAvailableAthletes] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [availableAthletes, setAvailableAthletes] = useState<User[]>([]);
 
-  // Initialize form data when editing
+  // Load form data when editing
   useEffect(() => {
     if (editingGroup) {
       setFormData({
@@ -69,10 +58,9 @@ export default function GroupFormModal({
         sport: editingGroup.sport,
         category: editingGroup.category || "",
         color: editingGroup.color,
-        athleteIds: [...editingGroup.athleteIds],
+        athleteIds: editingGroup.athleteIds,
       });
     } else {
-      // Reset form for new group
       setFormData({
         name: "",
         description: "",
@@ -85,28 +73,19 @@ export default function GroupFormModal({
     setError("");
   }, [editingGroup, isOpen]);
 
-  // Load available athletes (excluding those already in other groups)
+  // Load available athletes
   useEffect(() => {
-    const getAvailableAthletes = () => {
+    const loadAthletes = async () => {
       if (!isOpen) return;
-
-      // Get all athlete IDs that are already assigned to other groups
-      const assignedAthleteIds = new Set<string>();
-      existingGroups.forEach(group => {
-        // Skip the group we're editing
-        if (editingGroup && group.id === editingGroup.id) return;
-        group.athleteIds.forEach(id => assignedAthleteIds.add(id));
-      });
-
-      // Filter out athletes already assigned to other groups
-      const available = mockAthletes.filter(athlete => 
-        !assignedAthleteIds.has(athlete.id)
-      );
-
-      setAvailableAthletes(available);
+      try {
+        // TODO: Load athletes from API
+        setAvailableAthletes([]);
+      } catch (error) {
+        console.error("Error loading athletes:", error);
+        setAvailableAthletes([]);
+      }
     };
-
-    getAvailableAthletes();
+    loadAthletes();
   }, [isOpen, existingGroups, editingGroup]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -132,12 +111,7 @@ export default function GroupFormModal({
       setError("Sport selection is required");
       return false;
     }
-    if (formData.athleteIds.length === 0) {
-      setError("At least one athlete must be selected");
-      return false;
-    }
     
-    // Check for duplicate group names (excluding current group when editing)
     const duplicateName = existingGroups.some(group => 
       group.name.toLowerCase() === formData.name.toLowerCase() &&
       (!editingGroup || group.id !== editingGroup.id)
@@ -161,7 +135,6 @@ export default function GroupFormModal({
 
     try {
       if (editingGroup) {
-        // Update existing group
         const response = await apiClient.updateGroup(editingGroup.id, formData);
         if (response.success && response.data) {
           const data = response.data as { group?: AthleteGroup };
@@ -175,7 +148,6 @@ export default function GroupFormModal({
           setError(response.error || "Failed to update group");
         }
       } else {
-        // Create new group
         const response = await apiClient.createGroup(formData);
         if (response.success && response.data) {
           const data = response.data as { group?: AthleteGroup };
@@ -225,7 +197,6 @@ export default function GroupFormModal({
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Column - Group Details */}
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">Group Details</h3>
                 
@@ -314,13 +285,11 @@ export default function GroupFormModal({
                 </div>
               </div>
 
-              {/* Right Column - Athlete Selection */}
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">
                   Select Athletes ({formData.athleteIds.length} selected)
                 </h3>
 
-                {/* Selected Athletes */}
                 {selectedAthletes.length > 0 && (
                   <div className="mb-4">
                     <h4 className="text-body-primary font-medium mb-2">Selected Athletes</h4>
@@ -345,7 +314,6 @@ export default function GroupFormModal({
                   </div>
                 )}
 
-                {/* Available Athletes */}
                 {unselectedAthletes.length > 0 && (
                   <div>
                     <h4 className="text-body-primary font-medium mb-2">Available Athletes</h4>
@@ -372,20 +340,18 @@ export default function GroupFormModal({
 
                 {availableAthletes.length === 0 && (
                   <div className="text-center py-8 text-body-secondary">
-                    No available athletes. All athletes are assigned to other groups.
+                    No available athletes found. Add athletes to assign them to groups.
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
                 <p className="text-red-700 text-sm">{error}</p>
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex gap-3 mt-6 pt-6 border-t">
               <button
                 type="button"

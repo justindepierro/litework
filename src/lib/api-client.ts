@@ -135,6 +135,11 @@ class ApiClient {
     });
   }
 
+  // Exercises
+  async getExercises() {
+    return this.request("/exercises");
+  }
+
   // Assignments
   async getAssignments(params?: {
     athleteId?: string;
@@ -160,6 +165,79 @@ class ApiClient {
   // Demo credentials
   async getDemoCredentials() {
     return this.request("/auth/login", { method: "GET" });
+  }
+
+  // Users (Athletes)
+  async getAthletes() {
+    return this.request("/users");
+  }
+
+  async createAthlete(athleteData: { name: string; email: string; password: string }) {
+    return this.request("/users", {
+      method: "POST",
+      body: JSON.stringify(athleteData),
+    });
+  }
+
+  // KPIs
+  async createKPI(kpiData: {
+    athleteId: string;
+    exerciseId: string;
+    exerciseName: string;
+    currentPR: number;
+    dateAchieved: string;
+  }) {
+    return this.request("/kpis", {
+      method: "POST",
+      body: JSON.stringify(kpiData),
+    });
+  }
+
+  async updateKPI(kpiId: string, kpiData: {
+    exerciseName?: string;
+    currentPR?: number;
+    dateAchieved?: string;
+    notes?: string;
+  }) {
+    return this.request(`/kpis/${kpiId}`, {
+      method: "PUT",
+      body: JSON.stringify(kpiData),
+    });
+  }
+
+  async deleteKPI(kpiId: string) {
+    return this.request(`/kpis/${kpiId}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Athlete Invites
+  async createAthleteInvite(inviteData: {
+    email: string;
+    name: string;
+    groupIds?: string[];
+  }) {
+    return this.request("/invites", {
+      method: "POST",
+      body: JSON.stringify(inviteData),
+    });
+  }
+
+  async validateInvite(inviteCode: string) {
+    return this.request(`/invites/validate/${inviteCode}`);
+  }
+
+  async acceptInvite(inviteCode: string, password: string) {
+    return this.request("/invites/accept", {
+      method: "POST",
+      body: JSON.stringify({ inviteCode, password }),
+    });
+  }
+
+  async deleteAthlete(athleteId: string) {
+    return this.request(`/users/${athleteId}`, {
+      method: "DELETE",
+    });
   }
 }
 

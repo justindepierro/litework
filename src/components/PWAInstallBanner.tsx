@@ -68,7 +68,9 @@ export default function PWAInstallBanner() {
   const handleDismiss = () => {
     setShowInstallBanner(false);
     // Don't show again for this session
-    localStorage.setItem("pwa-install-dismissed", "true");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("pwa-install-dismissed", "true");
+    }
   };
 
   if (isInstalled || !showInstallBanner) {

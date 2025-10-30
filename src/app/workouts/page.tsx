@@ -1,15 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
-import { Dumbbell, Plus, Library } from "lucide-react";
+import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
 import ExerciseLibrary from "@/components/ExerciseLibrary";
 import WorkoutEditor from "@/components/WorkoutEditor";
 import { apiClient } from "@/lib/api-client";
 
+// Exercise interface to match the one in ExerciseLibrary component
+interface LibraryExercise {
+  id: string;
+  name: string;
+  description: string;
+  category_name: string;
+  category_color: string;
+  muscle_groups: Array<{ name: string; involvement: string }>;
+  equipment_needed: string[];
+  difficulty_level: number;
+  is_compound: boolean;
+  is_bodyweight: boolean;
+  instructions: string[];
+  video_url?: string;
+  usage_count: number;
+}
+
 export default function WorkoutsPage() {
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +50,13 @@ export default function WorkoutsPage() {
     estimatedDuration: 30,
   });
 
+  // Authentication guard
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, isLoading, router]);
+
   // Load workouts from API
   useEffect(() => {
     const loadWorkouts = async () => {
@@ -38,7 +64,7 @@ export default function WorkoutsPage() {
         setLoading(true);
         setError(null);
         const response = await apiClient.getWorkouts();
-        
+
         if (response.success && response.data) {
           const apiResponse = response.data as { workouts?: WorkoutPlan[] };
           setWorkouts(apiResponse.workouts || []);
@@ -58,12 +84,20 @@ export default function WorkoutsPage() {
     }
   }, [user]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-heading-secondary text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   if (!user || (user.role !== "admin" && user.role !== "coach")) {
     return (
       <div className="min-h-screen bg-white p-4">
         <div className="max-w-md mx-auto mt-20">
           <div className="card-primary text-center">
-            <div className="text-6xl mb-4">🚫</div>
+            <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
             <h2 className="text-heading-primary text-xl mb-2">Access Denied</h2>
             <p className="text-body-secondary mb-4">
               Only coaches and admins can manage workouts.
@@ -83,38 +117,40 @@ export default function WorkoutsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-primary text-white p-4">
+      {/* Enhanced mobile-first header */}
+      <div className="bg-gradient-primary text-white p-6 sm:p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center">
-              <Dumbbell className="w-8 h-8 mr-3" />
+              <Dumbbell className="w-10 h-10 sm:w-8 sm:h-8 mr-3" />
               <div>
-                <h1 className="text-2xl font-bold">Workout Management</h1>
-                <p className="text-blue-100">Create and manage training plans</p>
+                <h1 className="text-3xl sm:text-2xl font-bold">Workout Management</h1>
+                <p className="text-blue-100 text-base sm:text-sm mt-1">
+                  Create and manage training plans
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
               <button
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
                   currentView === "workouts"
-                    ? "bg-white text-primary-700"
-                    : "bg-primary-600 text-white hover:bg-primary-500"
+                    ? "bg-white text-blue-700 shadow-md"
+                    : "bg-blue-600 text-white hover:bg-blue-500"
                 }`}
                 onClick={() => setCurrentView("workouts")}
               >
-                <Dumbbell className="w-4 h-4 inline mr-1" />
+                <Dumbbell className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
                 Workouts
               </button>
               <button
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
                   currentView === "library"
-                    ? "bg-white text-primary-700"
-                    : "bg-primary-600 text-white hover:bg-primary-500"
+                    ? "bg-white text-blue-700 shadow-md"
+                    : "bg-blue-600 text-white hover:bg-blue-500"
                 }`}
                 onClick={() => setCurrentView("library")}
               >
-                <Library className="w-4 h-4 inline mr-1" />
+                <Library className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
                 Exercise Library
               </button>
             </div>
@@ -122,35 +158,37 @@ export default function WorkoutsPage() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-4xl mx-auto p-4">
+      {/* Enhanced mobile-first content */}
+      <div className="max-w-4xl mx-auto p-6 sm:p-4">
         {currentView === "workouts" ? (
           <>
-            {/* Error State */}
+            {/* Enhanced error state */}
             {error && (
-              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+                <p className="text-red-700 font-medium">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="mt-2 text-red-600 hover:text-red-800 underline"
+                  className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors touch-manipulation"
                 >
                   Try again
                 </button>
               </div>
             )}
 
-            {/* Loading State */}
+            {/* Enhanced loading state */}
             {loading && (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-                <p className="text-body-secondary mt-2">Loading workouts...</p>
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="text-gray-600 mt-4 text-lg">Loading workouts...</p>
               </div>
             )}
 
             {/* Action Buttons */}
             {!loading && (
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-heading-secondary text-xl">Your Workouts</h2>
+                <h2 className="text-heading-secondary text-xl">
+                  Your Workouts
+                </h2>
                 <button
                   className="btn-primary"
                   onClick={() => {
@@ -201,12 +239,15 @@ export default function WorkoutsPage() {
                       </div>
 
                       <div className="space-y-1 mb-4">
-                        {workout.exercises.slice(0, 3).map((exercise, index) => (
-                          <div key={exercise.id} className="text-body-small">
-                            {index + 1}. {exercise.exerciseName} - {exercise.sets}×
-                            {exercise.reps} @ {formatWeight(exercise)}
-                          </div>
-                        ))}
+                        {workout.exercises
+                          .slice(0, 3)
+                          .map((exercise, index) => (
+                            <div key={exercise.id} className="text-body-small">
+                              {index + 1}. {exercise.exerciseName} -{" "}
+                              {exercise.sets}×{exercise.reps} @{" "}
+                              {formatWeight(exercise)}
+                            </div>
+                          ))}
                         {workout.exercises.length > 3 && (
                           <div className="text-body-small text-gray-500">
                             +{workout.exercises.length - 3} more exercises
@@ -240,8 +281,10 @@ export default function WorkoutsPage() {
         ) : (
           /* Exercise Library View */
           <ExerciseLibrary
+            isOpen={true}
+            onClose={() => setCurrentView("workouts")}
             mode="browse"
-            onAddToWorkout={(exercise) => {
+            onAddToWorkout={(exercise: LibraryExercise) => {
               // When adding from library to a workout being created
               const workoutExercise: WorkoutExercise = {
                 id: Date.now().toString(),
@@ -290,7 +333,8 @@ export default function WorkoutsPage() {
                     </label>
                     <div className="space-y-2 max-h-40 overflow-y-auto">
                       <div className="text-body-secondary text-sm p-4 text-center">
-                        Athlete selection will be implemented with user management API
+                        Athlete selection will be implemented with user
+                        management API
                       </div>
                     </div>
                   </div>
@@ -319,16 +363,18 @@ export default function WorkoutsPage() {
       {/* Workout Editor Modal */}
       {(editingWorkout || creatingWorkout) && (
         <WorkoutEditor
-          workout={editingWorkout || {
-            id: "new-workout",
-            name: newWorkout.name || "",
-            description: newWorkout.description || "",
-            exercises: newWorkout.exercises || [],
-            estimatedDuration: newWorkout.estimatedDuration || 30,
-            createdBy: user.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          }}
+          workout={
+            editingWorkout || {
+              id: "new-workout",
+              name: newWorkout.name || "",
+              description: newWorkout.description || "",
+              exercises: newWorkout.exercises || [],
+              estimatedDuration: newWorkout.estimatedDuration || 30,
+              createdBy: user.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }
+          }
           onChange={async (updatedWorkout) => {
             if (creatingWorkout) {
               try {
@@ -339,9 +385,11 @@ export default function WorkoutsPage() {
                   exercises: updatedWorkout.exercises,
                   estimatedDuration: updatedWorkout.estimatedDuration,
                 });
-                
+
                 if (response.success && response.data) {
-                  const apiResponse = response.data as { workout?: WorkoutPlan };
+                  const apiResponse = response.data as {
+                    workout?: WorkoutPlan;
+                  };
                   const newWorkout = apiResponse.workout;
                   if (newWorkout) {
                     setWorkouts([...workouts, newWorkout]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -15,40 +15,63 @@ import {
   PieChart,
   Pie,
   RadarChart,
+  Radar,
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
-  Radar,
   AreaChart,
   Area,
 } from "recharts";
 import {
+  Calendar,
   TrendingUp,
+  TrendingDown,
   Target,
   Trophy,
-  Calendar,
   Dumbbell,
-  BarChart3,
   Download,
   Medal,
   Users,
   Zap,
   Award,
   Activity,
-  TrendingDown,
+  BarChart3,
 } from "lucide-react";
-import { mockProgressData, mockAnalytics } from "@/lib/analytics-data";
+
+// Analytics-specific interfaces
+interface WorkoutFrequencyData {
+  week: string;
+  workouts: number;
+  goal: number;
+}
+
+interface ExerciseProgressData {
+  exerciseId: string;
+  exerciseName: string;
+  data: Array<{
+    date: string;
+    weight: number;
+    reps: number;
+    estimated1RM: number;
+    volume: number;
+  }>;
+}
+
+interface AnalyticsData {
+  strengthProgress: ExerciseProgressData[];
+  workoutFrequency: WorkoutFrequencyData[];
+  exerciseComparison: Record<string, unknown>;
+  weeklyGoals: Record<string, unknown>;
+  overviewStats: {
+    totalWorkouts: number;
+    avgWorkoutsPerWeek: number;
+    consistencyScore: number;
+    avgImprovement: number;
+  };
+}
 
 interface AnalyticsDashboardProps {
   athleteId?: string;
-}
-
-interface ChartDataPoint {
-  date: string;
-  oneRepMax?: number;
-  weight: number;
-  reps: number;
-  volume: number;
 }
 
 export default function AnalyticsDashboard({
@@ -57,93 +80,158 @@ export default function AnalyticsDashboard({
   const [selectedTimeframe, setSelectedTimeframe] = useState<
     "1m" | "3m" | "6m" | "1y"
   >("3m");
-  const [viewMode, setViewMode] = useState<"overview" | "strength" | "comparison" | "goals">("overview");
+  const [viewMode, setViewMode] = useState<
+    "overview" | "strength" | "comparison" | "goals"
+  >("overview");
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
 
-  // Filter data based on timeframe
-  const filteredProgressData = useMemo(() => {
-    const now = new Date();
-    const cutoff = new Date();
+  // Load analytics data from API
+  useEffect(() => {
+    const loadAnalyticsData = async () => {
+      try {
+        // Only run on client side
+        if (typeof window === 'undefined') return;
+        
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+          console.error('No auth token available');
+          return;
+        }
 
-    switch (selectedTimeframe) {
-      case "1m":
-        cutoff.setMonth(now.getMonth() - 1);
-        break;
-      case "3m":
-        cutoff.setMonth(now.getMonth() - 3);
-        break;
-      case "6m":
-        cutoff.setMonth(now.getMonth() - 6);
-        break;
-      case "1y":
-        cutoff.setFullYear(now.getFullYear() - 1);
-        break;
-    }
+        // Load overview data
+        const overviewResponse = await fetch(
+          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ''}&type=overview`,
+          {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
 
-    let data = mockProgressData.filter((entry) => entry.date >= cutoff);
+        if (overviewResponse.ok) {
+          const overviewData = await overviewResponse.json();
+          if (overviewData.success) {
+            setAnalyticsData({
+              strengthProgress: [],
+              workoutFrequency: overviewData.data.overview?.workoutFrequency || [],
+              exerciseComparison: {},
+              weeklyGoals: {},
+              overviewStats: {
+                totalWorkouts: overviewData.data.overview?.totalWorkouts || 0,
+                avgWorkoutsPerWeek: overviewData.data.overview?.avgWorkoutsPerWeek || 0,
+                consistencyScore: overviewData.data.overview?.consistencyScore || 0,
+                avgImprovement: 8.5, // TODO: Calculate from actual data
+              },
+            });
+          }
+        }
 
-    if (athleteId) {
-      data = data.filter((entry) => entry.userId === athleteId);
-    }
+        // Load strength data
+        const strengthResponse = await fetch(
+          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ''}&type=strength`,
+          {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
 
-    return data;
-  }, [selectedTimeframe, athleteId]);
+        if (strengthResponse.ok) {
+          const strengthData = await strengthResponse.json();
+          if (strengthData.success) {
+            setAnalyticsData(prev => prev ? {
+              ...prev,
+              strengthProgress: strengthData.data.strength || []
+            } : {
+              strengthProgress: strengthData.data.strength || [],
+              workoutFrequency: [],
+              exerciseComparison: {},
+              weeklyGoals: {},
+              overviewStats: {
+                totalWorkouts: 0,
+                avgWorkoutsPerWeek: 0,
+                consistencyScore: 0,
+                avgImprovement: 0,
+              },
+            });
+          }
+        }
+
+      } catch (err) {
+        console.error("Error loading analytics data:", err);
+        // Set fallback data
+        setAnalyticsData({
+          strengthProgress: [],
+          workoutFrequency: [],
+          exerciseComparison: {},
+          weeklyGoals: {},
+          overviewStats: {
+            totalWorkouts: 0,
+            avgWorkoutsPerWeek: 0,
+            consistencyScore: 0,
+            avgImprovement: 0,
+          },
+        });
+      }
+    };
+
+    loadAnalyticsData();
+  }, [athleteId, selectedTimeframe]);
 
   // Prepare volume trend data
   const volumeData = useMemo(() => {
+    if (!analyticsData?.strengthProgress) return [];
+
     const weeklyVolume = new Map<string, number>();
-    
-    filteredProgressData.forEach((entry) => {
-      const week = `Week ${Math.ceil(entry.date.getDate() / 7)}`;
-      // Estimate volume using weight * reps (assuming 3 sets average)
-      const volume = entry.weight * entry.reps * 3;
-      weeklyVolume.set(week, (weeklyVolume.get(week) || 0) + volume);
+
+    analyticsData.strengthProgress.forEach(exercise => {
+      exercise.data?.forEach((entry) => {
+        const entryDate = new Date(entry.date);
+        const week = `Week ${Math.ceil(entryDate.getDate() / 7)}`;
+        const volume = entry.volume || 0;
+        weeklyVolume.set(week, (weeklyVolume.get(week) || 0) + volume);
+      });
     });
 
     return Array.from(weeklyVolume.entries()).map(([week, volume]) => ({
       week,
       volume: Math.round(volume),
     }));
-  }, [filteredProgressData]);
+  }, [analyticsData]);
 
   // Prepare chart data
   const strengthProgressData = useMemo(() => {
-    const exerciseData = new Map<string, ChartDataPoint[]>();
+    if (!analyticsData?.strengthProgress) return [];
 
-    filteredProgressData.forEach((entry) => {
-      const key = entry.exerciseId;
-      if (!exerciseData.has(key)) {
-        exerciseData.set(key, []);
-      }
-      exerciseData.get(key)!.push({
-        date: entry.date.toLocaleDateString(),
-        oneRepMax: entry.oneRepMax,
+    return analyticsData.strengthProgress.map(exercise => ({
+      exerciseId: exercise.exerciseId,
+      exerciseName: exercise.exerciseName,
+      data: exercise.data?.map((entry) => ({
+        date: new Date(entry.date).toLocaleDateString(),
+        oneRepMax: entry.estimated1RM,
         weight: entry.weight,
         reps: entry.reps,
-        volume: entry.weight * entry.reps,
-      });
-    });
-
-    return Array.from(exerciseData.entries()).map(([exerciseId, data]) => ({
-      exerciseId,
-      exerciseName: getExerciseName(exerciseId as string),
-      data: data.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      ),
+        volume: entry.volume,
+      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || []
     }));
-  }, [filteredProgressData]);
+  }, [analyticsData]);
 
-  const workoutFrequencyData = mockAnalytics.workoutFrequency;
+  const workoutFrequencyData = useMemo(() => {
+    return analyticsData?.workoutFrequency || [];
+  }, [analyticsData]);
 
   // Overview stats
   const overviewStats = useMemo(() => {
     const totalWorkouts = workoutFrequencyData.reduce(
-      (sum, week) => sum + week.workouts,
+      (sum: number, week: WorkoutFrequencyData) => sum + week.workouts,
       0
     );
     const avgWorkoutsPerWeek = totalWorkouts / workoutFrequencyData.length;
     const consistencyScore =
       workoutFrequencyData.reduce(
-        (sum, week) => sum + (week.workouts / week.goal) * 100,
+        (sum: number, week: WorkoutFrequencyData) => sum + (week.workouts / week.goal) * 100,
         0
       ) / workoutFrequencyData.length;
 
@@ -156,28 +244,29 @@ export default function AnalyticsDashboard({
   }, [workoutFrequencyData]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div>
-          <h1 className="text-heading-primary text-3xl mb-2">
-            Progress Analytics
+    <div className="space-y-6 p-4 sm:p-0">
+      {/* Enhanced mobile header */}
+      <div className="flex flex-col gap-6">
+        <div className="text-center sm:text-left">
+          <h1 className="text-heading-primary text-3xl sm:text-2xl mb-3 font-bold flex items-center gap-3 justify-center sm:justify-start">
+            <BarChart3 className="w-8 h-8" /> Progress Analytics
           </h1>
-          <p className="text-heading-secondary">
+          <p className="text-heading-secondary leading-relaxed">
             Track progress, strength gains, and workout consistency
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Time Range Selector */}
-          <div className="flex bg-color-silver-100 rounded-lg p-1">
+        {/* Mobile-optimized controls */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+          {/* Enhanced time range selector */}
+          <div className="flex bg-gray-100 rounded-xl p-1">
             {(["1m", "3m", "6m", "1y"] as const).map((timeframe) => (
               <button
                 key={timeframe}
                 onClick={() => setSelectedTimeframe(timeframe)}
-                className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                className={`flex-1 px-4 py-3 sm:px-3 sm:py-2 rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
                   selectedTimeframe === timeframe
-                    ? "bg-white text-accent-blue shadow-sm"
+                    ? "bg-white text-accent-blue shadow-md"
                     : "text-heading-secondary hover:text-heading-primary"
                 }`}
               >
@@ -186,200 +275,215 @@ export default function AnalyticsDashboard({
             ))}
           </div>
 
-          <button className="btn-secondary flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            Export
+          <button className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation">
+            <Download className="w-5 h-5 sm:w-4 sm:h-4" />
+            Export Data
           </button>
         </div>
       </div>
 
-      {/* View Mode Tabs */}
-      <div className="flex space-x-1 mb-6 bg-surface-gray rounded-lg p-1">
+      {/* Enhanced mobile view mode tabs */}
+      <div className="grid grid-cols-2 sm:flex gap-1 p-1 bg-gray-100 rounded-xl">
         <button
           onClick={() => setViewMode("overview")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "overview"
-              ? "bg-white text-primary-600 shadow-sm"
-              : "text-surface-gray-dark hover:text-primary-600"
+              ? "bg-white text-primary-600 shadow-md"
+              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
           }`}
         >
-          Overview
+          <TrendingUp className="w-4 h-4 inline mr-2" /> Overview
         </button>
         <button
           onClick={() => setViewMode("strength")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "strength"
-              ? "bg-white text-primary-600 shadow-sm"
-              : "text-surface-gray-dark hover:text-primary-600"
+              ? "bg-white text-primary-600 shadow-md"
+              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
           }`}
         >
-          Strength
+          <Dumbbell className="w-4 h-4 inline mr-2" /> Strength
         </button>
         <button
           onClick={() => setViewMode("comparison")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "comparison"
-              ? "bg-white text-primary-600 shadow-sm"
-              : "text-surface-gray-dark hover:text-primary-600"
+              ? "bg-white text-primary-600 shadow-md"
+              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
           }`}
         >
-          Comparison
+          <BarChart3 className="w-4 h-4 inline mr-2" /> Compare
         </button>
         <button
           onClick={() => setViewMode("goals")}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+          className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "goals"
-              ? "bg-white text-primary-600 shadow-sm"
-              : "text-surface-gray-dark hover:text-primary-600"
+              ? "bg-white text-primary-600 shadow-md"
+              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
           }`}
         >
-          Goals & Achievements
+          <Trophy className="w-4 h-4 inline mr-2" /> Goals
         </button>
-      </div>
-
-      {/* View Mode Tabs */}
-      <div className="flex space-x-1 bg-color-silver-100 rounded-lg p-1">
-        {[
-          { key: "overview", label: "Overview", icon: BarChart3 },
-          { key: "strength", label: "Strength", icon: Dumbbell },
-        ].map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setViewMode(key as "overview" | "strength")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              viewMode === key
-                ? "bg-white text-accent-blue shadow-sm"
-                : "text-heading-secondary hover:text-heading-primary"
-            }`}
-          >
-            <Icon className="w-4 h-4" />
-            {label}
-          </button>
-        ))}
       </div>
 
       {/* Overview Stats */}
       {viewMode === "overview" && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="card-primary">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-heading-secondary text-sm">
+                  <p className="text-gray-600 text-sm font-medium">
                     Total Workouts
                   </p>
-                  <p className="text-heading-primary text-2xl font-semibold">
+                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.totalWorkouts}
                   </p>
                 </div>
-                <div className="p-3 rounded-lg text-accent-blue bg-accent-blue/10">
+                <div className="p-3 rounded-xl text-blue-600 bg-blue-50">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="card-primary">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-heading-secondary text-sm">Avg per Week</p>
-                  <p className="text-heading-primary text-2xl font-semibold">
+                  <p className="text-gray-600 text-sm font-medium">Avg per Week</p>
+                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgWorkoutsPerWeek}
                   </p>
                 </div>
-                <div className="p-3 rounded-lg text-accent-green bg-accent-green/10">
+                <div className="p-3 rounded-xl text-green-600 bg-green-50">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="card-primary">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-heading-secondary text-sm">Consistency</p>
-                  <p className="text-heading-primary text-2xl font-semibold">
+                  <p className="text-gray-600 text-sm font-medium">Consistency</p>
+                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.consistencyScore}
-                    <span className="text-lg text-heading-secondary ml-1">
+                    <span className="text-lg text-gray-600 ml-1">
                       %
                     </span>
                   </p>
                 </div>
-                <div className="p-3 rounded-lg text-accent-orange bg-accent-orange/10">
+                <div className="p-3 rounded-xl text-orange-600 bg-orange-50">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="card-primary">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-heading-secondary text-sm">
+                  <p className="text-gray-600 text-sm font-medium">
                     Avg Improvement
                   </p>
-                  <p className="text-heading-primary text-2xl font-semibold">
+                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgImprovement}
-                    <span className="text-lg text-heading-secondary ml-1">
+                    <span className="text-lg text-gray-600 ml-1">
                       %
                     </span>
                   </p>
-                  <div className="flex items-center mt-2 text-sm text-accent-green">
+                  <div className="flex items-center mt-2 text-sm text-green-600">
                     <TrendingUp className="w-4 h-4 mr-1" />
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-lg text-purple-600 bg-purple-100">
+                <div className="p-3 rounded-xl text-purple-600 bg-purple-50">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Workout Frequency Chart */}
-          <div className="card-primary">
-            <h3 className="text-heading-primary text-lg font-semibold mb-4">
+          {/* Mobile-optimized Workout Frequency Chart */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-blue-600" />
               Workout Frequency
             </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={workoutFrequencyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="workouts" fill="#3b82f6" name="Workouts" />
-                <Bar dataKey="goal" fill="#e5e7eb" name="Goal" />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="w-full overflow-x-auto">
+              <ResponsiveContainer width="100%" height={280} className="touch-manipulation">
+                <BarChart data={workoutFrequencyData} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis 
+                    dataKey="week" 
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="workouts" fill="#3b82f6" name="Workouts" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="goal" fill="#e5e7eb" name="Goal" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </>
       )}
 
-      {/* Strength Progress */}
+      {/* Mobile-optimized Strength Progress */}
       {viewMode === "strength" && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {strengthProgressData.map((exercise) => (
-            <div key={exercise.exerciseId} className="card-primary">
+            <div key={exercise.exerciseId} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-heading-primary text-lg font-semibold">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <Dumbbell className="h-5 w-5 text-blue-600" />
                   {exercise.exerciseName} Progress
                 </h3>
               </div>
 
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={exercise.data}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="oneRepMax"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    name="1RM (lbs)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <div className="w-full overflow-x-auto">
+                <ResponsiveContainer width="100%" height={280} className="touch-manipulation">
+                  <LineChart data={exercise.data} margin={{ top: 20, right: 20, left: 10, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="date" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="oneRepMax"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                      name="1RM (lbs)"
+                      dot={{ fill: '#3b82f6', strokeWidth: 0, r: 4 }}
+                      activeDot={{ r: 6, fill: '#3b82f6', stroke: 'white', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           ))}
         </div>
@@ -487,7 +591,9 @@ export default function AnalyticsDashboard({
               <div className="border border-surface-border rounded-lg p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">Bench Press 1RM</span>
-                  <span className="text-primary-600 font-semibold">225 lbs</span>
+                  <span className="text-primary-600 font-semibold">
+                    225 lbs
+                  </span>
                 </div>
                 <div className="w-full bg-surface-gray rounded-full h-2">
                   <div className="bg-primary-600 h-2 rounded-full w-3/4"></div>
@@ -501,7 +607,9 @@ export default function AnalyticsDashboard({
               <div className="border border-surface-border rounded-lg p-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">Weekly Consistency</span>
-                  <span className="text-primary-600 font-semibold">4 workouts</span>
+                  <span className="text-primary-600 font-semibold">
+                    4 workouts
+                  </span>
                 </div>
                 <div className="w-full bg-surface-gray rounded-full h-2">
                   <div className="bg-accent-green h-2 rounded-full w-4/5"></div>
@@ -558,19 +666,22 @@ export default function AnalyticsDashboard({
               <div className="border-l-4 border-accent-green pl-4">
                 <p className="font-medium text-accent-green">Strength Gains</p>
                 <p className="text-sm text-heading-secondary">
-                  Your bench press has improved 12% this month. Keep focusing on progressive overload.
+                  Your bench press has improved 12% this month. Keep focusing on
+                  progressive overload.
                 </p>
               </div>
               <div className="border-l-4 border-accent-orange pl-4">
                 <p className="font-medium text-accent-orange">Recovery Note</p>
                 <p className="text-sm text-heading-secondary">
-                  Consider adding more rest days between heavy squat sessions for optimal recovery.
+                  Consider adding more rest days between heavy squat sessions
+                  for optimal recovery.
                 </p>
               </div>
               <div className="border-l-4 border-accent-blue pl-4">
                 <p className="font-medium text-accent-blue">Consistency Win</p>
                 <p className="text-sm text-heading-secondary">
-                  You&apos;re in the top 15% for workout consistency this quarter. Great work!
+                  You&apos;re in the top 15% for workout consistency this
+                  quarter. Great work!
                 </p>
               </div>
             </div>
@@ -579,16 +690,4 @@ export default function AnalyticsDashboard({
       )}
     </div>
   );
-}
-
-// Helper function to get exercise name from ID
-function getExerciseName(exerciseId: string): string {
-  const exerciseNames: Record<string, string> = {
-    "1": "Bench Press",
-    "2": "Squats",
-    "3": "Deadlifts",
-    "4": "Overhead Press",
-    "5": "Pull-ups",
-  };
-  return exerciseNames[exerciseId] || `Exercise ${exerciseId}`;
 }
