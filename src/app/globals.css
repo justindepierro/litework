@@ -7,24 +7,63 @@
 
 /* Additional global styles and overrides */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg-primary: var(--color-navy-900);
-    --color-text-primary: var(--color-silver-200);
-    --color-text-secondary: var(--color-navy-600);
-    --color-bg-secondary: var(--color-navy-800);
-    --color-text-tertiary: var(--color-silver-300);
-  }
+/* Force light mode - remove dark mode override */
+/* We want a consistent light mode experience */
+
+/* Ensure root colors are properly set */
+:root {
+  color-scheme: light;
 }
 
 body {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary) !important;
+  background-color: var(--color-bg-primary) !important;
   font-family: var(--font-family-primary);
   /* Mobile optimizations */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+}
+
+/* Force text visibility */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+button,
+a {
+  color: inherit;
+}
+
+/* Ensure specific heading styles are visible */
+.text-heading-primary {
+  color: #334155 !important; /* Navy-700 */
+}
+
+.text-heading-secondary {
+  color: #475569 !important; /* Navy-600 */
+}
+
+.text-heading-accent {
+  color: #ff6b35 !important; /* Orange accent */
+}
+
+.text-body-primary {
+  color: #334155 !important; /* Navy-700 */
+}
+
+.text-body-secondary {
+  color: #475569 !important; /* Navy-600 */
+}
+
+.text-body-small {
+  color: #64748b !important; /* Navy-500 */
 }
 
 /* Typography Classes */

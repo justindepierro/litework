@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import CalendarView from "@/components/CalendarView";
+import { Dumbbell, Trophy, Flame } from "lucide-react";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
@@ -41,7 +43,7 @@ export default function DashboardPage() {
             <div className="flex items-center">
               <div className="shrink-0">
                 <div className="w-10 h-10 bg-accent-orange bg-opacity-10 rounded-full flex items-center justify-center">
-                  <span className="workout-accent-strength text-lg">💪</span>
+                  <Dumbbell className="w-5 h-5 text-accent-orange" />
                 </div>
               </div>
               <div className="ml-4 flex-1">
@@ -55,7 +57,7 @@ export default function DashboardPage() {
             <div className="flex items-center">
               <div className="shrink-0">
                 <div className="w-10 h-10 bg-accent-green bg-opacity-10 rounded-full flex items-center justify-center">
-                  <span className="workout-accent-progress text-lg">🏆</span>
+                  <Trophy className="w-5 h-5 text-accent-green" />
                 </div>
               </div>
               <div className="ml-4 flex-1">
@@ -68,8 +70,8 @@ export default function DashboardPage() {
           <div className="card-stat sm:col-span-2 lg:col-span-1">
             <div className="flex items-center">
               <div className="shrink-0">
-                <div className="w-10 h-10 bg-accent-purple bg-opacity-10 rounded-full flex items-center justify-center">
-                  <span className="workout-accent-achievement text-lg">🔥</span>
+                <div className="w-10 h-10 bg-accent-red bg-opacity-10 rounded-full flex items-center justify-center">
+                  <Flame className="w-5 h-5 text-accent-red" />
                 </div>
               </div>
               <div className="ml-4 flex-1">
@@ -80,8 +82,15 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Assigned Workouts for Members */}
-        {user.role === "member" && (
+        {/* Calendar View for Coaches */}
+        {user.role === "coach" && (
+          <div className="mb-8">
+            <CalendarView />
+          </div>
+        )}
+
+        {/* Assigned Workouts for Athletes */}
+        {user.role === "athlete" && (
           <div className="mb-8">
             <h2 className="text-heading-secondary text-xl mb-4">
               📋 Your Assigned Workouts
@@ -107,14 +116,24 @@ export default function DashboardPage() {
                     <div className="text-heading-primary text-lg">0%</div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 mb-4">
-                  <div className="text-body-small text-navy-600 mb-1">Exercises:</div>
+                  <div className="text-body-small text-navy-600 mb-1">
+                    Exercises:
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <span className="bg-silver-100 px-2 py-1 rounded">3×10 Bench Press (75%)</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">3×10 Shoulder Shrug</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">3×8 Tricep Extension</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">10 Jump Squats</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      3×10 Bench Press (75%)
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      3×10 Shoulder Shrug
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      3×8 Tricep Extension
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      10 Jump Squats
+                    </span>
                   </div>
                 </div>
 
@@ -154,14 +173,24 @@ export default function DashboardPage() {
                     <div className="text-heading-primary text-lg">-</div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 mb-4">
-                  <div className="text-body-small text-navy-600 mb-1">Exercises:</div>
+                  <div className="text-body-small text-navy-600 mb-1">
+                    Exercises:
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <span className="bg-silver-100 px-2 py-1 rounded">5×5 Squats (80%)</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">3×8 Deadlifts</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">3×12 Leg Press</span>
-                    <span className="bg-silver-100 px-2 py-1 rounded">+ 3 more</span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      5×5 Squats (80%)
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      3×8 Deadlifts
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      3×12 Leg Press
+                    </span>
+                    <span className="bg-silver-100 px-2 py-1 rounded">
+                      + 3 more
+                    </span>
                   </div>
                 </div>
 
@@ -194,8 +223,8 @@ export default function DashboardPage() {
               <div className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-progress">💪</span>{" "}
+                    <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
+                      <Dumbbell className="w-4 h-4 text-accent-orange" />
                       Completed: Upper Body Strength
                     </div>
                     <div className="text-body-small">
@@ -210,9 +239,9 @@ export default function DashboardPage() {
               <div className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-warning">🏆</span> New
-                      Personal Record: Deadlift
+                    <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
+                      <Trophy className="w-4 h-4 text-accent-green" />
+                      New Personal Record: Deadlift
                     </div>
                     <div className="text-body-small">
                       You lifted 315 lbs - that&apos;s 25 lbs more than your
@@ -229,7 +258,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Upcoming Workouts - Mobile Optimized */}
-        {user.role === "member" && (
+        {user.role === "athlete" && (
           <div>
             <h2 className="text-heading-secondary text-xl mb-4">
               Upcoming Workouts
@@ -255,8 +284,8 @@ export default function DashboardPage() {
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="text-body-primary text-sm font-medium mb-1">
-                        <span className="workout-accent-strength">💪</span>{" "}
+                      <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
+                        <Dumbbell className="w-4 h-4 text-accent-orange" />
                         Upper Body Hypertrophy
                       </div>
                       <div className="text-body-small">

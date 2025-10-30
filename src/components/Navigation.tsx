@@ -3,6 +3,15 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import {
+  Dumbbell,
+  BarChart3,
+  Users,
+  Calendar,
+  TrendingUp,
+  LogOut,
+  LogIn,
+} from "lucide-react";
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -15,9 +24,9 @@ export default function Navigation() {
           {/* Logo/Brand */}
           <Link
             href="/"
-            className="text-heading-primary text-xl font-bold text-white hover:text-accent-orange transition-colors"
+            className="text-xl font-bold text-navy-700 flex items-center gap-2"
           >
-            💪 LiteWork
+            <Dumbbell className="w-6 h-6 text-accent-orange" /> LiteWork
           </Link>
 
           {/* Desktop Navigation */}
@@ -42,10 +51,10 @@ export default function Navigation() {
                       Workouts
                     </Link>
                     <Link
-                      href="/members"
+                      href="/athletes"
                       className="hover:text-accent-purple px-2 py-1 rounded transition-colors text-white"
                     >
-                      Members
+                      Athletes
                     </Link>
                   </>
                 )}
@@ -137,7 +146,9 @@ export default function Navigation() {
                 className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="text-accent-green">📊</span> Dashboard
+                <span className="text-accent-green inline-flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" /> Dashboard
+                </span>
               </Link>
               {(user.role === "admin" || user.role === "coach") && (
                 <>
@@ -146,14 +157,18 @@ export default function Navigation() {
                     className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span className="text-accent-orange">💪</span> Workouts
+                    <span className="text-accent-orange inline-flex items-center gap-2">
+                      <Dumbbell className="w-4 h-4" /> Workouts
+                    </span>
                   </Link>
                   <Link
-                    href="/members"
+                    href="/athletes"
                     className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span className="text-accent-purple">👥</span> Members
+                    <span className="text-accent-purple inline-flex items-center gap-2">
+                      <Users className="w-4 h-4" /> Athletes
+                    </span>
                   </Link>
                 </>
               )}
@@ -162,14 +177,18 @@ export default function Navigation() {
                 className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="text-accent-blue">📅</span> Schedule
+                <span className="text-accent-blue inline-flex items-center gap-2">
+                  <Calendar className="w-4 h-4" /> Schedule
+                </span>
               </Link>
               <Link
                 href="/progress"
                 className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="text-accent-pink">📈</span> Progress
+                <span className="text-accent-pink inline-flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" /> Progress
+                </span>
               </Link>
               <button
                 onClick={() => {
@@ -178,7 +197,9 @@ export default function Navigation() {
                 }}
                 className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
               >
-                🚪 Logout
+                <span className="inline-flex items-center gap-2">
+                  <LogOut className="w-4 h-4" /> Logout
+                </span>
               </button>
             </>
           ) : (
@@ -187,7 +208,9 @@ export default function Navigation() {
               className="block px-3 py-2 rounded-md text-base font-medium hover:text-white hover:bg-navy-700 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <span className="text-accent-green">🔐</span> Login
+              <span className="text-accent-green inline-flex items-center gap-2">
+                <LogIn className="w-4 h-4" /> Login
+              </span>
             </Link>
           )}
         </div>

@@ -3,6 +3,13 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Dumbbell,
+  Activity,
+  Calendar,
+  Settings,
+  BarChart3,
+} from "lucide-react";
 
 export default function SchedulePage() {
   const { user, isLoading } = useAuth();
@@ -41,7 +48,17 @@ export default function SchedulePage() {
     <div className="min-h-screen bg-gradient-primary container-responsive section-spacing">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-heading-primary text-3xl">Weekly Schedule</h1>
+          <div>
+            <h1 className="text-heading-primary text-3xl">Weekly Schedule</h1>
+            <p className="text-heading-secondary text-sm">
+              Week{" "}
+              {currentWeek === 0
+                ? "Current"
+                : currentWeek > 0
+                  ? `+${currentWeek}`
+                  : currentWeek}
+            </p>
+          </div>
           <div className="flex space-x-2">
             <button
               onClick={() => setCurrentWeek((prev) => prev - 1)}
@@ -68,8 +85,8 @@ export default function SchedulePage() {
               {index === 1 && ( // Tuesday
                 <div className="space-y-2">
                   <div className="p-3 bg-accent-orange bg-opacity-10 rounded-lg border border-accent-orange border-opacity-20">
-                    <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-strength">💪</span> Upper
+                    <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
+                      <Dumbbell className="w-4 h-4 text-accent-orange" /> Upper
                       Body
                     </div>
                     <div className="text-body-small">6:00 PM - 7:30 PM</div>
@@ -92,8 +109,8 @@ export default function SchedulePage() {
               {index === 5 && ( // Saturday
                 <div className="space-y-2">
                   <div className="p-3 bg-accent-green bg-opacity-10 rounded-lg border border-accent-green border-opacity-20">
-                    <div className="text-body-primary text-sm font-medium mb-1">
-                      <span className="workout-accent-progress">🏃</span>{" "}
+                    <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
+                      <Activity className="w-4 h-4 text-accent-green" />
                       Conditioning
                     </div>
                     <div className="text-body-small">10:00 AM - 11:00 AM</div>
@@ -110,23 +127,23 @@ export default function SchedulePage() {
           ))}
         </div>
 
-        {user.role !== "member" && (
+        {user.role !== "athlete" && (
           <div className="mt-8 card-primary">
             <h2 className="text-heading-secondary text-xl mb-4">
               Schedule Management
             </h2>
             <div className="flex flex-wrap gap-3">
-              <button className="btn-primary">
-                <span className="workout-accent-strength mr-2">📅</span>
+              <button className="btn-primary flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
                 Add Workout
               </button>
-              <button className="btn-secondary">
-                <span className="workout-accent-schedule mr-2">⚙️</span>
+              <button className="btn-secondary flex items-center gap-2">
+                <Settings className="w-4 h-4" />
                 Edit Schedule
               </button>
-              <button className="btn-secondary">
-                <span className="workout-accent-progress mr-2">📊</span>
-                View Analytics
+              <button className="btn-secondary flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Analytics
               </button>
             </div>
           </div>

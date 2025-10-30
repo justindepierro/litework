@@ -1,6 +1,7 @@
 "use client";
 
 import { User } from "@/types";
+import { apiClient } from "@/lib/api-client";
 import {
   createContext,
   useContext,
@@ -27,13 +28,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Check for stored auth token and validate
       const token = localStorage.getItem("auth-token");
       if (token) {
-        // In a real app, validate the token with your backend
-        // For now, we'll create a mock user
+        // Set token in API client
+        apiClient.setToken(token);
+
+        // For now, create a mock user based on stored token
+        // In production, you'd validate the token with the backend
         const mockUser: User = {
           id: "1",
           email: "coach@example.com",
           name: "Coach Smith",
           role: "coach",
+          groupIds: [],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -47,18 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Mock login - replace with actual API call
-      if (email === "coach@example.com" && password === "password") {
-        const mockUser: User = {
-          id: "1",
-          email: "coach@example.com",
-          name: "Coach Smith",
-          role: "coach",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        setUser(mockUser);
-        localStorage.setItem("auth-token", "mock-token");
+      const response = await apiClient.login(email, password);
+
+      if (response.success && response.data?.user) {
+        setUser(response.data.user as User);
         return true;
       }
       return false;
@@ -70,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("auth-token");
+    apiClient.logout();
   };
 
   return (

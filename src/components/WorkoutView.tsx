@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutSession, WorkoutPlan } from "@/types";
+import { Dumbbell, Calendar, Clock, Target, Weight, Check } from "lucide-react";
 
 // Mock assigned workouts for demonstration
 const mockAssignedWorkouts: WorkoutSession[] = [
@@ -12,6 +13,7 @@ const mockAssignedWorkouts: WorkoutSession[] = [
     userId: "member1",
     workoutPlanId: "1",
     workoutPlanName: "Upper Body Strength",
+    workoutAssignmentId: "assign1",
     date: new Date(),
     mode: "view",
     exercises: [
@@ -24,6 +26,7 @@ const mockAssignedWorkouts: WorkoutSession[] = [
         setRecords: [],
         started: false,
         completed: false,
+        isModified: false,
       },
       {
         id: "2",
@@ -34,6 +37,7 @@ const mockAssignedWorkouts: WorkoutSession[] = [
         setRecords: [],
         started: false,
         completed: false,
+        isModified: false,
       },
       {
         id: "3",
@@ -44,6 +48,7 @@ const mockAssignedWorkouts: WorkoutSession[] = [
         setRecords: [],
         started: false,
         completed: false,
+        isModified: false,
       },
       {
         id: "4",
@@ -54,11 +59,13 @@ const mockAssignedWorkouts: WorkoutSession[] = [
         setRecords: [],
         started: false,
         completed: false,
+        isModified: false,
       },
     ],
     started: false,
     completed: false,
-    progressPercentage: 0,
+    progressPercentage: 65,
+    appliedModifications: [],
   },
 ];
 
@@ -126,9 +133,14 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
   const [workout] = useState<WorkoutSession>(mockAssignedWorkouts[0]);
   const [workoutPlan] = useState<WorkoutPlan>(sampleWorkoutPlan);
 
-  const formatWeight = (exercise: { weightType: string; percentage?: number; weight?: number }) => {
+  const formatWeight = (exercise: {
+    weightType: string;
+    percentage?: number;
+    weight?: number;
+  }) => {
     if (exercise.weightType === "bodyweight") return "Bodyweight";
-    if (exercise.weightType === "percentage") return `${exercise.percentage}% of 1RM`;
+    if (exercise.weightType === "percentage")
+      return `${exercise.percentage}% of 1RM`;
     return `${exercise.weight} lbs`;
   };
 
@@ -141,7 +153,9 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
   if (!user) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-heading-primary">Please log in to view your workout.</div>
+        <div className="text-heading-primary">
+          Please log in to view your workout.
+        </div>
       </div>
     );
   }
@@ -153,16 +167,26 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
-              <h1 className="text-heading-primary text-2xl sm:text-3xl">
-                🏋️ {workoutPlan.name}
+              <h1 className="text-heading-primary text-2xl sm:text-3xl flex items-center gap-2">
+                <Dumbbell className="w-7 h-7 text-accent-orange" />
+                {workoutPlan.name}
               </h1>
               <p className="text-body-secondary mt-1">
                 {workoutPlan.description}
               </p>
-              <div className="flex items-center gap-4 mt-2 text-body-small">
-                <span>📅 {workout.date.toLocaleDateString()}</span>
-                <span>⏱️ ~{workoutPlan.estimatedDuration} min</span>
-                <span>🎯 {workoutPlan.exercises.length} exercises</span>
+              <div className="flex items-center gap-4 text-body-small">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  {workout.date.toLocaleDateString()}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />~{workoutPlan.estimatedDuration}{" "}
+                  min
+                </span>
+                <span className="flex items-center gap-1">
+                  <Target className="w-4 h-4" />
+                  {workoutPlan.exercises.length} exercises
+                </span>
               </div>
             </div>
             <div className="flex gap-3">
@@ -170,7 +194,8 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                 href={`/workouts/live/${sessionId}`}
                 className="btn-primary"
               >
-                <span className="workout-accent-strength">🚀</span> Start Live Mode
+                <span className="workout-accent-strength">🚀</span> Start Live
+                Mode
               </Link>
             </div>
           </div>
@@ -178,7 +203,9 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
           {/* Progress Overview */}
           <div className="card-primary mb-8">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-heading-secondary text-lg">Progress Overview</h2>
+              <h2 className="text-heading-secondary text-lg">
+                Progress Overview
+              </h2>
               <span className="text-body-small px-3 py-1 bg-silver-200 rounded-full">
                 {workout.progressPercentage}% Complete
               </span>
@@ -192,7 +219,7 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-heading-primary text-xl">
-                  {workout.exercises.filter(e => e.completed).length}
+                  {workout.exercises.filter((e) => e.completed).length}
                 </div>
                 <div className="text-body-small">Completed</div>
               </div>
@@ -204,7 +231,10 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
               </div>
               <div className="text-center">
                 <div className="text-heading-primary text-xl">
-                  {workout.exercises.reduce((acc, e) => acc + e.completedSets, 0)}
+                  {workout.exercises.reduce(
+                    (acc, e) => acc + e.completedSets,
+                    0
+                  )}
                 </div>
                 <div className="text-body-small">Sets Done</div>
               </div>
@@ -219,12 +249,16 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
 
           {/* Exercise List */}
           <div className="space-y-4">
-            <h2 className="text-heading-secondary text-xl">Workout Exercises</h2>
-            
+            <h2 className="text-heading-secondary text-xl">
+              Workout Exercises
+            </h2>
+
             {workoutPlan.exercises.map((exercise, index) => {
-              const sessionExercise = workout.exercises.find(e => e.workoutExerciseId === exercise.id);
+              const sessionExercise = workout.exercises.find(
+                (e) => e.workoutExerciseId === exercise.id
+              );
               const isCompleted = sessionExercise?.completed || false;
-              
+
               return (
                 <div
                   key={exercise.id}
@@ -234,29 +268,44 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        isCompleted 
-                          ? "bg-accent-green text-white" 
-                          : "bg-silver-300 text-navy-700"
-                      }`}>
-                        {isCompleted ? "✓" : index + 1}
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                          isCompleted
+                            ? "bg-accent-green text-white"
+                            : "bg-silver-300 text-navy-700"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          index + 1
+                        )}
                       </div>
                       <div>
                         <h3 className="text-heading-secondary text-lg">
                           {exercise.exerciseName}
                         </h3>
                         <div className="flex items-center gap-4 text-body-small mt-1">
-                          <span>🎯 {exercise.sets} sets × {exercise.reps} reps</span>
-                          <span>⚖️ {formatWeight(exercise)}</span>
+                          <span className="flex items-center gap-1">
+                            <Target className="w-4 h-4" /> {exercise.sets} sets
+                            × {exercise.reps} reps
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Weight className="w-4 h-4" />{" "}
+                            {formatWeight(exercise)}
+                          </span>
                           {exercise.restTime && (
-                            <span>⏱️ {formatTime(exercise.restTime)} rest</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />{" "}
+                              {formatTime(exercise.restTime)} rest
+                            </span>
                           )}
                         </div>
                       </div>
                     </div>
                     {isCompleted && (
-                      <span className="text-accent-green text-sm font-medium">
-                        Complete ✓
+                      <span className="text-accent-green text-sm font-medium flex items-center gap-1">
+                        <Check className="w-4 h-4" /> Complete
                       </span>
                     )}
                   </div>
@@ -264,15 +313,17 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                   {/* Set Breakdown */}
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {Array.from({ length: exercise.sets }, (_, setIndex) => {
-                      const setRecord = sessionExercise?.setRecords.find(r => r.setNumber === setIndex + 1);
+                      const setRecord = sessionExercise?.setRecords.find(
+                        (r) => r.setNumber === setIndex + 1
+                      );
                       const isSetComplete = setRecord?.completed || false;
-                      
+
                       return (
                         <div
                           key={setIndex}
                           className={`p-3 rounded-md border-2 ${
-                            isSetComplete 
-                              ? "border-accent-green bg-green-50" 
+                            isSetComplete
+                              ? "border-accent-green bg-green-50"
                               : "border-silver-300 bg-silver-100"
                           }`}
                         >
@@ -281,15 +332,17 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
                               Set {setIndex + 1}
                             </span>
                             {isSetComplete && (
-                              <span className="text-accent-green text-xs">✓</span>
+                              <Check className="w-3 h-3 text-accent-green" />
                             )}
                           </div>
                           <div className="text-body-small text-xs mt-1">
-                            Target: {exercise.reps} reps @ {formatWeight(exercise)}
+                            Target: {exercise.reps} reps @{" "}
+                            {formatWeight(exercise)}
                           </div>
                           {setRecord && (
                             <div className="text-body-small text-xs mt-1 text-accent-green">
-                              Actual: {setRecord.actualReps} reps @ {setRecord.actualWeight} lbs
+                              Actual: {setRecord.actualReps} reps @{" "}
+                              {setRecord.actualWeight} lbs
                             </div>
                           )}
                         </div>
@@ -319,7 +372,7 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
               href={`/workouts/live/${sessionId}`}
               className="btn-primary text-lg px-8 py-4"
             >
-              <span className="workout-accent-strength text-xl">🚀</span> 
+              <span className="workout-accent-strength text-xl">🚀</span>
               Start Live Workout
             </Link>
           </div>

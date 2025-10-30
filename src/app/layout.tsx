@@ -3,6 +3,8 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
+import PWAInstallBanner from "@/components/PWAInstallBanner";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +29,13 @@ export const metadata: Metadata = {
 
   // PWA manifest
   manifest: "/manifest.json",
+
+  // App icons
+  icons: {
+    icon: "/icons/icon-192x192.png",
+    apple: "/icons/apple-touch-icon.png",
+    shortcut: "/icons/icon-192x192.png",
+  },
 
   // Mobile app capabilities
   appleWebApp: {
@@ -70,6 +79,8 @@ export default function RootLayout({
         <AuthProvider>
           <Navigation />
           <main className="bg-white">{children}</main>
+          <PWAInstallBanner />
+          <ServiceWorkerRegistration />
         </AuthProvider>
       </body>
     </html>

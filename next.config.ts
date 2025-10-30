@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@heroicons/react"],
   },
 
+  // Turbopack configuration (empty for now)
+  turbopack: {},
+
   // PWA-ready configuration
   headers: async () => {
     return [

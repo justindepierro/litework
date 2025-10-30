@@ -6,21 +6,33 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:emoji": "eslint --rule 'no-restricted-syntax: [\"error\", {\"selector\": \"Literal[value=/[\\\\u{1F600}-\\\\u{1F64F}\\\\u{1F300}-\\\\u{1F5FF}\\\\u{1F680}-\\\\u{1F6FF}\\\\u{1F700}-\\\\u{1F77F}\\\\u{1F780}-\\\\u{1F7FF}\\\\u{1F800}-\\\\u{1F8FF}\\\\u{1F900}-\\\\u{1F9FF}\\\\u{1FA00}-\\\\u{1FA6F}\\\\u{1FA70}-\\\\u{1FAFF}\\\\u{2600}-\\\\u{26FF}\\\\u{2700}-\\\\u{27BF}\\\\u{FE00}-\\\\u{FE0F}\\\\u{1F1E0}-\\\\u{1F1FF}]/u]\", \"message\": \"Emoji literals are not allowed. Use Lucide React icons instead.\"}]' .",
+    "setup-hooks": "git config core.hooksPath .githooks && chmod +x .githooks/pre-commit",
+    "emoji-check": "grep -r \"[💪📊🏋📅👥📈🎯🔥🏆➕✓⚙🎉⏱⚖🔐]\" src/ || echo '✅ No decorative emojis found'"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.548.0",
+    "next": "16.0.1",
+    "next-pwa": "^5.6.0",
     "react": "19.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "recharts": "^3.3.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
+    "@types/react-dnd": "^2.0.36",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.0.1"
+    "eslint-config-next": "16.0.1",
+    "sharp": "^0.34.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

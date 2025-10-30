@@ -484,10 +484,82 @@ select:focus {
   .hide-mobile {
     display: none;
   }
+
+  /* Mobile-optimized button sizes */
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    min-height: 44px; /* iOS touch target recommendation */
+    padding: 12px 16px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  /* Mobile-friendly form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    min-height: 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px 16px;
+  }
+
+  /* Mobile navigation adjustments */
+  .nav-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-silver-100);
+    border-top: 1px solid var(--color-silver-400);
+    padding: 8px 0;
+    z-index: 50;
+  }
 }
 
 @media (min-width: 641px) {
   .show-mobile {
     display: none;
+  }
+
+  .nav-mobile {
+    display: none;
+  }
+}
+
+/* Mobile-first touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets for mobile */
+  button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  button:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-outline:hover {
+    transform: none;
+  }
+}
+
+/* PWA splash screen optimization */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .nav-container {
+    padding-top: env(safe-area-inset-top);
   }
 }

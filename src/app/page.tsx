@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { BarChart3, TrendingUp, Calendar, Users, Dumbbell } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -26,9 +27,12 @@ export default function Home() {
             {/* CTA Button - Mobile Optimized */}
             <div className="mt-8 w-full max-w-sm mx-auto">
               {user ? (
-                <Link href="/dashboard" className="btn-primary w-full">
-                  <span className="workout-accent-progress">📊</span> Go to
-                  Dashboard
+                <Link
+                  href="/dashboard"
+                  className="btn-primary flex items-center gap-3 text-lg"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                  Go to Dashboard
                 </Link>
               ) : (
                 <Link href="/login" className="btn-primary w-full">
@@ -52,7 +56,7 @@ export default function Home() {
             {/* Feature 1 - Progress Tracking */}
             <div className="card-primary">
               <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 mx-auto">
-                <span className="text-2xl">📈</span>
+                <TrendingUp className="w-6 h-6 text-accent-green" />
               </div>
               <h3 className="text-heading-secondary text-lg text-center mb-3">
                 Track Progress
@@ -71,7 +75,7 @@ export default function Home() {
             {/* Feature 2 - Smart Scheduling */}
             <div className="card-primary">
               <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 mx-auto">
-                <span className="text-2xl">📅</span>
+                <Calendar className="w-6 h-6 text-accent-blue" />
               </div>
               <h3 className="text-heading-secondary text-lg text-center mb-3">
                 Smart Scheduling
@@ -90,7 +94,7 @@ export default function Home() {
             {/* Feature 3 - Team Management */}
             <div className="card-primary sm:col-span-2 lg:col-span-1">
               <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 mx-auto">
-                <span className="text-2xl">👥</span>
+                <Users className="w-6 h-6 text-accent-purple" />
               </div>
               <h3 className="text-heading-secondary text-lg text-center mb-3">
                 Team Management
@@ -121,9 +125,7 @@ export default function Home() {
                 href="/dashboard"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-green"
               >
-                <span className="text-2xl mb-2 workout-accent-progress">
-                  📊
-                </span>
+                <BarChart3 className="w-8 h-8 mb-2 text-accent-green" />
                 <span className="text-body-primary text-sm font-medium">
                   Dashboard
                 </span>
@@ -132,9 +134,7 @@ export default function Home() {
                 href="/workout/new"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-orange"
               >
-                <span className="text-2xl mb-2 workout-accent-strength">
-                  💪
-                </span>
+                <Dumbbell className="w-8 h-8 mb-2 text-accent-orange" />
                 <span className="text-body-primary text-sm font-medium">
                   New Workout
                 </span>
@@ -143,9 +143,7 @@ export default function Home() {
                 href="/progress"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-pink"
               >
-                <span className="text-2xl mb-2 workout-accent-motivation">
-                  📈
-                </span>
+                <TrendingUp className="w-8 h-8 mb-2 text-accent-pink" />
                 <span className="text-body-primary text-sm font-medium">
                   Progress
                 </span>
@@ -154,9 +152,7 @@ export default function Home() {
                 href="/schedule"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-blue"
               >
-                <span className="text-2xl mb-2 workout-accent-schedule">
-                  📅
-                </span>
+                <Calendar className="w-8 h-8 mb-2 text-accent-blue" />
                 <span className="text-body-primary text-sm font-medium">
                   Schedule
                 </span>
