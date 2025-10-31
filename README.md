@@ -21,11 +21,14 @@ A comprehensive web-based workout tracking application designed for weight lifti
 
 ## 🛠️ Technical Stack
 
-- **Frontend**: Next.js 16 with React and TypeScript
+- **Framework**: Next.js 16 with App Router and Turbopack
+- **Language**: TypeScript with strict type checking
 - **Styling**: Tailwind CSS with custom design token system
-- **State Management**: React Context API
-- **Authentication**: JWT-based authentication system
+- **State Management**: React Context API with local component state
+- **Authentication**: Supabase Auth with Row Level Security (RLS)
+- **Database**: Supabase (PostgreSQL) with comprehensive RLS policies
 - **Progressive Web App**: PWA capabilities for mobile installation
+- **Deployment**: Vercel (production-ready)
 
 ## 🤖 GitHub Copilot Integration
 
@@ -171,7 +174,15 @@ npm run dev
 - **Mobile Installation**: Can be installed on mobile devices
 - **Push Notifications**: Workout reminders and updates (future)
 
-## � Recent Enhancements
+## 📱 Recent Enhancements
+
+### Security & Authentication (October 2025)
+
+- **Comprehensive Security Audit**: Fixed 6 critical unprotected API routes
+- **Supabase Migration**: Complete migration from JWT to Supabase Auth with RLS
+- **Centralized Auth Utilities**: Created `withAuth`, `withPermission`, `withRole` wrappers
+- **Role Hierarchy**: Admin role properly inherits all coach/athlete permissions
+- **Comprehensive Documentation**: ARCHITECTURE.md and SECURITY_AUDIT_REPORT.md
 
 ### Workout Editor Overhaul (October 2025)
 
@@ -183,10 +194,11 @@ npm run dev
 
 ### Technical Improvements
 
+- **Production Deployment**: Live on Vercel with TypeScript validation
 - **Component Architecture**: Modular `WorkoutEditor` component with reusable exercise management
 - **State Management**: Clean separation between creating and editing workflows
 - **Type Definitions**: Enhanced `WorkoutExercise` interface with `groupId` property for organization
-- **Code Cleanup**: Removed legacy create form code and unused state variables
+- **Code Cleanup**: Removed legacy files and unused components
 
 ## �🏃 Workout Examples
 
@@ -233,7 +245,39 @@ When developing with Copilot on this project:
 - **Component Isolation**: Each feature is modular and can be developed independently
 - **Progressive Enhancement**: Basic functionality works everywhere, enhanced features for modern browsers
 
-## 📄 License
+## � Security & Architecture
+
+### Authentication System
+
+This project uses **Supabase Authentication** with role-based access control (RBAC):
+
+- **Role Hierarchy**: Admin → Coach → Athlete (admin inherits all permissions)
+- **Row Level Security**: Database policies enforce data access at the database level
+- **API Protection**: All API routes use centralized auth wrappers (`withAuth`, `withPermission`, `withRole`)
+- **Frontend Guards**: Page-level protection with custom hooks (`useCoachGuard`, `useAdminGuard`)
+
+### Security Documentation
+
+- **📘 ARCHITECTURE.md**: Comprehensive development patterns and security best practices (650+ lines)
+- **🔒 SECURITY_AUDIT_REPORT.md**: Complete security audit findings and fixes (430+ lines)
+- **🛡️ Centralized Auth Utilities**: `src/lib/auth-utils.ts` for consistent authentication patterns
+
+### Recent Security Improvements (Oct 30, 2025)
+
+- ✅ Fixed 6 critical unprotected API routes
+- ✅ Implemented role hierarchy with admin permission inheritance
+- ✅ Created centralized auth utilities for future-proofing
+- ✅ Added comprehensive documentation and checklists
+- ✅ 100% API route protection coverage
+
+### Production Deployment
+
+- **Live URL**: https://litework-p6uw3kn0c-justin-depierros-projects.vercel.app
+- **Platform**: Vercel with automatic deployments from main branch
+- **TypeScript Validation**: All builds include type checking
+- **Performance**: Optimized with Turbopack and Next.js 16
+
+## �📄 License
 
 Built for educational and team use. Modify and distribute as needed for your weight lifting club.
 
