@@ -1,26 +1,29 @@
 {
   "buildCommand": "npm run build",
   "framework": "nextjs",
-  "routes": [
-    {
-      "src": "/sw.js",
-      "headers": {
-        "cache-control": "public, max-age=0, must-revalidate",
-        "service-worker-allowed": "/"
-      }
-    },
-    {
-      "src": "/manifest.json",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ],
   "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
