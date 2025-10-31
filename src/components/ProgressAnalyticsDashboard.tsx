@@ -14,69 +14,17 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-// Mock data - in real app, this would come from API
-const mockProgressData = [
-  {
-    date: "2024-10-01",
-    exercise: "Bench Press",
-    weight: 185,
-    reps: 8,
-    sets: 3,
-    volume: 4440,
-    oneRepMax: 231,
-    athleteId: "athlete1",
-  },
-  {
-    date: "2024-10-05",
-    exercise: "Bench Press",
-    weight: 190,
-    reps: 8,
-    sets: 3,
-    volume: 4560,
-    oneRepMax: 237,
-    athleteId: "athlete1",
-  },
-  {
-    date: "2024-10-10",
-    exercise: "Bench Press",
-    weight: 195,
-    reps: 8,
-    sets: 3,
-    volume: 4680,
-    oneRepMax: 244,
-    athleteId: "athlete1",
-  },
-  {
-    date: "2024-10-15",
-    exercise: "Squats",
-    weight: 225,
-    reps: 10,
-    sets: 3,
-    volume: 6750,
-    oneRepMax: 300,
-    athleteId: "athlete2",
-  },
-  {
-    date: "2024-10-20",
-    exercise: "Squats",
-    weight: 235,
-    reps: 10,
-    sets: 3,
-    volume: 7050,
-    oneRepMax: 313,
-    athleteId: "athlete2",
-  },
-  {
-    date: "2024-10-25",
-    exercise: "Deadlift",
-    weight: 275,
-    reps: 5,
-    sets: 3,
-    volume: 4125,
-    oneRepMax: 309,
-    athleteId: "athlete1",
-  },
-];
+// Progress data - will be loaded from API
+const mockProgressData: Array<{
+  date: string;
+  exercise: string;
+  weight: number;
+  reps: number;
+  sets: number;
+  volume: number;
+  oneRepMax: number;
+  athleteId: string;
+}> = [];
 
 interface AnalyticsSummary {
   totalWorkouts: number;
@@ -96,18 +44,13 @@ export default function ProgressAnalyticsDashboard() {
   const [selectedMetric, setSelectedMetric] = useState("strength");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Mock data - in real app, this would come from API
-
+  // Analytics summary - will be calculated from real data
   const analyticsSummary: AnalyticsSummary = {
-    totalWorkouts: 24,
-    totalVolume: 45680,
-    strengthGain: 15.2,
-    consistencyScore: 87,
-    topExercises: [
-      { name: "Bench Press", sessions: 8, improvement: 12.5 },
-      { name: "Squats", sessions: 7, improvement: 18.3 },
-      { name: "Deadlift", sessions: 6, improvement: 9.7 },
-    ],
+    totalWorkouts: 0,
+    totalVolume: 0,
+    strengthGain: 0,
+    consistencyScore: 0,
+    topExercises: [],
   };
 
   const chartData = useMemo(() => {

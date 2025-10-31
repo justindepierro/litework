@@ -1,7 +1,7 @@
 "use client";
 
 import { useCoachGuard } from "@/hooks/use-auth-guard";
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy } from "react";
 import { ApiResponse } from "@/lib/api-response";
 import {
   User,
@@ -84,132 +84,8 @@ interface EnhancedAthlete extends UserType {
   communication?: AthleteCommunication;
 }
 
-// Enhanced athlete data with communication features
-const enhancedAthletes: EnhancedAthlete[] = [
-  {
-    id: "1",
-    name: "Alex Johnson",
-    email: "alex.johnson@email.com",
-    role: "athlete" as const,
-    groupIds: ["football-linemen"],
-    status: "active",
-    profileImage: null,
-    bio: "Senior offensive lineman, team captain. Focused on strength and mobility training.",
-    injuryStatus: undefined,
-    lastActivity: new Date("2024-10-29"),
-    stats: {
-      totalWorkouts: 45,
-      thisMonthWorkouts: 12,
-      totalPRs: 8,
-      recentPRs: 2,
-      lastWorkout: new Date("2024-10-29"),
-    },
-    communication: {
-      unreadMessages: 2,
-      lastMessage: "Great job on the deadlift PRs! Keep it up!",
-      lastMessageTime: new Date("2024-10-29T10:30:00"),
-      notificationsEnabled: true,
-      preferredContact: "app",
-    },
-    personalRecords: [
-      {
-        id: "kpi1",
-        athleteId: "1",
-        exerciseId: "bench",
-        exerciseName: "Bench Press",
-        currentPR: 285,
-        dateAchieved: new Date("2024-10-15"),
-        isActive: true,
-        createdAt: new Date("2024-01-15"),
-        updatedAt: new Date("2024-10-15"),
-      },
-      {
-        id: "kpi2",
-        athleteId: "1",
-        exerciseId: "squat",
-        exerciseName: "Back Squat",
-        currentPR: 385,
-        dateAchieved: new Date("2024-10-20"),
-        isActive: true,
-        createdAt: new Date("2024-01-15"),
-        updatedAt: new Date("2024-10-20"),
-      },
-    ],
-    createdAt: new Date("2024-01-15"),
-    updatedAt: new Date("2024-10-29"),
-  },
-  {
-    id: "2",
-    name: "Sarah Chen",
-    email: "sarah.chen@email.com",
-    role: "athlete" as const,
-    groupIds: ["volleyball-girls"],
-    status: "active",
-    profileImage: null,
-    bio: "Volleyball setter with focus on explosive power and agility.",
-    injuryStatus: "minor",
-    lastActivity: new Date("2024-10-28"),
-    stats: {
-      totalWorkouts: 38,
-      thisMonthWorkouts: 10,
-      totalPRs: 6,
-      recentPRs: 1,
-      lastWorkout: new Date("2024-10-28"),
-    },
-    communication: {
-      unreadMessages: 0,
-      lastMessage:
-        "Thanks for adjusting my workout for the ankle. Feeling better!",
-      lastMessageTime: new Date("2024-10-27T14:15:00"),
-      notificationsEnabled: true,
-      preferredContact: "email",
-    },
-    personalRecords: [
-      {
-        id: "kpi3",
-        athleteId: "2",
-        exerciseId: "vertical",
-        exerciseName: "Vertical Jump",
-        currentPR: 28,
-        dateAchieved: new Date("2024-09-15"),
-        isActive: true,
-        createdAt: new Date("2024-01-20"),
-        updatedAt: new Date("2024-09-15"),
-      },
-    ],
-    createdAt: new Date("2024-01-20"),
-    updatedAt: new Date("2024-10-28"),
-  },
-  {
-    id: "3",
-    name: "Marcus Williams",
-    email: "marcus.williams@email.com",
-    role: "athlete" as const,
-    groupIds: [],
-    status: "invited",
-    profileImage: null,
-    bio: null,
-    injuryStatus: undefined,
-    lastActivity: null,
-    stats: {
-      totalWorkouts: 0,
-      thisMonthWorkouts: 0,
-      totalPRs: 0,
-      recentPRs: 0,
-      lastWorkout: null,
-    },
-    communication: {
-      unreadMessages: 0,
-      lastMessage: null,
-      lastMessageTime: null,
-      notificationsEnabled: true,
-      preferredContact: "app",
-    },
-    personalRecords: [],
-    createdAt: new Date("2024-10-25"),
-    updatedAt: new Date("2024-10-25"),
-  },
-];
+// Enhanced athlete data - now empty, will be loaded from API
+const enhancedAthletes: EnhancedAthlete[] = [];
 
 export default function AthletesPage() {
   const { isLoading } = useCoachGuard();

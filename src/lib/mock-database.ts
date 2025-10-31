@@ -17,49 +17,14 @@ import {
 export const mockUsers: User[] = [
   {
     id: "1",
-    email: "coach@litework.app",
-    name: "Coach Sarah",
+    email: "coach@litework.app", 
+    name: "Coach",
     role: "coach",
     groupIds: [], // Coaches don't belong to groups
     createdAt: new Date("2024-01-15"),
     updatedAt: new Date("2024-10-15"),
   },
-  {
-    id: "2",
-    email: "john@litework.app",
-    name: "John Smith",
-    role: "athlete",
-    groupIds: ["football-linemen"],
-    createdAt: new Date("2024-02-01"),
-    updatedAt: new Date("2024-10-20"),
-  },
-  {
-    id: "3",
-    email: "mike@litework.app",
-    name: "Mike Johnson",
-    role: "athlete",
-    groupIds: ["football-linemen"],
-    createdAt: new Date("2024-02-05"),
-    updatedAt: new Date("2024-10-18"),
-  },
-  {
-    id: "4",
-    email: "sarah@litework.app",
-    name: "Sarah Wilson",
-    role: "athlete",
-    groupIds: ["volleyball-girls"],
-    createdAt: new Date("2024-02-10"),
-    updatedAt: new Date("2024-10-22"),
-  },
-  {
-    id: "5",
-    email: "emma@litework.app",
-    name: "Emma Davis",
-    role: "athlete",
-    groupIds: ["volleyball-girls"],
-    createdAt: new Date("2024-02-15"),
-    updatedAt: new Date("2024-10-25"),
-  },
+  // Athletes will be added via the real database/API
 ];
 
 // ===========================
@@ -67,42 +32,7 @@ export const mockUsers: User[] = [
 // ===========================
 
 export const mockGroups: AthleteGroup[] = [
-  {
-    id: "1",
-    name: "Football Linemen",
-    description: "Offensive and defensive linemen",
-    sport: "Football",
-    category: "Linemen",
-    coachId: "1",
-    athleteIds: ["2", "4"],
-    color: "#ff6b35",
-    createdAt: new Date("2024-02-01"),
-    updatedAt: new Date("2024-10-15"),
-  },
-  {
-    id: "2",
-    name: "Football Receivers",
-    description: "Wide receivers and tight ends",
-    sport: "Football",
-    category: "Receivers",
-    coachId: "1",
-    athleteIds: [],
-    color: "#00d4aa",
-    createdAt: new Date("2024-02-01"),
-    updatedAt: new Date("2024-10-15"),
-  },
-  {
-    id: "3",
-    name: "Volleyball Girls",
-    description: "Varsity volleyball team",
-    sport: "Volleyball",
-    category: "Varsity",
-    coachId: "1",
-    athleteIds: ["3", "5"],
-    color: "#8b5cf6",
-    createdAt: new Date("2024-02-15"),
-    updatedAt: new Date("2024-10-20"),
-  },
+  // Groups will be created by coaches via the UI
 ];
 
 // ===========================
@@ -110,84 +40,7 @@ export const mockGroups: AthleteGroup[] = [
 // ===========================
 
 export const mockWorkoutPlans: WorkoutPlan[] = [
-  {
-    id: "1",
-    name: "Upper Body Strength",
-    description: "Focus on bench press, rows, and shoulder development",
-    exercises: [
-      {
-        id: "1",
-        exerciseId: "bench-press",
-        exerciseName: "Bench Press",
-        sets: 3,
-        reps: 8,
-        weightType: "percentage",
-        percentage: 80,
-        restTime: 180,
-        order: 1,
-      },
-      {
-        id: "2",
-        exerciseId: "bent-row",
-        exerciseName: "Bent Over Row",
-        sets: 3,
-        reps: 8,
-        weightType: "percentage",
-        percentage: 75,
-        restTime: 150,
-        order: 2,
-      },
-      {
-        id: "3",
-        exerciseId: "shoulder-press",
-        exerciseName: "Shoulder Press",
-        sets: 3,
-        reps: 10,
-        weightType: "percentage",
-        percentage: 70,
-        restTime: 120,
-        order: 3,
-      },
-    ],
-    estimatedDuration: 45,
-    targetGroupId: "1",
-    createdBy: "1",
-    createdAt: new Date("2024-10-01"),
-    updatedAt: new Date("2024-10-15"),
-  },
-  {
-    id: "2",
-    name: "Lower Body Power",
-    description: "Explosive movements for athletic development",
-    exercises: [
-      {
-        id: "4",
-        exerciseId: "squat",
-        exerciseName: "Back Squat",
-        sets: 4,
-        reps: 5,
-        weightType: "percentage",
-        percentage: 85,
-        restTime: 240,
-        order: 1,
-      },
-      {
-        id: "5",
-        exerciseId: "jump-squat",
-        exerciseName: "Jump Squats",
-        sets: 3,
-        reps: 10,
-        weightType: "bodyweight",
-        restTime: 60,
-        order: 2,
-      },
-    ],
-    estimatedDuration: 30,
-    targetGroupId: "3",
-    createdBy: "1",
-    createdAt: new Date("2024-10-05"),
-    updatedAt: new Date("2024-10-20"),
-  },
+  // Workout plans will be created by coaches via the WorkoutEditor
 ];
 
 // ===========================
@@ -195,42 +48,7 @@ export const mockWorkoutPlans: WorkoutPlan[] = [
 // ===========================
 
 export const mockAssignments: WorkoutAssignment[] = [
-  {
-    id: "1",
-    workoutPlanId: "1",
-    workoutPlanName: "Upper Body Strength",
-    assignmentType: "group",
-    groupId: "1",
-    athleteIds: ["2", "4"],
-    assignedBy: "1",
-    assignedDate: new Date("2024-10-25"),
-    scheduledDate: new Date("2024-10-30"),
-    startTime: "15:30",
-    endTime: "16:30",
-    status: "assigned",
-    modifications: [],
-    notes: "Focus on proper form",
-    createdAt: new Date("2024-10-25"),
-    updatedAt: new Date("2024-10-25"),
-  },
-  {
-    id: "2",
-    workoutPlanId: "2",
-    workoutPlanName: "Lower Body Power",
-    assignmentType: "group",
-    groupId: "3",
-    athleteIds: ["3", "5"],
-    assignedBy: "1",
-    assignedDate: new Date("2024-10-26"),
-    scheduledDate: new Date("2024-10-31"),
-    startTime: "14:00",
-    endTime: "14:45",
-    status: "assigned",
-    modifications: [],
-    notes: "Focus on explosive movements",
-    createdAt: new Date("2024-10-26"),
-    updatedAt: new Date("2024-10-26"),
-  },
+  // Workout assignments will be created when coaches assign workouts to athletes/groups
 ];
 
 // ===========================

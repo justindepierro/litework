@@ -3,12 +3,9 @@
 import { useAnyUserGuard } from "@/hooks/use-auth-guard";
 import { useState } from "react";
 import {
-  Dumbbell,
-  Activity,
   Calendar,
   Settings,
   BarChart3,
-  Zap,
 } from "lucide-react";
 
 export default function SchedulePage() {
@@ -71,7 +68,7 @@ export default function SchedulePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
-          {days.map((day, index) => (
+          {days.map((day) => (
             <div
               key={day}
               className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-48 hover:shadow-md transition-shadow"
@@ -80,47 +77,10 @@ export default function SchedulePage() {
                 {day}
               </h3>
 
-              {index === 1 && ( // Tuesday
-                <div className="space-y-2">
-                  <div className="p-4 bg-orange-50 rounded-xl border-2 border-orange-200 touch-manipulation">
-                    <div className="text-orange-700 text-sm font-bold mb-2 flex items-center gap-2">
-                      <Dumbbell className="w-4 h-4" /> Upper Body
-                    </div>
-                    <div className="text-gray-600 text-sm">
-                      6:00 PM - 7:30 PM
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {index === 3 && ( // Thursday
-                <div className="space-y-2">
-                  <div className="p-4 bg-blue-50 rounded-xl border-2 border-blue-200 touch-manipulation">
-                    <div className="text-blue-700 text-sm font-bold mb-2 flex items-center gap-2">
-                      <Zap className="w-4 h-4" /> Lower Body
-                    </div>
-                    <div className="text-body-small">6:00 PM - 7:30 PM</div>
-                  </div>
-                </div>
-              )}
-
-              {index === 5 && ( // Saturday
-                <div className="space-y-2">
-                  <div className="p-3 bg-accent-green bg-opacity-10 rounded-lg border border-accent-green border-opacity-20">
-                    <div className="text-body-primary text-sm font-medium mb-1 flex items-center gap-1">
-                      <Activity className="w-4 h-4 text-accent-green" />
-                      Conditioning
-                    </div>
-                    <div className="text-body-small">10:00 AM - 11:00 AM</div>
-                  </div>
-                </div>
-              )}
-
-              {![1, 3, 5].includes(index) && (
-                <div className="text-center text-body-small py-8 text-silver-600">
-                  Rest Day
-                </div>
-              )}
+              {/* No scheduled workouts - will be loaded from API */}
+              <div className="text-center text-body-small py-8 text-silver-600">
+                No workouts scheduled
+              </div>
             </div>
           ))}
         </div>

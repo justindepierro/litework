@@ -1,5 +1,11 @@
 import React from "react";
-import { Dumbbell, TrendingUp, Flame, Calendar, AlertTriangle } from "lucide-react";
+import {
+  Dumbbell,
+  TrendingUp,
+  Flame,
+  Calendar,
+  AlertTriangle,
+} from "lucide-react";
 import tokens from "@/styles/tokens-optimized";
 
 /**
