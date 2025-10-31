@@ -30,13 +30,13 @@ ADD COLUMN full_name TEXT GENERATED ALWAYS AS (first_name || ' ' || last_name) S
 -- IMPORTANT: Only run this after confirming data migration was successful
 -- ALTER TABLE public.users DROP COLUMN name;
 
--- Step 6: Update athlete_invites table
-ALTER TABLE public.athlete_invites
+-- Step 6: Update invites table
+ALTER TABLE public.invites
 ADD COLUMN first_name TEXT,
 ADD COLUMN last_name TEXT;
 
 -- Step 7: Migrate existing invite data
-UPDATE public.athlete_invites
+UPDATE public.invites
 SET 
   first_name = SPLIT_PART(name, ' ', 1),
   last_name = CASE 
@@ -46,16 +46,16 @@ SET
 WHERE first_name IS NULL;
 
 -- Step 8: Make new columns NOT NULL
-ALTER TABLE public.athlete_invites
+ALTER TABLE public.invites
 ALTER COLUMN first_name SET NOT NULL,
 ALTER COLUMN last_name SET NOT NULL;
 
 -- Step 9: Add computed full_name for invites
-ALTER TABLE public.athlete_invites
+ALTER TABLE public.invites
 ADD COLUMN full_name TEXT GENERATED ALWAYS AS (first_name || ' ' || last_name) STORED;
 
 -- Step 10: Drop old name column from invites (after verifying)
--- ALTER TABLE public.athlete_invites DROP COLUMN name;
+-- ALTER TABLE public.invites DROP COLUMN name;
 
 -- Step 11: Update RLS policies if they reference the name column
 -- (Review and update any policies that use the name field)
@@ -67,4 +67,4 @@ CREATE INDEX idx_users_full_name ON public.users(full_name);
 
 -- Verification queries:
 -- SELECT id, name, first_name, last_name, full_name FROM public.users LIMIT 10;
--- SELECT id, name, first_name, last_name, full_name FROM public.athlete_invites LIMIT 10;
+-- SELECT id, name, first_name, last_name, full_name FROM public.invites LIMIT 10;
