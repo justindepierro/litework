@@ -428,3 +428,167 @@
 [2025-10-31 10:41:52] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
  GET /api/health 503 in 166ms (compile: 1821µs, render: 164ms)
 [2025-10-31 10:42:22] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 205ms (compile: 1662µs, render: 203ms)
+[2025-10-31 10:42:53] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 177ms (compile: 1872µs, render: 175ms)
+[2025-10-31 10:43:24] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 124ms (compile: 4ms, render: 121ms)
+[2025-10-31 10:43:54] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 136ms (compile: 14ms, render: 122ms)
+[2025-10-31 10:44:25] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 246ms (compile: 1498µs, render: 245ms)
+[2025-10-31 10:44:55] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 236ms (compile: 4ms, render: 233ms)
+[2025-10-31 10:45:26] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 199ms (compile: 2ms, render: 197ms)
+[2025-10-31 10:45:57] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 100ms (compile: 1466µs, render: 99ms)
+[2025-10-31 10:46:28] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 255ms (compile: 3ms, render: 252ms)
+[2025-10-31 10:46:58] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 216ms (compile: 4ms, render: 211ms)
+[2025-10-31 10:47:29] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 294ms (compile: 4ms, render: 290ms)
+[2025-10-31 10:48:00] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 178ms (compile: 1610µs, render: 177ms)
+[2025-10-31 10:48:30] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 296ms (compile: 5ms, render: 291ms)
+[2025-10-31 10:49:01] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 232ms (compile: 8ms, render: 225ms)
+[2025-10-31 10:49:32] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 156ms (compile: 4ms, render: 152ms)
+[2025-10-31 10:50:02] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 167ms (compile: 1420µs, render: 165ms)
+[2025-10-31 10:50:33] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 256ms (compile: 1425µs, render: 255ms)
+[2025-10-31 10:51:04] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 172ms (compile: 3ms, render: 168ms)
+[2025-10-31 10:51:34] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 199ms (compile: 1491µs, render: 197ms)
+[2025-10-31 10:52:05] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 195ms (compile: 10ms, render: 185ms)
+[2025-10-31 10:52:36] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 188ms (compile: 8ms, render: 180ms)
+[2025-10-31 10:53:06] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 127ms (compile: 4ms, render: 123ms)
+[2025-10-31 10:53:37] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 103ms (compile: 1613µs, render: 101ms)
+[2025-10-31 10:54:08] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 155ms (compile: 1230µs, render: 154ms)
+[2025-10-31 10:54:38] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 174ms (compile: 1629µs, render: 173ms)
+[2025-10-31 10:55:09] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 137ms (compile: 1858µs, render: 135ms)
+[2025-10-31 10:55:39] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 120ms (compile: 1512µs, render: 119ms)
+[2025-10-31 10:56:10] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 100ms (compile: 1465µs, render: 98ms)
+[2025-10-31 10:56:41] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 283ms (compile: 1459µs, render: 281ms)
+[2025-10-31 10:57:11] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 105ms (compile: 884µs, render: 104ms)
+[2025-10-31 10:57:42] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 108ms (compile: 1430µs, render: 106ms)
+[2025-10-31 10:58:13] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 114ms (compile: 4ms, render: 110ms)
+[2025-10-31 10:58:43] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 373ms (compile: 13ms, render: 361ms)
+[2025-10-31 10:59:14] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 111ms (compile: 10ms, render: 100ms)
+[2025-10-31 10:59:45] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 114ms (compile: 12ms, render: 102ms)
+[2025-10-31 11:00:15] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 105ms (compile: 4ms, render: 101ms)
+[2025-10-31 11:00:46] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 217ms (compile: 4ms, render: 213ms)
+[2025-10-31 11:01:16] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 243ms (compile: 4ms, render: 239ms)
+[2025-10-31 11:01:47] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 158ms (compile: 13ms, render: 145ms)
+[2025-10-31 11:02:18] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 138ms (compile: 5ms, render: 133ms)
+[2025-10-31 11:02:49] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 177ms (compile: 1560µs, render: 175ms)
+[2025-10-31 11:03:19] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 124ms (compile: 1515µs, render: 123ms)
+[2025-10-31 11:03:50] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 112ms (compile: 1460µs, render: 110ms)
+[2025-10-31 11:04:20] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 125ms (compile: 4ms, render: 120ms)
+[2025-10-31 11:04:51] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 184ms (compile: 2ms, render: 182ms)
+[2025-10-31 11:05:22] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 97ms (compile: 1548µs, render: 95ms)
+[2025-10-31 11:05:52] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 236ms (compile: 2ms, render: 234ms)
+[2025-10-31 11:06:23] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 128ms (compile: 2ms, render: 126ms)
+[2025-10-31 11:06:54] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 232ms (compile: 1367µs, render: 231ms)
+[2025-10-31 11:07:24] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 165ms (compile: 1412µs, render: 164ms)
+[2025-10-31 11:07:55] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 130ms (compile: 1802µs, render: 129ms)
+[2025-10-31 11:08:25] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 126ms (compile: 1481µs, render: 124ms)
+[2025-10-31 11:08:56] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 196ms (compile: 5ms, render: 191ms)
+[2025-10-31 11:09:27] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 119ms (compile: 1851µs, render: 118ms)
+[2025-10-31 11:09:57] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 112ms (compile: 1503µs, render: 110ms)
+[2025-10-31 11:10:28] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 207ms (compile: 1527µs, render: 205ms)
+[2025-10-31 11:10:59] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 212ms (compile: 8ms, render: 204ms)
+[2025-10-31 11:11:29] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 184ms (compile: 1441µs, render: 183ms)
+[2025-10-31 11:12:00] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 113ms (compile: 3ms, render: 110ms)
+[2025-10-31 11:12:31] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 167ms (compile: 1451µs, render: 166ms)
+[2025-10-31 11:13:01] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 202ms (compile: 1640µs, render: 201ms)
+[2025-10-31 11:13:32] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 141ms (compile: 1586µs, render: 139ms)
+[2025-10-31 11:14:03] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 149ms (compile: 4ms, render: 145ms)
+[2025-10-31 11:14:33] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 142ms (compile: 1410µs, render: 141ms)
+[2025-10-31 11:15:04] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 335ms (compile: 5ms, render: 331ms)
+[2025-10-31 11:15:35] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 122ms (compile: 2ms, render: 119ms)
+[2025-10-31 11:16:05] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 120ms (compile: 1773µs, render: 118ms)
+[2025-10-31 11:16:36] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 108ms (compile: 4ms, render: 104ms)
+[2025-10-31 11:17:07] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 194ms (compile: 2ms, render: 192ms)
+[2025-10-31 11:17:37] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 123ms (compile: 4ms, render: 119ms)
+[2025-10-31 11:18:08] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 104ms (compile: 1519µs, render: 103ms)
+[2025-10-31 11:18:39] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 131ms (compile: 4ms, render: 127ms)
+[2025-10-31 11:19:09] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 200ms (compile: 13ms, render: 186ms)
+[2025-10-31 11:19:40] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 181ms (compile: 6ms, render: 175ms)
+[2025-10-31 11:20:11] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 156ms (compile: 5ms, render: 151ms)
+[2025-10-31 11:20:41] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 186ms (compile: 5ms, render: 181ms)
+[2025-10-31 11:21:12] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 207ms (compile: 2ms, render: 205ms)
+[2025-10-31 11:21:42] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 117ms (compile: 4ms, render: 113ms)
+[2025-10-31 11:22:13] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 134ms (compile: 3ms, render: 130ms)
+[2025-10-31 11:22:44] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 197ms (compile: 4ms, render: 193ms)
+[2025-10-31 11:23:14] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 187ms (compile: 4ms, render: 184ms)
+[2025-10-31 11:23:45] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 167ms (compile: 33ms, render: 135ms)
+[2025-10-31 11:24:16] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
