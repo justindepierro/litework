@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canManageGroups } from "@/lib/auth";
-import {
-  getGroupById,
-  updateGroup,
-  deleteGroup,
-} from "@/lib/database-service";
+import { getGroupById, updateGroup, deleteGroup } from "@/lib/database-service";
 
 // PUT /api/groups/[id] - Update group (coaches only)
 export async function PUT(
@@ -30,7 +26,7 @@ export async function PUT(
     }
 
     const groupId = id;
-    
+
     // Check if group exists
     const existingGroup = await getGroupById(groupId);
     if (!existingGroup) {
@@ -90,7 +86,7 @@ export async function DELETE(
     }
 
     const groupId = id;
-    
+
     // Check if group exists
     const existingGroup = await getGroupById(groupId);
     if (!existingGroup) {

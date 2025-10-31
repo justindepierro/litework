@@ -2,10 +2,15 @@
 // Supports both JWT (legacy) and Supabase Auth (new) during migration
 
 import { NextRequest } from "next/server";
-import { verifySupabaseAuth, AuthResult, AuthenticatedUser } from "./supabase-auth";
+import {
+  verifySupabaseAuth,
+  AuthResult,
+  AuthenticatedUser,
+} from "./supabase-auth";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 // Legacy JWT auth (for backward compatibility)
 function verifyJWTToken(request: NextRequest): AuthResult {
@@ -60,12 +65,11 @@ export async function verifyToken(request: NextRequest): Promise<AuthResult> {
     // Fallback to JWT auth for backward compatibility
     const jwtResult = verifyJWTToken(request);
     return jwtResult;
-
   } catch (error) {
     console.error("Token verification error:", error);
     return {
       success: false,
-      error: "Token verification failed"
+      error: "Token verification failed",
     };
   }
 }
@@ -78,7 +82,7 @@ export {
   canManageGroups,
   canAssignWorkouts,
   canViewAllAthletes,
-  canModifyWorkouts
+  canModifyWorkouts,
 } from "./supabase-auth";
 
 export type { AuthenticatedUser, AuthResult } from "./supabase-auth";

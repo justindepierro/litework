@@ -30,5 +30,5 @@ export {
   canAssignWorkouts,
   canViewAllAthletes,
   canModifyWorkouts,
-  requireRole
+  requireRole,
 } from "./auth-hybrid";

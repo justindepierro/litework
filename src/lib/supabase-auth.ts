@@ -300,7 +300,6 @@ export const verifySupabaseAuth = async (
 ): Promise<AuthResult> => {
   try {
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-      console.log("[verifySupabaseAuth] No authorization header found");
       return {
         success: false,
         error: "No valid authorization header found",
@@ -308,7 +307,6 @@ export const verifySupabaseAuth = async (
     }
 
     const token = authorizationHeader.substring(7); // Remove 'Bearer ' prefix
-    console.log("[verifySupabaseAuth] Token received, length:", token.length);
 
     // Create a new Supabase client with the user's token for server-side verification
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -330,14 +328,11 @@ export const verifySupabaseAuth = async (
     } = await serverSupabase.auth.getUser();
 
     if (error || !user) {
-      console.log("[verifySupabaseAuth] Token verification failed:", error?.message);
       return {
         success: false,
         error: error?.message || "Invalid token",
       };
     }
-
-    console.log("[verifySupabaseAuth] User verified:", user.id);
 
     // Get user profile using the authenticated client
     const { data: userProfile, error: profileError } = await serverSupabase
@@ -347,14 +342,11 @@ export const verifySupabaseAuth = async (
       .single();
 
     if (profileError || !userProfile) {
-      console.log("[verifySupabaseAuth] Profile fetch failed:", profileError?.message);
       return {
         success: false,
         error: "User profile not found",
       };
     }
-
-    console.log("[verifySupabaseAuth] Profile fetched:", userProfile.email);
 
     return {
       success: true,

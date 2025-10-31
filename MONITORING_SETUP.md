@@ -5,6 +5,7 @@ This guide covers the complete setup of production monitoring and analytics for 
 ## Overview
 
 Our production monitoring stack includes:
+
 - **Sentry**: Error tracking and performance monitoring
 - **Vercel Analytics**: Core web vitals and traffic analytics
 - **Custom Analytics**: Application-specific metrics and user behavior
@@ -22,21 +23,22 @@ npm install @sentry/nextjs @sentry/cli
 ### Configuration Files
 
 #### sentry.client.config.ts
+
 ```typescript
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  
+
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 0.1,
-  
+
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
-  
+
   replaysOnErrorSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
-  
+
   integrations: [
     new Sentry.Replay({
       maskAllText: true,
@@ -47,6 +49,7 @@ Sentry.init({
 ```
 
 #### sentry.server.config.ts
+
 ```typescript
 import * as Sentry from "@sentry/nextjs";
 
@@ -58,6 +61,7 @@ Sentry.init({
 ```
 
 #### sentry.edge.config.ts
+
 ```typescript
 import * as Sentry from "@sentry/nextjs";
 
@@ -128,10 +132,10 @@ interface AnalyticsEvent {
 class AnalyticsService {
   // Track user interactions
   track(event: AnalyticsEvent): void;
-  
+
   // Track performance metrics
   trackPerformance(metric: string, value: number): void;
-  
+
   // Track business metrics
   trackWorkoutCompletion(workoutId: string, duration: number): void;
   trackProgressUpdate(athleteId: string, improvement: number): void;
@@ -141,18 +145,21 @@ class AnalyticsService {
 ### Key Metrics to Monitor
 
 #### User Engagement
+
 - Daily/Monthly Active Users
 - Session Duration
 - Feature Adoption Rates
 - User Retention
 
 #### Application Performance
+
 - Page Load Times
 - API Response Times
 - Error Rates
 - Cache Hit Rates
 
 #### Business Metrics
+
 - Workout Completion Rates
 - Progress Tracking Usage
 - Coach Dashboard Engagement
@@ -164,10 +171,10 @@ class AnalyticsService {
 
 ```typescript
 enum LogLevel {
-  ERROR = 'error',
-  WARN = 'warn',
-  INFO = 'info',
-  DEBUG = 'debug'
+  ERROR = "error",
+  WARN = "warn",
+  INFO = "info",
+  DEBUG = "debug",
 }
 
 interface LogEntry {
@@ -181,11 +188,11 @@ interface LogEntry {
 
 class Logger {
   private logLevel: LogLevel;
-  
+
   constructor(level: LogLevel = LogLevel.INFO) {
     this.logLevel = level;
   }
-  
+
   error(message: string, metadata?: Record<string, any>): void;
   warn(message: string, metadata?: Record<string, any>): void;
   info(message: string, metadata?: Record<string, any>): void;
@@ -196,18 +203,21 @@ class Logger {
 ### Log Categories
 
 #### Security Events
+
 - Authentication attempts
 - Authorization failures
 - Suspicious activity
 - Data access patterns
 
 #### Performance Events
+
 - Slow database queries
 - Large payload requests
 - Memory usage spikes
 - Cache misses
 
 #### Business Events
+
 - User registrations
 - Workout assignments
 - Progress achievements
@@ -224,15 +234,15 @@ export async function GET() {
     database: await checkDatabase(),
     cache: await checkCache(),
     externalServices: await checkExternalServices(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
-  
+
   const isHealthy = Object.values(checks).every(
-    check => check.status === 'healthy'
+    (check) => check.status === "healthy"
   );
-  
+
   return Response.json(
-    { status: isHealthy ? 'healthy' : 'unhealthy', checks },
+    { status: isHealthy ? "healthy" : "unhealthy", checks },
     { status: isHealthy ? 200 : 503 }
   );
 }
@@ -241,18 +251,21 @@ export async function GET() {
 ### Monitoring Alerts
 
 #### Critical Alerts (Immediate Response)
+
 - API downtime > 1 minute
 - Error rate > 5%
 - Database connection failures
 - Authentication service issues
 
 #### Warning Alerts (Monitor)
+
 - Response time > 2 seconds
 - Error rate > 1%
 - High memory usage
 - Unusual traffic patterns
 
 #### Info Alerts (Daily Review)
+
 - Performance degradation trends
 - User behavior anomalies
 - Feature usage statistics
@@ -265,18 +278,21 @@ export async function GET() {
 Create comprehensive monitoring dashboards that include:
 
 #### System Health
+
 - Uptime percentage
 - Response time trends
 - Error rate graphs
 - Resource utilization
 
 #### User Analytics
+
 - Active user counts
 - Feature adoption
 - Geographic distribution
 - Device/browser breakdown
 
 #### Business Metrics
+
 - Workout completion rates
 - Progress tracking engagement
 - Coach activity levels
@@ -287,11 +303,12 @@ Create comprehensive monitoring dashboards that include:
 ### Notification Setup
 
 #### Slack Integration
+
 ```typescript
 const slackWebhook = process.env.SLACK_WEBHOOK_URL;
 
 async function sendSlackAlert(alert: {
-  severity: 'critical' | 'warning' | 'info';
+  severity: "critical" | "warning" | "info";
   title: string;
   message: string;
   metadata?: Record<string, any>;
@@ -301,12 +318,13 @@ async function sendSlackAlert(alert: {
 ```
 
 #### Email Alerts
+
 ```typescript
 async function sendEmailAlert(alert: {
   recipients: string[];
   subject: string;
   body: string;
-  priority: 'high' | 'normal' | 'low';
+  priority: "high" | "normal" | "low";
 }) {
   // Email notification implementation
 }
@@ -317,6 +335,7 @@ async function sendEmailAlert(alert: {
 ### Core Web Vitals Tracking
 
 Monitor and optimize:
+
 - **Largest Contentful Paint (LCP)**: < 2.5s
 - **First Input Delay (FID)**: < 100ms
 - **Cumulative Layout Shift (CLS)**: < 0.1
@@ -324,6 +343,7 @@ Monitor and optimize:
 ### Database Performance
 
 Track and alert on:
+
 - Query execution time
 - Connection pool usage
 - Index effectiveness
@@ -332,6 +352,7 @@ Track and alert on:
 ### CDN and Asset Performance
 
 Monitor:
+
 - Cache hit ratios
 - Asset load times
 - Geographic performance
@@ -342,6 +363,7 @@ Monitor:
 ### Security Events
 
 Track and alert on:
+
 - Multiple failed login attempts
 - Unusual access patterns
 - Data export activities
@@ -350,6 +372,7 @@ Track and alert on:
 ### GDPR and Privacy Compliance
 
 Monitor:
+
 - Data access requests
 - Data deletion compliance
 - Cookie consent rates
@@ -358,24 +381,28 @@ Monitor:
 ## 10. Implementation Checklist
 
 ### Phase 1: Basic Monitoring (Week 1)
+
 - [ ] Install and configure Sentry
 - [ ] Set up Vercel Analytics
 - [ ] Implement basic error tracking
 - [ ] Create health check endpoints
 
 ### Phase 2: Advanced Analytics (Week 2)
+
 - [ ] Implement custom analytics service
 - [ ] Set up business metrics tracking
 - [ ] Configure performance monitoring
 - [ ] Create monitoring dashboards
 
 ### Phase 3: Alerts & Optimization (Week 3)
+
 - [ ] Configure alert channels
 - [ ] Set up automated notifications
 - [ ] Implement security monitoring
 - [ ] Performance optimization based on data
 
 ### Phase 4: Continuous Improvement
+
 - [ ] Regular performance reviews
 - [ ] Alert threshold tuning
 - [ ] Dashboard refinements
@@ -384,18 +411,21 @@ Monitor:
 ## Environment-Specific Configuration
 
 ### Development
+
 - Verbose logging enabled
 - All metrics tracked locally
 - Sentry debug mode on
 - Real-time error reporting
 
 ### Staging
+
 - Production-like monitoring
 - Reduced sampling rates
 - Test alert configurations
 - Performance baseline establishment
 
 ### Production
+
 - Optimized sampling rates
 - Critical alerts only
 - Performance-focused metrics

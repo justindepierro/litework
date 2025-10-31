@@ -87,6 +87,9 @@ export interface WorkoutExercise {
   order: number; // Order in the workout
   variations?: ExerciseVariation[]; // Available modifications
   groupId?: string; // ID of the group this exercise belongs to
+  substitutionReason?: string; // Reason for exercise substitution
+  originalExercise?: string; // Original exercise name if substituted
+  progressionNotes?: string; // Notes about progression suggestions
 }
 
 // Exercise grouping for workouts (supersets, circuits, etc.)

@@ -136,7 +136,10 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
               onChange={(e) =>
                 setEditedExercise({
                   ...editedExercise,
-                  weightType: e.target.value as "bodyweight" | "percentage" | "fixed",
+                  weightType: e.target.value as
+                    | "bodyweight"
+                    | "percentage"
+                    | "fixed",
                 })
               }
               className="w-full px-3 py-2 border border-border-subtle rounded-md bg-surface-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
@@ -242,31 +245,32 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
               {exercise.exerciseName}
             </h4>
             <div className="flex items-center gap-4 text-sm text-text-secondary">
-              <span>{exercise.sets} sets × {exercise.reps} reps</span>
-              
+              <span>
+                {exercise.sets} sets × {exercise.reps} reps
+              </span>
+
               {exercise.weightType === "percentage" && (
                 <span className="flex items-center gap-1">
                   <Percent className="w-3 h-3" />
                   {exercise.percentage}% 1RM
                 </span>
               )}
-              
+
               {exercise.weightType === "fixed" && (
                 <span>{exercise.weight} lbs</span>
               )}
-              
-              {exercise.weightType === "bodyweight" && (
-                <span>Bodyweight</span>
-              )}
-              
+
+              {exercise.weightType === "bodyweight" && <span>Bodyweight</span>}
+
               {exercise.restTime && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {Math.floor(exercise.restTime / 60)}:{(exercise.restTime % 60).toString().padStart(2, '0')}
+                  {Math.floor(exercise.restTime / 60)}:
+                  {(exercise.restTime % 60).toString().padStart(2, "0")}
                 </span>
               )}
             </div>
-            
+
             {exercise.notes && (
               <p className="text-sm text-text-secondary mt-1 italic">
                 {exercise.notes}
@@ -297,7 +301,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   <Edit2 className="w-4 h-4" />
                   Edit
                 </button>
-                
+
                 {canMoveUp && (
                   <button
                     onClick={() => {
@@ -310,7 +314,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     Move Up
                   </button>
                 )}
-                
+
                 {canMoveDown && (
                   <button
                     onClick={() => {
@@ -323,7 +327,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     Move Down
                   </button>
                 )}
-                
+
                 <button
                   onClick={() => {
                     onDelete(exercise.id);

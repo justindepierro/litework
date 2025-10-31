@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canAssignWorkouts, isAthlete } from "@/lib/auth";
 import { WorkoutAssignment } from "@/types";
-import { 
-  getAllAssignments, 
-  createAssignment, 
+import {
+  getAllAssignments,
+  createAssignment,
   getAssignmentById,
-  getAssignmentsByAthlete 
+  getAssignmentsByAthlete,
 } from "@/lib/database-service";
 
 // GET /api/assignments - Get assignments

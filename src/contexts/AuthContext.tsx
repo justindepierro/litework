@@ -1,12 +1,12 @@
 "use client";
 
 import { User } from "@/types";
-import { 
-  signInWithEmailPassword, 
-  signOut, 
+import {
+  signInWithEmailPassword,
+  signOut,
   getCurrentUser,
   onAuthStateChange,
-  AuthenticatedUser
+  AuthenticatedUser,
 } from "@/lib/supabase-auth";
 import {
   createContext,
@@ -55,7 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
 
     // Listen for auth state changes
-    const { data: { subscription } } = onAuthStateChange((supabaseUser) => {
+    const {
+      data: { subscription },
+    } = onAuthStateChange((supabaseUser) => {
       if (supabaseUser) {
         const appUser = convertToAppUser(supabaseUser);
         setUser(appUser);
@@ -70,13 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const result = await signInWithEmailPassword(email, password);
-      
+
       if (result.success && result.user) {
         const appUser = convertToAppUser(result.user);
         setUser(appUser);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error("Login error:", error);

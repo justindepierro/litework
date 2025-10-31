@@ -40,57 +40,30 @@ class ApiClient {
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
-    try {
-      const url = `${this.baseUrl}/api${endpoint}`;
+  ): Promise<T> {
+    const token = await this.getAuthToken();
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
 
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        ...(options.headers as Record<string, string>),
-      };
-
-      // Get current Supabase session token
-      const token = await this.getAuthToken();
-      
-      // Debug logging
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔑 API Request to ${endpoint}:`, {
-          hasToken: !!token,
-          tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
-        });
-      }
-      
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      } else {
-        console.warn(`⚠️  No auth token available for ${endpoint}`);
-      }
-
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error(`❌ API Error ${response.status} for ${endpoint}:`, data);
-        return {
-          success: false,
-          error: data.error || `HTTP ${response.status}`,
-        };
-      }
-
-      return {
-        success: true,
-        data,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
     }
+
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.error || `API Error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return response.json();
   }
 
   // Groups

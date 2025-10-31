@@ -3,6 +3,7 @@
 ## 🚀 Vercel Deployment (Recommended)
 
 ### Prerequisites
+
 - Vercel account
 - GitHub repository connected
 - Supabase project configured
@@ -28,6 +29,7 @@ NODE_ENV=production
 ### 2. Vercel Configuration
 
 File: `vercel.json` (already created)
+
 - Optimized build settings
 - Edge functions configuration
 - Static file handling
@@ -35,6 +37,7 @@ File: `vercel.json` (already created)
 ### 3. Build Configuration
 
 File: `next.config.ts` (already optimized)
+
 - Production optimizations enabled
 - Static generation configured
 - PWA manifest handling
@@ -52,12 +55,14 @@ npm run db:seed:prod
 ## 🌐 Domain Configuration
 
 ### Custom Domain Setup
+
 1. Purchase domain (recommended: litework.app)
 2. Configure DNS in Vercel
 3. Enable HTTPS (automatic)
 4. Update NEXT_PUBLIC_APP_URL
 
 ### SSL Certificate
+
 - Automatic via Vercel
 - Supports custom domains
 - HTTPS redirect enabled
@@ -65,11 +70,13 @@ npm run db:seed:prod
 ## 📊 Performance Optimization
 
 ### CDN Configuration
+
 - Vercel Edge Network (automatic)
 - Static asset optimization
 - Image optimization enabled
 
 ### Caching Strategy
+
 - Static: 1 year cache
 - API: Configurable per endpoint
 - Service Worker: Advanced caching
@@ -77,12 +84,14 @@ npm run db:seed:prod
 ## 🔒 Security Configuration
 
 ### Headers
+
 - Content Security Policy
 - HSTS enabled
 - X-Frame-Options
 - XSS Protection
 
 ### Environment Security
+
 - Secrets rotation schedule
 - Key management via Vercel
 - Database connection security
@@ -90,11 +99,13 @@ npm run db:seed:prod
 ## 🚨 Monitoring Setup
 
 ### Error Tracking
+
 - Sentry integration
 - Real-time alerts
 - Performance monitoring
 
 ### Analytics
+
 - Vercel Analytics
 - User behavior tracking
 - Performance insights
@@ -102,18 +113,21 @@ npm run db:seed:prod
 ## 📋 Deployment Checklist
 
 ### Pre-deployment
+
 - [ ] Environment variables configured
 - [ ] Database migrations tested
 - [ ] Build process verified
 - [ ] Security headers configured
 
 ### Post-deployment
+
 - [ ] Domain configured
 - [ ] SSL certificate active
 - [ ] Monitoring alerts set up
 - [ ] Performance benchmarks established
 
 ### Testing
+
 - [ ] Authentication flows
 - [ ] Database connectivity
 - [ ] API endpoints
@@ -123,11 +137,13 @@ npm run db:seed:prod
 ## 🔄 CI/CD Pipeline
 
 ### Automatic Deployment
+
 - Push to main → Production deploy
 - Pull requests → Preview deployments
 - Environment-specific configs
 
 ### Testing Pipeline
+
 - TypeScript validation
 - Build verification
 - Integration tests
@@ -136,11 +152,13 @@ npm run db:seed:prod
 ## 📈 Scaling Considerations
 
 ### Database
+
 - Supabase auto-scaling
 - Connection pooling
 - Read replicas for analytics
 
 ### Application
+
 - Vercel Edge Functions
 - Automatic scaling
 - Global CDN distribution
@@ -148,12 +166,14 @@ npm run db:seed:prod
 ## 🛠 Maintenance
 
 ### Regular Tasks
+
 - Security updates
 - Dependency updates
 - Performance monitoring
 - Database maintenance
 
 ### Backup Strategy
+
 - Supabase automatic backups
 - Critical data exports
 - Configuration backups

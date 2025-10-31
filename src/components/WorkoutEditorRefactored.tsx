@@ -182,7 +182,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               <Plus className="w-4 h-4" />
               Add Exercise
             </button>
-            
+
             <button
               onClick={() => addGroup("superset")}
               className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -190,7 +190,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               <Plus className="w-4 h-4" />
               Superset
             </button>
-            
+
             <button
               onClick={() => addGroup("circuit")}
               className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
@@ -198,7 +198,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               <Plus className="w-4 h-4" />
               Circuit
             </button>
-            
+
             <button
               onClick={() => addGroup("section")}
               className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
@@ -221,8 +221,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               onDeleteGroup={deleteGroup}
               onUpdateExercise={updateExercise}
               onDeleteExercise={deleteExercise}
-              onMoveExerciseUp={(exerciseId) => moveExercise(exerciseId, "up", group.id)}
-              onMoveExerciseDown={(exerciseId) => moveExercise(exerciseId, "down", group.id)}
+              onMoveExerciseUp={(exerciseId) =>
+                moveExercise(exerciseId, "up", group.id)
+              }
+              onMoveExerciseDown={(exerciseId) =>
+                moveExercise(exerciseId, "down", group.id)
+              }
               index={index}
             />
           ))}
@@ -234,7 +238,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 <Dumbbell className="w-5 h-5" />
                 <h3 className="font-medium">Individual Exercises</h3>
               </div>
-              
+
               {ungroupedExercises.map((exercise, index) => (
                 <ExerciseItem
                   key={exercise.id}
@@ -259,7 +263,8 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 No exercises yet
               </h3>
               <p className="text-text-secondary mb-4">
-                Start building your workout by adding exercises or creating exercise groups.
+                Start building your workout by adding exercises or creating
+                exercise groups.
               </p>
               <button
                 onClick={addExercise}

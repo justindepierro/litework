@@ -19,15 +19,15 @@ const exerciseSubstitutions = {
       muscleGroups: ["chest", "shoulders", "triceps"],
       difficulty: "intermediate",
       equipment: "dumbbells",
-      reason: "Same movement pattern, allows for unilateral training"
+      reason: "Same movement pattern, allows for unilateral training",
     },
     {
       id: "incline-press",
       name: "Incline Barbell Press",
       muscleGroups: ["chest", "shoulders", "triceps"],
-      difficulty: "intermediate", 
+      difficulty: "intermediate",
       equipment: "barbell",
-      reason: "Targets upper chest more effectively"
+      reason: "Targets upper chest more effectively",
     },
     {
       id: "push-ups",
@@ -35,17 +35,17 @@ const exerciseSubstitutions = {
       muscleGroups: ["chest", "shoulders", "triceps"],
       difficulty: "beginner",
       equipment: "bodyweight",
-      reason: "Bodyweight alternative, easier on joints"
-    }
+      reason: "Bodyweight alternative, easier on joints",
+    },
   ],
-  "squats": [
+  squats: [
     {
       id: "goblet-squats",
       name: "Goblet Squats",
       muscleGroups: ["quadriceps", "glutes", "core"],
       difficulty: "beginner",
       equipment: "dumbbell",
-      reason: "Easier loading, better for beginners"
+      reason: "Easier loading, better for beginners",
     },
     {
       id: "leg-press",
@@ -53,7 +53,7 @@ const exerciseSubstitutions = {
       muscleGroups: ["quadriceps", "glutes"],
       difficulty: "beginner",
       equipment: "machine",
-      reason: "Machine-assisted, reduced balance requirements"
+      reason: "Machine-assisted, reduced balance requirements",
     },
     {
       id: "lunges",
@@ -61,9 +61,9 @@ const exerciseSubstitutions = {
       muscleGroups: ["quadriceps", "glutes", "hamstrings"],
       difficulty: "intermediate",
       equipment: "bodyweight",
-      reason: "Unilateral movement, improves balance"
-    }
-  ]
+      reason: "Unilateral movement, improves balance",
+    },
+  ],
 };
 
 // Exercise substitution types
@@ -76,38 +76,48 @@ interface ExerciseSubstitutionOption {
   reason: string;
 }
 
-export default function ExerciseSubstitution({ 
-  currentExercise, 
-  onSubstitute, 
-  onClose 
+export default function ExerciseSubstitution({
+  currentExercise,
+  onSubstitute,
+  onClose,
 }: ExerciseSubstitutionProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  const suggestions = exerciseSubstitutions[currentExercise.exerciseId as keyof typeof exerciseSubstitutions] || [];
-  
-  const filteredSuggestions = suggestions.filter(exercise =>
-    exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    exercise.muscleGroups.some(group => group.toLowerCase().includes(searchTerm.toLowerCase()))
+
+  const suggestions =
+    exerciseSubstitutions[
+      currentExercise.exerciseId as keyof typeof exerciseSubstitutions
+    ] || [];
+
+  const filteredSuggestions = suggestions.filter(
+    (exercise) =>
+      exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      exercise.muscleGroups.some((group) =>
+        group.toLowerCase().includes(searchTerm.toLowerCase())
+      )
   );
-  
+
   const handleSubstitute = (suggestion: ExerciseSubstitutionOption) => {
     const newExercise: WorkoutExercise = {
       ...currentExercise,
       exerciseId: suggestion.id,
       exerciseName: suggestion.name,
       substitutionReason: suggestion.reason,
-      originalExercise: currentExercise.exerciseName
+      originalExercise: currentExercise.exerciseName,
     };
-    
+
     onSubstitute(newExercise);
   };
-  
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "beginner": return "text-green-600 bg-green-50";
-      case "intermediate": return "text-yellow-600 bg-yellow-50";
-      case "advanced": return "text-red-600 bg-red-50";
-      default: return "text-gray-600 bg-gray-50";
+      case "beginner":
+        return "text-green-600 bg-green-50";
+      case "intermediate":
+        return "text-yellow-600 bg-yellow-50";
+      case "advanced":
+        return "text-red-600 bg-red-50";
+      default:
+        return "text-gray-600 bg-gray-50";
     }
   };
 
@@ -119,10 +129,13 @@ export default function ExerciseSubstitution({
             Exercise Substitutions
           </h2>
           <p className="text-gray-600">
-            Find alternatives for <span className="font-semibold text-blue-600">{currentExercise.exerciseName}</span>
+            Find alternatives for{" "}
+            <span className="font-semibold text-blue-600">
+              {currentExercise.exerciseName}
+            </span>
           </p>
         </div>
-        
+
         <div className="p-6">
           {/* Search Bar */}
           <div className="relative mb-6">
@@ -135,23 +148,28 @@ export default function ExerciseSubstitution({
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          
+
           {/* Current Exercise Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-blue-900 mb-2">Current Exercise</h3>
+            <h3 className="font-semibold text-blue-900 mb-2">
+              Current Exercise
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
               <div>
-                <span className="text-blue-700 font-medium">Sets:</span> {currentExercise.sets}
+                <span className="text-blue-700 font-medium">Sets:</span>{" "}
+                {currentExercise.sets}
               </div>
               <div>
-                <span className="text-blue-700 font-medium">Reps:</span> {currentExercise.reps}
+                <span className="text-blue-700 font-medium">Reps:</span>{" "}
+                {currentExercise.reps}
               </div>
               <div>
-                <span className="text-blue-700 font-medium">Weight:</span> {currentExercise.weight}lbs
+                <span className="text-blue-700 font-medium">Weight:</span>{" "}
+                {currentExercise.weight}lbs
               </div>
             </div>
           </div>
-          
+
           {/* Substitution Options */}
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {filteredSuggestions.length > 0 ? (
@@ -167,7 +185,9 @@ export default function ExerciseSubstitution({
                         {suggestion.name}
                       </h4>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(suggestion.difficulty)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(suggestion.difficulty)}`}
+                        >
                           {suggestion.difficulty}
                         </span>
                         <span className="text-gray-500 text-sm">
@@ -177,7 +197,7 @@ export default function ExerciseSubstitution({
                     </div>
                     <ArrowRight className="w-5 h-5 text-blue-500 mt-1" />
                   </div>
-                  
+
                   <div className="mb-3">
                     <div className="flex flex-wrap gap-1">
                       {suggestion.muscleGroups.map((muscle, i) => (
@@ -190,7 +210,7 @@ export default function ExerciseSubstitution({
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-start gap-2">
                       <Info className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
@@ -205,13 +225,15 @@ export default function ExerciseSubstitution({
               <div className="text-center py-8">
                 <Target className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                 <p className="text-gray-500">
-                  {searchTerm ? "No exercises found matching your search." : "No substitutions available for this exercise."}
+                  {searchTerm
+                    ? "No exercises found matching your search."
+                    : "No substitutions available for this exercise."}
                 </p>
               </div>
             )}
           </div>
         </div>
-        
+
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <div className="flex gap-3">
             <button

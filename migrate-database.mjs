@@ -29,18 +29,18 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 // Real user IDs from our created users
 const USER_IDS = {
-  COACH_SMITH: 'e825fcc4-ef72-41e7-8e53-c12216ffcc73',
-  JOHN_DOE: '2a7603f5-4a04-41c8-b6f8-23755b6e6332',
-  JANE_SMITH: '8443615d-9aad-4008-861d-45b43b96d7b5',
-  MIKE_WILSON: 'e22ecef6-952f-48d3-91a0-59cd15e92d3d'
+  COACH_SMITH: "e825fcc4-ef72-41e7-8e53-c12216ffcc73",
+  JOHN_DOE: "2a7603f5-4a04-41c8-b6f8-23755b6e6332",
+  JANE_SMITH: "8443615d-9aad-4008-861d-45b43b96d7b5",
+  MIKE_WILSON: "e22ecef6-952f-48d3-91a0-59cd15e92d3d",
 };
 
 // Use service role key for full admin access during migration
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 // Mock data to migrate (users and exercises already exist)
@@ -51,7 +51,7 @@ const seedData = {
       name: "Football Linemen",
       description: "Offensive and defensive line strength training",
       sport: "Football",
-      category: "Linemen", 
+      category: "Linemen",
       coach_id: USER_IDS.COACH_SMITH,
       athlete_ids: [USER_IDS.JOHN_DOE, USER_IDS.MIKE_WILSON],
       color: "#1f2937",
@@ -59,7 +59,7 @@ const seedData = {
     {
       id: "22222222-2222-2222-2222-222222222222",
       name: "Volleyball Girls",
-      description: "Women's volleyball team training program", 
+      description: "Women's volleyball team training program",
       sport: "Volleyball",
       category: "Varsity",
       coach_id: USER_IDS.COACH_SMITH,
@@ -78,22 +78,22 @@ const seedData = {
       created_by: USER_IDS.COACH_SMITH,
     },
     {
-      id: "44444444-4444-4444-4444-444444444444", 
+      id: "44444444-4444-4444-4444-444444444444",
       name: "Lower Body Power",
       description: "Explosive leg development with squats and deadlifts",
       estimated_duration: 60,
-      target_group_id: "11111111-1111-1111-1111-111111111111", 
+      target_group_id: "11111111-1111-1111-1111-111111111111",
       created_by: USER_IDS.COACH_SMITH,
     },
     {
       id: "55555555-5555-5555-5555-555555555555",
-      name: "Volleyball Conditioning", 
+      name: "Volleyball Conditioning",
       description: "Sport-specific training for volleyball players",
       estimated_duration: 30,
       target_group_id: "22222222-2222-2222-2222-222222222222",
       created_by: USER_IDS.COACH_SMITH,
     },
-  ]
+  ],
 };
 
 async function seedDatabase() {
@@ -103,16 +103,16 @@ async function seedDatabase() {
     // Skip users for now - they need to be created through Supabase Auth
     console.log("⚠️  Skipping users (require Auth signup)");
 
-    // 1. Seed Athlete Groups  
+    // 1. Seed Athlete Groups
     console.log("🏃 Seeding athlete groups...");
     const { data: groupsData, error: groupsError } = await supabase
-      .from('athlete_groups')
+      .from("athlete_groups")
       .upsert(seedData.athlete_groups, {
-        onConflict: 'id',
-        ignoreDuplicates: false
+        onConflict: "id",
+        ignoreDuplicates: false,
       })
       .select();
-    
+
     if (groupsError) {
       console.error("❌ Error seeding groups:", groupsError);
       return false;
@@ -122,13 +122,13 @@ async function seedDatabase() {
     // 2. Seed Workout Plans
     console.log("🏋️ Seeding workout plans...");
     const { data: workoutsData, error: workoutsError } = await supabase
-      .from('workout_plans')
+      .from("workout_plans")
       .upsert(seedData.workout_plans, {
-        onConflict: 'id',
-        ignoreDuplicates: false  
+        onConflict: "id",
+        ignoreDuplicates: false,
       })
       .select();
-    
+
     if (workoutsError) {
       console.error("❌ Error seeding workouts:", workoutsError);
       return false;
@@ -137,15 +137,14 @@ async function seedDatabase() {
 
     console.log("\n🎉 Database migration completed successfully!");
     console.log("\n📊 Migration Summary:");
-    console.log(`   • ${groupsData.length} athlete groups`); 
+    console.log(`   • ${groupsData.length} athlete groups`);
     console.log(`   • ${workoutsData.length} workout plans`);
     console.log("   • Exercises already seeded via exercises-seed.sql");
     console.log("\n💡 Next steps:");
     console.log("   • Test CRUD operations via the web interface");
     console.log("   • Users will be automatically added to the users table");
-    
-    return true;
 
+    return true;
   } catch (err) {
     console.error("❌ Unexpected migration error:", err);
     return false;
@@ -153,6 +152,6 @@ async function seedDatabase() {
 }
 
 // Run migration
-seedDatabase().then(success => {
+seedDatabase().then((success) => {
   process.exit(success ? 0 : 1);
 });

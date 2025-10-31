@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canAssignWorkouts, canViewAllAthletes } from "@/lib/auth";
 import { WorkoutPlan } from "@/types";
-import { 
-  getAllWorkoutPlans, 
-  createWorkoutPlan, 
-  getWorkoutPlanById 
+import {
+  getAllWorkoutPlans,
+  createWorkoutPlan,
+  getWorkoutPlanById,
 } from "@/lib/database-service";
 
 // GET /api/workouts - Get workout plans

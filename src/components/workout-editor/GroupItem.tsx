@@ -178,7 +178,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                 <ChevronDown className="w-4 h-4" />
               )}
             </button>
-            
+
             <div className="flex items-center gap-2">
               {getGroupIcon()}
               <div>
@@ -186,7 +186,8 @@ const GroupItem: React.FC<GroupItemProps> = ({
                   {group.name} ({group.type})
                 </h3>
                 <p className="text-sm opacity-75">
-                  {groupExercises.length} exercise{groupExercises.length !== 1 ? 's' : ''}
+                  {groupExercises.length} exercise
+                  {groupExercises.length !== 1 ? "s" : ""}
                 </p>
               </div>
             </div>
@@ -211,9 +212,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
         </div>
 
         {group.notes && (
-          <p className="mt-2 text-sm opacity-80 italic">
-            {group.notes}
-          </p>
+          <p className="mt-2 text-sm opacity-80 italic">{group.notes}</p>
         )}
       </div>
 

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 export enum LogLevel {
-  ERROR = 'error',
-  WARN = 'warn',
-  INFO = 'info',
-  DEBUG = 'debug'
+  ERROR = "error",
+  WARN = "warn",
+  INFO = "info",
+  DEBUG = "debug",
 }
 
 export interface LogEntry {
@@ -27,6 +27,7 @@ export interface LoggerConfig {
   enableSentry: boolean;
   bufferSize: number;
   flushInterval: number;
+  context?: string;
 }
 
 class Logger {
@@ -39,12 +40,12 @@ class Logger {
   constructor(config: Partial<LoggerConfig> = {}) {
     this.config = {
       level: LogLevel.INFO,
-      enableConsole: process.env.NODE_ENV === 'development',
-      enableRemote: process.env.NODE_ENV === 'production',
+      enableConsole: process.env.NODE_ENV === "development",
+      enableRemote: process.env.NODE_ENV === "production",
       enableSentry: true,
       bufferSize: 100,
       flushInterval: 5000,
-      ...config
+      ...config,
     };
 
     this.sessionId = this.generateSessionId();
@@ -79,56 +80,82 @@ class Logger {
   // Specific logging methods for different categories
   security(event: string, metadata?: Record<string, unknown>) {
     this.log(LogLevel.WARN, `[SECURITY] ${event}`, {
-      category: 'security',
-      ...metadata
+      category: "security",
+      ...metadata,
     });
   }
 
-  performance(metric: string, value: number, unit: string, metadata?: Record<string, unknown>) {
+  performance(
+    metric: string,
+    value: number,
+    unit: string,
+    metadata?: Record<string, unknown>
+  ) {
     this.log(LogLevel.INFO, `[PERFORMANCE] ${metric}: ${value}${unit}`, {
-      category: 'performance',
+      category: "performance",
       metric,
       value,
       unit,
-      ...metadata
+      ...metadata,
     });
   }
 
   business(event: string, metadata?: Record<string, unknown>) {
     this.log(LogLevel.INFO, `[BUSINESS] ${event}`, {
-      category: 'business',
-      ...metadata
+      category: "business",
+      ...metadata,
     });
   }
 
-  api(method: string, endpoint: string, status: number, duration: number, metadata?: Record<string, unknown>) {
+  api(
+    method: string,
+    endpoint: string,
+    status: number,
+    duration: number,
+    metadata?: Record<string, unknown>
+  ) {
     const level = status >= 400 ? LogLevel.ERROR : LogLevel.INFO;
     this.log(level, `[API] ${method} ${endpoint} - ${status} (${duration}ms)`, {
-      category: 'api',
+      category: "api",
       method,
       endpoint,
       status,
       duration,
-      ...metadata
+      ...metadata,
     });
   }
 
-  database(query: string, duration: number, error?: Error, metadata?: Record<string, unknown>) {
+  database(
+    query: string,
+    duration: number,
+    error?: Error,
+    metadata?: Record<string, unknown>
+  ) {
     const level = error ? LogLevel.ERROR : LogLevel.DEBUG;
-    const message = error 
+    const message = error
       ? `[DATABASE] Query failed: ${query} (${duration}ms) - ${error.message}`
       : `[DATABASE] Query executed: ${query} (${duration}ms)`;
-    
-    this.log(level, message, {
-      category: 'database',
-      query,
-      duration,
-      error: error?.message,
-      ...metadata
-    }, error);
+
+    this.log(
+      level,
+      message,
+      {
+        category: "database",
+        query,
+        duration,
+        error: error?.message,
+        ...metadata,
+      },
+      error
+    );
   }
 
-  private log(level: LogLevel, message: string, metadata?: Record<string, unknown>, error?: Error) {
+  private log(
+    level: LogLevel,
+    message: string,
+    metadata?: Record<string, unknown>,
+    error?: Error
+  ) {
     // Check if this log level should be processed
     if (!this.shouldLog(level)) {
       return;
@@ -142,8 +169,9 @@ class Logger {
       sessionId: this.sessionId,
       metadata,
       stack: error?.stack,
-      url: typeof window !== 'undefined' ? window.location.href : undefined,
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
+      url: typeof window !== "undefined" ? window.location.href : undefined,
+      userAgent:
+        typeof navigator !== "undefined" ? navigator.userAgent : undefined,
     };
 
     // Console logging
@@ -171,9 +199,11 @@ class Logger {
   private logToConsole(entry: LogEntry) {
     const { level, message, metadata, timestamp } = entry;
     const timeString = new Date(timestamp).toLocaleTimeString();
-    
+
     const consoleMessage = `[${timeString}] ${message}`;
-    const consoleData = metadata ? [consoleMessage, metadata] : [consoleMessage];
+    const consoleData = metadata
+      ? [consoleMessage, metadata]
+      : [consoleMessage];
 
     switch (level) {
       case LogLevel.ERROR:
@@ -192,26 +222,28 @@ class Logger {
   }
 
   private logToSentry(error: Error, entry: LogEntry) {
-    if (typeof window !== 'undefined' && window.Sentry) {
+    if (typeof window !== "undefined" && window.Sentry) {
       window.Sentry.withScope((scope) => {
-        scope.setLevel(entry.level as 'error' | 'warning' | 'info' | 'debug');
+        scope.setLevel(entry.level as "error" | "warning" | "info" | "debug");
         scope.setUser({ id: this.userId });
-        scope.setTag('sessionId', this.sessionId);
-        
+        scope.setTag("sessionId", this.sessionId);
+
         if (entry.metadata) {
           Object.entries(entry.metadata).forEach(([key, value]) => {
             scope.setExtra(key, value);
           });
         }
-        
-        window.Sentry.captureException(error);
+
+        if (window.Sentry) {
+          window.Sentry.captureException(error);
+        }
       });
     }
   }
 
   private addToBuffer(entry: LogEntry) {
     this.buffer.push(entry);
-    
+
     if (this.buffer.length >= this.config.bufferSize) {
       this.flush();
     }
@@ -236,21 +268,21 @@ class Logger {
     } catch (error) {
       // If sending fails, add logs back to buffer for retry
       this.buffer.unshift(...logsToSend);
-      console.warn('Failed to send logs to remote server:', error);
+      console.warn("Failed to send logs to remote server:", error);
     }
   }
 
   private async sendLogsToRemote(logs: LogEntry[]) {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
-      await fetch('/api/logs', {
-        method: 'POST',
+      await fetch("/api/logs", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ logs }),
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(10000),
       });
     } catch (error) {
       throw new Error(`Remote logging failed: ${error}`);
@@ -266,7 +298,7 @@ class Logger {
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
     }
-    
+
     // Flush remaining logs
     if (this.buffer.length > 0) {
       this.flush();
@@ -281,12 +313,14 @@ export const logger = new Logger();
 declare global {
   interface Window {
     Sentry?: {
-      withScope: (callback: (scope: {
-        setLevel: (level: string) => void;
-        setUser: (user: { id?: string }) => void;
-        setTag: (key: string, value: string) => void;
-        setExtra: (key: string, value: unknown) => void;
-      }) => void) => void;
+      withScope: (
+        callback: (scope: {
+          setLevel: (level: string) => void;
+          setUser: (user: { id?: string }) => void;
+          setTag: (key: string, value: string) => void;
+          setExtra: (key: string, value: unknown) => void;
+        }) => void
+      ) => void;
       captureException: (error: Error) => void;
     };
   }
@@ -305,6 +339,6 @@ export function useLogger() {
     api: logger.api.bind(logger),
     database: logger.database.bind(logger),
     setUser: logger.setUser.bind(logger),
-    setContext: logger.setContext.bind(logger)
+    setContext: logger.setContext.bind(logger),
   };
 }
