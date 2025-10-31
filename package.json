@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
+    "dev:persistent": "./dev-persistent.sh",
     "dev:smart": "./dev-smart.sh",
     "dev:advanced": "./dev-advanced.sh",
     "dev:quick": "./dev-advanced.sh --quick",
