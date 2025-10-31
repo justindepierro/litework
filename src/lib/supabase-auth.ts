@@ -283,7 +283,7 @@ const getUserProfile = async (
       userId: userProfile.id,
       email: userProfile.email,
       role: userProfile.role as "admin" | "coach" | "athlete",
-      name: userProfile.name,
+      name: userProfile.full_name || `${userProfile.first_name} ${userProfile.last_name}`,
     };
   } catch (error) {
     console.error("getUserProfile error:", error);
@@ -354,7 +354,7 @@ export const verifySupabaseAuth = async (
         userId: userProfile.id,
         email: userProfile.email,
         role: userProfile.role as "admin" | "coach" | "athlete",
-        name: userProfile.name,
+        name: userProfile.full_name || `${userProfile.first_name} ${userProfile.last_name}`,
       },
     };
   } catch (error) {

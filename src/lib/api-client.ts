@@ -179,7 +179,8 @@ class ApiClient {
   // Athlete Invites
   async createAthleteInvite(inviteData: {
     email: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     groupIds?: string[];
   }) {
     return this.request("/invites", {

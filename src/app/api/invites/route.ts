@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
 
     try {
       const body = await request.json();
-      const { name, email, groupId } = body;
+      const { firstName, lastName, email, groupId } = body;
 
-      if (!name || !email) {
+      if (!firstName || !lastName || !email) {
         return NextResponse.json(
-          { error: "Name and email are required" },
+          { error: "First name, last name, and email are required" },
           { status: 400 }
         );
       }
@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
         .from("invites")
         .insert({
           email: email.toLowerCase(),
-          name,
+          first_name: firstName,
+          last_name: lastName,
           invited_by: user.userId,
           role: "athlete",
           group_id: groupId || null,

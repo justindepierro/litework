@@ -3,7 +3,9 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  fullName?: string; // Computed field: firstName + lastName
   role: "admin" | "coach" | "athlete";
   groupIds: string[]; // Groups this athlete belongs to
   coachId?: string; // Primary coach for this athlete

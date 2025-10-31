@@ -40,7 +40,8 @@ const BulkOperationHistory = lazy(
 const ProgressAnalytics = lazy(() => import("@/components/ProgressAnalytics"));
 
 interface InviteForm {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   groupId?: string;
   notes?: string;
@@ -104,7 +105,8 @@ export default function AthletesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const [inviteForm, setInviteForm] = useState<InviteForm>({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     groupId: "",
     notes: "",
@@ -125,19 +127,21 @@ export default function AthletesPage() {
   });
 
   const handleSendInvite = async () => {
-    if (!inviteForm.name || !inviteForm.email) return;
+    if (!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email) return;
 
     try {
       const response = (await apiClient.createAthleteInvite({
-        name: inviteForm.name,
+        firstName: inviteForm.firstName,
+        lastName: inviteForm.lastName,
         email: inviteForm.email,
       })) as ApiResponse;
 
       if (response.success) {
         // Add to local state with pending status
+        const fullName = `${inviteForm.firstName} ${inviteForm.lastName}`;
         const newAthlete: EnhancedAthlete = {
           id: Date.now().toString(),
-          name: inviteForm.name,
+          name: fullName,
           email: inviteForm.email,
           role: "athlete" as const,
           groupIds: inviteForm.groupId ? [inviteForm.groupId] : [],
@@ -166,7 +170,7 @@ export default function AthletesPage() {
 
         setAthletes([...athletes, newAthlete]);
         alert(`Invite sent successfully to ${inviteForm.email}!`);
-        setInviteForm({ name: "", email: "", groupId: "", notes: "" });
+        setInviteForm({ firstName: "", lastName: "", email: "", groupId: "", notes: "" });
         setShowInviteModal(false);
       } else {
         setError(
@@ -734,19 +738,35 @@ export default function AthletesPage() {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={inviteForm.name}
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, name: e.target.value })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter athlete's full name"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={inviteForm.firstName}
+                      onChange={(e) =>
+                        setInviteForm({ ...inviteForm, firstName: e.target.value })
+                      }
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="First name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={inviteForm.lastName}
+                      onChange={(e) =>
+                        setInviteForm({ ...inviteForm, lastName: e.target.value })
+                      }
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Last name"
+                    />
+                  </div>
                 </div>
 
                 <div>

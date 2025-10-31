@@ -61,7 +61,8 @@ export async function POST(request: NextRequest) {
         password,
         options: {
           data: {
-            name: invite.name,
+            firstName: invite.first_name,
+            lastName: invite.last_name,
             role: invite.role || "athlete",
           },
         },
@@ -79,7 +80,8 @@ export async function POST(request: NextRequest) {
     const { error: profileError } = await supabase.from("users").insert({
       id: authData.user.id,
       email: invite.email.toLowerCase(),
-      name: invite.name,
+      first_name: invite.first_name,
+      last_name: invite.last_name,
       role: invite.role || "athlete",
       group_ids: invite.group_id ? [invite.group_id] : [],
     });
@@ -109,7 +111,8 @@ export async function POST(request: NextRequest) {
       user: {
         id: authData.user.id,
         email: authData.user.email,
-        name: invite.name,
+        firstName: invite.first_name,
+        lastName: invite.last_name,
       },
     });
   } catch (error) {
