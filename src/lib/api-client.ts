@@ -51,8 +51,19 @@ class ApiClient {
 
       // Get current Supabase session token
       const token = await this.getAuthToken();
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔑 API Request to ${endpoint}:`, {
+          hasToken: !!token,
+          tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
+        });
+      }
+      
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
+      } else {
+        console.warn(`⚠️  No auth token available for ${endpoint}`);
       }
 
       const response = await fetch(url, {
@@ -63,6 +74,7 @@ class ApiClient {
       const data = await response.json();
 
       if (!response.ok) {
+        console.error(`❌ API Error ${response.status} for ${endpoint}:`, data);
         return {
           success: false,
           error: data.error || `HTTP ${response.status}`,
