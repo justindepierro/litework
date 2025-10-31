@@ -1,60 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/api-client";
-import { ApiResponse } from "@/lib/api-response";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [demoCredentials, setDemoCredentials] = useState<
-    Array<{
-      role: string;
-      email: string;
-      password: string;
-      description: string;
-    }>
-  >([]);
   const { login } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    // Load demo credentials
-    const loadDemoCredentials = async () => {
-      try {
-        const response = (await apiClient.getDemoCredentials()) as ApiResponse;
-        if (response.success && response.data) {
-          const data = response.data as {
-            demoCredentials?: Array<{
-              role: string;
-              email: string;
-              password: string;
-              description: string;
-            }>;
-          };
-          if (data.demoCredentials) {
-            setDemoCredentials(data.demoCredentials);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load demo credentials:", error);
-      }
-    };
-    loadDemoCredentials();
-  }, []);
-
-  const fillDemoCredentials = (credential: {
-    email: string;
-    password: string;
-  }) => {
-    setEmail(credential.email);
-    setPassword(credential.password);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,35 +38,6 @@ export default function LoginPage() {
           <p className="mt-2 text-body-secondary text-base sm:text-sm">
             Sign in to track your workouts
           </p>
-
-          {/* Enhanced mobile-first demo credentials */}
-          {demoCredentials.length > 0 && (
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mt-6 space-y-3">
-              <p className="text-sm font-bold text-navy-700">
-                Demo Credentials:
-              </p>
-              <div className="space-y-2">
-                {demoCredentials.map((cred, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => fillDemoCredentials(cred)}
-                    className="w-full text-left bg-white hover:bg-blue-50 px-4 py-3 rounded-xl border border-blue-200 transition-all touch-manipulation shadow-sm hover:shadow-md"
-                  >
-                    <div className="font-bold text-navy-700 text-sm">
-                      {cred.role}
-                    </div>
-                    <div className="text-body-secondary text-xs">
-                      {cred.email}
-                    </div>
-                    <div className="text-xs text-silver-600 mt-1">
-                      {cred.description}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>

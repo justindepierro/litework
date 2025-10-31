@@ -125,11 +125,6 @@ class ApiClient {
     });
   }
 
-  // Demo credentials
-  async getDemoCredentials() {
-    return this.request("/auth/login", { method: "GET" });
-  }
-
   // Users (Athletes)
   async getAthletes() {
     return this.request("/users");
