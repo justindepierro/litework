@@ -30,6 +30,17 @@ WHERE assigned_to_user_id IN (
   WHERE email != 'jdepierro@burkecatholic.org'
 );
 
+-- Delete workout plans that reference groups to be deleted
+DELETE FROM public.workout_plans
+WHERE target_group_id IN (
+  SELECT id FROM public.athlete_groups
+  WHERE coach_id IN (
+    SELECT id FROM public.users 
+    WHERE email != 'jdepierro@burkecatholic.org'
+    AND role = 'coach'
+  )
+);
+
 -- Update athlete_groups to remove references
 UPDATE public.athlete_groups 
 SET athlete_ids = ARRAY[]::TEXT[]
