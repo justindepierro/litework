@@ -2,12 +2,6 @@
 
 import { supabase } from "./supabase";
 
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
 class ApiClient {
   private baseUrl: string;
 
