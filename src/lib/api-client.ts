@@ -1,5 +1,7 @@
 // API client utilities for frontend components
 
+import { supabase } from "./supabase";
+
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -8,32 +10,33 @@ interface ApiResponse<T> {
 
 class ApiClient {
   private baseUrl: string;
-  private token: string | null;
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-    this.token = null;
+  }
 
-    // Try to get token from localStorage on client side
-    if (typeof window !== "undefined") {
-      this.token = localStorage.getItem("auth-token");
+  /**
+   * Get the current Supabase auth token
+   */
+  private async getAuthToken(): Promise<string | null> {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      return session?.access_token || null;
+    } catch (error) {
+      console.error("Failed to get auth token:", error);
+      return null;
     }
   }
 
-  setToken(token: string) {
-    this.token = token;
-    if (typeof window !== "undefined") {
-      localStorage.setItem("auth-token", token);
-    }
-  }
-
-  removeToken() {
-    this.token = null;
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("auth-token");
-    }
-  }
-
+  /**
+   * Make an authenticated API request
+   */
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -46,8 +49,10 @@ class ApiClient {
         ...(options.headers as Record<string, string>),
       };
 
-      if (this.token) {
-        headers["Authorization"] = `Bearer ${this.token}`;
+      // Get current Supabase session token
+      const token = await this.getAuthToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
       }
 
       const response = await fetch(url, {
@@ -74,28 +79,6 @@ class ApiClient {
         error: error instanceof Error ? error.message : "Unknown error",
       };
     }
-  }
-
-  // Authentication
-  async login(email: string, password: string) {
-    const response = await this.request<{ token?: string; user?: unknown }>(
-      "/auth/login",
-      {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      }
-    );
-
-    if (response.success && response.data?.token) {
-      this.setToken(response.data.token);
-    }
-
-    return response;
-  }
-
-  async logout() {
-    this.removeToken();
-    return { success: true };
   }
 
   // Groups
