@@ -59,7 +59,7 @@ export default function ExerciseLibrary({
   multiSelect = false,
   showCreateButton = true,
   mode,
-  onAddToWorkout
+  onAddToWorkout,
 }: ExerciseLibraryProps) {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);
@@ -79,47 +79,59 @@ export default function ExerciseLibrary({
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (searchTerm) params.append('search', searchTerm);
-      if (selectedCategory) params.append('category', selectedCategory);
-      if (selectedMuscleGroup) params.append('muscleGroup', selectedMuscleGroup);
-      if (selectedEquipment) params.append('equipment', selectedEquipment);
-      if (selectedDifficulty) params.append('difficulty', selectedDifficulty);
+      if (searchTerm) params.append("search", searchTerm);
+      if (selectedCategory) params.append("category", selectedCategory);
+      if (selectedMuscleGroup)
+        params.append("muscleGroup", selectedMuscleGroup);
+      if (selectedEquipment) params.append("equipment", selectedEquipment);
+      if (selectedDifficulty) params.append("difficulty", selectedDifficulty);
 
       // Get token from localStorage
-      const token = typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
-      
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("auth-token")
+          : null;
+
       if (!token) {
-        throw new Error('Authentication required. Please log in.');
+        throw new Error("Authentication required. Please log in.");
       }
-      
+
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       };
 
       const response = await fetch(`/api/exercises?${params}`, {
-        headers
+        headers,
       });
-      
+
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Authentication failed. Please log in again.');
+          throw new Error("Authentication failed. Please log in again.");
         }
-        throw new Error('Failed to fetch exercises');
+        throw new Error("Failed to fetch exercises");
       }
-      
+
       const data = await response.json();
       setExercises(data.exercises);
       setCategories(data.categories);
       setMuscleGroups(data.muscleGroups);
       setEquipmentTypes(data.equipmentTypes);
     } catch (error) {
-      console.error('Error fetching exercises:', error);
-      setError(error instanceof Error ? error.message : 'Failed to fetch exercises');
+      console.error("Error fetching exercises:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to fetch exercises"
+      );
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, selectedCategory, selectedMuscleGroup, selectedEquipment, selectedDifficulty]);
+  }, [
+    searchTerm,
+    selectedCategory,
+    selectedMuscleGroup,
+    selectedEquipment,
+    selectedDifficulty,
+  ]);
 
   useEffect(() => {
     if (isOpen) {
@@ -128,13 +140,25 @@ export default function ExerciseLibrary({
   }, [isOpen, fetchExercises]);
 
   const getDifficultyLabel = (level: number) => {
-    const labels = ['Beginner', 'Beginner', 'Intermediate', 'Advanced', 'Expert'];
-    return labels[level] || 'Unknown';
+    const labels = [
+      "Beginner",
+      "Beginner",
+      "Intermediate",
+      "Advanced",
+      "Expert",
+    ];
+    return labels[level] || "Unknown";
   };
 
   const getDifficultyColor = (level: number) => {
-    const colors = ['text-green-600', 'text-green-600', 'text-yellow-600', 'text-orange-600', 'text-red-600'];
-    return colors[level] || 'text-gray-600';
+    const colors = [
+      "text-green-600",
+      "text-green-600",
+      "text-yellow-600",
+      "text-orange-600",
+      "text-red-600",
+    ];
+    return colors[level] || "text-gray-600";
   };
 
   const handleExerciseSelect = (exercise: Exercise) => {
@@ -166,7 +190,9 @@ export default function ExerciseLibrary({
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Exercise Library</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Exercise Library
+            </h2>
             <p className="text-gray-600 mt-1">
               {exercises.length} exercises available
             </p>
@@ -174,7 +200,9 @@ export default function ExerciseLibrary({
           <div className="flex items-center gap-3">
             {showCreateButton && (
               <button
-                onClick={() => console.log('Create exercise - to be implemented')}
+                onClick={() =>
+                  console.log("Create exercise - to be implemented")
+                }
                 className="btn-secondary flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
@@ -206,13 +234,18 @@ export default function ExerciseLibrary({
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                showFilters ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                showFilters
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-gray-100 text-gray-700"
               }`}
             >
               <Filter className="w-4 h-4" />
               Filters
             </button>
-            {(selectedCategory || selectedMuscleGroup || selectedEquipment || selectedDifficulty) && (
+            {(selectedCategory ||
+              selectedMuscleGroup ||
+              selectedEquipment ||
+              selectedDifficulty) && (
               <button
                 onClick={clearFilters}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
@@ -308,8 +341,12 @@ export default function ExerciseLibrary({
           ) : exercises.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="text-lg text-gray-600 mb-2">No exercises found</div>
-                <div className="text-gray-500">Try adjusting your search or filters</div>
+                <div className="text-lg text-gray-600 mb-2">
+                  No exercises found
+                </div>
+                <div className="text-gray-500">
+                  Try adjusting your search or filters
+                </div>
               </div>
             </div>
           ) : (
@@ -319,8 +356,8 @@ export default function ExerciseLibrary({
                   key={exercise.id}
                   className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
                     isExerciseSelected(exercise.id)
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200 hover:border-gray-300"
                   }`}
                   onClick={() => handleExerciseSelect(exercise)}
                 >
@@ -337,7 +374,9 @@ export default function ExerciseLibrary({
                         >
                           {exercise.category_name}
                         </span>
-                        <span className={`text-xs font-medium ${getDifficultyColor(exercise.difficulty_level)}`}>
+                        <span
+                          className={`text-xs font-medium ${getDifficultyColor(exercise.difficulty_level)}`}
+                        >
                           {getDifficultyLabel(exercise.difficulty_level)}
                         </span>
                       </div>
@@ -378,18 +417,20 @@ export default function ExerciseLibrary({
                         Target Muscles:
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {exercise.muscle_groups.slice(0, 3).map((muscle, index) => (
-                          <span
-                            key={index}
-                            className={`text-xs px-2 py-1 rounded-full ${
-                              muscle.involvement === 'primary'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-gray-100 text-gray-700'
-                            }`}
-                          >
-                            {muscle.name}
-                          </span>
-                        ))}
+                        {exercise.muscle_groups
+                          .slice(0, 3)
+                          .map((muscle, index) => (
+                            <span
+                              key={index}
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                muscle.involvement === "primary"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-gray-100 text-gray-700"
+                              }`}
+                            >
+                              {muscle.name}
+                            </span>
+                          ))}
                         {exercise.muscle_groups.length > 3 && (
                           <span className="text-xs text-gray-500">
                             +{exercise.muscle_groups.length - 3} more
@@ -402,9 +443,9 @@ export default function ExerciseLibrary({
                   {/* Equipment */}
                   {exercise.equipment_needed.length > 0 && (
                     <div className="text-xs text-gray-600">
-                      <span className="font-medium">Equipment:</span>{' '}
-                      {exercise.equipment_needed.slice(0, 2).join(', ')}
-                      {exercise.equipment_needed.length > 2 && '...'}
+                      <span className="font-medium">Equipment:</span>{" "}
+                      {exercise.equipment_needed.slice(0, 2).join(", ")}
+                      {exercise.equipment_needed.length > 2 && "..."}
                     </div>
                   )}
                 </div>
@@ -426,7 +467,7 @@ export default function ExerciseLibrary({
                 onClick={onClose}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
-                {multiSelect ? 'Done' : 'Cancel'}
+                {multiSelect ? "Done" : "Cancel"}
               </button>
             </div>
           </div>

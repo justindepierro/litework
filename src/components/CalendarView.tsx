@@ -32,7 +32,7 @@ export default function CalendarView() {
       // For now, set empty array
       setAthletes([]);
     };
-    
+
     loadAthletes();
   }, []);
 
@@ -111,17 +111,18 @@ export default function CalendarView() {
   };
 
   const getAssignmentsForDate = (date: Date) => {
-    return assignments.filter(
-      (assignment: WorkoutAssignment) => {
-        // Ensure scheduledDate is a Date object (it might come as a string from API)
-        const scheduledDate = assignment.scheduledDate instanceof Date 
-          ? assignment.scheduledDate 
+    return assignments.filter((assignment: WorkoutAssignment) => {
+      // Ensure scheduledDate is a Date object (it might come as a string from API)
+      const scheduledDate =
+        assignment.scheduledDate instanceof Date
+          ? assignment.scheduledDate
           : new Date(assignment.scheduledDate);
-        
-        return scheduledDate.toDateString() === date.toDateString() &&
-          (selectedGroup === "all" || assignment.groupId === selectedGroup);
-      }
-    );
+
+      return (
+        scheduledDate.toDateString() === date.toDateString() &&
+        (selectedGroup === "all" || assignment.groupId === selectedGroup)
+      );
+    });
   };
 
   const getGroupById = (groupId: string) => {

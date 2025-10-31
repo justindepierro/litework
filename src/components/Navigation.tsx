@@ -26,7 +26,7 @@ export default function Navigation() {
             href="/"
             className="text-xl sm:text-2xl font-bold text-navy-700 flex items-center gap-2 touch-manipulation py-2 px-1"
           >
-            <Dumbbell className="w-7 h-7 sm:w-6 sm:h-6 text-accent-orange" /> 
+            <Dumbbell className="w-7 h-7 sm:w-6 sm:h-6 text-accent-orange" />
             <span className="hidden xs:block">LiteWork</span>
             <span className="xs:hidden">LW</span>
           </Link>
@@ -147,7 +147,7 @@ export default function Navigation() {
                 <div className="font-medium">Welcome back!</div>
                 <div className="text-xs text-silver-300 mt-1">{user.name}</div>
               </div>
-              
+
               <Link
                 href="/dashboard"
                 className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
@@ -156,7 +156,7 @@ export default function Navigation() {
                 <BarChart3 className="w-5 h-5 text-accent-green" />
                 <span className="text-white">Dashboard</span>
               </Link>
-              
+
               {(user.role === "admin" || user.role === "coach") && (
                 <>
                   <Link
@@ -167,7 +167,7 @@ export default function Navigation() {
                     <Dumbbell className="w-5 h-5 text-accent-orange" />
                     <span className="text-white">Workouts</span>
                   </Link>
-                  
+
                   <Link
                     href="/athletes"
                     className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
@@ -178,7 +178,7 @@ export default function Navigation() {
                   </Link>
                 </>
               )}
-              
+
               <Link
                 href="/schedule"
                 className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
@@ -187,7 +187,7 @@ export default function Navigation() {
                 <Calendar className="w-5 h-5 text-accent-blue" />
                 <span className="text-white">Schedule</span>
               </Link>
-              
+
               <Link
                 href="/progress"
                 className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
@@ -196,10 +196,10 @@ export default function Navigation() {
                 <TrendingUp className="w-5 h-5 text-accent-pink" />
                 <span className="text-white">Progress</span>
               </Link>
-              
+
               {/* Separator */}
               <div className="border-t border-navy-600 my-4"></div>
-              
+
               <button
                 onClick={() => {
                   logout();

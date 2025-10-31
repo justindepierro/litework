@@ -42,9 +42,7 @@ export default function GroupAssignmentModal({
   if (!isOpen) return null;
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
-  const selectedWorkout = workoutPlans.find(
-    (w) => w.id === selectedWorkoutId
-  );
+  const selectedWorkout = workoutPlans.find((w) => w.id === selectedWorkoutId);
   const groupAthletes = selectedGroup
     ? athletes.filter((a) => selectedGroup.athleteIds.includes(a.id))
     : [];

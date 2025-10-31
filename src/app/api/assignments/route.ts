@@ -1,33 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canAssignWorkouts, isAthlete } from "@/lib/auth";
 import { WorkoutAssignment } from "@/types";
-
-// Mock assignments database
-const mockAssignments: WorkoutAssignment[] = [
-  {
-    id: "1",
-    workoutPlanId: "1",
-    workoutPlanName: "Upper Body Strength",
-    assignmentType: "group",
-    groupId: "1",
-    athleteIds: ["2", "4"],
-    assignedBy: "1",
-    assignedDate: new Date(),
-    scheduledDate: new Date(),
-    startTime: "15:30",
-    endTime: "16:30",
-    status: "assigned",
-    modifications: [],
-    notes: "Focus on proper form",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import { 
+  getAllAssignments, 
+  createAssignment, 
+  getAssignmentById,
+  getAssignmentsByAthlete 
+} from "@/lib/database-service";
 
 // GET /api/assignments - Get assignments
 export async function GET(request: NextRequest) {
   try {
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -41,18 +25,18 @@ export async function GET(request: NextRequest) {
     const groupId = url.searchParams.get("groupId");
     const date = url.searchParams.get("date");
 
-    let filteredAssignments = mockAssignments;
+    let filteredAssignments: WorkoutAssignment[] = [];
 
     // Filter based on user role and query parameters
     if (isAthlete(auth.user)) {
       // Athletes only see their own assignments
-      filteredAssignments = mockAssignments.filter(
-        (assignment) =>
-          assignment.athleteIds?.includes(auth.user!.userId) ||
-          assignment.athleteId === auth.user!.userId
-      );
+      filteredAssignments = await getAssignmentsByAthlete(auth.user.userId);
     } else {
-      // Coaches can filter by various parameters
+      // Coaches can see all assignments
+      const allAssignments = await getAllAssignments();
+      filteredAssignments = allAssignments;
+
+      // Filter by specific athlete if requested
       if (athleteId) {
         filteredAssignments = filteredAssignments.filter(
           (assignment) =>
@@ -61,6 +45,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      // Filter by group if requested
       if (groupId) {
         filteredAssignments = filteredAssignments.filter(
           (assignment) => assignment.groupId === groupId
@@ -68,17 +53,18 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Filter by date if requested
     if (date) {
       const targetDate = new Date(date);
-      filteredAssignments = filteredAssignments.filter(
-        (assignment) =>
-          assignment.scheduledDate.toDateString() === targetDate.toDateString()
-      );
+      filteredAssignments = filteredAssignments.filter((assignment) => {
+        const scheduledDate = new Date(assignment.scheduledDate);
+        return scheduledDate.toDateString() === targetDate.toDateString();
+      });
     }
 
     return NextResponse.json({
       success: true,
-      assignments: filteredAssignments,
+      data: filteredAssignments,
     });
   } catch (error) {
     console.error("Assignments GET error:", error);
@@ -92,7 +78,7 @@ export async function GET(request: NextRequest) {
 // POST /api/assignments - Create new assignment (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -117,23 +103,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newAssignment: WorkoutAssignment = {
-      id: `assignment-${Date.now()}`,
+    // Create new assignment in database
+    const newAssignment = await createAssignment({
       ...assignmentData,
       assignedBy: auth.user.userId,
-      assignedDate: new Date(),
       scheduledDate: new Date(assignmentData.scheduledDate),
       status: "assigned",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    });
 
-    // In production, save to database
-    mockAssignments.push(newAssignment);
+    if (!newAssignment) {
+      return NextResponse.json(
+        { error: "Failed to create assignment" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      assignment: newAssignment,
+      data: newAssignment,
     });
   } catch (error) {
     console.error("Assignments POST error:", error);

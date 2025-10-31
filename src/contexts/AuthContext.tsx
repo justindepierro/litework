@@ -1,7 +1,13 @@
 "use client";
 
 import { User } from "@/types";
-import { apiClient } from "@/lib/api-client";
+import { 
+  signInWithEmailPassword, 
+  signOut, 
+  getCurrentUser,
+  onAuthStateChange,
+  AuthenticatedUser
+} from "@/lib/supabase-auth";
 import {
   createContext,
   useContext,
@@ -26,61 +32,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       // Only run on client side
-      if (typeof window === 'undefined') {
+      if (typeof window === "undefined") {
         setIsLoading(false);
         return;
       }
 
-      // Check for stored auth token and validate
-      const token = localStorage.getItem("auth-token");
-      if (token) {
-        // Set token in API client
-        apiClient.setToken(token);
-
-        // Validate token with backend and get user data
-        // In production, you'd validate the token with the backend
-        try {
-          // TODO: Implement actual token validation
-          // const response = await apiClient.validateToken();
-          // if (response.success && response.data) {
-          //   setUser(response.data.user);
-          // } else {
-          //   // Invalid token, remove it
-          //   localStorage.removeItem("auth_token");
-          //   apiClient.setToken(null);
-          // }
-          
-          // For now, create a temporary user for development
-          const tempUser: User = {
-            id: "1",
-            email: "coach@example.com",
-            name: "Coach Smith",
-            role: "coach",
-            groupIds: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-          setUser(tempUser);
-        } catch (error) {
-          console.error("Error validating token:", error);
-          localStorage.removeItem("auth_token");
-          apiClient.setToken("");
+      try {
+        // Check current Supabase auth state
+        const authResult = await getCurrentUser();
+        if (authResult.success && authResult.user) {
+          // Convert Supabase user to our User type
+          const appUser: User = convertToAppUser(authResult.user);
+          setUser(appUser);
         }
+      } catch (error) {
+        console.error("Auth initialization error:", error);
       }
+
       setIsLoading(false);
     };
 
     initializeAuth();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = onAuthStateChange((supabaseUser) => {
+      if (supabaseUser) {
+        const appUser = convertToAppUser(supabaseUser);
+        setUser(appUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await apiClient.login(email, password);
-
-      if (response.success && response.data?.user) {
-        setUser(response.data.user as User);
+      const result = await signInWithEmailPassword(email, password);
+      
+      if (result.success && result.user) {
+        const appUser = convertToAppUser(result.user);
+        setUser(appUser);
         return true;
       }
+      
       return false;
     } catch (error) {
       console.error("Login error:", error);
@@ -88,13 +84,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-    
-    localStorage.removeItem("auth-token");
-    apiClient.removeToken();
-    setUser(null);
+  const logout = async () => {
+    try {
+      await signOut();
+      setUser(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -102,6 +98,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+// Helper function to convert Supabase user to app User type
+function convertToAppUser(supabaseUser: AuthenticatedUser): User {
+  return {
+    id: supabaseUser.userId,
+    email: supabaseUser.email,
+    name: supabaseUser.name || supabaseUser.email,
+    role: supabaseUser.role,
+    groupIds: [], // Will be populated from database if needed
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 }
 
 export function useAuth() {

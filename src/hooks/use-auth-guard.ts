@@ -19,18 +19,16 @@ interface AuthGuardReturn {
   hasRequiredRole: boolean;
 }
 
-export const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardReturn => {
-  const { 
-    redirectTo = "/login", 
-    requiredRole, 
-    requireAuth = true 
-  } = options;
-  
+export const useAuthGuard = (
+  options: UseAuthGuardOptions = {}
+): AuthGuardReturn => {
+  const { redirectTo = "/login", requiredRole, requireAuth = true } = options;
+
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   const isAuthenticated = !!user;
-  const hasRequiredRole = !requiredRole || (user?.role === requiredRole);
+  const hasRequiredRole = !requiredRole || user?.role === requiredRole;
 
   useEffect(() => {
     // Don't redirect while still loading
@@ -54,7 +52,16 @@ export const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardReturn
       }
       return;
     }
-  }, [user, isLoading, router, redirectTo, requiredRole, isAuthenticated, hasRequiredRole, requireAuth]);
+  }, [
+    user,
+    isLoading,
+    router,
+    redirectTo,
+    requiredRole,
+    isAuthenticated,
+    hasRequiredRole,
+    requireAuth,
+  ]);
 
   return {
     user,
@@ -66,23 +73,23 @@ export const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardReturn
 
 // Specific hooks for common use cases
 export const useCoachGuard = (redirectTo?: string) => {
-  return useAuthGuard({ 
-    requiredRole: "coach", 
-    redirectTo: redirectTo || "/login" 
+  return useAuthGuard({
+    requiredRole: "coach",
+    redirectTo: redirectTo || "/login",
   });
 };
 
 export const useAthleteGuard = (redirectTo?: string) => {
-  return useAuthGuard({ 
-    requiredRole: "athlete", 
-    redirectTo: redirectTo || "/login" 
+  return useAuthGuard({
+    requiredRole: "athlete",
+    redirectTo: redirectTo || "/login",
   });
 };
 
 // Hook for pages that require any authenticated user
 export const useAnyUserGuard = (redirectTo?: string) => {
-  return useAuthGuard({ 
-    redirectTo: redirectTo || "/login" 
+  return useAuthGuard({
+    redirectTo: redirectTo || "/login",
   });
 };
 
@@ -95,7 +102,8 @@ export const usePublicOnlyGuard = (redirectTo?: string) => {
     if (isLoading) return;
 
     if (user) {
-      const defaultRedirect = user.role === "coach" ? "/dashboard" : "/progress";
+      const defaultRedirect =
+        user.role === "coach" ? "/dashboard" : "/progress";
       router.push(redirectTo || defaultRedirect);
     }
   }, [user, isLoading, router, redirectTo]);

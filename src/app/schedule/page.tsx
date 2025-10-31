@@ -1,8 +1,7 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useAnyUserGuard } from "@/hooks/use-auth-guard";
+import { useState } from "react";
 import {
   Dumbbell,
   Activity,
@@ -13,15 +12,8 @@ import {
 } from "lucide-react";
 
 export default function SchedulePage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
+  const { user, isLoading } = useAnyUserGuard();
   const [currentWeek, setCurrentWeek] = useState(0);
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -50,7 +42,9 @@ export default function SchedulePage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-heading-primary text-3xl sm:text-2xl font-bold">Weekly Schedule</h1>
+            <h1 className="text-heading-primary text-3xl sm:text-2xl font-bold">
+              Weekly Schedule
+            </h1>
             <p className="text-heading-secondary text-base sm:text-sm mt-1">
               Week{" "}
               {currentWeek === 0
@@ -78,7 +72,10 @@ export default function SchedulePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
           {days.map((day, index) => (
-            <div key={day} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-48 hover:shadow-md transition-shadow">
+            <div
+              key={day}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-48 hover:shadow-md transition-shadow"
+            >
               <h3 className="text-gray-700 text-lg font-semibold mb-4 text-center border-b border-gray-200 pb-3">
                 {day}
               </h3>
@@ -89,7 +86,9 @@ export default function SchedulePage() {
                     <div className="text-orange-700 text-sm font-bold mb-2 flex items-center gap-2">
                       <Dumbbell className="w-4 h-4" /> Upper Body
                     </div>
-                    <div className="text-gray-600 text-sm">6:00 PM - 7:30 PM</div>
+                    <div className="text-gray-600 text-sm">
+                      6:00 PM - 7:30 PM
+                    </div>
                   </div>
                 </div>
               )}
@@ -98,8 +97,7 @@ export default function SchedulePage() {
                 <div className="space-y-2">
                   <div className="p-4 bg-blue-50 rounded-xl border-2 border-blue-200 touch-manipulation">
                     <div className="text-blue-700 text-sm font-bold mb-2 flex items-center gap-2">
-                      <Zap className="w-4 h-4" /> Lower
-                      Body
+                      <Zap className="w-4 h-4" /> Lower Body
                     </div>
                     <div className="text-body-small">6:00 PM - 7:30 PM</div>
                   </div>

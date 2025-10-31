@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canManageGroups, canViewAllAthletes } from "@/lib/auth";
 import { AthleteGroup } from "@/types";
-import { 
-  mockGroups, 
-  addGroup, 
+import {
+  getAllGroups,
+  createGroup,
   updateGroup,
-  deleteGroup
-} from "@/lib/mock-database";
+  deleteGroup,
+} from "@/lib/database-service";
 
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
 export async function GET(request: NextRequest) {
   try {
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -20,16 +20,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get all groups from database
+    const allGroups = await getAllGroups();
+
     // Coaches can see all groups, athletes only see their groups
     if (canViewAllAthletes(auth.user)) {
       return NextResponse.json({
         success: true,
-        groups: mockGroups,
+        groups: allGroups,
       });
     } else {
-      // For athletes, we would filter by their groupIds
-      // This would require getting the user's groups from the database
-      const userGroups = mockGroups.filter((group) =>
+      // For athletes, filter by their groupIds
+      const userGroups = allGroups.filter((group) =>
         group.athleteIds.includes(auth.user!.userId)
       );
 
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
 // POST /api/groups - Create new group (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -76,7 +78,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newGroup = addGroup({
+    const newGroup = await createGroup({
       name,
       description,
       sport,
@@ -85,6 +87,13 @@ export async function POST(request: NextRequest) {
       athleteIds: athleteIds || [],
       color: color || "#3b82f6",
     });
+
+    if (!newGroup) {
+      return NextResponse.json(
+        { error: "Failed to create group" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

@@ -2,7 +2,13 @@
 // This file consolidates all mock data from across the application
 // In production, this will be replaced with real Supabase queries
 
-import { User, AthleteGroup, WorkoutPlan, WorkoutAssignment, Exercise } from "@/types";
+import {
+  User,
+  AthleteGroup,
+  WorkoutPlan,
+  WorkoutAssignment,
+  Exercise,
+} from "@/types";
 
 // ===========================
 // USERS & ATHLETES
@@ -14,30 +20,34 @@ export const mockUsers: User[] = [
     email: "coach@litework.app",
     name: "Coach Sarah",
     role: "coach",
+    groupIds: [], // Coaches don't belong to groups
     createdAt: new Date("2024-01-15"),
     updatedAt: new Date("2024-10-15"),
   },
   {
-    id: "2", 
+    id: "2",
     email: "john@litework.app",
     name: "John Smith",
     role: "athlete",
+    groupIds: ["football-linemen"],
     createdAt: new Date("2024-02-01"),
     updatedAt: new Date("2024-10-20"),
   },
   {
     id: "3",
-    email: "mike@litework.app", 
+    email: "mike@litework.app",
     name: "Mike Johnson",
     role: "athlete",
+    groupIds: ["football-linemen"],
     createdAt: new Date("2024-02-05"),
     updatedAt: new Date("2024-10-18"),
   },
   {
     id: "4",
     email: "sarah@litework.app",
-    name: "Sarah Wilson", 
+    name: "Sarah Wilson",
     role: "athlete",
+    groupIds: ["volleyball-girls"],
     createdAt: new Date("2024-02-10"),
     updatedAt: new Date("2024-10-22"),
   },
@@ -45,14 +55,15 @@ export const mockUsers: User[] = [
     id: "5",
     email: "emma@litework.app",
     name: "Emma Davis",
-    role: "athlete", 
+    role: "athlete",
+    groupIds: ["volleyball-girls"],
     createdAt: new Date("2024-02-15"),
     updatedAt: new Date("2024-10-25"),
   },
 ];
 
 // ===========================
-// ATHLETE GROUPS  
+// ATHLETE GROUPS
 // ===========================
 
 export const mockGroups: AthleteGroup[] = [
@@ -62,7 +73,7 @@ export const mockGroups: AthleteGroup[] = [
     description: "Offensive and defensive linemen",
     sport: "Football",
     category: "Linemen",
-    coachId: "1", 
+    coachId: "1",
     athleteIds: ["2", "4"],
     color: "#ff6b35",
     createdAt: new Date("2024-02-01"),
@@ -70,7 +81,7 @@ export const mockGroups: AthleteGroup[] = [
   },
   {
     id: "2",
-    name: "Football Receivers", 
+    name: "Football Receivers",
     description: "Wide receivers and tight ends",
     sport: "Football",
     category: "Receivers",
@@ -84,7 +95,7 @@ export const mockGroups: AthleteGroup[] = [
     id: "3",
     name: "Volleyball Girls",
     description: "Varsity volleyball team",
-    sport: "Volleyball", 
+    sport: "Volleyball",
     category: "Varsity",
     coachId: "1",
     athleteIds: ["3", "5"],
@@ -116,7 +127,7 @@ export const mockWorkoutPlans: WorkoutPlan[] = [
         order: 1,
       },
       {
-        id: "2", 
+        id: "2",
         exerciseId: "bent-row",
         exerciseName: "Bent Over Row",
         sets: 3,
@@ -132,7 +143,7 @@ export const mockWorkoutPlans: WorkoutPlan[] = [
         exerciseName: "Shoulder Press",
         sets: 3,
         reps: 10,
-        weightType: "percentage", 
+        weightType: "percentage",
         percentage: 70,
         restTime: 120,
         order: 3,
@@ -173,7 +184,7 @@ export const mockWorkoutPlans: WorkoutPlan[] = [
     ],
     estimatedDuration: 30,
     targetGroupId: "3",
-    createdBy: "1", 
+    createdBy: "1",
     createdAt: new Date("2024-10-05"),
     updatedAt: new Date("2024-10-20"),
   },
@@ -204,7 +215,7 @@ export const mockAssignments: WorkoutAssignment[] = [
   },
   {
     id: "2",
-    workoutPlanId: "2", 
+    workoutPlanId: "2",
     workoutPlanName: "Lower Body Power",
     assignmentType: "group",
     groupId: "3",
@@ -213,7 +224,7 @@ export const mockAssignments: WorkoutAssignment[] = [
     assignedDate: new Date("2024-10-26"),
     scheduledDate: new Date("2024-10-31"),
     startTime: "14:00",
-    endTime: "14:45", 
+    endTime: "14:45",
     status: "assigned",
     modifications: [],
     notes: "Focus on explosive movements",
@@ -231,73 +242,28 @@ export const mockExercises: Exercise[] = [
     id: "bench-press",
     name: "Bench Press",
     category: "Chest",
-    muscleGroups: ["Chest", "Triceps", "Shoulders"],
-    equipment: ["Barbell", "Bench"],
-    difficulty: 3,
+    targetMuscleGroups: ["Chest", "Triceps", "Shoulders"],
     instructions: [
-      "Lie flat on bench with feet planted on floor",
-      "Grip barbell with hands slightly wider than shoulder-width",
+      "Lie flat on bench with feet firmly on floor",
+      "Grip bar with hands slightly wider than shoulder width",
       "Lower bar to chest with control",
-      "Press bar up explosively to starting position",
+      "Press bar back up to starting position",
     ],
-    tips: [
-      "Keep shoulder blades retracted and tight",
-      "Maintain slight arch in lower back", 
-      "Don't bounce bar off chest",
-    ],
-    safetyNotes: [
-      "Always use a spotter or safety bars",
-      "Start with lighter weight to learn form",
-      "Don't lift alone",
-    ],
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "squat",
     name: "Back Squat",
     category: "Legs",
-    muscleGroups: ["Quadriceps", "Glutes", "Hamstrings"],
-    equipment: ["Barbell", "Squat Rack"],
-    difficulty: 4,
-    instructions: [
-      "Position bar on upper back/traps",
-      "Stand with feet shoulder-width apart",
-      "Descend by sitting back and down",
-      "Drive through heels to return to standing",
-    ],
-    tips: [
-      "Keep knees aligned with toes",
-      "Maintain neutral spine throughout",
-      "Descend until hips below knees",
-    ],
-    safetyNotes: [
-      "Always use safety bars/pins",
-      "Start with bodyweight only",
-      "Focus on mobility and form first",
-    ],
+    targetMuscleGroups: ["Quadriceps", "Glutes", "Hamstrings"],
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "bent-row",
-    name: "Bent Over Row", 
+    name: "Bent Over Row",
     category: "Back",
-    muscleGroups: ["Latissimus Dorsi", "Rhomboids", "Biceps"],
-    equipment: ["Barbell"],
-    difficulty: 3,
-    instructions: [
-      "Hinge at hips with slight knee bend",
-      "Keep back straight and core engaged",
-      "Pull bar to lower chest/upper abdomen",
-      "Lower with control to starting position",
-    ],
-    tips: [
-      "Squeeze shoulder blades together",
-      "Keep elbows close to body",
-      "Don't use momentum",
-    ],
-    safetyNotes: [
-      "Start with light weight",
-      "Focus on form over weight",
-      "Avoid rounding lower back",
-    ],
+    targetMuscleGroups: ["Lats", "Rhomboids", "Rear Delts"],
+    createdAt: new Date("2024-01-01"),
   },
 ];
 
@@ -305,38 +271,48 @@ export const mockExercises: Exercise[] = [
 // HELPER FUNCTIONS
 // ===========================
 
+// ===========================
+// HELPER FUNCTIONS
+// ===========================
+
 export const getUserById = (id: string): User | undefined => {
-  return mockUsers.find(user => user.id === id);
+  return mockUsers.find((user) => user.id === id);
 };
 
 export const getGroupById = (id: string): AthleteGroup | undefined => {
-  return mockGroups.find(group => group.id === id);
+  return mockGroups.find((group) => group.id === id);
 };
 
 export const getWorkoutById = (id: string): WorkoutPlan | undefined => {
-  return mockWorkoutPlans.find(workout => workout.id === id);
+  return mockWorkoutPlans.find((workout) => workout.id === id);
 };
 
-export const getAssignmentById = (id: string): WorkoutAssignment | undefined => {
-  return mockAssignments.find(assignment => assignment.id === id);
+export const getAssignmentById = (
+  id: string
+): WorkoutAssignment | undefined => {
+  return mockAssignments.find((assignment) => assignment.id === id);
 };
 
 export const getExerciseById = (id: string): Exercise | undefined => {
-  return mockExercises.find(exercise => exercise.id === id);
+  return mockExercises.find((exercise) => exercise.id === id);
 };
 
 export const getGroupsByCoach = (coachId: string): AthleteGroup[] => {
-  return mockGroups.filter(group => group.coachId === coachId);
+  return mockGroups.filter((group) => group.coachId === coachId);
 };
 
-export const getAssignmentsByAthlete = (athleteId: string): WorkoutAssignment[] => {
-  return mockAssignments.filter(assignment => 
-    assignment.athleteIds?.includes(athleteId) || assignment.athleteId === athleteId
+export const getAssignmentsByAthlete = (
+  athleteId: string
+): WorkoutAssignment[] => {
+  return mockAssignments.filter(
+    (assignment) =>
+      assignment.athleteIds?.includes(athleteId) ||
+      assignment.athleteId === athleteId
   );
 };
 
 export const getAssignmentsByGroup = (groupId: string): WorkoutAssignment[] => {
-  return mockAssignments.filter(assignment => assignment.groupId === groupId);
+  return mockAssignments.filter((assignment) => assignment.groupId === groupId);
 };
 
 // ===========================
@@ -344,7 +320,9 @@ export const getAssignmentsByGroup = (groupId: string): WorkoutAssignment[] => {
 // ===========================
 
 // Add new entities (in production, these would be database operations)
-export const addUser = (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): User => {
+export const addUser = (
+  user: Omit<User, "id" | "createdAt" | "updatedAt">
+): User => {
   const newUser: User = {
     ...user,
     id: `user-${Date.now()}`,
@@ -355,7 +333,9 @@ export const addUser = (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Use
   return newUser;
 };
 
-export const addGroup = (group: Omit<AthleteGroup, 'id' | 'createdAt' | 'updatedAt'>): AthleteGroup => {
+export const addGroup = (
+  group: Omit<AthleteGroup, "id" | "createdAt" | "updatedAt">
+): AthleteGroup => {
   const newGroup: AthleteGroup = {
     ...group,
     id: `group-${Date.now()}`,
@@ -366,7 +346,9 @@ export const addGroup = (group: Omit<AthleteGroup, 'id' | 'createdAt' | 'updated
   return newGroup;
 };
 
-export const addWorkout = (workout: Omit<WorkoutPlan, 'id' | 'createdAt' | 'updatedAt'>): WorkoutPlan => {
+export const addWorkout = (
+  workout: Omit<WorkoutPlan, "id" | "createdAt" | "updatedAt">
+): WorkoutPlan => {
   const newWorkout: WorkoutPlan = {
     ...workout,
     id: `workout-${Date.now()}`,
@@ -377,7 +359,9 @@ export const addWorkout = (workout: Omit<WorkoutPlan, 'id' | 'createdAt' | 'upda
   return newWorkout;
 };
 
-export const addAssignment = (assignment: Omit<WorkoutAssignment, 'id' | 'createdAt' | 'updatedAt'>): WorkoutAssignment => {
+export const addAssignment = (
+  assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+): WorkoutAssignment => {
   const newAssignment: WorkoutAssignment = {
     ...assignment,
     id: `assignment-${Date.now()}`,
@@ -390,9 +374,9 @@ export const addAssignment = (assignment: Omit<WorkoutAssignment, 'id' | 'create
 
 // Update entities
 export const updateUser = (id: string, updates: Partial<User>): User | null => {
-  const index = mockUsers.findIndex(user => user.id === id);
+  const index = mockUsers.findIndex((user) => user.id === id);
   if (index === -1) return null;
-  
+
   mockUsers[index] = {
     ...mockUsers[index],
     ...updates,
@@ -401,10 +385,13 @@ export const updateUser = (id: string, updates: Partial<User>): User | null => {
   return mockUsers[index];
 };
 
-export const updateGroup = (id: string, updates: Partial<AthleteGroup>): AthleteGroup | null => {
-  const index = mockGroups.findIndex(group => group.id === id);
+export const updateGroup = (
+  id: string,
+  updates: Partial<AthleteGroup>
+): AthleteGroup | null => {
+  const index = mockGroups.findIndex((group) => group.id === id);
   if (index === -1) return null;
-  
+
   mockGroups[index] = {
     ...mockGroups[index],
     ...updates,
@@ -413,10 +400,13 @@ export const updateGroup = (id: string, updates: Partial<AthleteGroup>): Athlete
   return mockGroups[index];
 };
 
-export const updateWorkout = (id: string, updates: Partial<WorkoutPlan>): WorkoutPlan | null => {
-  const index = mockWorkoutPlans.findIndex(workout => workout.id === id);
+export const updateWorkout = (
+  id: string,
+  updates: Partial<WorkoutPlan>
+): WorkoutPlan | null => {
+  const index = mockWorkoutPlans.findIndex((workout) => workout.id === id);
   if (index === -1) return null;
-  
+
   mockWorkoutPlans[index] = {
     ...mockWorkoutPlans[index],
     ...updates,
@@ -427,33 +417,33 @@ export const updateWorkout = (id: string, updates: Partial<WorkoutPlan>): Workou
 
 // Delete entities
 export const deleteUser = (id: string): boolean => {
-  const index = mockUsers.findIndex(user => user.id === id);
+  const index = mockUsers.findIndex((user) => user.id === id);
   if (index === -1) return false;
-  
+
   mockUsers.splice(index, 1);
   return true;
 };
 
 export const deleteGroup = (id: string): boolean => {
-  const index = mockGroups.findIndex(group => group.id === id);
+  const index = mockGroups.findIndex((group) => group.id === id);
   if (index === -1) return false;
-  
+
   mockGroups.splice(index, 1);
   return true;
 };
 
 export const deleteWorkout = (id: string): boolean => {
-  const index = mockWorkoutPlans.findIndex(workout => workout.id === id);
+  const index = mockWorkoutPlans.findIndex((workout) => workout.id === id);
   if (index === -1) return false;
-  
+
   mockWorkoutPlans.splice(index, 1);
   return true;
 };
 
 export const deleteAssignment = (id: string): boolean => {
-  const index = mockAssignments.findIndex(assignment => assignment.id === id);
+  const index = mockAssignments.findIndex((assignment) => assignment.id === id);
   if (index === -1) return false;
-  
+
   mockAssignments.splice(index, 1);
   return true;
 };

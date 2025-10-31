@@ -25,9 +25,19 @@ const predefinedColors = [
 ];
 
 const sportOptions = [
-  "Football", "Volleyball", "Basketball", "Soccer", "Cross Country",
-  "Track & Field", "Wrestling", "Tennis", "Swimming", "Baseball",
-  "Softball", "Golf", "Other"
+  "Football",
+  "Volleyball",
+  "Basketball",
+  "Soccer",
+  "Cross Country",
+  "Track & Field",
+  "Wrestling",
+  "Tennis",
+  "Swimming",
+  "Baseball",
+  "Softball",
+  "Golf",
+  "Other",
 ];
 
 export default function GroupFormModal({
@@ -89,16 +99,16 @@ export default function GroupFormModal({
   }, [isOpen, existingGroups, editingGroup]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     setError("");
   };
 
   const handleAthleteSelection = (athleteId: string, selected: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      athleteIds: selected 
+      athleteIds: selected
         ? [...prev.athleteIds, athleteId]
-        : prev.athleteIds.filter(id => id !== athleteId)
+        : prev.athleteIds.filter((id) => id !== athleteId),
     }));
   };
 
@@ -111,12 +121,13 @@ export default function GroupFormModal({
       setError("Sport selection is required");
       return false;
     }
-    
-    const duplicateName = existingGroups.some(group => 
-      group.name.toLowerCase() === formData.name.toLowerCase() &&
-      (!editingGroup || group.id !== editingGroup.id)
+
+    const duplicateName = existingGroups.some(
+      (group) =>
+        group.name.toLowerCase() === formData.name.toLowerCase() &&
+        (!editingGroup || group.id !== editingGroup.id)
     );
-    
+
     if (duplicateName) {
       setError("A group with this name already exists");
       return false;
@@ -127,7 +138,7 @@ export default function GroupFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -170,12 +181,12 @@ export default function GroupFormModal({
 
   if (!isOpen) return null;
 
-  const selectedAthletes = availableAthletes.filter(athlete => 
+  const selectedAthletes = availableAthletes.filter((athlete) =>
     formData.athleteIds.includes(athlete.id)
   );
 
-  const unselectedAthletes = availableAthletes.filter(athlete => 
-    !formData.athleteIds.includes(athlete.id)
+  const unselectedAthletes = availableAthletes.filter(
+    (athlete) => !formData.athleteIds.includes(athlete.id)
   );
 
   return (
@@ -198,8 +209,10 @@ export default function GroupFormModal({
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-heading-secondary text-lg mb-4">Group Details</h3>
-                
+                <h3 className="text-heading-secondary text-lg mb-4">
+                  Group Details
+                </h3>
+
                 <div>
                   <label className="text-body-primary font-medium block mb-2">
                     Group Name *
@@ -225,8 +238,10 @@ export default function GroupFormModal({
                     disabled={isLoading}
                   >
                     <option value="">Select a sport...</option>
-                    {sportOptions.map(sport => (
-                      <option key={sport} value={sport}>{sport}</option>
+                    {sportOptions.map((sport) => (
+                      <option key={sport} value={sport}>
+                        {sport}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -238,7 +253,9 @@ export default function GroupFormModal({
                   <input
                     type="text"
                     value={formData.category}
-                    onChange={(e) => handleInputChange("category", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
                     className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
                     placeholder="e.g., Varsity, JV, Linemen, Receivers"
                     disabled={isLoading}
@@ -251,7 +268,9 @@ export default function GroupFormModal({
                   </label>
                   <textarea
                     value={formData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("description", e.target.value)
+                    }
                     className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
                     rows={3}
                     placeholder="Brief description of the group..."
@@ -264,14 +283,14 @@ export default function GroupFormModal({
                     Group Color
                   </label>
                   <div className="grid grid-cols-4 gap-2">
-                    {predefinedColors.map(color => (
+                    {predefinedColors.map((color) => (
                       <button
                         key={color.value}
                         type="button"
                         onClick={() => handleInputChange("color", color.value)}
                         className={`p-3 rounded-md border-2 transition-all ${
-                          formData.color === color.value 
-                            ? "border-navy-600 scale-105" 
+                          formData.color === color.value
+                            ? "border-navy-600 scale-105"
                             : "border-silver-300 hover:border-silver-400"
                         }`}
                         style={{ backgroundColor: color.value }}
@@ -292,17 +311,28 @@ export default function GroupFormModal({
 
                 {selectedAthletes.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-body-primary font-medium mb-2">Selected Athletes</h4>
+                    <h4 className="text-body-primary font-medium mb-2">
+                      Selected Athletes
+                    </h4>
                     <div className="space-y-2 max-h-32 overflow-y-auto border border-silver-300 rounded-md p-2">
-                      {selectedAthletes.map(athlete => (
-                        <div key={athlete.id} className="flex items-center justify-between bg-accent-green/10 p-2 rounded">
+                      {selectedAthletes.map((athlete) => (
+                        <div
+                          key={athlete.id}
+                          className="flex items-center justify-between bg-accent-green/10 p-2 rounded"
+                        >
                           <div>
-                            <div className="text-body-primary font-medium">{athlete.name}</div>
-                            <div className="text-body-small">{athlete.email}</div>
+                            <div className="text-body-primary font-medium">
+                              {athlete.name}
+                            </div>
+                            <div className="text-body-small">
+                              {athlete.email}
+                            </div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleAthleteSelection(athlete.id, false)}
+                            onClick={() =>
+                              handleAthleteSelection(athlete.id, false)
+                            }
                             className="text-red-600 hover:text-red-800 text-sm"
                             disabled={isLoading}
                           >
@@ -316,17 +346,28 @@ export default function GroupFormModal({
 
                 {unselectedAthletes.length > 0 && (
                   <div>
-                    <h4 className="text-body-primary font-medium mb-2">Available Athletes</h4>
+                    <h4 className="text-body-primary font-medium mb-2">
+                      Available Athletes
+                    </h4>
                     <div className="space-y-2 max-h-64 overflow-y-auto border border-silver-300 rounded-md p-2">
-                      {unselectedAthletes.map(athlete => (
-                        <div key={athlete.id} className="flex items-center justify-between p-2 hover:bg-silver-50 rounded">
+                      {unselectedAthletes.map((athlete) => (
+                        <div
+                          key={athlete.id}
+                          className="flex items-center justify-between p-2 hover:bg-silver-50 rounded"
+                        >
                           <div>
-                            <div className="text-body-primary font-medium">{athlete.name}</div>
-                            <div className="text-body-small">{athlete.email}</div>
+                            <div className="text-body-primary font-medium">
+                              {athlete.name}
+                            </div>
+                            <div className="text-body-small">
+                              {athlete.email}
+                            </div>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleAthleteSelection(athlete.id, true)}
+                            onClick={() =>
+                              handleAthleteSelection(athlete.id, true)
+                            }
                             className="btn-secondary text-sm px-3 py-1"
                             disabled={isLoading}
                           >
@@ -340,7 +381,8 @@ export default function GroupFormModal({
 
                 {availableAthletes.length === 0 && (
                   <div className="text-center py-8 text-body-secondary">
-                    No available athletes found. Add athletes to assign them to groups.
+                    No available athletes found. Add athletes to assign them to
+                    groups.
                   </div>
                 )}
               </div>
@@ -366,7 +408,11 @@ export default function GroupFormModal({
                 className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : editingGroup ? "Update Group" : "Create Group"}
+                {isLoading
+                  ? "Saving..."
+                  : editingGroup
+                    ? "Update Group"
+                    : "Create Group"}
               </button>
             </div>
           </form>

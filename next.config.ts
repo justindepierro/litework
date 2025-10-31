@@ -13,11 +13,6 @@ const nextConfig: NextConfig = {
 
   // Production optimizations
   output: "standalone",
-  
-  // Development server configuration
-  devIndicators: {
-    appIsrStatus: false, // Reduces noise in development
-  },
 
   // Simplified development configuration
   webpack: (config, { dev, isServer }) => {
@@ -26,26 +21,28 @@ const nextConfig: NextConfig = {
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,
-        ignored: ['**/node_modules/**', '**/.git/**', '**/.next/**']
+        ignored: ["**/node_modules/**", "**/.git/**", "**/.next/**"],
       };
-      
+
       // Reduce memory usage in development
       config.optimization = {
         ...config.optimization,
-        splitChunks: isServer ? false : {
-          chunks: 'all',
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            framework: {
-              chunks: 'all',
-              name: 'framework',
-              test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-              priority: 40,
-              enforce: true,
+        splitChunks: isServer
+          ? false
+          : {
+              chunks: "all",
+              cacheGroups: {
+                default: false,
+                vendors: false,
+                framework: {
+                  chunks: "all",
+                  name: "framework",
+                  test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+                  priority: 40,
+                  enforce: true,
+                },
+              },
             },
-          },
-        },
       };
     }
     return config;

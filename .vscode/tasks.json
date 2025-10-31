@@ -85,9 +85,7 @@
       "type": "shell",
       "command": "npm run dev",
       "isBackground": true,
-      "problemMatcher": [
-        "$eslint-stylish"
-      ],
+      "problemMatcher": ["$eslint-stylish"],
       "group": "build",
       "runOptions": {
         "instanceLimit": 1

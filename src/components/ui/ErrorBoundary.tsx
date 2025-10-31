@@ -24,20 +24,25 @@ interface ErrorFallbackProps {
   goHome: () => void;
 }
 
-function DefaultErrorFallback({ error, resetError, goHome }: ErrorFallbackProps) {
+function DefaultErrorFallback({
+  error,
+  resetError,
+  goHome,
+}: ErrorFallbackProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
         <div className="flex justify-center mb-4">
           <AlertTriangle className="w-12 h-12 text-red-500" />
         </div>
-        
+
         <h1 className="text-heading-primary text-xl mb-2">
           Something went wrong
         </h1>
-        
+
         <p className="text-body-secondary mb-6">
-          An unexpected error occurred. Please try refreshing the page or return to the home page.
+          An unexpected error occurred. Please try refreshing the page or return
+          to the home page.
         </p>
 
         {process.env.NODE_ENV === "development" && error && (
@@ -60,7 +65,7 @@ function DefaultErrorFallback({ error, resetError, goHome }: ErrorFallbackProps)
             <RefreshCw className="w-4 h-4" />
             Try Again
           </button>
-          
+
           <button
             onClick={goHome}
             className="btn-primary flex items-center gap-2"
@@ -74,7 +79,10 @@ function DefaultErrorFallback({ error, resetError, goHome }: ErrorFallbackProps)
   );
 }
 
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -116,7 +124,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   render() {
     if (this.state.hasError) {
       const FallbackComponent = this.props.fallback || DefaultErrorFallback;
-      
+
       return (
         <FallbackComponent
           error={this.state.error}
@@ -140,9 +148,9 @@ export function withErrorBoundary<P extends object>(
       <Component {...props} />
     </ErrorBoundary>
   );
-  
+
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-  
+
   return WrappedComponent;
 }
 

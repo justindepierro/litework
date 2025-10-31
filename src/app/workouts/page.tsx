@@ -115,7 +115,9 @@ export default function WorkoutsPage() {
             <div className="flex items-center">
               <Dumbbell className="w-10 h-10 sm:w-8 sm:h-8 mr-3" />
               <div>
-                <h1 className="text-3xl sm:text-2xl font-bold">Workout Management</h1>
+                <h1 className="text-3xl sm:text-2xl font-bold">
+                  Workout Management
+                </h1>
                 <p className="text-blue-100 text-base sm:text-sm mt-1">
                   Create and manage training plans
                 </p>
@@ -170,7 +172,9 @@ export default function WorkoutsPage() {
             {loading && (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="text-gray-600 mt-4 text-lg">Loading workouts...</p>
+                <p className="text-gray-600 mt-4 text-lg">
+                  Loading workouts...
+                </p>
               </div>
             )}
 

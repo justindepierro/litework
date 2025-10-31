@@ -3,7 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { WorkoutSession, WorkoutPlan, SetRecord, WorkoutExercise } from "@/types";
+import {
+  WorkoutSession,
+  WorkoutPlan,
+  SetRecord,
+  WorkoutExercise,
+} from "@/types";
 import {
   Dumbbell,
   PartyPopper,
@@ -66,7 +71,7 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
         // } else {
         //   setError(response.error || "Failed to load workout");
         // }
-        
+
         // For now, just set null until API is implemented
         setWorkoutPlan(null);
         setError("No workout session found. Please check back later.");
@@ -121,7 +126,9 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
   const [actualWeight, setActualWeight] = useState(() =>
     currentExercise?.weightType === "fixed" ? currentExercise?.weight || 0 : 0
   );
-  const [actualReps, setActualReps] = useState(() => currentExercise?.reps || 0);
+  const [actualReps, setActualReps] = useState(
+    () => currentExercise?.reps || 0
+  );
 
   // Initialize workout session
   const [workoutSession, setWorkoutSession] = useState<WorkoutSession>(() => ({
@@ -132,17 +139,18 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
     workoutAssignmentId: "live-session",
     date: new Date(),
     mode: "live",
-    exercises: workoutPlan?.exercises.map((exercise) => ({
-      id: `session-${exercise.id}`,
-      workoutExerciseId: exercise.id,
-      exerciseName: exercise.exerciseName,
-      targetSets: exercise.sets,
-      completedSets: 0,
-      setRecords: [],
-      started: false,
-      completed: false,
-      isModified: false,
-    })) || [],
+    exercises:
+      workoutPlan?.exercises.map((exercise) => ({
+        id: `session-${exercise.id}`,
+        workoutExerciseId: exercise.id,
+        exerciseName: exercise.exerciseName,
+        targetSets: exercise.sets,
+        completedSets: 0,
+        setRecords: [],
+        started: false,
+        completed: false,
+        isModified: false,
+      })) || [],
     started: false,
     completed: false,
     progressPercentage: 0,
@@ -152,7 +160,7 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
   // Update weight and reps when exercise changes
   useEffect(() => {
     if (!currentExercise) return;
-    
+
     const timer = setTimeout(() => {
       if (currentExercise.weightType === "fixed") {
         setActualWeight(currentExercise.weight || 0);
@@ -264,7 +272,10 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
         setRestTimer(currentExercise.restTime);
         setIsResting(true);
       }
-    } else if (workoutPlan && currentExerciseIndex < workoutPlan.exercises.length - 1) {
+    } else if (
+      workoutPlan &&
+      currentExerciseIndex < workoutPlan.exercises.length - 1
+    ) {
       // Next exercise
       setCurrentExerciseIndex(currentExerciseIndex + 1);
       setCurrentSetIndex(0);
@@ -319,11 +330,13 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Dumbbell className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Workout Not Available</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Workout Not Available
+          </h3>
           <p className="text-gray-600 mb-6">
             {error || "The requested workout session could not be found."}
           </p>
-          <Link 
+          <Link
             href="/dashboard"
             className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl"
           >
@@ -341,11 +354,13 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Dumbbell className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Exercise Found</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            No Exercise Found
+          </h3>
           <p className="text-gray-600 mb-6">
             There are no exercises in this workout plan.
           </p>
-          <Link 
+          <Link
             href="/dashboard"
             className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl"
           >
@@ -372,7 +387,7 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
             onClick={startWorkout}
             className="btn-primary text-xl px-8 py-6 w-full rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation mb-4 flex items-center justify-center gap-3"
           >
-            <Rocket className="w-6 h-6" /> 
+            <Rocket className="w-6 h-6" />
             Start Workout
           </button>
           <Link
@@ -419,7 +434,10 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
             </h1>
             <p className="text-body-secondary mb-8 text-lg">
               Outstanding work on{" "}
-              <span className="font-semibold text-accent-orange">{workoutPlan.name}</span>!
+              <span className="font-semibold text-accent-orange">
+                {workoutPlan.name}
+              </span>
+              !
             </p>
 
             {/* Mobile-optimized workout summary */}
@@ -431,13 +449,17 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                     0
                   )}
                 </div>
-                <div className="text-green-600 text-sm font-medium">Sets Completed</div>
+                <div className="text-green-600 text-sm font-medium">
+                  Sets Completed
+                </div>
               </div>
               <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 touch-manipulation">
                 <div className="text-blue-800 text-2xl sm:text-xl font-bold">
                   {totalReps}
                 </div>
-                <div className="text-blue-600 text-sm font-medium">Total Reps</div>
+                <div className="text-blue-600 text-sm font-medium">
+                  Total Reps
+                </div>
               </div>
               <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 touch-manipulation">
                 <div className="text-purple-800 text-2xl sm:text-xl font-bold">
@@ -448,8 +470,12 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                 </div>
               </div>
               <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 touch-manipulation">
-                <div className="text-orange-800 text-2xl sm:text-xl font-bold">100%</div>
-                <div className="text-orange-600 text-sm font-medium">Completion</div>
+                <div className="text-orange-800 text-2xl sm:text-xl font-bold">
+                  100%
+                </div>
+                <div className="text-orange-600 text-sm font-medium">
+                  Completion
+                </div>
               </div>
             </div>
 
@@ -459,22 +485,22 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                 <Trophy className="w-5 h-5" /> Excellent Work!
               </h3>
               <p className="text-yellow-700">
-                You&apos;ve completed all exercises with great consistency. 
-                Keep up this momentum!
+                You&apos;ve completed all exercises with great consistency. Keep
+                up this momentum!
               </p>
             </div>
           </div>
 
           {/* Large, thumb-friendly buttons */}
           <div className="space-y-4">
-            <Link 
-              href="/dashboard" 
+            <Link
+              href="/dashboard"
               className="btn-primary w-full text-xl py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation"
             >
               ← Back to Dashboard
             </Link>
-            <Link 
-              href="/progress" 
+            <Link
+              href="/progress"
               className="btn-secondary w-full py-4 rounded-xl touch-manipulation font-medium"
             >
               View Progress →
@@ -515,7 +541,8 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
             {/* Mobile-friendly progress text */}
             <div className="text-center bg-gray-50 rounded-xl py-3 px-4">
               <div className="text-body-primary font-semibold text-lg">
-                Exercise {currentExerciseIndex + 1} of {workoutPlan.exercises.length}
+                Exercise {currentExerciseIndex + 1} of{" "}
+                {workoutPlan.exercises.length}
               </div>
               <div className="text-body-small text-gray-600 mt-1">
                 Set {currentSetIndex + 1} of {currentExercise.sets}
@@ -561,15 +588,17 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                 </div>
               </div>
 
-              <h2 className="text-heading-primary text-3xl sm:text-2xl mb-3 font-bold">Rest Time</h2>
+              <h2 className="text-heading-primary text-3xl sm:text-2xl mb-3 font-bold">
+                Rest Time
+              </h2>
               <div className="text-5xl sm:text-4xl font-bold text-accent-blue mb-8">
                 {formatTime(restTimer)}
               </div>
 
               {/* Large mobile-friendly buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
-                  onClick={skipRestTimer} 
+                <button
+                  onClick={skipRestTimer}
                   className="btn-primary py-4 px-8 text-lg font-bold rounded-2xl touch-manipulation shadow-lg hover:shadow-xl transition-all"
                 >
                   Skip Rest →
@@ -595,20 +624,24 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                 <div className="text-body-secondary mb-6 text-lg">
                   Set {currentSetIndex + 1} of {currentExercise.sets}
                 </div>
-                
+
                 {/* Target display with better mobile layout */}
                 <div className="grid grid-cols-2 gap-4 text-center bg-gray-50 rounded-xl p-4">
                   <div>
                     <div className="text-heading-primary text-2xl sm:text-xl font-bold text-accent-blue">
                       {currentExercise.reps}
                     </div>
-                    <div className="text-body-small font-medium mt-1">Target Reps</div>
+                    <div className="text-body-small font-medium mt-1">
+                      Target Reps
+                    </div>
                   </div>
                   <div>
                     <div className="text-heading-primary text-2xl sm:text-xl font-bold text-accent-orange">
                       {formatWeight(currentExercise)}
                     </div>
-                    <div className="text-body-small font-medium mt-1">Target Weight</div>
+                    <div className="text-body-small font-medium mt-1">
+                      Target Weight
+                    </div>
                   </div>
                 </div>
               </div>
@@ -627,7 +660,9 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                           (tip, index) => (
                             <li key={index} className="flex items-start gap-3">
                               <Target className="w-4 h-4 mt-1 shrink-0" />
-                              <span className="text-sm leading-relaxed">{tip}</span>
+                              <span className="text-sm leading-relaxed">
+                                {tip}
+                              </span>
                             </li>
                           )
                         )}
@@ -734,11 +769,17 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
                 disabled={actualReps <= 0}
               >
                 <CheckCircle className="w-8 h-8" />
-                {isLastSet && isLastExercise
-                  ? <><PartyPopper className="w-6 h-6" /> Finish Workout</>
-                  : isLastSet
-                    ? <><ArrowRight className="w-6 h-6" /> Next Exercise</>
-                    : "Complete Set"}
+                {isLastSet && isLastExercise ? (
+                  <>
+                    <PartyPopper className="w-6 h-6" /> Finish Workout
+                  </>
+                ) : isLastSet ? (
+                  <>
+                    <ArrowRight className="w-6 h-6" /> Next Exercise
+                  </>
+                ) : (
+                  "Complete Set"
+                )}
               </button>
 
               {/* Enhanced quick actions with better mobile layout */}

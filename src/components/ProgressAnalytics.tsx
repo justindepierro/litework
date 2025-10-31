@@ -83,29 +83,31 @@ export default function AnalyticsDashboard({
   const [viewMode, setViewMode] = useState<
     "overview" | "strength" | "comparison" | "goals"
   >("overview");
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(
+    null
+  );
 
   // Load analytics data from API
   useEffect(() => {
     const loadAnalyticsData = async () => {
       try {
         // Only run on client side
-        if (typeof window === 'undefined') return;
-        
-        const authToken = localStorage.getItem('authToken');
+        if (typeof window === "undefined") return;
+
+        const authToken = localStorage.getItem("authToken");
         if (!authToken) {
-          console.error('No auth token available');
+          console.error("No auth token available");
           return;
         }
 
         // Load overview data
         const overviewResponse = await fetch(
-          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ''}&type=overview`,
+          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ""}&type=overview`,
           {
             headers: {
-              'Authorization': `Bearer ${authToken}`,
-              'Content-Type': 'application/json'
-            }
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
           }
         );
 
@@ -114,13 +116,16 @@ export default function AnalyticsDashboard({
           if (overviewData.success) {
             setAnalyticsData({
               strengthProgress: [],
-              workoutFrequency: overviewData.data.overview?.workoutFrequency || [],
+              workoutFrequency:
+                overviewData.data.overview?.workoutFrequency || [],
               exerciseComparison: {},
               weeklyGoals: {},
               overviewStats: {
                 totalWorkouts: overviewData.data.overview?.totalWorkouts || 0,
-                avgWorkoutsPerWeek: overviewData.data.overview?.avgWorkoutsPerWeek || 0,
-                consistencyScore: overviewData.data.overview?.consistencyScore || 0,
+                avgWorkoutsPerWeek:
+                  overviewData.data.overview?.avgWorkoutsPerWeek || 0,
+                consistencyScore:
+                  overviewData.data.overview?.consistencyScore || 0,
                 avgImprovement: 8.5, // TODO: Calculate from actual data
               },
             });
@@ -129,36 +134,39 @@ export default function AnalyticsDashboard({
 
         // Load strength data
         const strengthResponse = await fetch(
-          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ''}&type=strength`,
+          `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ""}&type=strength`,
           {
             headers: {
-              'Authorization': `Bearer ${authToken}`,
-              'Content-Type': 'application/json'
-            }
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
           }
         );
 
         if (strengthResponse.ok) {
           const strengthData = await strengthResponse.json();
           if (strengthData.success) {
-            setAnalyticsData(prev => prev ? {
-              ...prev,
-              strengthProgress: strengthData.data.strength || []
-            } : {
-              strengthProgress: strengthData.data.strength || [],
-              workoutFrequency: [],
-              exerciseComparison: {},
-              weeklyGoals: {},
-              overviewStats: {
-                totalWorkouts: 0,
-                avgWorkoutsPerWeek: 0,
-                consistencyScore: 0,
-                avgImprovement: 0,
-              },
-            });
+            setAnalyticsData((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    strengthProgress: strengthData.data.strength || [],
+                  }
+                : {
+                    strengthProgress: strengthData.data.strength || [],
+                    workoutFrequency: [],
+                    exerciseComparison: {},
+                    weeklyGoals: {},
+                    overviewStats: {
+                      totalWorkouts: 0,
+                      avgWorkoutsPerWeek: 0,
+                      consistencyScore: 0,
+                      avgImprovement: 0,
+                    },
+                  }
+            );
           }
         }
-
       } catch (err) {
         console.error("Error loading analytics data:", err);
         // Set fallback data
@@ -186,7 +194,7 @@ export default function AnalyticsDashboard({
 
     const weeklyVolume = new Map<string, number>();
 
-    analyticsData.strengthProgress.forEach(exercise => {
+    analyticsData.strengthProgress.forEach((exercise) => {
       exercise.data?.forEach((entry) => {
         const entryDate = new Date(entry.date);
         const week = `Week ${Math.ceil(entryDate.getDate() / 7)}`;
@@ -205,16 +213,21 @@ export default function AnalyticsDashboard({
   const strengthProgressData = useMemo(() => {
     if (!analyticsData?.strengthProgress) return [];
 
-    return analyticsData.strengthProgress.map(exercise => ({
+    return analyticsData.strengthProgress.map((exercise) => ({
       exerciseId: exercise.exerciseId,
       exerciseName: exercise.exerciseName,
-      data: exercise.data?.map((entry) => ({
-        date: new Date(entry.date).toLocaleDateString(),
-        oneRepMax: entry.estimated1RM,
-        weight: entry.weight,
-        reps: entry.reps,
-        volume: entry.volume,
-      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || []
+      data:
+        exercise.data
+          ?.map((entry) => ({
+            date: new Date(entry.date).toLocaleDateString(),
+            oneRepMax: entry.estimated1RM,
+            weight: entry.weight,
+            reps: entry.reps,
+            volume: entry.volume,
+          }))
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          ) || [],
     }));
   }, [analyticsData]);
 
@@ -231,7 +244,8 @@ export default function AnalyticsDashboard({
     const avgWorkoutsPerWeek = totalWorkouts / workoutFrequencyData.length;
     const consistencyScore =
       workoutFrequencyData.reduce(
-        (sum: number, week: WorkoutFrequencyData) => sum + (week.workouts / week.goal) * 100,
+        (sum: number, week: WorkoutFrequencyData) =>
+          sum + (week.workouts / week.goal) * 100,
         0
       ) / workoutFrequencyData.length;
 
@@ -349,7 +363,9 @@ export default function AnalyticsDashboard({
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Avg per Week</p>
+                  <p className="text-gray-600 text-sm font-medium">
+                    Avg per Week
+                  </p>
                   <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgWorkoutsPerWeek}
                   </p>
@@ -363,12 +379,12 @@ export default function AnalyticsDashboard({
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Consistency</p>
+                  <p className="text-gray-600 text-sm font-medium">
+                    Consistency
+                  </p>
                   <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.consistencyScore}
-                    <span className="text-lg text-gray-600 ml-1">
-                      %
-                    </span>
+                    <span className="text-lg text-gray-600 ml-1">%</span>
                   </p>
                 </div>
                 <div className="p-3 rounded-xl text-orange-600 bg-orange-50">
@@ -385,9 +401,7 @@ export default function AnalyticsDashboard({
                   </p>
                   <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgImprovement}
-                    <span className="text-lg text-gray-600 ml-1">
-                      %
-                    </span>
+                    <span className="text-lg text-gray-600 ml-1">%</span>
                   </p>
                   <div className="flex items-center mt-2 text-sm text-green-600">
                     <TrendingUp className="w-4 h-4 mr-1" />
@@ -408,29 +422,46 @@ export default function AnalyticsDashboard({
               Workout Frequency
             </h3>
             <div className="w-full overflow-x-auto">
-              <ResponsiveContainer width="100%" height={280} className="touch-manipulation">
-                <BarChart data={workoutFrequencyData} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+              <ResponsiveContainer
+                width="100%"
+                height={280}
+                className="touch-manipulation"
+              >
+                <BarChart
+                  data={workoutFrequencyData}
+                  margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis 
-                    dataKey="week" 
-                    tick={{ fontSize: 12, fill: '#64748b' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
+                  <XAxis
+                    dataKey="week"
+                    tick={{ fontSize: 12, fill: "#64748b" }}
+                    axisLine={{ stroke: "#e2e8f0" }}
                   />
-                  <YAxis 
-                    tick={{ fontSize: 12, fill: '#64748b' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
+                  <YAxis
+                    tick={{ fontSize: 12, fill: "#64748b" }}
+                    axisLine={{ stroke: "#e2e8f0" }}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '14px'
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "14px",
                     }}
                   />
                   <Legend />
-                  <Bar dataKey="workouts" fill="#3b82f6" name="Workouts" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="goal" fill="#e5e7eb" name="Goal" radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey="workouts"
+                    fill="#3b82f6"
+                    name="Workouts"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="goal"
+                    fill="#e5e7eb"
+                    name="Goal"
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -442,7 +473,10 @@ export default function AnalyticsDashboard({
       {viewMode === "strength" && (
         <div className="space-y-4 sm:space-y-6">
           {strengthProgressData.map((exercise) => (
-            <div key={exercise.exerciseId} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4">
+            <div
+              key={exercise.exerciseId}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4"
+            >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                   <Dumbbell className="h-5 w-5 text-blue-600" />
@@ -451,24 +485,31 @@ export default function AnalyticsDashboard({
               </div>
 
               <div className="w-full overflow-x-auto">
-                <ResponsiveContainer width="100%" height={280} className="touch-manipulation">
-                  <LineChart data={exercise.data} margin={{ top: 20, right: 20, left: 10, bottom: 20 }}>
+                <ResponsiveContainer
+                  width="100%"
+                  height={280}
+                  className="touch-manipulation"
+                >
+                  <LineChart
+                    data={exercise.data}
+                    margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis 
-                      dataKey="date" 
-                      tick={{ fontSize: 12, fill: '#64748b' }}
-                      axisLine={{ stroke: '#e2e8f0' }}
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 12, fill: "#64748b" }}
+                      axisLine={{ stroke: "#e2e8f0" }}
                     />
-                    <YAxis 
-                      tick={{ fontSize: 12, fill: '#64748b' }}
-                      axisLine={{ stroke: '#e2e8f0' }}
+                    <YAxis
+                      tick={{ fontSize: 12, fill: "#64748b" }}
+                      axisLine={{ stroke: "#e2e8f0" }}
                     />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'white', 
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "white",
+                        border: "1px solid #e2e8f0",
+                        borderRadius: "8px",
+                        fontSize: "14px",
                       }}
                     />
                     <Legend />
@@ -478,8 +519,13 @@ export default function AnalyticsDashboard({
                       stroke="#3b82f6"
                       strokeWidth={3}
                       name="1RM (lbs)"
-                      dot={{ fill: '#3b82f6', strokeWidth: 0, r: 4 }}
-                      activeDot={{ r: 6, fill: '#3b82f6', stroke: 'white', strokeWidth: 2 }}
+                      dot={{ fill: "#3b82f6", strokeWidth: 0, r: 4 }}
+                      activeDot={{
+                        r: 6,
+                        fill: "#3b82f6",
+                        stroke: "white",
+                        strokeWidth: 2,
+                      }}
                     />
                   </LineChart>
                 </ResponsiveContainer>

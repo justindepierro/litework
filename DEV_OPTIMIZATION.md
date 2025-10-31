@@ -3,10 +3,13 @@
 ## Quick Start Commands
 
 ### Optimized Development (Recommended)
+
 ```bash
 npm run dev:optimized
 ```
+
 This command:
+
 - ✅ Kills any existing Next.js processes
 - ✅ Frees up port 3000
 - ✅ Cleans Next.js cache
@@ -32,6 +35,7 @@ npm run dev:clean
 ## VS Code Integration
 
 Use **Ctrl/Cmd + Shift + P** and type:
+
 - `Tasks: Run Task` → `Start Development Server (Optimized)`
 - `Tasks: Run Task` → `Kill Development Server`
 - `Tasks: Run Task` → `Restart Development Server`
@@ -39,6 +43,7 @@ Use **Ctrl/Cmd + Shift + P** and type:
 ## Development Server Optimizations
 
 ### What's Optimized:
+
 1. **Process Management**: Automatic cleanup of zombie processes
 2. **Port Management**: Automatic port 3000 cleanup
 3. **Cache Management**: Automatic .next directory cleanup
@@ -47,6 +52,7 @@ Use **Ctrl/Cmd + Shift + P** and type:
 6. **File Watching**: Improved polling for better file change detection
 
 ### Performance Features:
+
 - 🚀 **Turbopack**: ~10x faster than webpack
 - 🔄 **Fast Refresh**: Near-instant updates
 - 🧹 **Auto Cleanup**: No more manual process killing
@@ -56,24 +62,29 @@ Use **Ctrl/Cmd + Shift + P** and type:
 ### Troubleshooting
 
 #### If server won't start:
+
 ```bash
 npm run kill:dev
 npm run dev:optimized
 ```
 
 #### If port 3000 is busy:
+
 ```bash
 lsof -ti :3000 | xargs kill -9
 npm run dev:optimized
 ```
 
 #### If there are module issues:
+
 ```bash
 npm run dev:clean  # Deep clean with npm install
 ```
 
 #### Multiple terminal/zsh instances:
+
 The optimization script prevents this by:
+
 - Using single instance limits in VS Code tasks
 - Automatic process cleanup
 - Port collision detection
@@ -81,6 +92,7 @@ The optimization script prevents this by:
 ## Next.js Configuration
 
 The `next.config.ts` includes:
+
 - **Turbopack support** via CLI flag
 - **Webpack optimizations** for development
 - **Memory management** for large projects

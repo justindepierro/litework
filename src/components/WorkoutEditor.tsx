@@ -100,7 +100,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
           <div className="flex-1">
             {isEditing ? (
-                            <div className="space-y-4">
+              <div className="space-y-4">
                 {/* Enhanced mobile exercise name input */}
                 <input
                   type="text"
@@ -683,9 +683,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               (!localWorkout.groups || localWorkout.groups.length === 0) && (
                 <div className="text-center text-body-secondary py-16 sm:py-12">
                   <Dumbbell className="w-16 h-16 sm:w-12 sm:h-12 mx-auto mb-6 sm:mb-4 text-silver-400" />
-                  <p className="text-xl sm:text-lg font-medium mb-2">No exercises added yet</p>
+                  <p className="text-xl sm:text-lg font-medium mb-2">
+                    No exercises added yet
+                  </p>
                   <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto">
-                    Click &quot;Add Exercise&quot; to start building your workout
+                    Click &quot;Add Exercise&quot; to start building your
+                    workout
                   </p>
                 </div>
               )}

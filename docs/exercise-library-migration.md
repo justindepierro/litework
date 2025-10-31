@@ -7,6 +7,7 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 ## What Changed
 
 ### Before (Static File)
+
 - Limited to ~20 exercises in `src/lib/exercise-library.ts`
 - Hard to maintain and update
 - No filtering by equipment, difficulty, or muscle groups
@@ -14,6 +15,7 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 - No user preferences
 
 ### After (Database-Driven)
+
 - Hundreds of exercises stored in Supabase database
 - Easy to add/edit through admin interface
 - Advanced filtering and search capabilities
@@ -25,6 +27,7 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 ## Database Schema
 
 ### Core Tables
+
 - `exercises` - Main exercise data
 - `exercise_categories` - Categories (Chest, Back, Shoulders, etc.)
 - `muscle_groups` - Target muscle groups
@@ -37,10 +40,11 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 ## Setup Instructions
 
 1. **Run the database migrations:**
+
    ```sql
    -- First, run the schema creation
    \i database/exercises-schema.sql
-   
+
    -- Then seed with initial data
    \i database/exercises-seed.sql
    ```
@@ -49,21 +53,23 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
    The exercise library now uses the `/api/exercises` endpoint instead of the static file.
 
 3. **Component Usage:**
+
    ```tsx
-   import ExerciseLibrary from '@/components/ExerciseLibrary';
-   
+   import ExerciseLibrary from "@/components/ExerciseLibrary";
+
    <ExerciseLibrary
      isOpen={showLibrary}
      onClose={() => setShowLibrary(false)}
      onSelectExercise={handleExerciseSelect}
      multiSelect={true}
      showCreateButton={true}
-   />
+   />;
    ```
 
 ## Features
 
 ### For Users
+
 - **Advanced Search**: Search by name, description, or tags
 - **Smart Filtering**: Filter by category, muscle group, equipment, difficulty
 - **Exercise Details**: Complete instructions, muscle groups, equipment needed
@@ -73,6 +79,7 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 - **Restrictions**: Mark exercises as restricted due to injuries
 
 ### For Coaches/Admins
+
 - **Exercise Management**: Add, edit, and approve exercises
 - **Bulk Operations**: Import exercises from spreadsheets
 - **Usage Analytics**: Track which exercises are most used
@@ -82,7 +89,9 @@ We've migrated from a static TypeScript file with limited exercises to a compreh
 ## API Endpoints
 
 ### GET `/api/exercises`
+
 Retrieve exercises with filtering options:
+
 - `?search=term` - Search by name/description
 - `?category=id` - Filter by category
 - `?muscleGroup=name` - Filter by muscle group
@@ -90,7 +99,9 @@ Retrieve exercises with filtering options:
 - `?difficulty=level` - Filter by difficulty (1-5)
 
 ### POST `/api/exercises`
+
 Create new exercise (coaches/admins only):
+
 ```json
 {
   "name": "Exercise Name",
@@ -100,9 +111,7 @@ Create new exercise (coaches/admins only):
   "difficultyLevel": 3,
   "equipmentNeeded": ["Barbell", "Bench"],
   "isCompound": true,
-  "muscleGroups": [
-    {"muscleGroupId": "uuid", "involvementType": "primary"}
-  ]
+  "muscleGroups": [{ "muscleGroupId": "uuid", "involvementType": "primary" }]
 }
 ```
 
@@ -133,14 +142,14 @@ If you have custom exercises in the old format, they can be migrated using this 
 // Migration helper (to be run once)
 async function migrateExercises() {
   for (const exercise of oldExerciseLibrary) {
-    await fetch('/api/exercises', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/exercises", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: exercise.name,
         description: exercise.description,
         // ... map other fields
-      })
+      }),
     });
   }
 }

@@ -172,7 +172,11 @@ class ApiClient {
     return this.request("/users");
   }
 
-  async createAthlete(athleteData: { name: string; email: string; password: string }) {
+  async createAthlete(athleteData: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
     return this.request("/users", {
       method: "POST",
       body: JSON.stringify(athleteData),
@@ -193,12 +197,15 @@ class ApiClient {
     });
   }
 
-  async updateKPI(kpiId: string, kpiData: {
-    exerciseName?: string;
-    currentPR?: number;
-    dateAchieved?: string;
-    notes?: string;
-  }) {
+  async updateKPI(
+    kpiId: string,
+    kpiData: {
+      exerciseName?: string;
+      currentPR?: number;
+      dateAchieved?: string;
+      notes?: string;
+    }
+  ) {
     return this.request(`/kpis/${kpiId}`, {
       method: "PUT",
       body: JSON.stringify(kpiData),

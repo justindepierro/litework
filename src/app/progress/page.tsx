@@ -1,19 +1,10 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useAthleteGuard } from "@/hooks/use-auth-guard";
 import ProgressAnalytics from "@/components/ProgressAnalytics";
 
 export default function ProgressPage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [user, isLoading, router]);
+  const { user, isLoading } = useAthleteGuard();
 
   if (isLoading) {
     return (
@@ -23,15 +14,11 @@ export default function ProgressPage() {
     );
   }
 
-  if (!user) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-primary container-responsive section-spacing px-4 py-6">
       <div className="max-w-7xl mx-auto">
         <ProgressAnalytics
-          athleteId={user.role === "athlete" ? user.id : undefined}
+          athleteId={user!.role === "athlete" ? user!.id : undefined}
         />
       </div>
     </div>

@@ -3,7 +3,21 @@
 import Link from "next/link";
 import { useAnyUserGuard } from "@/hooks/use-auth-guard";
 import CalendarView from "@/components/CalendarView";
-import { Dumbbell, Trophy, Flame, Hand, ClipboardList, CheckCircle, Eye, Rocket, PartyPopper, Clock, TrendingUp, Calendar, Zap } from "lucide-react";
+import {
+  Dumbbell,
+  Trophy,
+  Flame,
+  Hand,
+  ClipboardList,
+  CheckCircle,
+  Eye,
+  Rocket,
+  PartyPopper,
+  Clock,
+  TrendingUp,
+  Calendar,
+  Zap,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAnyUserGuard();
@@ -26,7 +40,7 @@ export default function DashboardPage() {
         {/* Enhanced mobile-first welcome header */}
         <div className="text-center sm:text-left mb-8">
           <h1 className="text-heading-primary text-3xl sm:text-2xl mb-2 font-bold">
-            Welcome back, 
+            Welcome back,
           </h1>
           <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
             {user.name}! <Hand className="w-6 h-6" />
@@ -43,8 +57,12 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-orange-700">This Week</dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-orange-800">3 workouts</dd>
+                <dt className="text-body-small font-medium text-orange-700">
+                  This Week
+                </dt>
+                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-orange-800">
+                  3 workouts
+                </dd>
               </div>
             </div>
           </div>
@@ -57,8 +75,12 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-green-700">Personal Records</dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-green-800">12</dd>
+                <dt className="text-body-small font-medium text-green-700">
+                  Personal Records
+                </dt>
+                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-green-800">
+                  12
+                </dd>
               </div>
             </div>
           </div>
@@ -71,8 +93,12 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-red-700">Streak Days</dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-red-800">7</dd>
+                <dt className="text-body-small font-medium text-red-700">
+                  Streak Days
+                </dt>
+                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-red-800">
+                  7
+                </dd>
               </div>
             </div>
           </div>
@@ -108,8 +134,12 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="text-center sm:text-right bg-gray-50 rounded-xl p-4 min-w-[100px]">
-                    <div className="text-body-small mb-1 font-medium">Progress</div>
-                    <div className="text-heading-primary text-2xl sm:text-xl font-bold text-gray-600">0%</div>
+                    <div className="text-body-small mb-1 font-medium">
+                      Progress
+                    </div>
+                    <div className="text-heading-primary text-2xl sm:text-xl font-bold text-gray-600">
+                      0%
+                    </div>
                   </div>
                 </div>
 
@@ -167,8 +197,12 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="text-center sm:text-right bg-gray-50 rounded-xl p-4 min-w-[100px]">
-                    <div className="text-body-small mb-1 font-medium">Progress</div>
-                    <div className="text-heading-primary text-2xl sm:text-xl font-bold text-gray-400">-</div>
+                    <div className="text-body-small mb-1 font-medium">
+                      Progress
+                    </div>
+                    <div className="text-heading-primary text-2xl sm:text-xl font-bold text-gray-400">
+                      -
+                    </div>
                   </div>
                 </div>
 
@@ -236,7 +270,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-6 hover:bg-gray-50 transition-colors touch-manipulation">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
@@ -244,10 +278,12 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-body-primary font-bold mb-1 text-lg flex items-center gap-2">
-                      <PartyPopper className="w-5 h-5" /> New Personal Record: Deadlift
+                      <PartyPopper className="w-5 h-5" /> New Personal Record:
+                      Deadlift
                     </div>
                     <div className="text-body-secondary leading-relaxed">
-                      You lifted 315 lbs - that&apos;s 25 lbs more than your previous best!
+                      You lifted 315 lbs - that&apos;s 25 lbs more than your
+                      previous best!
                     </div>
                   </div>
                   <div className="text-sm text-gray-500 font-medium shrink-0">
@@ -286,7 +322,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="p-6 hover:bg-gray-50 transition-colors touch-manipulation">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">

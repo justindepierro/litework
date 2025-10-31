@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { verifyToken } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { verifyToken } from "@/lib/auth";
 
 // Remove unused interface
 // interface AnalyticsQuery {
@@ -11,21 +11,30 @@ import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get("authorization");
     if (!authHeader) {
-      return NextResponse.json({ error: 'Authorization header required' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authorization header required" },
+        { status: 401 }
+      );
     }
 
-    const authResult = verifyToken(request);
-    if (!authResult.success) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    const auth = await verifyToken(request);
+    if (!auth.success) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-    const user = authResult.user;
+    const user = auth.user;
 
     const { searchParams } = new URL(request.url);
-    const athleteId = searchParams.get('athleteId');
-    const timeframe = searchParams.get('timeframe') as '1m' | '3m' | '6m' | '1y' || '3m';
-    const type = searchParams.get('type') as 'overview' | 'strength' | 'volume' | 'consistency' || 'overview';
+    const athleteId = searchParams.get("athleteId");
+    const timeframe =
+      (searchParams.get("timeframe") as "1m" | "3m" | "6m" | "1y") || "3m";
+    const type =
+      (searchParams.get("type") as
+        | "overview"
+        | "strength"
+        | "volume"
+        | "consistency") || "overview";
 
     // supabase is already imported
 
@@ -33,46 +42,53 @@ export async function GET(request: NextRequest) {
     const now = new Date();
     const startDate = new Date();
     switch (timeframe) {
-      case '1m':
+      case "1m":
         startDate.setMonth(now.getMonth() - 1);
         break;
-      case '3m':
+      case "3m":
         startDate.setMonth(now.getMonth() - 3);
         break;
-      case '6m':
+      case "6m":
         startDate.setMonth(now.getMonth() - 6);
         break;
-      case '1y':
+      case "1y":
         startDate.setFullYear(now.getFullYear() - 1);
         break;
     }
 
     // Base query conditions
     let targetUserId = user?.userId;
-    
+
     // If athleteId is specified and user is coach/admin, analyze that athlete
-    if (athleteId && user && (user.role === 'coach' || user.role === 'admin')) {
+    if (athleteId && user && (user.role === "coach" || user.role === "admin")) {
       // Verify coach has access to this athlete
       const { data: athlete } = await supabase
-        .from('users')
-        .select('id, coach_id')
-        .eq('id', athleteId)
+        .from("users")
+        .select("id, coach_id")
+        .eq("id", athleteId)
         .single();
-        
-      if (!athlete || (athlete.coach_id !== user?.userId && user?.role !== 'admin')) {
-        return NextResponse.json({ error: 'Access denied to athlete data' }, { status: 403 });
+
+      if (
+        !athlete ||
+        (athlete.coach_id !== user?.userId && user?.role !== "admin")
+      ) {
+        return NextResponse.json(
+          { error: "Access denied to athlete data" },
+          { status: 403 }
+        );
       }
-      
+
       targetUserId = athleteId;
     }
 
     const analyticsData: Record<string, unknown> = {};
 
-    if (type === 'overview' || type === 'strength') {
+    if (type === "overview" || type === "strength") {
       // Get workout sessions and progress data
       const { data: workoutSessions } = await supabase
-        .from('workout_sessions')
-        .select(`
+        .from("workout_sessions")
+        .select(
+          `
           id,
           started_at,
           completed_at,
@@ -88,78 +104,103 @@ export async function GET(request: NextRequest) {
               reps_completed
             )
           )
-        `)
-        .eq('user_id', targetUserId)
-        .gte('started_at', startDate.toISOString())
-        .order('started_at', { ascending: true });
+        `
+        )
+        .eq("user_id", targetUserId)
+        .gte("started_at", startDate.toISOString())
+        .order("started_at", { ascending: true });
 
       // Get personal records (KPIs)
       const { data: personalRecords } = await supabase
-        .from('athlete_kpis')
-        .select('*')
-        .eq('athlete_id', targetUserId)
-        .eq('is_active', true);
+        .from("athlete_kpis")
+        .select("*")
+        .eq("athlete_id", targetUserId)
+        .eq("is_active", true);
 
       // Process overview statistics
-      if (type === 'overview') {
+      if (type === "overview") {
         const totalWorkouts = workoutSessions?.length || 0;
-        const totalDays = Math.max(1, Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+        const totalDays = Math.max(
+          1,
+          Math.ceil(
+            (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+          )
+        );
         const weeksInPeriod = Math.max(1, Math.ceil(totalDays / 7));
-        
+
         // Calculate workout frequency data
         const workoutsByWeek = new Map<string, number>();
-        workoutSessions?.forEach((session: { started_at: string; total_volume?: number; workout_exercises?: Record<string, unknown>[] }) => {
-          const sessionDate = new Date(session.started_at);
-          const weekStart = new Date(sessionDate);
-          weekStart.setDate(sessionDate.getDate() - sessionDate.getDay());
-          const weekKey = weekStart.toISOString().split('T')[0];
-          workoutsByWeek.set(weekKey, (workoutsByWeek.get(weekKey) || 0) + 1);
-        });
+        workoutSessions?.forEach(
+          (session: {
+            started_at: string;
+            total_volume?: number;
+            workout_exercises?: Record<string, unknown>[];
+          }) => {
+            const sessionDate = new Date(session.started_at);
+            const weekStart = new Date(sessionDate);
+            weekStart.setDate(sessionDate.getDate() - sessionDate.getDay());
+            const weekKey = weekStart.toISOString().split("T")[0];
+            workoutsByWeek.set(weekKey, (workoutsByWeek.get(weekKey) || 0) + 1);
+          }
+        );
 
         const workoutFrequency = Array.from(workoutsByWeek.entries())
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([, workouts], index) => ({
             week: `Week ${index + 1}`,
             workouts,
-            goal: 3 // Default goal of 3 workouts per week
+            goal: 3, // Default goal of 3 workouts per week
           }));
 
         // Calculate consistency score
         const goalWorkoutsPerWeek = 3;
         const actualWorkoutsPerWeek = totalWorkouts / weeksInPeriod;
-        const consistencyScore = Math.min(100, (actualWorkoutsPerWeek / goalWorkoutsPerWeek) * 100);
+        const consistencyScore = Math.min(
+          100,
+          (actualWorkoutsPerWeek / goalWorkoutsPerWeek) * 100
+        );
 
         // Calculate total volume trend
-        const totalVolume = workoutSessions?.reduce((sum, session) => sum + (session.total_volume || 0), 0) || 0;
+        const totalVolume =
+          workoutSessions?.reduce(
+            (sum, session) => sum + (session.total_volume || 0),
+            0
+          ) || 0;
 
         analyticsData.overview = {
           totalWorkouts,
-          avgWorkoutsPerWeek: Math.round((actualWorkoutsPerWeek) * 10) / 10,
+          avgWorkoutsPerWeek: Math.round(actualWorkoutsPerWeek * 10) / 10,
           consistencyScore: Math.round(consistencyScore),
           totalVolume: Math.round(totalVolume),
           workoutFrequency,
-          personalRecords: personalRecords?.length || 0
+          personalRecords: personalRecords?.length || 0,
         };
       }
 
       // Process strength progression data
-      if (type === 'strength') {
+      if (type === "strength") {
         const strengthProgress = new Map<string, Record<string, unknown>[]>();
-        
-        workoutSessions?.forEach(session => {
-          session.workout_exercises?.forEach(exercise => {
+
+        workoutSessions?.forEach((session) => {
+          session.workout_exercises?.forEach((exercise) => {
             const exerciseId = exercise.exercise_id;
             if (!strengthProgress.has(exerciseId)) {
               strengthProgress.set(exerciseId, []);
             }
 
             // Calculate max weight for this session
-            const maxWeight = exercise.workout_exercise_sets?.reduce((max, set) => 
-              Math.max(max, set.weight_used || 0), 0) || 0;
-            
+            const maxWeight =
+              exercise.workout_exercise_sets?.reduce(
+                (max, set) => Math.max(max, set.weight_used || 0),
+                0
+              ) || 0;
+
             // Estimate 1RM using Epley formula: weight * (1 + reps/30)
-            const maxReps = exercise.workout_exercise_sets?.reduce((max, set) => 
-              Math.max(max, set.reps_completed || 0), 0) || 1;
+            const maxReps =
+              exercise.workout_exercise_sets?.reduce(
+                (max, set) => Math.max(max, set.reps_completed || 0),
+                0
+              ) || 1;
             const estimated1RM = maxWeight * (1 + maxReps / 30);
 
             strengthProgress.get(exerciseId)!.push({
@@ -167,69 +208,87 @@ export async function GET(request: NextRequest) {
               weight: maxWeight,
               reps: maxReps,
               estimated1RM: Math.round(estimated1RM),
-              volume: exercise.workout_exercise_sets?.reduce((sum, set) => 
-                sum + ((set.weight_used || 0) * (set.reps_completed || 0)), 0) || 0
+              volume:
+                exercise.workout_exercise_sets?.reduce(
+                  (sum, set) =>
+                    sum + (set.weight_used || 0) * (set.reps_completed || 0),
+                  0
+                ) || 0,
             });
           });
         });
 
         // Convert to array format and get exercise names
         const { data: exercises } = await supabase
-          .from('exercises')
-          .select('id, name')
-          .in('id', Array.from(strengthProgress.keys()));
+          .from("exercises")
+          .select("id, name")
+          .in("id", Array.from(strengthProgress.keys()));
 
-        const exerciseMap = new Map(exercises?.map(ex => [ex.id, ex.name]) || []);
+        const exerciseMap = new Map(
+          exercises?.map((ex) => [ex.id, ex.name]) || []
+        );
 
-        analyticsData.strength = Array.from(strengthProgress.entries()).map(([exerciseId, data]) => ({
-          exerciseId,
-          exerciseName: exerciseMap.get(exerciseId) || `Exercise ${exerciseId}`,
-          data: data.sort((a, b) => new Date((a as { date: string }).date).getTime() - new Date((b as { date: string }).date).getTime())
-        }));
+        analyticsData.strength = Array.from(strengthProgress.entries()).map(
+          ([exerciseId, data]) => ({
+            exerciseId,
+            exerciseName:
+              exerciseMap.get(exerciseId) || `Exercise ${exerciseId}`,
+            data: data.sort(
+              (a, b) =>
+                new Date((a as { date: string }).date).getTime() -
+                new Date((b as { date: string }).date).getTime()
+            ),
+          })
+        );
       }
     }
 
-    if (type === 'volume') {
+    if (type === "volume") {
       // Get volume analytics from progress_analytics table
       const { data: volumeAnalytics } = await supabase
-        .from('progress_analytics')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .gte('period_start', startDate.toISOString().split('T')[0])
-        .order('period_start', { ascending: true });
+        .from("progress_analytics")
+        .select("*")
+        .eq("user_id", targetUserId)
+        .gte("period_start", startDate.toISOString().split("T")[0])
+        .order("period_start", { ascending: true });
 
-      analyticsData.volume = volumeAnalytics?.map(period => ({
-        period: period.period_start,
-        totalVolume: period.total_volume,
-        totalSets: period.total_sets,
-        avgVolume: Math.round((period.total_volume || 0) / Math.max(1, period.total_workouts))
-      })) || [];
+      analyticsData.volume =
+        volumeAnalytics?.map((period) => ({
+          period: period.period_start,
+          totalVolume: period.total_volume,
+          totalSets: period.total_sets,
+          avgVolume: Math.round(
+            (period.total_volume || 0) / Math.max(1, period.total_workouts)
+          ),
+        })) || [];
     }
 
-    if (type === 'consistency') {
+    if (type === "consistency") {
       // Get activity log for consistency analysis
       const { data: activityLog } = await supabase
-        .from('activity_log')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .eq('action_type', 'workout_completed')
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: true });
+        .from("activity_log")
+        .select("*")
+        .eq("user_id", targetUserId)
+        .eq("action_type", "workout_completed")
+        .gte("created_at", startDate.toISOString())
+        .order("created_at", { ascending: true });
 
       // Calculate streaks and consistency patterns
-      const workoutDates = activityLog?.map(log => new Date(log.created_at).toDateString()) || [];
+      const workoutDates =
+        activityLog?.map((log) => new Date(log.created_at).toDateString()) ||
+        [];
       const uniqueWorkoutDates = [...new Set(workoutDates)];
-      
+
       let currentStreak = 0;
       let longestStreak = 0;
       let tempStreak = 0;
-      
+
       const today = new Date();
       for (let i = 0; i < 30; i++) {
         const checkDate = new Date(today);
         checkDate.setDate(today.getDate() - i);
         const dateString = checkDate.toDateString();
-        
+
         if (uniqueWorkoutDates.includes(dateString)) {
           tempStreak++;
           if (i === 0) currentStreak = tempStreak;
@@ -243,19 +302,25 @@ export async function GET(request: NextRequest) {
         currentStreak,
         longestStreak: Math.max(longestStreak, tempStreak),
         workoutDates: uniqueWorkoutDates,
-        avgWorkoutsPerWeek: uniqueWorkoutDates.length / Math.max(1, Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7)))
+        avgWorkoutsPerWeek:
+          uniqueWorkoutDates.length /
+          Math.max(
+            1,
+            Math.ceil(
+              (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7)
+            )
+          ),
       };
     }
 
     return NextResponse.json({
       success: true,
-      data: analyticsData
+      data: analyticsData,
     });
-
   } catch (error) {
-    console.error('Analytics API error:', error);
+    console.error("Analytics API error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -264,16 +329,26 @@ export async function GET(request: NextRequest) {
 // POST endpoint for generating analytics reports
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get("authorization");
     if (!authHeader) {
-      return NextResponse.json({ error: 'Authorization header required' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authorization header required" },
+        { status: 401 }
+      );
     }
 
-    const authResult = verifyToken(request);
-    if (!authResult.success || !authResult.user || (authResult.user.role !== 'coach' && authResult.user.role !== 'admin')) {
-      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+    const auth = await verifyToken(request);
+    if (
+      !auth.success ||
+      !auth.user ||
+      (auth.user.role !== "coach" && auth.user.role !== "admin")
+    ) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
     }
-    const user = authResult.user;
+    const user = auth.user;
 
     const body = await request.json();
     const { athleteIds, reportType, timeframe } = body;
@@ -285,36 +360,53 @@ export async function POST(request: NextRequest) {
       athleteIds.map(async (athleteId: string) => {
         // Verify access to athlete
         const { data: athlete } = await supabase
-          .from('users')
-          .select('id, name, coach_id')
-          .eq('id', athleteId)
+          .from("users")
+          .select("id, name, coach_id")
+          .eq("id", athleteId)
           .single();
 
-        if (!athlete || (athlete.coach_id !== user.userId && user.role !== 'admin')) {
+        if (
+          !athlete ||
+          (athlete.coach_id !== user.userId && user.role !== "admin")
+        ) {
           return null;
         }
 
         // Get basic analytics for each athlete
         const startDate = new Date();
         switch (timeframe) {
-          case '1m': startDate.setMonth(startDate.getMonth() - 1); break;
-          case '3m': startDate.setMonth(startDate.getMonth() - 3); break;
-          case '6m': startDate.setMonth(startDate.getMonth() - 6); break;
-          case '1y': startDate.setFullYear(startDate.getFullYear() - 1); break;
+          case "1m":
+            startDate.setMonth(startDate.getMonth() - 1);
+            break;
+          case "3m":
+            startDate.setMonth(startDate.getMonth() - 3);
+            break;
+          case "6m":
+            startDate.setMonth(startDate.getMonth() - 6);
+            break;
+          case "1y":
+            startDate.setFullYear(startDate.getFullYear() - 1);
+            break;
         }
 
         const { data: sessions } = await supabase
-          .from('workout_sessions')
-          .select('id, total_volume, started_at')
-          .eq('user_id', athleteId)
-          .gte('started_at', startDate.toISOString());
+          .from("workout_sessions")
+          .select("id, total_volume, started_at")
+          .eq("user_id", athleteId)
+          .gte("started_at", startDate.toISOString());
 
         return {
           athleteId,
           athleteName: athlete.name,
           totalWorkouts: sessions?.length || 0,
-          totalVolume: sessions?.reduce((sum, s) => sum + (s.total_volume || 0), 0) || 0,
-          avgVolume: sessions?.length ? Math.round((sessions.reduce((sum, s) => sum + (s.total_volume || 0), 0) / sessions.length)) : 0
+          totalVolume:
+            sessions?.reduce((sum, s) => sum + (s.total_volume || 0), 0) || 0,
+          avgVolume: sessions?.length
+            ? Math.round(
+                sessions.reduce((sum, s) => sum + (s.total_volume || 0), 0) /
+                  sessions.length
+              )
+            : 0,
         };
       })
     );
@@ -325,14 +417,13 @@ export async function POST(request: NextRequest) {
         reportType,
         timeframe,
         athletes: reportData.filter(Boolean),
-        generatedAt: new Date().toISOString()
-      }
+        generatedAt: new Date().toISOString(),
+      },
     });
-
   } catch (error) {
-    console.error('Analytics report generation error:', error);
+    console.error("Analytics report generation error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { BarChart3, TrendingUp, Calendar, Users, Dumbbell, Rocket } from "lucide-react";
+import {
+  BarChart3,
+  TrendingUp,
+  Calendar,
+  Users,
+  Dumbbell,
+  Rocket,
+} from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -36,8 +43,7 @@ export default function Home() {
                 </Link>
               ) : (
                 <Link href="/login" className="btn-primary w-full">
-                  <Rocket className="w-5 h-5" /> Get
-                  Started
+                  <Rocket className="w-5 h-5" /> Get Started
                 </Link>
               )}
             </div>

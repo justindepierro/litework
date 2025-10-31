@@ -84,7 +84,9 @@ export default function LoginPage() {
           {/* Enhanced mobile-first demo credentials */}
           {demoCredentials.length > 0 && (
             <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mt-6 space-y-3">
-              <p className="text-sm font-bold text-navy-700">Demo Credentials:</p>
+              <p className="text-sm font-bold text-navy-700">
+                Demo Credentials:
+              </p>
               <div className="space-y-2">
                 {demoCredentials.map((cred, index) => (
                   <button
@@ -93,8 +95,12 @@ export default function LoginPage() {
                     onClick={() => fillDemoCredentials(cred)}
                     className="w-full text-left bg-white hover:bg-blue-50 px-4 py-3 rounded-xl border border-blue-200 transition-all touch-manipulation shadow-sm hover:shadow-md"
                   >
-                    <div className="font-bold text-navy-700 text-sm">{cred.role}</div>
-                    <div className="text-body-secondary text-xs">{cred.email}</div>
+                    <div className="font-bold text-navy-700 text-sm">
+                      {cred.role}
+                    </div>
+                    <div className="text-body-secondary text-xs">
+                      {cred.email}
+                    </div>
                     <div className="text-xs text-silver-600 mt-1">
                       {cred.description}
                     </div>

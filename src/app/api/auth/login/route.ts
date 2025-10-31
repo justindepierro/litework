@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,21 +22,23 @@ export async function POST(request: NextRequest) {
     if (result.success && result.data?.user) {
       // Get user profile from our users table
       const profileResult = await supabaseApiClient.getCurrentUser();
-      
+
       if (profileResult.success && profileResult.data) {
         // Create a local JWT token with our expected structure
         const tokenPayload = {
           userId: profileResult.data.id,
           email: profileResult.data.email,
-          role: profileResult.data.role
+          role: profileResult.data.role,
         };
-        
-        const localToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '24h' });
-        
+
+        const localToken = jwt.sign(tokenPayload, JWT_SECRET, {
+          expiresIn: "24h",
+        });
+
         return NextResponse.json({
           success: true,
           token: localToken,
-          user: profileResult.data
+          user: profileResult.data,
         });
       } else {
         return NextResponse.json(
@@ -67,7 +70,7 @@ export async function GET() {
         email: "jdepierro@burkecatholic.org",
         password: "TempPassword123!",
         description: "Full access to all features (Coach Justin DePierro)",
-      }
+      },
     ],
   });
 }

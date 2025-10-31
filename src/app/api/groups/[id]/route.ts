@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, canManageGroups } from "@/lib/auth";
-import { 
-  mockGroups, 
-  getGroupById, 
-  updateGroup, 
-  deleteGroup 
-} from "@/lib/mock-database";
+import {
+  getGroupById,
+  updateGroup,
+  deleteGroup,
+} from "@/lib/database-service";
 
 // PUT /api/groups/[id] - Update group (coaches only)
 export async function PUT(
@@ -14,7 +13,7 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -31,27 +30,32 @@ export async function PUT(
     }
 
     const groupId = id;
-    const groupIndex = mockGroups.findIndex((g) => g.id === groupId);
-
-    if (groupIndex === -1) {
+    
+    // Check if group exists
+    const existingGroup = await getGroupById(groupId);
+    if (!existingGroup) {
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
     }
 
     const updateData = await request.json();
-    const existingGroup = mockGroups[groupIndex];
 
     // Update group
-    mockGroups[groupIndex] = {
-      ...existingGroup,
+    const updatedGroup = await updateGroup(groupId, {
       ...updateData,
       id: groupId, // Preserve ID
       coachId: existingGroup.coachId, // Preserve coach ownership
-      updatedAt: new Date(),
-    };
+    });
+
+    if (!updatedGroup) {
+      return NextResponse.json(
+        { error: "Failed to update group" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      group: mockGroups[groupIndex],
+      group: updatedGroup,
     });
   } catch (error) {
     console.error("Group PUT error:", error);
@@ -69,7 +73,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const auth = verifyToken(request);
+    const auth = await verifyToken(request);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -86,14 +90,21 @@ export async function DELETE(
     }
 
     const groupId = id;
-    const groupIndex = mockGroups.findIndex((g) => g.id === groupId);
-
-    if (groupIndex === -1) {
+    
+    // Check if group exists
+    const existingGroup = await getGroupById(groupId);
+    if (!existingGroup) {
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
     }
 
-    // Remove group
-    mockGroups.splice(groupIndex, 1);
+    // Delete group
+    const success = await deleteGroup(groupId);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Failed to delete group" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

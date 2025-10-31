@@ -34,12 +34,12 @@ export function createSuccessResponse<T>(
     requestId,
   };
 
-  return NextResponse.json(response, { 
-    status, 
+  return NextResponse.json(response, {
+    status,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
-    }
+    },
   });
 }
 
@@ -60,12 +60,12 @@ export function createErrorResponse(
     requestId,
   };
 
-  return NextResponse.json(response, { 
+  return NextResponse.json(response, {
     status,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
-    }
+    },
   });
 }
 
@@ -85,33 +85,27 @@ export function createUnauthorizedResponse(
   message: string = "Authentication required",
   requestId?: string
 ): NextResponse<ApiResponse<null>> {
-  return createErrorResponse(
-    "Unauthorized",
-    message,
-    { status: 401, requestId }
-  );
+  return createErrorResponse("Unauthorized", message, {
+    status: 401,
+    requestId,
+  });
 }
 
 export function createForbiddenResponse(
   message: string = "Insufficient permissions",
   requestId?: string
 ): NextResponse<ApiResponse<null>> {
-  return createErrorResponse(
-    "Forbidden",
-    message,
-    { status: 403, requestId }
-  );
+  return createErrorResponse("Forbidden", message, { status: 403, requestId });
 }
 
 export function createValidationErrorResponse(
   errors: Record<string, string[]> | string,
   requestId?: string
 ): NextResponse<ApiResponse<null>> {
-  return createErrorResponse(
-    errors,
-    "Validation failed",
-    { status: 422, requestId }
-  );
+  return createErrorResponse(errors, "Validation failed", {
+    status: 422,
+    requestId,
+  });
 }
 
 export function createInternalServerErrorResponse(
@@ -126,9 +120,12 @@ export function createInternalServerErrorResponse(
   }
 
   // Don't expose internal error details in production
-  const publicError = process.env.NODE_ENV === "development" 
-    ? (error instanceof Error ? error.message : error)
-    : "An unexpected error occurred";
+  const publicError =
+    process.env.NODE_ENV === "development"
+      ? error instanceof Error
+        ? error.message
+        : error
+      : "An unexpected error occurred";
 
   return createErrorResponse(
     publicError || "Internal server error",
@@ -144,7 +141,7 @@ export function createRateLimitResponse(
 ): NextResponse<ApiResponse<null>> {
   const headers: Record<string, string> = {};
   if (retryAfter) {
-    headers['Retry-After'] = retryAfter.toString();
+    headers["Retry-After"] = retryAfter.toString();
   }
 
   return createErrorResponse(
@@ -163,10 +160,10 @@ export function withErrorHandling<T extends unknown[]>(
       return await handler(...args);
     } catch (error) {
       console.error("API Handler Error:", error);
-      
+
       // Generate a simple request ID for tracking
       const requestId = `req_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-      
+
       return createInternalServerErrorResponse(
         error instanceof Error ? error : undefined,
         requestId
@@ -177,13 +174,16 @@ export function withErrorHandling<T extends unknown[]>(
 
 // Validation helpers
 export function validateRequiredFields(
-  data: Record<string, unknown>, 
+  data: Record<string, unknown>,
   requiredFields: string[]
 ): Record<string, string[]> | null {
   const errors: Record<string, string[]> = {};
 
   for (const field of requiredFields) {
-    if (!data[field] || (typeof data[field] === 'string' && !data[field].trim())) {
+    if (
+      !data[field] ||
+      (typeof data[field] === "string" && !data[field].trim())
+    ) {
       errors[field] = [`${field} is required`];
     }
   }
@@ -197,8 +197,8 @@ export function validateEmail(email: string): boolean {
 }
 
 export function validateStringLength(
-  value: string, 
-  min: number, 
+  value: string,
+  min: number,
   max: number
 ): boolean {
   return value.length >= min && value.length <= max;
