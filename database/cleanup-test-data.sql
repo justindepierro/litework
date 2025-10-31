@@ -18,14 +18,14 @@ WHERE athlete_id IN (
 
 -- Delete from workout_sessions (if exists)
 DELETE FROM public.workout_sessions 
-WHERE athlete_id IN (
+WHERE user_id IN (
   SELECT id FROM public.users 
   WHERE email != 'jdepierro@burkecatholic.org'
 );
 
 -- Delete from workout_assignments (if exists)
 DELETE FROM public.workout_assignments 
-WHERE athlete_id IN (
+WHERE assigned_to_user_id IN (
   SELECT id FROM public.users 
   WHERE email != 'jdepierro@burkecatholic.org'
 );
