@@ -374,3 +374,31 @@ getUserProfile error: {
  GET /athletes 200 in 1779ms (compile: 541ms, render: 1239ms)
  GET /api/health 503 in 687ms (compile: 16ms, render: 671ms)
 [2025-10-30 21:54:26] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 147ms (compile: 16ms, render: 132ms)
+[2025-10-30 21:54:57] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 222ms (compile: 9ms, render: 213ms)
+[2025-10-30 21:55:27] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 263ms (compile: 6ms, render: 257ms)
+[2025-10-30 21:55:58] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 143ms (compile: 6ms, render: 137ms)
+[2025-10-30 21:56:29] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 136ms (compile: 8ms, render: 128ms)
+[2025-10-30 21:56:59] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 305ms (compile: 26ms, render: 279ms)
+[2025-10-30 21:57:30] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 140ms (compile: 11ms, render: 129ms)
+[2025-10-30 21:58:01] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 158ms (compile: 7ms, render: 151ms)
+[2025-10-30 21:58:32] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 313ms (compile: 14ms, render: 299ms)
+[2025-10-30 21:59:03] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 237ms (compile: 8ms, render: 229ms)
+[2025-10-30 21:59:34] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 147ms (compile: 20ms, render: 128ms)
+[2025-10-30 22:00:05] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 228ms (compile: 8ms, render: 219ms)
+[2025-10-30 22:00:36] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 141ms (compile: 9ms, render: 132ms)
+[2025-10-30 22:01:06] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m
+ GET /api/health 503 in 201ms (compile: 8ms, render: 192ms)
+[2025-10-30 22:01:37] [1;33m⚠️  WARNING: Health check failed (server may be building)[0m

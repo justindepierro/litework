@@ -1,11 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
+import { verifyToken, isAdmin } from "@/lib/auth";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Only admins can delete users
+    if (!isAdmin(auth.user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
 
     const result = await supabaseApiClient.deleteAthlete(id);

@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
+import { verifyToken, canAssignWorkouts } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Only coaches/admins can create KPIs
+    if (!canAssignWorkouts(auth.user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { athleteId, exerciseId, exerciseName, currentPR, dateAchieved } =
       body;

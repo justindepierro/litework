@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
+import { verifyToken } from "@/lib/auth";
 
 // GET /api/messages - Get messages for current user
 export async function GET(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const conversationWith = searchParams.get("with");
     const limit = parseInt(searchParams.get("limit") || "50");
@@ -32,6 +43,16 @@ export async function GET(request: NextRequest) {
 // POST /api/messages - Send a new message
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { recipient_id, subject, message, priority = "normal" } = body;
 

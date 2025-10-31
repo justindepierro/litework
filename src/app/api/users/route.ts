@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
+import { verifyToken, canViewAllAthletes } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Check if user has permission to view all athletes
+    if (!canViewAllAthletes(auth.user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     // For now, only support getting athletes
     const result = await supabaseApiClient.getAthletes();
 
@@ -34,6 +53,24 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Only coaches and admins can create users
+    if (!canViewAllAthletes(auth.user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { name, email, password } = body;
 

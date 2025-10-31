@@ -1,9 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseApiClient } from "@/lib/supabase-client";
+import { verifyToken, canAssignWorkouts } from "@/lib/auth";
 
 // POST /api/bulk-operations - Execute bulk operations
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const auth = await verifyToken(request);
+
+    if (!auth.success || !auth.user) {
+      return NextResponse.json(
+        { error: auth.error || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Only coaches/admins can perform bulk operations
+    if (!canAssignWorkouts(auth.user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { type, targetAthletes, targetGroups, data } = body;
 
