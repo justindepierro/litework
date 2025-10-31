@@ -36,16 +36,16 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const token = await this.getAuthToken();
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers,
     });
@@ -53,7 +53,8 @@ class ApiClient {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        errorData.error || `API Error: ${response.status} ${response.statusText}`
+        errorData.error ||
+          `API Error: ${response.status} ${response.statusText}`
       );
     }
 

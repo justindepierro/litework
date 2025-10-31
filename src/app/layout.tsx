@@ -5,6 +5,12 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
+
+// Initialize development environment
+if (typeof window !== "undefined") {
+  initializeDevelopmentEnvironment();
+}
 
 const inter = Inter({
   subsets: ["latin"],
@@ -74,7 +80,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        {/* Preconnect to Google Fonts for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        {/* Preload critical resources */}
+        <link
+          rel="preload"
+          href="/icons/icon-192x192.png"
+          as="image"
+          type="image/png"
+        />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+      </head>
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}
       >

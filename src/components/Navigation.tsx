@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import {
   Dumbbell,
   BarChart3,
@@ -13,9 +13,65 @@ import {
   LogIn,
 } from "lucide-react";
 
-export default function Navigation() {
+// Memoized navigation link component for better performance
+const NavigationLink = memo(function NavigationLink({
+  href,
+  children,
+  className = "",
+  onClick,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`hover:text-accent-green px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
+});
+
+const Navigation = memo(function Navigation() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Optimize toggle function with useCallback
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
+
+  // Memoize user role checks
+  const isCoachOrAdmin = useMemo(
+    () => user?.role === "admin" || user?.role === "coach",
+    [user?.role]
+  );
+
+  // Memoize navigation items based on user role
+  const navigationItems = useMemo(() => {
+    if (!user) return [];
+
+    const items = [{ href: "/dashboard", label: "Dashboard" }];
+
+    if (isCoachOrAdmin) {
+      items.push(
+        { href: "/workouts", label: "Workouts" },
+        { href: "/athletes", label: "Athletes" },
+        { href: "/schedule", label: "Schedule" }
+      );
+    } else {
+      items.push(
+        { href: "/progress", label: "Progress" },
+        { href: "/schedule", label: "Schedule" }
+      );
+    }
+
+    return items;
+  }, [user, isCoachOrAdmin]);
 
   return (
     <nav className="bg-color-navy-800 border-b border-color-navy-600 shadow-sm sticky top-0 z-40">
@@ -38,40 +94,25 @@ export default function Navigation() {
                 <span className="text-body-small hidden lg:block text-silver-200 mr-2">
                   Welcome, {user.name}
                 </span>
-                <Link
-                  href="/dashboard"
-                  className="hover:text-accent-green px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation"
-                >
-                  Dashboard
-                </Link>
-                {(user.role === "admin" || user.role === "coach") && (
-                  <>
-                    <Link
-                      href="/workouts"
-                      className="hover:text-accent-orange px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation"
-                    >
-                      Workouts
-                    </Link>
-                    <Link
-                      href="/athletes"
-                      className="hover:text-accent-purple px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation"
-                    >
-                      Athletes
-                    </Link>
-                  </>
-                )}
-                <Link
-                  href="/schedule"
-                  className="hover:text-accent-blue px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation"
-                >
-                  Schedule
-                </Link>
-                <Link
-                  href="/progress"
-                  className="hover:text-accent-pink px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation"
-                >
-                  Progress
-                </Link>
+                {navigationItems.map((item) => (
+                  <NavigationLink
+                    key={item.href}
+                    href={item.href}
+                    className={
+                      item.label === "Dashboard"
+                        ? "hover:text-accent-green"
+                        : item.label === "Workouts"
+                          ? "hover:text-accent-orange"
+                          : item.label === "Athletes"
+                            ? "hover:text-accent-purple"
+                            : item.label === "Schedule"
+                              ? "hover:text-accent-blue"
+                              : "hover:text-accent-pink"
+                    }
+                  >
+                    {item.label}
+                  </NavigationLink>
+                ))}
                 <button
                   onClick={logout}
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-800 hover:bg-navy-700 border border-navy-600 touch-manipulation"
@@ -92,7 +133,7 @@ export default function Navigation() {
           {/* Mobile menu button - Enhanced touch target */}
           <div className="md:hidden flex items-center">
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={toggleMobileMenu}
               className="inline-flex items-center justify-center p-3 rounded-xl text-silver-200 hover:text-white hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-all touch-manipulation"
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -225,4 +266,6 @@ export default function Navigation() {
       </div>
     </nav>
   );
-}
+});
+
+export default Navigation;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment } from "@/types";
+import { ApiResponse } from "@/lib/api-response";
 
 // Custom hooks for API data
 export function useGroups() {
@@ -11,14 +12,18 @@ export function useGroups() {
   const loadGroups = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getGroups();
+      const response = (await apiClient.getGroups()) as ApiResponse;
       if (response.success && response.data) {
         const data = response.data as { groups?: AthleteGroup[] };
         if (data.groups) {
           setGroups(data.groups);
         }
       } else {
-        setError(response.error || "Failed to load groups");
+        setError(
+          typeof response.error === "string"
+            ? response.error
+            : "Failed to load groups"
+        );
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -42,14 +47,18 @@ export function useWorkouts() {
   const loadWorkouts = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getWorkouts();
+      const response = (await apiClient.getWorkouts()) as ApiResponse;
       if (response.success && response.data) {
         const data = response.data as { workouts?: WorkoutPlan[] };
         if (data.workouts) {
           setWorkouts(data.workouts);
         }
       } else {
-        setError(response.error || "Failed to load workouts");
+        setError(
+          typeof response.error === "string"
+            ? response.error
+            : "Failed to load workouts"
+        );
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -77,14 +86,18 @@ export function useAssignments(params?: {
   const loadAssignments = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getAssignments(params);
+      const response = (await apiClient.getAssignments(params)) as ApiResponse;
       if (response.success && response.data) {
         const data = response.data as { assignments?: WorkoutAssignment[] };
         if (data.assignments) {
           setAssignments(data.assignments);
         }
       } else {
-        setError(response.error || "Failed to load assignments");
+        setError(
+          typeof response.error === "string"
+            ? response.error
+            : "Failed to load assignments"
+        );
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");

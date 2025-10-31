@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
+import { ApiResponse } from "@/lib/api-response";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function LoginPage() {
     // Load demo credentials
     const loadDemoCredentials = async () => {
       try {
-        const response = await apiClient.getDemoCredentials();
+        const response = (await apiClient.getDemoCredentials()) as ApiResponse;
         if (response.success && response.data) {
           const data = response.data as {
             demoCredentials?: Array<{

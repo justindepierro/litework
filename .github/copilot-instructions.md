@@ -18,6 +18,7 @@ This is a modern full-stack web application built with:
 ## Authentication & Authorization (CRITICAL)
 
 ### Role Hierarchy
+
 ```
 admin (level 3) → Full system access
   ↓
@@ -31,6 +32,7 @@ athlete (level 1) → View own data, complete workouts
 ### Security Patterns
 
 **API Routes** - Use auth wrappers from `src/lib/auth-utils.ts`:
+
 ```typescript
 import { withAuth, withPermission, withRole } from "@/lib/auth-utils";
 
@@ -50,6 +52,7 @@ export async function POST(request: NextRequest) {
 ```
 
 **Frontend Pages** - Use guard hooks from `src/hooks/use-auth-guard.ts`:
+
 ```typescript
 import { useCoachGuard } from "@/hooks/use-auth-guard";
 
@@ -61,15 +64,17 @@ function CoachPage() {
 ```
 
 **Permission Helpers** - Use from `src/lib/supabase-auth.ts`:
+
 ```typescript
-isAdmin(user)              // user.role === "admin"
-isCoach(user)              // user.role === "coach" || admin
-canManageGroups(user)      // coach or admin
-canAssignWorkouts(user)    // coach or admin
-canViewAllAthletes(user)   // coach or admin
+isAdmin(user); // user.role === "admin"
+isCoach(user); // user.role === "coach" || admin
+canManageGroups(user); // coach or admin
+canAssignWorkouts(user); // coach or admin
+canViewAllAthletes(user); // coach or admin
 ```
 
 ### Reference Documentation
+
 - `ARCHITECTURE.md` - Complete auth patterns and best practices
 - `SECURITY_AUDIT_REPORT.md` - Security audit findings and fixes
 - All API routes follow consistent patterns documented in ARCHITECTURE.md
@@ -96,6 +101,7 @@ canViewAllAthletes(user)   // coach or admin
 ## Recent Major Enhancements (October 2025)
 
 ### Security & Authentication (Oct 30, 2025)
+
 - **Comprehensive Security Audit**: Fixed 6 critical unprotected API routes
 - **Centralized Auth Utilities**: `withAuth`, `withPermission`, `withRole` wrappers
 - **Role Hierarchy**: Admin role properly inherits all coach/athlete permissions
@@ -103,6 +109,7 @@ canViewAllAthletes(user)   // coach or admin
 - **Documentation**: Created ARCHITECTURE.md and SECURITY_AUDIT_REPORT.md
 
 ### Advanced Workout Editor System
+
 - **Exercise Grouping**: Comprehensive superset, circuit, and section organization
 - **Unified Experience**: Same advanced editor for both creating and editing workouts
 - **Drag-and-Drop**: Manual reordering with up/down controls for precise organization
@@ -110,6 +117,7 @@ canViewAllAthletes(user)   // coach or admin
 - **Type-Safe Architecture**: Enhanced TypeScript interfaces with `ExerciseGroup` and updated `WorkoutExercise`
 
 ### Production Deployment
+
 - **Vercel Production**: Deployed at https://litework-p6uw3kn0c-justin-depierros-projects.vercel.app
 - **TypeScript Validation**: Integrated into deployment workflow
 - **Persistent Dev Server**: Auto-restart capabilities with health monitoring

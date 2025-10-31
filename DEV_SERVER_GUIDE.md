@@ -3,6 +3,7 @@
 ## The Problem
 
 Next.js dev servers can stop unexpectedly due to:
+
 - File changes that cause compilation errors
 - Memory issues or crashes
 - System events (sleep, network changes)
@@ -18,16 +19,19 @@ We've created a **persistent development server** that automatically restarts wh
 ## 🚀 Quick Start
 
 ### Option 1: NPM Script (Recommended)
+
 ```bash
 npm run dev:persistent
 ```
 
 ### Option 2: Direct Script
+
 ```bash
 ./dev-persistent.sh
 ```
 
 ### Option 3: VS Code Task
+
 1. Press `Cmd+Shift+B` (or `Ctrl+Shift+B` on Windows/Linux)
 2. Select **"Start Development Server (Persistent)"**
 
@@ -36,29 +40,34 @@ npm run dev:persistent
 ## ✨ Features
 
 ### 🔄 Automatic Restart
+
 - Server automatically restarts when it stops
 - Handles crashes gracefully
 - Exponential backoff for repeated failures
 
 ### 🏥 Health Monitoring
+
 - Checks server health every 30 seconds
 - Monitors process status
 - Verifies port availability
 - Pings health endpoint
 
 ### 📊 Smart Recovery
+
 - Tracks consecutive failures
 - Stops after 5 consecutive failures (prevents infinite loops)
 - Cleans up port conflicts automatically
 - Adds delays for repeated failures
 
 ### 📝 Comprehensive Logging
+
 - All events logged to `.dev-server.log`
 - Timestamped entries
 - Color-coded output
 - Session tracking
 
 ### 🛡️ Safety Features
+
 - Graceful shutdown with Ctrl+C
 - Uptime tracking
 - Restart counting
@@ -69,36 +78,45 @@ npm run dev:persistent
 ## 🎯 When to Use Each Server Mode
 
 ### `npm run dev:persistent` ⭐ **RECOMMENDED FOR DAILY WORK**
+
 **Use when:**
+
 - You're actively developing for extended periods
 - You want the server to survive file saves and errors
 - You step away and want the server running when you return
 - You're making experimental changes that might break things
 
 **Benefits:**
+
 - Server stays up through errors
 - Automatically recovers from crashes
 - Best for "fire and forget" development
 
 ### `npm run dev:smart`
+
 **Use when:**
+
 - You want a clean start
 - You're debugging specific issues
 - You want to see the full startup process
 - You prefer manual control
 
 **Benefits:**
+
 - Single clean startup
 - Full visibility into initialization
 - Better for troubleshooting
 
 ### `npm run dev`
+
 **Use when:**
+
 - You want vanilla Next.js behavior
 - You're comparing behavior with standard setup
 - Scripts aren't working
 
 **Benefits:**
+
 - Simplest possible setup
 - No wrapper scripts
 
@@ -107,6 +125,7 @@ npm run dev:persistent
 ## 📋 Server Output Explained
 
 ### Starting Up
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🚀 LiteWork Persistent Development Server
@@ -119,6 +138,7 @@ npm run dev:persistent
 ```
 
 ### Automatic Restart
+
 ```
 [10:45:30] ⚠️  WARNING: Server process (PID 12345) has stopped
 [10:45:30] ⚠️  WARNING: Server stopped. Failure count: 1/5
@@ -127,6 +147,7 @@ npm run dev:persistent
 ```
 
 ### Graceful Shutdown
+
 ```
 ^C
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -145,17 +166,21 @@ npm run dev:persistent
 ### Server Won't Start
 
 **Check the logs:**
+
 ```bash
 tail -f .dev-server.log
 ```
 
 **Common issues:**
+
 1. **Port already in use**: Script should auto-fix, but you can manually run:
+
    ```bash
    npm run kill:dev
    ```
 
 2. **Missing dependencies**: Script will auto-install, but you can manually run:
+
    ```bash
    npm install
    ```
@@ -165,22 +190,26 @@ tail -f .dev-server.log
 ### Too Many Restarts
 
 If you see:
+
 ```
 ERROR: Too many consecutive failures (5). Stopping persistent mode.
 ```
 
 **This means:**
+
 - Your code has persistent errors preventing startup
 - Check `.dev-server.log` for details
 - Fix the issues, then restart
 
 **Recovery:**
+
 1. Fix the errors in your code
 2. Run `npm run dev:persistent` again
 
 ### Server Stuck
 
 If the server appears stuck:
+
 1. Press `Ctrl+C` to stop cleanly
 2. Run `npm run kill:dev` to force cleanup
 3. Restart with `npm run dev:persistent`
@@ -192,16 +221,19 @@ If the server appears stuck:
 All activity is logged to: `.dev-server.log` in your project root
 
 **View live logs:**
+
 ```bash
 tail -f .dev-server.log
 ```
 
 **Search logs:**
+
 ```bash
 grep "ERROR" .dev-server.log
 ```
 
 **Clear old logs:**
+
 ```bash
 rm .dev-server.log
 ```
@@ -210,16 +242,17 @@ rm .dev-server.log
 
 ## 🎮 Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+C` | Gracefully stop server and show stats |
-| `Cmd+Shift+B` | Open VS Code task picker |
+| Key           | Action                                |
+| ------------- | ------------------------------------- |
+| `Ctrl+C`      | Gracefully stop server and show stats |
+| `Cmd+Shift+B` | Open VS Code task picker              |
 
 ---
 
 ## 📈 Statistics Tracking
 
 When you stop the server, you'll see:
+
 - **Total uptime**: How long the server ran
 - **Restart count**: How many times it recovered
 - **Log location**: Where to find detailed logs
@@ -235,6 +268,7 @@ npm run kill:dev
 ```
 
 This will:
+
 - Kill all Node/Next.js processes
 - Free port 3000
 - Clean up any zombie processes

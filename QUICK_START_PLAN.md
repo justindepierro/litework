@@ -328,7 +328,8 @@
 4. Image and asset optimization
 5. Database query optimization
 ```
-```
+
+````
 
 #### **3. Security Hardening** ✅ DONE (1 hour - included in main migration)
 
@@ -340,7 +341,7 @@
 ✅ Role-based access controls working (coach vs athlete)
 ✅ Session management through Supabase auth
 ✅ Hybrid auth system for backward compatibility
-```
+````
 
 ---
 

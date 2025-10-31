@@ -5,16 +5,16 @@ import { verifyToken } from "@/lib/auth";
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
-    
+
     console.log("🔍 Auth Debug:");
     console.log("Authorization header:", authHeader ? "Present" : "Missing");
-    
+
     if (authHeader) {
       console.log("Header value:", authHeader.substring(0, 20) + "...");
     }
 
     const auth = await verifyToken(request);
-    
+
     console.log("Auth result:", {
       success: auth.success,
       user: auth.user ? auth.user.email : null,

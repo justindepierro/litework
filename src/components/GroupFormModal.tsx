@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
+import { ApiResponse } from "@/lib/api-response";
 import { X } from "lucide-react";
 
 interface GroupFormModalProps {
@@ -146,7 +147,10 @@ export default function GroupFormModal({
 
     try {
       if (editingGroup) {
-        const response = await apiClient.updateGroup(editingGroup.id, formData);
+        const response = (await apiClient.updateGroup(
+          editingGroup.id,
+          formData
+        )) as ApiResponse;
         if (response.success && response.data) {
           const data = response.data as { group?: AthleteGroup };
           if (data.group) {
@@ -156,10 +160,14 @@ export default function GroupFormModal({
             setError("Failed to update group");
           }
         } else {
-          setError(response.error || "Failed to update group");
+          setError(
+            typeof response.error === "string"
+              ? response.error
+              : "Failed to update group"
+          );
         }
       } else {
-        const response = await apiClient.createGroup(formData);
+        const response = (await apiClient.createGroup(formData)) as ApiResponse;
         if (response.success && response.data) {
           const data = response.data as { group?: AthleteGroup };
           if (data.group) {
@@ -169,7 +177,11 @@ export default function GroupFormModal({
             setError("Failed to create group");
           }
         } else {
-          setError(response.error || "Failed to create group");
+          setError(
+            typeof response.error === "string"
+              ? response.error
+              : "Failed to create group"
+          );
         }
       }
     } catch (err) {

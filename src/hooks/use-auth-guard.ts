@@ -28,12 +28,11 @@ export const useAuthGuard = (
   const router = useRouter();
 
   const isAuthenticated = !!user;
-  
+
   // Check if user has required role
   // Admin role has access to all coach and athlete features
-  const hasRequiredRole = !requiredRole || 
-    user?.role === requiredRole || 
-    user?.role === "admin";
+  const hasRequiredRole =
+    !requiredRole || user?.role === requiredRole || user?.role === "admin";
 
   useEffect(() => {
     // Don't redirect while still loading

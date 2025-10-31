@@ -30,17 +30,18 @@ athlete (level 1) - View own data, complete workouts
 
 ### Permission Matrix
 
-| Permission | Admin | Coach | Athlete |
-|-----------|-------|-------|---------|
-| View All Users | ✅ | ✅ | ❌ |
-| Manage Users | ✅ | ❌ | ❌ |
-| Assign Workouts | ✅ | ✅ | ❌ |
-| Manage Groups | ✅ | ✅ | ❌ |
-| View Own Data | ✅ | ✅ | ✅ |
+| Permission      | Admin | Coach | Athlete |
+| --------------- | ----- | ----- | ------- |
+| View All Users  | ✅    | ✅    | ❌      |
+| Manage Users    | ✅    | ❌    | ❌      |
+| Assign Workouts | ✅    | ✅    | ❌      |
+| Manage Groups   | ✅    | ✅    | ❌      |
+| View Own Data   | ✅    | ✅    | ✅      |
 
 ### Auth Helper Functions
 
 **Backend (API Routes)**:
+
 ```typescript
 import { withAuth, withPermission, withRole } from "@/lib/auth-utils";
 
@@ -70,6 +71,7 @@ export async function DELETE(request: NextRequest) {
 ```
 
 **Frontend (Page Guards)**:
+
 ```typescript
 import { useCoachGuard, useAthleteGuard, useAnyUserGuard } from "@/hooks/use-auth-guard";
 
@@ -93,13 +95,13 @@ function DashboardPage() {
 Located in `src/lib/supabase-auth.ts`:
 
 ```typescript
-isAdmin(user)              // user.role === "admin"
-isCoach(user)              // user.role === "coach" || admin
-isAthlete(user)            // user.role === "athlete"
-canManageGroups(user)      // coach or admin
-canAssignWorkouts(user)    // coach or admin
-canViewAllAthletes(user)   // coach or admin
-canModifyWorkouts(user)    // coach or admin
+isAdmin(user); // user.role === "admin"
+isCoach(user); // user.role === "coach" || admin
+isAthlete(user); // user.role === "athlete"
+canManageGroups(user); // coach or admin
+canAssignWorkouts(user); // coach or admin
+canViewAllAthletes(user); // coach or admin
+canModifyWorkouts(user); // coach or admin
 ```
 
 **⚠️ Important**: These functions already handle the admin hierarchy. Use them instead of direct role checks.
@@ -129,7 +131,9 @@ export async function GET(request: NextRequest) {
 // Success
 return NextResponse.json({
   success: true,
-  data: { /* your data */ }
+  data: {
+    /* your data */
+  },
 });
 
 // Error
@@ -193,6 +197,7 @@ const { user } = useAuth();
 ```
 
 **Never use**:
+
 ```typescript
 // ❌ Bad - excludes admin
 {user.role === "coach" && <Link>...</Link>}
@@ -269,7 +274,10 @@ import { logAuthEvent } from "@/lib/auth-utils";
 logAuthEvent(user, "DELETE", "user", true, { targetUserId: id });
 
 // After failed attempt
-logAuthEvent(user, "DELETE", "user", false, { targetUserId: id, reason: "not found" });
+logAuthEvent(user, "DELETE", "user", false, {
+  targetUserId: id,
+  reason: "not found",
+});
 ```
 
 ---
@@ -314,29 +322,30 @@ logAuthEvent(user, "DELETE", "user", false, { targetUserId: id, reason: "not fou
 
 ## API Route Inventory
 
-| Route | Auth | Permission | Status |
-|-------|------|-----------|--------|
-| `/api/health` | Public | None | ✅ |
-| `/api/auth/login` | Public | None | ✅ |
-| `/api/auth/debug` | Required | Any | ✅ |
-| `/api/workouts` | Required | Coach | ✅ |
-| `/api/exercises` | Required | Any | ✅ |
-| `/api/groups` | Required | Coach | ✅ |
-| `/api/groups/[id]` | Required | Coach | ✅ |
-| `/api/assignments` | Required | Role-based | ✅ |
-| `/api/users` | Required | Coach | ✅ |
-| `/api/users/[id]` | Required | Admin | ✅ |
-| `/api/messages` | Required | Any | ✅ |
-| `/api/kpis` | Required | Coach | ✅ |
-| `/api/kpis/[id]` | Required | Coach | ✅ |
-| `/api/bulk-operations` | Required | Coach | ✅ |
-| `/api/analytics` | Required | Coach | ✅ |
+| Route                  | Auth     | Permission | Status |
+| ---------------------- | -------- | ---------- | ------ |
+| `/api/health`          | Public   | None       | ✅     |
+| `/api/auth/login`      | Public   | None       | ✅     |
+| `/api/auth/debug`      | Required | Any        | ✅     |
+| `/api/workouts`        | Required | Coach      | ✅     |
+| `/api/exercises`       | Required | Any        | ✅     |
+| `/api/groups`          | Required | Coach      | ✅     |
+| `/api/groups/[id]`     | Required | Coach      | ✅     |
+| `/api/assignments`     | Required | Role-based | ✅     |
+| `/api/users`           | Required | Coach      | ✅     |
+| `/api/users/[id]`      | Required | Admin      | ✅     |
+| `/api/messages`        | Required | Any        | ✅     |
+| `/api/kpis`            | Required | Coach      | ✅     |
+| `/api/kpis/[id]`       | Required | Coach      | ✅     |
+| `/api/bulk-operations` | Required | Coach      | ✅     |
+| `/api/analytics`       | Required | Coach      | ✅     |
 
 ---
 
 ## Common Pitfalls to Avoid
 
 ### ❌ Direct Role Check
+
 ```typescript
 if (user.role === "coach") {
   // Excludes admin!
@@ -344,6 +353,7 @@ if (user.role === "coach") {
 ```
 
 ### ✅ Use Permission Helper
+
 ```typescript
 if (canAssignWorkouts(user)) {
   // Includes admin and coach
@@ -351,6 +361,7 @@ if (canAssignWorkouts(user)) {
 ```
 
 ### ❌ Missing Auth on API Route
+
 ```typescript
 export async function GET(request: NextRequest) {
   const result = await getData(); // No auth check!
@@ -359,6 +370,7 @@ export async function GET(request: NextRequest) {
 ```
 
 ### ✅ Proper Auth Wrapper
+
 ```typescript
 export async function GET(request: NextRequest) {
   return withAuth(request, async (user) => {
@@ -369,17 +381,16 @@ export async function GET(request: NextRequest) {
 ```
 
 ### ❌ Inconsistent Error Responses
+
 ```typescript
 return NextResponse.json("Error occurred"); // Wrong format
 return new Response("Error", { status: 500 }); // Wrong class
 ```
 
 ### ✅ Consistent Error Format
+
 ```typescript
-return NextResponse.json(
-  { error: "Error occurred" },
-  { status: 500 }
-);
+return NextResponse.json({ error: "Error occurred" }, { status: 500 });
 ```
 
 ---

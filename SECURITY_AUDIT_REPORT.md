@@ -1,4 +1,5 @@
 # Security & Architecture Audit Report
+
 ## LiteWork Fitness Tracker
 
 **Date**: October 30, 2025  
@@ -30,25 +31,27 @@ Conducted a comprehensive security audit of the LiteWork application, focusing o
 
 #### Affected Endpoints:
 
-| Endpoint | Method | Data Exposed | Risk Level |
-|----------|--------|--------------|-----------|
-| `/api/users` | GET | All athlete data | HIGH |
-| `/api/users` | POST | Create users | CRITICAL |
-| `/api/users/[id]` | DELETE | Delete any user | CRITICAL |
-| `/api/messages` | GET | All messages | HIGH |
-| `/api/messages` | POST | Send as any user | HIGH |
-| `/api/kpis` | POST | Create fake KPIs | MEDIUM |
-| `/api/kpis/[id]` | PUT/DELETE | Modify/delete KPIs | MEDIUM |
-| `/api/bulk-operations` | POST | Mass operations | CRITICAL |
+| Endpoint               | Method     | Data Exposed       | Risk Level |
+| ---------------------- | ---------- | ------------------ | ---------- |
+| `/api/users`           | GET        | All athlete data   | HIGH       |
+| `/api/users`           | POST       | Create users       | CRITICAL   |
+| `/api/users/[id]`      | DELETE     | Delete any user    | CRITICAL   |
+| `/api/messages`        | GET        | All messages       | HIGH       |
+| `/api/messages`        | POST       | Send as any user   | HIGH       |
+| `/api/kpis`            | POST       | Create fake KPIs   | MEDIUM     |
+| `/api/kpis/[id]`       | PUT/DELETE | Modify/delete KPIs | MEDIUM     |
+| `/api/bulk-operations` | POST       | Mass operations    | CRITICAL   |
 
 **Root Cause**: Routes implemented without authentication checks
 
 **Fix Applied**:
+
 - Added `withAuth`, `withPermission`, or `withRole` wrappers to all routes
 - Implemented proper role-based access control
 - Added audit logging for sensitive operations
 
 **Verification**:
+
 ```bash
 # Before: Returns data without auth
 curl http://localhost:3000/api/users
@@ -68,6 +71,7 @@ curl http://localhost:3000/api/users
 **Description**: The `useCoachGuard` hook checked for exact role match (`role === "coach"`), preventing admin users from accessing coach pages like `/athletes` and `/workouts`.
 
 **Affected Components**:
+
 - Athletes page (`/app/athletes/page.tsx`)
 - Workouts page (`/app/workouts/page.tsx`)
 - All pages using `useCoachGuard()`
@@ -75,14 +79,14 @@ curl http://localhost:3000/api/users
 **Root Cause**: Missing role hierarchy logic in auth guards
 
 **Fix Applied**:
+
 ```typescript
 // Before
 const hasRequiredRole = user?.role === requiredRole;
 
 // After
-const hasRequiredRole = !requiredRole || 
-  user?.role === requiredRole || 
-  user?.role === "admin";
+const hasRequiredRole =
+  !requiredRole || user?.role === requiredRole || user?.role === "admin";
 ```
 
 **Verification**: Admin users can now access all coach and athlete features
@@ -97,6 +101,7 @@ const hasRequiredRole = !requiredRole ||
 **Description**: Some components used direct role checks, others used permission helpers, leading to inconsistent behavior.
 
 **Examples Found**:
+
 ```typescript
 // ❌ Bad - excludes admin
 if (user.role === "coach") { ... }
@@ -106,6 +111,7 @@ if (canAssignWorkouts(user)) { ... }
 ```
 
 **Fix Applied**:
+
 - Audited all role checks across codebase
 - Created centralized permission helpers
 - Documented proper patterns in ARCHITECTURE.md
@@ -119,6 +125,7 @@ if (canAssignWorkouts(user)) { ... }
 **Purpose**: Provide consistent, reusable auth patterns
 
 **Key Features**:
+
 - `withAuth()` - Require any authenticated user
 - `withPermission()` - Require specific permission
 - `withRole()` - Require specific role (or higher)
@@ -127,6 +134,7 @@ if (canAssignWorkouts(user)) { ... }
 - `logAuthEvent()` - Audit logging for sensitive operations
 
 **Usage Example**:
+
 ```typescript
 export async function POST(request: NextRequest) {
   return withPermission(request, "assign-workouts", async (user) => {
@@ -138,6 +146,7 @@ export async function POST(request: NextRequest) {
 ```
 
 **Benefits**:
+
 - Type-safe authentication
 - Consistent error responses
 - Built-in audit logging
@@ -149,6 +158,7 @@ export async function POST(request: NextRequest) {
 ### 2. Role Hierarchy & Permission Matrix
 
 **Role Hierarchy**:
+
 ```
 admin (level 3) ─────────────────────┐
   ↓                                  │
@@ -161,13 +171,13 @@ Permissions      ←────────┴──────────┘
 
 **Permission Matrix**:
 
-| Permission | Admin | Coach | Athlete |
-|-----------|-------|-------|---------|
-| view-all | ✅ | ✅ | ❌ |
-| manage-users | ✅ | ❌ | ❌ |
-| assign-workouts | ✅ | ✅ | ❌ |
-| manage-groups | ✅ | ✅ | ❌ |
-| view-own | ✅ | ✅ | ✅ |
+| Permission      | Admin | Coach | Athlete |
+| --------------- | ----- | ----- | ------- |
+| view-all        | ✅    | ✅    | ❌      |
+| manage-users    | ✅    | ❌    | ❌      |
+| assign-workouts | ✅    | ✅    | ❌      |
+| manage-groups   | ✅    | ✅    | ❌      |
+| view-own        | ✅    | ✅    | ✅      |
 
 **Implementation**: Centralized in `auth-utils.ts` for consistency
 
@@ -178,6 +188,7 @@ Permissions      ←────────┴──────────┘
 **File**: `ARCHITECTURE.md` (650+ lines)
 
 **Contents**:
+
 - Authentication & Authorization patterns
 - API route security requirements
 - Frontend routing & guards
@@ -199,21 +210,21 @@ Permissions      ←────────┴──────────┘
 ✅ All API routes return 401 without valid token  
 ✅ All API routes accept valid Supabase tokens  
 ✅ Role checks respect hierarchy (admin > coach > athlete)  
-✅ Permission checks work correctly  
+✅ Permission checks work correctly
 
 ### Authorization Tests
 
 ✅ Athletes cannot access coach-only endpoints  
 ✅ Coaches cannot access admin-only endpoints  
 ✅ Admin can access all endpoints  
-✅ Users can only access their own data (when appropriate)  
+✅ Users can only access their own data (when appropriate)
 
 ### Integration Tests
 
 ✅ Login flow works correctly  
 ✅ Navigation shows appropriate links per role  
 ✅ Page guards redirect unauthorized users  
-✅ API calls include auth headers  
+✅ API calls include auth headers
 
 ---
 
@@ -269,6 +280,7 @@ Permissions      ←────────┴──────────┘
 ### 1. Code Review Checklist (in ARCHITECTURE.md)
 
 Before merging any PR:
+
 - [ ] All new API routes have auth
 - [ ] All new pages have guards
 - [ ] No direct role comparisons
@@ -319,23 +331,23 @@ Before merging any PR:
 
 ## API Route Security Status
 
-| Route | Auth | Permission | Status |
-|-------|------|-----------|--------|
-| `/api/health` | Public | None | ✅ OK |
-| `/api/auth/login` | Public | None | ✅ OK |
-| `/api/auth/debug` | Required | Any | ✅ Fixed |
-| `/api/workouts` | Required | Coach | ✅ OK |
-| `/api/exercises` | Required | Any | ✅ OK |
-| `/api/groups` | Required | Coach | ✅ OK |
-| `/api/groups/[id]` | Required | Coach | ✅ OK |
-| `/api/assignments` | Required | Role-based | ✅ OK |
-| `/api/users` | Required | Coach | ✅ **Fixed** |
-| `/api/users/[id]` | Required | Admin | ✅ **Fixed** |
-| `/api/messages` | Required | Any | ✅ **Fixed** |
-| `/api/kpis` | Required | Coach | ✅ **Fixed** |
-| `/api/kpis/[id]` | Required | Coach | ✅ **Fixed** |
-| `/api/bulk-operations` | Required | Coach | ✅ **Fixed** |
-| `/api/analytics` | Required | Coach | ✅ OK |
+| Route                  | Auth     | Permission | Status       |
+| ---------------------- | -------- | ---------- | ------------ |
+| `/api/health`          | Public   | None       | ✅ OK        |
+| `/api/auth/login`      | Public   | None       | ✅ OK        |
+| `/api/auth/debug`      | Required | Any        | ✅ Fixed     |
+| `/api/workouts`        | Required | Coach      | ✅ OK        |
+| `/api/exercises`       | Required | Any        | ✅ OK        |
+| `/api/groups`          | Required | Coach      | ✅ OK        |
+| `/api/groups/[id]`     | Required | Coach      | ✅ OK        |
+| `/api/assignments`     | Required | Role-based | ✅ OK        |
+| `/api/users`           | Required | Coach      | ✅ **Fixed** |
+| `/api/users/[id]`      | Required | Admin      | ✅ **Fixed** |
+| `/api/messages`        | Required | Any        | ✅ **Fixed** |
+| `/api/kpis`            | Required | Coach      | ✅ **Fixed** |
+| `/api/kpis/[id]`       | Required | Coach      | ✅ **Fixed** |
+| `/api/bulk-operations` | Required | Coach      | ✅ **Fixed** |
+| `/api/analytics`       | Required | Coach      | ✅ OK        |
 
 **Total**: 15 routes  
 **Protected**: 15 (100%)  

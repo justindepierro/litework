@@ -1,6 +1,6 @@
 /**
  * Centralized Authentication Utilities
- * 
+ *
  * This file provides consistent auth patterns and helper functions
  * to prevent authentication/authorization bugs across the application.
  */
@@ -13,7 +13,12 @@ import type { AuthenticatedUser } from "./auth";
  * Type for role-based access control
  */
 export type Role = "admin" | "coach" | "athlete";
-export type Permission = "view-all" | "manage-users" | "assign-workouts" | "manage-groups" | "view-own";
+export type Permission =
+  | "view-all"
+  | "manage-users"
+  | "assign-workouts"
+  | "manage-groups"
+  | "view-own";
 
 /**
  * Role hierarchy: admin > coach > athlete
@@ -40,20 +45,26 @@ const PERMISSION_MATRIX: Record<Permission, Role[]> = {
 /**
  * Check if a user has a specific role or higher in the hierarchy
  */
-export function hasRoleOrHigher(user: AuthenticatedUser, requiredRole: Role): boolean {
+export function hasRoleOrHigher(
+  user: AuthenticatedUser,
+  requiredRole: Role
+): boolean {
   return ROLE_HIERARCHY[user.role] >= ROLE_HIERARCHY[requiredRole];
 }
 
 /**
  * Check if a user has a specific permission
  */
-export function hasPermission(user: AuthenticatedUser, permission: Permission): boolean {
+export function hasPermission(
+  user: AuthenticatedUser,
+  permission: Permission
+): boolean {
   return PERMISSION_MATRIX[permission].includes(user.role);
 }
 
 /**
  * Middleware wrapper for API routes that require authentication
- * 
+ *
  * Usage:
  * ```ts
  * export async function GET(request: NextRequest) {
@@ -82,7 +93,7 @@ export async function withAuth(
 
 /**
  * Middleware wrapper for API routes that require specific permissions
- * 
+ *
  * Usage:
  * ```ts
  * export async function POST(request: NextRequest) {
@@ -112,7 +123,7 @@ export async function withPermission(
 
 /**
  * Middleware wrapper for API routes that require a specific role
- * 
+ *
  * Usage:
  * ```ts
  * export async function DELETE(request: NextRequest) {

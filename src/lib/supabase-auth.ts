@@ -311,7 +311,7 @@ export const verifySupabaseAuth = async (
     // Create a new Supabase client with the user's token for server-side verification
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    
+
     const { createClient } = await import("@supabase/supabase-js");
     const serverSupabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {

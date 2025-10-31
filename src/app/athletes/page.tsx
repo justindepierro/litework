@@ -1,7 +1,8 @@
 "use client";
 
 import { useCoachGuard } from "@/hooks/use-auth-guard";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+import { ApiResponse } from "@/lib/api-response";
 import {
   User,
   Trophy,
@@ -27,9 +28,16 @@ import {
 } from "lucide-react";
 import { User as UserType, AthleteKPI } from "@/types";
 import { apiClient } from "@/lib/api-client";
-import BulkOperationModal from "@/components/BulkOperationModal";
-import BulkOperationHistory from "@/components/BulkOperationHistory";
-import ProgressAnalytics from "@/components/ProgressAnalytics";
+import { log } from "@/lib/dev-logger";
+
+// Dynamic imports for large components
+const BulkOperationModal = lazy(
+  () => import("@/components/BulkOperationModal")
+);
+const BulkOperationHistory = lazy(
+  () => import("@/components/BulkOperationHistory")
+);
+const ProgressAnalytics = lazy(() => import("@/components/ProgressAnalytics"));
 
 interface InviteForm {
   name: string;
@@ -204,7 +212,7 @@ const enhancedAthletes: EnhancedAthlete[] = [
 ];
 
 export default function AthletesPage() {
-  const { user, isLoading } = useCoachGuard();
+  const { isLoading } = useCoachGuard();
 
   const [athletes, setAthletes] = useState<EnhancedAthlete[]>(enhancedAthletes);
   const [error, setError] = useState<string | null>(null);
@@ -244,10 +252,10 @@ export default function AthletesPage() {
     if (!inviteForm.name || !inviteForm.email) return;
 
     try {
-      const response = await apiClient.createAthleteInvite({
+      const response = (await apiClient.createAthleteInvite({
         name: inviteForm.name,
         email: inviteForm.email,
-      });
+      })) as ApiResponse;
 
       if (response.success) {
         // Add to local state with pending status
@@ -285,7 +293,11 @@ export default function AthletesPage() {
         setInviteForm({ name: "", email: "", groupId: "", notes: "" });
         setShowInviteModal(false);
       } else {
-        setError(response.error || "Failed to send invite");
+        setError(
+          typeof response.error === "string"
+            ? response.error
+            : "Failed to send invite"
+        );
       }
     } catch (err) {
       setError("Failed to send invite");
@@ -396,7 +408,7 @@ export default function AthletesPage() {
     data: Record<string, unknown>;
   }) => {
     try {
-      console.log("Executing bulk operation:", operation);
+      log.debug("Executing bulk operation:", operation);
 
       // Call the bulk operations API
       const response = await fetch("/api/bulk-operations", {
@@ -413,7 +425,7 @@ export default function AthletesPage() {
       }
 
       const result = await response.json();
-      console.log("Bulk operation result:", result);
+      log.debug("Bulk operation result:", result);
 
       // Show success message based on operation type
       let successMessage = "";

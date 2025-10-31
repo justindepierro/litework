@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useCoachGuard } from "@/hooks/use-auth-guard";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
 import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
-import ExerciseLibrary from "@/components/ExerciseLibrary";
-import WorkoutEditor from "@/components/WorkoutEditor";
 import { apiClient } from "@/lib/api-client";
+import { ApiResponse } from "@/lib/api-response";
+
+// Dynamic imports for large components
+const ExerciseLibrary = lazy(() => import("@/components/ExerciseLibrary"));
+const WorkoutEditor = lazy(() => import("@/components/WorkoutEditor"));
 
 // Exercise interface to match the one in ExerciseLibrary component
 interface LibraryExercise {
@@ -54,13 +57,17 @@ export default function WorkoutsPage() {
       try {
         setLoading(true);
         setError(null);
-        const response = await apiClient.getWorkouts();
+        const response = (await apiClient.getWorkouts()) as ApiResponse;
 
         if (response.success && response.data) {
           const apiResponse = response.data as { workouts?: WorkoutPlan[] };
           setWorkouts(apiResponse.workouts || []);
         } else {
-          setError(response.error || "Failed to load workouts");
+          setError(
+            typeof response.error === "string"
+              ? response.error
+              : "Failed to load workouts"
+          );
         }
       } catch (err) {
         setError("Failed to load workouts");
@@ -275,31 +282,41 @@ export default function WorkoutsPage() {
           </>
         ) : (
           /* Exercise Library View */
-          <ExerciseLibrary
-            isOpen={true}
-            onClose={() => setCurrentView("workouts")}
-            mode="browse"
-            onAddToWorkout={(exercise: LibraryExercise) => {
-              // When adding from library to a workout being created
-              const workoutExercise: WorkoutExercise = {
-                id: Date.now().toString(),
-                exerciseId: exercise.id,
-                exerciseName: exercise.name,
-                sets: 3,
-                reps: 10,
-                weightType: "fixed",
-                weight: 0,
-                restTime: 120,
-                order: (newWorkout.exercises?.length || 0) + 1,
-              };
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-lg text-gray-600">
+                  Loading exercise library...
+                </div>
+              </div>
+            }
+          >
+            <ExerciseLibrary
+              isOpen={true}
+              onClose={() => setCurrentView("workouts")}
+              mode="browse"
+              onAddToWorkout={(exercise: LibraryExercise) => {
+                // When adding from library to a workout being created
+                const workoutExercise: WorkoutExercise = {
+                  id: Date.now().toString(),
+                  exerciseId: exercise.id,
+                  exerciseName: exercise.name,
+                  sets: 3,
+                  reps: 10,
+                  weightType: "fixed",
+                  weight: 0,
+                  restTime: 120,
+                  order: (newWorkout.exercises?.length || 0) + 1,
+                };
 
-              setNewWorkout({
-                ...newWorkout,
-                exercises: [...(newWorkout.exercises || []), workoutExercise],
-              });
-              setCurrentView("workouts");
-            }}
-          />
+                setNewWorkout({
+                  ...newWorkout,
+                  exercises: [...(newWorkout.exercises || []), workoutExercise],
+                });
+                setCurrentView("workouts");
+              }}
+            />
+          </Suspense>
         )}
 
         {/* Assign Workout Modal */}
@@ -357,58 +374,74 @@ export default function WorkoutsPage() {
 
       {/* Workout Editor Modal */}
       {(editingWorkout || creatingWorkout) && (
-        <WorkoutEditor
-          workout={
-            editingWorkout || {
-              id: "new-workout",
-              name: newWorkout.name || "",
-              description: newWorkout.description || "",
-              exercises: newWorkout.exercises || [],
-              estimatedDuration: newWorkout.estimatedDuration || 30,
-              createdBy: user.id,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            }
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-8">
+                <div className="text-lg text-gray-600">
+                  Loading workout editor...
+                </div>
+              </div>
+            </div>
           }
-          onChange={async (updatedWorkout) => {
-            if (creatingWorkout) {
-              try {
-                // Adding a new workout via API
-                const response = await apiClient.createWorkout({
-                  name: updatedWorkout.name,
-                  description: updatedWorkout.description,
-                  exercises: updatedWorkout.exercises,
-                  estimatedDuration: updatedWorkout.estimatedDuration,
-                });
-
-                if (response.success && response.data) {
-                  const apiResponse = response.data as {
-                    workout?: WorkoutPlan;
-                  };
-                  const newWorkout = apiResponse.workout;
-                  if (newWorkout) {
-                    setWorkouts([...workouts, newWorkout]);
-                  }
-                } else {
-                  setError(response.error || "Failed to create workout");
-                }
-              } catch (err) {
-                setError("Failed to create workout");
-                console.error("Error creating workout:", err);
+        >
+          <WorkoutEditor
+            workout={
+              editingWorkout || {
+                id: "new-workout",
+                name: newWorkout.name || "",
+                description: newWorkout.description || "",
+                exercises: newWorkout.exercises || [],
+                estimatedDuration: newWorkout.estimatedDuration || 30,
+                createdBy: user.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
               }
-            } else {
-              // For now, update locally (would need PUT endpoint)
-              const updatedWorkouts = workouts.map((w) =>
-                w.id === updatedWorkout.id ? updatedWorkout : w
-              );
-              setWorkouts(updatedWorkouts);
             }
-          }}
-          onClose={() => {
-            setEditingWorkout(null);
-            setCreatingWorkout(false);
-          }}
-        />
+            onChange={async (updatedWorkout) => {
+              if (creatingWorkout) {
+                try {
+                  // Adding a new workout via API
+                  const response = (await apiClient.createWorkout({
+                    name: updatedWorkout.name,
+                    description: updatedWorkout.description,
+                    exercises: updatedWorkout.exercises,
+                    estimatedDuration: updatedWorkout.estimatedDuration,
+                  })) as ApiResponse;
+
+                  if (response.success && response.data) {
+                    const apiResponse = response.data as {
+                      workout?: WorkoutPlan;
+                    };
+                    const newWorkout = apiResponse.workout;
+                    if (newWorkout) {
+                      setWorkouts([...workouts, newWorkout]);
+                    }
+                  } else {
+                    setError(
+                      typeof response.error === "string"
+                        ? response.error
+                        : "Failed to create workout"
+                    );
+                  }
+                } catch (err) {
+                  setError("Failed to create workout");
+                  console.error("Error creating workout:", err);
+                }
+              } else {
+                // For now, update locally (would need PUT endpoint)
+                const updatedWorkouts = workouts.map((w) =>
+                  w.id === updatedWorkout.id ? updatedWorkout : w
+                );
+                setWorkouts(updatedWorkouts);
+              }
+            }}
+            onClose={() => {
+              setEditingWorkout(null);
+              setCreatingWorkout(false);
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

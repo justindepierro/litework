@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { log } from "@/lib/dev-logger";
+import { devFeatures } from "@/lib/dev-config";
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
@@ -12,7 +14,9 @@ export default function ServiceWorkerRegistration() {
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {
-          console.log("SW registered: ", registration);
+          if (devFeatures.enableServiceWorkerLogging) {
+            log.info("Service Worker registered successfully:", registration);
+          }
 
           // Check for updates
           registration.addEventListener("updatefound", () => {
@@ -33,13 +37,15 @@ export default function ServiceWorkerRegistration() {
           });
         })
         .catch((registrationError) => {
-          console.log("SW registration failed: ", registrationError);
+          log.error("Service Worker registration failed:", registrationError);
         });
 
       // Listen for messages from service worker
       navigator.serviceWorker.addEventListener("message", (event) => {
         if (event.data && event.data.type === "CACHE_UPDATED") {
-          console.log("Cache updated");
+          if (devFeatures.enableServiceWorkerLogging) {
+            log.info("Service Worker cache updated");
+          }
         }
       });
     }
