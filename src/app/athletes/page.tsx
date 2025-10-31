@@ -38,6 +38,7 @@ const BulkOperationHistory = lazy(
   () => import("@/components/BulkOperationHistory")
 );
 const ProgressAnalytics = lazy(() => import("@/components/ProgressAnalytics"));
+const AthleteDetailModal = lazy(() => import("@/components/AthleteDetailModal"));
 
 interface InviteForm {
   firstName: string;
@@ -99,6 +100,7 @@ export default function AthletesPage() {
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -502,7 +504,11 @@ export default function AthletesPage() {
             {filteredAthletes.map((athlete) => (
               <div
                 key={athlete.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group touch-manipulation"
+                onClick={() => {
+                  setSelectedAthlete(athlete);
+                  setShowDetailModal(true);
+                }}
+                className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer"
               >
                 {/* Mobile-Optimized Card Header */}
                 <div className="p-4 sm:p-6 pb-3 sm:pb-4">
@@ -1136,6 +1142,29 @@ export default function AthletesPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Athlete Detail Modal */}
+      {showDetailModal && selectedAthlete && (
+        <AthleteDetailModal
+          athlete={selectedAthlete}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedAthlete(null);
+          }}
+          onEdit={() => {
+            setShowDetailModal(false);
+            // TODO: Open edit modal
+          }}
+          onMessage={() => {
+            setShowDetailModal(false);
+            handleMessageAthlete(selectedAthlete);
+          }}
+          onViewProgress={() => {
+            setShowDetailModal(false);
+            handleAnalytics(selectedAthlete);
+          }}
+        />
       )}
     </div>
   );
