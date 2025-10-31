@@ -30,19 +30,19 @@ export interface SignUpData {
 // ===========================
 
 export const signInWithEmailPassword = async (
-  email: string, 
+  email: string,
   password: string
 ): Promise<AuthResult> => {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error || !data.user) {
       return {
         success: false,
-        error: error?.message || "Sign in failed"
+        error: error?.message || "Sign in failed",
       };
     }
 
@@ -51,26 +51,34 @@ export const signInWithEmailPassword = async (
     if (!userProfile) {
       return {
         success: false,
-        error: "User profile not found"
+        error: "User profile not found",
       };
     }
 
     return {
       success: true,
-      user: userProfile
+      user: userProfile,
     };
   } catch (error) {
-    console.error('signInWithEmailPassword error:', error);
+    console.error("signInWithEmailPassword error:", error);
     return {
       success: false,
-      error: "Sign in failed"
+      error: "Sign in failed",
     };
   }
 };
 
-export const signUpWithEmailPassword = async (signUpData: SignUpData): Promise<AuthResult> => {
+export const signUpWithEmailPassword = async (
+  signUpData: SignUpData
+): Promise<AuthResult> => {
   try {
-    const { email, password, firstName, lastName, role = "athlete" } = signUpData;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      role = "athlete",
+    } = signUpData;
 
     // Sign up with Supabase Auth
     const { data, error } = await supabase.auth.signUp({
@@ -80,32 +88,32 @@ export const signUpWithEmailPassword = async (signUpData: SignUpData): Promise<A
         data: {
           first_name: firstName,
           last_name: lastName,
-          role: role
-        }
-      }
+          role: role,
+        },
+      },
     });
 
     if (error || !data.user) {
       return {
         success: false,
-        error: error?.message || "Sign up failed"
+        error: error?.message || "Sign up failed",
       };
     }
 
     // Create user profile in our users table
-    const { error: profileError } = await supabase
-      .from('users')
-      .insert([{
+    const { error: profileError } = await supabase.from("users").insert([
+      {
         id: data.user.id,
         email: email,
         name: `${firstName} ${lastName}`,
         role: role,
         group_ids: [],
-        status: 'active'
-      }]);
+        status: "active",
+      },
+    ]);
 
     if (profileError) {
-      console.error('Profile creation error:', profileError);
+      console.error("Profile creation error:", profileError);
       // Continue even if profile creation fails - can be handled later
     }
 
@@ -115,58 +123,63 @@ export const signUpWithEmailPassword = async (signUpData: SignUpData): Promise<A
         userId: data.user.id,
         email: email,
         role: role,
-        name: `${firstName} ${lastName}`
-      }
+        name: `${firstName} ${lastName}`,
+      },
     };
   } catch (error) {
-    console.error('signUpWithEmailPassword error:', error);
+    console.error("signUpWithEmailPassword error:", error);
     return {
       success: false,
-      error: "Sign up failed"
+      error: "Sign up failed",
     };
   }
 };
 
-export const signOut = async (): Promise<{ success: boolean; error?: string }> => {
+export const signOut = async (): Promise<{
+  success: boolean;
+  error?: string;
+}> => {
   try {
     const { error } = await supabase.auth.signOut();
-    
+
     if (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
 
     return { success: true };
   } catch (error) {
-    console.error('signOut error:', error);
+    console.error("signOut error:", error);
     return {
       success: false,
-      error: "Sign out failed"
+      error: "Sign out failed",
     };
   }
 };
 
-export const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+export const resetPassword = async (
+  email: string
+): Promise<{ success: boolean; error?: string }> => {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`
+      redirectTo: `${window.location.origin}/reset-password`,
     });
-    
+
     if (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
 
     return { success: true };
   } catch (error) {
-    console.error('resetPassword error:', error);
+    console.error("resetPassword error:", error);
     return {
       success: false,
-      error: "Password reset failed"
+      error: "Password reset failed",
     };
   }
 };
@@ -177,12 +190,15 @@ export const resetPassword = async (email: string): Promise<{ success: boolean; 
 
 export const getCurrentUser = async (): Promise<AuthResult> => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
     if (error || !user) {
       return {
         success: false,
-        error: error?.message || "No authenticated user"
+        error: error?.message || "No authenticated user",
       };
     }
 
@@ -191,35 +207,38 @@ export const getCurrentUser = async (): Promise<AuthResult> => {
     if (!userProfile) {
       return {
         success: false,
-        error: "User profile not found"
+        error: "User profile not found",
       };
     }
 
     return {
       success: true,
-      user: userProfile
+      user: userProfile,
     };
   } catch (error) {
-    console.error('getCurrentUser error:', error);
+    console.error("getCurrentUser error:", error);
     return {
       success: false,
-      error: "Failed to get current user"
+      error: "Failed to get current user",
     };
   }
 };
 
 export const getCurrentSession = async (): Promise<Session | null> => {
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+
     if (error) {
-      console.error('getCurrentSession error:', error);
+      console.error("getCurrentSession error:", error);
       return null;
     }
 
     return session;
   } catch (error) {
-    console.error('getCurrentSession error:', error);
+    console.error("getCurrentSession error:", error);
     return null;
   }
 };
@@ -228,7 +247,9 @@ export const getCurrentSession = async (): Promise<Session | null> => {
 // AUTH STATE LISTENERS
 // ===========================
 
-export const onAuthStateChange = (callback: (user: AuthenticatedUser | null) => void) => {
+export const onAuthStateChange = (
+  callback: (user: AuthenticatedUser | null) => void
+) => {
   return supabase.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
       const userProfile = await getUserProfile(session.user.id);
@@ -243,16 +264,18 @@ export const onAuthStateChange = (callback: (user: AuthenticatedUser | null) => 
 // HELPER FUNCTIONS
 // ===========================
 
-const getUserProfile = async (userId: string): Promise<AuthenticatedUser | null> => {
+const getUserProfile = async (
+  userId: string
+): Promise<AuthenticatedUser | null> => {
   try {
     const { data: userProfile, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', userId)
+      .from("users")
+      .select("*")
+      .eq("id", userId)
       .single();
 
     if (error || !userProfile) {
-      console.error('getUserProfile error:', error);
+      console.error("getUserProfile error:", error);
       return null;
     }
 
@@ -260,10 +283,10 @@ const getUserProfile = async (userId: string): Promise<AuthenticatedUser | null>
       userId: userProfile.id,
       email: userProfile.email,
       role: userProfile.role as "admin" | "coach" | "athlete",
-      name: userProfile.name
+      name: userProfile.name,
     };
   } catch (error) {
-    console.error('getUserProfile error:', error);
+    console.error("getUserProfile error:", error);
     return null;
   }
 };
@@ -272,45 +295,81 @@ const getUserProfile = async (userId: string): Promise<AuthenticatedUser | null>
 // API ROUTE HELPERS
 // ===========================
 
-export const verifySupabaseAuth = async (authorizationHeader?: string | null): Promise<AuthResult> => {
+export const verifySupabaseAuth = async (
+  authorizationHeader?: string | null
+): Promise<AuthResult> => {
   try {
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+      console.log("[verifySupabaseAuth] No authorization header found");
       return {
         success: false,
-        error: "No valid authorization header found"
+        error: "No valid authorization header found",
       };
     }
 
     const token = authorizationHeader.substring(7); // Remove 'Bearer ' prefix
+    console.log("[verifySupabaseAuth] Token received, length:", token.length);
+
+    // Create a new Supabase client with the user's token for server-side verification
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    
+    const { createClient } = await import("@supabase/supabase-js");
+    const serverSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
 
     // Verify the JWT token with Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    
+    const {
+      data: { user },
+      error,
+    } = await serverSupabase.auth.getUser();
+
     if (error || !user) {
+      console.log("[verifySupabaseAuth] Token verification failed:", error?.message);
       return {
         success: false,
-        error: error?.message || "Invalid token"
+        error: error?.message || "Invalid token",
       };
     }
 
-    // Get user profile
-    const userProfile = await getUserProfile(user.id);
-    if (!userProfile) {
+    console.log("[verifySupabaseAuth] User verified:", user.id);
+
+    // Get user profile using the authenticated client
+    const { data: userProfile, error: profileError } = await serverSupabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError || !userProfile) {
+      console.log("[verifySupabaseAuth] Profile fetch failed:", profileError?.message);
       return {
         success: false,
-        error: "User profile not found"
+        error: "User profile not found",
       };
     }
+
+    console.log("[verifySupabaseAuth] Profile fetched:", userProfile.email);
 
     return {
       success: true,
-      user: userProfile
+      user: {
+        userId: userProfile.id,
+        email: userProfile.email,
+        role: userProfile.role as "admin" | "coach" | "athlete",
+        name: userProfile.name,
+      },
     };
   } catch (error) {
-    console.error('verifySupabaseAuth error:', error);
+    console.error("[verifySupabaseAuth] Unexpected error:", error);
     return {
       success: false,
-      error: "Token verification failed"
+      error: "Token verification failed",
     };
   }
 };
