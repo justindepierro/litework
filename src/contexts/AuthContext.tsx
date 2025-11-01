@@ -25,11 +25,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
+    let isAuthenticating = false;
 
     authClient
       .getCurrentUser()
@@ -49,12 +49,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = authClient.onAuthChange((user) => {
+    } = authClient.onAuthChange((newUser) => {
       if (mounted && !isAuthenticating) {
-        setUser(user);
-        if (!loading) {
-          setLoading(false);
-        }
+        setUser(newUser);
       }
     });
 
@@ -62,25 +59,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [isAuthenticating, loading]);
+  }, []); // Empty deps - only run once on mount
 
   const signIn = async (email: string, password: string) => {
-    setIsAuthenticating(true);
+    setLoading(true);
     try {
       await authClient.signIn(email, password);
       const user = await authClient.getCurrentUser();
       if (user) {
         setUser(user);
-        // Small delay to ensure state is set before redirect
-        setTimeout(() => {
-          router.push("/dashboard");
-          setIsAuthenticating(false);
-        }, 100);
+        setLoading(false);
+        router.push("/dashboard");
       } else {
+        setLoading(false);
         throw new Error("Failed to get user after sign in");
       }
     } catch (error) {
-      setIsAuthenticating(false);
+      setLoading(false);
       throw error;
     }
   };
