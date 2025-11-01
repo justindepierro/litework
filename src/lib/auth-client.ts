@@ -1,7 +1,19 @@
 // CLIENT-SIDE AUTH ONLY
-// Simple wrapper around Supabase Auth for browser use
+// Enhanced wrapper around Supabase Auth with security features
 
 import { supabase } from "./supabase";
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+  sanitizeInput,
+  checkRateLimit,
+  getRateLimit,
+  resetRateLimit,
+  getClientFingerprint,
+  logSecurityEvent,
+  createAuditLog,
+} from "./security";
 
 export interface User {
   id: string;
@@ -12,37 +24,158 @@ export interface User {
   fullName: string;
 }
 
-// Sign up new user
+/**
+ * Sign up new user with validation and rate limiting
+ */
 export async function signUp(
   email: string,
   password: string,
   firstName: string,
   lastName: string
 ) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-      },
-    },
-  });
+  // Rate limiting
+  const clientId = getClientFingerprint();
+  const rateCheck = checkRateLimit(clientId, getRateLimit("signup"));
+  
+  if (!rateCheck.allowed) {
+    const waitMinutes = Math.ceil((rateCheck.resetAt - Date.now()) / 60000);
+    logSecurityEvent(
+      createAuditLog("signup_rate_limited", false, { email, clientId })
+    );
+    throw new Error(`Too many signup attempts. Please try again in ${waitMinutes} minutes.`);
+  }
 
-  if (error) throw error;
-  return data;
+  // Validate inputs
+  const emailValidation = validateEmail(email);
+  if (!emailValidation.valid) {
+    throw new Error(emailValidation.error);
+  }
+
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    throw new Error(passwordValidation.error);
+  }
+
+  const firstNameValidation = validateName(firstName, "First name");
+  if (!firstNameValidation.valid) {
+    throw new Error(firstNameValidation.error);
+  }
+
+  const lastNameValidation = validateName(lastName, "Last name");
+  if (!lastNameValidation.valid) {
+    throw new Error(lastNameValidation.error);
+  }
+
+  // Sanitize inputs
+  const sanitizedFirstName = sanitizeInput(firstName);
+  const sanitizedLastName = sanitizeInput(lastName);
+  const sanitizedEmail = email.trim().toLowerCase();
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: sanitizedEmail,
+      password,
+      options: {
+        data: {
+          first_name: sanitizedFirstName,
+          last_name: sanitizedLastName,
+        },
+      },
+    });
+
+    if (error) {
+      logSecurityEvent(
+        createAuditLog("signup_failed", false, { 
+          email: sanitizedEmail, 
+          error: error.message 
+        })
+      );
+      throw error;
+    }
+
+    // Reset rate limit on success
+    resetRateLimit(clientId);
+    
+    logSecurityEvent(
+      createAuditLog("signup_success", true, { 
+        email: sanitizedEmail,
+        userId: data.user?.id 
+      })
+    );
+
+    return data;
+  } catch (error) {
+    logSecurityEvent(
+      createAuditLog("signup_error", false, { 
+        email: sanitizedEmail,
+        error: error instanceof Error ? error.message : "Unknown error"
+      })
+    );
+    throw error;
+  }
 }
 
-// Sign in existing user
+/**
+ * Sign in existing user with validation and rate limiting
+ */
 export async function signIn(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  // Rate limiting per email to prevent brute force
+  const emailKey = email.trim().toLowerCase();
+  const rateCheck = checkRateLimit(emailKey, getRateLimit("login"));
+  
+  if (!rateCheck.allowed) {
+    const waitMinutes = Math.ceil((rateCheck.resetAt - Date.now()) / 60000);
+    logSecurityEvent(
+      createAuditLog("login_rate_limited", false, { email: emailKey })
+    );
+    throw new Error(`Too many login attempts. Please try again in ${waitMinutes} minutes.`);
+  }
 
-  if (error) throw error;
-  return data;
+  // Validate email
+  const emailValidation = validateEmail(email);
+  if (!emailValidation.valid) {
+    throw new Error(emailValidation.error);
+  }
+
+  const sanitizedEmail = email.trim().toLowerCase();
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: sanitizedEmail,
+      password,
+    });
+
+    if (error) {
+      logSecurityEvent(
+        createAuditLog("login_failed", false, { 
+          email: sanitizedEmail,
+          error: error.message,
+          remainingAttempts: rateCheck.remainingAttempts 
+        })
+      );
+      throw error;
+    }
+
+    // Reset rate limit on successful login
+    resetRateLimit(emailKey);
+    
+    logSecurityEvent(
+      createAuditLog("login_success", true, { 
+        email: sanitizedEmail,
+        userId: data.user?.id 
+      })
+    );
+
+    return data;
+  } catch (error) {
+    logSecurityEvent(
+      createAuditLog("login_error", false, { 
+        email: sanitizedEmail,
+        error: error instanceof Error ? error.message : "Unknown error"
+      })
+    );
+    throw error;
+  }
 }
 
 // Sign out

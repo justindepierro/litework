@@ -4,29 +4,63 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
+import { validateEmail } from "@/lib/security";
+import { RateLimitError } from "@/components/ui/RateLimitError";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
   const { signIn } = useAuth();
   
   // Redirect to dashboard if already logged in
   const { isLoading: authLoading } = useRedirectIfAuthenticated();
 
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setEmailError("");
+    setError("");
+    
+    // Only validate if user has entered something and moved on
+    if (value && value.includes("@")) {
+      const validation = validateEmail(value);
+      if (!validation.valid) {
+        setEmailError(validation.error || "Invalid email");
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setEmailError("");
+    setIsRateLimited(false);
+
+    // Final validation before submit
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setEmailError(emailValidation.error || "Invalid email");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       await signIn(email, password);
       // AuthContext will handle redirect to /dashboard
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Invalid email or password"
-      );
+      const errorMessage = err instanceof Error ? err.message : "Invalid email or password";
+      
+      // Check if it's a rate limit error
+      if (errorMessage.includes("Too many")) {
+        setIsRateLimited(true);
+        setError(errorMessage);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -66,11 +100,19 @@ export default function LoginPage() {
               name="email"
               type="email"
               required
-              className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
+              className={`w-full px-4 py-4 sm:px-3 sm:py-3 border-2 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 text-base bg-white touch-manipulation ${
+                emailError
+                  ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              }`}
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              disabled={isLoading || isRateLimited}
             />
+            {emailError && (
+              <p className="mt-1 text-sm text-red-600">{emailError}</p>
+            )}
           </div>
 
           <div>
@@ -96,19 +138,25 @@ export default function LoginPage() {
               className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              disabled={isLoading || isRateLimited}
             />
           </div>
 
-          {error && (
+          {isRateLimited && error ? (
+            <RateLimitError error={error} />
+          ) : error ? (
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
               <p className="text-sm font-medium text-red-700">{error}</p>
             </div>
-          )}
+          ) : null}
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isRateLimited || !!emailError}
             className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
           >
             {isLoading ? (

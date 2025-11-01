@@ -1,14 +1,44 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Public routes that don't require authentication
-const PUBLIC_ROUTES = ["/", "/login", "/signup", "/reset-password", "/clear-sw.html"];
-
-// Routes that require authentication
-const PROTECTED_ROUTES = ["/dashboard", "/workouts", "/progress", "/schedule", "/athletes", "/profile"];
-
-// Routes that require coach/admin role
-const COACH_ROUTES = ["/athletes"];
+/**
+ * Get security headers for responses
+ */
+function getSecurityHeaders() {
+  const headers = new Headers();
+  
+  // Content Security Policy - Prevent XSS attacks
+  headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: https:; " +
+    "font-src 'self' data:; " +
+    "connect-src 'self' https://*.supabase.co; " +
+    "frame-ancestors 'none';"
+  );
+  
+  // Prevent clickjacking
+  headers.set("X-Frame-Options", "DENY");
+  
+  // XSS Protection
+  headers.set("X-XSS-Protection", "1; mode=block");
+  
+  // Prevent MIME type sniffing
+  headers.set("X-Content-Type-Options", "nosniff");
+  
+  // Referrer Policy
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  
+  // Permissions Policy - Restrict browser features
+  headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  );
+  
+  return headers;
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -17,6 +47,13 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith("/api/")) {
     const response = NextResponse.next();
 
+    // Add security headers
+    const securityHeaders = getSecurityHeaders();
+    securityHeaders.forEach((value, key) => {
+      response.headers.set(key, value);
+    });
+
+    // Add CORS headers
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
       "Access-Control-Allow-Methods",
@@ -35,11 +72,14 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // For now, let client-side guards handle auth
-  // Server-side middleware auth would require cookies/session management
-  // which we can add later if needed
-  
-  return NextResponse.next();
+  // Add security headers to all responses
+  const response = NextResponse.next();
+  const securityHeaders = getSecurityHeaders();
+  securityHeaders.forEach((value, key) => {
+    response.headers.set(key, value);
+  });
+
+  return response;
 }
 
 export const config = {
