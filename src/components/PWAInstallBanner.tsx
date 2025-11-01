@@ -24,6 +24,8 @@ export default function PWAInstallBanner() {
   });
 
   useEffect(() => {
+    // Only show in production
+    if (process.env.NODE_ENV !== "production") return;
     if (isInstalled) return;
 
     // Listen for the beforeinstallprompt event

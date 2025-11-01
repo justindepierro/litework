@@ -11,12 +11,14 @@ export default function ServiceWorkerRegistration() {
     console.error = (...args) => {
       const message = args[0]?.toString() || "";
 
-      // Filter out known harmless errors from Chrome extensions
+      // Filter out known harmless errors from Chrome extensions and PWA
       if (
         message.includes(
           "message channel closed before a response was received"
         ) ||
-        message.includes("A listener indicated an asynchronous response")
+        message.includes("A listener indicated an asynchronous response") ||
+        message.includes("beforeinstallprompt") ||
+        message.includes("prompt() to show the banner")
       ) {
         // Silently ignore these extension-related errors
         return;
@@ -26,6 +28,7 @@ export default function ServiceWorkerRegistration() {
       originalError.apply(console, args);
     };
 
+    // Only register service worker in production
     if (
       typeof window !== "undefined" &&
       "serviceWorker" in navigator &&
