@@ -529,14 +529,27 @@ self.addEventListener("notificationclick", (event) => {
 
 // Message handling for communication with main thread
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  } else if (event.data && event.data.type === "CACHE_WORKOUT") {
-    // Cache workout data for offline use
-    cacheWorkoutData(event.data.workout);
-  } else if (event.data && event.data.type === "SYNC_REQUEST") {
-    // Trigger background sync
-    self.registration.sync.register(event.data.tag);
+  // Always acknowledge the message to prevent timeout errors
+  const respond = (success, data = null) => {
+    if (event.ports && event.ports[0]) {
+      event.ports[0].postMessage({ success, data });
+    }
+  };
+
+  try {
+    if (event.data && event.data.type === "SKIP_WAITING") {
+      self.skipWaiting();
+      respond(true);
+    } else if (event.data && event.data.type === "CACHE_WORKOUT") {
+      // Cache workout data for offline use
+      cacheWorkoutData(event.data.workout).then(() => respond(true));
+    } else if (event.data && event.data.type === "SYNC_REQUEST") {
+      // Trigger background sync
+      self.registration.sync.register(event.data.tag).then(() => respond(true));
+    }
+  } catch (error) {
+    console.log("Service worker message error:", error);
+    respond(false, error.message);
   }
 });
 

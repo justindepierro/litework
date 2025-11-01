@@ -207,11 +207,6 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
-          // Preload key resources
-          {
-            key: "Link",
-            value: "</icons/icon-192x192.png>; rel=preload; as=image",
-          },
         ],
       },
     ];

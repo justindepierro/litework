@@ -6,6 +6,24 @@ import { devFeatures } from "@/lib/dev-config";
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
+    // Suppress harmless Chrome extension message channel errors
+    const originalError = console.error;
+    console.error = (...args) => {
+      const message = args[0]?.toString() || "";
+      
+      // Filter out known harmless errors from Chrome extensions
+      if (
+        message.includes("message channel closed before a response was received") ||
+        message.includes("A listener indicated an asynchronous response")
+      ) {
+        // Silently ignore these extension-related errors
+        return;
+      }
+      
+      // Pass through all other errors
+      originalError.apply(console, args);
+    };
+
     if (
       typeof window !== "undefined" &&
       "serviceWorker" in navigator &&
@@ -49,6 +67,11 @@ export default function ServiceWorkerRegistration() {
         }
       });
     }
+
+    // Cleanup: restore original console.error
+    return () => {
+      console.error = originalError;
+    };
   }, []);
 
   return null;

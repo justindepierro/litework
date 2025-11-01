@@ -90,13 +90,6 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* Preload critical resources */}
-        <link
-          rel="preload"
-          href="/icons/icon-192x192.png"
-          as="image"
-          type="image/png"
-        />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
       <body
