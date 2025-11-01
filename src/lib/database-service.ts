@@ -2,7 +2,7 @@
 // This replaces the mock database with real Supabase queries
 // Provides the same interface for seamless transition
 
-import { supabase } from "./supabase";
+import { supabaseAdmin as supabase } from "./supabase-admin";
 import {
   User,
   AthleteGroup,
@@ -95,7 +95,19 @@ export const getAllGroups = async (): Promise<AthleteGroup[]> => {
     return [];
   }
 
-  return data || [];
+  // Transform snake_case to camelCase
+  return (data || []).map((group) => ({
+    id: group.id,
+    name: group.name,
+    description: group.description,
+    sport: group.sport,
+    category: group.category,
+    coachId: group.coach_id,
+    athleteIds: group.athlete_ids || [],
+    color: group.color,
+    createdAt: new Date(group.created_at),
+    updatedAt: new Date(group.updated_at),
+  }));
 };
 
 export const getGroupById = async (
@@ -112,24 +124,89 @@ export const getGroupById = async (
     return null;
   }
 
-  return data;
+  // Transform snake_case to camelCase
+  return {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    sport: data.sport,
+    category: data.category,
+    coachId: data.coach_id,
+    athleteIds: data.athlete_ids || [],
+    color: data.color,
+    createdAt: new Date(data.created_at),
+    updatedAt: new Date(data.updated_at),
+  };
 };
 
 export const createGroup = async (
   groupData: Omit<AthleteGroup, "id" | "createdAt" | "updatedAt">
 ): Promise<AthleteGroup | null> => {
-  const { data, error } = await supabase
-    .from("athlete_groups")
-    .insert([groupData])
-    .select()
-    .single();
+  try {
+    console.log(
+      "[database-service] createGroup called with:",
+      JSON.stringify(groupData)
+    );
 
-  if (error) {
-    console.error("Error creating group:", error);
+    // Transform camelCase to snake_case for database
+    const dbData = {
+      name: groupData.name,
+      description: groupData.description,
+      sport: groupData.sport,
+      category: groupData.category,
+      coach_id: groupData.coachId,
+      athlete_ids: groupData.athleteIds,
+      color: groupData.color,
+    };
+
+    console.log(
+      "[database-service] Transformed to dbData:",
+      JSON.stringify(dbData)
+    );
+
+    const { data, error } = await supabase
+      .from("athlete_groups")
+      .insert([dbData])
+      .select()
+      .single();
+
+    if (error) {
+      console.error(
+        "[database-service] Supabase error:",
+        JSON.stringify(error)
+      );
+      return null;
+    }
+
+    console.log(
+      "[database-service] Supabase returned data:",
+      JSON.stringify(data)
+    );
+
+    // Transform snake_case back to camelCase
+    const result = {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      sport: data.sport,
+      category: data.category,
+      coachId: data.coach_id,
+      athleteIds: data.athlete_ids || [],
+      color: data.color,
+      createdAt: new Date(data.created_at),
+      updatedAt: new Date(data.updated_at),
+    };
+
+    console.log("[database-service] Returning result:", JSON.stringify(result));
+    return result;
+  } catch (err) {
+    console.error("[database-service] Exception in createGroup:", err);
+    console.error(
+      "[database-service] Exception stack:",
+      err instanceof Error ? err.stack : "No stack"
+    );
     return null;
   }
-
-  return data;
 };
 
 export const updateGroup = async (

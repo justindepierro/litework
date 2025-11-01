@@ -1,27 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseApiClient } from "@/lib/supabase-client";
-import { verifyToken, canAssignWorkouts } from "@/lib/auth";
+import { getAdminClient, requireCoach } from "@/lib/auth-server";
 
 // POST /api/bulk-operations - Execute bulk operations
 export async function POST(request: NextRequest) {
   try {
-    // Verify authentication
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
     // Only coaches/admins can perform bulk operations
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+    await requireCoach();
+
+    const supabase = getAdminClient();
+    // TODO: Refactor to use supabase directly instead of supabaseApiClient wrapper
 
     const body = await request.json();
     const { type, targetAthletes, targetGroups, data } = body;
@@ -92,8 +79,8 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleBulkInvite(
-  targetAthletes: string[],
-  targetGroups: string[],
+  athleteIds: string[],
+  groupIds: string[],
   data: {
     groupIds?: string[];
     message?: string;
@@ -101,19 +88,27 @@ async function handleBulkInvite(
   }
 ) {
   try {
-    // For bulk invites, we're actually inviting new people, not existing athletes
-    // So this would typically be a list of email addresses to invite
+    const supabase = getAdminClient();
     const invites = [];
 
     for (const email of data.emails || []) {
-      const inviteResult = await supabaseApiClient.createAthleteInvite({
-        email: email.email,
-        name: email.name,
-        groupIds: data.groupIds || [],
-      });
+      // Create invite in database
+      const { data: invite, error } = await supabase
+        .from("invites")
+        .insert({
+          email: email.email,
+          first_name: email.name.split(" ")[0],
+          last_name: email.name.split(" ").slice(1).join(" ") || "",
+          role: "athlete",
+          group_id: (data.groupIds && data.groupIds[0]) || null,
+          status: "pending",
+        })
+        .select()
+        .single();
 
-      if (inviteResult.success) {
-        invites.push(inviteResult.data);
+      if (!error && invite) {
+        invites.push(invite);
+        // TODO: Send invitation email
       }
     }
 
@@ -125,10 +120,10 @@ async function handleBulkInvite(
       },
     };
   } catch (error) {
+    console.error("Error in handleBulkInvite:", error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Failed to send bulk invites",
+      error: "Failed to send invites",
     };
   }
 }
@@ -143,21 +138,28 @@ async function handleBulkMessage(
   }
 ) {
   try {
+    const supabase = getAdminClient();
     const results = [];
 
     // Send messages to individual athletes
     for (const athleteId of targetAthletes) {
-      const messageResult = await supabaseApiClient.sendMessage({
-        recipient_id: athleteId,
-        subject: data.subject,
-        message: data.message,
-        priority: data.priority,
-      });
+      // Create message in database
+      const { data: message, error } = await supabase
+        .from("messages")
+        .insert({
+          recipient_id: athleteId,
+          subject: data.subject,
+          body: data.message,
+          priority: data.priority || "normal",
+          status: "sent",
+        })
+        .select()
+        .single();
 
       results.push({
         targetId: athleteId,
-        success: messageResult.success,
-        error: messageResult.error,
+        success: !error,
+        error: error?.message,
       });
     }
 

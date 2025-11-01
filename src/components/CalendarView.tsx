@@ -348,7 +348,7 @@ export default function CalendarView() {
                                   key={athleteId}
                                   className="text-body-small bg-silver-100 px-2 py-1 rounded"
                                 >
-                                  {athlete.name}
+                                  {athlete.fullName}
                                 </div>
                               ) : null;
                             })}

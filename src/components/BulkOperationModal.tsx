@@ -16,7 +16,9 @@ import {
 
 interface EnhancedAthlete {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  fullName?: string;
   email: string;
   status: string;
   groupIds?: string[];
@@ -392,7 +394,7 @@ export default function BulkOperationModal({
                               key={athlete.id}
                               className="text-sm text-gray-600"
                             >
-                              • {athlete.name}
+                              • {athlete.fullName}
                             </div>
                           ))}
                         </div>
@@ -423,7 +425,7 @@ export default function BulkOperationModal({
                           <Square className="w-5 h-5 text-gray-400 mr-3" />
                         )}
                         <div className="flex-1 text-left">
-                          <div className="font-medium">{athlete.name}</div>
+                          <div className="font-medium">{athlete.fullName}</div>
                           <div className="text-sm text-gray-600">
                             {athlete.email}
                           </div>

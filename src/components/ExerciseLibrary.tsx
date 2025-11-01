@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface Exercise {
   id: string;
@@ -86,11 +87,11 @@ export default function ExerciseLibrary({
       if (selectedEquipment) params.append("equipment", selectedEquipment);
       if (selectedDifficulty) params.append("difficulty", selectedDifficulty);
 
-      // Get token from localStorage
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("auth-token")
-          : null;
+      // Get token from Supabase session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
       if (!token) {
         throw new Error("Authentication required. Please log in.");

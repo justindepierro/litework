@@ -2,6 +2,7 @@
 // Enhanced auth layer for Sprint 4
 
 import { supabase } from "./supabase";
+import { supabaseAdmin } from "./supabase-admin";
 import type { Session } from "@supabase/supabase-js";
 
 export interface AuthenticatedUser {
@@ -265,10 +266,12 @@ export const onAuthStateChange = (
 // ===========================
 
 const getUserProfile = async (
-  userId: string
+  userId: string,
+  useAdmin = false // Use admin client for server-side calls
 ): Promise<AuthenticatedUser | null> => {
   try {
-    const { data: userProfile, error } = await supabase
+    const client = useAdmin ? supabaseAdmin : supabase;
+    const { data: userProfile, error } = await client
       .from("users")
       .select("*")
       .eq("id", userId)
@@ -283,7 +286,9 @@ const getUserProfile = async (
       userId: userProfile.id,
       email: userProfile.email,
       role: userProfile.role as "admin" | "coach" | "athlete",
-      name: userProfile.full_name || `${userProfile.first_name} ${userProfile.last_name}`,
+      name:
+        userProfile.full_name ||
+        `${userProfile.first_name} ${userProfile.last_name}`,
     };
   } catch (error) {
     console.error("getUserProfile error:", error);
@@ -354,7 +359,9 @@ export const verifySupabaseAuth = async (
         userId: userProfile.id,
         email: userProfile.email,
         role: userProfile.role as "admin" | "coach" | "athlete",
-        name: userProfile.full_name || `${userProfile.first_name} ${userProfile.last_name}`,
+        name:
+          userProfile.full_name ||
+          `${userProfile.first_name} ${userProfile.last_name}`,
       },
     };
   } catch (error) {

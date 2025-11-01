@@ -2,11 +2,25 @@ import type { NextConfig } from "next";
 import TerserPlugin from "terser-webpack-plugin";
 
 const nextConfig: NextConfig = {
-  // Mobile-first optimizations
+  // Security headers
   poweredByHeader: false,
   compress: true,
 
-  // Development server stability improvements
+  // Production optimizations
+  output: "standalone",
+  reactStrictMode: true,
+
+  // Image optimization
+  images: {
+    formats: ["image/webp", "image/avif"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000, // 1 year cache for production
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  // Advanced development and production optimizations
   experimental: {
     optimizeCss: true,
     optimizePackageImports: [
@@ -19,9 +33,6 @@ const nextConfig: NextConfig = {
 
   // External packages for server-side optimization
   serverExternalPackages: ["@supabase/supabase-js"],
-
-  // Production optimizations
-  output: "standalone",
 
   // Simplified development configuration
   webpack: (config, { dev, isServer }) => {
@@ -129,17 +140,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     // Set correct root directory to avoid lockfile warning
     root: __dirname,
-  },
-
-  // PWA-ready configuration
-  images: {
-    // Image optimization for better performance
-    formats: ["image/webp", "image/avif"],
-    minimumCacheTTL: 31536000, // 1 year cache
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
   headers: async () => {

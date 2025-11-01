@@ -55,18 +55,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user account via Supabase Auth
-    const { data: authData, error: signUpError } =
-      await supabase.auth.signUp({
-        email: invite.email.toLowerCase(),
-        password,
-        options: {
-          data: {
-            firstName: invite.first_name,
-            lastName: invite.last_name,
-            role: invite.role || "athlete",
-          },
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email: invite.email.toLowerCase(),
+      password,
+      options: {
+        data: {
+          firstName: invite.first_name,
+          lastName: invite.last_name,
+          role: invite.role || "athlete",
         },
-      });
+      },
+    });
 
     if (signUpError || !authData.user) {
       console.error("Error creating user account:", signUpError);

@@ -1,124 +1,100 @@
 "use client";
 
-import { User } from "@/types";
-import {
-  signInWithEmailPassword,
-  signOut,
-  getCurrentUser,
-  onAuthStateChange,
-  AuthenticatedUser,
-} from "@/lib/supabase-auth";
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import * as authClient from "@/lib/auth-client";
+
+type User = authClient.User;
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  isLoading: boolean;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => Promise<void>;
+  signOut: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      // Only run on client side
-      if (typeof window === "undefined") {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        // Check current Supabase auth state
-        const authResult = await getCurrentUser();
-        if (authResult.success && authResult.user) {
-          // Convert Supabase user to our User type
-          const appUser: User = convertToAppUser(authResult.user);
-          setUser(appUser);
-        }
-      } catch (error) {
+    authClient
+      .getCurrentUser()
+      .then((user) => {
+        setUser(user);
+        setLoading(false);
+      })
+      .catch((error) => {
         console.error("Auth initialization error:", error);
-      }
+        setUser(null);
+        setLoading(false);
+      });
 
-      setIsLoading(false);
-    };
-
-    initializeAuth();
-
-    // Listen for auth state changes
     const {
       data: { subscription },
-    } = onAuthStateChange((supabaseUser) => {
-      if (supabaseUser) {
-        const appUser = convertToAppUser(supabaseUser);
-        setUser(appUser);
-      } else {
-        setUser(null);
-      }
+    } = authClient.onAuthChange((user) => {
+      setUser(user);
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const result = await signInWithEmailPassword(email, password);
-
-      if (result.success && result.user) {
-        const appUser = convertToAppUser(result.user);
-        setUser(appUser);
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      console.error("Login error:", error);
-      return false;
-    }
+  const signIn = async (email: string, password: string) => {
+    await authClient.signIn(email, password);
+    const user = await authClient.getCurrentUser();
+    setUser(user);
+    router.push("/dashboard");
   };
 
-  const logout = async () => {
-    try {
-      await signOut();
-      setUser(null);
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+  const signUp = async (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    await authClient.signUp(email, password, firstName, lastName);
+    const user = await authClient.getCurrentUser();
+    setUser(user);
+    router.push("/dashboard");
+  };
+
+  const signOut = async () => {
+    await authClient.signOut();
+    setUser(null);
+    router.push("/login");
+  };
+
+  const refreshUser = async () => {
+    const user = await authClient.getCurrentUser();
+    setUser(user);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, signOut, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Helper function to convert Supabase user to app User type
-function convertToAppUser(supabaseUser: AuthenticatedUser): User {
-  return {
-    id: supabaseUser.userId,
-    email: supabaseUser.email,
-    name: supabaseUser.name || supabaseUser.email,
-    role: supabaseUser.role,
-    groupIds: [], // Will be populated from database if needed
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-}
-
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 }

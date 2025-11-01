@@ -1,7 +1,7 @@
 "use client";
 
-import { useCoachGuard } from "@/hooks/use-auth-guard";
-import { useState, lazy } from "react";
+import { useRequireCoach } from "@/hooks/use-auth-guard";
+import { useState, useEffect, lazy } from "react";
 import { ApiResponse } from "@/lib/api-response";
 import {
   User,
@@ -26,8 +26,9 @@ import {
   Dumbbell,
   History,
 } from "lucide-react";
-import { User as UserType, AthleteKPI } from "@/types";
+import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 import { apiClient } from "@/lib/api-client";
+import GroupFormModal from "@/components/GroupFormModal";
 import { log } from "@/lib/dev-logger";
 
 // Dynamic imports for large components
@@ -38,7 +39,9 @@ const BulkOperationHistory = lazy(
   () => import("@/components/BulkOperationHistory")
 );
 const ProgressAnalytics = lazy(() => import("@/components/ProgressAnalytics"));
-const AthleteDetailModal = lazy(() => import("@/components/AthleteDetailModal"));
+const AthleteDetailModal = lazy(
+  () => import("@/components/AthleteDetailModal")
+);
 
 interface InviteForm {
   firstName: string;
@@ -78,6 +81,7 @@ interface EnhancedAthlete extends UserType {
   lastActivity?: Date | null;
   stats?: {
     totalWorkouts: number;
+    completedWorkouts: number;
     thisMonthWorkouts: number;
     totalPRs: number;
     recentPRs: number;
@@ -90,9 +94,10 @@ interface EnhancedAthlete extends UserType {
 const enhancedAthletes: EnhancedAthlete[] = [];
 
 export default function AthletesPage() {
-  const { isLoading } = useCoachGuard();
+  const { isLoading } = useRequireCoach();
 
   const [athletes, setAthletes] = useState<EnhancedAthlete[]>(enhancedAthletes);
+  const [groups, setGroups] = useState<AthleteGroup[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showKPIModal, setShowKPIModal] = useState(false);
@@ -101,6 +106,7 @@ export default function AthletesPage() {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showGroupFormModal, setShowGroupFormModal] = useState(false);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -128,8 +134,26 @@ export default function AthletesPage() {
     notifyViaEmail: false,
   });
 
+  // Load groups on mount
+  const loadGroups = async () => {
+    try {
+      const response = (await apiClient.getGroups()) as {
+        groups: AthleteGroup[];
+      };
+      setGroups(response.groups || []);
+    } catch (err) {
+      console.error("Failed to load groups:", err);
+    }
+  };
+
+  // Load groups when component mounts
+  useEffect(() => {
+    loadGroups();
+  }, []);
+
   const handleSendInvite = async () => {
-    if (!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email) return;
+    if (!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email)
+      return;
 
     try {
       const response = (await apiClient.createAthleteInvite({
@@ -143,7 +167,9 @@ export default function AthletesPage() {
         const fullName = `${inviteForm.firstName} ${inviteForm.lastName}`;
         const newAthlete: EnhancedAthlete = {
           id: Date.now().toString(),
-          name: fullName,
+          firstName: inviteForm.firstName,
+          lastName: inviteForm.lastName,
+          fullName: fullName,
           email: inviteForm.email,
           role: "athlete" as const,
           groupIds: inviteForm.groupId ? [inviteForm.groupId] : [],
@@ -153,6 +179,7 @@ export default function AthletesPage() {
           injuryStatus: inviteForm.notes ? undefined : undefined,
           stats: {
             totalWorkouts: 0,
+            completedWorkouts: 0,
             thisMonthWorkouts: 0,
             totalPRs: 0,
             recentPRs: 0,
@@ -172,7 +199,13 @@ export default function AthletesPage() {
 
         setAthletes([...athletes, newAthlete]);
         alert(`Invite sent successfully to ${inviteForm.email}!`);
-        setInviteForm({ firstName: "", lastName: "", email: "", groupId: "", notes: "" });
+        setInviteForm({
+          firstName: "",
+          lastName: "",
+          email: "",
+          groupId: "",
+          notes: "",
+        });
         setShowInviteModal(false);
       } else {
         setError(
@@ -268,7 +301,7 @@ export default function AthletesPage() {
       );
 
       setAthletes(updatedAthletes);
-      alert(`Message sent to ${selectedAthlete.name}!`);
+      alert(`Message sent to ${selectedAthlete.fullName}!`);
       setMessageForm({
         recipientId: "",
         subject: "",
@@ -364,7 +397,7 @@ export default function AthletesPage() {
 
   const filteredAthletes = athletes.filter((athlete) => {
     const matchesSearch =
-      athlete.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      athlete.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       athlete.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
       statusFilter === "all" ||
@@ -516,7 +549,7 @@ export default function AthletesPage() {
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="relative shrink-0">
                         <div className="w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg">
-                          {athlete.name
+                          {(athlete.fullName || "")
                             .split(" ")
                             .map((n: string) => n[0])
                             .join("")
@@ -532,7 +565,7 @@ export default function AthletesPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 text-lg">
-                          {athlete.name}
+                          {athlete.fullName}
                         </h3>
                         <div className="flex items-center gap-2">
                           {getStatusIcon(athlete.status, athlete.injuryStatus)}
@@ -753,7 +786,10 @@ export default function AthletesPage() {
                       type="text"
                       value={inviteForm.firstName}
                       onChange={(e) =>
-                        setInviteForm({ ...inviteForm, firstName: e.target.value })
+                        setInviteForm({
+                          ...inviteForm,
+                          firstName: e.target.value,
+                        })
                       }
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="First name"
@@ -767,7 +803,10 @@ export default function AthletesPage() {
                       type="text"
                       value={inviteForm.lastName}
                       onChange={(e) =>
-                        setInviteForm({ ...inviteForm, lastName: e.target.value })
+                        setInviteForm({
+                          ...inviteForm,
+                          lastName: e.target.value,
+                        })
                       }
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Last name"
@@ -796,15 +835,30 @@ export default function AthletesPage() {
                   </label>
                   <select
                     value={inviteForm.groupId}
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, groupId: e.target.value })
-                    }
+                    onChange={(e) => {
+                      if (e.target.value === "CREATE_NEW") {
+                        setShowGroupFormModal(true);
+                      } else {
+                        setInviteForm({
+                          ...inviteForm,
+                          groupId: e.target.value,
+                        });
+                      }
+                    }}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   >
                     <option value="">No group assigned</option>
-                    <option value="football-linemen">Football Linemen</option>
-                    <option value="volleyball-girls">Volleyball Girls</option>
-                    <option value="cross-country">Cross Country</option>
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))}
+                    <option
+                      value="CREATE_NEW"
+                      className="font-semibold text-blue-600"
+                    >
+                      + Create New Group
+                    </option>
                   </select>
                 </div>
 
@@ -848,7 +902,11 @@ export default function AthletesPage() {
                   <button
                     onClick={handleSendInvite}
                     className="flex-1 btn-primary flex items-center justify-center gap-2"
-                    disabled={!inviteForm.name || !inviteForm.email}
+                    disabled={
+                      !inviteForm.firstName ||
+                      !inviteForm.lastName ||
+                      !inviteForm.email
+                    }
                   >
                     <Send className="w-4 h-4" />
                     Send Invite
@@ -865,7 +923,7 @@ export default function AthletesPage() {
             <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  Message {selectedAthlete.name}
+                  Message {selectedAthlete.fullName}
                 </h2>
                 <button onClick={() => setShowMessageModal(false)}>
                   <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
@@ -960,8 +1018,8 @@ export default function AthletesPage() {
                       <p className="text-sm text-green-700">
                         {selectedAthlete.communication?.preferredContact ===
                         "email"
-                          ? `${selectedAthlete.name} prefers email communication. Consider checking the email option above.`
-                          : `${selectedAthlete.name} prefers app notifications. They'll be notified in the app immediately.`}
+                          ? `${selectedAthlete.fullName} prefers email communication. Consider checking the email option above.`
+                          : `${selectedAthlete.fullName} prefers app notifications. They'll be notified in the app immediately.`}
                       </p>
                     </div>
                   </div>
@@ -994,7 +1052,7 @@ export default function AthletesPage() {
             <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  Manage Personal Records - {selectedAthlete.name}
+                  Manage Personal Records - {selectedAthlete.fullName}
                 </h2>
                 <button onClick={() => setShowKPIModal(false)}>
                   <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
@@ -1124,7 +1182,7 @@ export default function AthletesPage() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                   <BarChart3 className="h-6 w-6 text-blue-600" />
-                  {selectedAthlete.name} - Progress Analytics
+                  {selectedAthlete.fullName} - Progress Analytics
                 </h2>
                 <p className="text-gray-600 mt-1">
                   Comprehensive performance tracking and insights
@@ -1148,6 +1206,7 @@ export default function AthletesPage() {
       {showDetailModal && selectedAthlete && (
         <AthleteDetailModal
           athlete={selectedAthlete}
+          groups={groups}
           onClose={() => {
             setShowDetailModal(false);
             setSelectedAthlete(null);
@@ -1166,6 +1225,20 @@ export default function AthletesPage() {
           }}
         />
       )}
+
+      {/* Group Form Modal */}
+      <GroupFormModal
+        isOpen={showGroupFormModal}
+        onClose={() => setShowGroupFormModal(false)}
+        onSave={(group) => {
+          // Refresh groups list
+          loadGroups();
+          // After creating the group, select it in the invite form
+          setInviteForm({ ...inviteForm, groupId: group.id });
+          setShowGroupFormModal(false);
+        }}
+        existingGroups={groups}
+      />
     </div>
   );
 }

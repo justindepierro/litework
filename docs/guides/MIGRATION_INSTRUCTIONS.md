@@ -17,6 +17,7 @@ The code changes have been committed locally, but **you MUST run the database mi
 7. Click **Run** (or press Cmd+Enter)
 
 **What this does:**
+
 - Creates the `invites` table with `first_name`, `last_name`, `full_name` from the start
 - Adds proper indexes for performance
 - Sets up Row Level Security (RLS) policies
@@ -31,6 +32,7 @@ The code changes have been committed locally, but **you MUST run the database mi
 5. Click **Run** (or press Cmd+Enter)
 
 **What this does:**
+
 - Adds `first_name`, `last_name`, `full_name` columns to `users` table
 - Migrates existing user data (splits "John Doe" → first="John", last="Doe")
 - Creates indexes for better performance
@@ -42,17 +44,18 @@ Run these queries in Supabase SQL Editor:
 
 ```sql
 -- Check users table structure
-SELECT id, name, first_name, last_name, full_name, email, role 
-FROM public.users 
+SELECT id, name, first_name, last_name, full_name, email, role
+FROM public.users
 LIMIT 10;
 
 -- Check invites table structure
-SELECT id, email, first_name, last_name, full_name, status, created_at 
-FROM public.invites 
+SELECT id, email, first_name, last_name, full_name, status, created_at
+FROM public.invites
 LIMIT 10;
 ```
 
-**Expected result:** 
+**Expected result:**
+
 - **users table:** Should have both old `name` and new `first_name`, `last_name`, `full_name` columns
 - **invites table:** Should be empty but have the correct structure with split name fields
 
@@ -76,16 +79,19 @@ This will trigger Vercel to deploy the updated code.
 ## What Changed
 
 ### Frontend (Athletes Page)
+
 - ✅ Form now has **two separate fields**: First Name and Last Name
 - ✅ Side-by-side layout for better UX
 - ✅ Both fields required before sending invite
 
 ### API Endpoints
+
 - ✅ `POST /api/invites` now expects `{ firstName, lastName, email }`
 - ✅ `POST /api/invites/accept` uses split names to create accounts
 - ✅ All user data transformed to use new structure
 
 ### Database
+
 - ✅ `users` table has `first_name`, `last_name`, `full_name` columns
 - ✅ `athlete_invites` table has same new columns
 - ✅ Computed `full_name` column auto-updates when first/last change

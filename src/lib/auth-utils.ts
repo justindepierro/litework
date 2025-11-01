@@ -6,8 +6,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "./auth";
-import type { AuthenticatedUser } from "./auth";
+import { verifySupabaseAuth as verifyToken } from "./supabase-auth";
+import type { AuthenticatedUser } from "./supabase-auth";
 
 /**
  * Type for role-based access control
@@ -79,7 +79,8 @@ export async function withAuth(
   request: NextRequest,
   handler: (auth: AuthenticatedUser) => Promise<NextResponse>
 ): Promise<NextResponse> {
-  const auth = await verifyToken(request);
+  const authHeader = request.headers.get("authorization");
+  const auth = await verifyToken(authHeader);
 
   if (!auth.success || !auth.user) {
     return NextResponse.json(

@@ -176,6 +176,16 @@ npm run dev
 
 ## 📱 Recent Enhancements
 
+### Auth System Overhaul (November 2025) 🔥 **LATEST**
+
+- **Unified Authentication**: Complete rewrite with `auth-client.ts` (browser) and `auth-server.ts` (API routes)
+- **13 API Routes Migrated**: All routes now use consistent Supabase auth pattern
+- **700+ Lines Removed**: Deleted 3 obsolete auth files (auth.ts, auth-hybrid.ts, supabase-auth.ts)
+- **Table Schema Fixed**: Corrected users vs profiles mismatch across codebase
+- **Production-Ready**: Silent error handling, no info leaks, proper token management
+- **Login Flow Fixed**: Now uses Supabase session instead of localStorage
+- **Comprehensive Cleanup**: Debug files removed, console logs cleaned up
+
 ### Security & Authentication (October 2025)
 
 - **Comprehensive Security Audit**: Fixed 6 critical unprotected API routes

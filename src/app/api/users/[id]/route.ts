@@ -1,49 +1,90 @@
-import { NextRequest, NextResponse } from "next/server";
-import { supabaseApiClient } from "@/lib/supabase-client";
-import { verifyToken, isAdmin } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { getAdminClient, requireRole, getCurrentUser } from "@/lib/auth-server";
 
-export async function DELETE(
-  request: NextRequest,
+export async function PATCH(
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verify authentication
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
-      );
-    }
-
-    // Only admins can delete users
-    if (!isAdmin(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
       );
     }
 
     const { id } = await params;
 
-    const result = await supabaseApiClient.deleteAthlete(id);
-
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        data: { deleted: true },
-      });
-    } else {
+    // Users can only update their own profile (unless admin)
+    if (user.id !== id && user.role !== "admin") {
       return NextResponse.json(
-        {
-          success: false,
-          error: result.error,
-        },
-        { status: 500 }
+        { error: "You can only update your own profile" },
+        { status: 403 }
       );
     }
+
+    const body = await request.json();
+    const { name } = body;
+
+    const supabase = getAdminClient();
+
+    const { data, error } = await supabase
+      .from("users")
+      .update({ name })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data,
+    });
   } catch (error) {
+    console.error("Error updating profile:", error);
+    return NextResponse.json(
+      { error: "Failed to update profile" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Only admins can delete users
+    await requireRole("admin");
+
+    const { id } = await params;
+    const supabase = getAdminClient();
+
+    const { error } = await supabase.from("users").delete().eq("id", id);
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: { deleted: true },
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Forbidden") {
+      return NextResponse.json(
+        { error: "Insufficient permissions - Admin only" },
+        { status: 403 }
+      );
+    }
+
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     console.error("Error deleting athlete:", error);
     return NextResponse.json(
       {

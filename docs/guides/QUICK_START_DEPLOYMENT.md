@@ -3,6 +3,7 @@
 ## 🚀 Fastest Path to Production
 
 ### 1. Test Locally (10 minutes)
+
 ```bash
 # Server should already be running
 # Visit: http://localhost:3000
@@ -10,11 +11,12 @@
 # Test these key features:
 - Login/Signup works
 - Create a group
-- Create a workout  
+- Create a workout
 - Assign workout to group
 ```
 
 ### 2. Push to Production (2 minutes)
+
 ```bash
 git add .
 git commit -m "chore: clear mock data for production"
@@ -29,9 +31,10 @@ git push origin main
 Go to: Vercel Dashboard → Your Project → Settings → Environment Variables
 
 Add these:
+
 ```
 NEXT_PUBLIC_SUPABASE_URL = (from Supabase dashboard)
-NEXT_PUBLIC_SUPABASE_ANON_KEY = (from Supabase dashboard)  
+NEXT_PUBLIC_SUPABASE_ANON_KEY = (from Supabase dashboard)
 SUPABASE_SERVICE_ROLE_KEY = (from Supabase dashboard)
 NEXT_PUBLIC_APP_URL = https://your-vercel-url.vercel.app
 ```
@@ -41,6 +44,7 @@ Redeploy after adding variables.
 ### 4. Custom Domain Setup (Optional - 30 minutes)
 
 **Option A: Use Vercel domain**
+
 - Already deployed at: `litework-p6uw3kn0c-justin-depierros-projects.vercel.app`
 - Works immediately, no setup needed
 
@@ -59,7 +63,7 @@ Redeploy after adding variables.
 ### 5. Create Your Coach Account (2 minutes)
 
 1. Go to your deployed URL
-2. Click "Login"  
+2. Click "Login"
 3. Sign up with your email
 4. Confirm email
 5. You're in!
@@ -77,6 +81,7 @@ Redeploy after adding variables.
 ## 📋 Environment Variables Quick Reference
 
 **Where to find Supabase credentials:**
+
 1. Go to https://app.supabase.com
 2. Select your project
 3. Settings → API
@@ -102,21 +107,25 @@ Redeploy after adding variables.
 ## 💡 Pro Tips
 
 **Testing:**
+
 - Test on your phone (most athletes will use mobile)
 - Install as PWA on home screen
 - Try the "Live Workout" mode
 
 **Athlete Onboarding:**
+
 - Start with a small pilot group (3-5 athletes)
 - Choose tech-savvy athletes first
 - Get feedback before full rollout
 
 **Domain:**
+
 - Custom domain is optional but looks more professional
 - Vercel domain works perfectly fine
 - You can add custom domain later
 
 **Support:**
+
 - Most questions will be "How do I install the app?"
 - Create a quick video showing PWA installation
 - Post QR code in weight room for easy access
@@ -126,16 +135,19 @@ Redeploy after adding variables.
 ## 🆘 If Something Breaks
 
 **Can't log in:**
+
 - Check Supabase environment variables in Vercel
 - Verify Supabase project is active
 - Check browser console for errors
 
 **Athletes can't see workouts:**
+
 - Verify workout was assigned to correct group
 - Check athlete is in that group
 - Confirm scheduled date is today or future
 
 **Need help:**
+
 - Check the full PRODUCTION_DEPLOYMENT_CHECKLIST.md
 - Review DEPLOYMENT_GUIDE.md
 - Supabase docs: https://supabase.com/docs

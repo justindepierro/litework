@@ -3,21 +3,25 @@
 ## Missing Endpoints (Need to Create)
 
 ### 1. `/api/invites/validate/[code]` ❌
+
 **Used by:** `apiClient.validateInvite()`
 **Purpose:** Validate invitation code before accepting
 **Status:** MISSING
 
 ### 2. `/api/invites/accept` ❌
+
 **Used by:** `apiClient.acceptInvite()`
 **Purpose:** Accept invitation and create athlete account
 **Status:** MISSING
 
 ### 3. `/api/logs` ❌
+
 **Used by:** `src/lib/logger.ts`
 **Purpose:** Log errors/warnings to server
 **Status:** MISSING (Optional - for production error logging)
 
 ### 4. `/api/auth/login` GET ❌
+
 **Used by:** `apiClient.getDemoCredentials()` in login page
 **Purpose:** Demo credentials for testing
 **Status:** MISSING (Not needed for production)
@@ -46,10 +50,12 @@
 ## Priority Fixes
 
 ### HIGH PRIORITY (Needed for core functionality):
+
 1. Create `/api/invites/validate/[code]`
 2. Create `/api/invites/accept`
 
 ### LOW PRIORITY (Nice to have):
+
 1. Create `/api/logs` for error logging
 2. Add GET to `/api/auth/login` for demo credentials (or remove from UI)
 

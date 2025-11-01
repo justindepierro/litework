@@ -3,29 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const router = useRouter();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    const success = await login(email, password);
-
-    if (success) {
-      router.push("/dashboard");
-    } else {
-      setError("Invalid email or password");
+    try {
+      await signIn(email, password);
+      // AuthContext will handle redirect to /dashboard
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Invalid email or password"
+      );
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -61,12 +61,20 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="text-body-primary block text-base sm:text-sm font-medium mb-2"
-            >
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label
+                htmlFor="password"
+                className="text-body-primary block text-base sm:text-sm font-medium"
+              >
+                Password
+              </label>
+              <Link
+                href="/reset-password"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium touch-manipulation"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <input
               id="password"
               name="password"

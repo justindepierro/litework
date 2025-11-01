@@ -37,7 +37,7 @@ const NavigationLink = memo(function NavigationLink({
 });
 
 const Navigation = memo(function Navigation() {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Optimize toggle function with useCallback
@@ -65,6 +65,7 @@ const Navigation = memo(function Navigation() {
       );
     } else {
       items.push(
+        { href: "/workouts/history", label: "History" },
         { href: "/progress", label: "Progress" },
         { href: "/schedule", label: "Schedule" }
       );
@@ -92,7 +93,7 @@ const Navigation = memo(function Navigation() {
             {user ? (
               <>
                 <span className="text-body-small hidden lg:block text-silver-200 mr-2">
-                  Welcome, {user.name}
+                  Welcome, {user.fullName}
                 </span>
                 {navigationItems.map((item) => (
                   <NavigationLink
@@ -113,8 +114,14 @@ const Navigation = memo(function Navigation() {
                     {item.label}
                   </NavigationLink>
                 ))}
+                <Link
+                  href="/profile"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-700 hover:bg-navy-600 border border-navy-600 touch-manipulation"
+                >
+                  Profile
+                </Link>
                 <button
-                  onClick={logout}
+                  onClick={signOut}
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-800 hover:bg-navy-700 border border-navy-600 touch-manipulation"
                 >
                   Logout
@@ -186,7 +193,9 @@ const Navigation = memo(function Navigation() {
             <>
               <div className="px-4 py-3 text-sm text-silver-200 border-b border-navy-600 mb-4 bg-navy-900 rounded-lg">
                 <div className="font-medium">Welcome back!</div>
-                <div className="text-xs text-silver-300 mt-1">{user.name}</div>
+                <div className="text-xs text-silver-300 mt-1">
+                  {user.fullName}
+                </div>
               </div>
 
               <Link
@@ -241,9 +250,30 @@ const Navigation = memo(function Navigation() {
               {/* Separator */}
               <div className="border-t border-navy-600 my-4"></div>
 
+              <Link
+                href="/profile"
+                className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg
+                  className="w-5 h-5 text-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span className="text-white">Profile</span>
+              </Link>
+
               <button
                 onClick={() => {
-                  logout();
+                  signOut();
                   setIsMobileMenuOpen(false);
                 }}
                 className="flex items-center gap-3 w-full text-left px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-red-900 transition-all touch-manipulation active:bg-red-800 bg-red-950"

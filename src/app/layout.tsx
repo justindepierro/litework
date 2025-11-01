@@ -5,10 +5,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
 
-// Initialize development environment
-if (typeof window !== "undefined") {
+// Initialize development environment (only in dev)
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   initializeDevelopmentEnvironment();
 }
 
@@ -101,12 +102,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}
       >
-        <AuthProvider>
-          <Navigation />
-          <main className="bg-white">{children}</main>
-          <PWAInstallBanner />
-          <ServiceWorkerRegistration />
-        </AuthProvider>
+        <GlobalErrorBoundary>
+          <AuthProvider>
+            <Navigation />
+            <main className="bg-white">{children}</main>
+            <PWAInstallBanner />
+            <ServiceWorkerRegistration />
+          </AuthProvider>
+        </GlobalErrorBoundary>
       </body>
     </html>
   );

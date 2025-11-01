@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, lazy, Suspense } from "react";
-import { useCoachGuard } from "@/hooks/use-auth-guard";
+import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
 import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
@@ -29,7 +29,7 @@ interface LibraryExercise {
 }
 
 export default function WorkoutsPage() {
-  const { user, isLoading } = useCoachGuard();
+  const { user, isLoading: authLoading } = useRequireCoach();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +82,7 @@ export default function WorkoutsPage() {
     }
   }, [user]);
 
-  if (isLoading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-heading-secondary text-lg">Loading...</div>

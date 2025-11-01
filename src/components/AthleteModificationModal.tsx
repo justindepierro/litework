@@ -98,7 +98,7 @@ export default function AthleteModificationModal({
               <p className="text-body-secondary text-sm mt-1">
                 Customize{" "}
                 <span className="font-medium">{workoutPlan.name}</span> for{" "}
-                <span className="font-medium">{athlete.name}</span> (
+                <span className="font-medium">{athlete.fullName}</span> (
                 {group.name})
               </p>
             </div>

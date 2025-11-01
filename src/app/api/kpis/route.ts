@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseApiClient } from "@/lib/supabase-client";
-import { verifyToken, canAssignWorkouts } from "@/lib/auth";
+import { getAdminClient, requireCoach } from "@/lib/auth-server";
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify authentication
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
     // Only coaches/admins can create KPIs
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+    await requireCoach();
+
+    const supabase = getAdminClient();
 
     const body = await request.json();
     const { athleteId, exerciseId, exerciseName, currentPR, dateAchieved } =
@@ -34,37 +20,30 @@ export async function POST(request: NextRequest) {
       !dateAchieved
     ) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "All KPI fields are required",
-        },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const result = await supabaseApiClient.createKPI({
-      athleteId,
-      exerciseId,
-      exerciseName,
-      currentPR: parseFloat(currentPR),
-      dateAchieved: new Date(dateAchieved),
-      isActive: true,
-    });
+    const { data: kpi, error } = await supabase
+      .from("athlete_kpis")
+      .insert({
+        athlete_id: athleteId,
+        exercise_id: exerciseId,
+        exercise_name: exerciseName,
+        current_pr: parseFloat(currentPR),
+        date_achieved: new Date(dateAchieved).toISOString(),
+        is_active: true,
+      })
+      .select()
+      .single();
 
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        data: { kpi: result.data },
-      });
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error,
-        },
-        { status: 500 }
-      );
-    }
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: { kpi },
+    });
   } catch (error) {
     console.error("Error creating KPI:", error);
     return NextResponse.json(

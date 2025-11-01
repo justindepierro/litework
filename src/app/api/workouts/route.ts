@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, canAssignWorkouts, canViewAllAthletes } from "@/lib/auth";
-import { WorkoutPlan } from "@/types";
-import {
-  getAllWorkoutPlans,
-  createWorkoutPlan,
-  getWorkoutPlanById,
-} from "@/lib/database-service";
+import { getCurrentUser, requireCoach } from "@/lib/auth-server";
+import { getAllWorkoutPlans, createWorkoutPlan } from "@/lib/database-service";
 
 // GET /api/workouts - Get workout plans
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
@@ -22,18 +17,18 @@ export async function GET(request: NextRequest) {
     // Get all workout plans from database
     const allWorkoutPlans = await getAllWorkoutPlans();
 
-    // Coaches see all workouts, athletes see workouts for their groups
-    if (canViewAllAthletes(auth.user)) {
+    // Coaches/admins see all workouts, athletes see workouts for their groups
+    if (user.role === "coach" || user.role === "admin") {
       return NextResponse.json({
         success: true,
-        data: allWorkoutPlans,
+        data: { workouts: allWorkoutPlans },
       });
     } else {
       // For athletes, filter by target groups they belong to
       // This would require cross-referencing with user's groups
       return NextResponse.json({
         success: true,
-        data: allWorkoutPlans, // For now, return all
+        data: { workouts: allWorkoutPlans }, // For now, return all
       });
     }
   } catch (error) {
@@ -48,19 +43,11 @@ export async function GET(request: NextRequest) {
 // POST /api/workouts - Create new workout plan (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
+    const user = await requireCoach();
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
-      );
-    }
-
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
       );
     }
 
@@ -69,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     if (!name || !exercises || !Array.isArray(exercises)) {
       return NextResponse.json(
-        { error: "Name and exercises are required" },
+        { error: "Workout name and exercises are required" },
         { status: 400 }
       );
     }
@@ -85,7 +72,7 @@ export async function POST(request: NextRequest) {
       })),
       estimatedDuration: estimatedDuration || 60,
       targetGroupId,
-      createdBy: auth.user.userId,
+      createdBy: user.id,
     });
 
     if (!newWorkout) {

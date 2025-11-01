@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, canAssignWorkouts, isAthlete } from "@/lib/auth";
+import { getCurrentUser, requireCoach } from "@/lib/auth-server";
 import { WorkoutAssignment } from "@/types";
 import {
   getAllAssignments,
   createAssignment,
-  getAssignmentById,
   getAssignmentsByAthlete,
 } from "@/lib/database-service";
 
 // GET /api/assignments - Get assignments
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
@@ -28,9 +27,9 @@ export async function GET(request: NextRequest) {
     let filteredAssignments: WorkoutAssignment[] = [];
 
     // Filter based on user role and query parameters
-    if (isAthlete(auth.user)) {
+    if (user.role === "athlete") {
       // Athletes only see their own assignments
-      filteredAssignments = await getAssignmentsByAthlete(auth.user.userId);
+      filteredAssignments = await getAssignmentsByAthlete(user.id);
     } else {
       // Coaches can see all assignments
       const allAssignments = await getAllAssignments();
@@ -78,19 +77,11 @@ export async function GET(request: NextRequest) {
 // POST /api/assignments - Create new assignment (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
+    const user = await requireCoach();
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
-      );
-    }
-
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
       );
     }
 
@@ -106,7 +97,7 @@ export async function POST(request: NextRequest) {
     // Create new assignment in database
     const newAssignment = await createAssignment({
       ...assignmentData,
-      assignedBy: auth.user.userId,
+      assignedBy: user.id,
       scheduledDate: new Date(assignmentData.scheduledDate),
       status: "assigned",
     });

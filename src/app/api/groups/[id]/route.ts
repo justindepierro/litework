@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, canManageGroups } from "@/lib/auth";
+import {
+  verifySupabaseAuth as verifyToken,
+  canManageGroups,
+} from "@/lib/supabase-auth";
 import { getGroupById, updateGroup, deleteGroup } from "@/lib/database-service";
 
 // PUT /api/groups/[id] - Update group (coaches only)
@@ -9,7 +12,8 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
-    const auth = await verifyToken(request);
+    const authHeader = request.headers.get("authorization");
+    const auth = await verifyToken(authHeader);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(
@@ -69,7 +73,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const auth = await verifyToken(request);
+    const authHeader = request.headers.get("authorization");
+    const auth = await verifyToken(authHeader);
 
     if (!auth.success || !auth.user) {
       return NextResponse.json(

@@ -1,29 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { verifyToken } from "@/lib/auth";
-
-// Remove unused interface
-// interface AnalyticsQuery {
-//   athleteId?: string;
-//   timeframe?: '1m' | '3m' | '6m' | '1y';
-//   type?: 'overview' | 'strength' | 'volume' | 'consistency';
-// }
+import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json(
-        { error: "Authorization header required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
 
-    const auth = await verifyToken(request);
-    if (!auth.success) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-    const user = auth.user;
+    const supabase = getAdminClient();
 
     const { searchParams } = new URL(request.url);
     const athleteId = searchParams.get("athleteId");
@@ -57,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Base query conditions
-    let targetUserId = user?.userId;
+    let targetUserId = user?.id;
 
     // If athleteId is specified and user is coach/admin, analyze that athlete
     if (athleteId && user && (user.role === "coach" || user.role === "admin")) {
@@ -70,7 +58,7 @@ export async function GET(request: NextRequest) {
 
       if (
         !athlete ||
-        (athlete.coach_id !== user?.userId && user?.role !== "admin")
+        (athlete.coach_id !== user?.id && user?.role !== "admin")
       ) {
         return NextResponse.json(
           { error: "Access denied to athlete data" },
@@ -329,31 +317,25 @@ export async function GET(request: NextRequest) {
 // POST endpoint for generating analytics reports
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json(
-        { error: "Authorization header required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
 
-    const auth = await verifyToken(request);
-    if (
-      !auth.success ||
-      !auth.user ||
-      (auth.user.role !== "coach" && auth.user.role !== "admin")
-    ) {
+    if (user.role !== "coach" && user.role !== "admin") {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
-    const user = auth.user;
 
     const body = await request.json();
     const { athleteIds, reportType, timeframe } = body;
 
-    // supabase is already imported
+    const supabase = getAdminClient();
 
     // Generate bulk analytics report
     const reportData = await Promise.all(
@@ -361,13 +343,13 @@ export async function POST(request: NextRequest) {
         // Verify access to athlete
         const { data: athlete } = await supabase
           .from("users")
-          .select("id, name, coach_id")
+          .select("id, first_name, last_name, coach_id")
           .eq("id", athleteId)
           .single();
 
         if (
           !athlete ||
-          (athlete.coach_id !== user.userId && user.role !== "admin")
+          (athlete.coach_id !== user.id && user.role !== "admin")
         ) {
           return null;
         }
@@ -395,16 +377,25 @@ export async function POST(request: NextRequest) {
           .eq("user_id", athleteId)
           .gte("started_at", startDate.toISOString());
 
+        interface SessionData {
+          total_volume?: number;
+        }
+
         return {
           athleteId,
-          athleteName: athlete.name,
+          athleteName: `${athlete.first_name} ${athlete.last_name}`,
           totalWorkouts: sessions?.length || 0,
           totalVolume:
-            sessions?.reduce((sum, s) => sum + (s.total_volume || 0), 0) || 0,
+            sessions?.reduce(
+              (sum: number, s: SessionData) => sum + (s.total_volume || 0),
+              0
+            ) || 0,
           avgVolume: sessions?.length
             ? Math.round(
-                sessions.reduce((sum, s) => sum + (s.total_volume || 0), 0) /
-                  sessions.length
+                sessions.reduce(
+                  (sum: number, s: SessionData) => sum + (s.total_volume || 0),
+                  0
+                ) / sessions.length
               )
             : 0,
         };

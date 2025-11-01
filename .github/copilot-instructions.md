@@ -100,6 +100,15 @@ canViewAllAthletes(user); // coach or admin
 
 ## Recent Major Enhancements (October 2025)
 
+### Directory Organization & Professional Structure (Nov 1, 2025)
+
+- **Root Cleanup**: Reduced from 80+ files to 22 essential files
+- **Organized Scripts**: Categorized into `/scripts/{database,dev,deployment,analysis}`
+- **Organized Docs**: Categorized into `/docs/{guides,reports,checklists}`
+- **TypeScript Configuration**: Excludes non-source directories for clean compilation
+- **Comprehensive Documentation**: Created PROJECT_STRUCTURE.md with complete guidelines
+- **Zero TypeScript Errors**: Achieved 100% error-free production build
+
 ### Security & Authentication (Oct 30, 2025)
 
 - **Comprehensive Security Audit**: Fixed 6 critical unprotected API routes
@@ -124,6 +133,8 @@ canViewAllAthletes(user); // coach or admin
 
 ## Development Guidelines
 
+### Core Principles
+
 - **TypeScript First**: Use comprehensive type definitions from `src/types/index.ts`
 - **Security First**: All API routes MUST use auth wrappers (see ARCHITECTURE.md)
 - **Mobile-First Design**: Build for touch interfaces and mobile gym use
@@ -132,16 +143,185 @@ canViewAllAthletes(user); // coach or admin
 - **Progressive Enhancement**: Ensure basic functionality works everywhere
 - **Domain Knowledge**: Understand weight lifting terminology (supersets, circuits, 1RM, etc.)
 - **Permission Checks**: Always use permission helpers, never direct role comparisons
+- **Professional Organization**: Maintain clean directory structure (see PROJECT_STRUCTURE.md)
 
-## File Organization
+### Code Quality Standards
 
-- `src/app/` - Next.js App Router pages and API routes
-- `src/components/` - Reusable React components
-- `src/contexts/` - React Context providers for global state
-- `src/types/` - TypeScript type definitions and interfaces
-- `src/styles/` - Design system, tokens, and custom CSS
-- `src/lib/` - Utility functions and shared logic
-- `src/hooks/` - Custom React hooks
+- **Zero TypeScript Errors**: Run `npm run typecheck` before committing
+- **Build Validation**: Ensure `npm run build` succeeds
+- **Consistent Formatting**: Follow existing code style and patterns
+- **Type Safety**: Use proper types, avoid `any` unless absolutely necessary
+- **Error Handling**: Always handle errors gracefully with user-friendly messages
+- **Performance**: Optimize for mobile devices and slow connections
+
+## Project Structure & File Organization
+
+### Directory Hierarchy (CRITICAL - MUST FOLLOW)
+
+```
+litework/
+├── 📄 Root Level                 # ONLY essential configuration files
+│   ├── package.json              # Dependencies
+│   ├── tsconfig.json             # TypeScript config
+│   ├── next.config.ts            # Next.js config
+│   ├── tailwind.config.ts        # Tailwind config
+│   ├── middleware.ts             # Route middleware
+│   └── *.md                      # Core documentation
+│
+├── 📁 src/                       # ALL application source code
+│   ├── app/                      # Next.js pages & API routes
+│   ├── components/               # React components
+│   ├── contexts/                 # React contexts
+│   ├── hooks/                    # Custom hooks
+│   ├── lib/                      # Utilities & services
+│   ├── styles/                   # CSS & design tokens
+│   └── types/                    # TypeScript definitions
+│
+├── 📁 scripts/                   # Automation scripts (ORGANIZED)
+│   ├── database/                 # DB migrations, seeds, setup
+│   ├── dev/                      # Development tools
+│   ├── deployment/               # Production deployment
+│   └── analysis/                 # Performance analysis
+│
+├── 📁 docs/                      # Documentation (ORGANIZED)
+│   ├── guides/                   # How-to guides
+│   ├── reports/                  # Audit reports
+│   └── checklists/              # Process checklists
+│
+├── 📁 database/                  # Database schemas only
+├── 📁 public/                    # Static assets
+├── 📁 config/                    # Config files & archive
+└── 📁 .github/                   # GitHub config
+```
+
+### File Placement Rules (ENFORCE STRICTLY)
+
+**✅ DO:**
+
+- Place ALL automation scripts in `/scripts/{category}/`
+- Place ALL documentation in `/docs/{type}/`
+- Place ALL source code in `/src/`
+- Keep root directory minimal (config files + core docs only)
+- Archive old configs to `/config/archive/`
+
+**❌ DON'T:**
+
+- Add loose `.mjs`, `.sh`, or utility scripts to root
+- Create documentation files outside `/docs/`
+- Mix scripts with source code
+- Leave temporary/test files in root
+
+### Naming Conventions
+
+**Files:**
+
+- Components: `PascalCase.tsx` (e.g., `WorkoutEditor.tsx`)
+- Utilities: `kebab-case.ts` (e.g., `auth-utils.ts`)
+- Scripts: `kebab-case.mjs` (e.g., `migrate-database.mjs`)
+- API routes: `route.ts` in feature folders
+
+**Directories:**
+
+- Feature folders: `kebab-case` (e.g., `workout-editor/`)
+- Component folders: `PascalCase` (e.g., `WorkoutEditor/`)
+
+**Variables/Functions:**
+
+- camelCase for functions and variables
+- PascalCase for components and classes
+- SCREAMING_SNAKE_CASE for constants
+
+### Source Code Organization (`/src`)
+
+**Application Pages & Routes (`/app`)**
+
+```
+app/
+├── (auth)/                       # Auth-protected routes
+├── api/                          # API endpoints (grouped by resource)
+│   ├── analytics/route.ts
+│   ├── assignments/route.ts
+│   ├── exercises/route.ts
+│   └── workouts/
+│       ├── route.ts              # List/create workouts
+│       └── [id]/route.ts         # Single workout operations
+├── dashboard/page.tsx
+├── workouts/page.tsx
+└── layout.tsx
+```
+
+**Reusable Components (`/components`)**
+
+- Feature components: Root of `/components/`
+- Shared UI components: `/components/ui/`
+- Feature-specific sub-components: `/components/feature-name/`
+
+**Utilities & Services (`/lib`)**
+
+```
+lib/
+├── auth-utils.ts                 # Authentication wrappers
+├── supabase-auth.ts             # Supabase auth helpers
+├── api-client.ts                # API request utilities
+├── analytics-service.ts         # Analytics logic
+└── [feature]-service.ts         # Feature-specific services
+```
+
+**Type Definitions (`/types`)**
+
+```
+types/
+├── index.ts                      # Main type exports
+├── database.ts                   # Database types
+├── api.ts                        # API request/response types
+└── [feature].ts                  # Feature-specific types
+```
+
+### Script Organization (`/scripts`)
+
+**Database Scripts (`/scripts/database/`)**
+
+- Migrations: `migrate-*.mjs`
+- Seeds: `seed-*.mjs`, `*-seed.sql`
+- Setup: `create-*.mjs`, `check-*.mjs`
+- Verification: `verify-*.mjs`
+
+**Development Scripts (`/scripts/dev/`)**
+
+- Server management: `dev-*.sh`
+- Environment checks: `check-*.mjs`
+- Diagnostics: `*-diagnose.sh`, `*-troubleshoot.sh`
+
+**Deployment Scripts (`/scripts/deployment/`)**
+
+- Production: `deploy-*.sh`
+- Pre-deploy checks: `pre-deploy-*.mjs`
+
+**Analysis Scripts (`/scripts/analysis/`)**
+
+- Performance: `analyze-*.mjs`
+- Optimization: `optimize-*.mjs`
+
+### Documentation Organization (`/docs`)
+
+**Guides (`/docs/guides/`)**
+
+- Setup guides: `*_SETUP.md`, `*_GUIDE.md`
+- Development: `DEV_*.md`
+- Deployment: `DEPLOYMENT_*.md`
+- Quick starts: `QUICK_START_*.md`
+
+**Reports (`/docs/reports/`)**
+
+- Audits: `*_AUDIT_REPORT.md`
+- Security: `SECURITY_*.md`
+- Performance: `PERFORMANCE_*.md`
+
+**Checklists (`/docs/checklists/`)**
+
+- Launch: `*-checklist.md`
+- Migration: `*-migration.md`
+- Optimization: `*-optimization-*.md`
 
 ## Key Components
 
@@ -164,6 +344,267 @@ canViewAllAthletes(user); // coach or admin
 - `WorkoutView.tsx` - Review mode for assigned workouts
 - `WorkoutLive.tsx` - Interactive workout session with set recording
 - `ProgressAnalytics.tsx` - Performance tracking and statistics
+
+## Design Language & UI Patterns
+
+### Design System
+
+**Design Tokens** (from `src/styles/tokens.css`):
+
+- Use CSS custom properties for colors, spacing, typography
+- Reference: `docs/design-tokens.md`
+- Never hardcode colors - always use tokens
+- Maintain consistency across all components
+
+**Tailwind Classes**:
+
+- Use utility-first approach with Tailwind
+- Follow mobile-first responsive design (`sm:`, `md:`, `lg:` breakpoints)
+- Prefer Tailwind utilities over custom CSS
+- Use `@apply` in components for repeated patterns
+
+**Color Palette**:
+
+```css
+/* Primary - Brand colors */
+--color-primary: #3b82f6; /* Blue */
+--color-primary-dark: #1e40af;
+
+/* Semantic - Functional colors */
+--color-success: #10b981; /* Green */
+--color-warning: #f59e0b; /* Amber */
+--color-error: #ef4444; /* Red */
+--color-info: #06b6d4; /* Cyan */
+
+/* Neutral - Text and backgrounds */
+--color-gray-50: #f9fafb;
+--color-gray-900: #111827;
+```
+
+### Component Patterns
+
+**Modal Components**:
+
+- Use consistent modal structure with backdrop
+- Mobile-responsive with full-screen on small devices
+- Always include close button and keyboard (Escape) handling
+- Follow pattern: `[Feature]Modal.tsx` (e.g., `WorkoutEditor.tsx`)
+
+**Form Patterns**:
+
+```typescript
+// ✅ Good - Controlled inputs with validation
+const [formData, setFormData] = useState<FormType>(initialState);
+const [errors, setErrors] = useState<Record<string, string>>({});
+
+// Handle input changes
+const handleChange = (field: keyof FormType, value: any) => {
+  setFormData((prev) => ({ ...prev, [field]: value }));
+  if (errors[field]) {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  }
+};
+```
+
+**Loading States**:
+
+```typescript
+// ✅ Good - Consistent loading UI
+if (isLoading) {
+  return (
+    <div className="flex items-center justify-center p-8">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
+}
+```
+
+**Error Handling**:
+
+```typescript
+// ✅ Good - User-friendly error messages
+try {
+  await apiCall();
+} catch (error) {
+  setError(
+    error instanceof Error ? error.message : "An unexpected error occurred"
+  );
+  // Show toast notification
+  toast.error("Failed to save workout. Please try again.");
+}
+```
+
+### Mobile-First Design Rules
+
+**Touch Targets**:
+
+- Minimum 44x44px for all interactive elements
+- Use larger buttons in workout live mode (56px+)
+- Add adequate spacing between touch targets (8px minimum)
+
+**Typography**:
+
+```css
+/* Mobile base sizes */
+--text-xs: 0.75rem; /* 12px */
+--text-sm: 0.875rem; /* 14px */
+--text-base: 1rem; /* 16px - minimum for body text */
+--text-lg: 1.125rem; /* 18px */
+--text-xl: 1.25rem; /* 20px */
+
+/* Increase for readability in gym environment */
+.workout-live {
+  font-size: var(--text-lg); /* Larger base text */
+}
+```
+
+**Responsive Breakpoints**:
+
+```typescript
+// Mobile-first approach
+className="
+  w-full              // Mobile: full width
+  md:w-2/3            // Tablet: 2/3 width
+  lg:w-1/2            // Desktop: half width
+  p-4                 // Mobile: padding
+  md:p-6              // Tablet: more padding
+  lg:p-8              // Desktop: even more
+"
+```
+
+**Mobile Optimization**:
+
+- Always test on mobile devices (PWA context)
+- Optimize images and assets for mobile bandwidth
+- Use lazy loading for images and heavy components
+- Implement offline-first patterns for core features
+
+### Accessibility Requirements
+
+**Keyboard Navigation**:
+
+- All interactive elements must be keyboard accessible
+- Logical tab order throughout the application
+- Visual focus indicators on all focusable elements
+- Support Escape key to close modals/dialogs
+
+**Screen Readers**:
+
+```typescript
+// ✅ Good - Semantic HTML with ARIA labels
+<button
+  aria-label="Delete workout"
+  onClick={handleDelete}
+>
+  <TrashIcon className="w-5 h-5" />
+</button>
+
+// ✅ Good - Descriptive link text
+<Link href="/workouts" aria-label="View all workouts">
+  Workouts
+</Link>
+```
+
+**Color Contrast**:
+
+- Maintain WCAG AA standards (4.5:1 for normal text)
+- Never rely solely on color to convey information
+- Use icons + text for status indicators
+
+### Performance Patterns
+
+**Code Splitting**:
+
+```typescript
+// ✅ Good - Lazy load heavy components
+const WorkoutEditor = dynamic(() => import('@/components/WorkoutEditor'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+```
+
+**Memoization**:
+
+```typescript
+// ✅ Good - Memoize expensive computations
+const sortedWorkouts = useMemo(() => {
+  return workouts.sort((a, b) => b.date.localeCompare(a.date));
+}, [workouts]);
+
+// ✅ Good - Memoize callbacks passed to children
+const handleWorkoutSelect = useCallback(
+  (id: string) => {
+    navigate(`/workouts/view/${id}`);
+  },
+  [navigate]
+);
+```
+
+**API Optimization**:
+
+```typescript
+// ✅ Good - Batch API calls when possible
+const [workouts, assignments, analytics] = await Promise.all([
+  fetchWorkouts(),
+  fetchAssignments(),
+  fetchAnalytics(),
+]);
+
+// ✅ Good - Use pagination for large lists
+const { data, hasMore } = await fetchWorkouts({
+  limit: 20,
+  offset: page * 20,
+});
+```
+
+### State Management Patterns
+
+**Local State** - Component-specific data:
+
+```typescript
+const [isOpen, setIsOpen] = useState(false);
+const [formData, setFormData] = useState<FormType>(initialState);
+```
+
+**Context** - Shared state across components:
+
+```typescript
+// ✅ Good - Auth context for user session
+const { user, isLoading } = useAuth();
+
+// ✅ Good - Workout session context
+const { activeWorkout, updateSet } = useWorkoutSession();
+```
+
+**Server State** - Data from API:
+
+```typescript
+// ✅ Good - Use SWR or React Query pattern
+const { data: workouts, error, mutate } = useSWR("/api/workouts", fetcher);
+```
+
+### Testing & Validation
+
+**Before Every Commit**:
+
+```bash
+npm run typecheck    # Must show 0 errors
+npm run build        # Must complete successfully
+npm run lint         # Must pass (or fix warnings)
+```
+
+**Code Review Checklist**:
+
+- [ ] TypeScript errors: ZERO
+- [ ] Mobile responsive: Tested
+- [ ] Accessibility: Keyboard + screen reader
+- [ ] Error handling: All edge cases
+- [ ] Loading states: Implemented
+- [ ] File placement: Correct directory
+- [ ] Naming: Follows conventions
+- [ ] Comments: Added for complex logic
+- [ ] No console.logs in production code
+- [ ] Security: Auth checks in place
 
 ## Domain-Specific Context
 

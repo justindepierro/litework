@@ -1,20 +1,24 @@
 # Quick Migration Guide - Split Names
 
 ## The Problem
+
 Your production database doesn't have an `invites` table yet, so we need to create it fresh with the split name structure.
 
 ## Solution: Two-Step Migration
 
 ### Step 1: Create Invites Table
+
 **File:** `database/create-invites-table.sql`
 
 Run this in Supabase SQL Editor to create the `invites` table with:
+
 - `first_name`, `last_name`, `full_name` columns
 - RLS policies for security
 - Proper indexes
 - Triggers for timestamps
 
-### Step 2: Migrate Users Table  
+### Step 2: Migrate Users Table
+
 **File:** `database/migration-split-names.sql`
 
 Run this in Supabase SQL Editor to add split name columns to existing `users` table.

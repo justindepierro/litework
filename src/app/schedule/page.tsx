@@ -1,15 +1,11 @@
 "use client";
 
-import { useAnyUserGuard } from "@/hooks/use-auth-guard";
+import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState } from "react";
-import {
-  Calendar,
-  Settings,
-  BarChart3,
-} from "lucide-react";
+import { Calendar, Settings, BarChart3 } from "lucide-react";
 
 export default function SchedulePage() {
-  const { user, isLoading } = useAnyUserGuard();
+  const { user, isLoading } = useRequireAuth();
   const [currentWeek, setCurrentWeek] = useState(0);
 
   if (isLoading) {

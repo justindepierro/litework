@@ -15,7 +15,7 @@ import {
   MessageCircle,
   BarChart3,
 } from "lucide-react";
-import { User as UserType, AthleteKPI } from "@/types";
+import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 
 interface AthleteDetailModalProps {
   athlete: UserType & {
@@ -42,6 +42,7 @@ interface AthleteDetailModalProps {
       currentStreak?: number;
     };
   };
+  groups?: AthleteGroup[];
   onClose: () => void;
   onEdit?: () => void;
   onMessage?: () => void;
@@ -50,6 +51,7 @@ interface AthleteDetailModalProps {
 
 export default function AthleteDetailModal({
   athlete,
+  groups = [],
   onClose,
   onEdit,
   onMessage,
@@ -234,7 +236,9 @@ export default function AthleteDetailModal({
                         <p className="text-sm text-gray-600">
                           Emergency Contact
                         </p>
-                        <p className="font-medium">{athlete.emergencyContact}</p>
+                        <p className="font-medium">
+                          {athlete.emergencyContact}
+                        </p>
                         {athlete.emergencyPhone && (
                           <p className="text-sm text-gray-600">
                             {athlete.emergencyPhone}
@@ -326,14 +330,23 @@ export default function AthleteDetailModal({
                     Groups
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {athlete.groupIds.map((groupId) => (
-                      <span
-                        key={groupId}
-                        className="px-3 py-1 bg-gray-100 rounded-full text-sm"
-                      >
-                        {groupId}
-                      </span>
-                    ))}
+                    {athlete.groupIds.map((groupId) => {
+                      const group = groups.find((g) => g.id === groupId);
+                      return (
+                        <span
+                          key={groupId}
+                          className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                          style={{
+                            backgroundColor: group?.color
+                              ? `${group.color}20`
+                              : undefined,
+                            color: group?.color || undefined,
+                          }}
+                        >
+                          {group?.name || groupId}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               )}

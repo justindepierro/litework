@@ -10,6 +10,7 @@
 ### 1. Test Authentication Flow
 
 **Test Login/Signup:**
+
 ```
 1. Go to http://localhost:3000/login
 2. Test Supabase authentication:
@@ -20,6 +21,7 @@
 ```
 
 **Expected Results:**
+
 - ✅ Authentication redirects to dashboard
 - ✅ User profile created in database
 - ✅ Session persists across page refreshes
@@ -27,14 +29,16 @@
 ### 2. Test Athlete Management
 
 **Test Athlete Invitations:**
+
 ```
 1. Navigate to /athletes
-2. Click "Invite Athlete" 
+2. Click "Invite Athlete"
 3. Fill in name and email
 4. Verify invitation created
 ```
 
 **Expected Results:**
+
 - ✅ Empty state shows: "No athletes yet"
 - ✅ Invitation form works
 - ✅ Athletes list updates after invitation
@@ -42,6 +46,7 @@
 ### 3. Test Group Management
 
 **Test Group Creation:**
+
 ```
 1. Navigate to /dashboard (CalendarView section)
 2. Click "Create Group"
@@ -54,6 +59,7 @@
 ```
 
 **Expected Results:**
+
 - ✅ Group appears in dropdown
 - ✅ Empty groups show proper message
 - ✅ Can edit/delete test group
@@ -61,6 +67,7 @@
 ### 4. Test Workout Creation
 
 **Test WorkoutEditor:**
+
 ```
 1. Navigate to /workouts
 2. Click "Create Workout"
@@ -72,6 +79,7 @@
 ```
 
 **Expected Results:**
+
 - ✅ Workout editor opens
 - ✅ Exercise library loads
 - ✅ Can add multiple exercises
@@ -80,6 +88,7 @@
 ### 5. Test Workout Assignment
 
 **Test Group Assignment:**
+
 ```
 1. With a workout and group created
 2. Click "Assign to Group"
@@ -88,6 +97,7 @@
 ```
 
 **Expected Results:**
+
 - ✅ Assignment appears in calendar
 - ✅ Athletes see assigned workout
 - ✅ Can view workout details
@@ -95,6 +105,7 @@
 ### 6. Test Mobile Responsiveness
 
 **Test on Different Devices:**
+
 ```
 1. Chrome DevTools → Toggle device toolbar
 2. Test on:
@@ -106,6 +117,7 @@
 ```
 
 **Expected Results:**
+
 - ✅ All pages responsive
 - ✅ Touch targets large enough
 - ✅ Navigation works on mobile
@@ -118,11 +130,13 @@
 ### Option A: Use Existing Vercel Domain
 
 **Current Deployment:**
+
 - URL: `https://litework-p6uw3kn0c-justin-depierros-projects.vercel.app`
 - Status: Active
 - Environment: Production
 
 **Quick Deploy:**
+
 ```bash
 git push origin main
 # Vercel will auto-deploy
@@ -133,11 +147,13 @@ git push origin main
 **Step 1: Purchase Domain**
 
 Recommended registrars:
+
 - Namecheap (namecheap.com)
 - Google Domains (domains.google)
 - Cloudflare (cloudflare.com)
 
 **Suggested domains:**
+
 - litework.app
 - litework.fit
 - [yourschool]-weights.com
@@ -160,7 +176,7 @@ Type: A
 Name: @
 Value: 76.76.21.21
 
-Type: CNAME  
+Type: CNAME
 Name: www
 Value: cname.vercel-dns.com
 ```
@@ -255,6 +271,7 @@ vercel --prod
 ### Phase 1: Coach Setup (You - Day 1)
 
 **Initial Setup:**
+
 1. Create your coach account
 2. Set up athlete groups:
    - By sport (Football, Volleyball, etc.)
@@ -266,11 +283,13 @@ vercel --prod
 ### Phase 2: Pilot Group (Days 2-3)
 
 **Select 3-5 Athletes:**
+
 - Choose tech-savvy athletes
 - Mix of sports/groups
 - Good communicators
 
 **Invitation Process:**
+
 1. Navigate to /athletes
 2. Click "Invite Athlete"
 3. Enter athlete details:
@@ -281,6 +300,7 @@ vercel --prod
 5. They sign up and accept
 
 **Pilot Workout:**
+
 - Assign simple workout
 - Monitor completion
 - Gather feedback
@@ -288,6 +308,7 @@ vercel --prod
 ### Phase 3: Full Rollout (Week 1)
 
 **Batch Invitations:**
+
 1. Prepare athlete roster:
    - Names
    - Email addresses
@@ -327,6 +348,7 @@ Coach [Your Name]
 ### Phase 4: Training & Support
 
 **In-Person Training Session:**
+
 - Schedule 15-minute demo
 - Show key features:
   - Viewing assigned workouts
@@ -335,6 +357,7 @@ Coach [Your Name]
   - Installing PWA on phone
 
 **Support Resources:**
+
 - Create simple video tutorial (Loom or phone recording)
 - Post QR code in weight room
 - Designate 1-2 "tech helper" athletes
@@ -368,21 +391,25 @@ Coach [Your Name]
 ### Common Issues:
 
 **"Can't log in"**
+
 - Verify Supabase URL/keys in Vercel env vars
 - Check Supabase authentication settings
 - Confirm email confirmation is working
 
 **"Domain not loading"**
+
 - Wait for DNS propagation (up to 48 hours)
 - Verify DNS records match Vercel instructions
 - Clear browser cache
 
 **"Changes not appearing"**
+
 - Hard refresh browser (Cmd+Shift+R or Ctrl+Shift+R)
 - Check Vercel deployment succeeded
 - Verify correct branch deployed
 
 **"Athletes can't see workouts"**
+
 - Verify workout assignment saved
 - Check athlete is in correct group
 - Confirm scheduled date is correct
@@ -402,6 +429,7 @@ Coach [Your Name]
 ### Feedback Collection:
 
 **Quick Survey After First Week:**
+
 1. Was sign-up easy? (Yes/No/Issues)
 2. Was the app easy to use? (1-5 scale)
 3. What feature did you like most?
@@ -413,6 +441,7 @@ Coach [Your Name]
 ## 🎉 Success Criteria
 
 **Week 1 Goals:**
+
 - [ ] 80%+ of invited athletes signed up
 - [ ] 10+ workouts assigned
 - [ ] 5+ workouts completed by athletes
@@ -420,6 +449,7 @@ Coach [Your Name]
 - [ ] Positive athlete feedback
 
 **Month 1 Goals:**
+
 - [ ] 100% athlete adoption
 - [ ] Daily active usage during training times
 - [ ] Athletes tracking progress independently
@@ -431,13 +461,16 @@ Coach [Your Name]
 ## 🆘 Support Contacts
 
 **Technical Issues:**
+
 - GitHub: [your-github]
 - Email: [your-email]
 
 **Supabase Dashboard:**
+
 - https://app.supabase.com
 
 **Vercel Dashboard:**
+
 - https://vercel.com/dashboard
 
 ---

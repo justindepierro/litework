@@ -168,15 +168,18 @@ export default function GroupFormModal({
         }
       } else {
         const response = (await apiClient.createGroup(formData)) as ApiResponse;
-        if (response.success && response.data) {
-          const data = response.data as { group?: AthleteGroup };
+        console.log("Create group response:", response);
+        if (response.success) {
+          const data = response as unknown as { group?: AthleteGroup };
           if (data.group) {
             onSave(data.group);
             onClose();
           } else {
-            setError("Failed to create group");
+            console.error("No group in response:", data);
+            setError("Failed to create group - no group returned");
           }
         } else {
+          console.error("API returned error:", response.error);
           setError(
             typeof response.error === "string"
               ? response.error
@@ -185,6 +188,7 @@ export default function GroupFormModal({
         }
       }
     } catch (err) {
+      console.error("Exception creating group:", err);
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
@@ -334,7 +338,7 @@ export default function GroupFormModal({
                         >
                           <div>
                             <div className="text-body-primary font-medium">
-                              {athlete.name}
+                              {athlete.fullName}
                             </div>
                             <div className="text-body-small">
                               {athlete.email}
@@ -369,7 +373,7 @@ export default function GroupFormModal({
                         >
                           <div>
                             <div className="text-body-primary font-medium">
-                              {athlete.name}
+                              {athlete.fullName}
                             </div>
                             <div className="text-body-small">
                               {athlete.email}

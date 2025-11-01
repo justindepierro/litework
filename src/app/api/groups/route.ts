@@ -1,44 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, canManageGroups, canViewAllAthletes } from "@/lib/auth";
-import { AthleteGroup } from "@/types";
-import {
-  getAllGroups,
-  createGroup,
-  updateGroup,
-  deleteGroup,
-} from "@/lib/database-service";
+import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
 
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get all groups from database
-    const allGroups = await getAllGroups();
+    const supabase = getAdminClient();
 
-    // Coaches can see all groups, athletes only see their groups
-    if (canViewAllAthletes(auth.user)) {
-      return NextResponse.json({
-        success: true,
-        groups: allGroups,
-      });
+    // Coaches/admins can see all groups, athletes only see their groups
+    if (user.role === "coach" || user.role === "admin") {
+      const { data: groups, error } = await supabase
+        .from("athlete_groups")
+        .select("*")
+        .order("name");
+
+      if (error) throw error;
+
+      return NextResponse.json({ success: true, groups });
     } else {
-      // For athletes, filter by their groupIds
-      const userGroups = allGroups.filter((group) =>
-        group.athleteIds.includes(auth.user!.userId)
-      );
+      // Athletes see only their groups
+      const { data: groups, error } = await supabase
+        .from("athlete_groups")
+        .select("*")
+        .contains("athlete_ids", [user.id])
+        .order("name");
 
-      return NextResponse.json({
-        success: true,
-        groups: userGroups,
-      });
+      if (error) throw error;
+
+      return NextResponse.json({ success: true, groups });
     }
   } catch (error) {
     console.error("Groups GET error:", error);
@@ -52,24 +46,21 @@ export async function GET(request: NextRequest) {
 // POST /api/groups - Create new group (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!canManageGroups(auth.user)) {
+    if (user.role !== "coach" && user.role !== "admin") {
       return NextResponse.json(
-        { error: "Insufficient permissions" },
+        { error: "Forbidden - Coach access required" },
         { status: 403 }
       );
     }
 
-    const { name, description, sport, category, color, athleteIds } =
-      await request.json();
+    const body = await request.json();
+    const { name, description, sport, category, color, athleteIds } = body;
 
     if (!name || !sport) {
       return NextResponse.json(
@@ -78,21 +69,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newGroup = await createGroup({
-      name,
-      description,
-      sport,
-      category,
-      coachId: auth.user.userId,
-      athleteIds: athleteIds || [],
-      color: color || "#3b82f6",
-    });
+    const supabase = getAdminClient();
 
-    if (!newGroup) {
-      return NextResponse.json(
-        { error: "Failed to create group" },
-        { status: 500 }
-      );
+    const { data: newGroup, error } = await supabase
+      .from("athlete_groups")
+      .insert({
+        name,
+        description,
+        sport,
+        category,
+        coach_id: user.id,
+        athlete_ids: athleteIds || [],
+        color: color || "#3b82f6",
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating group:", error);
+      throw error;
     }
 
     return NextResponse.json({
@@ -102,7 +97,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Groups POST error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }

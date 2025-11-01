@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withAuth } from "@/lib/auth-utils";
-import { createClient } from "@/lib/supabase-server";
+import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
 
 // POST /api/invites - Create athlete invitation
 export async function POST(request: NextRequest) {
-  return withAuth(request, async (user) => {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // Only coaches and admins can invite athletes
     if (user.role !== "coach" && user.role !== "admin") {
       return NextResponse.json(
@@ -13,78 +18,81 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    try {
-      const body = await request.json();
-      const { firstName, lastName, email, groupId } = body;
+    const body = await request.json();
+    const { firstName, lastName, email, groupId } = body;
 
-      if (!firstName || !lastName || !email) {
-        return NextResponse.json(
-          { error: "First name, last name, and email are required" },
-          { status: 400 }
-        );
-      }
-
-      const supabase = createClient();
-
-      // Check if user already exists
-      const { data: existingUser } = await supabase
-        .from("users")
-        .select("id, email")
-        .eq("email", email.toLowerCase())
-        .single();
-
-      if (existingUser) {
-        return NextResponse.json(
-          { error: "User with this email already exists" },
-          { status: 400 }
-        );
-      }
-
-      // Create invitation record
-      const { data: invite, error: inviteError } = await supabase
-        .from("invites")
-        .insert({
-          email: email.toLowerCase(),
-          first_name: firstName,
-          last_name: lastName,
-          invited_by: user.userId,
-          role: "athlete",
-          group_id: groupId || null,
-          status: "pending",
-          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-        })
-        .select()
-        .single();
-
-      if (inviteError) {
-        console.error("Error creating invite:", inviteError);
-        return NextResponse.json(
-          { error: "Failed to create invitation" },
-          { status: 500 }
-        );
-      }
-
-      // TODO: Send invitation email via Supabase Auth or email service
-      // For now, the athlete will need to sign up manually and you can assign them to groups
-
-      return NextResponse.json({
-        success: true,
-        invite,
-        message: "Invitation created successfully",
-      });
-    } catch (error) {
-      console.error("Error in POST /api/invites:", error);
+    if (!firstName || !lastName || !email) {
       return NextResponse.json(
-        { error: "Internal server error" },
+        { error: "First name, last name, and email are required" },
+        { status: 400 }
+      );
+    }
+
+    const supabase = getAdminClient();
+
+    // Check if user already exists
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id, email")
+      .eq("email", email.toLowerCase())
+      .single();
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "User with this email already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Create invitation record
+    const { data: invite, error: inviteError } = await supabase
+      .from("invites")
+      .insert({
+        email: email.toLowerCase(),
+        first_name: firstName,
+        last_name: lastName,
+        invited_by: user.id,
+        role: "athlete",
+        group_id: groupId || null,
+        status: "pending",
+        expires_at: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 7 days
+      })
+      .select()
+      .single();
+
+    if (inviteError) {
+      console.error("Error creating invite:", inviteError);
+      return NextResponse.json(
+        { error: "Failed to create invitation" },
         { status: 500 }
       );
     }
-  });
+
+    return NextResponse.json({
+      success: true,
+      invite,
+      message: "Invitation created successfully",
+    });
+  } catch (error) {
+    console.error("Error in POST /api/invites:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
 
 // GET /api/invites - Get all invitations (for coaches)
-export async function GET(request: NextRequest) {
-  return withAuth(request, async (user) => {
+export async function GET() {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // Only coaches and admins can view invitations
     if (user.role !== "coach" && user.role !== "admin") {
       return NextResponse.json(
@@ -93,30 +101,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    try {
-      const supabase = createClient();
+    const supabase = getAdminClient();
 
-      const { data: invites, error } = await supabase
-        .from("invites")
-        .select("*")
-        .eq("invited_by", user.userId)
-        .order("created_at", { ascending: false });
+    const { data: invites, error } = await supabase
+      .from("invites")
+      .select("*")
+      .eq("invited_by", user.id)
+      .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching invites:", error);
-        return NextResponse.json(
-          { error: "Failed to fetch invitations" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ invites: invites || [] });
-    } catch (error) {
-      console.error("Error in GET /api/invites:", error);
+    if (error) {
+      console.error("Error fetching invites:", error);
       return NextResponse.json(
-        { error: "Internal server error" },
+        { error: "Failed to fetch invitations" },
         { status: 500 }
       );
     }
-  });
+
+    return NextResponse.json({ invites: invites || [] });
+  } catch (error) {
+    console.error("Error in GET /api/invites:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }

@@ -6,7 +6,7 @@ class ApiClient {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
   }
 
   /**
@@ -52,8 +52,15 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error("API request failed:", {
+        url: `${this.baseUrl}${endpoint}`,
+        status: response.status,
+        statusText: response.statusText,
+        errorData,
+      });
       throw new Error(
         errorData.error ||
+          errorData.details ||
           `API Error: ${response.status} ${response.statusText}`
       );
     }

@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { verifyToken } from "@/lib/auth";
+import {
+  getCurrentUser,
+  getAdminClient,
+  requireCoach,
+} from "@/lib/auth-server";
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
-    if (!auth.success) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const supabase = getAdminClient();
 
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
@@ -86,19 +91,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyToken(request);
-    if (!auth.success || !auth.user) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    const user = await requireCoach();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can create exercises
-    if (auth.user.role !== "coach" && auth.user.role !== "admin") {
+    if (user.role !== "coach" && user.role !== "admin") {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
 
+    const supabase = getAdminClient();
     const body = await request.json();
     const {
       name,
@@ -135,9 +144,9 @@ export async function POST(request: NextRequest) {
         safety_notes: safetyNotes,
         video_url: videoUrl,
         image_url: imageUrl,
-        created_by: auth.user.userId,
+        created_by: user.id,
         is_active: true,
-        is_approved: auth.user.role === "admin", // Auto-approve for admins
+        is_approved: user.role === "admin", // Auto-approve for admins
         tags: tags || [],
       })
       .select()

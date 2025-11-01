@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
-import { X, Settings } from "lucide-react";
+import { X, Settings, Check } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
 
 import { WorkoutModification } from "@/types";
@@ -28,7 +28,7 @@ export default function GroupAssignmentModal({
   athletes,
   onAssignWorkout,
 }: GroupAssignmentModalProps) {
-  const [selectedGroupId, setSelectedGroupId] = useState<string>("");
+  const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string>("");
   const [startTime, setStartTime] = useState("15:30");
   const [endTime, setEndTime] = useState("16:30");
@@ -41,38 +41,58 @@ export default function GroupAssignmentModal({
 
   if (!isOpen) return null;
 
-  const selectedGroup = groups.find((g) => g.id === selectedGroupId);
+  // Support both single and multi-select
+  const selectedGroups = groups.filter((g) => selectedGroupIds.includes(g.id));
   const selectedWorkout = workoutPlans.find((w) => w.id === selectedWorkoutId);
-  const groupAthletes = selectedGroup
-    ? athletes.filter((a) => selectedGroup.athleteIds.includes(a.id))
-    : [];
+
+  // Get all athletes from selected groups (deduplicated)
+  const allAthleteIds = new Set<string>();
+  selectedGroups.forEach((group) => {
+    group.athleteIds.forEach((id) => allAthleteIds.add(id));
+  });
+  const groupAthletes = athletes.filter((a) => allAthleteIds.has(a.id));
+
+  const toggleGroup = (groupId: string) => {
+    setSelectedGroupIds((prev) =>
+      prev.includes(groupId)
+        ? prev.filter((id) => id !== groupId)
+        : [...prev, groupId]
+    );
+  };
 
   const handleAssign = () => {
-    if (!selectedGroupId || !selectedWorkoutId || !selectedWorkout) return;
+    if (selectedGroupIds.length === 0 || !selectedWorkoutId || !selectedWorkout)
+      return;
 
-    const assignment: Omit<
-      WorkoutAssignment,
-      "id" | "createdAt" | "updatedAt"
-    > = {
-      workoutPlanId: selectedWorkoutId,
-      workoutPlanName: selectedWorkout.name,
-      assignmentType: "group",
-      groupId: selectedGroupId,
-      athleteIds: selectedGroup?.athleteIds || [],
-      assignedBy: "coach1", // In real app, get from auth context
-      assignedDate: new Date(),
-      scheduledDate: selectedDate,
-      status: "assigned",
-      modifications: Object.values(groupModifications).flat(),
-      startTime,
-      endTime,
-      notes: notes || undefined,
-    };
+    // Create one assignment per group
+    selectedGroupIds.forEach((groupId) => {
+      const group = groups.find((g) => g.id === groupId);
+      if (!group) return;
 
-    onAssignWorkout(assignment);
+      const assignment: Omit<
+        WorkoutAssignment,
+        "id" | "createdAt" | "updatedAt"
+      > = {
+        workoutPlanId: selectedWorkoutId,
+        workoutPlanName: selectedWorkout.name,
+        assignmentType: "group",
+        groupId: groupId,
+        athleteIds: group.athleteIds || [],
+        assignedBy: "coach1", // In real app, get from auth context
+        assignedDate: new Date(),
+        scheduledDate: selectedDate,
+        status: "assigned",
+        modifications: Object.values(groupModifications).flat(),
+        startTime,
+        endTime,
+        notes: notes || undefined,
+      };
+
+      onAssignWorkout(assignment);
+    });
 
     // Reset form
-    setSelectedGroupId("");
+    setSelectedGroupIds([]);
     setSelectedWorkoutId("");
     setStartTime("15:30");
     setEndTime("16:30");
@@ -118,21 +138,43 @@ export default function GroupAssignmentModal({
               {/* Left Column - Assignment Details */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Select Group
+                  <label className="text-body-primary font-medium block mb-3">
+                    Select Groups (Multiple)
                   </label>
-                  <select
-                    value={selectedGroupId}
-                    onChange={(e) => setSelectedGroupId(e.target.value)}
-                    className="w-full p-3 border border-silver-400 rounded-md"
-                  >
-                    <option value="">Choose a group...</option>
-                    {groups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.name} ({group.athleteIds.length} athletes)
-                      </option>
-                    ))}
-                  </select>
+                  <div className="space-y-2 max-h-48 overflow-y-auto border border-silver-400 rounded-md p-3">
+                    {groups.length === 0 ? (
+                      <p className="text-silver-600 text-sm">
+                        No groups available
+                      </p>
+                    ) : (
+                      groups.map((group) => (
+                        <label
+                          key={group.id}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedGroupIds.includes(group.id)}
+                            onChange={() => toggleGroup(group.id)}
+                            className="w-5 h-5 text-accent-blue rounded focus:ring-2 focus:ring-accent-blue"
+                          />
+                          <span className="flex-1 text-body-primary">
+                            {group.name}
+                          </span>
+                          <span className="text-silver-600 text-sm">
+                            {group.athleteIds.length} athletes
+                          </span>
+                        </label>
+                      ))
+                    )}
+                  </div>
+                  {selectedGroupIds.length > 0 && (
+                    <p className="text-sm text-accent-blue mt-2 flex items-center gap-1">
+                      <Check className="w-4 h-4" />
+                      {selectedGroupIds.length} group
+                      {selectedGroupIds.length > 1 ? "s" : ""} selected
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -228,11 +270,13 @@ export default function GroupAssignmentModal({
               {/* Right Column - Athletes & Modifications */}
               <div>
                 <h3 className="text-heading-secondary text-lg mb-4">
-                  Athletes & Individual Modifications
+                  Athletes
+                  {selectedGroupIds.length > 0 &&
+                    ` (${allAthleteIds.size} total)`}
                 </h3>
 
-                {selectedGroup && groupAthletes.length > 0 ? (
-                  <div className="space-y-3">
+                {selectedGroupIds.length > 0 && groupAthletes.length > 0 ? (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
                     {groupAthletes.map((athlete) => {
                       const hasModifications =
                         groupModifications[athlete.id]?.length > 0;
@@ -241,7 +285,7 @@ export default function GroupAssignmentModal({
                           <div className="flex justify-between items-center">
                             <div>
                               <div className="text-body-primary font-medium">
-                                {athlete.name}
+                                {athlete.fullName}
                               </div>
                               <div className="text-body-small">
                                 {athlete.email}
@@ -270,13 +314,13 @@ export default function GroupAssignmentModal({
                       );
                     })}
                   </div>
-                ) : selectedGroup ? (
+                ) : selectedGroupIds.length > 0 ? (
                   <div className="text-center py-8 text-body-secondary">
-                    No athletes found in this group.
+                    No athletes found in selected groups.
                   </div>
                 ) : (
                   <div className="text-center py-8 text-body-secondary">
-                    Select a group to see athletes.
+                    Select one or more groups to see athletes.
                   </div>
                 )}
               </div>
@@ -289,13 +333,13 @@ export default function GroupAssignmentModal({
               </button>
               <button
                 onClick={handleAssign}
-                disabled={!selectedGroupId || !selectedWorkoutId}
+                disabled={selectedGroupIds.length === 0 || !selectedWorkoutId}
                 className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Assign to{" "}
-                {selectedGroup
-                  ? `${selectedGroup.name} (${groupAthletes.length})`
-                  : "Group"}
+                {selectedGroupIds.length > 0
+                  ? `${selectedGroupIds.length} Group${selectedGroupIds.length > 1 ? "s" : ""} (${allAthleteIds.size} athletes)`
+                  : "Groups"}
               </button>
             </div>
           </div>
@@ -305,13 +349,13 @@ export default function GroupAssignmentModal({
       {/* Athlete Modification Modal */}
       {showModificationModal &&
         selectedAthlete &&
-        selectedGroup &&
+        selectedGroupIds.length > 0 &&
         selectedWorkout && (
           <AthleteModificationModal
             isOpen={showModificationModal}
             onClose={() => setShowModificationModal(false)}
             athlete={selectedAthlete}
-            group={selectedGroup}
+            group={selectedGroups[0]} // Use first group for context
             workoutPlan={selectedWorkout}
             existingModifications={groupModifications[selectedAthlete.id] || []}
             onSaveModifications={(modifications) => {

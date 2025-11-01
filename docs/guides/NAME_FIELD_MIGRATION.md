@@ -1,12 +1,15 @@
 # Name Field Migration Summary
 
 ## Overview
+
 Migrating from single `name` field to separate `firstName` and `lastName` fields throughout the application for better flexibility in display, sorting, and personalization.
 
 ## Changes Made
 
 ### 1. Database Schema ✅
+
 **File:** `database/migration-split-names.sql`
+
 - Added `first_name`, `last_name`, `full_name` (computed) to `users` table
 - Added `first_name`, `last_name`, `full_name` (computed) to `athlete_invites` table
 - Migrates existing data by splitting on first space
@@ -16,24 +19,30 @@ Migrating from single `name` field to separate `firstName` and `lastName` fields
 **Status:** Migration file created, needs to be run in Supabase
 
 ### 2. TypeScript Types ✅
+
 **File:** `src/types/index.ts`
+
 - Updated `User` interface to use `firstName`, `lastName`, `fullName?`
 - Removed old `name` field
 
 ### 3. API Routes ✅
 
 **File:** `src/app/api/invites/route.ts` (POST /api/invites)
+
 - Changed from `{ name, email }` to `{ firstName, lastName, email }`
 - Updates validation message
 - Stores `first_name`, `last_name` in database
 
 **File:** `src/app/api/invites/accept/route.ts` (POST /api/invites/accept)
+
 - Reads `invite.first_name`, `invite.last_name` from database
 - Creates user with `first_name`, `last_name` fields
 - Returns `firstName`, `lastName` in response
 
 ### 4. Auth Utils ✅
+
 **File:** `src/lib/supabase-auth.ts`
+
 - Updated `getUserProfile()` to construct name from `full_name` or `first_name + last_name`
 - Updated `verifySupabaseAuth()` to do the same
 - Maintains backwards compatibility with `name` field in `AuthenticatedUser` interface
@@ -41,6 +50,7 @@ Migrating from single `name` field to separate `firstName` and `lastName` fields
 ### 5. Frontend Components - PENDING
 
 **File:** `src/app/athletes/page.tsx`
+
 - [ ] Update `InviteForm` interface from `name: string` to `firstName: string; lastName: string`
 - [ ] Update form state initialization
 - [ ] Split Name input field into two fields (First Name and Last Name)
@@ -48,15 +58,18 @@ Migrating from single `name` field to separate `firstName` and `lastName` fields
 - [ ] Update athlete displays to use `fullName` or construct from first + last
 
 **File:** `src/lib/api-client.ts`
+
 - [ ] Update `createAthleteInvite()` method signature
 
 **File:** Components that display user names
+
 - [ ] Update all components that display `user.name` to use `user.fullName` or construct it
 - [ ] Examples: Navigation, Dashboard, Progress Analytics, etc.
 
 ## Migration Steps
 
 1. **Run Database Migration** (REQUIRED FIRST)
+
    ```sql
    -- In Supabase SQL Editor
    -- Run: database/migration-split-names.sql

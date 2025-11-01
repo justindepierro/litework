@@ -17,8 +17,10 @@ import {
 export const mockUsers: User[] = [
   {
     id: "1",
-    email: "coach@litework.app", 
-    name: "Coach",
+    email: "coach@litework.app",
+    firstName: "Coach",
+    lastName: "User",
+    fullName: "Coach User",
     role: "coach",
     groupIds: [], // Coaches don't belong to groups
     createdAt: new Date("2024-01-15"),

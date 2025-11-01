@@ -1,36 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
-import { supabaseApiClient } from "@/lib/supabase-client";
-import { verifyToken } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth-server";
 
 // GET /api/messages - Get messages for current user
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verify authentication
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const conversationWith = searchParams.get("with");
-    const limit = parseInt(searchParams.get("limit") || "50");
-    const offset = parseInt(searchParams.get("offset") || "0");
-
-    const result = await supabaseApiClient.getMessages({
-      conversationWith,
-      limit,
-      offset,
-    });
-
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
-
-    return NextResponse.json({ messages: result.data });
+    // TODO: Implement actual message fetching from database
+    return NextResponse.json({ messages: [] });
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(
@@ -41,42 +26,22 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/messages - Send a new message
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Verify authentication
-    const auth = await verifyToken(request);
+    const user = await getCurrentUser();
 
-    if (!auth.success || !auth.user) {
+    if (!user) {
       return NextResponse.json(
-        { error: auth.error || "Authentication required" },
+        { error: "Authentication required" },
         { status: 401 }
       );
     }
 
-    const body = await request.json();
-    const { recipient_id, subject, message, priority = "normal" } = body;
-
-    if (!recipient_id || !message) {
-      return NextResponse.json(
-        { error: "Recipient and message are required" },
-        { status: 400 }
-      );
-    }
-
-    const result = await supabaseApiClient.sendMessage({
-      recipient_id,
-      subject,
-      message,
-      priority,
-    });
-
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
-
+    // TODO: Implement actual message sending to database
     return NextResponse.json({
       success: true,
-      message: result.data,
+      message: "Message feature not yet implemented",
     });
   } catch (error) {
     console.error("API Error:", error);

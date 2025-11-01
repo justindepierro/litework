@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useAnyUserGuard } from "@/hooks/use-auth-guard";
+import { useRequireAuth } from "@/hooks/use-auth-guard";
 import CalendarView from "@/components/CalendarView";
+import TodayOverview from "@/components/TodayOverview";
+import QuickActions from "@/components/QuickActions";
+import GroupCompletionStats from "@/components/GroupCompletionStats";
 import {
   TrendingUp,
   ClipboardList,
@@ -15,7 +18,9 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAnyUserGuard();
+  const { user, isLoading } = useRequireAuth();
+
+  const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
 
   if (isLoading) {
     return (
@@ -29,6 +34,49 @@ export default function DashboardPage() {
     return null;
   }
 
+  // Coach/Admin Dashboard
+  if (isCoachOrAdmin) {
+    return (
+      <div className="container-responsive min-h-screen bg-gradient-primary px-4 py-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Welcome Header */}
+          <div className="text-center sm:text-left mb-8">
+            <h1 className="text-heading-primary text-3xl sm:text-2xl mb-2 font-bold">
+              Welcome back,
+            </h1>
+            <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
+              {user.fullName}! <Hand className="w-6 h-6" />
+            </p>
+            <p className="text-gray-600 mt-2">
+              {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
+            </p>
+          </div>
+
+          {/* Two-column layout for coaches */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* Left column - Today & Actions */}
+            <div className="lg:col-span-2 space-y-6">
+              <TodayOverview />
+              <QuickActions />
+            </div>
+
+            {/* Right column - Stats */}
+            <div className="lg:col-span-1">
+              <GroupCompletionStats />
+            </div>
+          </div>
+
+          {/* Full-width calendar */}
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <CalendarView />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Athlete Dashboard (existing code)
+
   return (
     <div className="container-responsive min-h-screen bg-gradient-primary px-4 py-6">
       <div className="max-w-6xl mx-auto">
@@ -38,7 +86,7 @@ export default function DashboardPage() {
             Welcome back,
           </h1>
           <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
-            {user.name}! <Hand className="w-6 h-6" />
+            {user.fullName}! <Hand className="w-6 h-6" />
           </p>
         </div>
 
@@ -100,7 +148,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Calendar View for Coaches */}
-        {user.role === "coach" && (
+        {(user.role === "coach" || user.role === "admin") && (
           <div className="mb-8">
             <CalendarView />
           </div>

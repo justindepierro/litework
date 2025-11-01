@@ -1,49 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
-import { supabaseApiClient } from "@/lib/supabase-client";
-import { verifyToken, canAssignWorkouts } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { getAdminClient, requireCoach } from "@/lib/auth-server";
 
 export async function PUT(
-  request: NextRequest,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verify authentication
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
     // Only coaches/admins can update KPIs
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+    await requireCoach();
 
     const { id } = await params;
     const body = await request.json();
+    const supabase = getAdminClient();
 
-    const result = await supabaseApiClient.updateKPI(id, body);
+    const { data: kpi, error } = await supabase
+      .from("athlete_kpis")
+      .update(body)
+      .eq("id", id)
+      .select()
+      .single();
 
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        data: { kpi: result.data },
-      });
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error,
-        },
-        { status: 500 }
-      );
-    }
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: { kpi },
+    });
   } catch (error) {
     console.error("Error updating KPI:", error);
     return NextResponse.json(
@@ -57,46 +39,24 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verify authentication
-    const auth = await verifyToken(request);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
     // Only coaches/admins can delete KPIs
-    if (!canAssignWorkouts(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+    await requireCoach();
 
     const { id } = await params;
+    const supabase = getAdminClient();
 
-    const result = await supabaseApiClient.deleteKPI(id);
+    const { error } = await supabase.from("athlete_kpis").delete().eq("id", id);
 
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        data: { deleted: true },
-      });
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error,
-        },
-        { status: 500 }
-      );
-    }
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      data: { deleted: true },
+    });
   } catch (error) {
     console.error("Error deleting KPI:", error);
     return NextResponse.json(
