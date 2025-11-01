@@ -9,7 +9,6 @@ import {
   Trophy,
   TrendingUp,
   AlertCircle,
-  MapPin,
   User,
   Edit,
   MessageCircle,
@@ -85,7 +84,7 @@ export default function AthleteDetailModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+        <div className="bg-linear-to-r from-blue-600 to-blue-700 p-6 text-white">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">

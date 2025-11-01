@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -46,7 +46,7 @@ const exerciseTips: Record<string, string[]> = {
   ],
 };
 
-export default function WorkoutLive({ sessionId }: { sessionId: string }) {
+function WorkoutLive({ sessionId }: { sessionId: string }) {
   const { user } = useAuth();
 
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
@@ -808,3 +808,5 @@ export default function WorkoutLive({ sessionId }: { sessionId: string }) {
     </div>
   );
 }
+
+export default memo(WorkoutLive);

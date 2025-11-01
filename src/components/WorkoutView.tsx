@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutSession, WorkoutPlan } from "@/types";
@@ -18,7 +18,7 @@ interface WorkoutViewProps {
   sessionId: string;
 }
 
-export default function WorkoutView({ sessionId }: WorkoutViewProps) {
+function WorkoutView({ sessionId }: WorkoutViewProps) {
   const { user } = useAuth();
   const [workout, setWorkout] = useState<WorkoutSession | null>(null);
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
@@ -381,3 +381,5 @@ export default function WorkoutView({ sessionId }: WorkoutViewProps) {
     </div>
   );
 }
+
+export default memo(WorkoutView);

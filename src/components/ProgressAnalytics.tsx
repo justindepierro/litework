@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, memo } from "react";
 import {
   LineChart,
   Line,
@@ -74,7 +74,7 @@ interface AnalyticsDashboardProps {
   athleteId?: string;
 }
 
-export default function AnalyticsDashboard({
+function AnalyticsDashboard({
   athleteId,
 }: AnalyticsDashboardProps) {
   const [selectedTimeframe, setSelectedTimeframe] = useState<
@@ -737,3 +737,5 @@ export default function AnalyticsDashboard({
     </div>
   );
 }
+
+export default memo(AnalyticsDashboard);

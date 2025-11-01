@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -52,15 +52,13 @@ interface ExerciseLibraryProps {
   onAddToWorkout?: (exercise: Exercise) => void;
 }
 
-export default function ExerciseLibrary({
+function ExerciseLibrary({
   isOpen,
   onClose,
   onSelectExercise,
   selectedExercises = [],
   multiSelect = false,
   showCreateButton = true,
-  mode,
-  onAddToWorkout,
 }: ExerciseLibraryProps) {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);
@@ -477,3 +475,5 @@ export default function ExerciseLibrary({
     </div>
   );
 }
+
+export default memo(ExerciseLibrary);

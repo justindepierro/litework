@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
           <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 space-y-4">
             <div className="flex items-center gap-3">
               <svg
-                className="w-8 h-8 text-green-600 flex-shrink-0"
+                className="w-8 h-8 text-green-600 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
