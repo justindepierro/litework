@@ -1,6 +1,6 @@
-// Simple auth guard hooks for client-side pages
+// Enhanced auth guard hooks with proper redirect handling and role checks
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -8,9 +8,11 @@ import { useRouter } from "next/navigation";
 export function useRequireAuth() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !hasRedirected.current) {
+      hasRedirected.current = true;
       router.push("/login");
     }
   }, [user, loading, router]);
@@ -27,12 +29,15 @@ export function useAthleteGuard() {
 export function useRequireCoach() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !hasRedirected.current) {
       if (!user) {
+        hasRedirected.current = true;
         router.push("/login");
       } else if (user.role !== "coach" && user.role !== "admin") {
+        hasRedirected.current = true;
         router.push("/dashboard");
       }
     }
@@ -50,12 +55,15 @@ export function useCoachGuard() {
 export function useRequireAdmin() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !hasRedirected.current) {
       if (!user) {
+        hasRedirected.current = true;
         router.push("/login");
       } else if (user.role !== "admin") {
+        hasRedirected.current = true;
         router.push("/dashboard");
       }
     }
@@ -67,4 +75,20 @@ export function useRequireAdmin() {
 // Alias for admins
 export function useAdminGuard() {
   return useRequireAdmin();
+}
+
+// Redirect authenticated users away from public pages (login, signup)
+export function useRedirectIfAuthenticated(redirectTo: string = "/dashboard") {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const hasRedirected = useRef(false);
+
+  useEffect(() => {
+    if (!loading && user && !hasRedirected.current) {
+      hasRedirected.current = true;
+      router.push(redirectTo);
+    }
+  }, [user, loading, router, redirectTo]);
+
+  return { user, isLoading: loading };
 }
