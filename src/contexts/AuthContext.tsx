@@ -25,38 +25,64 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    let mounted = true;
+
     authClient
       .getCurrentUser()
       .then((user) => {
-        setUser(user);
-        setLoading(false);
+        if (mounted) {
+          setUser(user);
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error("Auth initialization error:", error);
-        setUser(null);
-        setLoading(false);
+        if (mounted) {
+          setUser(null);
+          setLoading(false);
+        }
       });
 
     const {
       data: { subscription },
     } = authClient.onAuthChange((user) => {
-      setUser(user);
-      setLoading(false);
+      if (mounted && !isAuthenticating) {
+        setUser(user);
+        if (!loading) {
+          setLoading(false);
+        }
+      }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [isAuthenticating, loading]);
 
   const signIn = async (email: string, password: string) => {
-    await authClient.signIn(email, password);
-    const user = await authClient.getCurrentUser();
-    setUser(user);
-    router.push("/dashboard");
+    setIsAuthenticating(true);
+    try {
+      await authClient.signIn(email, password);
+      const user = await authClient.getCurrentUser();
+      if (user) {
+        setUser(user);
+        // Small delay to ensure state is set before redirect
+        setTimeout(() => {
+          router.push("/dashboard");
+          setIsAuthenticating(false);
+        }, 100);
+      } else {
+        throw new Error("Failed to get user after sign in");
+      }
+    } catch (error) {
+      setIsAuthenticating(false);
+      throw error;
+    }
   };
 
   const signUp = async (

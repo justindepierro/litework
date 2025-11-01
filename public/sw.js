@@ -1,9 +1,9 @@
-const CACHE_NAME = "workout-tracker-v4"; // Keep for potential future use
-const STATIC_CACHE = "static-v4";
-const DYNAMIC_CACHE = "dynamic-v4"; // Keep for potential future use
-const IMAGES_CACHE = "images-v4";
-const API_CACHE = "api-v4";
-const WORKOUT_DATA_CACHE = "workout-data-v4";
+const CACHE_NAME = "workout-tracker-v5"; // Keep for potential future use
+const STATIC_CACHE = "static-v5";
+const DYNAMIC_CACHE = "dynamic-v5"; // Keep for potential future use
+const IMAGES_CACHE = "images-v5";
+const API_CACHE = "api-v5";
+const WORKOUT_DATA_CACHE = "workout-data-v5";
 
 // Enhanced cache configuration with TTL management
 const CACHE_CONFIG = {
@@ -16,23 +16,13 @@ const CACHE_CONFIG = {
 // Expanded cache with critical resources for gym WiFi scenarios
 const urlsToCache = [
   "/",
+  "/login",
   "/dashboard",
   "/workouts",
-  "/progress",
-  "/schedule",
-  "/athletes",
-  "/login",
-  "/offline",
-  "/performance-demo",
   "/manifest.json",
+  // Only cache icons that definitely exist
   "/icons/icon-192x192.png",
   "/icons/icon-512x512.png",
-  "/icons/apple-touch-icon.png",
-  // Critical CSS and JS chunks (will be updated by build process)
-  "/_next/static/css/app.css",
-  // Offline fallback pages
-  "/workouts/offline",
-  "/simple",
 ];
 
 // Essential API endpoints to cache for offline functionality
@@ -87,9 +77,21 @@ function timeoutFetch(request, timeout = TIMEOUT_DURATION, retries = 2) {
 self.addEventListener("install", (event) => {
   event.waitUntil(
     Promise.all([
-      // Cache critical static resources
-      caches.open(STATIC_CACHE).then((cache) => {
-        return cache.addAll(urlsToCache);
+      // Cache critical static resources with error handling
+      caches.open(STATIC_CACHE).then(async (cache) => {
+        // Cache URLs individually to avoid failing entire batch
+        const cachePromises = urlsToCache.map(async (url) => {
+          try {
+            const response = await fetch(url);
+            if (response.ok) {
+              await cache.put(url, response);
+            }
+          } catch (error) {
+            // Silently skip failed resources - they'll be cached on demand
+            console.log(`Skipping cache for ${url}`);
+          }
+        });
+        return Promise.all(cachePromises);
       }),
       // Preload essential workout data for offline use
       preloadWorkoutData(),
@@ -108,8 +110,8 @@ self.addEventListener("activate", (event) => {
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            // Delete old cache versions
-            if (!cacheName.includes("v4")) {
+            // Delete old cache versions (keep only v5)
+            if (!cacheName.includes("v5")) {
               return caches.delete(cacheName);
             }
           })

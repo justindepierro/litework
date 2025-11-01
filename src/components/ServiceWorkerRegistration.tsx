@@ -10,16 +10,18 @@ export default function ServiceWorkerRegistration() {
     const originalError = console.error;
     console.error = (...args) => {
       const message = args[0]?.toString() || "";
-      
+
       // Filter out known harmless errors from Chrome extensions
       if (
-        message.includes("message channel closed before a response was received") ||
+        message.includes(
+          "message channel closed before a response was received"
+        ) ||
         message.includes("A listener indicated an asynchronous response")
       ) {
         // Silently ignore these extension-related errors
         return;
       }
-      
+
       // Pass through all other errors
       originalError.apply(console, args);
     };

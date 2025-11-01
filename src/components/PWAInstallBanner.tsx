@@ -28,6 +28,7 @@ export default function PWAInstallBanner() {
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent the default prompt
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowInstallBanner(true);
@@ -40,29 +41,39 @@ export default function PWAInstallBanner() {
       setDeferredPrompt(null);
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.addEventListener("appinstalled", handleAppInstalled);
+    }
 
     return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-      window.removeEventListener("appinstalled", handleAppInstalled);
+      if (typeof window !== "undefined") {
+        window.removeEventListener(
+          "beforeinstallprompt",
+          handleBeforeInstallPrompt
+        );
+        window.removeEventListener("appinstalled", handleAppInstalled);
+      }
     };
   }, [isInstalled]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
+      // Wait for the user's response
+      const { outcome } = await deferredPrompt.userChoice;
 
-    if (outcome === "accepted") {
-      setShowInstallBanner(false);
+      if (outcome === "accepted") {
+        setShowInstallBanner(false);
+      }
+    } catch (error) {
+      console.error("Error showing install prompt:", error);
+    } finally {
+      setDeferredPrompt(null);
     }
-
-    setDeferredPrompt(null);
   };
 
   const handleDismiss = () => {
