@@ -347,7 +347,7 @@ export interface AuditLog {
   ip?: string;
   userAgent?: string;
   success: boolean;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -375,7 +375,7 @@ export function logSecurityEvent(log: AuditLog) {
 export function createAuditLog(
   action: string,
   success: boolean,
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 ): AuditLog {
   return {
     timestamp: new Date(),
