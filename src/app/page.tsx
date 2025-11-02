@@ -42,9 +42,14 @@ export default function Home() {
                   Go to Dashboard
                 </Link>
               ) : (
-                <Link href="/login" className="btn-primary w-full">
-                  <Rocket className="w-5 h-5" /> Get Started
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/signup" className="btn-primary flex-1">
+                    <Rocket className="w-5 h-5" /> Sign Up
+                  </Link>
+                  <Link href="/login" className="btn-secondary flex-1">
+                    Login
+                  </Link>
+                </div>
               )}
             </div>
           </div>
