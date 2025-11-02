@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
@@ -18,7 +18,6 @@ interface InviteData {
 }
 
 export default function SignUpPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const inviteId = searchParams.get("invite");
 
@@ -176,36 +175,30 @@ export default function SignUpPage() {
     }
 
     try {
-      const result = await signUp(email, password, {
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
-        role: inviteData?.role || 'athlete',
-        invite_id: inviteId || undefined,
-      });
+      // Call signUp with 4 separate parameters as expected by AuthContext
+      await signUp(email, password, firstName.trim(), lastName.trim());
 
-      if (result.success) {
-        // If signing up from an invite, mark it as accepted
-        if (inviteId) {
-          try {
-            await fetch(`/api/invites/${inviteId}`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ status: 'accepted' }),
-            });
-          } catch (err) {
-            console.error("Failed to mark invite as accepted:", err);
-            // Don't fail signup if this fails
-          }
+      // If signing up from an invite, mark it as accepted
+      if (inviteId) {
+        try {
+          await fetch(`/api/invites/${inviteId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'accepted' }),
+          });
+        } catch (err) {
+          console.error("Failed to mark invite as accepted:", err);
+          // Don't fail signup if this fails
         }
-
-        // Redirect to dashboard
-        router.push("/dashboard");
-      } else {
-        setError(result.error || "Failed to create account");
       }
+
+      // Redirect to dashboard - signUp handles this automatically
+      // router.push("/dashboard"); is called by signUp in AuthContext
     } catch (err) {
       console.error("Sign up error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
