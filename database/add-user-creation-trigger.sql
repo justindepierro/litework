@@ -9,6 +9,7 @@ BEGIN
   INSERT INTO public.users (
     id,
     email,
+    name,
     first_name,
     last_name,
     role,
@@ -18,6 +19,10 @@ BEGIN
   VALUES (
     NEW.id,
     NEW.email,
+    COALESCE(
+      (NEW.raw_user_meta_data->>'first_name' || ' ' || NEW.raw_user_meta_data->>'last_name'),
+      NEW.email
+    ),
     COALESCE(NEW.raw_user_meta_data->>'first_name', ''),
     COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
     COALESCE(NEW.raw_user_meta_data->>'role', 'athlete'),

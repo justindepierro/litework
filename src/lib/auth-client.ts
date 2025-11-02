@@ -100,11 +100,13 @@ export async function signUp(
     }
 
     // Create user profile in database
+    const fullName = `${sanitizedFirstName} ${sanitizedLastName}`.trim();
     const { error: profileError } = await supabase
       .from("users")
       .insert({
         id: data.user.id,
         email: sanitizedEmail,
+        name: fullName,
         first_name: sanitizedFirstName,
         last_name: sanitizedLastName,
         role: "athlete", // Default role
@@ -114,7 +116,7 @@ export async function signUp(
 
     if (profileError) {
       console.error("Failed to create user profile:", profileError);
-      // Don't throw here - user is created in auth, we'll handle profile creation via trigger or manually
+      // Don't throw here - user is created in auth, trigger might handle it
     }
 
     // Reset rate limit on success
