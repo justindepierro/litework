@@ -36,6 +36,7 @@ function SignUpForm() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   const { signUp } = useAuth();
 
@@ -176,7 +177,14 @@ function SignUpForm() {
 
     try {
       // Call signUp with 4 separate parameters as expected by AuthContext
-      await signUp(email, password, firstName.trim(), lastName.trim());
+      const result = await signUp(email, password, firstName.trim(), lastName.trim());
+
+      // Check if email confirmation is required
+      if (result.needsEmailConfirmation) {
+        setShowEmailConfirmation(true);
+        setIsLoading(false);
+        return;
+      }
 
       // If signing up from an invite, mark it as accepted
       if (inviteId) {
@@ -216,6 +224,36 @@ function SignUpForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
+        {/* Show email confirmation message instead of form */}
+        {showEmailConfirmation ? (
+          <div>
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                <svg className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Check Your Email
+              </h2>
+              <p className="text-gray-600 mb-6">
+                We've sent a confirmation link to <strong>{email}</strong>
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-800">
+                  <strong>Please confirm your email address</strong> by clicking the link we sent you. 
+                  Once confirmed, you'll be able to log in and start using LiteWork.
+                </p>
+              </div>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p>• Check your spam folder if you don't see the email</p>
+                <p>• The link will expire in 24 hours</p>
+                <p>• After confirming, return to <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">login</Link></p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Header */}
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -397,6 +435,8 @@ function SignUpForm() {
               </p>
             </div>
           </form>
+        )}
+          </>
         )}
       </div>
     </div>

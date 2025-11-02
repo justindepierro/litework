@@ -126,10 +126,15 @@ export async function signUp(
       createAuditLog("signup_success", true, {
         email: sanitizedEmail,
         userId: data.user?.id,
+        emailConfirmed: !!data.user?.email_confirmed_at,
       })
     );
 
-    return data;
+    // Return data including confirmation status
+    return {
+      ...data,
+      needsEmailConfirmation: !data.user?.email_confirmed_at && !data.session,
+    };
   } catch (error) {
     logSecurityEvent(
       createAuditLog("signup_error", false, {

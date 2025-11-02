@@ -22,7 +22,7 @@ interface AuthContextType {
     password: string,
     firstName: string,
     lastName: string
-  ) => Promise<void>;
+  ) => Promise<{ needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -143,7 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password: string,
       firstName: string,
       lastName: string
-    ) => {
+    ): Promise<{ needsEmailConfirmation?: boolean }> => {
       if (authOperationInProgress.current) {
         throw new Error("Authentication operation already in progress");
       }
@@ -152,7 +152,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       try {
-        await authClient.signUp(email, password, firstName, lastName);
+        const result = await authClient.signUp(email, password, firstName, lastName);
+        
+        // If email confirmation is required, don't try to load user or navigate
+        if (result.needsEmailConfirmation) {
+          if (mountedRef.current) {
+            setLoading(false);
+          }
+          return { needsEmailConfirmation: true };
+        }
         
         // Wait a moment for the user profile to be created in the database
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -169,6 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         router.push("/dashboard");
+        return {};
       } catch (error) {
         if (mountedRef.current) {
           setLoading(false);
