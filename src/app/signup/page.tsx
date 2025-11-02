@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,7 +17,7 @@ interface InviteData {
   status: string;
 }
 
-export default function SignUpPage() {
+function SignUpForm() {
   const searchParams = useSearchParams();
   const inviteId = searchParams.get("invite");
 
@@ -400,5 +400,19 @@ export default function SignUpPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      }
+    >
+      <SignUpForm />
+    </Suspense>
   );
 }
