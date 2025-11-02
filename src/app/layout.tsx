@@ -7,6 +7,9 @@ import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { WebVitalsTracker } from "@/components/WebVitalsTracker";
 
 // Initialize development environment (only in dev)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
@@ -103,6 +106,9 @@ export default function RootLayout({
             <ServiceWorkerRegistration />
           </AuthProvider>
         </GlobalErrorBoundary>
+        <Analytics />
+        <SpeedInsights />
+        <WebVitalsTracker />
       </body>
     </html>
   );
