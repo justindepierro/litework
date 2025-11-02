@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
   const router = useRouter();
-  
+
   // Refs to prevent race conditions
   const mountedRef = useRef(true);
   const authOperationInProgress = useRef(false);
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Ignore auth changes during active operations (sign in/up/out)
       if (!authOperationInProgress.current && mountedRef.current) {
         setUser(newUser);
-        
+
         // If user logged out elsewhere, redirect to login
         if (!newUser && !initializing) {
           router.push("/login");
@@ -102,12 +102,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Sign in with Supabase
         await authClient.signIn(email, password);
-        
+
         // Get fresh user data
         const currentUser = await authClient.getCurrentUser();
-        
+
         if (!currentUser) {
-          throw new Error("Authentication succeeded but failed to retrieve user data");
+          throw new Error(
+            "Authentication succeeded but failed to retrieve user data"
+          );
         }
 
         if (mountedRef.current) {
@@ -147,7 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         await authClient.signUp(email, password, firstName, lastName);
         const currentUser = await authClient.getCurrentUser();
-        
+
         if (!currentUser) {
           throw new Error("Sign up succeeded but failed to retrieve user data");
         }
@@ -180,7 +182,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       await authClient.signOut();
-      
+
       if (mountedRef.current) {
         setUser(null);
         setLoading(false);

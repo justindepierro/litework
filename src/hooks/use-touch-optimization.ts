@@ -73,16 +73,16 @@ export function useHapticFeedback() {
   return {
     // Light tap feedback
     tapFeedback: useCallback(() => vibrate(10), [vibrate]),
-    
+
     // Success feedback
     successFeedback: useCallback(() => vibrate([10, 50, 10]), [vibrate]),
-    
+
     // Error feedback
     errorFeedback: useCallback(() => vibrate([50, 50, 50]), [vibrate]),
-    
+
     // Warning feedback
     warningFeedback: useCallback(() => vibrate([20, 100, 20]), [vibrate]),
-    
+
     // Custom pattern
     customFeedback: vibrate,
   };
@@ -176,7 +176,9 @@ export function usePullToRefresh(onRefresh: () => Promise<void>) {
     };
 
     // Use passive listeners for better scroll performance
-    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
     document.addEventListener("touchmove", handleTouchMove, { passive: true });
     document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
@@ -191,7 +193,11 @@ export function usePullToRefresh(onRefresh: () => Promise<void>) {
 /**
  * Component to prevent zoom on double-tap
  */
-export function TouchOptimizationProvider({ children }: { children: React.ReactNode }) {
+export function TouchOptimizationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useTouchOptimization({
     enablePassiveListeners: true,
     enableTouchFeedback: true,

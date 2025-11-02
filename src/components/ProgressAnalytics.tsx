@@ -74,9 +74,7 @@ interface AnalyticsDashboardProps {
   athleteId?: string;
 }
 
-function AnalyticsDashboard({
-  athleteId,
-}: AnalyticsDashboardProps) {
+function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
   const [selectedTimeframe, setSelectedTimeframe] = useState<
     "1m" | "3m" | "6m" | "1y"
   >("3m");

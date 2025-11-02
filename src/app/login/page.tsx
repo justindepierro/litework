@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRateLimited, setIsRateLimited] = useState(false);
   const { signIn } = useAuth();
-  
+
   // Redirect to dashboard if already logged in
   const { isLoading: authLoading } = useRedirectIfAuthenticated();
 
@@ -23,7 +23,7 @@ export default function LoginPage() {
     setEmail(value);
     setEmailError("");
     setError("");
-    
+
     // Only validate if user has entered something and moved on
     if (value && value.includes("@")) {
       const validation = validateEmail(value);
@@ -52,8 +52,9 @@ export default function LoginPage() {
       await signIn(email, password);
       // AuthContext will handle redirect to /dashboard
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Invalid email or password";
-      
+      const errorMessage =
+        err instanceof Error ? err.message : "Invalid email or password";
+
       // Check if it's a rate limit error
       if (errorMessage.includes("Too many")) {
         setIsRateLimited(true);

@@ -31,7 +31,12 @@ export function WebVitalsTracker() {
           userAgent: navigator.userAgent,
           timestamp: Date.now(),
           // Network info if available
-          effectiveType: (navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType || "unknown",
+          effectiveType:
+            (
+              navigator as Navigator & {
+                connection?: { effectiveType?: string };
+              }
+            ).connection?.effectiveType || "unknown",
         }),
       }).catch((error) => {
         // Silently fail - don't break the app for analytics
@@ -40,7 +45,7 @@ export function WebVitalsTracker() {
 
       // Also send to Vercel Analytics if available
       if (typeof window !== "undefined") {
-        const analyticsWindow = window as Window & { 
+        const analyticsWindow = window as Window & {
           va?: (event: string, properties?: Record<string, unknown>) => void;
         };
         if (analyticsWindow.va) {

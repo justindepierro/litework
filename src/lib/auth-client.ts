@@ -36,13 +36,15 @@ export async function signUp(
   // Rate limiting
   const clientId = getClientFingerprint();
   const rateCheck = checkRateLimit(clientId, getRateLimit("signup"));
-  
+
   if (!rateCheck.allowed) {
     const waitMinutes = Math.ceil((rateCheck.resetAt - Date.now()) / 60000);
     logSecurityEvent(
       createAuditLog("signup_rate_limited", false, { email, clientId })
     );
-    throw new Error(`Too many signup attempts. Please try again in ${waitMinutes} minutes.`);
+    throw new Error(
+      `Too many signup attempts. Please try again in ${waitMinutes} minutes.`
+    );
   }
 
   // Validate inputs
@@ -85,9 +87,9 @@ export async function signUp(
 
     if (error) {
       logSecurityEvent(
-        createAuditLog("signup_failed", false, { 
-          email: sanitizedEmail, 
-          error: error.message 
+        createAuditLog("signup_failed", false, {
+          email: sanitizedEmail,
+          error: error.message,
         })
       );
       throw error;
@@ -95,20 +97,20 @@ export async function signUp(
 
     // Reset rate limit on success
     resetRateLimit(clientId);
-    
+
     logSecurityEvent(
-      createAuditLog("signup_success", true, { 
+      createAuditLog("signup_success", true, {
         email: sanitizedEmail,
-        userId: data.user?.id 
+        userId: data.user?.id,
       })
     );
 
     return data;
   } catch (error) {
     logSecurityEvent(
-      createAuditLog("signup_error", false, { 
+      createAuditLog("signup_error", false, {
         email: sanitizedEmail,
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       })
     );
     throw error;
@@ -122,13 +124,15 @@ export async function signIn(email: string, password: string) {
   // Rate limiting per email to prevent brute force
   const emailKey = email.trim().toLowerCase();
   const rateCheck = checkRateLimit(emailKey, getRateLimit("login"));
-  
+
   if (!rateCheck.allowed) {
     const waitMinutes = Math.ceil((rateCheck.resetAt - Date.now()) / 60000);
     logSecurityEvent(
       createAuditLog("login_rate_limited", false, { email: emailKey })
     );
-    throw new Error(`Too many login attempts. Please try again in ${waitMinutes} minutes.`);
+    throw new Error(
+      `Too many login attempts. Please try again in ${waitMinutes} minutes.`
+    );
   }
 
   // Validate email
@@ -147,10 +151,10 @@ export async function signIn(email: string, password: string) {
 
     if (error) {
       logSecurityEvent(
-        createAuditLog("login_failed", false, { 
+        createAuditLog("login_failed", false, {
           email: sanitizedEmail,
           error: error.message,
-          remainingAttempts: rateCheck.remainingAttempts 
+          remainingAttempts: rateCheck.remainingAttempts,
         })
       );
       throw error;
@@ -158,20 +162,20 @@ export async function signIn(email: string, password: string) {
 
     // Reset rate limit on successful login
     resetRateLimit(emailKey);
-    
+
     logSecurityEvent(
-      createAuditLog("login_success", true, { 
+      createAuditLog("login_success", true, {
         email: sanitizedEmail,
-        userId: data.user?.id 
+        userId: data.user?.id,
       })
     );
 
     return data;
   } catch (error) {
     logSecurityEvent(
-      createAuditLog("login_error", false, { 
+      createAuditLog("login_error", false, {
         email: sanitizedEmail,
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       })
     );
     throw error;

@@ -98,16 +98,20 @@ export function resetRateLimit(identifier: string) {
 /**
  * Validate email format
  */
-export function validateEmail(email: string): { valid: boolean; error?: string } {
+export function validateEmail(email: string): {
+  valid: boolean;
+  error?: string;
+} {
   const trimmed = email.trim().toLowerCase();
-  
+
   if (!trimmed) {
     return { valid: false, error: "Email is required" };
   }
 
   // RFC 5322 compliant email regex (simplified)
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
   if (!emailRegex.test(trimmed)) {
     return { valid: false, error: "Invalid email format" };
   }
@@ -122,8 +126,8 @@ export function validateEmail(email: string): { valid: boolean; error?: string }
 /**
  * Validate password strength
  */
-export function validatePassword(password: string): { 
-  valid: boolean; 
+export function validatePassword(password: string): {
+  valid: boolean;
   error?: string;
   strength: "weak" | "medium" | "strong";
 } {
@@ -132,31 +136,38 @@ export function validatePassword(password: string): {
   }
 
   if (password.length < 8) {
-    return { 
-      valid: false, 
-      error: "Password must be at least 8 characters", 
-      strength: "weak" 
+    return {
+      valid: false,
+      error: "Password must be at least 8 characters",
+      strength: "weak",
     };
   }
 
   if (password.length > 128) {
-    return { 
-      valid: false, 
-      error: "Password is too long", 
-      strength: "weak" 
+    return {
+      valid: false,
+      error: "Password is too long",
+      strength: "weak",
     };
   }
 
   // Check for common weak passwords
   const commonPasswords = [
-    "password", "12345678", "qwerty", "abc123", "letmein", 
-    "welcome", "monkey", "password1", "123456789"
+    "password",
+    "12345678",
+    "qwerty",
+    "abc123",
+    "letmein",
+    "welcome",
+    "monkey",
+    "password1",
+    "123456789",
   ];
   if (commonPasswords.includes(password.toLowerCase())) {
-    return { 
-      valid: false, 
-      error: "This password is too common", 
-      strength: "weak" 
+    return {
+      valid: false,
+      error: "This password is too common",
+      strength: "weak",
     };
   }
 
@@ -166,9 +177,11 @@ export function validatePassword(password: string): {
   const hasUpper = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
   const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  
-  const criteriaCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
-  
+
+  const criteriaCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(
+    Boolean
+  ).length;
+
   if (password.length >= 12 && criteriaCount >= 3) {
     strength = "strong";
   } else if (password.length >= 10 && criteriaCount >= 2) {
@@ -177,7 +190,7 @@ export function validatePassword(password: string): {
     return {
       valid: false,
       error: "Password must contain at least lowercase, uppercase, and numbers",
-      strength: "weak"
+      strength: "weak",
     };
   }
 
@@ -187,9 +200,12 @@ export function validatePassword(password: string): {
 /**
  * Validate name input (first/last name)
  */
-export function validateName(name: string, fieldName: string = "Name"): { 
-  valid: boolean; 
-  error?: string 
+export function validateName(
+  name: string,
+  fieldName: string = "Name"
+): {
+  valid: boolean;
+  error?: string;
 } {
   const trimmed = name.trim();
 
@@ -198,7 +214,10 @@ export function validateName(name: string, fieldName: string = "Name"): {
   }
 
   if (trimmed.length < 2) {
-    return { valid: false, error: `${fieldName} must be at least 2 characters` };
+    return {
+      valid: false,
+      error: `${fieldName} must be at least 2 characters`,
+    };
   }
 
   if (trimmed.length > 50) {
@@ -208,9 +227,9 @@ export function validateName(name: string, fieldName: string = "Name"): {
   // Allow letters, spaces, hyphens, apostrophes
   const nameRegex = /^[a-zA-Z\s'-]+$/;
   if (!nameRegex.test(trimmed)) {
-    return { 
-      valid: false, 
-      error: `${fieldName} can only contain letters, spaces, hyphens, and apostrophes` 
+    return {
+      valid: false,
+      error: `${fieldName} can only contain letters, spaces, hyphens, and apostrophes`,
     };
   }
 
@@ -223,9 +242,9 @@ export function validateName(name: string, fieldName: string = "Name"): {
 export function sanitizeInput(input: string): string {
   return input
     .trim()
-    .replace(/[<>]/g, '') // Remove < and > to prevent tags
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+=/gi, ''); // Remove event handlers like onclick=
+    .replace(/[<>]/g, "") // Remove < and > to prevent tags
+    .replace(/javascript:/gi, "") // Remove javascript: protocol
+    .replace(/on\w+=/gi, ""); // Remove event handlers like onclick=
 }
 
 // ===========================
@@ -238,7 +257,9 @@ export function sanitizeInput(input: string): string {
 export function generateSecureToken(length: number = 32): string {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    ""
+  );
 }
 
 /**
@@ -247,28 +268,28 @@ export function generateSecureToken(length: number = 32): string {
 export async function hashValue(value: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(value);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 /**
  * Get client fingerprint (browser/device identification)
  */
 export function getClientFingerprint(): string {
-  if (typeof window === 'undefined') return 'server';
-  
+  if (typeof window === "undefined") return "server";
+
   const components = [
     navigator.userAgent,
     navigator.language,
     screen.colorDepth,
-    screen.width + 'x' + screen.height,
+    screen.width + "x" + screen.height,
     new Date().getTimezoneOffset(),
     !!window.sessionStorage,
     !!window.localStorage,
   ];
-  
-  return btoa(components.join('|'));
+
+  return btoa(components.join("|"));
 }
 
 /**
@@ -280,10 +301,18 @@ export function detectSuspiciousActivity(params: {
   newDevice?: boolean;
   failedAttempts?: number;
 }): { suspicious: boolean; reason?: string } {
-  const { rapidRequests, unusualLocation, newDevice, failedAttempts = 0 } = params;
+  const {
+    rapidRequests,
+    unusualLocation,
+    newDevice,
+    failedAttempts = 0,
+  } = params;
 
   if (failedAttempts >= 3) {
-    return { suspicious: true, reason: "Multiple failed authentication attempts" };
+    return {
+      suspicious: true,
+      reason: "Multiple failed authentication attempts",
+    };
   }
 
   if (rapidRequests) {
@@ -307,12 +336,12 @@ export function detectSuspiciousActivity(params: {
 export function getSecurityHeaders(): Record<string, string> {
   return {
     // Prevent XSS attacks
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'X-XSS-Protection': '1; mode=block',
-    
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+
     // CSP (Content Security Policy)
-    'Content-Security-Policy': [
+    "Content-Security-Policy": [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js needs these
       "style-src 'self' 'unsafe-inline'",
@@ -320,18 +349,18 @@ export function getSecurityHeaders(): Record<string, string> {
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co",
       "frame-ancestors 'none'",
-    ].join('; '),
-    
+    ].join("; "),
+
     // Referrer policy
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+
     // Permissions policy
-    'Permissions-Policy': [
-      'camera=()',
-      'microphone=()',
-      'geolocation=()',
-      'interest-cohort=()',
-    ].join(', '),
+    "Permissions-Policy": [
+      "camera=()",
+      "microphone=()",
+      "geolocation=()",
+      "interest-cohort=()",
+    ].join(", "),
   };
 }
 
@@ -355,8 +384,8 @@ export interface AuditLog {
  */
 export function logSecurityEvent(log: AuditLog) {
   // In development, just console log
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[SECURITY]', {
+  if (process.env.NODE_ENV === "development") {
+    console.log("[SECURITY]", {
       timestamp: log.timestamp.toISOString(),
       action: log.action,
       success: log.success,
@@ -364,7 +393,7 @@ export function logSecurityEvent(log: AuditLog) {
       details: log.details,
     });
   }
-  
+
   // In production, send to logging service (Sentry, LogRocket, etc.)
   // Example: sendToLoggingService(log);
 }

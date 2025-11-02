@@ -1,19 +1,23 @@
 # Virtual Scrolling Implementation Guide
 
 ## Overview
+
 Virtual scrolling (windowing) only renders items visible in the viewport, dramatically improving performance for large lists. Our `VirtualizedList` component provides up to 90% DOM reduction and 60% faster initial renders.
 
 ## Component Location
+
 `src/components/VirtualizedList.tsx`
 
 ## When to Use Virtual Scrolling
 
 ### ✅ Ideal Use Cases:
+
 - **Lists with 50+ items** - Athletes list, exercise library, workout history
 - **Fixed or predictable item heights** - Cards, list items, table rows
 - **Scrollable containers** - Full-page lists or contained scrollable areas
 
 ### ❌ Not Recommended:
+
 - **Variable heights without measurement** - Expandable content (unless collapsed by default)
 - **Grid layouts with responsive columns** - Complex calculations for row height
 - **Small lists (<20 items)** - Overhead not worth the benefit
@@ -26,21 +30,18 @@ Virtual scrolling (windowing) only renders items visible in the viewport, dramat
 
 ```tsx
 // src/app/workouts/history/page.tsx
-import VirtualizedList from '@/components/VirtualizedList';
+import VirtualizedList from "@/components/VirtualizedList";
 
 export default function WorkoutHistoryPage() {
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
-  
+
   return (
     <VirtualizedList
       items={sessions}
       itemHeight={120} // Fixed height per card
-      height={600}     // Viewport height
+      height={600} // Viewport height
       renderItem={(session, index) => (
-        <WorkoutSessionCard 
-          key={session.id}
-          session={session}
-        />
+        <WorkoutSessionCard key={session.id} session={session} />
       )}
     />
   );
@@ -65,7 +66,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     itemHeight={100}
     height={800}
     renderItem={(athlete) => (
-      <AthleteListItem 
+      <AthleteListItem
         athlete={athlete}
         onClick={() => handleAthleteClick(athlete)}
       />
@@ -85,21 +86,21 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
 ```tsx
 // src/components/ExerciseLibrary.tsx
-import VirtualizedList from './VirtualizedList';
+import VirtualizedList from "./VirtualizedList";
 
 function ExerciseLibrary() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
-  
+
   // Apply filters
   useEffect(() => {
-    const filtered = exercises.filter(ex => {
+    const filtered = exercises.filter((ex) => {
       // Your filter logic
       return matchesSearch && matchesCategory;
     });
     setFilteredExercises(filtered);
   }, [exercises, searchTerm, selectedCategory]);
-  
+
   return (
     <VirtualizedList
       items={filteredExercises}
@@ -107,7 +108,7 @@ function ExerciseLibrary() {
       height={700}
       overscan={3} // Render 3 extra items above/below for smooth scrolling
       renderItem={(exercise) => (
-        <ExerciseCard 
+        <ExerciseCard
           exercise={exercise}
           onSelect={() => handleSelect(exercise)}
         />
@@ -121,24 +122,26 @@ function ExerciseLibrary() {
 
 ```typescript
 interface VirtualizedListProps<T> {
-  items: T[];              // Array of items to render
-  itemHeight: number;      // Fixed height per item (in pixels)
-  height: number;          // Container/viewport height (in pixels)
-  overscan?: number;       // Extra items to render (default: 2)
+  items: T[]; // Array of items to render
+  itemHeight: number; // Fixed height per item (in pixels)
+  height: number; // Container/viewport height (in pixels)
+  overscan?: number; // Extra items to render (default: 2)
   renderItem: (item: T, index: number) => React.ReactNode;
-  className?: string;      // Additional container classes
+  className?: string; // Additional container classes
 }
 ```
 
 ## Performance Metrics
 
 ### Before Virtual Scrolling:
+
 - 500 items = 500 DOM nodes
 - Initial render: ~800ms
 - Memory usage: ~15MB
 - Scroll FPS: 30-40
 
 ### After Virtual Scrolling:
+
 - 500 items = ~12 visible DOM nodes (90% reduction)
 - Initial render: ~320ms (60% faster)
 - Memory usage: ~3MB (80% less)
@@ -147,14 +150,17 @@ interface VirtualizedListProps<T> {
 ## Responsive Design Considerations
 
 ### Mobile Optimization:
+
 ```tsx
 <VirtualizedList
   items={items}
   itemHeight={isMobile ? 100 : 120} // Shorter on mobile
-  height={isMobile ? 500 : 800}     // Less viewport on mobile
-  overscan={isMobile ? 1 : 3}       // Less overscan on mobile
+  height={isMobile ? 500 : 800} // Less viewport on mobile
+  overscan={isMobile ? 1 : 3} // Less overscan on mobile
   renderItem={(item) => (
-    <div className="p-4 sm:p-6"> {/* Responsive padding */}
+    <div className="p-4 sm:p-6">
+      {" "}
+      {/* Responsive padding */}
       {/* Card content */}
     </div>
   )}
@@ -162,23 +168,21 @@ interface VirtualizedListProps<T> {
 ```
 
 ### Network-Aware Loading:
+
 ```tsx
-import { useNetworkQuality } from '@/hooks/use-network-quality';
+import { useNetworkQuality } from "@/hooks/use-network-quality";
 
 function OptimizedList() {
   const networkQuality = useNetworkQuality();
-  
+
   return (
     <VirtualizedList
       items={items}
       itemHeight={120}
       height={600}
-      overscan={networkQuality === 'poor' ? 1 : 3} // Less on slow networks
+      overscan={networkQuality === "poor" ? 1 : 3} // Less on slow networks
       renderItem={(item) => (
-        <ItemCard 
-          item={item}
-          lazyLoadImages={networkQuality === 'poor'}
-        />
+        <ItemCard item={item} lazyLoadImages={networkQuality === "poor"} />
       )}
     />
   );
@@ -188,6 +192,7 @@ function OptimizedList() {
 ## Common Pitfalls & Solutions
 
 ### ❌ Problem: Variable item heights
+
 ```tsx
 // DON'T - Items with varying content height
 <VirtualizedList
@@ -202,12 +207,15 @@ function OptimizedList() {
 ```
 
 ### ✅ Solution: Fixed height with overflow
+
 ```tsx
 // DO - Fixed container with overflow handling
 <VirtualizedList
   itemHeight={120}
   renderItem={(athlete) => (
-    <div className="h-[120px] overflow-hidden"> {/* Fixed height */}
+    <div className="h-[120px] overflow-hidden">
+      {" "}
+      {/* Fixed height */}
       <h3>{athlete.name}</h3>
       <p className="line-clamp-2">{athlete.bio}</p> {/* Truncate */}
     </div>
@@ -216,6 +224,7 @@ function OptimizedList() {
 ```
 
 ### ❌ Problem: Expandable content
+
 ```tsx
 // DON'T - Expanding content breaks fixed height
 const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -226,10 +235,11 @@ const [expanded, setExpanded] = useState<Set<string>>(new Set());
       {expanded.has(item.id) && <div>{item.details}</div>}
     </div>
   )}
-/>
+/>;
 ```
 
 ### ✅ Solution: Use modal for details
+
 ```tsx
 // DO - Keep list items fixed height, use modal for expansion
 const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -244,17 +254,15 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     )}
   />
   {selectedItem && (
-    <DetailModal 
-      item={selectedItem}
-      onClose={() => setSelectedItem(null)}
-    />
+    <DetailModal item={selectedItem} onClose={() => setSelectedItem(null)} />
   )}
-</>
+</>;
 ```
 
 ## Testing Checklist
 
 ### Functionality:
+
 - [ ] Items render correctly
 - [ ] Scrolling is smooth (60fps)
 - [ ] Clicking/interacting with items works
@@ -262,6 +270,7 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 - [ ] Empty state shows when no items
 
 ### Performance:
+
 - [ ] Test with 100+ items
 - [ ] Test with 500+ items
 - [ ] Monitor FPS during scroll (Chrome DevTools Performance)
@@ -269,6 +278,7 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 - [ ] Test on low-end mobile devices
 
 ### Edge Cases:
+
 - [ ] Empty array (0 items)
 - [ ] Single item
 - [ ] Height smaller than itemHeight
@@ -279,17 +289,20 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 ## Migration Strategy
 
 ### Phase 1: Create Alternative View
+
 1. Keep existing grid/list implementation
 2. Add new virtualized view as option
 3. Test thoroughly with real data
 4. Gather user feedback
 
 ### Phase 2: Gradual Rollout
+
 1. Default to virtualized view for 100+ items
 2. Monitor analytics for issues
 3. Optimize based on real-world usage
 
 ### Phase 3: Full Adoption
+
 1. Replace old implementation if successful
 2. Remove feature flag/toggle
 3. Document lessons learned
@@ -297,6 +310,7 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 ## Real-World Example: Athletes Page
 
 ### Current Implementation (Grid):
+
 ```tsx
 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
   {filteredAthletes.map((athlete) => (
@@ -306,15 +320,16 @@ const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 ```
 
 ### Proposed: Responsive with Virtual Scrolling
+
 ```tsx
 // Add view toggle
-const [view, setView] = useState<'grid' | 'list'>('grid');
-const isMobile = useMediaQuery('(max-width: 768px)');
+const [view, setView] = useState<"grid" | "list">("grid");
+const isMobile = useMediaQuery("(max-width: 768px)");
 
 // Auto-switch to list on mobile for large datasets
 useEffect(() => {
   if (isMobile && filteredAthletes.length > 50) {
-    setView('list');
+    setView("list");
   }
 }, [isMobile, filteredAthletes.length]);
 
@@ -322,19 +337,17 @@ return (
   <>
     {/* View toggle */}
     <div className="flex gap-2 mb-4">
-      <button onClick={() => setView('grid')}>Grid</button>
-      <button onClick={() => setView('list')}>List</button>
+      <button onClick={() => setView("grid")}>Grid</button>
+      <button onClick={() => setView("list")}>List</button>
     </div>
-    
+
     {/* Conditional rendering */}
-    {view === 'list' ? (
+    {view === "list" ? (
       <VirtualizedList
         items={filteredAthletes}
         itemHeight={100}
         height={window.innerHeight - 200}
-        renderItem={(athlete) => (
-          <AthleteListItem athlete={athlete} />
-        )}
+        renderItem={(athlete) => <AthleteListItem athlete={athlete} />}
       />
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">

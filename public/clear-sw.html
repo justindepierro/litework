@@ -1,83 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title>Clear Service Worker</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .status {
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-    .success { background: #d4edda; color: #155724; }
-    .info { background: #d1ecf1; color: #0c5460; }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover { background: #0056b3; }
-  </style>
-</head>
-<body>
-  <h1>Clear Service Worker</h1>
-  <div id="status" class="status info">Checking service workers...</div>
-  <button onclick="clearAndReload()">Clear Service Worker & Reload</button>
-  
-  <script>
-    async function checkServiceWorkers() {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      const status = document.getElementById('status');
-      
-      if (registrations.length === 0) {
-        status.className = 'status success';
-        status.textContent = '✓ No service workers found. App is clean!';
-      } else {
-        status.className = 'status info';
-        status.textContent = `Found ${registrations.length} service worker(s). Click button to clear.`;
+  <head>
+    <title>Clear Service Worker</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        text-align: center;
       }
-    }
-    
-    async function clearAndReload() {
-      const status = document.getElementById('status');
-      status.className = 'status info';
-      status.textContent = 'Clearing service workers...';
-      
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      
-      for (let registration of registrations) {
-        await registration.unregister();
+      .status {
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        font-weight: bold;
       }
-      
-      // Clear all caches
-      const cacheNames = await caches.keys();
-      for (let cacheName of cacheNames) {
-        await caches.delete(cacheName);
+      .success {
+        background: #d4edda;
+        color: #155724;
       }
-      
-      status.className = 'status success';
-      status.textContent = '✓ Cleared! Reloading in 2 seconds...';
-      
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 2000);
-    }
-    
-    // Check on load
-    if ('serviceWorker' in navigator) {
-      checkServiceWorkers();
-    }
-  </script>
-</body>
+      .info {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Clear Service Worker</h1>
+    <div id="status" class="status info">Checking service workers...</div>
+    <button onclick="clearAndReload()">Clear Service Worker & Reload</button>
+
+    <script>
+      async function checkServiceWorkers() {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const status = document.getElementById("status");
+
+        if (registrations.length === 0) {
+          status.className = "status success";
+          status.textContent = "✓ No service workers found. App is clean!";
+        } else {
+          status.className = "status info";
+          status.textContent = `Found ${registrations.length} service worker(s). Click button to clear.`;
+        }
+      }
+
+      async function clearAndReload() {
+        const status = document.getElementById("status");
+        status.className = "status info";
+        status.textContent = "Clearing service workers...";
+
+        const registrations = await navigator.serviceWorker.getRegistrations();
+
+        for (let registration of registrations) {
+          await registration.unregister();
+        }
+
+        // Clear all caches
+        const cacheNames = await caches.keys();
+        for (let cacheName of cacheNames) {
+          await caches.delete(cacheName);
+        }
+
+        status.className = "status success";
+        status.textContent = "✓ Cleared! Reloading in 2 seconds...";
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+      }
+
+      // Check on load
+      if ("serviceWorker" in navigator) {
+        checkServiceWorkers();
+      }
+    </script>
+  </body>
 </html>

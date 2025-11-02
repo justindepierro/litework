@@ -179,7 +179,7 @@ export function useDataSaver(): boolean {
  */
 export function useAdaptiveQuality() {
   const { isSlowConnection, connectionQuality } = useNetworkQuality();
-  
+
   // Compute device quality once
   const deviceQuality = useMemo(() => {
     if (typeof window === "undefined") {
@@ -195,7 +195,9 @@ export function useAdaptiveQuality() {
     // @ts-expect-error - deviceMemory not in all browsers
     const deviceMemory = navigator.deviceMemory || 4;
     const isLowEnd = hardwareConcurrency <= 4 && deviceMemory <= 4;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     return {
       isLowEnd,
@@ -209,19 +211,27 @@ export function useAdaptiveQuality() {
     // Network quality
     connectionQuality,
     isSlowConnection,
-    
+
     // Device quality
     isLowEndDevice: deviceQuality.isLowEnd,
     prefersReducedMotion: deviceQuality.prefersReducedMotion,
-    
+
     // Adaptive settings
-    shouldReduceAnimations: isSlowConnection || deviceQuality.isLowEnd || deviceQuality.prefersReducedMotion,
+    shouldReduceAnimations:
+      isSlowConnection ||
+      deviceQuality.isLowEnd ||
+      deviceQuality.prefersReducedMotion,
     shouldReduceImageQuality: isSlowConnection,
     shouldEnableVirtualScrolling: true, // Always enable for performance
-    maxPreloadCount: connectionQuality === "excellent" && !deviceQuality.isLowEnd ? 10 : 3,
+    maxPreloadCount:
+      connectionQuality === "excellent" && !deviceQuality.isLowEnd ? 10 : 3,
     chartDataPoints: deviceQuality.isLowEnd ? 10 : 30,
     enableShadows: !deviceQuality.isLowEnd && connectionQuality !== "poor",
     enableBlur: !deviceQuality.isLowEnd && connectionQuality !== "poor",
-    animationDuration: deviceQuality.prefersReducedMotion ? 0 : deviceQuality.isLowEnd ? 150 : 300,
+    animationDuration: deviceQuality.prefersReducedMotion
+      ? 0
+      : deviceQuality.isLowEnd
+        ? 150
+        : 300,
   };
 }

@@ -14,7 +14,7 @@ interface VirtualizedListProps<T> {
 /**
  * Simple virtualized list component
  * Only renders visible items for optimal performance
- * 
+ *
  * Benefits:
  * - 90% reduction in DOM nodes for large lists
  * - 60% faster initial render
@@ -58,10 +58,7 @@ function VirtualizedList<T>({
           {visibleItems.map((item, i) => {
             const actualIndex = startIndex + i;
             return (
-              <div
-                key={actualIndex}
-                style={{ height: itemHeight }}
-              >
+              <div key={actualIndex} style={{ height: itemHeight }}>
                 {renderItem(item, actualIndex)}
               </div>
             );
