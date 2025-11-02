@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
+import { useState, useEffect } from "react";
 import CalendarView from "@/components/CalendarView";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
@@ -17,10 +18,49 @@ import {
   Flame,
 } from "lucide-react";
 
+interface DashboardStats {
+  workoutsThisWeek: number;
+  personalRecords: number;
+  currentStreak: number;
+}
+
 export default function DashboardPage() {
   const { user, isLoading } = useRequireAuth();
+  const [stats, setStats] = useState<DashboardStats>({
+    workoutsThisWeek: 0,
+    personalRecords: 0,
+    currentStreak: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
 
   const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
+
+  // Fetch dashboard stats for athletes
+  useEffect(() => {
+    if (user && user.role === "athlete") {
+      fetchDashboardStats();
+    }
+  }, [user]);
+
+  const fetchDashboardStats = async () => {
+    try {
+      setLoadingStats(true);
+      const response = await fetch("/api/analytics/dashboard-stats");
+      const data = await response.json();
+
+      if (data.success) {
+        setStats({
+          workoutsThisWeek: data.stats.workoutsThisWeek || 0,
+          personalRecords: data.stats.personalRecords || 0,
+          currentStreak: data.stats.currentStreak || 0,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch dashboard stats:", error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -104,7 +144,11 @@ export default function DashboardPage() {
                   This Week
                 </dt>
                 <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-orange-800">
-                  3 workouts
+                  {loadingStats ? (
+                    <div className="animate-pulse h-8 w-16 bg-orange-200 rounded"></div>
+                  ) : (
+                    `${stats.workoutsThisWeek} workout${stats.workoutsThisWeek !== 1 ? 's' : ''}`
+                  )}
                 </dd>
               </div>
             </div>
@@ -122,7 +166,11 @@ export default function DashboardPage() {
                   Personal Records
                 </dt>
                 <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-green-800">
-                  12
+                  {loadingStats ? (
+                    <div className="animate-pulse h-8 w-12 bg-green-200 rounded"></div>
+                  ) : (
+                    stats.personalRecords
+                  )}
                 </dd>
               </div>
             </div>
@@ -140,7 +188,11 @@ export default function DashboardPage() {
                   Streak Days
                 </dt>
                 <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-red-800">
-                  7
+                  {loadingStats ? (
+                    <div className="animate-pulse h-8 w-12 bg-red-200 rounded"></div>
+                  ) : (
+                    stats.currentStreak
+                  )}
                 </dd>
               </div>
             </div>
