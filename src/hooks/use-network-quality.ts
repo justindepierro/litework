@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import React from "react";
 
 interface ConnectionInfo {
@@ -165,3 +165,63 @@ export function NetworkQualityIndicator() {
 }
 
 export default useNetworkQuality;
+
+/**
+ * Hook to detect if user prefers reduced data usage
+ */
+export function useDataSaver(): boolean {
+  const { connectionInfo } = useNetworkQuality();
+  return connectionInfo?.saveData || false;
+}
+
+/**
+ * Hook to get adaptive quality settings based on network and device
+ */
+export function useAdaptiveQuality() {
+  const { isSlowConnection, connectionQuality } = useNetworkQuality();
+  
+  // Compute device quality once
+  const deviceQuality = useMemo(() => {
+    if (typeof window === "undefined") {
+      return {
+        isLowEnd: false,
+        hardwareConcurrency: 4,
+        deviceMemory: 4,
+        prefersReducedMotion: false,
+      };
+    }
+
+    const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+    // @ts-expect-error - deviceMemory not in all browsers
+    const deviceMemory = navigator.deviceMemory || 4;
+    const isLowEnd = hardwareConcurrency <= 4 && deviceMemory <= 4;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    return {
+      isLowEnd,
+      hardwareConcurrency,
+      deviceMemory,
+      prefersReducedMotion,
+    };
+  }, []);
+
+  return {
+    // Network quality
+    connectionQuality,
+    isSlowConnection,
+    
+    // Device quality
+    isLowEndDevice: deviceQuality.isLowEnd,
+    prefersReducedMotion: deviceQuality.prefersReducedMotion,
+    
+    // Adaptive settings
+    shouldReduceAnimations: isSlowConnection || deviceQuality.isLowEnd || deviceQuality.prefersReducedMotion,
+    shouldReduceImageQuality: isSlowConnection,
+    shouldEnableVirtualScrolling: true, // Always enable for performance
+    maxPreloadCount: connectionQuality === "excellent" && !deviceQuality.isLowEnd ? 10 : 3,
+    chartDataPoints: deviceQuality.isLowEnd ? 10 : 30,
+    enableShadows: !deviceQuality.isLowEnd && connectionQuality !== "poor",
+    enableBlur: !deviceQuality.isLowEnd && connectionQuality !== "poor",
+    animationDuration: deviceQuality.prefersReducedMotion ? 0 : deviceQuality.isLowEnd ? 150 : 300,
+  };
+}
