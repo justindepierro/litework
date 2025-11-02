@@ -95,6 +95,28 @@ export async function signUp(
       throw error;
     }
 
+    if (!data.user) {
+      throw new Error("Signup succeeded but no user data returned");
+    }
+
+    // Create user profile in database
+    const { error: profileError } = await supabase
+      .from("users")
+      .insert({
+        id: data.user.id,
+        email: sanitizedEmail,
+        first_name: sanitizedFirstName,
+        last_name: sanitizedLastName,
+        role: "athlete", // Default role
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+
+    if (profileError) {
+      console.error("Failed to create user profile:", profileError);
+      // Don't throw here - user is created in auth, we'll handle profile creation via trigger or manually
+    }
+
     // Reset rate limit on success
     resetRateLimit(clientId);
 

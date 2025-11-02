@@ -153,6 +153,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         await authClient.signUp(email, password, firstName, lastName);
+        
+        // Wait a moment for the user profile to be created in the database
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const currentUser = await authClient.getCurrentUser();
 
         if (!currentUser) {
