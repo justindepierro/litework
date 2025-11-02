@@ -39,6 +39,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const mountedRef = useRef(true);
   const authOperationInProgress = useRef(false);
   const hasInitialized = useRef(false);
+  const initializingRef = useRef(initializing);
+
+  useEffect(() => {
+    initializingRef.current = initializing;
+  }, [initializing]);
 
   // Initialize auth on mount
   useEffect(() => {
@@ -77,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(newUser);
 
         // If user logged out elsewhere, redirect to login
-        if (!newUser && !initializing) {
+        if (!newUser && !initializingRef.current) {
           router.push("/login");
         }
       }
@@ -87,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mountedRef.current = false;
       subscription.unsubscribe();
     };
-  }, []); // Run once on mount
+  }, [router]); // Run once on mount
 
   // Sign in with proper state management
   const signIn = useCallback(

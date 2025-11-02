@@ -23,7 +23,6 @@ interface GroupItemProps {
   onDeleteExercise: (exerciseId: string) => void;
   onMoveExerciseUp: (exerciseId: string) => void;
   onMoveExerciseDown: (exerciseId: string) => void;
-  index: number;
 }
 
 const GroupItem: React.FC<GroupItemProps> = ({
@@ -35,7 +34,6 @@ const GroupItem: React.FC<GroupItemProps> = ({
   onDeleteExercise,
   onMoveExerciseUp,
   onMoveExerciseDown,
-  index,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -229,7 +227,6 @@ const GroupItem: React.FC<GroupItemProps> = ({
               canMoveUp={exerciseIndex > 0}
               canMoveDown={exerciseIndex < groupExercises.length - 1}
               index={exerciseIndex}
-              groupId={group.id}
             />
           ))}
         </div>

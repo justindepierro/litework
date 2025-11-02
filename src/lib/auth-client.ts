@@ -188,6 +188,155 @@ export async function signOut() {
   if (error) throw error;
 }
 
+/**
+ * Request a password reset email with validation and rate limiting
+ */
+export async function requestPasswordReset(email: string) {
+  const emailValidation = validateEmail(email);
+
+  if (!emailValidation.valid) {
+    throw new Error(emailValidation.error || "Invalid email address");
+  }
+
+  const sanitizedEmail = email.trim().toLowerCase();
+  const rateCheck = checkRateLimit(
+    `password-reset:${sanitizedEmail}`,
+    getRateLimit("passwordReset")
+  );
+
+  if (!rateCheck.allowed) {
+    const waitMinutes = Math.max(
+      1,
+      Math.ceil((rateCheck.resetAt - Date.now()) / 60000)
+    );
+
+    logSecurityEvent(
+      createAuditLog("password_reset_rate_limited", false, {
+        email: sanitizedEmail,
+        waitMinutes,
+      })
+    );
+
+    throw new Error(
+      `Too many password reset attempts. Try again in ${waitMinutes} minute${
+        waitMinutes === 1 ? "" : "s"
+      }.`
+    );
+  }
+
+  try {
+    const redirectBase =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SITE_URL || "";
+
+    const redirectTo = redirectBase
+      ? `${redirectBase.replace(/\/$/, "")}/update-password`
+      : undefined;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      sanitizedEmail,
+      redirectTo ? { redirectTo } : undefined
+    );
+
+    if (error) {
+      logSecurityEvent(
+        createAuditLog("password_reset_request_failed", false, {
+          email: sanitizedEmail,
+          error: error.message,
+          remainingAttempts: rateCheck.remainingAttempts,
+        })
+      );
+      throw new Error(
+        "We couldn't send reset instructions right now. Please try again shortly."
+      );
+    }
+
+    logSecurityEvent(
+      createAuditLog("password_reset_requested", true, {
+        email: sanitizedEmail,
+        redirectTo,
+      })
+    );
+  } catch (err) {
+    logSecurityEvent(
+      createAuditLog("password_reset_request_error", false, {
+        email: sanitizedEmail,
+        error: err instanceof Error ? err.message : "Unknown error",
+      })
+    );
+
+    if (err instanceof Error) {
+      throw err;
+    }
+
+    throw new Error(
+      "Something went wrong while requesting the password reset. Please try again."
+    );
+  }
+}
+
+/**
+ * Complete the password reset for an authenticated recovery session
+ */
+export async function completePasswordReset(newPassword: string) {
+  const passwordValidation = validatePassword(newPassword);
+
+  if (!passwordValidation.valid) {
+    throw new Error(
+      passwordValidation.error || "Password does not meet requirements"
+    );
+  }
+
+  const session = await getSession();
+
+  if (!session?.user) {
+    throw new Error(
+      "Your reset session expired. Please request a new password reset email."
+    );
+  }
+
+  try {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      logSecurityEvent(
+        createAuditLog("password_reset_update_failed", false, {
+          userId: session.user.id,
+          error: error.message,
+        })
+      );
+      throw new Error(
+        "We couldn't update your password. Please try again or request a new reset link."
+      );
+    }
+
+    logSecurityEvent(
+      createAuditLog("password_reset_update_success", true, {
+        userId: session.user.id,
+        strength: passwordValidation.strength,
+      })
+    );
+  } catch (err) {
+    logSecurityEvent(
+      createAuditLog("password_reset_update_error", false, {
+        userId: session.user.id,
+        error: err instanceof Error ? err.message : "Unknown error",
+      })
+    );
+
+    if (err instanceof Error) {
+      throw err;
+    }
+
+    throw new Error(
+      "Unexpected error while updating the password. Please try again."
+    );
+  }
+}
+
 // Get current session
 export async function getSession() {
   const {

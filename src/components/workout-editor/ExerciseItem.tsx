@@ -8,7 +8,6 @@ import {
   ArrowUp,
   ArrowDown,
   Clock,
-  RotateCcw,
   Percent,
 } from "lucide-react";
 import { WorkoutExercise } from "@/types";
@@ -22,7 +21,6 @@ interface ExerciseItemProps {
   canMoveUp: boolean;
   canMoveDown: boolean;
   index: number;
-  groupId?: string;
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = ({
@@ -34,7 +32,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   canMoveUp,
   canMoveDown,
   index,
-  groupId,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedExercise, setEditedExercise] = useState(exercise);

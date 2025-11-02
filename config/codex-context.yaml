@@ -1,0 +1,105 @@
+project:
+  name: LiteWork
+  mission: Transform club weight training from paper tracking to a mobile-first,
+    coach-led workflow.
+  success_metrics:
+    - 100% coach adoption across active teams
+    - 80%+ athlete workout completion rate
+    - <2s median page load, 99% uptime
+
+goals:
+  current_focus:
+    - Harden account recovery and profile management before widening pilots
+    - Ship coach-side workflow polish: bulk assignments and per-athlete tweaks
+    - Stand up actionable analytics for coaches plus production monitoring
+
+active_initiatives:
+  mvp_blockers:
+    - key: password-reset
+      priority: high
+      summary: Implement secure reset + verification flow (UI + API) and align
+        with Supabase auth helpers.
+      references:
+        - MVP_ROADMAP.md:35
+        - ARCHITECTURE.md:1
+    - key: bulk-assignment
+      priority: high
+      summary: Extend workout assignment tooling for multi-group selection and
+        conflict handling with audit logging.
+      references:
+        - MVP_ROADMAP.md:70
+        - src/components/GroupAssignmentModal.tsx
+    - key: progress-history
+      priority: medium
+      summary: Persist and surface athlete workout history with charts fed by
+        `workout_sessions` analytics APIs.
+      references:
+        - MVP_ROADMAP.md:87
+        - src/app/api/analytics/route.ts
+  supporting_work:
+    - key: profile-polish
+      summary: Close UX/validation gaps in profile management flows.
+      references:
+        - MVP_ROADMAP.md:34
+        - src/app/profile/page.tsx
+    - key: consistency-dashboards
+      summary: Build coach overview + completion dashboards on top of analytics
+        service responses.
+      references:
+        - MVP_ROADMAP.md:118
+        - src/components/ProgressAnalyticsDashboard.tsx
+
+technical_guardrails:
+  authentication:
+    summary: Always gate API routes with `withAuth`/`withPermission`; admin role
+      inherits coach/athlete capabilities.
+    references:
+      - ARCHITECTURE.md:70
+      - src/lib/auth-utils.ts
+  data_access:
+    summary: Interact with Supabase via service layers; respect RLS and row-level
+      ownership checks for athlete resources.
+    references:
+      - ARCHITECTURE.md:51
+      - src/lib/database-service.ts
+  frontend:
+    summary: Follow App Router patterns, guard pages with `use*-Guard` hooks, and
+      prefer design tokens + Tailwind utility conventions.
+    references:
+      - PROJECT_STRUCTURE.md:88
+      - README.md:48
+  testing:
+    summary: Treat `npm run typecheck`, `npm run build`, and `npm run lint` as the
+      pre-commit validation suite.
+    references:
+      - package.json:4
+
+environment:
+  required_env_vars:
+    - NEXT_PUBLIC_SUPABASE_URL (`.env.local.example`)
+    - NEXT_PUBLIC_SUPABASE_ANON_KEY (`.env.local.example`)
+    - JWT_SECRET (local dev fallback only)
+  local_setup:
+    - npm install
+    - npm run dev
+  validation_commands:
+    - npm run typecheck
+    - npm run build
+    - npm run lint
+
+monitoring:
+  current_state:
+    - Vercel Analytics and Speed Insights included in `src/app/layout.tsx:10`
+    - Web vitals forwarded to `/api/analytics/web-vitals` via
+      `WebVitalsTracker`.
+  gaps:
+    - Sentry packages/config files absent; follow `docs/guides/MONITORING_SETUP.md`
+      for rollout.
+    - Alert routing (Slack/email) not implemented.
+  next_actions:
+    - Install and configure Sentry client/server/edge configs with DSN secrets.
+    - Finish analytics dashboards + alert hooks for coach KPIs.
+
+contacts:
+  product_owner: "<set owner>"
+  engineering_lead: "<set owner>"

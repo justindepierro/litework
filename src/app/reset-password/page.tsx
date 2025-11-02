@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { requestPasswordReset } from "@/lib/auth-client";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -17,17 +17,7 @@ export default function ResetPasswordPage() {
     setSuccess(false);
 
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-        email,
-        {
-          redirectTo: `${window.location.origin}/update-password`,
-        }
-      );
-
-      if (resetError) {
-        throw resetError;
-      }
-
+      await requestPasswordReset(email);
       setSuccess(true);
       setEmail("");
     } catch (err) {
@@ -50,7 +40,7 @@ export default function ResetPasswordPage() {
             Reset Password
           </h2>
           <p className="mt-2 text-body-secondary text-base sm:text-sm">
-            Enter your email address and we'll send you instructions to reset
+            Enter your email address and we&apos;ll send you instructions to reset
             your password
           </p>
         </div>
@@ -76,7 +66,7 @@ export default function ResetPasswordPage() {
                   Check your email
                 </h3>
                 <p className="text-sm text-green-700 mt-1">
-                  We've sent password reset instructions to your email address.
+                  We&apos;ve sent password reset instructions to your email address.
                 </p>
               </div>
             </div>
@@ -124,7 +114,7 @@ export default function ResetPasswordPage() {
                 autoFocus
               />
               <p className="text-sm text-gray-600 mt-2">
-                We'll send reset instructions to this email if it's associated
+                We&apos;ll send reset instructions to this email if it&apos;s associated
                 with an account.
               </p>
             </div>

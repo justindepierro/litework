@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings=0",
     "deploy": "./deploy.sh",
     "clean": "rm -rf .next && rm -rf node_modules/.cache",
     "analyze": "ANALYZE=true next build --webpack"
@@ -30,6 +30,8 @@
     "react-dom": "19.2.0",
     "react-window": "^2.2.2",
     "recharts": "^3.3.0",
+    "resend": "^6.4.0",
+    "web-push": "^3.6.7",
     "web-vitals": "^5.1.0"
   },
   "devDependencies": {
@@ -40,6 +42,7 @@
     "@types/react-dnd": "^2.0.36",
     "@types/react-dom": "^19",
     "@types/react-window": "^1.8.8",
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "sharp": "^0.34.4",

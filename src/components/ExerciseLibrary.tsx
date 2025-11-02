@@ -216,6 +216,11 @@ function ExerciseLibrary({
             </button>
           </div>
         </div>
+        {error && (
+          <div className="mx-6 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Search and Filters */}
         <div className="p-6 border-b border-gray-200">

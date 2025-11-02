@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  return withAuth(request, async (user) => {
+  return withAuth(request, async () => {
     try {
       const url = new URL(request.url);
       const metric = url.searchParams.get("metric");

@@ -12,6 +12,7 @@ import {
   LogOut,
   LogIn,
 } from "lucide-react";
+import NotificationBell from "@/components/NotificationBell";
 
 // Memoized navigation link component for better performance
 const NavigationLink = memo(function NavigationLink({
@@ -114,6 +115,7 @@ const Navigation = memo(function Navigation() {
                     {item.label}
                   </NavigationLink>
                 ))}
+                <NotificationBell />
                 <Link
                   href="/profile"
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-700 hover:bg-navy-600 border border-navy-600 touch-manipulation"

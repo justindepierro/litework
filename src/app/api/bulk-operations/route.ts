@@ -7,9 +7,6 @@ export async function POST(request: NextRequest) {
     // Only coaches/admins can perform bulk operations
     await requireCoach();
 
-    const supabase = getAdminClient();
-    // TODO: Refactor to use supabase directly instead of supabaseApiClient wrapper
-
     const body = await request.json();
     const { type, targetAthletes, targetGroups, data } = body;
 
@@ -144,7 +141,7 @@ async function handleBulkMessage(
     // Send messages to individual athletes
     for (const athleteId of targetAthletes) {
       // Create message in database
-      const { data: message, error } = await supabase
+      const { error } = await supabase
         .from("messages")
         .insert({
           recipient_id: athleteId,

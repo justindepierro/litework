@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import {
+  completePasswordReset,
+  getSession,
+} from "@/lib/auth-client";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
@@ -16,13 +19,18 @@ export default function UpdatePasswordPage() {
 
   useEffect(() => {
     // Check if user has a valid recovery session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        setError("Invalid or expired reset link. Please request a new one.");
-      } else {
-        setIsValidSession(true);
-      }
-    });
+    getSession()
+      .then((session) => {
+        if (!session) {
+          setError("Invalid or expired reset link. Please request a new one.");
+        } else {
+          setIsValidSession(true);
+        }
+      })
+      .catch((err) => {
+        console.error("Password reset session error:", err);
+        setError("Unable to verify reset session. Please request a new link.");
+      });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,14 +52,7 @@ export default function UpdatePasswordPage() {
     }
 
     try {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password,
-      });
-
-      if (updateError) {
-        throw updateError;
-      }
-
+      await completePasswordReset(password);
       setSuccess(true);
 
       // Redirect to dashboard after 2 seconds
