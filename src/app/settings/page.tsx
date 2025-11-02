@@ -6,7 +6,7 @@
 
 import { useRequireAuth } from '@/hooks/use-auth-guard';
 import NotificationPermission from '@/components/NotificationPermission';
-import NotificationPreferences from '@/components/NotificationPreferences';
+import NotificationPreferencesSettings from '@/components/NotificationPreferencesSettings';
 
 export default function SettingsPage() {
   const { user, isLoading } = useRequireAuth();
@@ -44,7 +44,7 @@ export default function SettingsPage() {
 
         {/* Notification Preferences */}
         <div>
-          <NotificationPreferences />
+          <NotificationPreferencesSettings />
         </div>
       </div>
     </div>

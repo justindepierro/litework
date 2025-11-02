@@ -1,5 +1,25 @@
 // Shared types for the workout tracking application
 
+// Notification preferences structure
+export type NotificationTiming = "smart" | "morning" | "evening" | "2hours" | "1hour" | "30min";
+export type NotificationChannel = "email" | "push";
+
+export interface NotificationPreferences {
+  workoutReminders: {
+    enabled: boolean;
+    timing: NotificationTiming;
+    channels: NotificationChannel[];
+  };
+  achievementNotifications: {
+    enabled: boolean;
+    channels: NotificationChannel[];
+  };
+  assignmentNotifications: {
+    enabled: boolean;
+    channels: NotificationChannel[];
+  };
+}
+
 export interface User {
   id: string;
   email: string;
@@ -12,6 +32,7 @@ export interface User {
   dateOfBirth?: Date;
   injuryStatus?: string;
   personalRecords?: AthleteKPI[]; // Personal records for key lifts
+  notificationPreferences?: NotificationPreferences; // User notification settings
   createdAt: Date;
   updatedAt: Date;
 }
