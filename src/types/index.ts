@@ -50,6 +50,7 @@ export interface AthleteGroup {
   coachId: string; // Coach who manages this group
   athleteIds: string[]; // Members of this group
   color: string; // For calendar display
+  archived?: boolean; // Whether the group is archived
   createdAt: Date;
   updatedAt: Date;
 }

@@ -42,6 +42,11 @@ interface SendEmailResult {
 const resendApiKey = process.env.RESEND_API_KEY;
 const fromEmail = process.env.RESEND_FROM_EMAIL || 'LiteWork <noreply@litework.app>';
 
+console.log('🔧 Email Service Initialization:');
+console.log('   - RESEND_API_KEY present:', !!resendApiKey);
+console.log('   - RESEND_API_KEY length:', resendApiKey?.length || 0);
+console.log('   - FROM_EMAIL:', fromEmail);
+
 if (!resendApiKey) {
   console.error('❌ RESEND_API_KEY not configured. Email notifications will not work.');
   console.error('Please add RESEND_API_KEY to .env.local');
@@ -220,6 +225,8 @@ function generateEmailHTML(
       return generateProgressReportEmail(data, baseStyles);
     case 'achievement':
       return generateAchievementEmail(data, baseStyles);
+    case 'invite':
+      return generateAthleteInviteEmail(data, baseStyles);
     default:
       return generateGenericEmail(data, baseStyles);
   }
@@ -438,6 +445,59 @@ function generateAchievementEmail(data: EmailTemplateData, styles: string): stri
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
           ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+/**
+ * Template: Athlete Invitation
+ */
+function generateAthleteInviteEmail(data: EmailTemplateData, styles: string): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      ${styles}
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>🏋️ You're Invited to LiteWork!</h1>
+        </div>
+        <div class="content">
+          <div class="greeting">Hi ${data.userName},</div>
+          <div class="message">
+            ${data.message || 'Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.'}
+          </div>
+          <div class="message">
+            <strong>What is LiteWork?</strong><br>
+            LiteWork helps you track workouts, monitor progress, hit new PRs, and stay connected with your coach. Get started today and take your training to the next level!
+          </div>
+          ${data.details ? `
+            <div class="details">
+              ${data.details.map(d => `
+                <div class="detail-row">
+                  <span class="detail-label">${d.label}</span>
+                  <span class="detail-value">${d.value}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+          ${data.actionUrl ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || 'Accept Invitation'}</a>
+          ` : ''}
+          <div class="message" style="margin-top: 24px; font-size: 14px; color: #6b7280;">
+            This invitation will expire in 7 days. If you didn't expect this invitation, you can safely ignore this email.
+          </div>
+        </div>
+        <div class="footer">
+          <p>LiteWork - Weight Lifting Tracker</p>
+          <p>You received this email because your coach invited you to join their training program.</p>
         </div>
       </div>
     </body>

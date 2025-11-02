@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
+    "dev:restart": "./scripts/dev/dev-restart.sh",
+    "dev:kill": "pkill -f 'next dev' || lsof -ti:3000 | xargs kill -9 2>/dev/null || true",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

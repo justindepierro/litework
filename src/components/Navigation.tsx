@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, useMemo, memo, useEffect, useRef } from "react";
 import {
   Dumbbell,
   BarChart3,
@@ -40,6 +40,10 @@ const NavigationLink = memo(function NavigationLink({
 const Navigation = memo(function Navigation() {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   // Optimize toggle function with useCallback
   const toggleMobileMenu = useCallback(() => {
@@ -75,10 +79,69 @@ const Navigation = memo(function Navigation() {
     return items;
   }, [user, isCoachOrAdmin]);
 
+  // Modern scroll behavior with performance optimization
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Set scrolled state for styling (compact mode)
+      setIsScrolled(currentScrollY > 20);
+
+      // Show/hide navigation based on scroll direction
+      if (currentScrollY < 10) {
+        // Always show at top of page
+        setIsVisible(true);
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up - show nav
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down - hide nav (only after 100px)
+        setIsVisible(false);
+        // Close mobile menu when hiding
+        if (isMobileMenuOpen) {
+          setIsMobileMenuOpen(false);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+      ticking.current = false;
+    };
+
+    const requestTick = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+        });
+        ticking.current = true;
+      }
+    };
+
+    const onScroll = () => {
+      requestTick();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobileMenuOpen]);
+
   return (
-    <nav className="bg-color-navy-800 border-b border-color-navy-600 shadow-sm sticky top-0 z-40">
+    <nav
+      className={`
+        bg-color-navy-800 border-b border-color-navy-600 shadow-sm 
+        fixed top-0 left-0 right-0 z-40
+        transition-all duration-300 ease-in-out
+        ${isVisible ? "translate-y-0" : "-translate-y-full"}
+        ${isScrolled ? "shadow-lg backdrop-blur-sm bg-navy-800/95" : ""}
+      `}
+    >
       <div className="container-responsive">
-        <div className="flex justify-between items-center h-16 sm:h-18">
+        <div
+          className={`
+          flex justify-between items-center 
+          transition-all duration-300 ease-in-out
+          ${isScrolled ? "h-14 sm:h-16" : "h-16 sm:h-18"}
+        `}
+        >
           {/* Logo/Brand - Enhanced for mobile */}
           <Link
             href="/"

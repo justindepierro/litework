@@ -26,7 +26,8 @@ export type NotificationCategory =
   | 'message'
   | 'assignment'
   | 'progress'
-  | 'achievement';
+  | 'achievement'
+  | 'invite';
 
 export interface PushSubscription {
   id: string;
@@ -447,6 +448,7 @@ function isCategoryEnabled(prefs: NotificationPreferences, category?: Notificati
     message: 'message_notifications',
     progress: 'progress_updates',
     achievement: 'achievement_notifications',
+    invite: 'message_notifications', // Invites use message notification preference
   };
 
   const prefKey = categoryMap[category];

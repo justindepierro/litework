@@ -146,6 +146,77 @@ html {
   justify-content: center;
 }
 
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Support for scroll padding when using fixed header */
+html {
+  scroll-padding-top: 5rem; /* Account for fixed navigation */
+}
+
+/* Toast and Modal Animations */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-out-right {
+  animation: slide-out-right 0.3s cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (hover: none) and (pointer: coarse) {
   /* Mobile-specific styles */
   .touch-target {
@@ -158,5 +229,10 @@ html {
   .btn-secondary {
     min-height: 48px;
     padding: 12px 16px;
+  }
+  
+  /* Improve scroll performance on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
   }
 }

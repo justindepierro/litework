@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import { sendEmailNotification } from "@/lib/email-service";
 
 // POST /api/invites - Create athlete invitation
 export async function POST(request: NextRequest) {
@@ -44,6 +45,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if there's already a pending invite for this email
+    const { data: existingInvite } = await supabase
+      .from("invites")
+      .select("id, email, status, expires_at")
+      .eq("email", email.toLowerCase())
+      .eq("status", "pending")
+      .single();
+
+    if (existingInvite) {
+      // Check if invite is still valid (not expired)
+      const expiresAt = new Date(existingInvite.expires_at);
+      if (expiresAt > new Date()) {
+        return NextResponse.json(
+          { 
+            error: "An active invitation for this email already exists",
+            existingInvite: existingInvite
+          },
+          { status: 400 }
+        );
+      }
+      // If expired, we'll create a new one (old one will be overridden)
+    }
+
     // Create invitation record
     const { data: invite, error: inviteError } = await supabase
       .from("invites")
@@ -68,6 +92,34 @@ export async function POST(request: NextRequest) {
         { error: "Failed to create invitation" },
         { status: 500 }
       );
+    }
+
+    // Send invitation email
+    try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const inviteUrl = `${appUrl}/signup?invite=${invite.id}`;
+
+      await sendEmailNotification({
+        to: email.toLowerCase(),
+        subject: "You're invited to join LiteWork!",
+        category: "invite",
+        templateData: {
+          userName: `${firstName} ${lastName}`,
+          title: "Join LiteWork",
+          message: "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.",
+          actionUrl: inviteUrl,
+          actionText: "Accept Invitation",
+          details: [
+            { label: "Invited By", value: user.email || "Your Coach" },
+            { label: "Expires", value: new Date(invite.expires_at).toLocaleDateString() },
+          ],
+        },
+      });
+
+      console.log(`✅ Invitation email sent to ${email}`);
+    } catch (emailError) {
+      console.error("❌ Failed to send invitation email:", emailError);
+      // Don't fail the request if email fails - invite is still created
     }
 
     return NextResponse.json({

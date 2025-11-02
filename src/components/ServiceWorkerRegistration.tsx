@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { log } from "@/lib/dev-logger";
 import { devFeatures } from "@/lib/dev-config";
+import ConfirmModal from "@/components/ConfirmModal";
+import { useToast } from "@/components/ToastProvider";
 
 export default function ServiceWorkerRegistration() {
+  const toast = useToast();
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   useEffect(() => {
     // Suppress harmless Chrome extension message channel errors
     const originalError = console.error;
@@ -50,10 +54,8 @@ export default function ServiceWorkerRegistration() {
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
                 ) {
-                  // New content is available
-                  if (confirm("New version available! Reload to update?")) {
-                    window.location.reload();
-                  }
+                  // New content is available - show modal
+                  setShowUpdateModal(true);
                 }
               });
             }
@@ -79,5 +81,22 @@ export default function ServiceWorkerRegistration() {
     };
   }, []);
 
-  return null;
+  const handleUpdate = () => {
+    toast.info("Updating app...");
+    setShowUpdateModal(false);
+    window.location.reload();
+  };
+
+  return (
+    <ConfirmModal
+      isOpen={showUpdateModal}
+      title="App Update Available"
+      message="A new version of LiteWork is available. Would you like to reload the app to get the latest features and improvements?"
+      confirmText="Update Now"
+      cancelText="Later"
+      confirmVariant="primary"
+      onConfirm={handleUpdate}
+      onCancel={() => setShowUpdateModal(false)}
+    />
+  );
 }

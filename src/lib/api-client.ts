@@ -134,7 +134,7 @@ class ApiClient {
 
   // Users (Athletes)
   async getAthletes() {
-    return this.request("/users");
+    return this.request("/athletes");
   }
 
   async createAthlete(athleteData: {
@@ -193,6 +193,18 @@ class ApiClient {
     return this.request("/invites", {
       method: "POST",
       body: JSON.stringify(inviteData),
+    });
+  }
+
+  async deleteInvite(inviteId: string) {
+    return this.request(`/invites/${inviteId}`, {
+      method: "DELETE",
+    });
+  }
+
+  async resendInvite(inviteId: string) {
+    return this.request(`/invites/${inviteId}`, {
+      method: "PATCH",
     });
   }
 

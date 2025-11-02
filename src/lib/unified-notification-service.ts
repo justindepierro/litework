@@ -222,7 +222,8 @@ function getIconForCategory(category: NotificationCategory): string {
     assignment: '💪',
     message: '💬',
     progress: '📊',
-    achievement: '🏆'
+    achievement: '🏆',
+    invite: '📨'
   };
   return icons[category] || '🔔';
 }

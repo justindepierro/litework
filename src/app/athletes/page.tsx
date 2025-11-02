@@ -25,10 +25,15 @@ import {
   MessageSquare,
   Dumbbell,
   History,
+  Edit3,
+  Archive,
 } from "lucide-react";
 import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import GroupFormModal from "@/components/GroupFormModal";
+import ManageGroupMembersModal from "@/components/ManageGroupMembersModal";
+import ConfirmModal from "@/components/ConfirmModal";
+import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
 
 // Dynamic imports for large components
@@ -94,7 +99,8 @@ interface EnhancedAthlete extends UserType {
 const enhancedAthletes: EnhancedAthlete[] = [];
 
 export default function AthletesPage() {
-  const { isLoading } = useRequireCoach();
+  const { isLoading, user } = useRequireCoach();
+  const toast = useToast();
 
   const [athletes, setAthletes] = useState<EnhancedAthlete[]>(enhancedAthletes);
   const [groups, setGroups] = useState<AthleteGroup[]>([]);
@@ -107,8 +113,25 @@ export default function AthletesPage() {
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showGroupFormModal, setShowGroupFormModal] = useState(false);
+  const [showManageGroupModal, setShowManageGroupModal] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
+  const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
+  const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
+  
+  // Confirmation modal state
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -146,10 +169,178 @@ export default function AthletesPage() {
     }
   };
 
+  // Load athletes and invites
+  const loadAthletes = async () => {
+    try {
+      const response = (await apiClient.getAthletes()) as {
+        success: boolean;
+        data: {
+          athletes: Array<{
+            id: string;
+            first_name: string;
+            last_name: string;
+            email: string;
+            role: string;
+            created_at: string;
+          }>;
+          invites: Array<{
+            id: string;
+            first_name: string;
+            last_name: string;
+            email: string;
+            status: string;
+            created_at: string;
+          }>;
+        };
+      };
+
+      if (response.success) {
+        // Convert API athletes to EnhancedAthlete format
+        const loadedAthletes: EnhancedAthlete[] = [
+          // Map registered athletes
+          ...response.data.athletes.map((athlete) => ({
+            id: athlete.id,
+            firstName: athlete.first_name,
+            lastName: athlete.last_name,
+            fullName: `${athlete.first_name} ${athlete.last_name}`,
+            email: athlete.email,
+            role: "athlete" as const,
+            groupIds: [],
+            status: "active" as const,
+            profileImage: null,
+            bio: null,
+            injuryStatus: undefined,
+            stats: {
+              totalWorkouts: 0,
+              completedWorkouts: 0,
+              thisMonthWorkouts: 0,
+              totalPRs: 0,
+              recentPRs: 0,
+              lastWorkout: null,
+            },
+            communication: {
+              unreadMessages: 0,
+              lastMessage: null,
+              lastMessageTime: null,
+              notificationsEnabled: true,
+              preferredContact: "app" as const,
+            },
+            personalRecords: [],
+            createdAt: new Date(athlete.created_at),
+            updatedAt: new Date(athlete.created_at),
+          })),
+          // Map pending invites
+          ...response.data.invites.map((invite) => ({
+            id: invite.id,
+            firstName: invite.first_name,
+            lastName: invite.last_name,
+            fullName: `${invite.first_name} ${invite.last_name}`,
+            email: invite.email,
+            role: "athlete" as const,
+            groupIds: [],
+            status: "invited" as const,
+            profileImage: null,
+            bio: null,
+            injuryStatus: undefined,
+            stats: {
+              totalWorkouts: 0,
+              completedWorkouts: 0,
+              thisMonthWorkouts: 0,
+              totalPRs: 0,
+              recentPRs: 0,
+              lastWorkout: null,
+            },
+            communication: {
+              unreadMessages: 0,
+              lastMessage: null,
+              lastMessageTime: null,
+              notificationsEnabled: true,
+              preferredContact: "app" as const,
+            },
+            personalRecords: [],
+            createdAt: new Date(invite.created_at),
+            updatedAt: new Date(invite.created_at),
+          })),
+        ];
+
+        setAthletes(loadedAthletes);
+      }
+    } catch (err) {
+      console.error("Failed to load athletes:", err);
+      // Fall back to mock data if API fails
+      setAthletes(enhancedAthletes);
+    }
+  };
+
+  // Handle group deletion
+  const handleDeleteGroup = async (groupId: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Delete Group",
+      message: "Are you sure you want to delete this group? This action cannot be undone and will remove all athlete assignments.",
+      onConfirm: async () => {
+        try {
+          await apiClient.deleteGroup(groupId);
+
+          // Remove from local state
+          setGroups(groups.filter((g) => g.id !== groupId));
+          setOpenGroupMenuId(null);
+          
+          toast.success("Group deleted successfully");
+        } catch (error) {
+          console.error("Delete group error:", error);
+          const errorMessage = error instanceof Error ? error.message : "Failed to delete group";
+          toast.error(errorMessage);
+        }
+      },
+    });
+  };
+
+  // Handle group archiving
+  const handleArchiveGroup = async (group: AthleteGroup) => {
+    try {
+      await apiClient.updateGroup(group.id, {
+        ...group,
+        archived: true,
+      });
+
+      // Reload groups to reflect changes
+      await loadGroups();
+      setOpenGroupMenuId(null);
+      
+      toast.success("Group archived successfully");
+    } catch (error) {
+      console.error("Archive group error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to archive group";
+      toast.error(errorMessage);
+    }
+  };
+
   // Load groups when component mounts
   useEffect(() => {
-    loadGroups();
-  }, []);
+    // Only load data after auth is verified
+    if (!isLoading && user) {
+      loadGroups();
+      loadAthletes();
+    }
+  }, [isLoading, user]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (openGroupMenuId) {
+        setOpenGroupMenuId(null);
+      }
+    };
+
+    if (openGroupMenuId) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [openGroupMenuId]);
 
   const handleSendInvite = async () => {
     if (!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email)
@@ -163,42 +354,10 @@ export default function AthletesPage() {
       })) as ApiResponse;
 
       if (response.success) {
-        // Add to local state with pending status
-        const fullName = `${inviteForm.firstName} ${inviteForm.lastName}`;
-        const newAthlete: EnhancedAthlete = {
-          id: Date.now().toString(),
-          firstName: inviteForm.firstName,
-          lastName: inviteForm.lastName,
-          fullName: fullName,
-          email: inviteForm.email,
-          role: "athlete" as const,
-          groupIds: inviteForm.groupId ? [inviteForm.groupId] : [],
-          status: "invited",
-          profileImage: null,
-          bio: inviteForm.notes || null,
-          injuryStatus: inviteForm.notes ? undefined : undefined,
-          stats: {
-            totalWorkouts: 0,
-            completedWorkouts: 0,
-            thisMonthWorkouts: 0,
-            totalPRs: 0,
-            recentPRs: 0,
-            lastWorkout: null,
-          },
-          communication: {
-            unreadMessages: 0,
-            lastMessage: null,
-            lastMessageTime: null,
-            notificationsEnabled: true,
-            preferredContact: "app",
-          },
-          personalRecords: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        setAthletes([...athletes, newAthlete]);
-        alert(`Invite sent successfully to ${inviteForm.email}!`);
+        // Reload athletes to get the new invite from the database
+        await loadAthletes();
+        
+        toast.success(`Invite sent successfully to ${inviteForm.email}!`);
         setInviteForm({
           firstName: "",
           lastName: "",
@@ -207,17 +366,72 @@ export default function AthletesPage() {
           notes: "",
         });
         setShowInviteModal(false);
+        setError("");
       } else {
-        setError(
-          typeof response.error === "string"
-            ? response.error
-            : "Failed to send invite"
-        );
+        const errorMsg = typeof response.error === "string"
+          ? response.error
+          : "Failed to send invite";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err) {
-      setError("Failed to send invite");
+      const errorMsg = err instanceof Error 
+        ? err.message 
+        : "Failed to send invite";
+      setError(errorMsg);
+      toast.error(errorMsg);
       console.error("Error sending invite:", err);
     }
+  };
+
+  const handleResendInvite = async (inviteId: string) => {
+    console.log('🔄 Resending invite:', inviteId);
+    toast.info("Sending invitation email...");
+    try {
+      const response = (await apiClient.resendInvite(inviteId)) as {
+        success: boolean;
+        message?: string;
+      };
+
+      if (response.success) {
+        toast.success("✅ Invitation email sent! Check your inbox.");
+      } else {
+        toast.error("Failed to resend invite");
+      }
+    } catch (err) {
+      console.error("Error resending invite:", err);
+      toast.error("Failed to resend invite");
+    }
+  };
+
+  const handleCancelInvite = (inviteId: string) => {
+    console.log('❌ Canceling invite:', inviteId);
+    setConfirmModal({
+      isOpen: true,
+      title: "Cancel Invitation",
+      message: "Are you sure you want to cancel this invitation? The athlete will not be able to accept it.",
+      onConfirm: async () => {
+        try {
+          setConfirmModal({ ...confirmModal, isOpen: false });
+          
+          const response = (await apiClient.deleteInvite(inviteId)) as {
+            success: boolean;
+            message?: string;
+          };
+
+          if (response.success) {
+            // Remove from local state
+            setAthletes(athletes.filter((a) => a.id !== inviteId));
+            toast.success("Invitation cancelled successfully");
+          } else {
+            toast.error("Failed to cancel invitation");
+          }
+        } catch (err) {
+          console.error("Error canceling invite:", err);
+          toast.error("Failed to cancel invitation");
+        }
+      },
+    });
   };
 
   const handleKPIManagement = (athlete: EnhancedAthlete) => {
@@ -301,7 +515,7 @@ export default function AthletesPage() {
       );
 
       setAthletes(updatedAthletes);
-      alert(`Message sent to ${selectedAthlete.fullName}!`);
+      toast.success(`Message sent to ${selectedAthlete.fullName}!`);
       setMessageForm({
         recipientId: "",
         subject: "",
@@ -361,12 +575,13 @@ export default function AthletesPage() {
           successMessage = "Bulk operation completed successfully";
       }
 
-      alert(successMessage);
+      toast.success(successMessage);
 
       // Refresh athletes list if needed
       // await fetchAthletes();
     } catch (error) {
       console.error("Bulk operation failed:", error);
+      toast.error("Bulk operation failed. Please try again.");
       throw error;
     }
   };
@@ -477,7 +692,7 @@ export default function AthletesPage() {
           </div>
 
           {/* Mobile-Optimized Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <button
               onClick={() => setShowHistoryModal(true)}
               className="btn-secondary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
@@ -493,6 +708,13 @@ export default function AthletesPage() {
               <span>Bulk Actions</span>
             </button>
             <button
+              onClick={() => setShowGroupFormModal(true)}
+              className="btn-secondary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
+            >
+              <Users className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span>Add Group</span>
+            </button>
+            <button
               onClick={() => setShowInviteModal(true)}
               className="btn-primary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
             >
@@ -501,6 +723,110 @@ export default function AthletesPage() {
             </button>
           </div>
         </div>
+
+        {/* Groups Section */}
+        {groups.filter(g => !g.archived).length > 0 && (
+          <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-purple-600" />
+              Groups ({groups.filter(g => !g.archived).length})
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {groups.filter(g => !g.archived).map((group) => {
+                const athleteCount = athletes.filter(a => 
+                  a.groupIds?.includes(group.id)
+                ).length;
+                
+                return (
+                  <div
+                    key={group.id}
+                    className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
+                  >
+                    {/* 3-dot menu */}
+                    <div className="absolute top-3 right-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenGroupMenuId(openGroupMenuId === group.id ? null : group.id);
+                        }}
+                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                        aria-label="Group menu"
+                      >
+                        <MoreVertical className="w-5 h-5 text-gray-600" />
+                      </button>
+                      
+                      {/* Dropdown menu */}
+                      {openGroupMenuId === group.id && (
+                        <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingGroup(group);
+                              setShowGroupFormModal(true);
+                              setOpenGroupMenuId(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                            Edit Group
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleArchiveGroup(group);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                          >
+                            <Archive className="w-4 h-4" />
+                            Archive Group
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteGroup(group.id);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Delete Group
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Group content (clickable to manage members) */}
+                    <button
+                      onClick={() => {
+                        setSelectedGroup(group);
+                        setShowManageGroupModal(true);
+                      }}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-center justify-between mb-2 pr-8">
+                        <h4 className="font-semibold text-gray-900">{group.name}</h4>
+                        {group.color && (
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: group.color }}
+                          />
+                        )}
+                      </div>
+                      {group.description && (
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          {group.description}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <Users className="w-4 h-4" />
+                        <span>{athleteCount} athlete{athleteCount !== 1 ? 's' : ''}</span>
+                      </div>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Mobile-Optimized Search and Filters */}
         <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:gap-4">
@@ -676,7 +1002,10 @@ export default function AthletesPage() {
 
                   {/* Invite Status for Pending */}
                   {athlete.status === "invited" && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div 
+                      className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <div className="flex items-center gap-2 mb-2">
                         <Send className="h-4 w-4 text-blue-600" />
                         <span className="text-sm font-medium text-blue-900">
@@ -686,10 +1015,35 @@ export default function AthletesPage() {
                       <p className="text-xs text-blue-700">
                         Sent {athlete.createdAt.toLocaleDateString()}
                       </p>
-                      <button className="mt-2 text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        <RefreshCw className="h-3 w-3" />
-                        Resend Invite
-                      </button>
+                      <div className="mt-2 flex items-center gap-2">
+                        <button 
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🔄 BUTTON CLICKED - Resending invite:', athlete.id);
+                            handleResendInvite(athlete.id);
+                          }}
+                          className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <RefreshCw className="h-3 w-3" />
+                          Resend Invite
+                        </button>
+                        <span className="text-xs text-gray-400">•</span>
+                        <button 
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('❌ BUTTON CLICKED - Canceling invite:', athlete.id);
+                            handleCancelInvite(athlete.id);
+                          }}
+                          className="text-xs text-red-600 hover:text-red-800 hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <X className="h-3 w-3" />
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1229,15 +1583,52 @@ export default function AthletesPage() {
       {/* Group Form Modal */}
       <GroupFormModal
         isOpen={showGroupFormModal}
-        onClose={() => setShowGroupFormModal(false)}
+        onClose={() => {
+          setShowGroupFormModal(false);
+          setEditingGroup(null);
+        }}
         onSave={(group) => {
           // Refresh groups list
           loadGroups();
           // After creating the group, select it in the invite form
           setInviteForm({ ...inviteForm, groupId: group.id });
           setShowGroupFormModal(false);
+          setEditingGroup(null);
         }}
+        editingGroup={editingGroup}
         existingGroups={groups}
+      />
+
+      {/* Manage Group Members Modal */}
+      {selectedGroup && (
+        <ManageGroupMembersModal
+          isOpen={showManageGroupModal}
+          onClose={() => {
+            setShowManageGroupModal(false);
+            setSelectedGroup(null);
+          }}
+          group={selectedGroup}
+          allAthletes={athletes}
+          onMembersUpdated={() => {
+            // Reload groups to update athlete counts
+            loadGroups();
+            // Close and reopen the modal to refresh with updated data
+            setShowManageGroupModal(false);
+            setTimeout(() => setShowManageGroupModal(true), 100);
+          }}
+        />
+      )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmVariant="danger"
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
       />
     </div>
   );

@@ -69,7 +69,7 @@ export default function GroupFormModal({
         sport: editingGroup.sport,
         category: editingGroup.category || "",
         color: editingGroup.color,
-        athleteIds: editingGroup.athleteIds,
+        athleteIds: editingGroup.athleteIds || [],
       });
     } else {
       setFormData({
@@ -322,7 +322,7 @@ export default function GroupFormModal({
 
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">
-                  Select Athletes ({formData.athleteIds.length} selected)
+                  Select Athletes ({formData.athleteIds?.length || 0} selected)
                 </h3>
 
                 {selectedAthletes.length > 0 && (

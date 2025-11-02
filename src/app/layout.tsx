@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/components/ToastProvider";
 import Navigation from "@/components/Navigation";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
@@ -100,10 +101,13 @@ export default function RootLayout({
       >
         <GlobalErrorBoundary>
           <AuthProvider>
-            <Navigation />
-            <main className="bg-white">{children}</main>
-            <PWAInstallBanner />
-            <ServiceWorkerRegistration />
+            <ToastProvider>
+              <Navigation />
+              {/* Add padding to compensate for fixed navigation */}
+              <main className="bg-white pt-16 sm:pt-18">{children}</main>
+              <PWAInstallBanner />
+              <ServiceWorkerRegistration />
+            </ToastProvider>
           </AuthProvider>
         </GlobalErrorBoundary>
         <Analytics />

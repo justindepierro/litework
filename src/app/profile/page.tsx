@@ -8,6 +8,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRequireAuth } from '@/hooks/use-auth-guard';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/components/ToastProvider';
+import ConfirmModal from '@/components/ConfirmModal';
 import { 
   User, 
   Save, 
@@ -44,6 +46,7 @@ interface ProfileData {
 
 export default function ProfilePage() {
   const { user, isLoading: authLoading } = useRequireAuth();
+  const toast = useToast();
   
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -75,6 +78,17 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'profile' | 'metrics' | 'account'>('profile');
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {}
+  });
 
   // Load profile data
   useEffect(() => {
@@ -165,30 +179,35 @@ export default function ProfilePage() {
   };
 
   const handleAvatarDelete = async () => {
-    if (!confirm('Are you sure you want to remove your profile picture?')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Remove Profile Picture',
+      message: 'Are you sure you want to remove your profile picture?',
+      onConfirm: async () => {
+        try {
+          setIsUploadingAvatar(true);
+          setError('');
+          setConfirmModal({ ...confirmModal, isOpen: false });
 
-    try {
-      setIsUploadingAvatar(true);
-      setError('');
+          const response = await fetch('/api/profile/avatar', {
+            method: 'DELETE'
+          });
 
-      const response = await fetch('/api/profile/avatar', {
-        method: 'DELETE'
-      });
+          const data = await response.json();
 
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess('Profile picture removed');
-        setProfile(prev => prev ? { ...prev, avatar_url: undefined } : null);
-        setTimeout(() => setSuccess(''), 3000);
-      } else {
-        setError(data.error || 'Failed to delete avatar');
+          if (data.success) {
+            toast.success('Profile picture removed');
+            setProfile(prev => prev ? { ...prev, avatar_url: undefined } : null);
+          } else {
+            toast.error(data.error || 'Failed to delete avatar');
+          }
+        } catch (err) {
+          toast.error('Failed to delete profile picture');
+        } finally {
+          setIsUploadingAvatar(false);
+        }
       }
-    } catch (err) {
-      setError('Failed to delete profile picture');
-    } finally {
-      setIsUploadingAvatar(false);
-    }
+    });
   };
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
@@ -705,6 +724,16 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        confirmVariant="danger"
+      />
     </main>
   );
 }

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Bell, X, Check, CheckCheck } from 'lucide-react';
 
@@ -28,12 +28,73 @@ export default function NotificationBell() {
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Load notifications
+  // Memoized function to load unread count
+  const loadUnreadCount = useCallback(async () => {
+    // Don't attempt to load if no user
+    if (!user) return;
+    
+    try {
+      const response = await fetch('/api/notifications/inbox?limit=1&unread_only=true');
+      
+      // Silently handle auth errors (user not logged in)
+      if (!response.ok) {
+        if (response.status === 401) {
+          // User not authenticated, silently return
+          return;
+        }
+        throw new Error('Failed to fetch notifications');
+      }
+      
+      const data = await response.json();
+
+      if (data.success) {
+        setUnreadCount(data.unreadCount);
+      }
+    } catch (error) {
+      // Only log non-auth errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to load unread count:', error);
+      }
+    }
+  }, [user]);
+
+  // Memoized function to load notifications
+  const loadNotifications = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/notifications/inbox?limit=10');
+      
+      // Silently handle auth errors
+      if (!response.ok) {
+        if (response.status === 401) {
+          return;
+        }
+        throw new Error('Failed to fetch notifications');
+      }
+      
+      const data = await response.json();
+
+      if (data.success) {
+        setNotifications(data.notifications);
+        setUnreadCount(data.unreadCount);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to load notifications:', error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  // Load notifications when dropdown opens
   useEffect(() => {
     if (user && isOpen) {
       loadNotifications();
     }
-  }, [user, isOpen]);
+  }, [user, isOpen, loadNotifications]);
 
   // Poll for new notifications every 30 seconds
   useEffect(() => {
@@ -42,7 +103,7 @@ export default function NotificationBell() {
     loadUnreadCount();
     const interval = setInterval(loadUnreadCount, 30000);
     return () => clearInterval(interval);
-  }, [user]);
+  }, [user, loadUnreadCount]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,36 +118,6 @@ export default function NotificationBell() {
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isOpen]);
-
-  const loadNotifications = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/notifications/inbox?limit=10');
-      const data = await response.json();
-
-      if (data.success) {
-        setNotifications(data.notifications);
-        setUnreadCount(data.unreadCount);
-      }
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const loadUnreadCount = async () => {
-    try {
-      const response = await fetch('/api/notifications/inbox?limit=1&unread_only=true');
-      const data = await response.json();
-
-      if (data.success) {
-        setUnreadCount(data.unreadCount);
-      }
-    } catch (error) {
-      console.error('Failed to load unread count:', error);
-    }
-  };
 
   const markAsRead = async (notificationId: string) => {
     try {
