@@ -23,30 +23,12 @@ export default function TodayOverview() {
 
   const fetchTodayWorkouts = async () => {
     try {
-      // In production, fetch from API
-      // For now, show example data
-      const mockData: TodayWorkout[] = [
-        {
-          id: "1",
-          workoutName: "Upper Body Strength",
-          groupName: "Football Linemen",
-          athleteCount: 12,
-          completedCount: 8,
-          startTime: "15:30",
-          endTime: "16:30",
-        },
-        {
-          id: "2",
-          workoutName: "Conditioning Circuit",
-          groupName: "Volleyball Girls",
-          athleteCount: 15,
-          completedCount: 12,
-          startTime: "16:00",
-          endTime: "17:00",
-        },
-      ];
+      const response = await fetch('/api/analytics/today-schedule');
+      const data = await response.json();
 
-      setTodayWorkouts(mockData);
+      if (data.success) {
+        setTodayWorkouts(data.workouts || []);
+      }
     } catch (error) {
       console.error("Error fetching today's workouts:", error);
     } finally {

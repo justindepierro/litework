@@ -22,36 +22,12 @@ export default function GroupCompletionStats() {
 
   const fetchGroupStats = async () => {
     try {
-      // In production, fetch from API
-      // For now, show example data
-      const mockData: GroupStats[] = [
-        {
-          id: "1",
-          groupName: "Football Linemen",
-          athleteCount: 12,
-          completedWorkouts: 45,
-          totalAssignments: 50,
-          avgCompletionRate: 90,
-        },
-        {
-          id: "2",
-          groupName: "Volleyball Girls",
-          athleteCount: 15,
-          completedWorkouts: 52,
-          totalAssignments: 60,
-          avgCompletionRate: 87,
-        },
-        {
-          id: "3",
-          groupName: "Cross Country",
-          athleteCount: 20,
-          completedWorkouts: 68,
-          totalAssignments: 80,
-          avgCompletionRate: 85,
-        },
-      ];
+      const response = await fetch('/api/analytics/group-stats');
+      const data = await response.json();
 
-      setGroupStats(mockData);
+      if (data.success) {
+        setGroupStats(data.groups || []);
+      }
     } catch (error) {
       console.error("Error fetching group stats:", error);
     } finally {
