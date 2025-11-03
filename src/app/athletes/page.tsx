@@ -114,6 +114,7 @@ export default function AthletesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showGroupFormModal, setShowGroupFormModal] = useState(false);
   const [showManageGroupModal, setShowManageGroupModal] = useState(false);
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
@@ -1106,9 +1107,16 @@ export default function AthletesPage() {
                         <BarChart3 className="w-4 h-4" />
                         Progress
                       </button>
-                      <button className="btn-secondary flex items-center justify-center gap-2 text-sm py-2">
-                        <Calendar className="w-4 h-4" />
-                        Assign
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedAthlete(athlete);
+                          setShowAddToGroupModal(true);
+                        }}
+                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                      >
+                        <Users className="w-4 h-4" />
+                        Add to Group
                       </button>
                     </div>
                   ) : (
@@ -1650,6 +1658,120 @@ export default function AthletesPage() {
             setTimeout(() => setShowManageGroupModal(true), 100);
           }}
         />
+      )}
+
+      {/* Add Athlete to Group Modal */}
+      {showAddToGroupModal && selectedAthlete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900">
+                Add {selectedAthlete.firstName} to Group
+              </h2>
+              <button
+                onClick={() => {
+                  setShowAddToGroupModal(false);
+                  setSelectedAthlete(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {groups.length === 0 ? (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 mb-4">No groups available</p>
+                  <button
+                    onClick={() => {
+                      setShowAddToGroupModal(false);
+                      setShowGroupFormModal(true);
+                    }}
+                    className="btn-primary inline-flex items-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Create First Group
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {groups.map((group) => {
+                    const isInGroup = group.athleteIds?.includes(selectedAthlete.id);
+                    return (
+                      <button
+                        key={group.id}
+                        onClick={async () => {
+                          if (isInGroup) {
+                            toast.info(`${selectedAthlete.firstName} is already in ${group.name}`);
+                            return;
+                          }
+                          
+                          try {
+                            const response = await fetch("/api/groups/members", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                groupId: group.id,
+                                athleteIds: [selectedAthlete.id],
+                              }),
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (data.success) {
+                              toast.success(`Added ${selectedAthlete.firstName} to ${group.name}`);
+                              loadGroups(); // Refresh groups
+                              setShowAddToGroupModal(false);
+                              setSelectedAthlete(null);
+                            } else {
+                              toast.error(data.error || "Failed to add to group");
+                            }
+                          } catch (error) {
+                            console.error("Error adding to group:", error);
+                            toast.error("Failed to add to group");
+                          }
+                        }}
+                        disabled={isInGroup}
+                        className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                          isInGroup
+                            ? "border-green-200 bg-green-50 cursor-default"
+                            : "border-gray-200 hover:border-blue-500 hover:bg-blue-50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-semibold text-gray-900 flex items-center gap-2">
+                              {group.name}
+                              {isInGroup && (
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                              )}
+                            </div>
+                            {group.description && (
+                              <p className="text-sm text-gray-600 mt-1">
+                                {group.description}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-500 mt-1">
+                              {group.athleteIds?.length || 0} athletes
+                            </p>
+                          </div>
+                          {group.color && (
+                            <div
+                              className="w-4 h-4 rounded-full"
+                              style={{ backgroundColor: group.color }}
+                            />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Confirmation Modal */}

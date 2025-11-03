@@ -4,8 +4,24 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
-import { supabase } from "@/lib/supabase";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+// Helper to create server-side Supabase client
+async function getSupabaseClient() {
+  const cookieStore = await cookies();
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return cookieStore.get(name)?.value;
+      },
+    },
+  });
+}
 
 /**
  * POST /api/groups/members
@@ -39,6 +55,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get server-side Supabase client
+    const supabase = await getSupabaseClient();
+
     // Get current group
     const { data: group, error: groupError } = await supabase
       .from("athlete_groups")
@@ -60,7 +79,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Update the group with the new athlete_ids array
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("athlete_groups")
       .update({ athlete_ids: updatedAthleteIds })
       .eq("id", groupId)
@@ -113,6 +132,9 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Get server-side Supabase client
+    const supabase = await getSupabaseClient();
 
     // Get the group with its athlete_ids
     const { data: group, error: groupError } = await supabase
@@ -184,6 +206,9 @@ export async function DELETE(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Get server-side Supabase client
+    const supabase = await getSupabaseClient();
 
     // Get current group
     const { data: group, error: groupError } = await supabase
