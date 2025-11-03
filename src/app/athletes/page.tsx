@@ -724,7 +724,7 @@ export default function AthletesPage() {
               className="btn-primary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
             >
               <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Send Invite</span>
+              <span>Add Athlete</span>
             </button>
           </div>
         </div>
@@ -885,9 +885,27 @@ export default function AthletesPage() {
         </div>
 
         {/* Athletes Grid - Mobile Optimized Cards */}
-        {filteredAthletes.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-            {filteredAthletes.map((athlete) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          {/* Add Athlete Placeholder Card */}
+          <button
+            onClick={() => setShowInviteModal(true)}
+            className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-dashed border-blue-300 hover:border-blue-500 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-blue-100 hover:to-blue-200"
+          >
+            <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Plus className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-blue-900 mb-1">
+                Add New Athlete
+              </h3>
+              <p className="text-sm text-blue-600">
+                Click to add athlete profile
+              </p>
+            </div>
+          </button>
+
+          {filteredAthletes.length > 0 &&
+            filteredAthletes.map((athlete) => (
               <div
                 key={athlete.id}
                 onClick={() => {
@@ -1179,8 +1197,10 @@ export default function AthletesPage() {
                 </div>
               </div>
             ))}
-          </div>
-        ) : (
+        </div>
+
+        {/* Empty State - Only show if no athletes at all */}
+        {filteredAthletes.length === 0 && (
           <div className="text-center py-12">
             <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -1189,17 +1209,8 @@ export default function AthletesPage() {
             <p className="text-gray-600 mb-6">
               {searchTerm || statusFilter !== "all"
                 ? "Try adjusting your search or filters"
-                : "Start by sending invites to your athletes"}
+                : "Click the 'Add Athlete' card above to get started"}
             </p>
-            {!searchTerm && statusFilter === "all" && (
-              <button
-                onClick={() => setShowInviteModal(true)}
-                className="btn-primary inline-flex items-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                Send First Invite
-              </button>
-            )}
           </div>
         )}
 
