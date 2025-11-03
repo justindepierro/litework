@@ -803,13 +803,7 @@ export default function AthletesPage() {
                       </div>
 
                       {/* Group content (clickable to manage members) */}
-                      <button
-                        onClick={() => {
-                          setSelectedGroup(group);
-                          setShowManageGroupModal(true);
-                        }}
-                        className="w-full text-left"
-                      >
+                      <div className="w-full">
                         <div className="flex items-center justify-between mb-2 pr-8">
                           <h4 className="font-semibold text-gray-900">
                             {group.name}
@@ -827,16 +821,22 @@ export default function AthletesPage() {
                           </p>
                         )}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <button
+                            onClick={() => {
+                              setSelectedGroup(group);
+                              setShowManageGroupModal(true);
+                            }}
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                            aria-label={`Manage ${group.name} members`}
+                          >
                             <Users className="w-4 h-4" />
                             <span>
                               {athleteCount} athlete
                               {athleteCount !== 1 ? "s" : ""}
                             </span>
-                          </div>
+                          </button>
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               setSelectedGroup(group);
                               setShowManageGroupModal(true);
                             }}
@@ -847,7 +847,7 @@ export default function AthletesPage() {
                             <span>Add</span>
                           </button>
                         </div>
-                      </button>
+                      </div>
                     </div>
                   );
                 })}
