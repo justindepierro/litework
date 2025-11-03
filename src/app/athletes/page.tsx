@@ -421,8 +421,10 @@ export default function AthletesPage() {
           // Add to the top of the athletes list for immediate visibility
           setAthletes((prev) => [newAthlete, ...prev]);
 
-          // Reload groups to show updated athlete count
-          loadGroups();
+          // Reload groups to show updated athlete count and membership
+          await loadGroups();
+          
+          console.log("✅ New athlete added:", newAthlete.id, "Groups:", newAthlete.groupIds);
         }
 
         const successMsg = inviteForm.email
@@ -1015,9 +1017,16 @@ export default function AthletesPage() {
                           </span>
                           
                           {/* Group badges */}
-                          {groups
-                            .filter((group) => group.athleteIds?.includes(athlete.id))
-                            .map((group) => (
+                          {(() => {
+                            const athleteGroups = groups.filter((group) => 
+                              group.athleteIds?.includes(athlete.id)
+                            );
+                            console.log(`Group check for ${athlete.fullName} (${athlete.id}):`, {
+                              athleteGroupIds: athlete.groupIds,
+                              matchingGroups: athleteGroups.map(g => ({ id: g.id, name: g.name, athleteIds: g.athleteIds })),
+                              allGroups: groups.map(g => ({ id: g.id, name: g.name, athleteIds: g.athleteIds }))
+                            });
+                            return athleteGroups.map((group) => (
                               <span
                                 key={group.id}
                                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
@@ -1027,7 +1036,8 @@ export default function AthletesPage() {
                                 <Users className="w-3 h-3" />
                                 {group.name}
                               </span>
-                            ))}
+                            ));
+                          })()}
                         </div>
                       </div>
                     </div>
