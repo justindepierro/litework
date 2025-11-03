@@ -96,6 +96,38 @@ export async function DELETE(
       );
     }
 
+    // Get invite details to find associated groups
+    const { data: fullInvite } = await supabase
+      .from("invites")
+      .select("id, group_ids")
+      .eq("id", inviteId)
+      .single();
+
+    // Remove invite from any groups it was added to
+    if (fullInvite?.group_ids && fullInvite.group_ids.length > 0) {
+      for (const groupId of fullInvite.group_ids) {
+        try {
+          const { data: group } = await supabase
+            .from("athlete_groups")
+            .select("athlete_ids")
+            .eq("id", groupId)
+            .single();
+
+          if (group) {
+            const updatedAthleteIds = group.athlete_ids.filter(
+              (id: string) => id !== inviteId
+            );
+            await supabase
+              .from("athlete_groups")
+              .update({ athlete_ids: updatedAthleteIds })
+              .eq("id", groupId);
+          }
+        } catch (err) {
+          console.error(`Failed to remove invite from group ${groupId}:`, err);
+        }
+      }
+    }
+
     // Delete the invite
     const { error: deleteError } = await supabase
       .from("invites")

@@ -496,6 +496,8 @@ export default function AthletesPage() {
           if (response.success) {
             // Remove from local state
             setAthletes(athletes.filter((a) => a.id !== inviteId));
+            // Reload groups to update counts
+            await loadGroups();
             toast.success("Invitation cancelled successfully");
           } else {
             toast.error("Failed to cancel invitation");
@@ -1016,17 +1018,11 @@ export default function AthletesPage() {
                             )}
                           </span>
                           
-                          {/* Group badges */}
-                          {(() => {
-                            const athleteGroups = groups.filter((group) => 
-                              group.athleteIds?.includes(athlete.id)
-                            );
-                            console.log(`Group check for ${athlete.fullName} (${athlete.id}):`, {
-                              athleteGroupIds: athlete.groupIds,
-                              matchingGroups: athleteGroups.map(g => ({ id: g.id, name: g.name, athleteIds: g.athleteIds })),
-                              allGroups: groups.map(g => ({ id: g.id, name: g.name, athleteIds: g.athleteIds }))
-                            });
-                            return athleteGroups.map((group) => (
+                          {/* Group badges - show groups this athlete belongs to */}
+                          {athlete.groupIds && athlete.groupIds.length > 0 && athlete.groupIds.map((groupId) => {
+                            const group = groups.find((g) => g.id === groupId);
+                            if (!group) return null;
+                            return (
                               <span
                                 key={group.id}
                                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
@@ -1036,8 +1032,8 @@ export default function AthletesPage() {
                                 <Users className="w-3 h-3" />
                                 {group.name}
                               </span>
-                            ));
-                          })()}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
