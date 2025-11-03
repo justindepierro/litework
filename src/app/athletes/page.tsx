@@ -920,7 +920,7 @@ export default function AthletesPage() {
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {athlete.fullName}
                         </h3>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           {getStatusIcon(athlete.status, athlete.injuryStatus)}
                           <span className="text-sm text-gray-600">
                             {getStatusText(
@@ -928,6 +928,21 @@ export default function AthletesPage() {
                               athlete.injuryStatus
                             )}
                           </span>
+                          
+                          {/* Group badges */}
+                          {groups
+                            .filter((group) => group.athleteIds?.includes(athlete.id))
+                            .map((group) => (
+                              <span
+                                key={group.id}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                                style={{ backgroundColor: group.color }}
+                                title={group.name}
+                              >
+                                <Users className="w-3 h-3" />
+                                {group.name}
+                              </span>
+                            ))}
                         </div>
                       </div>
                     </div>
