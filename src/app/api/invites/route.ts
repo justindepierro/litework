@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
 
+// Type for invite insert data
+interface InviteInsertData {
+  email: string | null;
+  first_name: string;
+  last_name: string;
+  invited_by: string;
+  role: string;
+  status: "pending" | "draft";
+  expires_at: string | null;
+  group_id?: string;
+  group_ids?: string[];
+  notes?: string;
+  bio?: string;
+  date_of_birth?: string;
+  injury_status?: string;
+}
+
 // POST /api/invites - Create athlete invitation
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +89,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create invitation record
-    const insertData: any = {
+    const insertData: InviteInsertData = {
       email: email ? email.toLowerCase() : null,
       first_name: firstName,
       last_name: lastName,
