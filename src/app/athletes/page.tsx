@@ -347,21 +347,24 @@ export default function AthletesPage() {
   }, [openGroupMenuId]);
 
   const handleSendInvite = async () => {
-    if (!inviteForm.firstName || !inviteForm.lastName || !inviteForm.email)
-      return;
+    // Only require first name and last name (email is optional)
+    if (!inviteForm.firstName || !inviteForm.lastName) return;
 
     try {
       const response = (await apiClient.createAthleteInvite({
         firstName: inviteForm.firstName,
         lastName: inviteForm.lastName,
-        email: inviteForm.email,
+        email: inviteForm.email, // Can be empty string
       })) as ApiResponse;
 
       if (response.success) {
         // Reload athletes to get the new invite from the database
         await loadAthletes();
 
-        toast.success(`Invite sent successfully to ${inviteForm.email}!`);
+        const successMsg = inviteForm.email
+          ? `Invite sent successfully to ${inviteForm.email}!`
+          : `Athlete ${inviteForm.firstName} ${inviteForm.lastName} added successfully!`;
+        toast.success(successMsg);
         setInviteForm({
           firstName: "",
           lastName: "",
@@ -381,10 +384,10 @@ export default function AthletesPage() {
       }
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Failed to send invite";
+        err instanceof Error ? err.message : "Failed to add athlete";
       setError(errorMsg);
       toast.error(errorMsg);
-      console.error("Error sending invite:", err);
+      console.error("Error adding athlete:", err);
     }
   };
 
