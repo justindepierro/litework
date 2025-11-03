@@ -419,6 +419,9 @@ export default function AthletesPage() {
 
           // Add to the top of the athletes list for immediate visibility
           setAthletes((prev) => [newAthlete, ...prev]);
+
+          // Reload groups to show updated athlete count
+          loadGroups();
         }
 
         const successMsg = inviteForm.email

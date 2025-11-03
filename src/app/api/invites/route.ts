@@ -120,6 +120,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If groupId was provided, add the invite to the group's athleteIds array
+    if (groupId) {
+      try {
+        // Get current group
+        const { data: group, error: groupError } = await supabase
+          .from("athlete_groups")
+          .select("athlete_ids")
+          .eq("id", groupId)
+          .single();
+
+        if (!groupError && group) {
+          // Add invite ID to group's athlete_ids array
+          const currentAthleteIds = group.athlete_ids || [];
+          const updatedAthleteIds = Array.from(
+            new Set([...currentAthleteIds, invite.id])
+          );
+
+          await supabase
+            .from("athlete_groups")
+            .update({ athlete_ids: updatedAthleteIds })
+            .eq("id", groupId);
+
+          console.log(`✅ Added invite ${invite.id} to group ${groupId}`);
+        }
+      } catch (groupError) {
+        console.error("❌ Failed to add invite to group:", groupError);
+        // Don't fail the request - invite is still created
+      }
+    }
+
     // Send invitation email only if email is provided
     if (email) {
       try {
