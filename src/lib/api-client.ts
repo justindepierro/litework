@@ -111,6 +111,18 @@ class ApiClient {
     return this.request("/exercises");
   }
 
+  async findOrCreateExercise(exerciseData: {
+    name: string;
+    category?: string;
+    muscleGroups?: Array<{ name: string; involvement: string }>;
+    equipment?: string[];
+  }) {
+    return this.request("/exercises/find-or-create", {
+      method: "POST",
+      body: JSON.stringify(exerciseData),
+    });
+  }
+
   // Assignments
   async getAssignments(params?: {
     athleteId?: string;
@@ -204,6 +216,13 @@ class ApiClient {
   async deleteInvite(inviteId: string) {
     return this.request(`/invites/${inviteId}`, {
       method: "DELETE",
+    });
+  }
+
+  async updateInvite(inviteId: string, data: { email: string }) {
+    return this.request(`/invites/${inviteId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
     });
   }
 

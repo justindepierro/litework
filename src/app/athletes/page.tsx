@@ -115,11 +115,15 @@ export default function AthletesPage() {
   const [showGroupFormModal, setShowGroupFormModal] = useState(false);
   const [showManageGroupModal, setShowManageGroupModal] = useState(false);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
+  const [showEditEmailModal, setShowEditEmailModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
   const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
+  const [editEmailForm, setEditEmailForm] = useState({
+    email: "",
+  });
 
   // Confirmation modal state
   const [confirmModal, setConfirmModal] = useState<{
@@ -523,6 +527,49 @@ export default function AthletesPage() {
   const handleKPIManagement = (athlete: EnhancedAthlete) => {
     setSelectedAthlete(athlete);
     setShowKPIModal(true);
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!selectedAthlete || !editEmailForm.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    try {
+      const response = (await apiClient.updateInvite(selectedAthlete.id, {
+        email: editEmailForm.email,
+      })) as {
+        success: boolean;
+        invite?: {
+          email: string;
+          status: string;
+        };
+        error?: string;
+      };
+
+      if (response.success && response.invite) {
+        // Update local state with new email and status
+        setAthletes((prev) =>
+          prev.map((a) =>
+            a.id === selectedAthlete.id
+              ? { 
+                  ...a, 
+                  email: response.invite?.email || editEmailForm.email,
+                  status: "invited" as const, // Update status to invited
+                }
+              : a
+          )
+        );
+        setShowEditEmailModal(false);
+        setEditEmailForm({ email: "" });
+        toast.success("Email updated successfully! You can now send the invite.");
+      } else {
+        toast.error(response.error || "Failed to update email");
+      }
+    } catch (err) {
+      console.error("Error updating email:", err);
+      toast.error(err instanceof Error ? err.message : "Failed to update email");
+    }
   };
 
   const handleAnalytics = (athlete: EnhancedAthlete) => {
@@ -970,7 +1017,7 @@ export default function AthletesPage() {
           {/* Add Athlete Placeholder Card */}
           <button
             onClick={() => setShowInviteModal(true)}
-            className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-dashed border-blue-300 hover:border-blue-500 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-blue-100 hover:to-blue-200"
+            className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-dashed border-blue-300 hover:border-blue-500 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-blue-100 hover:to-blue-200"
           >
             <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
               <Plus className="w-8 h-8 text-white" />
@@ -1019,7 +1066,7 @@ export default function AthletesPage() {
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {athlete.fullName}
                         </h3>
-                        <div className="flex items-center gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
                           {getStatusIcon(athlete.status, athlete.injuryStatus)}
                           <span className="text-sm text-gray-600">
                             {getStatusText(
@@ -1049,6 +1096,20 @@ export default function AthletesPage() {
                               );
                             })}
                         </div>
+                        
+                        {/* Email Address Display */}
+                        {athlete.email && (
+                          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span className="truncate">{athlete.email}</span>
+                          </div>
+                        )}
+                        {!athlete.email && athlete.status === "invited" && (
+                          <div className="flex items-center gap-1 text-sm text-orange-600 mt-1">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            <span className="text-xs">No email - Add to send invite</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -1272,28 +1333,45 @@ export default function AthletesPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleResendInvite(athlete.id);
-                        }}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                        Resend
-                      </button>
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setSelectedAthlete(athlete);
+                            setEditEmailForm({ email: athlete.email || "" });
+                            setShowEditEmailModal(true);
+                          }}
+                          className="btn-primary flex items-center justify-center gap-2 text-sm py-2"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                          {athlete.email ? "Edit Email" : "Add Email"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleResendInvite(athlete.id);
+                          }}
+                          className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                          disabled={!athlete.email}
+                          title={!athlete.email ? "Add email first to send invite" : "Resend invitation email"}
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          Resend
+                        </button>
+                      </div>
                       <button
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           handleCancelInvite(athlete.id);
                         }}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        className="w-full btn-secondary flex items-center justify-center gap-2 text-sm py-2"
                       >
                         <X className="w-4 h-4" />
-                        Cancel
+                        Cancel Invite
                       </button>
                     </div>
                   )}
@@ -1314,6 +1392,90 @@ export default function AthletesPage() {
                 ? "Try adjusting your search or filters"
                 : "Click the 'Add Athlete' card above to get started"}
             </p>
+          </div>
+        )}
+
+        {/* Edit Email Modal */}
+        {showEditEmailModal && selectedAthlete && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {selectedAthlete.email ? "Edit" : "Add"} Email Address
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowEditEmailModal(false);
+                    setEditEmailForm({ email: "" });
+                  }}
+                >
+                  <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Athlete
+                  </label>
+                  <p className="text-gray-900 font-medium">{selectedAthlete.fullName}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    value={editEmailForm.email}
+                    onChange={(e) =>
+                      setEditEmailForm({ email: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="athlete@email.com"
+                    autoFocus
+                  />
+                  {selectedAthlete.email && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      Current: {selectedAthlete.email}
+                    </p>
+                  )}
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-900 mb-1">
+                        Ready to Send Invite
+                      </h4>
+                      <p className="text-sm text-blue-700">
+                        After updating the email, you can use the &ldquo;Resend&rdquo; button to send the invitation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => {
+                      setShowEditEmailModal(false);
+                      setEditEmailForm({ email: "" });
+                    }}
+                    className="flex-1 btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleUpdateEmail}
+                    className="flex-1 btn-primary"
+                    disabled={!editEmailForm.email}
+                  >
+                    {selectedAthlete.email ? "Update" : "Add"} Email
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

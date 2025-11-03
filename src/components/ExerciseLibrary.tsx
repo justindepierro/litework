@@ -72,6 +72,19 @@ function ExerciseLibrary({
   const [selectedEquipment, setSelectedEquipment] = useState<string>("");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newExercise, setNewExercise] = useState({
+    name: "",
+    description: "",
+    categoryId: "",
+    instructions: [""],
+    difficultyLevel: 2,
+    equipmentNeeded: [] as string[],
+    isCompound: false,
+    isBodyweight: false,
+    videoUrl: "",
+  });
 
   const fetchExercises = useCallback(async () => {
     setLoading(true);
@@ -149,6 +162,60 @@ function ExerciseLibrary({
     return labels[level] || "Unknown";
   };
 
+  const handleCreateExercise = async () => {
+    if (!newExercise.name || !newExercise.categoryId) {
+      setError("Name and category are required");
+      return;
+    }
+
+    setCreating(true);
+    setError(null);
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const response = await fetch("/api/exercises", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newExercise),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create exercise");
+      }
+
+      // Reset form and refresh exercises
+      setNewExercise({
+        name: "",
+        description: "",
+        categoryId: "",
+        instructions: [""],
+        difficultyLevel: 2,
+        equipmentNeeded: [],
+        isCompound: false,
+        isBodyweight: false,
+        videoUrl: "",
+      });
+      setShowCreateForm(false);
+      fetchExercises(); // Refresh the list
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create exercise");
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const getDifficultyColor = (level: number) => {
     const colors = [
       "text-green-600",
@@ -199,9 +266,7 @@ function ExerciseLibrary({
           <div className="flex items-center gap-3">
             {showCreateButton && (
               <button
-                onClick={() =>
-                  console.log("Create exercise - to be implemented")
-                }
+                onClick={() => setShowCreateForm(true)}
                 className="btn-secondary flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
@@ -477,6 +542,276 @@ function ExerciseLibrary({
           </div>
         </div>
       </div>
+
+      {/* Create Exercise Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-60">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Create New Exercise</h2>
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  <X className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Exercise Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={newExercise.name}
+                    onChange={(e) =>
+                      setNewExercise({ ...newExercise, name: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., Barbell Bench Press"
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={newExercise.description}
+                    onChange={(e) =>
+                      setNewExercise({
+                        ...newExercise,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={3}
+                    placeholder="Brief description of the exercise..."
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={newExercise.categoryId}
+                    onChange={(e) =>
+                      setNewExercise({
+                        ...newExercise,
+                        categoryId: e.target.value,
+                      })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Difficulty Level */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Difficulty Level
+                  </label>
+                  <select
+                    value={newExercise.difficultyLevel}
+                    onChange={(e) =>
+                      setNewExercise({
+                        ...newExercise,
+                        difficultyLevel: parseInt(e.target.value),
+                      })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value={1}>Beginner</option>
+                    <option value={2}>Intermediate</option>
+                    <option value={3}>Advanced</option>
+                    <option value={4}>Expert</option>
+                  </select>
+                </div>
+
+                {/* Equipment */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Equipment Needed
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {equipmentTypes.map((equipment) => (
+                      <label
+                        key={equipment.id}
+                        className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={newExercise.equipmentNeeded.includes(
+                            equipment.name
+                          )}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setNewExercise({
+                                ...newExercise,
+                                equipmentNeeded: [
+                                  ...newExercise.equipmentNeeded,
+                                  equipment.name,
+                                ],
+                              });
+                            } else {
+                              setNewExercise({
+                                ...newExercise,
+                                equipmentNeeded:
+                                  newExercise.equipmentNeeded.filter(
+                                    (eq) => eq !== equipment.name
+                                  ),
+                              });
+                            }
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-sm">{equipment.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Checkboxes */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={newExercise.isCompound}
+                      onChange={(e) =>
+                        setNewExercise({
+                          ...newExercise,
+                          isCompound: e.target.checked,
+                        })
+                      }
+                      className="rounded"
+                    />
+                    <span className="text-sm text-gray-700">
+                      Compound Exercise (works multiple muscle groups)
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={newExercise.isBodyweight}
+                      onChange={(e) =>
+                        setNewExercise({
+                          ...newExercise,
+                          isBodyweight: e.target.checked,
+                        })
+                      }
+                      className="rounded"
+                    />
+                    <span className="text-sm text-gray-700">
+                      Bodyweight Exercise
+                    </span>
+                  </label>
+                </div>
+
+                {/* Instructions */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Instructions
+                  </label>
+                  {newExercise.instructions.map((instruction, index) => (
+                    <div key={index} className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={instruction}
+                        onChange={(e) => {
+                          const newInstructions = [...newExercise.instructions];
+                          newInstructions[index] = e.target.value;
+                          setNewExercise({
+                            ...newExercise,
+                            instructions: newInstructions,
+                          });
+                        }}
+                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder={`Step ${index + 1}`}
+                      />
+                      {newExercise.instructions.length > 1 && (
+                        <button
+                          onClick={() => {
+                            const newInstructions =
+                              newExercise.instructions.filter(
+                                (_, i) => i !== index
+                              );
+                            setNewExercise({
+                              ...newExercise,
+                              instructions: newInstructions,
+                            });
+                          }}
+                          className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    onClick={() =>
+                      setNewExercise({
+                        ...newExercise,
+                        instructions: [...newExercise.instructions, ""],
+                      })
+                    }
+                    className="text-sm text-blue-600 hover:text-blue-700"
+                  >
+                    + Add Step
+                  </button>
+                </div>
+
+                {/* Video URL */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Video URL (optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={newExercise.videoUrl}
+                    onChange={(e) =>
+                      setNewExercise({
+                        ...newExercise,
+                        videoUrl: e.target.value,
+                      })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://youtube.com/..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                  disabled={creating}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateExercise}
+                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={creating || !newExercise.name || !newExercise.categoryId}
+                >
+                  {creating ? "Creating..." : "Create Exercise"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

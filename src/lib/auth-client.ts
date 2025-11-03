@@ -115,29 +115,29 @@ export async function signUp(
       throw new Error("Signup succeeded but no user data returned");
     }
 
-    // Create user profile in database with data from invite if available
-    const fullName = `${sanitizedFirstName} ${sanitizedLastName}`.trim();
-    const { error: profileError } = await supabase.from("users").insert({
-      id: data.user.id,
-      email: sanitizedEmail,
-      name: fullName,
-      first_name: sanitizedFirstName,
-      last_name: sanitizedLastName,
-      role: "athlete", // Default role
-      // Transfer profile data from invite if available
-      bio: inviteData?.bio || null,
-      notes: inviteData?.notes || null,
-      date_of_birth: inviteData?.date_of_birth || null,
-      injury_status: inviteData?.injury_status || null,
-      group_ids: inviteData?.group_ids || [],
-      coach_id: inviteData?.invited_by || null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    });
+    // Wait a moment for the database trigger to create the user profile
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (profileError) {
-      console.error("Failed to create user profile:", profileError);
-      // Don't throw here - user is created in auth, trigger might handle it
+    // Update user profile with data from invite if available
+    // The trigger already created the basic profile, we just need to update it with invite data
+    if (inviteData) {
+      const { error: profileError } = await supabase
+        .from("users")
+        .update({
+          bio: inviteData.bio || null,
+          notes: inviteData.notes || null,
+          date_of_birth: inviteData.date_of_birth || null,
+          injury_status: inviteData.injury_status || null,
+          group_ids: inviteData.group_ids || [],
+          coach_id: inviteData.invited_by || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", data.user.id);
+
+      if (profileError) {
+        console.error("Failed to update user profile with invite data:", profileError);
+        // Don't throw here - user is created, just missing some profile data
+      }
     }
 
     // Add athlete to groups from invite

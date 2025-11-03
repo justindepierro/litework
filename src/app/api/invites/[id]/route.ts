@@ -155,6 +155,151 @@ export async function DELETE(
   }
 }
 
+// PUT /api/invites/[id] - Update invitation email
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: inviteId } = await params;
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Only coaches and admins can update invitations
+    if (user.role !== "coach" && user.role !== "admin") {
+      return NextResponse.json(
+        { error: "Only coaches can update invitations" },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { email } = body;
+
+    if (!email) {
+      return NextResponse.json(
+        { error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    const supabase = getAdminClient();
+
+    // Verify the invite belongs to this coach (or user is admin)
+    const { data: invite } = await supabase
+      .from("invites")
+      .select("id, invited_by, status, expires_at")
+      .eq("id", inviteId)
+      .single();
+
+    if (!invite) {
+      return NextResponse.json(
+        { error: "Invitation not found" },
+        { status: 404 }
+      );
+    }
+
+    // Check ownership (admins can update any invite)
+    if (user.role !== "admin" && invite.invited_by !== user.id) {
+      return NextResponse.json(
+        { error: "You can only update your own invitations" },
+        { status: 403 }
+      );
+    }
+
+    // Can only update pending invites (not accepted, expired, or cancelled)
+    if (invite.status === "accepted" || invite.status === "expired" || invite.status === "cancelled") {
+      return NextResponse.json(
+        { error: `Cannot update ${invite.status} invitations` },
+        { status: 400 }
+      );
+    }
+
+    // Update the invite with new email
+    const updateData: Record<string, string> = {
+      email,
+      status: "pending", // Set to pending once email is added
+      updated_at: new Date().toISOString(),
+    };
+
+    // If the invite didn't have an expiry date (draft invite), set it now
+    if (!invite.expires_at || invite.status === "draft") {
+      updateData.expires_at = new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      ).toISOString();
+    }
+
+    const { data: updatedInvite, error: updateError } = await supabase
+      .from("invites")
+      .update(updateData)
+      .eq("id", inviteId)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error("Error updating invite email:", updateError);
+      return NextResponse.json(
+        { error: "Failed to update invitation email" },
+        { status: 500 }
+      );
+    }
+
+    // Send the invitation email
+    try {
+      const appUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const inviteUrl = `${appUrl}/signup?invite=${inviteId}`;
+
+      await sendEmailNotification({
+        to: email.toLowerCase(),
+        subject: "You're invited to join LiteWork!",
+        category: "invite",
+        templateData: {
+          userName: `${updatedInvite.first_name} ${updatedInvite.last_name}`,
+          title: "Join LiteWork",
+          message:
+            "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.",
+          actionUrl: inviteUrl,
+          actionText: "Accept Invitation",
+          details: [
+            { label: "Invited By", value: user.email || "Your Coach" },
+            {
+              label: "Expires",
+              value: new Date(updatedInvite.expires_at).toLocaleDateString(),
+            },
+          ],
+          footer: "This invitation will expire in 7 days.",
+        },
+      });
+      console.log(`✅ Invitation email sent to ${email}`);
+    } catch (emailError) {
+      console.error("Error sending invitation email:", emailError);
+      // Don't fail the request if email fails, but log it
+      return NextResponse.json({
+        success: true,
+        invite: updatedInvite,
+        message: "Email updated but notification failed to send",
+        warning: "Email delivery failed",
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      invite: updatedInvite,
+      message: "Email updated and invitation sent successfully",
+    });
+  } catch (error) {
+    console.error("Error in PUT /api/invites/[id]:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 // PATCH /api/invites/[id] - Update invitation (resend or mark as accepted)
 export async function PATCH(
   request: NextRequest,
