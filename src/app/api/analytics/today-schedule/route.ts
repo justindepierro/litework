@@ -7,11 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
-} from "@/lib/auth-server";
+import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
 
 export async function GET(request: NextRequest) {
@@ -44,13 +40,13 @@ export async function GET(request: NextRequest) {
         `
           id,
           scheduled_date,
-          group_id,
-          workout_id,
-          groups!inner (
+          assigned_to_group_id,
+          workout_plan_id,
+          athlete_groups:assigned_to_group_id (
             id,
             name
           ),
-          workouts!inner (
+          workout_plans:workout_plan_id (
             id,
             name
           )
@@ -76,7 +72,7 @@ export async function GET(request: NextRequest) {
         const { data: groupMembers, error: memberError } = await supabase
           .from("group_members")
           .select("user_id")
-          .eq("group_id", assignment.group_id);
+          .eq("group_id", assignment.assigned_to_group_id);
 
         if (memberError) throw memberError;
 
@@ -110,12 +106,12 @@ export async function GET(request: NextRequest) {
           hour12: false,
         });
 
-        const workout = Array.isArray(assignment.workouts)
-          ? assignment.workouts[0]
-          : assignment.workouts;
-        const group = Array.isArray(assignment.groups)
-          ? assignment.groups[0]
-          : assignment.groups;
+        const workout = Array.isArray(assignment.workout_plans)
+          ? assignment.workout_plans[0]
+          : assignment.workout_plans;
+        const group = Array.isArray(assignment.athlete_groups)
+          ? assignment.athlete_groups[0]
+          : assignment.athlete_groups;
 
         return {
           id: assignment.id,

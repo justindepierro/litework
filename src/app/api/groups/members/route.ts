@@ -4,11 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
-} from "@/lib/auth-server";
+import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
 
 /**
@@ -45,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     // Check if group exists
     const { data: group, error: groupError } = await supabase
-      .from("groups")
+      .from("athlete_groups")
       .select("id")
       .eq("id", groupId)
       .single();
