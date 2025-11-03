@@ -119,7 +119,7 @@ export default function AthletesPage() {
     useState<EnhancedAthlete | null>(null);
   const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
-  
+
   // Confirmation modal state
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -277,7 +277,8 @@ export default function AthletesPage() {
     setConfirmModal({
       isOpen: true,
       title: "Delete Group",
-      message: "Are you sure you want to delete this group? This action cannot be undone and will remove all athlete assignments.",
+      message:
+        "Are you sure you want to delete this group? This action cannot be undone and will remove all athlete assignments.",
       onConfirm: async () => {
         try {
           await apiClient.deleteGroup(groupId);
@@ -285,11 +286,12 @@ export default function AthletesPage() {
           // Remove from local state
           setGroups(groups.filter((g) => g.id !== groupId));
           setOpenGroupMenuId(null);
-          
+
           toast.success("Group deleted successfully");
         } catch (error) {
           console.error("Delete group error:", error);
-          const errorMessage = error instanceof Error ? error.message : "Failed to delete group";
+          const errorMessage =
+            error instanceof Error ? error.message : "Failed to delete group";
           toast.error(errorMessage);
         }
       },
@@ -307,11 +309,12 @@ export default function AthletesPage() {
       // Reload groups to reflect changes
       await loadGroups();
       setOpenGroupMenuId(null);
-      
+
       toast.success("Group archived successfully");
     } catch (error) {
       console.error("Archive group error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to archive group";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to archive group";
       toast.error(errorMessage);
     }
   };
@@ -334,11 +337,11 @@ export default function AthletesPage() {
     };
 
     if (openGroupMenuId) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [openGroupMenuId]);
 
@@ -356,7 +359,7 @@ export default function AthletesPage() {
       if (response.success) {
         // Reload athletes to get the new invite from the database
         await loadAthletes();
-        
+
         toast.success(`Invite sent successfully to ${inviteForm.email}!`);
         setInviteForm({
           firstName: "",
@@ -368,16 +371,16 @@ export default function AthletesPage() {
         setShowInviteModal(false);
         setError("");
       } else {
-        const errorMsg = typeof response.error === "string"
-          ? response.error
-          : "Failed to send invite";
+        const errorMsg =
+          typeof response.error === "string"
+            ? response.error
+            : "Failed to send invite";
         setError(errorMsg);
         toast.error(errorMsg);
       }
     } catch (err) {
-      const errorMsg = err instanceof Error 
-        ? err.message 
-        : "Failed to send invite";
+      const errorMsg =
+        err instanceof Error ? err.message : "Failed to send invite";
       setError(errorMsg);
       toast.error(errorMsg);
       console.error("Error sending invite:", err);
@@ -385,7 +388,7 @@ export default function AthletesPage() {
   };
 
   const handleResendInvite = async (inviteId: string) => {
-    console.log('🔄 Resending invite:', inviteId);
+    console.log("Resending invite:", inviteId);
     toast.info("Sending invitation email...");
     try {
       const response = (await apiClient.resendInvite(inviteId)) as {
@@ -405,15 +408,16 @@ export default function AthletesPage() {
   };
 
   const handleCancelInvite = (inviteId: string) => {
-    console.log('❌ Canceling invite:', inviteId);
+    console.log("❌ Canceling invite:", inviteId);
     setConfirmModal({
       isOpen: true,
       title: "Cancel Invitation",
-      message: "Are you sure you want to cancel this invitation? The athlete will not be able to accept it.",
+      message:
+        "Are you sure you want to cancel this invitation? The athlete will not be able to accept it.",
       onConfirm: async () => {
         try {
           setConfirmModal({ ...confirmModal, isOpen: false });
-          
+
           const response = (await apiClient.deleteInvite(inviteId)) as {
             success: boolean;
             message?: string;
@@ -725,105 +729,114 @@ export default function AthletesPage() {
         </div>
 
         {/* Groups Section */}
-        {groups.filter(g => !g.archived).length > 0 && (
+        {groups.filter((g) => !g.archived).length > 0 && (
           <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-purple-600" />
-              Groups ({groups.filter(g => !g.archived).length})
+              Groups ({groups.filter((g) => !g.archived).length})
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {groups.filter(g => !g.archived).map((group) => {
-                const athleteCount = athletes.filter(a => 
-                  a.groupIds?.includes(group.id)
-                ).length;
-                
-                return (
-                  <div
-                    key={group.id}
-                    className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
-                  >
-                    {/* 3-dot menu */}
-                    <div className="absolute top-3 right-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenGroupMenuId(openGroupMenuId === group.id ? null : group.id);
-                        }}
-                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                        aria-label="Group menu"
-                      >
-                        <MoreVertical className="w-5 h-5 text-gray-600" />
-                      </button>
-                      
-                      {/* Dropdown menu */}
-                      {openGroupMenuId === group.id && (
-                        <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingGroup(group);
-                              setShowGroupFormModal(true);
-                              setOpenGroupMenuId(null);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                            Edit Group
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleArchiveGroup(group);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
-                          >
-                            <Archive className="w-4 h-4" />
-                            Archive Group
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteGroup(group.id);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete Group
-                          </button>
-                        </div>
-                      )}
-                    </div>
+              {groups
+                .filter((g) => !g.archived)
+                .map((group) => {
+                  const athleteCount = athletes.filter((a) =>
+                    a.groupIds?.includes(group.id)
+                  ).length;
 
-                    {/* Group content (clickable to manage members) */}
-                    <button
-                      onClick={() => {
-                        setSelectedGroup(group);
-                        setShowManageGroupModal(true);
-                      }}
-                      className="w-full text-left"
+                  return (
+                    <div
+                      key={group.id}
+                      className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
                     >
-                      <div className="flex items-center justify-between mb-2 pr-8">
-                        <h4 className="font-semibold text-gray-900">{group.name}</h4>
-                        {group.color && (
-                          <div
-                            className="w-4 h-4 rounded-full"
-                            style={{ backgroundColor: group.color }}
-                          />
+                      {/* 3-dot menu */}
+                      <div className="absolute top-3 right-3">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenGroupMenuId(
+                              openGroupMenuId === group.id ? null : group.id
+                            );
+                          }}
+                          className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                          aria-label="Group menu"
+                        >
+                          <MoreVertical className="w-5 h-5 text-gray-600" />
+                        </button>
+
+                        {/* Dropdown menu */}
+                        {openGroupMenuId === group.id && (
+                          <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingGroup(group);
+                                setShowGroupFormModal(true);
+                                setOpenGroupMenuId(null);
+                              }}
+                              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                              Edit Group
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleArchiveGroup(group);
+                              }}
+                              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                            >
+                              <Archive className="w-4 h-4" />
+                              Archive Group
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteGroup(group.id);
+                              }}
+                              className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Delete Group
+                            </button>
+                          </div>
                         )}
                       </div>
-                      {group.description && (
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                          {group.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <Users className="w-4 h-4" />
-                        <span>{athleteCount} athlete{athleteCount !== 1 ? 's' : ''}</span>
-                      </div>
-                    </button>
-                  </div>
-                );
-              })}
+
+                      {/* Group content (clickable to manage members) */}
+                      <button
+                        onClick={() => {
+                          setSelectedGroup(group);
+                          setShowManageGroupModal(true);
+                        }}
+                        className="w-full text-left"
+                      >
+                        <div className="flex items-center justify-between mb-2 pr-8">
+                          <h4 className="font-semibold text-gray-900">
+                            {group.name}
+                          </h4>
+                          {group.color && (
+                            <div
+                              className="w-4 h-4 rounded-full"
+                              style={{ backgroundColor: group.color }}
+                            />
+                          )}
+                        </div>
+                        {group.description && (
+                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                            {group.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Users className="w-4 h-4" />
+                          <span>
+                            {athleteCount} athlete
+                            {athleteCount !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                      </button>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}
@@ -1002,7 +1015,7 @@ export default function AthletesPage() {
 
                   {/* Invite Status for Pending */}
                   {athlete.status === "invited" && (
-                    <div 
+                    <div
                       className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -1016,12 +1029,15 @@ export default function AthletesPage() {
                         Sent {athlete.createdAt.toLocaleDateString()}
                       </p>
                       <div className="mt-2 flex items-center gap-2">
-                        <button 
+                        <button
                           type="button"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log('🔄 BUTTON CLICKED - Resending invite:', athlete.id);
+                            console.log(
+                              "BUTTON CLICKED - Resending invite:",
+                              athlete.id
+                            );
                             handleResendInvite(athlete.id);
                           }}
                           className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 cursor-pointer"
@@ -1030,12 +1046,15 @@ export default function AthletesPage() {
                           Resend Invite
                         </button>
                         <span className="text-xs text-gray-400">•</span>
-                        <button 
+                        <button
                           type="button"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log('❌ BUTTON CLICKED - Canceling invite:', athlete.id);
+                            console.log(
+                              "❌ BUTTON CLICKED - Canceling invite:",
+                              athlete.id
+                            );
                             handleCancelInvite(athlete.id);
                           }}
                           className="text-xs text-red-600 hover:text-red-800 hover:underline flex items-center gap-1 cursor-pointer"

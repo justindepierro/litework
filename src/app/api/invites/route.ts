@@ -58,9 +58,9 @@ export async function POST(request: NextRequest) {
       const expiresAt = new Date(existingInvite.expires_at);
       if (expiresAt > new Date()) {
         return NextResponse.json(
-          { 
+          {
             error: "An active invitation for this email already exists",
-            existingInvite: existingInvite
+            existingInvite: existingInvite,
           },
           { status: 400 }
         );
@@ -106,12 +106,16 @@ export async function POST(request: NextRequest) {
         templateData: {
           userName: `${firstName} ${lastName}`,
           title: "Join LiteWork",
-          message: "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.",
+          message:
+            "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.",
           actionUrl: inviteUrl,
           actionText: "Accept Invitation",
           details: [
             { label: "Invited By", value: user.email || "Your Coach" },
-            { label: "Expires", value: new Date(invite.expires_at).toLocaleDateString() },
+            {
+              label: "Expires",
+              value: new Date(invite.expires_at).toLocaleDateString(),
+            },
           ],
         },
       });

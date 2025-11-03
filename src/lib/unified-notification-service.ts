@@ -4,12 +4,15 @@
  * Created: November 2, 2025
  */
 
-import { sendPushNotification } from './notification-service';
-import { sendEmailNotification } from './email-service';
-import { getUserPreferences } from './notification-service';
-import { createClient } from '@supabase/supabase-js';
-import type { PushNotificationPayload, NotificationCategory } from './notification-service';
-import type { EmailTemplateData } from './email-service';
+import { sendPushNotification } from "./notification-service";
+import { sendEmailNotification } from "./email-service";
+import { getUserPreferences } from "./notification-service";
+import { createClient } from "@supabase/supabase-js";
+import type {
+  PushNotificationPayload,
+  NotificationCategory,
+} from "./notification-service";
+import type { EmailTemplateData } from "./email-service";
 
 // Initialize Supabase client for in-app notifications
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -18,8 +21,8 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 // ============================================================
@@ -31,15 +34,15 @@ export interface UnifiedNotificationPayload {
   title: string;
   body: string;
   category: NotificationCategory;
-  
+
   // URLs
   url?: string;
-  
+
   // Push-specific
   icon?: string;
   badge?: string;
   data?: Record<string, unknown>;
-  
+
   // Email-specific
   emailSubject?: string; // If different from title
   emailDetails?: Array<{ label: string; value: string }>;
@@ -75,14 +78,16 @@ export async function sendNotification(
 
   // Get user's notification preferences
   const prefs = await getUserPreferences(userId);
-  
+
   if (!prefs) {
-    console.log(`⚠️  No notification preferences found for user ${userId}, using defaults`);
+    console.log(
+      `⚠️  No notification preferences found for user ${userId}, using defaults`
+    );
   }
 
   const pushEnabled = prefs?.push_enabled ?? true;
   const emailEnabled = prefs?.email_enabled ?? true;
-  const preferredContact = prefs?.preferred_contact ?? 'push';
+  const preferredContact = prefs?.preferred_contact ?? "push";
 
   let pushSent = false;
   let emailSent = false;
@@ -94,7 +99,10 @@ export async function sendNotification(
     await createInAppNotification(userId, payload);
     inAppCreated = true;
   } catch (error) {
-    console.error(`❌ Error creating in-app notification for user ${userId}:`, error);
+    console.error(
+      `❌ Error creating in-app notification for user ${userId}:`,
+      error
+    );
     // Don't fail the whole process if in-app creation fails
   }
 
@@ -115,11 +123,11 @@ export async function sendNotification(
       pushSent = pushResult.success && pushResult.sent > 0;
 
       if (!pushSent) {
-        lastError = pushResult.errors?.[0]?.error || 'Push notification failed';
+        lastError = pushResult.errors?.[0]?.error || "Push notification failed";
       }
     } catch (error) {
       console.error(`❌ Error sending push to user ${userId}:`, error);
-      lastError = error instanceof Error ? error.message : 'Unknown push error';
+      lastError = error instanceof Error ? error.message : "Unknown push error";
     }
   }
 
@@ -127,9 +135,9 @@ export async function sendNotification(
   // 1. Push failed or wasn't enabled
   // 2. User prefers email or both
   // 3. Email is enabled
-  const shouldSendEmail = 
-    emailEnabled && 
-    (!pushSent || preferredContact === 'email' || preferredContact === 'both');
+  const shouldSendEmail =
+    emailEnabled &&
+    (!pushSent || preferredContact === "email" || preferredContact === "both");
 
   if (shouldSendEmail) {
     try {
@@ -155,11 +163,12 @@ export async function sendNotification(
       emailSent = emailResult.success;
 
       if (!emailSent) {
-        lastError = emailResult.error || 'Email notification failed';
+        lastError = emailResult.error || "Email notification failed";
       }
     } catch (error) {
       console.error(`❌ Error sending email to user ${userId}:`, error);
-      lastError = error instanceof Error ? error.message : 'Unknown email error';
+      lastError =
+        error instanceof Error ? error.message : "Unknown email error";
     }
   }
 
@@ -167,10 +176,10 @@ export async function sendNotification(
 
   if (success) {
     const methods = [];
-    if (inAppCreated) methods.push('in-app');
-    if (pushSent) methods.push('push');
-    if (emailSent) methods.push('email');
-    console.log(`✅ Notification sent to ${name} via ${methods.join(' and ')}`);
+    if (inAppCreated) methods.push("in-app");
+    if (pushSent) methods.push("push");
+    if (emailSent) methods.push("email");
+    console.log(`✅ Notification sent to ${name} via ${methods.join(" and ")}`);
   } else {
     console.error(`❌ Failed to send notification to ${name}: ${lastError}`);
   }
@@ -196,19 +205,17 @@ async function createInAppNotification(
   payload: UnifiedNotificationPayload
 ): Promise<void> {
   try {
-    await supabase
-      .from('in_app_notifications')
-      .insert({
-        user_id: userId,
-        type: payload.category,
-        title: payload.title,
-        body: payload.body,
-        icon: payload.icon || getIconForCategory(payload.category),
-        url: payload.url,
-        priority: 'normal'
-      });
+    await supabase.from("in_app_notifications").insert({
+      user_id: userId,
+      type: payload.category,
+      title: payload.title,
+      body: payload.body,
+      icon: payload.icon || getIconForCategory(payload.category),
+      url: payload.url,
+      priority: "normal",
+    });
   } catch (error) {
-    console.error('❌ Error creating in-app notification:', error);
+    console.error("❌ Error creating in-app notification:", error);
     throw error;
   }
 }
@@ -218,14 +225,14 @@ async function createInAppNotification(
  */
 function getIconForCategory(category: NotificationCategory): string {
   const icons: Record<NotificationCategory, string> = {
-    workout: '⏰',
-    assignment: '💪',
-    message: '💬',
-    progress: '📊',
-    achievement: '🏆',
-    invite: '📨'
+    workout: "⏰",
+    assignment: "",
+    message: "💬",
+    progress: "",
+    achievement: "",
+    invite: "📨",
   };
-  return icons[category] || '🔔';
+  return icons[category] || "🔔";
 }
 
 /**
@@ -236,16 +243,18 @@ export async function sendNotificationToUsers(
   payload: UnifiedNotificationPayload
 ): Promise<NotificationResult[]> {
   const results = await Promise.all(
-    recipients.map(recipient => sendNotification(recipient, payload))
+    recipients.map((recipient) => sendNotification(recipient, payload))
   );
 
   // Log summary
-  const totalSuccess = results.filter(r => r.success).length;
-  const totalPush = results.filter(r => r.pushSent).length;
-  const totalEmail = results.filter(r => r.emailSent).length;
-  const totalFailed = results.filter(r => !r.success).length;
+  const totalSuccess = results.filter((r) => r.success).length;
+  const totalPush = results.filter((r) => r.pushSent).length;
+  const totalEmail = results.filter((r) => r.emailSent).length;
+  const totalFailed = results.filter((r) => !r.success).length;
 
-  console.log(`📊 Notification Summary: ${totalSuccess} succeeded, ${totalFailed} failed`);
+  console.log(
+    `Notification Summary: ${totalSuccess} succeeded, ${totalFailed} failed`
+  );
   console.log(`   Push: ${totalPush}, Email: ${totalEmail}`);
 
   return results;
@@ -308,16 +317,16 @@ export async function notifyWorkoutAssignment(
   workoutUrl: string
 ): Promise<NotificationResult> {
   return sendNotification(recipient, {
-    title: 'New Workout Assigned',
+    title: "New Workout Assigned",
     body: `${workoutName} has been assigned to you`,
-    category: 'assignment',
+    category: "assignment",
     url: workoutUrl,
     emailSubject: `New Workout: ${workoutName}`,
     emailDetails: [
-      { label: 'Workout', value: workoutName },
-      { label: 'Scheduled', value: scheduledDate },
+      { label: "Workout", value: workoutName },
+      { label: "Scheduled", value: scheduledDate },
     ],
-    actionText: 'View Workout',
+    actionText: "View Workout",
   });
 }
 
@@ -330,11 +339,11 @@ export async function notifyCoachMessage(
   messageUrl?: string
 ): Promise<NotificationResult> {
   return sendNotification(recipient, {
-    title: 'Message from Your Coach',
+    title: "Message from Your Coach",
     body: message,
-    category: 'message',
+    category: "message",
     url: messageUrl,
-    actionText: 'View Message',
+    actionText: "View Message",
   });
 }
 
@@ -348,16 +357,16 @@ export async function notifyWorkoutReminder(
   workoutUrl: string
 ): Promise<NotificationResult> {
   return sendNotification(recipient, {
-    title: 'Workout Reminder',
+    title: "Workout Reminder",
     body: `${workoutName} is scheduled for ${scheduledTime}`,
-    category: 'workout',
+    category: "workout",
     url: workoutUrl,
     emailSubject: `Reminder: ${workoutName}`,
     emailDetails: [
-      { label: 'Workout', value: workoutName },
-      { label: 'Time', value: scheduledTime },
+      { label: "Workout", value: workoutName },
+      { label: "Time", value: scheduledTime },
     ],
-    actionText: 'Start Workout',
+    actionText: "Start Workout",
   });
 }
 
@@ -373,11 +382,11 @@ export async function notifyAchievement(
   return sendNotification(recipient, {
     title: achievementTitle,
     body: achievementDescription,
-    category: 'achievement',
+    category: "achievement",
     url: progressUrl,
-    icon: '/icons/trophy.png',
-    emailSubject: `🏆 ${achievementTitle}`,
-    actionText: 'View Progress',
+    icon: "/icons/trophy.png",
+    emailSubject: `Achievement: ${achievementTitle}`,
+    actionText: "View Progress",
   });
 }
 
@@ -389,15 +398,16 @@ export async function notifyWeeklyProgress(
   stats: Array<{ label: string; value: string }>,
   progressUrl: string
 ): Promise<NotificationResult> {
-  const workoutsCompleted = stats.find(s => s.label === 'Workouts Completed')?.value || '0';
-  
+  const workoutsCompleted =
+    stats.find((s) => s.label === "Workouts Completed")?.value || "0";
+
   return sendNotification(recipient, {
-    title: 'Your Weekly Progress',
+    title: "Your Weekly Progress",
     body: `You completed ${workoutsCompleted} workouts this week`,
-    category: 'progress',
+    category: "progress",
     url: progressUrl,
-    emailSubject: '📊 Your Weekly Training Summary',
+    emailSubject: "Your Weekly Training Summary",
     emailDetails: stats,
-    actionText: 'View Full Report',
+    actionText: "View Full Report",
   });
 }

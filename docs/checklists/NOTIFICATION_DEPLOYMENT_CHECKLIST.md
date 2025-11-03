@@ -8,6 +8,7 @@
 ## ✅ Pre-Deployment Checklist
 
 ### Code Quality
+
 - [x] Zero TypeScript errors (`npm run typecheck`)
 - [x] No console.log statements in production code
 - [x] All imports used
@@ -15,6 +16,7 @@
 - [x] RLS policies configured
 
 ### Environment Variables
+
 - [x] NEXT_PUBLIC_SUPABASE_URL set
 - [x] NEXT_PUBLIC_SUPABASE_ANON_KEY set
 - [x] SUPABASE_SERVICE_ROLE_KEY set
@@ -24,6 +26,7 @@
 - [x] CRON_SECRET set (added today)
 
 ### Documentation
+
 - [x] NOTIFICATION_SYSTEM_COMPLETE.md created
 - [x] NOTIFICATION_IMPLEMENTATION_SUMMARY.md created
 - [x] This deployment checklist created
@@ -53,6 +56,7 @@ cat scripts/database/create-in-app-notifications.sql
 ```
 
 **Expected Output**:
+
 ```
 ✅ In-app notification center table created successfully!
 📊 Table: in_app_notifications
@@ -61,11 +65,12 @@ cat scripts/database/create-in-app-notifications.sql
 ```
 
 **Verification**:
+
 ```sql
 -- Run this query to verify
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
   AND table_name = 'in_app_notifications';
 
 -- Should return: in_app_notifications
@@ -89,6 +94,7 @@ WHERE table_schema = 'public'
 ```
 
 **Steps**:
+
 1. Go to Vercel Dashboard
 2. Select project: LiteWork
 3. Settings → Environment Variables
@@ -154,6 +160,7 @@ git push origin main
 4. Check build logs for errors
 
 **Expected**:
+
 - ✅ Build succeeds
 - ✅ No TypeScript errors
 - ✅ No build warnings
@@ -176,6 +183,7 @@ git push origin main
 4. Check next run time
 
 **Expected**:
+
 - Path: `/api/cron/workout-reminders`
 - Schedule: `0 7,17 * * *` (7 AM & 5 PM UTC)
 - Status: Active
@@ -191,12 +199,14 @@ git push origin main
 ### Test 1: In-App Notification Bell
 
 **Steps**:
+
 1. Visit deployed site
 2. Log in as athlete
 3. Look for bell icon in navigation
 4. Should show "0" or current unread count
 
-**Expected**: 
+**Expected**:
+
 - Bell icon visible in navigation
 - Badge count accurate
 - Clicking opens dropdown
@@ -210,12 +220,14 @@ git push origin main
 ### Test 2: Notifications Page
 
 **Steps**:
+
 1. Navigate to `/notifications`
 2. Should see full notifications page
 3. Test filter buttons (All / Unread)
 4. Test "Mark all read" button
 
 **Expected**:
+
 - Page loads successfully
 - Filters work
 - Actions work (mark read, delete)
@@ -229,26 +241,31 @@ git push origin main
 ### Test 3: Create Test Notification
 
 **Method 1: Via Workout Assignment**
+
 1. Log in as coach
 2. Assign workout to athlete
 3. Check if athlete receives notification
 
 **Method 2: Via API (Browser Console)**
+
 ```javascript
-fetch('/api/notifications/inbox', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+fetch("/api/notifications/inbox", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    type: 'workout',
-    title: 'Test Notification',
-    body: 'This is a test',
-    icon: '💪',
-    url: '/workouts'
-  })
-}).then(r => r.json()).then(console.log);
+    type: "workout",
+    title: "Test Notification",
+    body: "This is a test",
+    icon: "💪",
+    url: "/workouts",
+  }),
+})
+  .then((r) => r.json())
+  .then(console.log);
 ```
 
 **Expected**:
+
 - Notification created successfully
 - Appears in bell dropdown
 - Badge count increases
@@ -264,12 +281,14 @@ fetch('/api/notifications/inbox', {
 ### Test 4: Mark as Read
 
 **Steps**:
+
 1. Click on unread notification (blue background)
 2. Notification should turn white
 3. Badge count should decrease
 4. Refresh page - should stay read
 
 **Expected**:
+
 - Visual change (blue → white)
 - Badge count decreases
 - State persists after refresh
@@ -283,12 +302,14 @@ fetch('/api/notifications/inbox', {
 ### Test 5: Delete Notification
 
 **Steps**:
+
 1. Click X button on notification
 2. Notification should disappear
 3. Badge count should update if it was unread
 4. Refresh - notification should stay deleted
 
 **Expected**:
+
 - Notification removed from list
 - Badge updates if needed
 - Deletion persists
@@ -302,6 +323,7 @@ fetch('/api/notifications/inbox', {
 ### Test 6: Cron Job (Manual Trigger)
 
 **Steps**:
+
 ```bash
 # Replace with your deployed URL and CRON_SECRET
 curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
@@ -309,6 +331,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ```
 
 **Expected Response**:
+
 ```json
 {
   "success": true,
@@ -330,18 +353,21 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Test 7: Workout Reminder Flow (End-to-End)
 
 **Setup**:
+
 1. Log in as coach
 2. Assign workout to athlete for TOMORROW
 3. Verify athlete has `workout_reminders: true` in `/settings`
 4. Wait for next cron run (7 AM or 5 PM UTC)
 
 **Or manually trigger**:
+
 ```bash
 curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
   -H "Authorization: Bearer YOUR_CRON_SECRET"
 ```
 
 **Expected**:
+
 - Cron finds the assignment
 - Sends reminder to athlete
 - Athlete receives:
@@ -359,6 +385,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Test 8: Push Notifications
 
 **Steps**:
+
 1. Go to `/settings`
 2. Click "Enable Push Notifications"
 3. Grant permission when browser prompts
@@ -366,6 +393,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 5. Check for push notification
 
 **Expected**:
+
 - Permission granted
 - Subscription saved
 - Push notification appears
@@ -379,12 +407,14 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Test 9: Email Fallback
 
 **Steps**:
+
 1. Go to `/settings`
 2. Disable push notifications
 3. Assign workout to yourself
 4. Check email inbox
 
 **Expected**:
+
 - Email received
 - Professional HTML template
 - Links work
@@ -400,6 +430,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Issue: Bell icon not showing
 
 **Check**:
+
 - [ ] Navigation.tsx imports NotificationBell
 - [ ] Component is rendered in JSX
 - [ ] No console errors
@@ -408,6 +439,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Issue: Notifications not appearing
 
 **Check**:
+
 - [ ] Database migration ran successfully
 - [ ] Table `in_app_notifications` exists
 - [ ] RLS policies are correct
@@ -416,6 +448,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Issue: Cron job not running
 
 **Check**:
+
 - [ ] `vercel.json` has cron configuration
 - [ ] CRON_SECRET is set in Vercel
 - [ ] Endpoint is deployed
@@ -424,6 +457,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ### Issue: Badge count wrong
 
 **Check**:
+
 - [ ] API endpoint returns correct count
 - [ ] Query filters expired notifications
 - [ ] RLS policies allow user to see own notifications
@@ -433,6 +467,7 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 ## 📊 Success Criteria
 
 ### Functional
+
 - [x] Zero TypeScript errors
 - [ ] Database migration successful
 - [ ] All API endpoints working
@@ -446,12 +481,14 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 - [ ] Email fallback works
 
 ### Performance
+
 - [ ] Page load < 2 seconds
 - [ ] API responses < 500ms
 - [ ] No console errors
 - [ ] No memory leaks
 
 ### UX
+
 - [ ] Mobile-friendly
 - [ ] Accessible (keyboard navigation)
 - [ ] Visual feedback on actions
@@ -473,19 +510,22 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 
 ## 📝 Notes
 
-**Deployment Date**: _______________
+**Deployment Date**: ******\_\_\_******
 
-**Deployed By**: _______________
+**Deployed By**: ******\_\_\_******
 
-**Production URL**: _______________
+**Production URL**: ******\_\_\_******
 
 **Issues Encountered**:
+
 - None yet
 
 **Resolutions**:
+
 - N/A
 
 **Post-Launch Tasks**:
+
 - [ ] Monitor Vercel logs for 24 hours
 - [ ] Check Resend dashboard for email delivery
 - [ ] Monitor Supabase for RLS policy violations

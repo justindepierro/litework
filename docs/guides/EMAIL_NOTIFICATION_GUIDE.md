@@ -10,15 +10,15 @@ LiteWork's email notification system sends transactional emails to athletes for 
 
 **Recommended for LiteWork:**
 
-| Feature | Resend | SendGrid | AWS SES | SMTP |
-|---------|--------|----------|---------|------|
-| **Free Tier** | 3,000/month | 100/day | 3,000/month | Varies |
-| **Ease of Setup** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ |
-| **Developer Experience** | Excellent | Good | Complex | Basic |
-| **Deliverability** | Excellent | Excellent | Excellent | Poor |
-| **React Email Support** | ✅ Built-in | ❌ | ❌ | ❌ |
-| **Webhooks** | ✅ | ✅ | ✅ | ❌ |
-| **Cost (50k/mo)** | $20 | $20 | $5 | Free |
+| Feature                  | Resend      | SendGrid  | AWS SES     | SMTP     |
+| ------------------------ | ----------- | --------- | ----------- | -------- |
+| **Free Tier**            | 3,000/month | 100/day   | 3,000/month | Varies   |
+| **Ease of Setup**        | ⭐⭐⭐⭐⭐  | ⭐⭐⭐    | ⭐⭐        | ⭐⭐⭐⭐ |
+| **Developer Experience** | Excellent   | Good      | Complex     | Basic    |
+| **Deliverability**       | Excellent   | Excellent | Excellent   | Poor     |
+| **React Email Support**  | ✅ Built-in | ❌        | ❌          | ❌       |
+| **Webhooks**             | ✅          | ✅        | ✅          | ❌       |
+| **Cost (50k/mo)**        | $20         | $20       | $5          | Free     |
 
 **Winner: Resend** for simplicity and free tier.
 
@@ -99,6 +99,7 @@ RESEND_DOMAIN="litework.app"
 4. Wait for verification (~10 minutes)
 
 **For development:**
+
 - Use `onboarding@resend.dev` (no verification needed)
 - Limited to your registered email only
 
@@ -822,11 +823,11 @@ export async function POST(request: NextRequest) {
 ### Cost Projections
 
 | Athletes | Emails/Month | Cost |
-|----------|--------------|------|
-| 30 | ~900 | FREE |
-| 100 | ~3,000 | FREE |
-| 200 | ~6,000 | $20 |
-| 500 | ~15,000 | $20 |
+| -------- | ------------ | ---- |
+| 30       | ~900         | FREE |
+| 100      | ~3,000       | FREE |
+| 200      | ~6,000       | $20  |
+| 500      | ~15,000      | $20  |
 
 ---
 

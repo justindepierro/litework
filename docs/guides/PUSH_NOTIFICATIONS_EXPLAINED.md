@@ -20,17 +20,20 @@ That's it! Your phone doesn't need the LiteWork app open. It just needs to be co
 ### Setup (One-Time)
 
 #### Step 1: You Install LiteWork
+
 ```
 You → Add LiteWork to Home Screen → Now it's a "real app"
 ```
 
 #### Step 2: You Grant Permission
+
 ```
 LiteWork asks: "Allow notifications?"
 You tap: "Allow" ✅
 ```
 
 #### Step 3: Your Phone Subscribes
+
 ```
 Your Phone → Contacts Google/Apple Push Service
 Push Service → Gives you a unique ID
@@ -43,6 +46,7 @@ Think of this like signing up for a newsletter. Google/Apple gives you a unique 
 ### When Coach Assigns a Workout
 
 #### Step 1: Assignment Created
+
 ```
 Coach → Assigns workout to you
 LiteWork database → Saves assignment
@@ -50,6 +54,7 @@ API → Looks up your unique ID
 ```
 
 #### Step 2: LiteWork Sends to Push Service
+
 ```
 LiteWork Server → Calls Google/Apple API
 Message: {
@@ -61,6 +66,7 @@ Message: {
 ```
 
 #### Step 3: Push Service Delivers to Your Phone
+
 ```
 Google/Apple → Finds your device using your ID
 Google/Apple → Sends encrypted message to your phone
@@ -68,6 +74,7 @@ Your Phone → Wakes up and receives it
 ```
 
 This happens even if:
+
 - ❌ LiteWork is closed
 - ❌ Phone is locked
 - ❌ You're in another app
@@ -75,6 +82,7 @@ This happens even if:
 As long as your phone is connected to internet (WiFi or cellular).
 
 #### Step 4: Your Phone Shows Notification
+
 ```
 Your Phone → Displays notification
 Lock Screen shows:
@@ -87,6 +95,7 @@ Lock Screen shows:
 ```
 
 #### Step 5: You Tap It
+
 ```
 You → Tap notification
 Phone → Opens LiteWork
@@ -98,12 +107,14 @@ LiteWork → Shows workout details
 ## The Key Players
 
 ### 1. **LiteWork Server** (Your Backend)
+
 - Knows WHO to notify (athlete ID)
 - Knows WHAT to send (workout info)
 - Stores your push subscription ID
 - Sends message to Google/Apple
 
 ### 2. **Push Service** (Google FCM or Apple APNs)
+
 - **FCM** = Firebase Cloud Messaging (Android/Chrome)
 - **APNs** = Apple Push Notification service (iOS/Safari)
 - Maintains connections to ALL phones
@@ -111,12 +122,14 @@ LiteWork → Shows workout details
 - FREE to use (Google/Apple provide this)
 
 ### 3. **Your Phone** (The Device)
+
 - Stays connected to Push Service 24/7
 - Receives messages in real-time
 - Shows notifications
 - Wakes up app when tapped
 
 ### 4. **Service Worker** (Background Script)
+
 - Lives in browser/PWA
 - Handles incoming messages
 - Displays notifications
@@ -159,6 +172,7 @@ Benefits:
 **Push Notifications = Post Office**
 
 ### Setup Phase (Subscription)
+
 ```
 You (Phone) → Visit Google Post Office
 Google → Gives you mailbox #XYZ123
@@ -167,6 +181,7 @@ LiteWork → Writes down your mailbox number
 ```
 
 ### Notification Phase (Delivery)
+
 ```
 Coach → Assigns workout
 LiteWork → Writes letter: "Workout assigned!"
@@ -182,6 +197,7 @@ You → Open letter (tap notification)
 ## Platform Differences
 
 ### Android / Chrome
+
 ```
 Phone → Connected to Google FCM
 Process:
@@ -192,11 +208,13 @@ Process:
 ```
 
 **Example endpoint:**
+
 ```
 https://fcm.googleapis.com/fcm/send/dXoFa...xyz
 ```
 
 ### iOS / Safari
+
 ```
 Phone → Connected to Apple APNs
 Process:
@@ -207,11 +225,13 @@ Process:
 ```
 
 **Requirements:**
+
 - iOS 16.4 or later
 - Must be added to home screen
 - Must open from home screen icon
 
 **Example endpoint:**
+
 ```
 https://web.push.apple.com/vXqR...abc
 ```
@@ -248,6 +268,7 @@ Your Device → Decrypts with your key
 ```
 
 Google/Apple see:
+
 - ✅ "Deliver this to device XYZ"
 - ❌ Can't read: "New workout assigned"
 
@@ -256,6 +277,7 @@ Google/Apple see:
 ## What Happens When...
 
 ### Phone is Offline?
+
 ```
 LiteWork → Sends to Google/Apple
 Google/Apple → Queues message
@@ -264,11 +286,13 @@ Notification shows ✅
 ```
 
 ### Phone is Off?
+
 ```
 Same as offline. Message waits up to 4 weeks.
 ```
 
 ### User Revokes Permission?
+
 ```
 User → Settings → Disables LiteWork notifications
 Phone → Tells Google/Apple: "Stop accepting for LiteWork"
@@ -278,6 +302,7 @@ LiteWork → Removes subscription from database
 ```
 
 ### Subscription Expires?
+
 ```
 After ~6 months of not using device:
 Google/Apple → Expires subscription
@@ -287,6 +312,7 @@ User needs to re-subscribe next visit
 ```
 
 ### User Has Multiple Devices?
+
 ```
 User subscribed on:
 - iPhone ✅
@@ -322,7 +348,7 @@ POST /api/assignments
 }
 
 // 2. Look up push subscriptions
-SELECT * FROM push_subscriptions 
+SELECT * FROM push_subscriptions
 WHERE user_id = 'athlete-uuid-456'
 
 Results:
@@ -369,6 +395,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 ### "Not Getting Notifications on iPhone"
 
 **Check:**
+
 1. iOS version → Must be 16.4+
 2. Installed as PWA? → Must add to home screen
 3. Opening from home screen? → Must open PWA icon (not Safari)
@@ -376,6 +403,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 5. Focus mode off? → Disable Do Not Disturb
 
 **Fix:**
+
 ```
 1. Delete LiteWork from home screen
 2. Open Safari → litework.app
@@ -388,6 +416,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 ### "Notifications Work Sometimes"
 
 **Likely causes:**
+
 - Subscription expired (re-subscribe)
 - Multiple devices (only newest subscription works)
 - Battery saver mode (limits background)
@@ -396,6 +425,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 ### "Click Doesn't Open Workout"
 
 **Check:**
+
 - URL in notification correct?
 - Service worker notification click handler working?
 - App opens but wrong page? (routing issue)
@@ -405,17 +435,20 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 ## Cost & Limits
 
 ### Completely Free
+
 - ✅ Google FCM: Free unlimited
 - ✅ Apple APNs: Free unlimited
 - ✅ No per-notification fees
 - ✅ No monthly charges
 
 ### Rate Limits
+
 - **FCM:** 600,000/minute (way more than needed)
 - **APNs:** No documented limit
 - **LiteWork:** Limit to prevent abuse
 
 ### Size Limits
+
 - **Message payload:** 4KB max
 - **Title:** ~50 characters recommended
 - **Body:** ~120 characters recommended
@@ -431,6 +464,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 3. **On tap:** Notification → Opens LiteWork app → Shows workout
 
 **Key benefits:**
+
 - ✅ Works when app is closed
 - ✅ Free forever
 - ✅ Battery efficient
@@ -438,6 +472,7 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 - ✅ Secure & private
 
 **Platform support:**
+
 - ✅ Android (browser or PWA)
 - ✅ iOS (PWA only, iOS 16.4+)
 - ✅ Desktop (all browsers)
@@ -445,9 +480,11 @@ self.registration.showNotification("New Workout Assigned! 🏋️", {
 ---
 
 **Questions?** Read the full technical guide:
+
 - `docs/guides/NOTIFICATION_SYSTEM_GUIDE.md`
 
 **Ready to implement?** Follow the roadmap:
+
 - `docs/guides/NOTIFICATION_IMPLEMENTATION_ROADMAP.md`
 
 ---

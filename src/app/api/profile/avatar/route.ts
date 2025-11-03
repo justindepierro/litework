@@ -3,9 +3,9 @@
  * Handles avatar uploads to Supabase Storage
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { getAuthenticatedUser } from '@/lib/auth-server';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,25 +13,25 @@ const supabase = createClient(
 );
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 export async function POST(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
 
   try {
     const formData = await request.formData();
-    const file = formData.get('avatar') as File;
+    const file = formData.get("avatar") as File;
 
     if (!file) {
       return NextResponse.json(
-        { success: false, error: 'No file provided' },
+        { success: false, error: "No file provided" },
         { status: 400 }
       );
     }
@@ -39,7 +39,10 @@ export async function POST(request: NextRequest) {
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid file type. Only JPG, PNG, WebP, and GIF are allowed.' },
+        {
+          success: false,
+          error: "Invalid file type. Only JPG, PNG, WebP, and GIF are allowed.",
+        },
         { status: 400 }
       );
     }
@@ -47,13 +50,13 @@ export async function POST(request: NextRequest) {
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { success: false, error: 'File too large. Maximum size is 2MB.' },
+        { success: false, error: "File too large. Maximum size is 2MB." },
         { status: 400 }
       );
     }
 
     // Generate unique filename
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split(".").pop();
     const fileName = `${user.id}-${Date.now()}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
@@ -63,66 +66,63 @@ export async function POST(request: NextRequest) {
 
     // Delete old avatar if exists
     const { data: userData } = await supabase
-      .from('users')
-      .select('avatar_url')
-      .eq('id', user.id)
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
       .single();
 
     if (userData?.avatar_url) {
-      const oldPath = userData.avatar_url.split('/').pop();
+      const oldPath = userData.avatar_url.split("/").pop();
       if (oldPath) {
-        await supabase.storage
-          .from('avatars')
-          .remove([`avatars/${oldPath}`]);
+        await supabase.storage.from("avatars").remove([`avatars/${oldPath}`]);
       }
     }
 
     // Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
-      .from('avatars')
+      .from("avatars")
       .upload(filePath, buffer, {
         contentType: file.type,
-        upsert: true
+        upsert: true,
       });
 
     if (uploadError) {
-      console.error('Upload error:', uploadError);
+      console.error("Upload error:", uploadError);
       return NextResponse.json(
-        { success: false, error: 'Failed to upload image' },
+        { success: false, error: "Failed to upload image" },
         { status: 500 }
       );
     }
 
     // Get public URL
     const { data: urlData } = supabase.storage
-      .from('avatars')
+      .from("avatars")
       .getPublicUrl(filePath);
 
     const avatarUrl = urlData.publicUrl;
 
     // Update user record with new avatar URL
     const { error: updateError } = await supabase
-      .from('users')
+      .from("users")
       .update({ avatar_url: avatarUrl })
-      .eq('id', user.id);
+      .eq("id", user.id);
 
     if (updateError) {
-      console.error('Database update error:', updateError);
+      console.error("Database update error:", updateError);
       return NextResponse.json(
-        { success: false, error: 'Failed to update profile' },
+        { success: false, error: "Failed to update profile" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      avatarUrl
+      avatarUrl,
     });
-
   } catch (error) {
-    console.error('Avatar upload error:', error);
+    console.error("Avatar upload error:", error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -130,10 +130,10 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -141,59 +141,58 @@ export async function DELETE(request: NextRequest) {
   try {
     // Get current avatar URL
     const { data: userData, error: fetchError } = await supabase
-      .from('users')
-      .select('avatar_url')
-      .eq('id', user.id)
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
       .single();
 
     if (fetchError || !userData?.avatar_url) {
       return NextResponse.json(
-        { success: false, error: 'No avatar to delete' },
+        { success: false, error: "No avatar to delete" },
         { status: 404 }
       );
     }
 
     // Extract filename from URL
-    const fileName = userData.avatar_url.split('/').pop();
+    const fileName = userData.avatar_url.split("/").pop();
     if (!fileName) {
       return NextResponse.json(
-        { success: false, error: 'Invalid avatar URL' },
+        { success: false, error: "Invalid avatar URL" },
         { status: 400 }
       );
     }
 
     // Delete from storage
     const { error: deleteError } = await supabase.storage
-      .from('avatars')
+      .from("avatars")
       .remove([`avatars/${fileName}`]);
 
     if (deleteError) {
-      console.error('Delete error:', deleteError);
+      console.error("Delete error:", deleteError);
     }
 
     // Update user record to remove avatar URL
     const { error: updateError } = await supabase
-      .from('users')
+      .from("users")
       .update({ avatar_url: null })
-      .eq('id', user.id);
+      .eq("id", user.id);
 
     if (updateError) {
-      console.error('Database update error:', updateError);
+      console.error("Database update error:", updateError);
       return NextResponse.json(
-        { success: false, error: 'Failed to update profile' },
+        { success: false, error: "Failed to update profile" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Avatar deleted successfully'
+      message: "Avatar deleted successfully",
     });
-
   } catch (error) {
-    console.error('Avatar delete error:', error);
+    console.error("Avatar delete error:", error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     );
   }

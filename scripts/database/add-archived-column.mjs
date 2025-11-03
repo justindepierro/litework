@@ -31,7 +31,10 @@ async function runMigration() {
 
   try {
     // Read the SQL file
-    const sqlPath = join(__dirname, "../../database/add-archived-to-groups.sql");
+    const sqlPath = join(
+      __dirname,
+      "../../database/add-archived-to-groups.sql"
+    );
     const sql = readFileSync(sqlPath, "utf-8");
 
     console.log("📄 Executing SQL migration...");
@@ -51,7 +54,6 @@ async function runMigration() {
     console.log("   - Added 'archived' column to athlete_groups table");
     console.log("   - Created index for archived column");
     console.log("   - Groups can now be archived instead of deleted");
-
   } catch (error) {
     console.error("❌ Migration failed:", error);
     process.exit(1);

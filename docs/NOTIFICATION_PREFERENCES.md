@@ -25,14 +25,14 @@ LiteWork now supports customizable notification preferences, allowing athletes t
 
 ### Timing Options
 
-| Option | Description | When Reminder Sent |
-|--------|-------------|-------------------|
-| **Smart** | Adaptive timing based on workout schedule | 2 hours before (if today) OR day before at 5 PM (if tomorrow) |
-| **Morning** | Daily morning reminder | Every day at 7 AM (if workout within 24 hours) |
-| **Evening** | Daily evening reminder | Every day at 5 PM (if workout within 24 hours) |
-| **2 Hours** | Before workout | Exactly 2 hours before scheduled workout |
-| **1 Hour** | Before workout | Exactly 1 hour before scheduled workout |
-| **30 Minutes** | Before workout | Exactly 30 minutes before scheduled workout |
+| Option         | Description                               | When Reminder Sent                                            |
+| -------------- | ----------------------------------------- | ------------------------------------------------------------- |
+| **Smart**      | Adaptive timing based on workout schedule | 2 hours before (if today) OR day before at 5 PM (if tomorrow) |
+| **Morning**    | Daily morning reminder                    | Every day at 7 AM (if workout within 24 hours)                |
+| **Evening**    | Daily evening reminder                    | Every day at 5 PM (if workout within 24 hours)                |
+| **2 Hours**    | Before workout                            | Exactly 2 hours before scheduled workout                      |
+| **1 Hour**     | Before workout                            | Exactly 1 hour before scheduled workout                       |
+| **30 Minutes** | Before workout                            | Exactly 30 minutes before scheduled workout                   |
 
 ### Channels
 
@@ -68,16 +68,16 @@ notification_preferences JSONB DEFAULT '{
 
 ```typescript
 // Timing options
-type NotificationTiming = 
-  | 'smart' 
-  | 'morning' 
-  | 'evening' 
-  | '2hours' 
-  | '1hour' 
-  | '30min';
+type NotificationTiming =
+  | "smart"
+  | "morning"
+  | "evening"
+  | "2hours"
+  | "1hour"
+  | "30min";
 
 // Communication channels
-type NotificationChannel = 'email' | 'push';
+type NotificationChannel = "email" | "push";
 
 // Complete preferences interface
 interface NotificationPreferences {
@@ -102,6 +102,7 @@ interface NotificationPreferences {
 ### API Endpoints
 
 #### Get User Preferences
+
 ```typescript
 GET /api/user/preferences
 
@@ -117,6 +118,7 @@ Response:
 ```
 
 #### Update User Preferences
+
 ```typescript
 PATCH /api/user/preferences
 
@@ -142,6 +144,7 @@ Response:
 **Component:** `NotificationPreferencesSettings.tsx`
 **Route:** `/settings`
 **Features:**
+
 - Toggle switches for enable/disable
 - Dropdown for timing selection (workout reminders)
 - Checkboxes for channel selection
@@ -158,24 +161,28 @@ Response:
 
 ```typescript
 switch (timing) {
-  case 'smart':
+  case "smart":
     // 2 hours before if workout is within 2.5-1.5 hours
     if (hoursUntilWorkout <= 2.5 && hoursUntilWorkout >= 1.5) {
       send();
     }
     // OR day before at 5 PM if workout is 22-26 hours away
-    else if (hoursUntilWorkout >= 22 && hoursUntilWorkout <= 26 && currentHour === 17) {
+    else if (
+      hoursUntilWorkout >= 22 &&
+      hoursUntilWorkout <= 26 &&
+      currentHour === 17
+    ) {
       send();
     }
     break;
-    
-  case 'morning':
+
+  case "morning":
     // At 7 AM if workout is within next 24 hours
     if (currentHour === 7 && hoursUntilWorkout <= 24) {
       send();
     }
     break;
-    
+
   // ... other timing options
 }
 ```
@@ -217,6 +224,7 @@ switch (timing) {
 ### Coach Experience
 
 Coaches don't need to do anything! The system automatically:
+
 - Reads athlete preferences from database
 - Calculates optimal send times
 - Filters athletes who have reminders disabled
@@ -235,21 +243,23 @@ Coaches don't need to do anything! The system automatically:
    - [ ] Verify success message appears
 
 2. **Database Verification**
+
    ```sql
    -- Check your preferences
-   SELECT 
-     id, 
-     email, 
-     notification_preferences 
-   FROM users 
+   SELECT
+     id,
+     email,
+     notification_preferences
+   FROM users
    WHERE email = 'your-email@example.com';
    ```
 
 3. **API Testing**
+
    ```bash
    # Get preferences (requires authentication)
    curl https://liteworkapp.com/api/user/preferences
-   
+
    # Update preferences
    curl -X PATCH https://liteworkapp.com/api/user/preferences \
      -H "Content-Type: application/json" \
@@ -296,16 +306,19 @@ NEXT_PUBLIC_APP_URL=https://liteworkapp.com
 The "smart" timing option uses an adaptive algorithm:
 
 ### For Workouts Today (within 2 hours)
+
 - **Send:** 2 hours before workout
 - **Example:** Workout at 3 PM → Reminder at 1 PM
 - **Benefits:** Last-minute reminder, time to prepare
 
 ### For Workouts Tomorrow
+
 - **Send:** Day before at 5 PM
 - **Example:** Workout at 2 PM tomorrow → Reminder today at 5 PM
 - **Benefits:** Advance notice, time to plan
 
 ### Time Windows
+
 - 2 hours before: 1.5 - 2.5 hours before workout
 - Day before: 22 - 26 hours before workout (sent at 5 PM)
 
@@ -314,6 +327,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 ## Future Enhancements
 
 ### Phase 1 (Current) ✅
+
 - [x] Database schema with JSONB preferences
 - [x] TypeScript types and interfaces
 - [x] API endpoints (GET, PATCH)
@@ -323,6 +337,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 - [x] Email channel support
 
 ### Phase 2 (Planned)
+
 - [ ] Push notification support
 - [ ] Achievement notifications implementation
 - [ ] Assignment notifications implementation
@@ -332,6 +347,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 - [ ] A/B testing for optimal timing
 
 ### Phase 3 (Future)
+
 - [ ] SMS notifications
 - [ ] In-app notifications
 - [ ] Notification templates customization
@@ -344,6 +360,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 ### Issue: Not Receiving Reminders
 
 **Check:**
+
 1. Preferences enabled: `/settings` → Workout Reminders = ON
 2. Email channel selected
 3. Workout assignments exist for next 24 hours
@@ -353,6 +370,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 ### Issue: Reminders at Wrong Time
 
 **Check:**
+
 1. Timing preference in `/settings`
 2. Workout scheduled_date is correct
 3. Server timezone (should be UTC)
@@ -361,6 +379,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 ### Issue: Preferences Not Saving
 
 **Check:**
+
 1. Browser console for errors
 2. Network tab for failed API calls
 3. Authentication (logged in?)
@@ -369,6 +388,7 @@ This ensures athletes always get timely reminders without being overwhelmed by n
 ### Issue: TypeScript Errors
 
 **Solution:**
+
 ```bash
 npm run typecheck
 # Should show 0 errors
@@ -382,6 +402,7 @@ npm run typecheck
 ## Support
 
 For questions or issues:
+
 1. Check this documentation first
 2. Review `ARCHITECTURE.md` for auth patterns
 3. Check `PROJECT_STRUCTURE.md` for file locations

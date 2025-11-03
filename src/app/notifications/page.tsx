@@ -3,12 +3,12 @@
  * Full-page view of all in-app notifications
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Bell, Check, CheckCheck, Trash2, Filter } from 'lucide-react';
-import Navigation from '@/components/Navigation';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
+import Navigation from "@/components/Navigation";
 
 interface InAppNotification {
   id: string;
@@ -26,15 +26,16 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [filter, setFilter] = useState<"all" | "unread">("all");
 
   const loadNotifications = async () => {
     try {
       setIsLoading(true);
-      const url = filter === 'unread' 
-        ? '/api/notifications/inbox?unread_only=true&limit=50'
-        : '/api/notifications/inbox?limit=50';
-      
+      const url =
+        filter === "unread"
+          ? "/api/notifications/inbox?unread_only=true&limit=50"
+          : "/api/notifications/inbox?limit=50";
+
       const response = await fetch(url);
       const data = await response.json();
 
@@ -43,7 +44,7 @@ export default function NotificationsPage() {
         setUnreadCount(data.unreadCount);
       }
     } catch (error) {
-      console.error('Failed to load notifications:', error);
+      console.error("Failed to load notifications:", error);
     } finally {
       setIsLoading(false);
     }
@@ -58,51 +59,51 @@ export default function NotificationsPage() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationId })
+      await fetch("/api/notifications/inbox", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
       });
 
-      setNotifications(prev =>
-        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Failed to mark notification as read:', error);
+      console.error("Failed to mark notification as read:", error);
     }
   };
 
   const markAllAsRead = async () => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ markAllRead: true })
+      await fetch("/api/notifications/inbox", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markAllRead: true }),
       });
 
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (error) {
-      console.error('Failed to mark all as read:', error);
+      console.error("Failed to mark all as read:", error);
     }
   };
 
   const deleteNotification = async (notificationId: string) => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationId })
+      await fetch("/api/notifications/inbox", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
       });
 
-      const notification = notifications.find(n => n.id === notificationId);
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      const notification = notifications.find((n) => n.id === notificationId);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
       if (notification && !notification.read) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (error) {
-      console.error('Failed to delete notification:', error);
+      console.error("Failed to delete notification:", error);
     }
   };
 
@@ -124,16 +125,16 @@ export default function NotificationsPage() {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return 'Just now';
+    if (diffMins < 1) return "Just now";
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return 'Yesterday';
+    if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
     });
   };
 
@@ -143,7 +144,9 @@ export default function NotificationsPage() {
         <Navigation />
         <main className="min-h-screen bg-gray-50 pt-20">
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <p className="text-center text-gray-600">Please log in to view notifications.</p>
+            <p className="text-center text-gray-600">
+              Please log in to view notifications.
+            </p>
           </div>
         </main>
       </>
@@ -161,9 +164,13 @@ export default function NotificationsPage() {
               <div className="flex items-center gap-3">
                 <Bell className="w-8 h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Notifications
+                  </h1>
                   <p className="text-sm text-gray-600 mt-1">
-                    {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up!'}
+                    {unreadCount > 0
+                      ? `${unreadCount} unread`
+                      : "All caught up!"}
                   </p>
                 </div>
               </div>
@@ -172,22 +179,22 @@ export default function NotificationsPage() {
                 {/* Filter Buttons */}
                 <div className="flex bg-gray-100 rounded-lg p-1">
                   <button
-                    onClick={() => setFilter('all')}
+                    onClick={() => setFilter("all")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      filter === 'all'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                      filter === "all"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     <Filter className="w-4 h-4 inline mr-1" />
                     All
                   </button>
                   <button
-                    onClick={() => setFilter('unread')}
+                    onClick={() => setFilter("unread")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      filter === 'unread'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                      filter === "unread"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     Unread ({unreadCount})
@@ -217,11 +224,13 @@ export default function NotificationsPage() {
               <div className="text-center py-12">
                 <Bell className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {filter === 'unread' ? 'No unread notifications' : 'No notifications'}
+                  {filter === "unread"
+                    ? "No unread notifications"
+                    : "No notifications"}
                 </h3>
                 <p className="text-gray-600">
-                  {filter === 'unread' 
-                    ? "You're all caught up!" 
+                  {filter === "unread"
+                    ? "You're all caught up!"
                     : "When you get notifications, they'll appear here."}
                 </p>
               </div>
@@ -231,22 +240,24 @@ export default function NotificationsPage() {
                   <div
                     key={notification.id}
                     className={`p-6 hover:bg-gray-50 transition-colors cursor-pointer ${
-                      !notification.read ? 'bg-blue-50' : ''
+                      !notification.read ? "bg-blue-50" : ""
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
                     <div className="flex items-start gap-4">
                       {/* Icon */}
                       <div className="text-3xl shrink-0">
-                        {notification.icon || '🔔'}
+                        {notification.icon || "🔔"}
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4 mb-2">
-                          <h3 className={`text-base font-medium text-gray-900 ${
-                            !notification.read ? 'font-semibold' : ''
-                          }`}>
+                          <h3
+                            className={`text-base font-medium text-gray-900 ${
+                              !notification.read ? "font-semibold" : ""
+                            }`}
+                          >
                             {notification.title}
                           </h3>
                           <span className="text-sm text-gray-500 shrink-0">
@@ -294,7 +305,8 @@ export default function NotificationsPage() {
           {notifications.length >= 50 && (
             <div className="text-center mt-6">
               <p className="text-sm text-gray-600">
-                Showing {notifications.length} notifications. Older notifications auto-expire after 7 days.
+                Showing {notifications.length} notifications. Older
+                notifications auto-expire after 7 days.
               </p>
             </div>
           )}

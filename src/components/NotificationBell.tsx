@@ -3,11 +3,11 @@
  * Shows notification icon with badge count and dropdown
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Bell, X, Check, CheckCheck } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Bell, X, Check, CheckCheck } from "lucide-react";
 
 interface InAppNotification {
   id: string;
@@ -32,19 +32,21 @@ export default function NotificationBell() {
   const loadUnreadCount = useCallback(async () => {
     // Don't attempt to load if no user
     if (!user) return;
-    
+
     try {
-      const response = await fetch('/api/notifications/inbox?limit=1&unread_only=true');
-      
+      const response = await fetch(
+        "/api/notifications/inbox?limit=1&unread_only=true"
+      );
+
       // Silently handle auth errors (user not logged in)
       if (!response.ok) {
         if (response.status === 401) {
           // User not authenticated, silently return
           return;
         }
-        throw new Error('Failed to fetch notifications');
+        throw new Error("Failed to fetch notifications");
       }
-      
+
       const data = await response.json();
 
       if (data.success) {
@@ -52,8 +54,8 @@ export default function NotificationBell() {
       }
     } catch (error) {
       // Only log non-auth errors in development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Failed to load unread count:', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to load unread count:", error);
       }
     }
   }, [user]);
@@ -61,19 +63,19 @@ export default function NotificationBell() {
   // Memoized function to load notifications
   const loadNotifications = useCallback(async () => {
     if (!user) return;
-    
+
     try {
       setIsLoading(true);
-      const response = await fetch('/api/notifications/inbox?limit=10');
-      
+      const response = await fetch("/api/notifications/inbox?limit=10");
+
       // Silently handle auth errors
       if (!response.ok) {
         if (response.status === 401) {
           return;
         }
-        throw new Error('Failed to fetch notifications');
+        throw new Error("Failed to fetch notifications");
       }
-      
+
       const data = await response.json();
 
       if (data.success) {
@@ -81,8 +83,8 @@ export default function NotificationBell() {
         setUnreadCount(data.unreadCount);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Failed to load notifications:', error);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Failed to load notifications:", error);
       }
     } finally {
       setIsLoading(false);
@@ -108,63 +110,67 @@ export default function NotificationBell() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isOpen]);
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationId })
+      await fetch("/api/notifications/inbox", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
       });
 
-      setNotifications(prev =>
-        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Failed to mark notification as read:', error);
+      console.error("Failed to mark notification as read:", error);
     }
   };
 
   const markAllAsRead = async () => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ markAllRead: true })
+      await fetch("/api/notifications/inbox", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markAllRead: true }),
       });
 
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (error) {
-      console.error('Failed to mark all as read:', error);
+      console.error("Failed to mark all as read:", error);
     }
   };
 
   const deleteNotification = async (notificationId: string) => {
     try {
-      await fetch('/api/notifications/inbox', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationId })
+      await fetch("/api/notifications/inbox", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId }),
       });
 
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      if (!notifications.find(n => n.id === notificationId)?.read) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+      if (!notifications.find((n) => n.id === notificationId)?.read) {
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (error) {
-      console.error('Failed to delete notification:', error);
+      console.error("Failed to delete notification:", error);
     }
   };
 
@@ -187,10 +193,10 @@ export default function NotificationBell() {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return 'Just now';
+    if (diffMins < 1) return "Just now";
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return 'Yesterday';
+    if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString();
   };
@@ -208,7 +214,7 @@ export default function NotificationBell() {
         <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-            {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
@@ -218,7 +224,9 @@ export default function NotificationBell() {
         <div className="absolute right-0 mt-2 w-96 max-h-[600px] bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
-            <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Notifications
+            </h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
@@ -247,22 +255,24 @@ export default function NotificationBell() {
                   <div
                     key={notification.id}
                     className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
-                      !notification.read ? 'bg-blue-50' : ''
+                      !notification.read ? "bg-blue-50" : ""
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
                     <div className="flex items-start gap-3">
                       {/* Icon */}
                       <div className="text-2xl shrink-0">
-                        {notification.icon || '🔔'}
+                        {notification.icon || "🔔"}
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <p className={`text-sm font-medium text-gray-900 ${
-                            !notification.read ? 'font-semibold' : ''
-                          }`}>
+                          <p
+                            className={`text-sm font-medium text-gray-900 ${
+                              !notification.read ? "font-semibold" : ""
+                            }`}
+                          >
                             {notification.title}
                           </p>
                           <button
@@ -311,7 +321,7 @@ export default function NotificationBell() {
             <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={() => {
-                  window.location.href = '/notifications';
+                  window.location.href = "/notifications";
                   setIsOpen(false);
                 }}
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium w-full text-center"

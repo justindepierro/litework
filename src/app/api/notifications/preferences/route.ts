@@ -3,9 +3,13 @@
  * Manage user notification preferences
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getAuthenticatedUser,
+  hasRoleOrHigher,
+  isCoach,
+} from "@/lib/auth-server";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -13,8 +17,8 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 /**
@@ -23,26 +27,26 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
  */
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
 
   try {
     const { data, error } = await supabase
-      .from('notification_preferences')
-      .select('*')
-      .eq('user_id', user.id)
+      .from("notification_preferences")
+      .select("*")
+      .eq("user_id", user.id)
       .single();
 
     if (error) {
       // If no preferences exist, create defaults
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         const { data: newPrefs, error: insertError } = await supabase
-          .from('notification_preferences')
+          .from("notification_preferences")
           .insert({
             user_id: user.id,
             push_enabled: true,
@@ -52,7 +56,7 @@ export async function GET(request: NextRequest) {
             message_notifications: true,
             progress_updates: false,
             achievement_notifications: true,
-            preferred_contact: 'push'
+            preferred_contact: "push",
           })
           .select()
           .single();
@@ -63,7 +67,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          preferences: newPrefs
+          preferences: newPrefs,
         });
       }
       throw error;
@@ -71,13 +75,12 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      preferences: data
+      preferences: data,
     });
-
   } catch (error) {
-    console.error('❌ Error fetching preferences:', error);
+    console.error("❌ Error fetching preferences:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch preferences' },
+      { error: "Failed to fetch preferences" },
       { status: 500 }
     );
   }
@@ -89,10 +92,10 @@ export async function GET(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -102,15 +105,15 @@ export async function PUT(request: NextRequest) {
 
     // Validate preferences
     const allowedFields = [
-      'push_enabled',
-      'email_enabled',
-      'workout_reminders',
-      'assignment_notifications',
-      'message_notifications',
-      'progress_updates',
-      'achievement_notifications',
-      'quiet_hours',
-      'preferred_contact'
+      "push_enabled",
+      "email_enabled",
+      "workout_reminders",
+      "assignment_notifications",
+      "message_notifications",
+      "progress_updates",
+      "achievement_notifications",
+      "quiet_hours",
+      "preferred_contact",
     ];
 
     const updates: Record<string, unknown> = {};
@@ -122,16 +125,16 @@ export async function PUT(request: NextRequest) {
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json(
-        { error: 'No valid fields to update' },
+        { error: "No valid fields to update" },
         { status: 400 }
       );
     }
 
     // Update preferences
     const { data, error } = await supabase
-      .from('notification_preferences')
+      .from("notification_preferences")
       .update(updates)
-      .eq('user_id', user.id)
+      .eq("user_id", user.id)
       .select()
       .single();
 
@@ -141,13 +144,12 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      preferences: data
+      preferences: data,
     });
-
   } catch (error) {
-    console.error('❌ Error updating preferences:', error);
+    console.error("❌ Error updating preferences:", error);
     return NextResponse.json(
-      { error: 'Failed to update preferences' },
+      { error: "Failed to update preferences" },
       { status: 500 }
     );
   }

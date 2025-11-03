@@ -1,7 +1,13 @@
 // Shared types for the workout tracking application
 
 // Notification preferences structure
-export type NotificationTiming = "smart" | "morning" | "evening" | "2hours" | "1hour" | "30min";
+export type NotificationTiming =
+  | "smart"
+  | "morning"
+  | "evening"
+  | "2hours"
+  | "1hour"
+  | "30min";
 export type NotificationChannel = "email" | "push";
 
 export interface NotificationPreferences {

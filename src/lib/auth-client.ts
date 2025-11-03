@@ -101,18 +101,16 @@ export async function signUp(
 
     // Create user profile in database
     const fullName = `${sanitizedFirstName} ${sanitizedLastName}`.trim();
-    const { error: profileError } = await supabase
-      .from("users")
-      .insert({
-        id: data.user.id,
-        email: sanitizedEmail,
-        name: fullName,
-        first_name: sanitizedFirstName,
-        last_name: sanitizedLastName,
-        role: "athlete", // Default role
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+    const { error: profileError } = await supabase.from("users").insert({
+      id: data.user.id,
+      email: sanitizedEmail,
+      name: fullName,
+      first_name: sanitizedFirstName,
+      last_name: sanitizedLastName,
+      role: "athlete", // Default role
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
 
     if (profileError) {
       console.error("Failed to create user profile:", profileError);
@@ -379,25 +377,25 @@ export async function getSession() {
 // Get current user with profile data
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    console.log('[AUTH_CLIENT] Getting session...');
-    
+    console.log("[AUTH_CLIENT] Getting session...");
+
     // Add timeout for session fetch (3 seconds)
     const sessionPromise = getSession();
     const timeoutPromise = new Promise<null>((resolve) => {
       setTimeout(() => {
-        console.warn('[AUTH_CLIENT] Session fetch timeout after 3s');
+        console.warn("[AUTH_CLIENT] Session fetch timeout after 3s");
         resolve(null);
       }, 3000);
     });
-    
+
     const session = await Promise.race([sessionPromise, timeoutPromise]);
-    
+
     if (!session?.user) {
-      console.log('[AUTH_CLIENT] No session found');
+      console.log("[AUTH_CLIENT] No session found");
       return null;
     }
-    
-    console.log('[AUTH_CLIENT] Session found, fetching profile...');
+
+    console.log("[AUTH_CLIENT] Session found, fetching profile...");
 
     // Get user profile from database with timeout (2 seconds)
     const profilePromise = supabase
@@ -405,27 +403,35 @@ export async function getCurrentUser(): Promise<User | null> {
       .select("*")
       .eq("id", session.user.id)
       .single();
-      
-    const profileTimeoutPromise = new Promise<{ data: null; error: Error }>((resolve) => {
-      setTimeout(() => {
-        console.warn('[AUTH_CLIENT] Profile fetch timeout after 2s');
-        resolve({ data: null, error: new Error('Profile fetch timeout') });
-      }, 2000);
-    });
-    
-    const { data: profile, error } = await Promise.race([profilePromise, profileTimeoutPromise]);
+
+    const profileTimeoutPromise = new Promise<{ data: null; error: Error }>(
+      (resolve) => {
+        setTimeout(() => {
+          console.warn("[AUTH_CLIENT] Profile fetch timeout after 2s");
+          resolve({ data: null, error: new Error("Profile fetch timeout") });
+        }, 2000);
+      }
+    );
+
+    const { data: profile, error } = await Promise.race([
+      profilePromise,
+      profileTimeoutPromise,
+    ]);
 
     if (error) {
-      console.error('[AUTH_CLIENT] Profile fetch error:', error);
-      return null;
-    }
-    
-    if (!profile) {
-      console.error('[AUTH_CLIENT] No profile found for user:', session.user.id);
+      console.error("[AUTH_CLIENT] Profile fetch error:", error);
       return null;
     }
 
-    console.log('[AUTH_CLIENT] Profile loaded successfully');
+    if (!profile) {
+      console.error(
+        "[AUTH_CLIENT] No profile found for user:",
+        session.user.id
+      );
+      return null;
+    }
+
+    console.log("[AUTH_CLIENT] Profile loaded successfully");
     return {
       id: profile.id,
       email: profile.email,
@@ -435,7 +441,7 @@ export async function getCurrentUser(): Promise<User | null> {
       fullName: profile.name,
     };
   } catch (error) {
-    console.error('[AUTH_CLIENT] Unexpected error in getCurrentUser:', error);
+    console.error("[AUTH_CLIENT] Unexpected error in getCurrentUser:", error);
     return null;
   }
 }

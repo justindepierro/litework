@@ -48,7 +48,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers,
-      credentials: 'include', // Required to send cookies with requests
+      credentials: "include", // Required to send cookies with requests
     });
 
     if (!response.ok) {

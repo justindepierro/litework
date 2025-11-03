@@ -22,7 +22,9 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error("❌ Missing Supabase credentials in .env.local");
-  console.error("   Need: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY");
+  console.error(
+    "   Need: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
+  );
   process.exit(1);
 }
 
@@ -76,9 +78,9 @@ async function runMigration() {
 
         if (error) {
           // Try direct execution as fallback
-          const { error: directError } = await supabase.from("_sql").select(
-            statement
-          );
+          const { error: directError } = await supabase
+            .from("_sql")
+            .select(statement);
           if (directError) {
             throw error;
           }
@@ -112,7 +114,9 @@ async function runMigration() {
       console.log("🎉 Migration completed successfully!");
       console.log("\n📋 Next steps:");
       console.log("   1. Verify tables: npm run check-tables");
-      console.log("   2. Generate VAPID keys: npx web-push generate-vapid-keys");
+      console.log(
+        "   2. Generate VAPID keys: npx web-push generate-vapid-keys"
+      );
       console.log("   3. Add keys to .env.local");
       console.log("   4. Start Phase 2: Push Notification Implementation\n");
     } else {

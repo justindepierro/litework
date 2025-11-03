@@ -41,7 +41,9 @@ export default function Toast({
       case "error":
         return <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />;
       case "warning":
-        return <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />;
+        return (
+          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
+        );
       case "info":
         return <Info className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />;
     }

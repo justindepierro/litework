@@ -3,12 +3,12 @@
  * Assign/unassign athletes to/from a group
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { X, UserPlus, Users, Search, Check } from 'lucide-react';
-import { User as UserType, AthleteGroup } from '@/types';
-import { useToast } from '@/components/ToastProvider';
+import { useState, useEffect } from "react";
+import { X, UserPlus, Users, Search, Check } from "lucide-react";
+import { User as UserType, AthleteGroup } from "@/types";
+import { useToast } from "@/components/ToastProvider";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -23,10 +23,10 @@ export default function ManageGroupMembersModal({
   onClose,
   group,
   allAthletes,
-  onMembersUpdated
+  onMembersUpdated,
 }: ManageGroupMembersModalProps) {
   const toast = useToast();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,7 +41,7 @@ export default function ManageGroupMembersModal({
         setGroupMembers(data.athletes.map((a: UserType) => a.id));
       }
     } catch (error) {
-      console.error('Failed to load group members:', error);
+      console.error("Failed to load group members:", error);
     } finally {
       setIsLoading(false);
     }
@@ -64,22 +64,22 @@ export default function ManageGroupMembersModal({
         // Remove from group
         const response = await fetch(
           `/api/groups/members?groupId=${group.id}&athleteId=${athleteId}`,
-          { method: 'DELETE' }
+          { method: "DELETE" }
         );
         const data = await response.json();
 
         if (data.success) {
-          setGroupMembers(groupMembers.filter(id => id !== athleteId));
+          setGroupMembers(groupMembers.filter((id) => id !== athleteId));
         }
       } else {
         // Add to group
-        const response = await fetch('/api/groups/members', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/groups/members", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             groupId: group.id,
-            athleteIds: [athleteId]
-          })
+            athleteIds: [athleteId],
+          }),
         });
         const data = await response.json();
 
@@ -90,16 +90,19 @@ export default function ManageGroupMembersModal({
 
       onMembersUpdated();
     } catch (error) {
-      console.error('Failed to update group membership:', error);
-      toast.error('Failed to update group membership');
+      console.error("Failed to update group membership:", error);
+      toast.error("Failed to update group membership");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const filteredAthletes = allAthletes.filter(athlete =>
-    `${athlete.firstName} ${athlete.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    athlete.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAthletes = allAthletes.filter(
+    (athlete) =>
+      `${athlete.firstName} ${athlete.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      athlete.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (!isOpen) return null;
@@ -167,19 +170,22 @@ export default function ManageGroupMembersModal({
                     disabled={isSaving}
                     className={`w-full p-4 rounded-lg border-2 transition-all flex items-center justify-between ${
                       isInGroup
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                    } ${isSaving ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    } ${isSaving ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                        {athlete.firstName[0]}{athlete.lastName[0]}
+                        {athlete.firstName[0]}
+                        {athlete.lastName[0]}
                       </div>
                       <div className="text-left">
                         <div className="font-semibold text-gray-900">
                           {athlete.firstName} {athlete.lastName}
                         </div>
-                        <div className="text-sm text-gray-500">{athlete.email}</div>
+                        <div className="text-sm text-gray-500">
+                          {athlete.email}
+                        </div>
                       </div>
                     </div>
 

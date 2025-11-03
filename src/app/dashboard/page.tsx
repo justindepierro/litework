@@ -147,7 +147,7 @@ export default function DashboardPage() {
                   {loadingStats ? (
                     <div className="animate-pulse h-8 w-16 bg-orange-200 rounded"></div>
                   ) : (
-                    `${stats.workoutsThisWeek} workout${stats.workoutsThisWeek !== 1 ? 's' : ''}`
+                    `${stats.workoutsThisWeek} workout${stats.workoutsThisWeek !== 1 ? "s" : ""}`
                   )}
                 </dd>
               </div>

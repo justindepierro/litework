@@ -16,7 +16,7 @@
 #### Tasks
 
 - [ ] Create `push_subscriptions` table
-- [ ] Create `notification_preferences` table  
+- [ ] Create `notification_preferences` table
 - [ ] Create `notification_log` table
 - [ ] Add RLS policies
 - [ ] Create indexes
@@ -36,8 +36,8 @@ psql $DATABASE_URL < scripts/database/create-notification-tables.sql
 
 ```sql
 -- Verify tables exist
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name LIKE '%notification%';
 ```
 
@@ -173,7 +173,6 @@ RESEND_FROM_EMAIL="LiteWork <noreply@litework.app>"
   - Send notification after assignment
   - Include workout details
   - Link to workout view
-  
 - [ ] **Coach Messages** (`src/app/api/messages/route.ts`)
   - Send notification on new message
   - Include message preview
@@ -279,7 +278,7 @@ RESEND_FROM_EMAIL="LiteWork <noreply@litework.app>"
 
 ```sql
 -- Daily notification stats
-SELECT 
+SELECT
   DATE(sent_at) as date,
   type,
   category,
@@ -389,6 +388,7 @@ A: We only send transactional emails (no marketing). Push subscriptions are opt-
 **Ready to implement?** Start with Phase 1! 🚀
 
 **Questions?** Check the detailed guides:
+
 - Technical details → `NOTIFICATION_SYSTEM_GUIDE.md`
 - Email specifics → `EMAIL_NOTIFICATION_GUIDE.md`
 

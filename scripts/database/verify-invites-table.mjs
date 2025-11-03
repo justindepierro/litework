@@ -19,7 +19,9 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error("❌ Missing Supabase credentials");
-  console.error("Make sure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set");
+  console.error(
+    "Make sure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set"
+  );
   process.exit(1);
 }
 
@@ -39,23 +41,28 @@ async function verifyInvitesTable() {
       if (error.message.includes("does not exist") || error.code === "42P01") {
         console.log("❌ Invites table does not exist");
         console.log("📝 Creating invites table...");
-        
+
         // Read the SQL file
-        const sqlPath = join(__dirname, "../../database/create-invites-table.sql");
+        const sqlPath = join(
+          __dirname,
+          "../../database/create-invites-table.sql"
+        );
         const sql = readFileSync(sqlPath, "utf-8");
-        
+
         // Execute the SQL
         const { error: createError } = await supabase.rpc("exec_sql", {
           sql_query: sql,
         });
-        
+
         if (createError) {
           console.error("❌ Failed to create invites table:", createError);
-          console.log("\n📋 Please run this SQL manually in Supabase SQL Editor:");
+          console.log(
+            "\n📋 Please run this SQL manually in Supabase SQL Editor:"
+          );
           console.log(sql);
           process.exit(1);
         }
-        
+
         console.log("✅ Invites table created successfully");
       } else {
         console.error("❌ Error checking invites table:", error);
@@ -79,18 +86,21 @@ async function verifyInvitesTable() {
     }
 
     console.log("✅ Table structure verified");
-    console.log(`📊 Sample invites (showing ${invites?.length || 0} of total):`);
-    
+    console.log(
+      `📊 Sample invites (showing ${invites?.length || 0} of total):`
+    );
+
     if (invites && invites.length > 0) {
       invites.forEach((invite) => {
-        console.log(`  - ${invite.first_name} ${invite.last_name} <${invite.email}> - Status: ${invite.status}`);
+        console.log(
+          `  - ${invite.first_name} ${invite.last_name} <${invite.email}> - Status: ${invite.status}`
+        );
       });
     } else {
       console.log("  (No invites yet)");
     }
 
     console.log("\n✅ Invites table verification complete!");
-
   } catch (error) {
     console.error("❌ Verification failed:", error);
     process.exit(1);

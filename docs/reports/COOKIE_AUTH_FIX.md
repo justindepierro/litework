@@ -19,12 +19,13 @@ In `src/lib/auth-server.ts`, the `getAuthenticatedUser()` function was creating 
 
 ```typescript
 // ❌ BROKEN - Creates client without cookie access
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 ```
 
 **Why this failed:**
+
 - `createClient()` from `@supabase/supabase-js` creates a browser client
 - Browser clients expect `localStorage` (not available on server)
 - Even though `cookies()` was called, the client had no way to read them
@@ -45,24 +46,21 @@ Used `createServerClient` from `@supabase/ssr` with a proper cookie adapter:
 
 ```typescript
 // ✅ FIXED - Server client with cookie access
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from "@supabase/ssr";
 
 const cookieStore = await cookies();
 
-const supabase = createServerClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
-      },
+const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+  cookies: {
+    get(name: string) {
+      return cookieStore.get(name)?.value;
     },
-  }
-);
+  },
+});
 ```
 
 **Why this works:**
+
 - `createServerClient` is designed for Next.js server-side use
 - The `cookies.get()` callback tells Supabase how to read from Next.js cookie store
 - Server can now properly read authentication cookies
@@ -73,6 +71,7 @@ const supabase = createServerClient(
 **File**: `src/lib/auth-server.ts`
 
 **Modified**:
+
 1. Import: `createClient` → `createServerClient` (from `@supabase/ssr`)
 2. Client creation: Added proper cookie adapter configuration
 3. Documentation: Updated comments to reflect cookie-based approach
@@ -100,6 +99,7 @@ Server should start on http://localhost:3000
 ### 3. Verify Cookies Are Set
 
 **Browser DevTools:**
+
 1. Open DevTools (F12 or Cmd+Option+I)
 2. Go to **Application** tab
 3. Click **Cookies** → `http://localhost:3000`
@@ -115,12 +115,14 @@ Navigate to protected pages and verify **NO 401 errors**:
 - http://localhost:3000/profile
 
 **Expected Behavior:**
+
 - ✅ Pages load successfully
 - ✅ API calls return 200 status codes
 - ✅ Data loads and displays
 - ✅ No "Authentication required" errors in console
 
 **Browser Console** (should see):
+
 ```
 ✅ GET /api/analytics/today-schedule 200
 ✅ GET /api/groups 200
@@ -129,6 +131,7 @@ Navigate to protected pages and verify **NO 401 errors**:
 ```
 
 **Terminal** (should see):
+
 ```
 ✓ GET /api/analytics/today-schedule 200 in 45ms
 ✓ GET /api/groups 200 in 32ms
@@ -152,7 +155,7 @@ Navigate to protected pages and verify **NO 401 errors**:
 ## Verification Checklist
 
 - [x] TypeScript compiles with zero errors
-- [x] Build succeeds without errors  
+- [x] Build succeeds without errors
 - [x] Commit pushed to origin/main
 - [ ] **User signs in successfully**
 - [ ] **Cookies are set in browser**
@@ -183,6 +186,7 @@ Navigate to protected pages and verify **NO 401 errors**:
 ### @supabase/ssr Package
 
 The `@supabase/ssr` package provides:
+
 - `createServerClient` - For Next.js server components and API routes
 - `createBrowserClient` - For client-side React components
 - Cookie adapters for various frameworks (Next.js, SvelteKit, etc.)
@@ -206,11 +210,13 @@ The `@supabase/ssr` package provides:
 ### Why Two Different Clients?
 
 **Client-side** (`src/lib/supabase.ts`):
+
 - Uses `createClient` from `@supabase/supabase-js`
 - Has access to `localStorage` and browser APIs
 - Handles sign in, sign out, session management
 
 **Server-side** (`src/lib/auth-server.ts`):
+
 - Uses `createServerClient` from `@supabase/ssr`
 - No access to `localStorage` (server environment)
 - Reads session from HTTP-only cookies via Next.js `cookies()` API
@@ -218,11 +224,13 @@ The `@supabase/ssr` package provides:
 ## Impact
 
 **Before Fix:**
+
 - ❌ 100% of authenticated requests failed
 - ❌ All protected pages showed no data
 - ❌ System completely non-functional
 
 **After Fix:**
+
 - ✅ Authentication works end-to-end
 - ✅ Protected routes accessible after login
 - ✅ Session persistence across page loads

@@ -1,6 +1,7 @@
 # 📋 Notification System - Quick Reference
 
 **Quick Links:**
+
 - 📘 [Complete System Guide](./NOTIFICATION_SYSTEM_GUIDE.md) - Full technical documentation
 - 📧 [Email Guide](./EMAIL_NOTIFICATION_GUIDE.md) - Email-specific implementation
 - 🗺️ [Implementation Roadmap](./NOTIFICATION_IMPLEMENTATION_ROADMAP.md) - Step-by-step plan
@@ -10,14 +11,14 @@
 
 ## 🎯 At a Glance
 
-| Feature | Status | Effort | Dependencies |
-|---------|--------|--------|--------------|
-| Database Schema | ⬜ Not Started | 1-2h | PostgreSQL |
-| Push Notifications | ⬜ Not Started | 4-5h | web-push, VAPID keys |
-| Email Service | ⬜ Not Started | 3-4h | Resend account |
-| Integration | ⬜ Not Started | 2-3h | Above complete |
-| Settings UI | ⬜ Not Started | 2-3h | Above complete |
-| **Total** | **⬜ 0%** | **14-20h** | ~2-3 days |
+| Feature            | Status         | Effort     | Dependencies         |
+| ------------------ | -------------- | ---------- | -------------------- |
+| Database Schema    | ⬜ Not Started | 1-2h       | PostgreSQL           |
+| Push Notifications | ⬜ Not Started | 4-5h       | web-push, VAPID keys |
+| Email Service      | ⬜ Not Started | 3-4h       | Resend account       |
+| Integration        | ⬜ Not Started | 2-3h       | Above complete       |
+| Settings UI        | ⬜ Not Started | 2-3h       | Above complete       |
+| **Total**          | **⬜ 0%**      | **14-20h** | ~2-3 days            |
 
 ---
 
@@ -49,6 +50,7 @@ RESEND_FROM_EMAIL="LiteWork <noreply@litework.app>"
 ## 🗄️ Database Tables
 
 ### push_subscriptions
+
 Stores device subscriptions for push notifications.
 
 ```sql
@@ -66,6 +68,7 @@ CREATE TABLE push_subscriptions (
 ```
 
 ### notification_preferences
+
 User settings for notifications.
 
 ```sql
@@ -82,6 +85,7 @@ CREATE TABLE notification_preferences (
 ```
 
 ### notification_log
+
 Audit trail for all notifications.
 
 ```sql
@@ -178,20 +182,31 @@ export async function notifyUser(params: {
 ## 🔌 API Routes
 
 ### Subscribe to Push
+
 ```typescript
-POST /api/notifications/subscribe
-Body: { subscription, deviceName }
-Returns: { success: true }
+POST / api / notifications / subscribe;
+Body: {
+  (subscription, deviceName);
+}
+Returns: {
+  success: true;
+}
 ```
 
 ### Unsubscribe
+
 ```typescript
-DELETE /api/notifications/subscribe
-Body: { endpoint }
-Returns: { success: true }
+DELETE / api / notifications / subscribe;
+Body: {
+  endpoint;
+}
+Returns: {
+  success: true;
+}
 ```
 
 ### Send Notification (Admin)
+
 ```typescript
 POST /api/notifications/send
 Body: { userIds[], title, body, url, category }
@@ -199,12 +214,14 @@ Returns: { success: true, results: [...] }
 ```
 
 ### Get Preferences
+
 ```typescript
 GET /api/notifications/preferences
 Returns: { preferences: {...} }
 ```
 
 ### Update Preferences
+
 ```typescript
 PUT /api/notifications/preferences
 Body: { push_enabled, email_enabled, ... }
@@ -216,6 +233,7 @@ Returns: { success: true }
 ## 📱 Client Components
 
 ### NotificationPermission
+
 ```tsx
 // src/components/NotificationPermission.tsx
 <NotificationPermission />
@@ -228,6 +246,7 @@ Returns: { success: true }
 ```
 
 ### Usage
+
 ```tsx
 import NotificationPermission from "@/components/NotificationPermission";
 
@@ -261,7 +280,7 @@ export async function POST(request: NextRequest) {
     body: `${workout.name} - ${formatDate(date)}`,
     url: `/workouts/view/${assignment.id}`,
     emailTemplate: "workoutAssignment",
-    emailData: { athleteName, workoutName, date, exercises }
+    emailData: { athleteName, workoutName, date, exercises },
   });
 
   return NextResponse.json({ success: true });
@@ -279,7 +298,7 @@ await notifyUser({
   body: message.subject,
   url: `/messages?id=${message.id}`,
   emailTemplate: "coachMessage",
-  emailData: { athleteName, coachName, subject, message }
+  emailData: { athleteName, coachName, subject, message },
 });
 ```
 
@@ -288,42 +307,45 @@ await notifyUser({
 ## 🧪 Testing Commands
 
 ### Generate VAPID Keys
+
 ```bash
 npx web-push generate-vapid-keys
 ```
 
 ### Test Push Notification
+
 ```javascript
 // Browser console (after granting permission)
-fetch('/api/notifications/send', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+fetch("/api/notifications/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    userIds: ['your-user-id'],
-    title: 'Test Notification',
-    body: 'This is a test!',
-    url: '/dashboard',
-    category: 'test'
-  })
+    userIds: ["your-user-id"],
+    title: "Test Notification",
+    body: "This is a test!",
+    url: "/dashboard",
+    category: "test",
+  }),
 });
 ```
 
 ### Test Email
+
 ```javascript
-fetch('/api/emails/send', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+fetch("/api/emails/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    userId: 'your-user-id',
-    template: 'workout-assignment',
+    userId: "your-user-id",
+    template: "workout-assignment",
     data: {
-      athleteName: 'Justin',
-      workoutName: 'Test Workout',
-      date: 'Today',
-      exercises: ['Bench Press'],
-      assignmentId: '123'
-    }
-  })
+      athleteName: "Justin",
+      workoutName: "Test Workout",
+      date: "Today",
+      exercises: ["Bench Press"],
+      assignmentId: "123",
+    },
+  }),
 });
 ```
 
@@ -332,8 +354,9 @@ fetch('/api/emails/send', {
 ## 📊 Monitoring Queries
 
 ### Delivery Stats
+
 ```sql
-SELECT 
+SELECT
   type,
   category,
   COUNT(*) as total,
@@ -345,8 +368,9 @@ GROUP BY type, category;
 ```
 
 ### User Subscriptions
+
 ```sql
-SELECT 
+SELECT
   u.name,
   COUNT(ps.id) as devices,
   np.push_enabled,
@@ -363,30 +387,35 @@ GROUP BY u.id, u.name, np.push_enabled, np.email_enabled;
 ## ⚠️ Common Issues
 
 ### Push not working on iPhone
+
 **Fix:** Must be installed as PWA and opened from home screen icon.
 
 ### Email going to spam
+
 **Fix:** Verify domain in Resend dashboard (SPF, DKIM, DMARC records).
 
 ### Notification shows but click doesn't work
+
 **Fix:** Check service worker notification click handler in `public/sw.js`.
 
 ### "Permission denied" error
+
 **Fix:** User must grant permission in browser. Can't request again if denied.
 
 ### Subscription expired
+
 **Fix:** Auto-removed on 410 error. User needs to re-subscribe.
 
 ---
 
 ## 💰 Cost Breakdown
 
-| Service | Free Tier | Paid Tier | LiteWork Need |
-|---------|-----------|-----------|---------------|
-| Push (FCM/APNs) | ∞ unlimited | ∞ unlimited | FREE ✅ |
-| Resend Email | 3,000/month | $20 for 50k | FREE ✅ |
-| Database Storage | Minimal | Minimal | Included ✅ |
-| **Total** | **$0** | **$0-20** | **FREE** ✅ |
+| Service          | Free Tier   | Paid Tier   | LiteWork Need |
+| ---------------- | ----------- | ----------- | ------------- |
+| Push (FCM/APNs)  | ∞ unlimited | ∞ unlimited | FREE ✅       |
+| Resend Email     | 3,000/month | $20 for 50k | FREE ✅       |
+| Database Storage | Minimal     | Minimal     | Included ✅   |
+| **Total**        | **$0**      | **$0-20**   | **FREE** ✅   |
 
 For 100 athletes × 30 emails/month = 3,000 emails → **FREE**
 
@@ -394,27 +423,27 @@ For 100 athletes × 30 emails/month = 3,000 emails → **FREE**
 
 ## 🎯 Success Metrics
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Push Delivery Rate | >95% | TBD |
-| Email Delivery Rate | >98% | TBD |
-| Push CTR | >20% | TBD |
-| Email CTR | >15% | TBD |
-| Opt-out Rate | <5% | TBD |
-| User Satisfaction | >4.5★ | TBD |
+| Metric              | Target | Current |
+| ------------------- | ------ | ------- |
+| Push Delivery Rate  | >95%   | TBD     |
+| Email Delivery Rate | >98%   | TBD     |
+| Push CTR            | >20%   | TBD     |
+| Email CTR           | >15%   | TBD     |
+| Opt-out Rate        | <5%    | TBD     |
+| User Satisfaction   | >4.5★  | TBD     |
 
 ---
 
 ## 📅 Implementation Timeline
 
-| Phase | Duration | What Gets Built |
-|-------|----------|-----------------|
-| Phase 1: Database | 1-2h | Tables, indexes, RLS policies |
-| Phase 2: Push | 4-5h | Service, API routes, client component |
-| Phase 3: Email | 3-4h | Service, templates, Resend integration |
-| Phase 4: Integration | 2-3h | Connect to assignments & messages |
-| Phase 5: UI | 2-3h | Settings page, preferences |
-| **Total** | **14-20h** | **Full system operational** |
+| Phase                | Duration   | What Gets Built                        |
+| -------------------- | ---------- | -------------------------------------- |
+| Phase 1: Database    | 1-2h       | Tables, indexes, RLS policies          |
+| Phase 2: Push        | 4-5h       | Service, API routes, client component  |
+| Phase 3: Email       | 3-4h       | Service, templates, Resend integration |
+| Phase 4: Integration | 2-3h       | Connect to assignments & messages      |
+| Phase 5: UI          | 2-3h       | Settings page, preferences             |
+| **Total**            | **14-20h** | **Full system operational**            |
 
 ---
 
@@ -423,6 +452,7 @@ For 100 athletes × 30 emails/month = 3,000 emails → **FREE**
 **Overall Progress:** ⬜⬜⬜⬜⬜ 0%
 
 **Phase Status:**
+
 - ⬜ Phase 1: Database - Not Started
 - ⬜ Phase 2: Push Notifications - Not Started
 - ⬜ Phase 3: Email Service - Not Started

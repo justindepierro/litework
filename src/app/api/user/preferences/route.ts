@@ -3,11 +3,11 @@
  * Allows authenticated users to view and update their notification settings
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser } from '@/lib/auth-server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import type { NotificationPreferences } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { NotificationPreferences } from "@/types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -18,10 +18,10 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
  */
 export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -29,22 +29,18 @@ export async function GET() {
   try {
     // Create Supabase client with cookie support
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-      }
-    );
+      },
+    });
 
     const { data, error } = await supabase
-      .from('users')
-      .select('notification_preferences')
-      .eq('id', user.id)
+      .from("users")
+      .select("notification_preferences")
+      .eq("id", user.id)
       .single();
 
     if (error) {
@@ -55,16 +51,16 @@ export async function GET() {
     const defaultPreferences: NotificationPreferences = {
       workoutReminders: {
         enabled: true,
-        timing: 'smart',
-        channels: ['email'],
+        timing: "smart",
+        channels: ["email"],
       },
       achievementNotifications: {
         enabled: true,
-        channels: ['email'],
+        channels: ["email"],
       },
       assignmentNotifications: {
         enabled: true,
-        channels: ['email'],
+        channels: ["email"],
       },
     };
 
@@ -73,11 +69,11 @@ export async function GET() {
       preferences: data?.notification_preferences || defaultPreferences,
     });
   } catch (error) {
-    console.error('Error fetching preferences:', error);
+    console.error("Error fetching preferences:", error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to fetch notification preferences',
+        error: "Failed to fetch notification preferences",
       },
       { status: 500 }
     );
@@ -90,10 +86,10 @@ export async function GET() {
  */
 export async function PATCH(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -106,7 +102,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Preferences are required',
+          error: "Preferences are required",
         },
         { status: 400 }
       );
@@ -114,23 +110,19 @@ export async function PATCH(request: NextRequest) {
 
     // Create Supabase client with cookie support
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-      supabaseUrl,
-      supabaseAnonKey,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-      }
-    );
+      },
+    });
 
     // Get current preferences
     const { data: currentData } = await supabase
-      .from('users')
-      .select('notification_preferences')
-      .eq('id', user.id)
+      .from("users")
+      .select("notification_preferences")
+      .eq("id", user.id)
       .single();
 
     // Merge with existing preferences
@@ -141,12 +133,12 @@ export async function PATCH(request: NextRequest) {
 
     // Update in database
     const { error } = await supabase
-      .from('users')
+      .from("users")
       .update({
         notification_preferences: updatedPreferences,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', user.id);
+      .eq("id", user.id);
 
     if (error) {
       throw error;
@@ -154,15 +146,15 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Notification preferences updated successfully',
+      message: "Notification preferences updated successfully",
       preferences: updatedPreferences,
     });
   } catch (error) {
-    console.error('Error updating preferences:', error);
+    console.error("Error updating preferences:", error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to update notification preferences',
+        error: "Failed to update notification preferences",
       },
       { status: 500 }
     );

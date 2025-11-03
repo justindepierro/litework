@@ -2,11 +2,11 @@
  * Settings Page - Notification Preferences
  */
 
-'use client';
+"use client";
 
-import { useRequireAuth } from '@/hooks/use-auth-guard';
-import NotificationPermission from '@/components/NotificationPermission';
-import NotificationPreferencesSettings from '@/components/NotificationPreferencesSettings';
+import { useRequireAuth } from "@/hooks/use-auth-guard";
+import NotificationPermission from "@/components/NotificationPermission";
+import NotificationPreferencesSettings from "@/components/NotificationPreferencesSettings";
 
 export default function SettingsPage() {
   const { user, isLoading } = useRequireAuth();

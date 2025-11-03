@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser } from '@/lib/auth-server';
+import { getAuthenticatedUser } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 /**
@@ -12,10 +12,10 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
  */
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -74,49 +74,49 @@ export async function GET(request: NextRequest) {
 
     // Calculate statistics for each session
     const enrichedSessions = sessions?.map((session) => {
-        const totalExercises = session.session_exercises?.length || 0;
-        const completedExercises =
-          session.session_exercises?.filter((ex) => ex.completed).length || 0;
-        const totalSets =
-          session.session_exercises?.reduce(
-            (sum, ex) => sum + ex.target_sets,
-            0
-          ) || 0;
-        const completedSets =
-          session.session_exercises?.reduce(
-            (sum, ex) => sum + ex.completed_sets,
-            0
-          ) || 0;
-        const totalVolume =
-          session.session_exercises?.reduce((sum, ex) => {
-            return (
-              sum +
-              (ex.set_records?.reduce(
-                (setSum, set) => setSum + set.actual_weight * set.actual_reps,
-                0
-              ) || 0)
-            );
-          }, 0) || 0;
+      const totalExercises = session.session_exercises?.length || 0;
+      const completedExercises =
+        session.session_exercises?.filter((ex) => ex.completed).length || 0;
+      const totalSets =
+        session.session_exercises?.reduce(
+          (sum, ex) => sum + ex.target_sets,
+          0
+        ) || 0;
+      const completedSets =
+        session.session_exercises?.reduce(
+          (sum, ex) => sum + ex.completed_sets,
+          0
+        ) || 0;
+      const totalVolume =
+        session.session_exercises?.reduce((sum, ex) => {
+          return (
+            sum +
+            (ex.set_records?.reduce(
+              (setSum, set) => setSum + set.actual_weight * set.actual_reps,
+              0
+            ) || 0)
+          );
+        }, 0) || 0;
 
-        return {
-          ...session,
-          stats: {
-            totalExercises,
-            completedExercises,
-            totalSets,
-            completedSets,
-            totalVolume: Math.round(totalVolume),
-            duration:
-              session.started_at && session.completed_at
-                ? Math.round(
-                    (new Date(session.completed_at).getTime() -
-                      new Date(session.started_at).getTime()) /
-                      60000
-                  ) // duration in minutes
-                : null,
-          },
-        };
-      });
+      return {
+        ...session,
+        stats: {
+          totalExercises,
+          completedExercises,
+          totalSets,
+          completedSets,
+          totalVolume: Math.round(totalVolume),
+          duration:
+            session.started_at && session.completed_at
+              ? Math.round(
+                  (new Date(session.completed_at).getTime() -
+                    new Date(session.started_at).getTime()) /
+                    60000
+                ) // duration in minutes
+              : null,
+        },
+      };
+    });
 
     return NextResponse.json({
       sessions: enrichedSessions || [],

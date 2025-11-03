@@ -23,7 +23,7 @@ export default function TodayOverview() {
 
   const fetchTodayWorkouts = async () => {
     try {
-      const response = await fetch('/api/analytics/today-schedule');
+      const response = await fetch("/api/analytics/today-schedule");
       const data = await response.json();
 
       if (data.success) {
@@ -56,7 +56,9 @@ export default function TodayOverview() {
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6 text-blue-600" />
-        <h2 className="text-xl font-bold text-gray-900">Today&apos;s Schedule</h2>
+        <h2 className="text-xl font-bold text-gray-900">
+          Today&apos;s Schedule
+        </h2>
       </div>
 
       {todayWorkouts.length === 0 ? (

@@ -56,6 +56,7 @@ LiteWork now has a **comprehensive notification system** with three delivery cha
 ## Phase Status
 
 ### ✅ Phase 1: Database Foundation (COMPLETE)
+
 - `push_subscriptions` table
 - `notification_preferences` table
 - `notification_log` table
@@ -64,6 +65,7 @@ LiteWork now has a **comprehensive notification system** with three delivery cha
 - VAPID key generation
 
 ### ✅ Phase 2: Push Notification Service (COMPLETE)
+
 - `src/lib/notification-service.ts`
 - Web Push integration
 - Service worker handlers
@@ -71,30 +73,35 @@ LiteWork now has a **comprehensive notification system** with three delivery cha
 - Subscription management API
 
 ### ✅ Phase 3: Email Service (COMPLETE)
+
 - `src/lib/email-service.ts`
 - Resend API integration
 - 5 HTML email templates
 - Email API endpoints
 
 ### ✅ Phase 4: Unified Service (COMPLETE)
+
 - `src/lib/unified-notification-service.ts`
 - Smart fallback logic (in-app → push → email)
 - Integration with workout assignments
 - Comprehensive logging
 
 ### ✅ Phase 5: User Preferences (COMPLETE)
+
 - `/settings` page
 - Toggle switches for each channel
 - Per-notification-type preferences
 - `NotificationPreferences.tsx` component
 
 ### ✅ Phase 6: Scheduled Reminders (COMPLETE)
+
 - Vercel Cron job configuration
 - `/api/cron/workout-reminders` endpoint
 - Runs twice daily (7 AM, 5 PM UTC)
 - Sends reminders 24hrs before workouts
 
 ### ✅ Phase 7: In-App Notification Center (COMPLETE)
+
 - NotificationBell component with badge
 - Full notifications page (`/notifications`)
 - Mark as read/unread functionality
@@ -155,19 +162,19 @@ in_app_notifications (
 
 -- Push subscriptions
 push_subscriptions (
-  id, user_id, endpoint, keys, 
+  id, user_id, endpoint, keys,
   created_at, last_used_at
 )
 
 -- User preferences
 notification_preferences (
-  user_id, push_enabled, email_enabled, 
+  user_id, push_enabled, email_enabled,
   workout_reminders, ...
 )
 
 -- Audit log
 notification_log (
-  id, user_id, type, channel, 
+  id, user_id, type, channel,
   success, error_message, sent_at
 )
 ```
@@ -187,6 +194,7 @@ cat scripts/database/create-in-app-notifications.sql
 ```
 
 **Expected Output**:
+
 ```
 ✅ In-app notification center table created successfully!
 📊 Table: in_app_notifications
@@ -198,14 +206,15 @@ cat scripts/database/create-in-app-notifications.sql
 
 ```sql
 -- Check all notification tables exist
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
   AND table_name LIKE '%notification%'
 ORDER BY table_name;
 ```
 
 **Expected Result**:
+
 ```
 in_app_notifications
 notification_log
@@ -310,17 +319,19 @@ curl -X GET "https://your-app.vercel.app/api/cron/workout-reminders" \
 
 ```typescript
 // Manual test via browser console
-fetch('/api/notifications/inbox', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+fetch("/api/notifications/inbox", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    type: 'workout',
-    title: 'Test Notification',
-    body: 'This is a test notification',
-    icon: '💪',
-    url: '/workouts'
-  })
-}).then(r => r.json()).then(console.log);
+    type: "workout",
+    title: "Test Notification",
+    body: "This is a test notification",
+    icon: "💪",
+    url: "/workouts",
+  }),
+})
+  .then((r) => r.json())
+  .then(console.log);
 ```
 
 **Expected Result**: Notification appears in bell dropdown and `/notifications` page
@@ -349,6 +360,7 @@ curl -X GET "http://localhost:3000/api/cron/workout-reminders" \
 ```
 
 **Expected Response**:
+
 ```json
 {
   "success": true,
@@ -373,14 +385,14 @@ curl -X GET "http://localhost:3000/api/cron/workout-reminders" \
 ### Example 1: Send Custom Notification
 
 ```typescript
-import { sendNotification } from '@/lib/unified-notification-service';
+import { sendNotification } from "@/lib/unified-notification-service";
 
 await sendNotification({
-  userId: 'user-uuid',
-  type: 'achievement',
-  title: 'New Personal Record!',
-  body: '🎉 You just hit a new PR on Bench Press!',
-  url: '/progress'
+  userId: "user-uuid",
+  type: "achievement",
+  title: "New Personal Record!",
+  body: "🎉 You just hit a new PR on Bench Press!",
+  url: "/progress",
 });
 ```
 
@@ -388,32 +400,32 @@ await sendNotification({
 
 ```typescript
 // Get unread notifications
-const response = await fetch('/api/notifications/inbox?unread_only=true');
+const response = await fetch("/api/notifications/inbox?unread_only=true");
 const data = await response.json();
 console.log(`${data.unreadCount} unread notifications`);
 
 // Get all notifications (limit 50)
-const response = await fetch('/api/notifications/inbox?limit=50');
+const response = await fetch("/api/notifications/inbox?limit=50");
 const data = await response.json();
 ```
 
 ### Example 3: Mark All as Read
 
 ```typescript
-await fetch('/api/notifications/inbox', {
-  method: 'PATCH',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ markAllRead: true })
+await fetch("/api/notifications/inbox", {
+  method: "PATCH",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ markAllRead: true }),
 });
 ```
 
 ### Example 4: Delete Notification
 
 ```typescript
-await fetch('/api/notifications/inbox', {
-  method: 'DELETE',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ notificationId: 'notification-uuid' })
+await fetch("/api/notifications/inbox", {
+  method: "DELETE",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ notificationId: "notification-uuid" }),
 });
 ```
 
@@ -425,6 +437,7 @@ await fetch('/api/notifications/inbox', {
 
 **Cause**: Badge count not updating  
 **Solution**:
+
 ```bash
 # Check if API is working
 curl http://localhost:3000/api/notifications/inbox?limit=1&unread_only=true
@@ -435,25 +448,27 @@ curl http://localhost:3000/api/notifications/inbox?limit=1&unread_only=true
 ### Issue: Push notifications not working
 
 **Possible Causes**:
+
 1. User hasn't granted permission
 2. Browser doesn't support push
 3. Service worker not registered
 4. VAPID keys incorrect
 
 **Debug Steps**:
+
 ```javascript
 // Check service worker
-navigator.serviceWorker.getRegistration().then(reg => {
-  console.log('SW registered:', !!reg);
+navigator.serviceWorker.getRegistration().then((reg) => {
+  console.log("SW registered:", !!reg);
 });
 
 // Check push permission
-console.log('Push permission:', Notification.permission);
+console.log("Push permission:", Notification.permission);
 
 // Check subscription
-navigator.serviceWorker.ready.then(reg => {
-  reg.pushManager.getSubscription().then(sub => {
-    console.log('Push subscription:', sub);
+navigator.serviceWorker.ready.then((reg) => {
+  reg.pushManager.getSubscription().then((sub) => {
+    console.log("Push subscription:", sub);
   });
 });
 ```
@@ -461,6 +476,7 @@ navigator.serviceWorker.ready.then(reg => {
 ### Issue: Cron job not running
 
 **Check Vercel Logs**:
+
 1. Go to Vercel Dashboard → Deployments
 2. Click on latest deployment
 3. Go to Functions tab
@@ -468,6 +484,7 @@ navigator.serviceWorker.ready.then(reg => {
 5. Check invocation logs
 
 **Common Issues**:
+
 - `CRON_SECRET` not set in Vercel
 - Timezone confusion (cron runs in UTC)
 - Database connection issues
@@ -475,11 +492,13 @@ navigator.serviceWorker.ready.then(reg => {
 ### Issue: Emails not sending
 
 **Check Resend Dashboard**:
+
 1. Go to https://resend.com/emails
 2. Check for failed sends
 3. Review error messages
 
 **Common Issues**:
+
 - `RESEND_API_KEY` not set
 - Rate limit exceeded
 - Invalid email addresses
@@ -487,10 +506,11 @@ navigator.serviceWorker.ready.then(reg => {
 ### Issue: Notifications expiring too fast
 
 **Solution**: Adjust expiry time in database schema
+
 ```sql
 -- Change default expiry from 7 days to 30 days
-ALTER TABLE in_app_notifications 
-ALTER COLUMN expires_at 
+ALTER TABLE in_app_notifications
+ALTER COLUMN expires_at
 SET DEFAULT (NOW() + INTERVAL '30 days');
 ```
 
@@ -532,9 +552,11 @@ SET DEFAULT (NOW() + INTERVAL '30 days');
 ## API Reference
 
 ### POST `/api/notifications/inbox`
+
 Create a new in-app notification
 
 **Request**:
+
 ```json
 {
   "type": "workout",
@@ -547,6 +569,7 @@ Create a new in-app notification
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -555,13 +578,16 @@ Create a new in-app notification
 ```
 
 ### GET `/api/notifications/inbox`
+
 Fetch notifications
 
 **Query Parameters**:
+
 - `limit` (number): Max results (default: 10)
 - `unread_only` (boolean): Only unread
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -571,9 +597,11 @@ Fetch notifications
 ```
 
 ### PATCH `/api/notifications/inbox`
+
 Mark notifications as read
 
 **Request**:
+
 ```json
 {
   "notificationId": "uuid"          // Mark single as read
@@ -585,9 +613,11 @@ Mark notifications as read
 ```
 
 ### DELETE `/api/notifications/inbox`
+
 Delete notifications
 
 **Request**:
+
 ```json
 {
   "notificationId": "uuid"          // Delete single
@@ -597,14 +627,17 @@ Delete notifications
 ```
 
 ### GET `/api/cron/workout-reminders`
+
 Cron job endpoint (internal use)
 
 **Headers**:
+
 ```
 Authorization: Bearer YOUR_CRON_SECRET
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -620,11 +653,13 @@ Authorization: Bearer YOUR_CRON_SECRET
 ## File Reference
 
 ### Core Services
+
 - `src/lib/unified-notification-service.ts` - Main notification orchestrator
 - `src/lib/notification-service.ts` - Push notification service
 - `src/lib/email-service.ts` - Email service
 
 ### API Routes
+
 - `src/app/api/notifications/inbox/route.ts` - In-app notification CRUD
 - `src/app/api/notifications/subscribe/route.ts` - Push subscription
 - `src/app/api/notifications/send/route.ts` - Manual push send
@@ -633,18 +668,22 @@ Authorization: Bearer YOUR_CRON_SECRET
 - `src/app/api/cron/workout-reminders/route.ts` - Cron job
 
 ### Components
+
 - `src/components/NotificationBell.tsx` - Bell icon with dropdown
 - `src/components/NotificationPermission.tsx` - Permission UI
 - `src/components/NotificationPreferences.tsx` - Settings UI
 
 ### Pages
+
 - `src/app/notifications/page.tsx` - Full notifications page
 - `src/app/settings/page.tsx` - Settings page
 
 ### Database
+
 - `scripts/database/create-in-app-notifications.sql` - Schema
 
 ### Configuration
+
 - `vercel.json` - Cron job configuration
 - `public/sw.js` - Service worker (lines 489-537)
 
@@ -653,6 +692,7 @@ Authorization: Bearer YOUR_CRON_SECRET
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review code comments in service files
 3. Check Vercel deployment logs

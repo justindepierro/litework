@@ -47,13 +47,17 @@ export default function ConfirmModal({
     switch (confirmVariant) {
       case "danger":
         return {
-          icon: <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" />,
+          icon: (
+            <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" />
+          ),
           bgColor: "bg-red-100",
           buttonColor: "bg-red-600 hover:bg-red-700 active:bg-red-800",
         };
       case "warning":
         return {
-          icon: <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" />,
+          icon: (
+            <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" />
+          ),
           bgColor: "bg-yellow-100",
           buttonColor: "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800",
         };
@@ -69,7 +73,7 @@ export default function ConfirmModal({
   const { icon, bgColor, buttonColor } = getIconAndColor();
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
@@ -86,11 +90,13 @@ export default function ConfirmModal({
       <div className="relative bg-white w-full sm:max-w-lg sm:rounded-2xl shadow-2xl animate-slide-up sm:animate-scale-in max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-start gap-3 sm:gap-4 p-5 sm:p-6 border-b border-gray-200">
-          <div className={`shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full ${bgColor} flex items-center justify-center`}>
+          <div
+            className={`shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full ${bgColor} flex items-center justify-center`}
+          >
             {icon}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 
+            <h3
               id="modal-title"
               className="text-lg sm:text-xl font-bold text-gray-900 leading-tight"
             >

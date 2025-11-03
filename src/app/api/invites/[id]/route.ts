@@ -240,8 +240,8 @@ export async function PATCH(
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       const inviteUrl = `${appUrl}/signup?invite=${updatedInvite.id}`;
 
-      console.log('📧 Attempting to send email to:', updatedInvite.email);
-      console.log('📧 Resend API Key present:', !!process.env.RESEND_API_KEY);
+      console.log('Attempting to send email to:', updatedInvite.email);
+      console.log('Resend API Key present:', !!process.env.RESEND_API_KEY);
       
       const emailResult = await sendEmailNotification({
         to: updatedInvite.email,

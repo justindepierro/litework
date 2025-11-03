@@ -8,12 +8,12 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  
+
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -69,12 +69,12 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  
+
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }

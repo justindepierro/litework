@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
+import {
+  getAuthenticatedUser,
+  hasRoleOrHigher,
+  isCoach,
+} from "@/lib/auth-server";
 
 interface WebVitalData {
   name: string;
@@ -18,10 +22,10 @@ const webVitalsData: WebVitalData[] = [];
 
 export async function POST(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -37,19 +41,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-      // Add metadata
-      const enrichedVital = {
-        ...webVital,
-        userId: user.id,
-        timestamp: Date.now(),
-      };
+    // Add metadata
+    const enrichedVital = {
+      ...webVital,
+      userId: user.id,
+      timestamp: Date.now(),
+    };
 
-      // Store the metric (in production, save to database)
-      webVitalsData.push(enrichedVital);
+    // Store the metric (in production, save to database)
+    webVitalsData.push(enrichedVital);
 
-      // Keep only the last 1000 entries to prevent memory issues
-      if (webVitalsData.length > 1000) {
-        webVitalsData.splice(0, webVitalsData.length - 1000);
+    // Keep only the last 1000 entries to prevent memory issues
+    if (webVitalsData.length > 1000) {
+      webVitalsData.splice(0, webVitalsData.length - 1000);
     }
 
     return NextResponse.json({ success: true });
@@ -64,10 +68,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
-      { success: false, error: authError || 'Unauthorized' },
+      { success: false, error: authError || "Unauthorized" },
       { status: 401 }
     );
   }
@@ -78,49 +82,48 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(url.searchParams.get("limit") || "100");
     const timeframe = url.searchParams.get("timeframe") || "24h";
 
-      // Calculate time filter
-      const now = Date.now();
-      const timeFilters = {
-        "1h": now - 1 * 60 * 60 * 1000,
-        "24h": now - 24 * 60 * 60 * 1000,
-        "7d": now - 7 * 24 * 60 * 60 * 1000,
-        "30d": now - 30 * 24 * 60 * 60 * 1000,
-      };
+    // Calculate time filter
+    const now = Date.now();
+    const timeFilters = {
+      "1h": now - 1 * 60 * 60 * 1000,
+      "24h": now - 24 * 60 * 60 * 1000,
+      "7d": now - 7 * 24 * 60 * 60 * 1000,
+      "30d": now - 30 * 24 * 60 * 60 * 1000,
+    };
 
-      const timeFilter =
-        timeFilters[timeframe as keyof typeof timeFilters] ||
-        timeFilters["24h"];
+    const timeFilter =
+      timeFilters[timeframe as keyof typeof timeFilters] || timeFilters["24h"];
 
-      // Filter data
-      let filteredData = webVitalsData.filter(
-        (vital) => vital.timestamp >= timeFilter
-      );
+    // Filter data
+    let filteredData = webVitalsData.filter(
+      (vital) => vital.timestamp >= timeFilter
+    );
 
-      if (metric) {
-        filteredData = filteredData.filter((vital) => vital.name === metric);
-      }
+    if (metric) {
+      filteredData = filteredData.filter((vital) => vital.name === metric);
+    }
 
-      // Limit results
-      filteredData = filteredData
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .slice(0, limit);
+    // Limit results
+    filteredData = filteredData
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, limit);
 
-      // Calculate statistics
-      const stats = {
-        count: filteredData.length,
-        averageValue:
-          filteredData.length > 0
-            ? filteredData.reduce((sum, vital) => sum + vital.value, 0) /
-              filteredData.length
-            : 0,
-        ratings: {
-          good: filteredData.filter((v) => v.rating === "good").length,
-          "needs-improvement": filteredData.filter(
-            (v) => v.rating === "needs-improvement"
-          ).length,
-          poor: filteredData.filter((v) => v.rating === "poor").length,
-        },
-      };
+    // Calculate statistics
+    const stats = {
+      count: filteredData.length,
+      averageValue:
+        filteredData.length > 0
+          ? filteredData.reduce((sum, vital) => sum + vital.value, 0) /
+            filteredData.length
+          : 0,
+      ratings: {
+        good: filteredData.filter((v) => v.rating === "good").length,
+        "needs-improvement": filteredData.filter(
+          (v) => v.rating === "needs-improvement"
+        ).length,
+        poor: filteredData.filter((v) => v.rating === "poor").length,
+      },
+    };
 
     return NextResponse.json({
       data: filteredData,

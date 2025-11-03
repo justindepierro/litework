@@ -22,7 +22,7 @@ export default function GroupCompletionStats() {
 
   const fetchGroupStats = async () => {
     try {
-      const response = await fetch('/api/analytics/group-stats');
+      const response = await fetch("/api/analytics/group-stats");
       const data = await response.json();
 
       if (data.success) {

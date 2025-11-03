@@ -4,9 +4,9 @@
  * Created: November 2, 2025
  */
 
-import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
-import type { NotificationCategory } from './notification-service';
+import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
+import type { NotificationCategory } from "./notification-service";
 
 // ============================================================
 // TYPES
@@ -40,16 +40,19 @@ interface SendEmailResult {
 // ============================================================
 
 const resendApiKey = process.env.RESEND_API_KEY;
-const fromEmail = process.env.RESEND_FROM_EMAIL || 'LiteWork <noreply@litework.app>';
+const fromEmail =
+  process.env.RESEND_FROM_EMAIL || "LiteWork <noreply@litework.app>";
 
-console.log('🔧 Email Service Initialization:');
-console.log('   - RESEND_API_KEY present:', !!resendApiKey);
-console.log('   - RESEND_API_KEY length:', resendApiKey?.length || 0);
-console.log('   - FROM_EMAIL:', fromEmail);
+console.log("🔧 Email Service Initialization:");
+console.log("   - RESEND_API_KEY present:", !!resendApiKey);
+console.log("   - RESEND_API_KEY length:", resendApiKey?.length || 0);
+console.log("   - FROM_EMAIL:", fromEmail);
 
 if (!resendApiKey) {
-  console.error('❌ RESEND_API_KEY not configured. Email notifications will not work.');
-  console.error('Please add RESEND_API_KEY to .env.local');
+  console.error(
+    "❌ RESEND_API_KEY not configured. Email notifications will not work."
+  );
+  console.error("Please add RESEND_API_KEY to .env.local");
 }
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
@@ -61,8 +64,8 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 // ============================================================
@@ -78,7 +81,7 @@ export async function sendEmailNotification(
 ): Promise<SendEmailResult> {
   try {
     if (!resend) {
-      throw new Error('Resend is not configured');
+      throw new Error("Resend is not configured");
     }
 
     // Generate HTML email from template
@@ -93,8 +96,8 @@ export async function sendEmailNotification(
     });
 
     if (error) {
-      console.error('❌ Error sending email:', error);
-      
+      console.error("❌ Error sending email:", error);
+
       // Log failed delivery
       if (userId) {
         await logEmail({
@@ -133,12 +136,11 @@ export async function sendEmailNotification(
       success: true,
       emailId: data?.id,
     };
-
   } catch (error) {
-    console.error('❌ Error sending email notification:', error);
+    console.error("❌ Error sending email notification:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -150,7 +152,7 @@ export async function sendEmailToUsers(
   userEmails: Array<{ userId: string; email: string; name: string }>,
   subject: string,
   category: NotificationCategory,
-  templateData: Omit<EmailTemplateData, 'userName'>
+  templateData: Omit<EmailTemplateData, "userName">
 ): Promise<Record<string, SendEmailResult>> {
   const results: Record<string, SendEmailResult> = {};
 
@@ -173,7 +175,7 @@ export async function sendEmailToUsers(
         console.error(`❌ Failed to send email to user ${userId}:`, error);
         results[userId] = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : "Unknown error",
         };
       }
     })
@@ -215,17 +217,17 @@ function generateEmailHTML(
   `;
 
   switch (category) {
-    case 'assignment':
+    case "assignment":
       return generateWorkoutAssignmentEmail(data, baseStyles);
-    case 'message':
+    case "message":
       return generateCoachMessageEmail(data, baseStyles);
-    case 'workout':
+    case "workout":
       return generateWorkoutReminderEmail(data, baseStyles);
-    case 'progress':
+    case "progress":
       return generateProgressReportEmail(data, baseStyles);
-    case 'achievement':
+    case "achievement":
       return generateAchievementEmail(data, baseStyles);
-    case 'invite':
+    case "invite":
       return generateAthleteInviteEmail(data, baseStyles);
     default:
       return generateGenericEmail(data, baseStyles);
@@ -235,7 +237,10 @@ function generateEmailHTML(
 /**
  * Template: New Workout Assignment
  */
-function generateWorkoutAssignmentEmail(data: EmailTemplateData, styles: string): string {
+function generateWorkoutAssignmentEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -247,30 +252,42 @@ function generateWorkoutAssignmentEmail(data: EmailTemplateData, styles: string)
     <body>
       <div class="container">
         <div class="header">
-          <h1>💪 New Workout Assigned</h1>
+          <h1>New Workout Assigned</h1>
         </div>
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || 'You have a new workout assigned to you!'}
+            ${data.message || "You have a new workout assigned to you!"}
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'View Workout'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "View Workout"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered as an athlete on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -281,7 +298,10 @@ function generateWorkoutAssignmentEmail(data: EmailTemplateData, styles: string)
 /**
  * Template: Coach Message
  */
-function generateCoachMessageEmail(data: EmailTemplateData, styles: string): string {
+function generateCoachMessageEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -298,15 +318,19 @@ function generateCoachMessageEmail(data: EmailTemplateData, styles: string): str
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || 'Your coach has sent you a message.'}
+            ${data.message || "Your coach has sent you a message."}
           </div>
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'View Message'}</a>
-          ` : ''}
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "View Message"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered as an athlete on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -317,7 +341,10 @@ function generateCoachMessageEmail(data: EmailTemplateData, styles: string): str
 /**
  * Template: Workout Reminder
  */
-function generateWorkoutReminderEmail(data: EmailTemplateData, styles: string): string {
+function generateWorkoutReminderEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -334,25 +361,37 @@ function generateWorkoutReminderEmail(data: EmailTemplateData, styles: string): 
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || 'Don\'t forget about your scheduled workout!'}
+            ${data.message || "Don't forget about your scheduled workout!"}
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'Start Workout'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "Start Workout"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered as an athlete on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -363,7 +402,10 @@ function generateWorkoutReminderEmail(data: EmailTemplateData, styles: string): 
 /**
  * Template: Weekly Progress Report
  */
-function generateProgressReportEmail(data: EmailTemplateData, styles: string): string {
+function generateProgressReportEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -375,30 +417,42 @@ function generateProgressReportEmail(data: EmailTemplateData, styles: string): s
     <body>
       <div class="container">
         <div class="header">
-          <h1>📊 Your Weekly Progress</h1>
+          <h1>Your Weekly Progress</h1>
         </div>
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || 'Here\'s a summary of your training progress this week!'}
+            ${data.message || "Here's a summary of your training progress this week!"}
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'View Full Report'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "View Full Report"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered as an athlete on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -409,7 +463,10 @@ function generateProgressReportEmail(data: EmailTemplateData, styles: string): s
 /**
  * Template: Achievement Notification
  */
-function generateAchievementEmail(data: EmailTemplateData, styles: string): string {
+function generateAchievementEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -421,30 +478,42 @@ function generateAchievementEmail(data: EmailTemplateData, styles: string): stri
     <body>
       <div class="container">
         <div class="header">
-          <h1>🏆 New Achievement Unlocked!</h1>
+          <h1>New Achievement Unlocked!</h1>
         </div>
         <div class="content">
           <div class="greeting">Congratulations ${data.userName}!</div>
           <div class="message">
-            ${data.message || 'You\'ve reached a new personal record!'}
+            ${data.message || "You've reached a new personal record!"}
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'View Progress'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "View Progress"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered as an athlete on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered as an athlete on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -455,7 +524,10 @@ function generateAchievementEmail(data: EmailTemplateData, styles: string): stri
 /**
  * Template: Athlete Invitation
  */
-function generateAthleteInviteEmail(data: EmailTemplateData, styles: string): string {
+function generateAthleteInviteEmail(
+  data: EmailTemplateData,
+  styles: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -467,30 +539,42 @@ function generateAthleteInviteEmail(data: EmailTemplateData, styles: string): st
     <body>
       <div class="container">
         <div class="header">
-          <h1>🏋️ You're Invited to LiteWork!</h1>
+          <h1>You're Invited to LiteWork!</h1>
         </div>
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || 'Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes.'}
+            ${data.message || "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes."}
           </div>
           <div class="message">
             <strong>What is LiteWork?</strong><br>
             LiteWork helps you track workouts, monitor progress, hit new PRs, and stay connected with your coach. Get started today and take your training to the next level!
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'Accept Invitation'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "Accept Invitation"}</a>
+          `
+              : ""
+          }
           <div class="message" style="margin-top: 24px; font-size: 14px; color: #6b7280;">
             This invitation will expire in 7 days. If you didn't expect this invitation, you can safely ignore this email.
           </div>
@@ -525,25 +609,37 @@ function generateGenericEmail(data: EmailTemplateData, styles: string): string {
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || ''}
+            ${data.message || ""}
           </div>
-          ${data.details ? `
+          ${
+            data.details
+              ? `
             <div class="details">
-              ${data.details.map(d => `
+              ${data.details
+                .map(
+                  (d) => `
                 <div class="detail-row">
                   <span class="detail-label">${d.label}</span>
                   <span class="detail-value">${d.value}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-          ` : ''}
-          ${data.actionUrl ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || 'Learn More'}</a>
-          ` : ''}
+          `
+              : ""
+          }
+          ${
+            data.actionUrl
+              ? `
+            <a href="${data.actionUrl}" class="button">${data.actionText || "Learn More"}</a>
+          `
+              : ""
+          }
         </div>
         <div class="footer">
           <p>LiteWork - Weight Lifting Tracker</p>
-          ${data.footer || '<p>You received this email because you are registered on LiteWork.</p>'}
+          ${data.footer || "<p>You received this email because you are registered on LiteWork.</p>"}
         </div>
       </div>
     </body>
@@ -569,13 +665,11 @@ async function logEmail(log: {
   email_id?: string;
 }): Promise<void> {
   try {
-    await supabase
-      .from('notification_log')
-      .insert({
-        ...log,
-        type: 'email',
-      });
+    await supabase.from("notification_log").insert({
+      ...log,
+      type: "email",
+    });
   } catch (error) {
-    console.error('❌ Error logging email:', error);
+    console.error("❌ Error logging email:", error);
   }
 }

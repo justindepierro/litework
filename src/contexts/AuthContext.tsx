@@ -54,13 +54,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (hasInitialized.current) return;
       hasInitialized.current = true;
 
-      console.log('[AUTH] Initializing authentication...');
+      console.log("[AUTH] Initializing authentication...");
 
       // Set a timeout to prevent infinite loading (8 seconds to allow for getCurrentUser timeouts)
       const timeout = setTimeout(() => {
-        console.warn('[AUTH] Authentication initialization taking longer than expected');
+        console.warn(
+          "[AUTH] Authentication initialization taking longer than expected"
+        );
         if (mountedRef.current && initializingRef.current) {
-          console.log('[AUTH] Proceeding without authentication - user can login manually');
+          console.log(
+            "[AUTH] Proceeding without authentication - user can login manually"
+          );
           setUser(null);
           setLoading(false);
           setInitializing(false);
@@ -70,7 +74,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const currentUser = await authClient.getCurrentUser();
         clearTimeout(timeout);
-        console.log('[AUTH] Current user:', currentUser ? `Found (${currentUser.email})` : 'Not found');
+        console.log(
+          "[AUTH] Current user:",
+          currentUser ? `Found (${currentUser.email})` : "Not found"
+        );
         if (mountedRef.current) {
           setUser(currentUser);
           setLoading(false);
@@ -78,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         clearTimeout(timeout);
-        console.error('[AUTH] Auth initialization error:', error);
+        console.error("[AUTH] Auth initialization error:", error);
         if (mountedRef.current) {
           setUser(null);
           setLoading(false);
@@ -168,8 +175,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       try {
-        const result = await authClient.signUp(email, password, firstName, lastName);
-        
+        const result = await authClient.signUp(
+          email,
+          password,
+          firstName,
+          lastName
+        );
+
         // If email confirmation is required, don't try to load user or navigate
         if (result.needsEmailConfirmation) {
           if (mountedRef.current) {
@@ -177,10 +189,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           return { needsEmailConfirmation: true };
         }
-        
+
         // Wait a moment for the user profile to be created in the database
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const currentUser = await authClient.getCurrentUser();
 
         if (!currentUser) {

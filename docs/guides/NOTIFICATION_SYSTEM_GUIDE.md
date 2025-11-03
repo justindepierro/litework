@@ -57,7 +57,7 @@ When user grants permission, browser creates a **unique push subscription**:
 const registration = await navigator.serviceWorker.ready;
 const subscription = await registration.pushManager.subscribe({
   userVisibleOnly: true,
-  applicationServerKey: VAPID_PUBLIC_KEY // Your server's public key
+  applicationServerKey: VAPID_PUBLIC_KEY, // Your server's public key
 });
 
 // Subscription contains:
@@ -71,6 +71,7 @@ const subscription = await registration.pushManager.subscribe({
 ```
 
 **What's happening:**
+
 - Browser contacts **Google's FCM** (Chrome/Android) or **Apple's APNs** (Safari/iOS)
 - Push service generates a unique endpoint URL for this device
 - Subscription is encrypted end-to-end
@@ -83,8 +84,8 @@ await fetch("/api/notifications/subscribe", {
   method: "POST",
   body: JSON.stringify({
     subscription: subscription.toJSON(),
-    deviceName: "Justin's iPhone"
-  })
+    deviceName: "Justin's iPhone",
+  }),
 });
 
 // Server stores in push_subscriptions table:
@@ -124,19 +125,20 @@ await webpush.sendNotification(
     endpoint: subscription.endpoint,
     keys: {
       p256dh: subscription.p256dh,
-      auth: subscription.auth
-    }
+      auth: subscription.auth,
+    },
   },
   JSON.stringify({
     title: "New Workout Assigned! 🏋️",
     body: "Upper Body Strength - Monday 3:30 PM",
     url: "/workouts/view/123",
-    tag: "workout-assignment"
+    tag: "workout-assignment",
   })
 );
 ```
 
 **What's happening:**
+
 - Your server sends HTTPS request to push service endpoint
 - Request is signed with VAPID keys (proves it's from your server)
 - Payload is encrypted (only the device can decrypt it)
@@ -148,6 +150,7 @@ Your Server → Push Service → Device OS → Browser → Service Worker
 ```
 
 **Push services by platform:**
+
 - **Android/Chrome**: Google FCM (Firebase Cloud Messaging)
 - **iOS/Safari**: Apple APNs (Apple Push Notification service)
 - **Windows**: Windows Push Notification Service
@@ -159,7 +162,7 @@ Your Server → Push Service → Device OS → Browser → Service Worker
 // sw.js (already implemented in LiteWork)
 self.addEventListener("push", (event) => {
   const data = event.data.json();
-  
+
   self.registration.showNotification(data.title, {
     body: data.body,
     icon: "/icons/icon-192x192.png",
@@ -168,9 +171,9 @@ self.addEventListener("push", (event) => {
     requireInteraction: true,
     actions: [
       { action: "view", title: "View Workout" },
-      { action: "dismiss", title: "Dismiss" }
+      { action: "dismiss", title: "Dismiss" },
     ],
-    data: data.url
+    data: data.url,
   });
 });
 ```
@@ -178,6 +181,7 @@ self.addEventListener("push", (event) => {
 #### **Step 8: Athlete Sees Notification**
 
 **On Phone Lock Screen:**
+
 ```
 ┌─────────────────────────────────┐
 │ 🔔 LiteWork                     │
@@ -196,11 +200,13 @@ self.addEventListener("push", (event) => {
 ### VAPID Keys (Voluntary Application Server Identification)
 
 **What they are:**
+
 - Public/private key pair that identifies your server
 - Proves notifications come from your authorized server
 - Required by push services (FCM, APNs)
 
 **Generate once:**
+
 ```bash
 npx web-push generate-vapid-keys
 
@@ -210,6 +216,7 @@ npx web-push generate-vapid-keys
 ```
 
 **Add to .env.local:**
+
 ```bash
 VAPID_PUBLIC_KEY="BGgj3...xyz"
 VAPID_PRIVATE_KEY="7h4k...abc"
@@ -217,6 +224,7 @@ VAPID_SUBJECT="mailto:jdepierro@burkecatholic.org"
 ```
 
 **How they work:**
+
 1. **Public key** → Sent to browser → Included in subscription
 2. **Private key** → Kept secret on server → Signs notification requests
 3. Push service verifies signature matches public key in subscription
@@ -233,18 +241,18 @@ Stores device subscriptions for sending push notifications.
 CREATE TABLE push_subscriptions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- Push subscription data from browser
   endpoint TEXT NOT NULL,           -- Push service URL
   p256dh TEXT NOT NULL,              -- Encryption key
   auth TEXT NOT NULL,                -- Authentication secret
-  
+
   -- Metadata
   device_name TEXT,                  -- "Justin's iPhone"
   user_agent TEXT,                   -- Browser/OS info
   created_at TIMESTAMP DEFAULT NOW(),
   last_used TIMESTAMP DEFAULT NOW(), -- Last successful push
-  
+
   -- Prevent duplicate subscriptions per device
   UNIQUE(user_id, endpoint)
 );
@@ -259,24 +267,24 @@ User notification settings per category.
 ```sql
 CREATE TABLE notification_preferences (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- Channel toggles
   push_enabled BOOLEAN DEFAULT true,
   email_enabled BOOLEAN DEFAULT true,
-  
+
   -- Category preferences
   workout_reminders BOOLEAN DEFAULT true,       -- Before workout starts
   assignment_notifications BOOLEAN DEFAULT true, -- New workout assigned
   message_notifications BOOLEAN DEFAULT true,    -- Coach messages
   progress_updates BOOLEAN DEFAULT false,        -- Weekly progress
   achievement_notifications BOOLEAN DEFAULT true, -- PRs, milestones
-  
+
   -- Quiet hours (JSON: {start: "22:00", end: "07:00"})
   quiet_hours JSONB,
-  
+
   -- Preferred contact method for urgent notifications
   preferred_contact TEXT DEFAULT 'push',  -- 'push', 'email', 'both'
-  
+
   updated_at TIMESTAMP DEFAULT NOW()
 );
 ```
@@ -289,25 +297,25 @@ Audit trail for all notifications.
 CREATE TABLE notification_log (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  
+
   -- Notification details
   type TEXT NOT NULL,           -- 'push' or 'email'
   category TEXT NOT NULL,       -- 'workout', 'message', 'assignment'
   title TEXT NOT NULL,
   body TEXT,
   url TEXT,                     -- Deep link URL
-  
+
   -- Delivery tracking
   sent_at TIMESTAMP DEFAULT NOW(),
   delivered BOOLEAN DEFAULT false,
   opened BOOLEAN DEFAULT false,
   clicked BOOLEAN DEFAULT false,
   clicked_at TIMESTAMP,
-  
+
   -- Error tracking
   error TEXT,
   retry_count INTEGER DEFAULT 0,
-  
+
   -- Metadata
   device_info JSONB  -- Device/browser details
 );
@@ -337,6 +345,7 @@ npx web-push generate-vapid-keys
 ```
 
 **Save to `.env.local`:**
+
 ```bash
 # VAPID Keys for Push Notifications
 VAPID_PUBLIC_KEY="BHxKz...your-public-key"
@@ -457,10 +466,7 @@ export async function sendPushNotification(
         // Handle expired/invalid subscriptions
         if (error.statusCode === 410 || error.statusCode === 404) {
           console.log(`Removing invalid subscription: ${sub.id}`);
-          await supabase
-            .from("push_subscriptions")
-            .delete()
-            .eq("id", sub.id);
+          await supabase.from("push_subscriptions").delete().eq("id", sub.id);
         }
 
         // Log failure
@@ -502,7 +508,7 @@ async function logNotification(data: {
   error?: string;
 }) {
   const supabase = getAdminClient();
-  
+
   await supabase.from("notification_log").insert({
     user_id: data.userId,
     type: data.type,
@@ -519,6 +525,7 @@ async function logNotification(data: {
 ### Step 4: Create API Routes
 
 **Subscribe to Push:**
+
 ```typescript
 // src/app/api/notifications/subscribe/route.ts
 import { NextRequest, NextResponse } from "next/server";
@@ -579,6 +586,7 @@ export async function DELETE(request: NextRequest) {
 ```
 
 **Send Notification (Admin/Testing):**
+
 ```typescript
 // src/app/api/notifications/send/route.ts
 import { NextRequest, NextResponse } from "next/server";
@@ -857,6 +865,7 @@ export async function POST(request: NextRequest) {
 ### Local Testing
 
 **Option 1: Use ngrok (Expose localhost)**
+
 ```bash
 # VAPID requires HTTPS, so use ngrok for local testing
 npm install -g ngrok
@@ -866,6 +875,7 @@ ngrok http 3000
 ```
 
 **Option 2: Test on Production**
+
 ```bash
 # Deploy to Vercel (has HTTPS)
 npm run deploy
@@ -875,32 +885,35 @@ npm run deploy
 
 ```javascript
 // In browser console (after subscribing)
-fetch('/api/notifications/send', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+fetch("/api/notifications/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    userIds: ['your-user-id'],
-    title: 'Test Notification',
-    body: 'This is a test!',
-    url: '/dashboard',
-    category: 'test'
-  })
+    userIds: ["your-user-id"],
+    title: "Test Notification",
+    body: "This is a test!",
+    url: "/dashboard",
+    category: "test",
+  }),
 });
 ```
 
 ### Device-Specific Testing
 
 **iOS (Safari):**
+
 - Must be added to home screen as PWA
 - Notifications only work for installed PWAs
 - Test on iOS 16.4+
 
 **Android (Chrome):**
+
 - Works in browser and as PWA
 - More permissive than iOS
 - Test notification actions
 
 **Desktop:**
+
 - Works in all modern browsers
 - Easier for initial testing
 
@@ -911,6 +924,7 @@ fetch('/api/notifications/send', {
 ### "Notifications not showing on iPhone"
 
 **Solution:**
+
 1. Install LiteWork as PWA (Add to Home Screen)
 2. Open from home screen icon (not Safari)
 3. Grant notification permission
@@ -919,6 +933,7 @@ fetch('/api/notifications/send', {
 ### "Push subscription fails"
 
 **Check:**
+
 - VAPID keys are correct in `.env.local`
 - NEXT_PUBLIC_VAPID_PUBLIC_KEY is exposed to client
 - Service worker is registered
@@ -927,6 +942,7 @@ fetch('/api/notifications/send', {
 ### "Notification sent but not received"
 
 **Debug:**
+
 1. Check notification_log table for errors
 2. Verify subscription is in push_subscriptions table
 3. Check browser console for errors
@@ -937,6 +953,7 @@ fetch('/api/notifications/send', {
 **Meaning:** Subscription expired/invalid
 
 **Fix:**
+
 - Code automatically removes invalid subscriptions
 - User needs to re-subscribe
 
@@ -948,7 +965,7 @@ fetch('/api/notifications/send', {
 
 ```sql
 -- Delivery rate
-SELECT 
+SELECT
   type,
   category,
   COUNT(*) as total_sent,
@@ -959,7 +976,7 @@ WHERE sent_at > NOW() - INTERVAL '7 days'
 GROUP BY type, category;
 
 -- Click-through rate
-SELECT 
+SELECT
   category,
   COUNT(*) as total_delivered,
   SUM(CASE WHEN clicked THEN 1 ELSE 0 END) as clicked,
@@ -970,7 +987,7 @@ WHERE delivered = true
 GROUP BY category;
 
 -- Active devices per user
-SELECT 
+SELECT
   u.name,
   COUNT(ps.id) as device_count
 FROM users u

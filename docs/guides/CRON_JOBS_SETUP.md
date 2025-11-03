@@ -1,16 +1,19 @@
 # External Cron Jobs Setup Guide
 
 ## Overview
+
 Since Vercel Hobby plan limits cron jobs, we use **cron-job.org** (free) to trigger our scheduled tasks.
 
 ## Cron Jobs to Set Up
 
 ### 1. Database Cleanup (Daily at 2 AM)
+
 - **URL**: `https://liteworkapp.com/api/maintenance/cleanup`
 - **Schedule**: `0 2 * * *` (2 AM every day)
 - **Purpose**: Cleans up expired invites, old sessions, cancelled invites
 
 ### 2. Workout Reminders (Twice Daily)
+
 - **URL**: `https://liteworkapp.com/api/cron/workout-reminders`
 - **Schedule**: `0 7,17 * * *` (7 AM and 5 PM every day)
 - **Purpose**: Sends reminders for upcoming workouts
@@ -20,18 +23,22 @@ Since Vercel Hobby plan limits cron jobs, we use **cron-job.org** (free) to trig
 ## Setup Instructions
 
 ### Step 1: Create Account
+
 1. Go to https://cron-job.org
 2. Click **"Sign Up"** (top right)
 3. Create free account with email
 4. Verify email
 
 ### Step 2: Add CRON_SECRET to Vercel
+
 For security, we need a secret key to verify cron requests.
 
 1. **Generate a secret**:
+
    ```bash
    openssl rand -base64 32
    ```
+
    Copy the output (example: `Y2VQz4wGj7m7ijSLzdQJjw_hV1kJ7nd...`)
 
 2. **Add to Vercel**:
@@ -55,7 +62,7 @@ For security, we need a secret key to verify cron requests.
 3. Fill in:
    - **Title**: `LiteWork - Database Cleanup`
    - **Address**: `https://liteworkapp.com/api/maintenance/cleanup`
-   - **Schedule**: 
+   - **Schedule**:
      - Type: Every day
      - Hour: `2`
      - Minute: `0`
@@ -71,7 +78,7 @@ For security, we need a secret key to verify cron requests.
 2. Fill in:
    - **Title**: `LiteWork - Morning Workout Reminders`
    - **Address**: `https://liteworkapp.com/api/cron/workout-reminders`
-   - **Schedule**: 
+   - **Schedule**:
      - Type: Every day
      - Hour: `7`
      - Minute: `0`
@@ -87,7 +94,7 @@ For security, we need a secret key to verify cron requests.
 2. Fill in:
    - **Title**: `LiteWork - Evening Workout Reminders`
    - **Address**: `https://liteworkapp.com/api/cron/workout-reminders`
-   - **Schedule**: 
+   - **Schedule**:
      - Type: Every day
      - Hour: `17` (5 PM)
      - Minute: `0`
@@ -118,6 +125,7 @@ curl -H "Authorization: Bearer YOUR_CRON_SECRET" \
 ### Test via cron-job.org
 
 On each cron job page:
+
 1. Click **"Test run"** button
 2. Check the **"Execution log"** tab
 3. Should show `200 OK` status
@@ -129,6 +137,7 @@ On each cron job page:
 ### Check Execution History
 
 In cron-job.org dashboard:
+
 1. Click on any job
 2. View **"Execution history"** tab
 3. See success/failure status and response times
@@ -145,16 +154,19 @@ In cron-job.org dashboard:
 ## Troubleshooting
 
 ### "401 Unauthorized" Error
+
 - Check `CRON_SECRET` is set in Vercel
 - Verify `Authorization` header matches secret
 - Redeploy if you just added the secret
 
 ### "500 Internal Server Error"
+
 - Check Vercel deployment logs
 - Verify Supabase credentials are set
 - Test endpoint manually in browser
 
 ### Cron Not Running
+
 - Verify schedule is correct (use 24-hour format)
 - Check timezone settings (UTC by default)
 - Enable "Email on failure" to get alerts

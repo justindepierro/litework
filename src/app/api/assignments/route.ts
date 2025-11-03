@@ -112,10 +112,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Send notifications to assigned athletes (async, don't wait)
-    sendAssignmentNotifications(newAssignment, assignmentData).catch((err: Error) => {
-      console.error("Failed to send assignment notifications:", err);
-      // Don't fail the request if notifications fail
-    });
+    sendAssignmentNotifications(newAssignment, assignmentData).catch(
+      (err: Error) => {
+        console.error("Failed to send assignment notifications:", err);
+        // Don't fail the request if notifications fail
+      }
+    );
 
     return NextResponse.json({
       success: true,
@@ -153,8 +155,9 @@ async function sendAssignmentNotifications(
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get list of athlete IDs to notify
-    const athleteIds = assignmentData.athleteIds || 
-                      (assignmentData.athleteId ? [assignmentData.athleteId] : []);
+    const athleteIds =
+      assignmentData.athleteIds ||
+      (assignmentData.athleteId ? [assignmentData.athleteId] : []);
 
     if (athleteIds.length === 0) {
       console.log("No athletes to notify for assignment");
@@ -173,26 +176,29 @@ async function sendAssignmentNotifications(
     }
 
     // Format scheduled date
-    const scheduledDate = new Date(assignment.scheduledDate).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const scheduledDate = new Date(assignment.scheduledDate).toLocaleDateString(
+      "en-US",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
 
     // Get workout name
     const workoutName = assignmentData.workoutPlanName || "New Workout";
 
     // Generate workout URL
-    const workoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/workouts/view/${assignment.id}`;
+    const workoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/workouts/view/${assignment.id}`;
 
     // Send notification to each athlete
-    const notificationPromises = athletes.map(athlete =>
+    const notificationPromises = athletes.map((athlete) =>
       notifyWorkoutAssignment(
         {
           userId: athlete.id,
           email: athlete.email,
-          name: athlete.name || 'Athlete'
+          name: athlete.name || "Athlete",
         },
         workoutName,
         scheduledDate,
@@ -201,12 +207,13 @@ async function sendAssignmentNotifications(
     );
 
     const results = await Promise.allSettled(notificationPromises);
-    
-    // Log results
-    const successful = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
-    console.log(`✅ Sent ${successful} assignment notifications, ${failed} failed`);
 
+    // Log results
+    const successful = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
+    console.log(
+      `✅ Sent ${successful} assignment notifications, ${failed} failed`
+    );
   } catch (error) {
     console.error("Error in sendAssignmentNotifications:", error);
     throw error;

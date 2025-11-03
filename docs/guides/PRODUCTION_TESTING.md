@@ -1,6 +1,7 @@
 # Production Testing Guide
 
 ## Deployment Status
+
 ✅ **Deployed**: https://liteworkapp.com  
 ✅ **Commit**: 5165e98 (Suspense boundary fix)  
 ✅ **Build**: Successful
@@ -12,6 +13,7 @@
 ### A. Test Regular Signup (No Invite)
 
 1. **Open signup page**:
+
    ```
    https://liteworkapp.com/signup
    ```
@@ -40,6 +42,7 @@ First, you need to create an invite as a coach:
 6. **Click invite link** (should go to `/signup?invite=<id>`)
 
 **Expected Result**:
+
 - ✅ Email and name pre-filled from invite
 - ✅ Can complete signup
 - ✅ Invite marked as "accepted" in database
@@ -53,6 +56,7 @@ First, you need to create an invite as a coach:
 ### Steps:
 
 1. **Go to Vercel Dashboard**:
+
    ```
    https://vercel.com/justin-depierros-projects/litework/settings/environment-variables
    ```
@@ -86,6 +90,7 @@ curl -i -H "Authorization: Bearer R0FVlFrBxoCRxhcSQ73mzF63gb56SAlrY1n2NuaawX0=" 
 ```
 
 **Expected Response**:
+
 ```
 HTTP/2 200
 Content-Type: application/json
@@ -102,6 +107,7 @@ Content-Type: application/json
 ```
 
 **❌ If you get 401**:
+
 - Check that CRON_SECRET is in Vercel environment variables
 - Verify you redeployed after adding it
 - Check that the Bearer token matches exactly
@@ -114,6 +120,7 @@ curl -i -H "Authorization: Bearer R0FVlFrBxoCRxhcSQ73mzF63gb56SAlrY1n2NuaawX0=" 
 ```
 
 **Expected Response**:
+
 ```
 HTTP/2 200
 Content-Type: application/json
@@ -153,18 +160,21 @@ For each of the 3 jobs:
 ### C. Verify Job Details
 
 **Database Cleanup**:
+
 - Schedule: `0 2 * * *` (Daily at 2:00 AM)
 - URL: `https://liteworkapp.com/api/maintenance/cleanup`
 - Method: GET
 - Header: `Authorization: Bearer R0FVlFr...`
 
 **Morning Reminders**:
+
 - Schedule: `0 7 * * *` (Daily at 7:00 AM)
 - URL: `https://liteworkapp.com/api/cron/workout-reminders`
 - Method: GET
 - Header: `Authorization: Bearer R0FVlFr...`
 
 **Evening Reminders**:
+
 - Schedule: `0 17 * * *` (Daily at 5:00 PM)
 - URL: `https://liteworkapp.com/api/cron/workout-reminders`
 - Method: GET
@@ -285,9 +295,11 @@ EOF
 ### A. Test Authentication
 
 1. **Try accessing coach-only pages as athlete**:
+
    ```
    https://liteworkapp.com/athletes
    ```
+
    Should: ❌ Redirect to dashboard or show error
 
 2. **Try accessing API without auth**:
@@ -299,9 +311,11 @@ EOF
 ### B. Test Cron Security
 
 1. **Try calling cron endpoint without secret**:
+
    ```bash
    curl https://liteworkapp.com/api/maintenance/cleanup
    ```
+
    Should: ❌ Return 401 Unauthorized
 
 2. **Try with wrong secret**:
@@ -360,7 +374,7 @@ Save these for quick testing:
 curl -i -H "Authorization: Bearer R0FVlFrBxoCRxhcSQ73mzF63gb56SAlrY1n2NuaawX0=" \
   https://liteworkapp.com/api/maintenance/cleanup
 
-# Test reminders endpoint  
+# Test reminders endpoint
 curl -i -H "Authorization: Bearer R0FVlFrBxoCRxhcSQ73mzF63gb56SAlrY1n2NuaawX0=" \
   https://liteworkapp.com/api/cron/workout-reminders
 
@@ -380,6 +394,7 @@ curl -s https://liteworkapp.com/signup | grep -q "meta" && echo "✅ Signup page
 **Problem**: Cron endpoints return `401 Unauthorized`
 
 **Solution**:
+
 1. Check CRON_SECRET is in Vercel (Settings → Environment Variables)
 2. Verify it's enabled for Production
 3. Redeploy to pick up the variable
@@ -390,6 +405,7 @@ curl -s https://liteworkapp.com/signup | grep -q "meta" && echo "✅ Signup page
 **Problem**: Blank page or error on `/signup`
 
 **Solution**:
+
 1. Check browser console for errors
 2. Verify Suspense boundary is working
 3. Check that searchParams is being read correctly
@@ -400,6 +416,7 @@ curl -s https://liteworkapp.com/signup | grep -q "meta" && echo "✅ Signup page
 **Problem**: Invite emails not received
 
 **Solution**:
+
 1. Check RESEND_API_KEY in Vercel
 2. Verify domain is verified in Resend dashboard
 3. Check spam folder
@@ -410,6 +427,7 @@ curl -s https://liteworkapp.com/signup | grep -q "meta" && echo "✅ Signup page
 ## Next Steps
 
 Once all tests pass:
+
 1. ✅ Mark deployment as successful
 2. 📝 Document any issues found
 3. 🔔 Enable cron-job.org email notifications

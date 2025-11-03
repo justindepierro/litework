@@ -4,7 +4,7 @@
 
 ### ✅ Completed Items
 
-1. **Email System** 
+1. **Email System**
    - ✅ Resend API configured
    - ✅ Domain `liteworkapp.com` verified with DNS
    - ✅ Email templates created
@@ -58,26 +58,31 @@ NEXT_PUBLIC_APP_VERSION=1.0.0
 ## 📋 Pre-Deployment Steps
 
 ### 1. **Test Production Build Locally**
+
 ```bash
 npm run build
 npm run start
 ```
 
 ### 2. **Check for TypeScript Errors**
+
 ```bash
 npm run typecheck
 ```
 
 ### 3. **Domain Setup**
+
 - [ ] Is `liteworkapp.com` connected to Vercel?
   - Go to Vercel → Domains → Add Domain
   - Point DNS to Vercel
 
 ### 4. **Database Check**
+
 - [ ] Verify Supabase RLS policies are active
 - [ ] Test auth flows in production mode
 
 ### 5. **Security Headers**
+
 - ✅ Configured in `vercel.json`
 
 ---
@@ -85,6 +90,7 @@ npm run typecheck
 ## 🚀 Deployment Process
 
 ### Option A: Deploy via Vercel Dashboard
+
 1. Go to https://vercel.com/dashboard
 2. Connect GitHub repo (if not already)
 3. Click "Deploy"
@@ -92,6 +98,7 @@ npm run typecheck
 5. Deploy
 
 ### Option B: Deploy via CLI
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -112,6 +119,7 @@ vercel env add NEXT_PUBLIC_APP_URL production
 ## ✅ Post-Deployment Verification
 
 ### Test These Flows:
+
 1. **Authentication**
    - [ ] Sign up new user
    - [ ] Log in existing user
@@ -178,16 +186,19 @@ Then Vercel will auto-deploy if connected to GitHub!
 ## 🆘 Troubleshooting
 
 **If emails don't work in production:**
+
 - Check `RESEND_API_KEY` is set in Vercel
 - Verify `NEXT_PUBLIC_APP_URL` is production URL
 - Check Resend dashboard for send logs
 
 **If auth doesn't work:**
+
 - Verify Supabase keys are correct
 - Check Supabase URL in environment variables
 - Test with hardcoded credentials first
 
 **If domain doesn't load:**
+
 - Verify DNS points to Vercel
 - Check domain is added in Vercel dashboard
 - Wait up to 48 hours for DNS propagation

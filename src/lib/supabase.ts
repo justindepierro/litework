@@ -4,9 +4,9 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('[SUPABASE] Missing environment variables!');
-  console.error('[SUPABASE] URL:', supabaseUrl ? 'SET' : 'MISSING');
-  console.error('[SUPABASE] KEY:', supabaseAnonKey ? 'SET' : 'MISSING');
+  console.error("[SUPABASE] Missing environment variables!");
+  console.error("[SUPABASE] URL:", supabaseUrl ? "SET" : "MISSING");
+  console.error("[SUPABASE] KEY:", supabaseAnonKey ? "SET" : "MISSING");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -17,7 +17,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
   global: {
     headers: {
-      'X-Client-Info': 'litework-web',
+      "X-Client-Info": "litework-web",
     },
   },
 });
