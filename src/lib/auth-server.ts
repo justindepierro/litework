@@ -6,7 +6,7 @@
  */
 
 import { cookies } from 'next/headers';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
 import { supabaseAdmin } from './supabase-admin';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -41,11 +41,21 @@ export interface AuthResult {
  */
 export async function getAuthenticatedUser(): Promise<AuthResult> {
   try {
-    // Ensure cookies are accessed (required for Next.js)
-    await cookies();
+    // Get Next.js cookie store
+    const cookieStore = await cookies();
     
-    // Create Supabase client (automatically reads auth cookies)
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Create Supabase server client with cookie access
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
+        },
+      }
+    );
     
     // Get authenticated user from session
     const {
