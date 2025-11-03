@@ -355,6 +355,8 @@ export default function AthletesPage() {
         firstName: inviteForm.firstName,
         lastName: inviteForm.lastName,
         email: inviteForm.email, // Can be empty string
+        groupId: inviteForm.groupId || undefined, // Include groupId if provided
+        notes: inviteForm.notes || undefined, // Include notes if provided
       })) as ApiResponse;
 
       if (response.success) {

@@ -189,7 +189,11 @@ class ApiClient {
     email: string;
     firstName: string;
     lastName: string;
-    groupIds?: string[];
+    groupId?: string;
+    notes?: string;
+    bio?: string;
+    dateOfBirth?: string;
+    injuryStatus?: string;
   }) {
     return this.request("/invites", {
       method: "POST",
