@@ -357,11 +357,69 @@ export default function AthletesPage() {
         email: inviteForm.email, // Can be empty string
         groupId: inviteForm.groupId || undefined, // Include groupId if provided
         notes: inviteForm.notes || undefined, // Include notes if provided
-      })) as ApiResponse;
+      })) as {
+        success: boolean;
+        error?: string;
+        data?: {
+          invite?: {
+            id: string;
+            first_name: string;
+            last_name: string;
+            email: string | null;
+            group_ids?: string[];
+            created_at: string;
+          };
+        };
+        invite?: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string | null;
+          group_ids?: string[];
+          created_at: string;
+        };
+      };
 
       if (response.success) {
-        // Reload athletes to get the new invite from the database
-        await loadAthletes();
+        // Add the new invite to the athletes list immediately
+        // API returns invite at top level
+        const newInvite = response.invite || response.data?.invite;
+        if (newInvite) {
+          const newAthlete: EnhancedAthlete = {
+            id: newInvite.id,
+            firstName: newInvite.first_name || inviteForm.firstName,
+            lastName: newInvite.last_name || inviteForm.lastName,
+            fullName: `${newInvite.first_name || inviteForm.firstName} ${newInvite.last_name || inviteForm.lastName}`,
+            email: newInvite.email || inviteForm.email || "",
+            role: "athlete" as const,
+            groupIds: newInvite.group_ids || (inviteForm.groupId ? [inviteForm.groupId] : []),
+            status: "invited" as const,
+            profileImage: null,
+            bio: null,
+            injuryStatus: undefined,
+            stats: {
+              totalWorkouts: 0,
+              completedWorkouts: 0,
+              thisMonthWorkouts: 0,
+              totalPRs: 0,
+              recentPRs: 0,
+              lastWorkout: null,
+            },
+            communication: {
+              unreadMessages: 0,
+              lastMessage: null,
+              lastMessageTime: null,
+              notificationsEnabled: true,
+              preferredContact: "app" as const,
+            },
+            personalRecords: [],
+            createdAt: new Date(newInvite.created_at || Date.now()),
+            updatedAt: new Date(newInvite.created_at || Date.now()),
+          };
+
+          // Add to the top of the athletes list for immediate visibility
+          setAthletes((prev) => [newAthlete, ...prev]);
+        }
 
         const successMsg = inviteForm.email
           ? `Invite sent successfully to ${inviteForm.email}!`
