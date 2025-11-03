@@ -4,15 +4,19 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
-import { supabase } from '@/lib/supabase';
+import { getAuthenticatedUser } from '@/lib/auth-server';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import type { NotificationPreferences } from '@/types';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 /**
  * GET /api/user/preferences
  * Get current user's notification preferences
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
   
   if (!user) {
@@ -23,6 +27,20 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Create Supabase client with cookie support
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
+        },
+      }
+    );
+
     const { data, error } = await supabase
       .from('users')
       .select('notification_preferences')
@@ -93,6 +111,20 @@ export async function PATCH(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Create Supabase client with cookie support
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
+        },
+      }
+    );
 
     // Get current preferences
     const { data: currentData } = await supabase
