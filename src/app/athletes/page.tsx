@@ -1042,8 +1042,39 @@ export default function AthletesPage() {
                       </div>
                     )}
 
+                  {/* Email Missing Reminder */}
+                  {!athlete.email && athlete.status === "invited" && (
+                    <div
+                      className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-4 w-4 text-amber-600" />
+                        <span className="text-sm font-medium text-amber-900">
+                          Email Required to Send Invite
+                        </span>
+                      </div>
+                      <p className="text-xs text-amber-700 mb-2">
+                        Add an email address to send the invitation
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // TODO: Open edit modal to add email
+                          alert("Edit athlete feature coming soon - add email via detail modal");
+                        }}
+                        className="text-xs text-amber-600 hover:text-amber-800 font-medium hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Edit3 className="h-3 w-3" />
+                        Add Email Address
+                      </button>
+                    </div>
+                  )}
+
                   {/* Invite Status for Pending */}
-                  {athlete.status === "invited" && (
+                  {athlete.status === "invited" && athlete.email && (
                     <div
                       className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
                       onClick={(e) => e.stopPropagation()}
@@ -1225,7 +1256,7 @@ export default function AthletesPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
+                    Email Address (Optional)
                   </label>
                   <input
                     type="email"
@@ -1234,8 +1265,11 @@ export default function AthletesPage() {
                       setInviteForm({ ...inviteForm, email: e.target.value })
                     }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="athlete@email.com"
+                    placeholder="athlete@email.com (can add later)"
                   />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Leave blank to add athlete profile without sending invite yet
+                  </p>
                 </div>
 
                 <div>
@@ -1291,11 +1325,12 @@ export default function AthletesPage() {
                     <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
                     <div>
                       <h4 className="text-sm font-medium text-blue-900 mb-1">
-                        How Invites Work
+                        How It Works
                       </h4>
                       <p className="text-sm text-blue-700">
-                        The athlete will receive an email with a secure link to
-                        create their account. No password needed from you!
+                        {inviteForm.email
+                          ? "The athlete will receive an email with a secure link to create their account."
+                          : "Add athlete profile now, then add email later to send the invite."}
                       </p>
                     </div>
                   </div>
@@ -1311,14 +1346,10 @@ export default function AthletesPage() {
                   <button
                     onClick={handleSendInvite}
                     className="flex-1 btn-primary flex items-center justify-center gap-2"
-                    disabled={
-                      !inviteForm.firstName ||
-                      !inviteForm.lastName ||
-                      !inviteForm.email
-                    }
+                    disabled={!inviteForm.firstName || !inviteForm.lastName}
                   >
                     <Send className="w-4 h-4" />
-                    Send Invite
+                    {inviteForm.email ? "Send Invite" : "Add Athlete"}
                   </button>
                 </div>
               </div>
