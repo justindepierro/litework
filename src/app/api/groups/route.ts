@@ -21,7 +21,22 @@ export async function GET() {
 
       if (error) throw error;
 
-      return NextResponse.json({ success: true, groups });
+      // Map snake_case to camelCase for frontend
+      const mappedGroups = groups?.map((group) => ({
+        id: group.id,
+        name: group.name,
+        description: group.description,
+        sport: group.sport,
+        category: group.category,
+        coachId: group.coach_id,
+        athleteIds: group.athlete_ids || [],
+        color: group.color,
+        archived: group.archived,
+        createdAt: group.created_at,
+        updatedAt: group.updated_at,
+      }));
+
+      return NextResponse.json({ success: true, groups: mappedGroups });
     } else {
       // Athletes see only their groups
       const { data: groups, error } = await supabase
@@ -32,7 +47,22 @@ export async function GET() {
 
       if (error) throw error;
 
-      return NextResponse.json({ success: true, groups });
+      // Map snake_case to camelCase for frontend
+      const mappedGroups = groups?.map((group) => ({
+        id: group.id,
+        name: group.name,
+        description: group.description,
+        sport: group.sport,
+        category: group.category,
+        coachId: group.coach_id,
+        athleteIds: group.athlete_ids || [],
+        color: group.color,
+        archived: group.archived,
+        createdAt: group.created_at,
+        updatedAt: group.updated_at,
+      }));
+
+      return NextResponse.json({ success: true, groups: mappedGroups });
     }
   } catch (error) {
     console.error("Groups GET error:", error);
@@ -90,9 +120,24 @@ export async function POST(request: NextRequest) {
       throw error;
     }
 
+    // Map snake_case to camelCase for frontend
+    const mappedGroup = {
+      id: newGroup.id,
+      name: newGroup.name,
+      description: newGroup.description,
+      sport: newGroup.sport,
+      category: newGroup.category,
+      coachId: newGroup.coach_id,
+      athleteIds: newGroup.athlete_ids || [],
+      color: newGroup.color,
+      archived: newGroup.archived,
+      createdAt: newGroup.created_at,
+      updatedAt: newGroup.updated_at,
+    };
+
     return NextResponse.json({
       success: true,
-      group: newGroup,
+      group: mappedGroup,
     });
   } catch (error) {
     console.error("Groups POST error:", error);

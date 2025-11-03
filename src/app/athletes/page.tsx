@@ -740,9 +740,8 @@ export default function AthletesPage() {
               {groups
                 .filter((g) => !g.archived)
                 .map((group) => {
-                  const athleteCount = athletes.filter((a) =>
-                    a.groupIds?.includes(group.id)
-                  ).length;
+                  // Get athlete count directly from group's athleteIds array
+                  const athleteCount = group.athleteIds?.length || 0;
 
                   return (
                     <div
