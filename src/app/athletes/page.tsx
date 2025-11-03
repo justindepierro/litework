@@ -1266,11 +1266,25 @@ export default function AthletesPage() {
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
-                      <button className="btn-secondary flex items-center justify-center gap-2 text-sm py-2">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleResendInvite(athlete.id);
+                        }}
+                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                      >
                         <RefreshCw className="w-4 h-4" />
                         Resend
                       </button>
-                      <button className="btn-secondary flex items-center justify-center gap-2 text-sm py-2">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleCancelInvite(athlete.id);
+                        }}
+                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                      >
                         <X className="w-4 h-4" />
                         Cancel
                       </button>
