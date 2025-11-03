@@ -478,7 +478,7 @@ export default function AthletesPage() {
   };
 
   const handleCancelInvite = (inviteId: string) => {
-    console.log("❌ Canceling invite:", inviteId);
+    console.log("handleCancelInvite called with ID:", inviteId);
     setConfirmModal({
       isOpen: true,
       title: "Cancel Invitation",
@@ -486,25 +486,34 @@ export default function AthletesPage() {
         "Are you sure you want to cancel this invitation? The athlete will not be able to accept it.",
       onConfirm: async () => {
         try {
+          console.log("Confirming deletion for invite:", inviteId);
           setConfirmModal({ ...confirmModal, isOpen: false });
 
+          console.log("Calling apiClient.deleteInvite...");
           const response = (await apiClient.deleteInvite(inviteId)) as {
             success: boolean;
             message?: string;
+            error?: string;
           };
 
+          console.log("Delete response:", response);
+
           if (response.success) {
+            console.log("Delete successful, removing from state");
             // Remove from local state
-            setAthletes(athletes.filter((a) => a.id !== inviteId));
+            setAthletes((prev) => prev.filter((a) => a.id !== inviteId));
             // Reload groups to update counts
             await loadGroups();
             toast.success("Invitation cancelled successfully");
           } else {
-            toast.error("Failed to cancel invitation");
+            console.error("Delete failed:", response.error || response);
+            toast.error(response.error || "Failed to cancel invitation");
           }
         } catch (err) {
           console.error("Error canceling invite:", err);
-          toast.error("Failed to cancel invitation");
+          toast.error(
+            err instanceof Error ? err.message : "Failed to cancel invitation"
+          );
         }
       },
     });
