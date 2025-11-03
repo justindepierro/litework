@@ -3,8 +3,12 @@
 /**
  * Apply Profile Transfer Enhancement
  * 
+ * ⚠️  MIGRATIONS ALREADY APPLIED (Nov 3, 2025)
+ * 
  * This script applies database migrations to enable profile data transfer
  * from invites to user accounts when athletes accept invitations.
+ * 
+ * Migration files are now in: database/archive/
  * 
  * Features enabled:
  * - Coach can add notes, bio, DOB, injury status to invite
@@ -83,11 +87,11 @@ async function applyProfileTransferMigrations() {
   
   const migrations = [
     {
-      file: join(process.cwd(), 'database', 'add-user-profile-fields.sql'),
+      file: join(process.cwd(), 'database', 'archive', 'add-user-profile-fields.sql'),
       description: 'Adding bio and notes fields to users table'
     },
     {
-      file: join(process.cwd(), 'database', 'enhance-invites-for-profile-transfer.sql'),
+      file: join(process.cwd(), 'database', 'archive', 'enhance-invites-for-profile-transfer.sql'),
       description: 'Enhancing invites table for profile data storage'
     }
   ];
