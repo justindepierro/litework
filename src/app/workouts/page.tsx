@@ -398,24 +398,42 @@ export default function WorkoutsPage() {
                 updatedAt: new Date(),
               }
             }
-            onChange={async (updatedWorkout) => {
+            onChange={(updatedWorkout) => {
+              // For creating new workouts, just track changes locally
+              // Only save to API when user closes/saves (handled in onClose)
               if (creatingWorkout) {
+                setNewWorkout(updatedWorkout);
+              } else {
+                // For editing existing workouts, update local state
+                const updatedWorkouts = workouts.map((w) =>
+                  w.id === updatedWorkout.id ? updatedWorkout : w
+                );
+                setWorkouts(updatedWorkouts);
+              }
+            }}
+            onClose={async () => {
+              // If creating a new workout, save it to the API
+              if (
+                creatingWorkout &&
+                newWorkout.name &&
+                newWorkout.exercises &&
+                newWorkout.exercises.length > 0
+              ) {
                 try {
-                  // Adding a new workout via API
                   const response = (await apiClient.createWorkout({
-                    name: updatedWorkout.name,
-                    description: updatedWorkout.description,
-                    exercises: updatedWorkout.exercises,
-                    estimatedDuration: updatedWorkout.estimatedDuration,
+                    name: newWorkout.name,
+                    description: newWorkout.description,
+                    exercises: newWorkout.exercises,
+                    estimatedDuration: newWorkout.estimatedDuration || 30,
                   })) as ApiResponse;
 
                   if (response.success && response.data) {
                     const apiResponse = response.data as {
                       workout?: WorkoutPlan;
                     };
-                    const newWorkout = apiResponse.workout;
-                    if (newWorkout) {
-                      setWorkouts([...workouts, newWorkout]);
+                    const createdWorkout = apiResponse.workout;
+                    if (createdWorkout) {
+                      setWorkouts([...workouts, createdWorkout]);
                     }
                   } else {
                     setError(
@@ -423,22 +441,26 @@ export default function WorkoutsPage() {
                         ? response.error
                         : "Failed to create workout"
                     );
+                    // Don't close if save failed
+                    return;
                   }
                 } catch (err) {
                   setError("Failed to create workout");
                   console.error("Error creating workout:", err);
+                  // Don't close if save failed
+                  return;
                 }
-              } else {
-                // For now, update locally (would need PUT endpoint)
-                const updatedWorkouts = workouts.map((w) =>
-                  w.id === updatedWorkout.id ? updatedWorkout : w
-                );
-                setWorkouts(updatedWorkouts);
               }
-            }}
-            onClose={() => {
+
+              // Reset state
               setEditingWorkout(null);
               setCreatingWorkout(false);
+              setNewWorkout({
+                name: "",
+                description: "",
+                exercises: [],
+                estimatedDuration: 30,
+              });
             }}
           />
         </Suspense>

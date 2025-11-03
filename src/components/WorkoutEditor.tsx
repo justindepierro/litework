@@ -23,6 +23,7 @@ import {
   WorkoutBlock,
   BlockInstance,
 } from "@/types";
+import { apiClient } from "@/lib/api-client";
 import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
@@ -46,6 +47,7 @@ interface ExerciseItemProps {
   availableGroups: ExerciseGroup[];
   canMoveUp: boolean;
   canMoveDown: boolean;
+  onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = ({
@@ -59,13 +61,32 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   availableGroups,
   canMoveUp,
   canMoveDown,
+  onExerciseNameChange,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedExercise, setEditedExercise] = useState(exercise);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
 
-  const saveExercise = () => {
-    onUpdate(editedExercise);
+  const saveExercise = async () => {
+    let updatedExercise = editedExercise;
+
+    // If exercise name changed and we have the callback, add to library
+    if (
+      onExerciseNameChange &&
+      editedExercise.exerciseName !== exercise.exerciseName &&
+      editedExercise.exerciseName.trim().length > 0
+    ) {
+      const libraryExerciseId = await onExerciseNameChange(
+        editedExercise.exerciseName
+      );
+      // Update the exerciseId with the one from the library
+      updatedExercise = {
+        ...editedExercise,
+        exerciseId: libraryExerciseId,
+      };
+    }
+
+    onUpdate(updatedExercise);
     setIsEditing(false);
   };
 
@@ -280,6 +301,7 @@ interface BlockInstanceItemProps {
   ) => void;
   onMoveExerciseToGroup: (exerciseId: string, targetGroupId?: string) => void;
   availableGroups: ExerciseGroup[];
+  onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
 const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
@@ -292,6 +314,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
   onMoveExercise,
   onMoveExerciseToGroup,
   availableGroups,
+  onExerciseNameChange,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -374,6 +397,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
               availableGroups={availableGroups}
               canMoveUp={false}
               canMoveDown={false}
+              onExerciseNameChange={onExerciseNameChange}
             />
           ))}
 
@@ -390,6 +414,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
               onMoveExercise={onMoveExercise}
               onMoveExerciseToGroup={onMoveExerciseToGroup}
               availableGroups={availableGroups}
+              onExerciseNameChange={onExerciseNameChange}
             />
           ))}
         </div>
@@ -413,6 +438,7 @@ interface GroupItemProps {
   ) => void;
   onMoveExerciseToGroup: (exerciseId: string, targetGroupId?: string) => void;
   availableGroups: ExerciseGroup[];
+  onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
 const GroupItem: React.FC<GroupItemProps> = ({
@@ -425,6 +451,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
   onMoveExercise,
   onMoveExerciseToGroup,
   availableGroups,
+  onExerciseNameChange,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -658,6 +685,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
               availableGroups={availableGroups.filter((g) => g.id !== group.id)}
               canMoveUp={index > 0}
               canMoveDown={index < groupExercises.length - 1}
+              onExerciseNameChange={onExerciseNameChange}
             />
           ))}
 
@@ -690,6 +718,41 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       onChange(updatedWorkout);
     },
     [onChange]
+  );
+
+  // Auto-add exercise to library when name is set/changed
+  const handleExerciseNameChange = useCallback(
+    async (exerciseName: string): Promise<string> => {
+      if (!exerciseName || exerciseName.trim().length === 0) {
+        return "new-exercise";
+      }
+
+      try {
+        const response = await apiClient.findOrCreateExercise({
+          name: exerciseName.trim(),
+        });
+
+        if (response && typeof response === "object" && "success" in response) {
+          const apiResponse = response as {
+            success: boolean;
+            exercise?: { id: string };
+            created?: boolean;
+          };
+
+          if (apiResponse.success && apiResponse.exercise) {
+            // Return the exercise ID from the library
+            return apiResponse.exercise.id;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to add exercise to library:", error);
+        // Don't block the user if API fails, just use a generated ID
+      }
+
+      // Fallback to generated ID if API call fails
+      return `custom-${exerciseName.toLowerCase().replace(/\s+/g, "-")}`;
+    },
+    []
   );
 
   // Add new exercise
@@ -1038,6 +1101,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 onMoveExercise={moveExercise}
                 onMoveExerciseToGroup={moveExerciseToGroup}
                 availableGroups={localWorkout.groups || []}
+                onExerciseNameChange={handleExerciseNameChange}
               />
             ))}
 
@@ -1057,6 +1121,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   availableGroups={localWorkout.groups || []}
                   canMoveUp={index > 0}
                   canMoveDown={index < ungroupedExercises.length - 1}
+                  onExerciseNameChange={handleExerciseNameChange}
                 />
               ))}
 
@@ -1075,6 +1140,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   onMoveExercise={moveExercise}
                   onMoveExerciseToGroup={moveExerciseToGroup}
                   availableGroups={localWorkout.groups || []}
+                  onExerciseNameChange={handleExerciseNameChange}
                 />
               ))}
 
