@@ -246,13 +246,13 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 # Web Push (VAPID Keys)
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=BDdFmhhNn3e...
-VAPID_PRIVATE_KEY=iRras99R9...
+VAPID_PRIVATE_KEY=<your-vapid-private-key>
 
 # Resend Email Service
-RESEND_API_KEY=re_ND6yNNQG_PsDzkRA9kQCGvv9hgwp9w7p9
+RESEND_API_KEY=<your-resend-api-key>
 
 # Cron Job Authentication (NEW)
-CRON_SECRET=/7HghhKqwCNSBnKxAisEUQLBVyRsQwFWoHeUkvCNlYg=
+CRON_SECRET=<your-cron-secret>
 ```
 
 ### Vercel Environment Variables

@@ -165,7 +165,7 @@ VAPID_SUBJECT="mailto:jdepierro@burkecatholic.org"
 NEXT_PUBLIC_VAPID_PUBLIC_KEY="BDdFmhhNn3e..."
 
 # Email Service
-RESEND_API_KEY="re_ND6yNNQG..."
+RESEND_API_KEY="<your-resend-api-key>"
 RESEND_FROM_EMAIL="LiteWork <noreply@litework.app>"
 ```
 

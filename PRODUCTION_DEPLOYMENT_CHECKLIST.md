@@ -28,26 +28,28 @@ Go to: https://vercel.com/dashboard → Your Project → Settings → Environmen
 ### Add these variables (Production environment):
 
 ```bash
+```bash
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://lzsjaqkhdoqsafptqpnt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_81nl9WAiECbQlQ5kPJw9Ww_R0x_vA_x
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_y2VQz4wGj7m7ijSLzdQJjw_hV1kJ7nd
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 
 # JWT
-JWT_SECRET=U2VcJCvOzpwTA1jLoarCXljX3XohXiEMsoi54DArie0
+JWT_SECRET=<your-jwt-secret>
 
 # App URL (CRITICAL - use your production URL)
 NEXT_PUBLIC_APP_URL=https://liteworkapp.com
 
 # Resend Email
-RESEND_API_KEY=re_ND6yNNQG_PsDzkRA9kQCGvv9hgwp9w7p9
+RESEND_API_KEY=<your-resend-api-key>
 RESEND_FROM_EMAIL=LiteWork <noreply@liteworkapp.com>
 
 # VAPID Keys (Push Notifications)
-VAPID_PUBLIC_KEY=BDdFmhhNn3eEw-cpfO4O0SxKLKZo8FC3LVOq3GebT7aKHHm1__zmNh_Ps8TPB-e2Ul6CXAx5ZQeaGMH_TBKijxQ
-VAPID_PRIVATE_KEY=iRras99R9Zxz0035FQuOtE_R4YpujcgRfUqmrVS4F-I
+VAPID_PUBLIC_KEY=<your-vapid-public-key>
+VAPID_PRIVATE_KEY=<your-vapid-private-key>
 VAPID_SUBJECT=mailto:jdepierro@burkecatholic.org
-NEXT_PUBLIC_VAPID_PUBLIC_KEY=BDdFmhhNn3eEw-cpfO4O0SxKLKZo8FC3LVOq3GebT7aKHHm1__zmNh_Ps8TPB-e2Ul6CXAx5ZQeaGMH_TBKijxQ
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=<your-vapid-public-key>
+```
 
 # App Version
 NEXT_PUBLIC_APP_VERSION=1.0.0
