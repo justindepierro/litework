@@ -38,6 +38,14 @@ yarn-error.log*
 .env*
 !.env.example
 
+# Secrets and API keys (extra protection)
+*secret*
+*_key.txt
+*_keys.txt
+*.pem
+*.key
+*.cert
+
 # vercel
 .vercel
 
