@@ -188,9 +188,10 @@ export default function AthletesPage() {
             id: string;
             first_name: string;
             last_name: string;
-            email: string;
+            email: string | null;
             status: string;
             created_at: string;
+            group_ids?: string[];
           }>;
         };
       };
@@ -230,15 +231,15 @@ export default function AthletesPage() {
             createdAt: new Date(athlete.created_at),
             updatedAt: new Date(athlete.created_at),
           })),
-          // Map pending invites
+          // Map pending invites (including drafts)
           ...response.data.invites.map((invite) => ({
             id: invite.id,
             firstName: invite.first_name,
             lastName: invite.last_name,
             fullName: `${invite.first_name} ${invite.last_name}`,
-            email: invite.email,
+            email: invite.email || "",
             role: "athlete" as const,
-            groupIds: [],
+            groupIds: invite.group_ids || [],
             status: "invited" as const,
             profileImage: null,
             bio: null,
