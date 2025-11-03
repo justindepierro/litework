@@ -72,32 +72,50 @@ export async function POST(request: NextRequest) {
     }
 
     // Create invitation record
+    const insertData: any = {
+      email: email ? email.toLowerCase() : null,
+      first_name: firstName,
+      last_name: lastName,
+      invited_by: user.id,
+      role: "athlete",
+      status: email ? "pending" : "draft",
+      expires_at: email
+        ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        : null,
+    };
+
+    // Add group assignment - support both old and new schema
+    if (groupId) {
+      insertData.group_id = groupId; // Legacy single group
+      insertData.group_ids = [groupId]; // New array format
+    }
+
+    // Add profile data if provided (from profile transfer migration)
+    if (notes) insertData.notes = notes;
+    if (bio) insertData.bio = bio;
+    if (dateOfBirth) insertData.date_of_birth = dateOfBirth;
+    if (injuryStatus) insertData.injury_status = injuryStatus;
+
+    console.log("Creating invite with data:", {
+      ...insertData,
+      email: insertData.email ? "***" : null,
+    });
+
     const { data: invite, error: inviteError } = await supabase
       .from("invites")
-      .insert({
-        email: email ? email.toLowerCase() : null,
-        first_name: firstName,
-        last_name: lastName,
-        invited_by: user.id,
-        role: "athlete",
-        group_ids: groupId ? [groupId] : [],
-        status: email ? "pending" : "draft", // "draft" status if no email
-        expires_at: email
-          ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-          : null, // No expiration for drafts
-        // Profile data that will transfer on signup
-        notes: notes || null,
-        bio: bio || null,
-        date_of_birth: dateOfBirth || null,
-        injury_status: injuryStatus || null,
-      })
+      .insert(insertData)
       .select()
       .single();
 
     if (inviteError) {
       console.error("Error creating invite:", inviteError);
+      console.error("Insert data was:", insertData);
       return NextResponse.json(
-        { error: "Failed to create invitation" },
+        { 
+          error: "Failed to create invitation",
+          details: inviteError.message,
+          code: inviteError.code
+        },
         { status: 500 }
       );
     }
