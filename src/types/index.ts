@@ -108,15 +108,25 @@ export interface WorkoutExercise {
   exerciseName: string;
   sets: number;
   reps: number;
+
+  // Tempo - time for each phase of the rep (e.g., "3-1-1-0" = 3sec down, 1sec pause, 1sec up, 0sec top)
+  tempo?: string;
+
+  // Load/Weight configuration
   weightType: "percentage" | "fixed" | "bodyweight";
   weight?: number; // For fixed weight
   percentage?: number; // For percentage-based (e.g., 75% of 1RM)
   percentageBaseKPI?: string; // KPI exercise ID to base percentage on (e.g., "bench-press")
+
+  // Unilateral exercise flag
+  eachSide?: boolean; // If true, perform reps on each side separately (e.g., single-arm rows, Bulgarian split squats)
+
   restTime?: number; // Rest time in seconds
-  notes?: string;
+  notes?: string; // Exercise-specific notes (equipment, cues, modifications)
   order: number; // Order in the workout
   variations?: ExerciseVariation[]; // Available modifications
   groupId?: string; // ID of the group this exercise belongs to
+  blockInstanceId?: string; // ID of the block instance this exercise belongs to (for template tracking)
   substitutionReason?: string; // Reason for exercise substitution
   originalExercise?: string; // Original exercise name if substituted
   progressionNotes?: string; // Notes about progression suggestions
@@ -129,9 +139,52 @@ export interface ExerciseGroup {
   type: "superset" | "circuit" | "section";
   description?: string;
   order: number; // Order in the workout
-  restBetweenRounds?: number; // Rest between rounds/sets (for circuits)
+  restBetweenRounds?: number; // Rest between rounds/sets (for circuits and supersets)
+  restBetweenExercises?: number; // Rest between exercises within the group (for circuits)
   rounds?: number; // Number of rounds (for circuits)
   notes?: string;
+  blockInstanceId?: string; // ID of the block instance this group belongs to (for template tracking)
+}
+
+// Workout Block - Reusable template for common workout sections
+export interface WorkoutBlock {
+  id: string;
+  name: string; // e.g., "Monday Warm-up", "Push Day Core", "Cool Down"
+  description?: string;
+  category: "warmup" | "main" | "accessory" | "cooldown" | "custom";
+  exercises: WorkoutExercise[]; // Exercises in this block
+  groups?: ExerciseGroup[]; // Groups within the block
+  estimatedDuration: number; // In minutes
+  tags: string[]; // e.g., ["push", "upper body", "strength"]
+  isTemplate: boolean; // Whether this is a system template or user-created
+  createdBy: string;
+  usageCount: number; // Track how often this block is used
+  lastUsed?: Date;
+  isFavorite?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Block Instance - A specific use of a workout block template in a workout
+// This allows the same template to be used multiple times with different customizations
+export interface BlockInstance {
+  id: string; // Unique instance ID
+  sourceBlockId: string; // Reference to the original WorkoutBlock
+  sourceBlockName: string; // Name of the original block (for display)
+  instanceName?: string; // Custom name for this instance (overrides sourceBlockName)
+  customizations: {
+    // Track what has been customized vs template defaults
+    modifiedExercises: string[]; // IDs of exercises that have been modified
+    addedExercises: string[]; // IDs of exercises added to this instance
+    removedExercises: string[]; // IDs of template exercises removed from this instance
+    modifiedGroups: string[]; // IDs of groups that have been modified
+    addedGroups: string[]; // IDs of groups added to this instance
+    removedGroups: string[]; // IDs of template groups removed from this instance
+  };
+  notes?: string; // Instance-specific notes (e.g., "Week 3 progression", "Beginner variation")
+  estimatedDuration: number; // May differ from template if customized
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface WorkoutPlan {
@@ -140,6 +193,7 @@ export interface WorkoutPlan {
   description?: string;
   exercises: WorkoutExercise[];
   groups?: ExerciseGroup[]; // Groups for organizing exercises
+  blockInstances?: BlockInstance[]; // Track block instances used in this workout
   estimatedDuration: number; // In minutes
   targetGroupId?: string; // Group this workout is designed for
   createdBy: string;

@@ -7,6 +7,7 @@ The Profile Transfer System allows coaches to create pre-filled athlete profiles
 ## Features
 
 ### Coach Benefits
+
 - Pre-load athlete information before they sign up
 - Add notes, bio, date of birth, injury status
 - Assign athlete to multiple groups at once
@@ -14,6 +15,7 @@ The Profile Transfer System allows coaches to create pre-filled athlete profiles
 - All data transfers automatically on athlete signup
 
 ### Athlete Benefits
+
 - Pre-filled profile on first login
 - Already member of assigned groups
 - Coach relationship established automatically
@@ -61,6 +63,7 @@ The Profile Transfer System allows coaches to create pre-filled athlete profiles
 ### Database Schema
 
 #### Invites Table (Enhanced)
+
 ```sql
 CREATE TABLE public.invites (
   id UUID PRIMARY KEY,
@@ -70,20 +73,21 @@ CREATE TABLE public.invites (
   invited_by UUID NOT NULL,
   role TEXT DEFAULT 'athlete',
   status TEXT DEFAULT 'pending', -- 'pending', 'draft', 'accepted', 'expired'
-  
+
   -- Profile data (NEW)
   notes TEXT,                    -- Coach notes about athlete
   bio TEXT,                      -- Athlete bio/description
   date_of_birth DATE,            -- DOB
   injury_status TEXT,            -- Current injury info
   group_ids TEXT[],              -- Array of group IDs
-  
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
   expires_at TIMESTAMPTZ
 );
 ```
 
 #### Users Table (Enhanced)
+
 ```sql
 CREATE TABLE public.users (
   id UUID PRIMARY KEY,
@@ -92,7 +96,7 @@ CREATE TABLE public.users (
   last_name TEXT NOT NULL,
   name TEXT NOT NULL,
   role TEXT DEFAULT 'athlete',
-  
+
   -- Profile data (NEW)
   bio TEXT,                      -- Visible to athlete
   notes TEXT,                    -- Coach notes (coach-only)
@@ -100,7 +104,7 @@ CREATE TABLE public.users (
   injury_status TEXT,
   group_ids TEXT[],
   coach_id UUID,
-  
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -113,6 +117,7 @@ CREATE TABLE public.users (
 **Apply these migrations in Supabase SQL Editor:**
 
 #### Migration 1: Add User Profile Fields
+
 ```sql
 ALTER TABLE public.users
 ADD COLUMN IF NOT EXISTS bio TEXT,
@@ -121,11 +126,12 @@ ADD COLUMN IF NOT EXISTS notes TEXT;
 COMMENT ON COLUMN public.users.bio IS 'Athlete bio/description visible to athlete';
 COMMENT ON COLUMN public.users.notes IS 'Coach notes about athlete (visible only to coaches)';
 
-CREATE INDEX IF NOT EXISTS idx_users_bio_text_search 
+CREATE INDEX IF NOT EXISTS idx_users_bio_text_search
 ON public.users USING gin(to_tsvector('english', COALESCE(bio, '')));
 ```
 
 #### Migration 2: Enhance Invites Table
+
 ```sql
 ALTER TABLE public.invites
 ADD COLUMN IF NOT EXISTS notes TEXT,
@@ -141,11 +147,11 @@ COMMENT ON COLUMN public.invites.injury_status IS 'Current injury status';
 COMMENT ON COLUMN public.invites.group_ids IS 'Array of group IDs to add athlete to';
 
 -- Migrate existing single group_id to array
-UPDATE public.invites 
+UPDATE public.invites
 SET group_ids = ARRAY[group_id::text]
 WHERE group_id IS NOT NULL AND (group_ids IS NULL OR group_ids = '{}');
 
-CREATE INDEX IF NOT EXISTS idx_invites_group_ids 
+CREATE INDEX IF NOT EXISTS idx_invites_group_ids
 ON public.invites USING GIN(group_ids);
 ```
 
@@ -161,7 +167,7 @@ export async function signUp(
   password: string,
   firstName: string,
   lastName: string,
-  inviteId?: string  // NEW: Enable profile transfer
+  inviteId?: string // NEW: Enable profile transfer
 ) {
   // Load invite data if invite ID provided
   let inviteData = null;
@@ -192,7 +198,7 @@ export async function signUp(
     first_name: sanitizedFirstName,
     last_name: sanitizedLastName,
     role: "athlete",
-    
+
     // TRANSFER PROFILE DATA FROM INVITE:
     bio: inviteData?.bio || null,
     notes: inviteData?.notes || null,
@@ -200,7 +206,7 @@ export async function signUp(
     injury_status: inviteData?.injury_status || null,
     group_ids: inviteData?.group_ids || [],
     coach_id: inviteData?.invited_by || null,
-    
+
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
@@ -242,7 +248,7 @@ signUp: (
   password: string,
   firstName: string,
   lastName: string,
-  inviteId?: string  // NEW parameter
+  inviteId?: string // NEW parameter
 ) => Promise<{ needsEmailConfirmation?: boolean }>;
 ```
 
@@ -254,22 +260,22 @@ const result = await signUp(
   password,
   firstName.trim(),
   lastName.trim(),
-  inviteId || undefined  // Pass invite ID from URL
+  inviteId || undefined // Pass invite ID from URL
 );
 ```
 
 #### invites/route.ts - Store Profile Data
 
 ```typescript
-const { 
-  firstName, 
-  lastName, 
-  email, 
+const {
+  firstName,
+  lastName,
+  email,
   groupId,
-  notes,          // NEW
-  bio,            // NEW
-  dateOfBirth,    // NEW
-  injuryStatus    // NEW
+  notes, // NEW
+  bio, // NEW
+  dateOfBirth, // NEW
+  injuryStatus, // NEW
 } = body;
 
 await supabase.from("invites").insert({
@@ -278,10 +284,10 @@ await supabase.from("invites").insert({
   last_name: lastName,
   invited_by: user.id,
   role: "athlete",
-  group_ids: groupId ? [groupId] : [],  // Array instead of single ID
+  group_ids: groupId ? [groupId] : [], // Array instead of single ID
   status: email ? "pending" : "draft",
   expires_at: email ? expirationDate : null,
-  
+
   // Store profile data
   notes: notes || null,
   bio: bio || null,
@@ -295,6 +301,7 @@ await supabase.from("invites").insert({
 ### Current State (After Migrations)
 
 **Backend is fully functional:**
+
 - ✅ Database schema enhanced
 - ✅ Profile transfer logic implemented
 - ✅ Group membership auto-assignment works
@@ -302,6 +309,7 @@ await supabase.from("invites").insert({
 
 **Frontend needs enhancement:**
 Currently the invite form only captures:
+
 - First Name
 - Last Name
 - Email (optional)
@@ -376,18 +384,21 @@ const [inviteForm, setInviteForm] = useState({
 ## Benefits Summary
 
 ### For Coaches
+
 - **Efficiency**: Pre-load all athlete information once
 - **Organization**: Assign to multiple groups immediately
 - **Tracking**: Add notes that persist to athlete profile
 - **Roster Management**: Create draft profiles for planning
 
 ### For Athletes
+
 - **Convenience**: No duplicate data entry
 - **Immediate Access**: Already in correct groups on first login
 - **Complete Profile**: See coach-prepared information
 - **Smooth Onboarding**: Professional first impression
 
 ### For System
+
 - **Data Integrity**: Single source of truth (invite → user)
 - **Scalability**: Bulk athlete onboarding made easy
 - **Maintainability**: Clear data flow and ownership
@@ -396,17 +407,20 @@ const [inviteForm, setInviteForm] = useState({
 ## Future Enhancements
 
 ### Vitals System (User Interest)
+
 - Weight, height, body fat percentage
 - Measurement history tracking
 - Transfer from invite to user
 - Progress charts and analytics
 
 ### Multi-Group Support
+
 - Already supported in backend (group_ids array)
 - UI needs update to allow multiple group selection
 - Athlete can be in multiple teams/categories simultaneously
 
 ### Profile Editing
+
 - Allow athletes to edit their own bio
 - Coach-only access to notes field
 - Permission-based field visibility
@@ -414,12 +428,14 @@ const [inviteForm, setInviteForm] = useState({
 ## Files Modified
 
 ### New Files
+
 - `database/add-user-profile-fields.sql`
 - `database/enhance-invites-for-profile-transfer.sql`
 - `scripts/database/apply-profile-transfer.mjs`
 - `docs/guides/PROFILE_TRANSFER_SYSTEM.md` (this file)
 
 ### Modified Files
+
 - `src/lib/auth-client.ts` (signUp function - ~70 lines added)
 - `src/contexts/AuthContext.tsx` (interface + implementation)
 - `src/app/signup/page.tsx` (pass inviteId parameter)
@@ -435,6 +451,7 @@ const [inviteForm, setInviteForm] = useState({
 ## Support
 
 For questions or issues with the Profile Transfer System:
+
 1. Check this guide first
 2. Review related documentation above
 3. Test with draft invites (no email) to avoid sending test emails

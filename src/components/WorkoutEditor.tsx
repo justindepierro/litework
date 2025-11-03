@@ -14,8 +14,18 @@ import {
   Dumbbell,
   ChevronDown,
   ChevronRight,
+  Package,
 } from "lucide-react";
-import { WorkoutPlan, WorkoutExercise, ExerciseGroup } from "@/types";
+import {
+  WorkoutPlan,
+  WorkoutExercise,
+  ExerciseGroup,
+  WorkoutBlock,
+  BlockInstance,
+} from "@/types";
+import BlockLibrary from "./BlockLibrary";
+import BlockEditor from "./BlockEditor";
+import BlockInstanceEditor from "./BlockInstanceEditor";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;
@@ -255,6 +265,139 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   );
 };
 
+// Block Instance Component - Shows blocks added to the workout
+interface BlockInstanceItemProps {
+  blockInstance: BlockInstance;
+  exercises: WorkoutExercise[];
+  groups: ExerciseGroup[];
+  onCustomize: (blockInstance: BlockInstance) => void;
+  onDeleteExercise: (exerciseId: string) => void;
+  onUpdateExercise: (exercise: WorkoutExercise) => void;
+  onMoveExercise: (
+    exerciseId: string,
+    direction: "up" | "down",
+    groupId?: string
+  ) => void;
+  onMoveExerciseToGroup: (exerciseId: string, targetGroupId?: string) => void;
+  availableGroups: ExerciseGroup[];
+}
+
+const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
+  blockInstance,
+  exercises,
+  groups,
+  onCustomize,
+  onDeleteExercise,
+  onUpdateExercise,
+  onMoveExercise,
+  onMoveExerciseToGroup,
+  availableGroups,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const blockExercises = exercises.filter(
+    (ex) => ex.blockInstanceId === blockInstance.id && !ex.groupId
+  );
+  const blockGroups = groups.filter(
+    (g) => g.blockInstanceId === blockInstance.id
+  );
+
+  const hasCustomizations =
+    blockInstance.customizations.modifiedExercises.length > 0 ||
+    blockInstance.customizations.addedExercises.length > 0 ||
+    blockInstance.customizations.removedExercises.length > 0;
+
+  return (
+    <div className="border-2 border-purple-300 rounded-lg bg-purple-50/30 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1 text-silver-500 hover:text-purple-600"
+          >
+            {isCollapsed ? (
+              <ChevronRight className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
+
+          <Package className="w-4 h-4 text-purple-600" />
+
+          <div className="flex-1">
+            <div className="font-medium text-silver-900">
+              {blockInstance.instanceName || blockInstance.sourceBlockName}
+            </div>
+            <div className="text-xs text-silver-500">
+              Block Template
+              {hasCustomizations && (
+                <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                  Customized
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => onCustomize(blockInstance)}
+            className="px-3 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-1"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Customize</span>
+          </button>
+        </div>
+      </div>
+
+      {!isCollapsed && (
+        <div className="ml-6 space-y-3 mt-3 border-l-2 border-purple-200 pl-4">
+          {blockInstance.notes && (
+            <div className="text-sm text-silver-600 italic bg-white/50 p-2 rounded">
+              {blockInstance.notes}
+            </div>
+          )}
+
+          {/* Block exercises (ungrouped) */}
+          {blockExercises.map((exercise) => (
+            <ExerciseItem
+              key={exercise.id}
+              exercise={exercise}
+              index={0}
+              onUpdate={onUpdateExercise}
+              onDelete={onDeleteExercise}
+              onMoveUp={() => onMoveExercise(exercise.id, "up")}
+              onMoveDown={() => onMoveExercise(exercise.id, "down")}
+              onMoveToGroup={(groupId) =>
+                onMoveExerciseToGroup(exercise.id, groupId)
+              }
+              availableGroups={availableGroups}
+              canMoveUp={false}
+              canMoveDown={false}
+            />
+          ))}
+
+          {/* Block groups */}
+          {blockGroups.map((group) => (
+            <GroupItem
+              key={group.id}
+              group={group}
+              exercises={exercises}
+              onUpdateGroup={() => {}}
+              onDeleteGroup={() => {}}
+              onUpdateExercise={onUpdateExercise}
+              onDeleteExercise={onDeleteExercise}
+              onMoveExercise={onMoveExercise}
+              onMoveExerciseToGroup={onMoveExerciseToGroup}
+              availableGroups={availableGroups}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Exercise Group Component
 interface GroupItemProps {
   group: ExerciseGroup;
@@ -338,50 +481,148 @@ const GroupItem: React.FC<GroupItemProps> = ({
           {getGroupIcon()}
 
           {isEditing ? (
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                value={editedGroup.name}
-                onChange={(e) =>
-                  setEditedGroup({ ...editedGroup, name: e.target.value })
-                }
-                className="p-1 border border-silver-300 rounded text-sm"
-                placeholder="Group name"
-              />
-              <select
-                value={editedGroup.type}
-                onChange={(e) =>
-                  setEditedGroup({
-                    ...editedGroup,
-                    type: e.target.value as "superset" | "circuit" | "section",
-                  })
-                }
-                className="p-1 border border-silver-300 rounded text-sm"
-              >
-                <option value="section">Section</option>
-                <option value="superset">Superset</option>
-                <option value="circuit">Circuit</option>
-              </select>
-              <button
-                onClick={saveGroup}
-                className="btn-primary text-xs px-2 py-1"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="btn-secondary text-xs px-2 py-1"
-              >
-                Cancel
-              </button>
+            <div className="flex flex-col space-y-2 flex-1">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={editedGroup.name}
+                  onChange={(e) =>
+                    setEditedGroup({ ...editedGroup, name: e.target.value })
+                  }
+                  className="p-1 border border-silver-300 rounded text-sm flex-1"
+                  placeholder="Group name"
+                />
+                <select
+                  value={editedGroup.type}
+                  onChange={(e) =>
+                    setEditedGroup({
+                      ...editedGroup,
+                      type: e.target.value as
+                        | "superset"
+                        | "circuit"
+                        | "section",
+                    })
+                  }
+                  className="p-1 border border-silver-300 rounded text-sm"
+                >
+                  <option value="section">Section</option>
+                  <option value="superset">Superset</option>
+                  <option value="circuit">Circuit</option>
+                </select>
+              </div>
+
+              {/* Rest Intervals */}
+              <div className="flex items-center space-x-2 text-xs">
+                {(editedGroup.type === "circuit" ||
+                  editedGroup.type === "superset") && (
+                  <>
+                    <label className="flex items-center space-x-1">
+                      <span className="text-gray-600">
+                        Rest between exercises:
+                      </span>
+                      <input
+                        type="number"
+                        value={editedGroup.restBetweenExercises || ""}
+                        onChange={(e) =>
+                          setEditedGroup({
+                            ...editedGroup,
+                            restBetweenExercises:
+                              parseInt(e.target.value) || undefined,
+                          })
+                        }
+                        className="w-16 p-1 border border-silver-300 rounded"
+                        placeholder="0"
+                        min="0"
+                      />
+                      <span className="text-gray-600">sec</span>
+                    </label>
+
+                    <label className="flex items-center space-x-1">
+                      <span className="text-gray-600">
+                        Rest between rounds:
+                      </span>
+                      <input
+                        type="number"
+                        value={editedGroup.restBetweenRounds || ""}
+                        onChange={(e) =>
+                          setEditedGroup({
+                            ...editedGroup,
+                            restBetweenRounds:
+                              parseInt(e.target.value) || undefined,
+                          })
+                        }
+                        className="w-16 p-1 border border-silver-300 rounded"
+                        placeholder="60"
+                        min="0"
+                      />
+                      <span className="text-gray-600">sec</span>
+                    </label>
+                  </>
+                )}
+
+                {editedGroup.type === "circuit" && (
+                  <label className="flex items-center space-x-1">
+                    <span className="text-gray-600">Rounds:</span>
+                    <input
+                      type="number"
+                      value={editedGroup.rounds || ""}
+                      onChange={(e) =>
+                        setEditedGroup({
+                          ...editedGroup,
+                          rounds: parseInt(e.target.value) || undefined,
+                        })
+                      }
+                      className="w-12 p-1 border border-silver-300 rounded"
+                      placeholder="3"
+                      min="1"
+                    />
+                  </label>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={saveGroup}
+                  className="btn-primary text-xs px-2 py-1"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="btn-secondary text-xs px-2 py-1"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           ) : (
-            <>
-              <h3 className="font-medium text-heading-primary">{group.name}</h3>
-              <span className="text-xs text-body-secondary capitalize">
-                ({group.type} - {groupExercises.length} exercises)
-              </span>
-            </>
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-center space-x-2">
+                <h3 className="font-medium text-heading-primary">
+                  {group.name}
+                </h3>
+                <span className="text-xs text-body-secondary capitalize">
+                  ({group.type} - {groupExercises.length} exercises)
+                </span>
+              </div>
+
+              {/* Display rest intervals */}
+              {(group.restBetweenExercises ||
+                group.restBetweenRounds ||
+                group.rounds) && (
+                <div className="flex items-center space-x-3 text-xs text-gray-600">
+                  {group.restBetweenExercises !== undefined && (
+                    <span>Rest between: {group.restBetweenExercises}s</span>
+                  )}
+                  {group.restBetweenRounds !== undefined && (
+                    <span>Rest after round: {group.restBetweenRounds}s</span>
+                  )}
+                  {group.rounds !== undefined && (
+                    <span>{group.rounds} rounds</span>
+                  )}
+                </div>
+              )}
+            </div>
           )}
         </div>
 
@@ -438,6 +679,10 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   onClose,
 }) => {
   const [localWorkout, setLocalWorkout] = useState<WorkoutPlan>(workout);
+  const [showBlockLibrary, setShowBlockLibrary] = useState(false);
+  const [showBlockEditor, setShowBlockEditor] = useState(false);
+  const [editingBlockInstance, setEditingBlockInstance] =
+    useState<BlockInstance | null>(null);
 
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
@@ -586,6 +831,133 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     });
   };
 
+  // Insert a workout block
+  const insertBlock = (block: WorkoutBlock) => {
+    // Generate unique IDs for this block instance
+    const timestamp = Date.now();
+    const blockInstanceId = `block-instance-${timestamp}`;
+
+    const maxOrder = Math.max(
+      ...localWorkout.exercises.map((ex) => ex.order),
+      0
+    );
+    const maxGroupOrder = Math.max(
+      ...(localWorkout.groups || []).map((g) => g.order),
+      0
+    );
+
+    // Clone exercises with new IDs, updated order, and block instance tracking
+    const newExercises = block.exercises.map((ex, index) => ({
+      ...ex,
+      id: `${timestamp}-ex-${index}`,
+      order: maxOrder + index + 1,
+      groupId: ex.groupId ? `${timestamp}-group-${ex.groupId}` : undefined,
+      blockInstanceId, // Track which instance this exercise belongs to
+    }));
+
+    // Clone groups with new IDs, updated order, and block instance tracking
+    const newGroups = (block.groups || []).map((group, index) => ({
+      ...group,
+      id: `${timestamp}-group-${group.id}`,
+      order: maxGroupOrder + index + 1,
+      blockInstanceId, // Track which instance this group belongs to
+    }));
+
+    // Create the block instance metadata
+    const blockInstance: BlockInstance = {
+      id: blockInstanceId,
+      sourceBlockId: block.id,
+      sourceBlockName: block.name,
+      customizations: {
+        modifiedExercises: [],
+        addedExercises: [],
+        removedExercises: [],
+        modifiedGroups: [],
+        addedGroups: [],
+        removedGroups: [],
+      },
+      estimatedDuration: block.estimatedDuration,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Update the workout with the new block instance
+    updateWorkout({
+      ...localWorkout,
+      exercises: [...localWorkout.exercises, ...newExercises],
+      groups: [...(localWorkout.groups || []), ...newGroups],
+      blockInstances: [...(localWorkout.blockInstances || []), blockInstance],
+      estimatedDuration:
+        localWorkout.estimatedDuration + block.estimatedDuration,
+    });
+
+    // Close the block library
+    setShowBlockLibrary(false);
+  };
+
+  // Handle saving a new block
+  const handleSaveBlock = async (
+    blockData: Omit<
+      WorkoutBlock,
+      "id" | "createdAt" | "updatedAt" | "usageCount" | "lastUsed"
+    >
+  ) => {
+    try {
+      const response = await fetch("/api/blocks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(blockData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create block");
+      }
+
+      const data = await response.json();
+
+      // Optionally close the editor and show success message
+      setShowBlockEditor(false);
+
+      // Could add a toast notification here
+      console.log("Block created successfully:", data.block);
+
+      return data.block;
+    } catch (error) {
+      console.error("Error saving block:", error);
+      throw error;
+    }
+  };
+
+  // Handle block instance updates
+  const handleSaveBlockInstance = (
+    updatedExercises: WorkoutExercise[],
+    updatedGroups: ExerciseGroup[],
+    updatedInstance: BlockInstance
+  ) => {
+    // Replace exercises for this block instance
+    const otherExercises = localWorkout.exercises.filter(
+      (ex) => ex.blockInstanceId !== updatedInstance.id
+    );
+    const otherGroups = (localWorkout.groups || []).filter(
+      (g) => g.blockInstanceId !== updatedInstance.id
+    );
+
+    // Replace block instance
+    const otherInstances = (localWorkout.blockInstances || []).filter(
+      (bi) => bi.id !== updatedInstance.id
+    );
+
+    updateWorkout({
+      ...localWorkout,
+      exercises: [...otherExercises, ...updatedExercises],
+      groups: [...otherGroups, ...updatedGroups],
+      blockInstances: [...otherInstances, updatedInstance],
+    });
+  };
+
   // Get ungrouped exercises
   const ungroupedExercises = localWorkout.exercises.filter((ex) => !ex.groupId);
 
@@ -608,6 +980,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
           {/* Enhanced mobile action buttons */}
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2">
+            <button
+              onClick={() => setShowBlockLibrary(true)}
+              className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <Package className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span>Add Block</span>
+            </button>
+
             <button
               onClick={addExercise}
               className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
@@ -645,38 +1025,58 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         {/* Enhanced mobile content area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="space-y-6 sm:space-y-4">
-            {/* Ungrouped Exercises */}
-            {ungroupedExercises.map((exercise, index) => (
-              <ExerciseItem
-                key={exercise.id}
-                exercise={exercise}
-                index={index}
-                onUpdate={updateExercise}
-                onDelete={deleteExercise}
-                onMoveUp={() => moveExercise(exercise.id, "up")}
-                onMoveDown={() => moveExercise(exercise.id, "down")}
-                onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
-                availableGroups={localWorkout.groups || []}
-                canMoveUp={index > 0}
-                canMoveDown={index < ungroupedExercises.length - 1}
-              />
-            ))}
-
-            {/* Exercise Groups */}
-            {localWorkout.groups?.map((group) => (
-              <GroupItem
-                key={group.id}
-                group={group}
+            {/* Block Instances */}
+            {localWorkout.blockInstances?.map((blockInstance) => (
+              <BlockInstanceItem
+                key={blockInstance.id}
+                blockInstance={blockInstance}
                 exercises={localWorkout.exercises}
-                onUpdateGroup={updateGroup}
-                onDeleteGroup={deleteGroup}
-                onUpdateExercise={updateExercise}
+                groups={localWorkout.groups || []}
+                onCustomize={setEditingBlockInstance}
                 onDeleteExercise={deleteExercise}
+                onUpdateExercise={updateExercise}
                 onMoveExercise={moveExercise}
                 onMoveExerciseToGroup={moveExerciseToGroup}
                 availableGroups={localWorkout.groups || []}
               />
             ))}
+
+            {/* Ungrouped Exercises (not in blocks) */}
+            {ungroupedExercises
+              .filter((ex) => !ex.blockInstanceId)
+              .map((exercise, index) => (
+                <ExerciseItem
+                  key={exercise.id}
+                  exercise={exercise}
+                  index={index}
+                  onUpdate={updateExercise}
+                  onDelete={deleteExercise}
+                  onMoveUp={() => moveExercise(exercise.id, "up")}
+                  onMoveDown={() => moveExercise(exercise.id, "down")}
+                  onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
+                  availableGroups={localWorkout.groups || []}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < ungroupedExercises.length - 1}
+                />
+              ))}
+
+            {/* Exercise Groups (not in blocks) */}
+            {localWorkout.groups
+              ?.filter((g) => !g.blockInstanceId)
+              .map((group) => (
+                <GroupItem
+                  key={group.id}
+                  group={group}
+                  exercises={localWorkout.exercises}
+                  onUpdateGroup={updateGroup}
+                  onDeleteGroup={deleteGroup}
+                  onUpdateExercise={updateExercise}
+                  onDeleteExercise={deleteExercise}
+                  onMoveExercise={moveExercise}
+                  onMoveExerciseToGroup={moveExerciseToGroup}
+                  availableGroups={localWorkout.groups || []}
+                />
+              ))}
 
             {/* Enhanced mobile empty state */}
             {ungroupedExercises.length === 0 &&
@@ -686,15 +1086,48 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   <p className="text-xl sm:text-lg font-medium mb-2">
                     No exercises added yet
                   </p>
-                  <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto">
+                  <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto mb-4">
                     Click &quot;Add Exercise&quot; to start building your
-                    workout
+                    workout, or use &quot;Add Block&quot; to insert pre-built
+                    workout templates
                   </p>
                 </div>
               )}
           </div>
         </div>
       </div>
+
+      {/* Block Library Modal */}
+      <BlockLibrary
+        isOpen={showBlockLibrary}
+        onClose={() => setShowBlockLibrary(false)}
+        onSelectBlock={insertBlock}
+        onCreateBlock={() => {
+          setShowBlockLibrary(false);
+          setShowBlockEditor(true);
+        }}
+        selectedBlocks={
+          localWorkout.blockInstances?.map((bi) => bi.sourceBlockId) || []
+        }
+      />
+
+      {/* Block Editor Modal */}
+      <BlockEditor
+        isOpen={showBlockEditor}
+        onClose={() => setShowBlockEditor(false)}
+        onSave={handleSaveBlock}
+      />
+
+      {/* Block Instance Editor Modal */}
+      {editingBlockInstance && (
+        <BlockInstanceEditor
+          isOpen={!!editingBlockInstance}
+          onClose={() => setEditingBlockInstance(null)}
+          blockInstance={editingBlockInstance}
+          workout={localWorkout}
+          onSave={handleSaveBlockInstance}
+        />
+      )}
     </div>
   );
 };

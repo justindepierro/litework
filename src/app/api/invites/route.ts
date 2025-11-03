@@ -37,7 +37,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { firstName, lastName, email, groupId, notes, bio, dateOfBirth, injuryStatus } = body;
+    const {
+      firstName,
+      lastName,
+      email,
+      groupId,
+      notes,
+      bio,
+      dateOfBirth,
+      injuryStatus,
+    } = body;
 
     if (!firstName || !lastName) {
       return NextResponse.json(
@@ -128,10 +137,10 @@ export async function POST(request: NextRequest) {
       console.error("Error creating invite:", inviteError);
       console.error("Insert data was:", insertData);
       return NextResponse.json(
-        { 
+        {
           error: "Failed to create invitation",
           details: inviteError.message,
-          code: inviteError.code
+          code: inviteError.code,
         },
         { status: 500 }
       );

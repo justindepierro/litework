@@ -162,7 +162,7 @@ export async function PATCH(
 ) {
   try {
     const { id: inviteId } = await params;
-    
+
     // Try to parse body, but handle empty body for resend requests
     let body;
     try {
@@ -170,17 +170,17 @@ export async function PATCH(
     } catch {
       body = {};
     }
-    
+
     const { status } = body;
 
     // If marking as accepted, allow without auth (during signup)
-    if (status === 'accepted') {
+    if (status === "accepted") {
       const supabase = getAdminClient();
-      
+
       const { error: updateError } = await supabase
         .from("invites")
         .update({
-          status: 'accepted',
+          status: "accepted",
           updated_at: new Date().toISOString(),
         })
         .eq("id", inviteId);
@@ -272,9 +272,9 @@ export async function PATCH(
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       const inviteUrl = `${appUrl}/signup?invite=${updatedInvite.id}`;
 
-      console.log('Attempting to send email to:', updatedInvite.email);
-      console.log('Resend API Key present:', !!process.env.RESEND_API_KEY);
-      
+      console.log("Attempting to send email to:", updatedInvite.email);
+      console.log("Resend API Key present:", !!process.env.RESEND_API_KEY);
+
       const emailResult = await sendEmailNotification({
         to: updatedInvite.email,
         subject: "Reminder: You're invited to join LiteWork!",
@@ -282,17 +282,23 @@ export async function PATCH(
         templateData: {
           userName: `${updatedInvite.first_name} ${updatedInvite.last_name}`,
           title: "Join LiteWork",
-          message: "This is a friendly reminder that your coach has invited you to join LiteWork. Don't miss out on tracking your progress and hitting new PRs!",
+          message:
+            "This is a friendly reminder that your coach has invited you to join LiteWork. Don't miss out on tracking your progress and hitting new PRs!",
           actionUrl: inviteUrl,
           actionText: "Accept Invitation",
           details: [
-            { label: "New Expiry Date", value: new Date(updatedInvite.expires_at).toLocaleDateString() },
+            {
+              label: "New Expiry Date",
+              value: new Date(updatedInvite.expires_at).toLocaleDateString(),
+            },
           ],
         },
       });
 
       if (emailResult.success) {
-        console.log(`✅ Invitation reminder email sent to ${updatedInvite.email}`);
+        console.log(
+          `✅ Invitation reminder email sent to ${updatedInvite.email}`
+        );
       } else {
         console.error(`❌ Failed to send email: ${emailResult.error}`);
       }

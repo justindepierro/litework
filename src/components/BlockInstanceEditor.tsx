@@ -1,0 +1,369 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { X, Package, RotateCcw, AlertCircle, Save, Info } from "lucide-react";
+import {
+  WorkoutExercise,
+  ExerciseGroup,
+  BlockInstance,
+  WorkoutBlock,
+} from "@/types";
+
+interface BlockInstanceEditorProps {
+  isOpen: boolean;
+  onClose: () => void;
+  blockInstance: BlockInstance;
+  workout: {
+    exercises: WorkoutExercise[];
+    groups?: ExerciseGroup[];
+  };
+  onSave: (
+    updatedExercises: WorkoutExercise[],
+    updatedGroups: ExerciseGroup[],
+    updatedInstance: BlockInstance
+  ) => void;
+}
+
+export default function BlockInstanceEditor({
+  isOpen,
+  onClose,
+  blockInstance,
+  workout,
+  onSave,
+}: BlockInstanceEditorProps) {
+  const [instanceName, setInstanceName] = useState(
+    blockInstance.instanceName || blockInstance.sourceBlockName
+  );
+  const [notes, setNotes] = useState(blockInstance.notes || "");
+  const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
+  const [groups, setGroups] = useState<ExerciseGroup[]>([]);
+  const [sourceBlock, setSourceBlock] = useState<WorkoutBlock | null>(null);
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+
+  // Load exercises and groups for this block instance
+  useEffect(() => {
+    if (isOpen) {
+      const instanceExercises = workout.exercises.filter(
+        (ex) => ex.blockInstanceId === blockInstance.id
+      );
+      const instanceGroups = (workout.groups || []).filter(
+        (g) => g.blockInstanceId === blockInstance.id
+      );
+
+      setExercises(instanceExercises);
+      setGroups(instanceGroups);
+      setInstanceName(
+        blockInstance.instanceName || blockInstance.sourceBlockName
+      );
+      setNotes(blockInstance.notes || "");
+    }
+  }, [isOpen, blockInstance, workout]);
+
+  // Load source block template for reset functionality
+  useEffect(() => {
+    const fetchSourceBlock = async () => {
+      setIsLoadingTemplate(true);
+      try {
+        const response = await fetch(
+          `/api/blocks/${blockInstance.sourceBlockId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setSourceBlock(data.block);
+        }
+      } catch (error) {
+        console.error("Error fetching source block:", error);
+      } finally {
+        setIsLoadingTemplate(false);
+      }
+    };
+
+    if (isOpen && blockInstance.sourceBlockId) {
+      fetchSourceBlock();
+    }
+  }, [isOpen, blockInstance.sourceBlockId]);
+
+  const resetToTemplate = () => {
+    if (!sourceBlock) return;
+
+    const confirmed = window.confirm(
+      "Reset this block to the original template? All customizations will be lost."
+    );
+
+    if (!confirmed) return;
+
+    // Generate new IDs but keep the block instance ID
+    const timestamp = Date.now();
+    const maxOrder = Math.max(
+      ...workout.exercises
+        .filter((ex) => ex.blockInstanceId !== blockInstance.id)
+        .map((ex) => ex.order),
+      0
+    );
+    const maxGroupOrder = Math.max(
+      ...(workout.groups || [])
+        .filter((g) => g.blockInstanceId !== blockInstance.id)
+        .map((g) => g.order),
+      0
+    );
+
+    // Clone template exercises
+    const resetExercises = sourceBlock.exercises.map((ex, index) => ({
+      ...ex,
+      id: `${timestamp}-reset-ex-${index}`,
+      order: maxOrder + index + 1,
+      groupId: ex.groupId
+        ? `${timestamp}-reset-group-${ex.groupId}`
+        : undefined,
+      blockInstanceId: blockInstance.id,
+    }));
+
+    // Clone template groups
+    const resetGroups = (sourceBlock.groups || []).map((group, index) => ({
+      ...group,
+      id: `${timestamp}-reset-group-${group.id}`,
+      order: maxGroupOrder + index + 1,
+      blockInstanceId: blockInstance.id,
+    }));
+
+    setExercises(resetExercises);
+    setGroups(resetGroups);
+    setInstanceName(sourceBlock.name);
+    setNotes("");
+  };
+
+  const handleSave = () => {
+    // Track customizations
+    const originalExercises = workout.exercises.filter(
+      (ex) => ex.blockInstanceId === blockInstance.id
+    );
+    const originalGroups = (workout.groups || []).filter(
+      (g) => g.blockInstanceId === blockInstance.id
+    );
+
+    // Find what changed
+    const modifiedExercises = exercises
+      .filter((ex) => {
+        const original = originalExercises.find((o) => o.id === ex.id);
+        return original && JSON.stringify(original) !== JSON.stringify(ex);
+      })
+      .map((ex) => ex.id);
+
+    const addedExercises = exercises
+      .filter((ex) => !originalExercises.find((o) => o.id === ex.id))
+      .map((ex) => ex.id);
+
+    const removedExercises = originalExercises
+      .filter((ex) => !exercises.find((e) => e.id === ex.id))
+      .map((ex) => ex.id);
+
+    const modifiedGroups = groups
+      .filter((g) => {
+        const original = originalGroups.find((o) => o.id === g.id);
+        return original && JSON.stringify(original) !== JSON.stringify(g);
+      })
+      .map((g) => g.id);
+
+    const addedGroups = groups
+      .filter((g) => !originalGroups.find((o) => o.id === g.id))
+      .map((g) => g.id);
+
+    const removedGroups = originalGroups
+      .filter((g) => !groups.find((gr) => gr.id === g.id))
+      .map((g) => g.id);
+
+    // Update block instance
+    const updatedInstance: BlockInstance = {
+      ...blockInstance,
+      instanceName:
+        instanceName !== blockInstance.sourceBlockName
+          ? instanceName
+          : undefined,
+      notes,
+      customizations: {
+        modifiedExercises,
+        addedExercises,
+        removedExercises,
+        modifiedGroups,
+        addedGroups,
+        removedGroups,
+      },
+      estimatedDuration: exercises.reduce((sum, ex) => {
+        const exerciseTime =
+          (ex.sets * ex.reps * 3 + (ex.restTime || 0) * ex.sets) / 60;
+        return sum + exerciseTime;
+      }, 0),
+      updatedAt: new Date(),
+    };
+
+    onSave(exercises, groups, updatedInstance);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  const hasCustomizations =
+    blockInstance.customizations.modifiedExercises.length > 0 ||
+    blockInstance.customizations.addedExercises.length > 0 ||
+    blockInstance.customizations.removedExercises.length > 0 ||
+    blockInstance.customizations.modifiedGroups.length > 0 ||
+    blockInstance.customizations.addedGroups.length > 0 ||
+    blockInstance.customizations.removedGroups.length > 0;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-silver-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+              <Package className="w-5 h-5 text-primary-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-silver-900">
+                Customize Block Instance
+              </h2>
+              <p className="text-sm text-silver-600">
+                Template: {blockInstance.sourceBlockName}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-silver-100 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5 text-silver-500" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Info Banner */}
+          {hasCustomizations && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start space-x-3">
+              <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="font-medium text-blue-900">
+                  This block has been customized
+                </h4>
+                <p className="text-sm text-blue-700 mt-1">
+                  Changes made here only affect this workout. The original
+                  template remains unchanged.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Instance Name */}
+          <div>
+            <label className="block text-sm font-medium text-silver-700 mb-2">
+              Instance Name (Optional)
+            </label>
+            <input
+              type="text"
+              value={instanceName}
+              onChange={(e) => setInstanceName(e.target.value)}
+              placeholder={blockInstance.sourceBlockName}
+              className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+            <p className="text-xs text-silver-500 mt-1">
+              Give this instance a custom name (e.g., &quot;Week 3
+              Progression&quot; or &quot;Beginner Variation&quot;)
+            </p>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-medium text-silver-700 mb-2">
+              Instance Notes
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add notes about this specific instance..."
+              rows={3}
+              className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+            />
+          </div>
+
+          {/* Exercise Customization Summary */}
+          <div className="bg-silver-50 border border-silver-200 rounded-lg p-4">
+            <h3 className="font-medium text-silver-900 mb-3">Block Contents</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-silver-600">Exercises:</span>
+                <span className="font-medium text-silver-900">
+                  {exercises.length}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-silver-600">Groups:</span>
+                <span className="font-medium text-silver-900">
+                  {groups.length}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-silver-600">Estimated Duration:</span>
+                <span className="font-medium text-silver-900">
+                  {Math.round(
+                    exercises.reduce((sum, ex) => {
+                      const exerciseTime =
+                        (ex.sets * ex.reps * 3 + (ex.restTime || 0) * ex.sets) /
+                        60;
+                      return sum + exerciseTime;
+                    }, 0)
+                  )}{" "}
+                  min
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={resetToTemplate}
+              disabled={isLoadingTemplate || !sourceBlock}
+              className="btn-secondary flex items-center space-x-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Reset to Template</span>
+            </button>
+          </div>
+
+          {/* Note about full editing */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start space-x-3">
+            <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+            <div className="flex-1 text-sm">
+              <p className="text-yellow-900">
+                <strong>Note:</strong> To modify individual exercises, sets,
+                reps, or weights, close this dialog and edit the exercises
+                directly in the workout editor. Changes will be tracked
+                automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between p-6 border-t border-silver-200 bg-silver-50">
+          <button onClick={onClose} className="btn-secondary">
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Save className="w-4 h-4" />
+            <span>Save Changes</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

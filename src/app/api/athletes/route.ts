@@ -27,7 +27,9 @@ export async function GET() {
     // Fetch pending invites (including draft invites without email)
     const { data: invites, error: invitesError } = await supabase
       .from("invites")
-      .select("id, first_name, last_name, email, status, created_at, expires_at, group_ids")
+      .select(
+        "id, first_name, last_name, email, status, created_at, expires_at, group_ids"
+      )
       .in("status", ["pending", "draft"])
       .order("created_at", { ascending: false });
 

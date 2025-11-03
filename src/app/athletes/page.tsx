@@ -393,7 +393,9 @@ export default function AthletesPage() {
             fullName: `${newInvite.first_name || inviteForm.firstName} ${newInvite.last_name || inviteForm.lastName}`,
             email: newInvite.email || inviteForm.email || "",
             role: "athlete" as const,
-            groupIds: newInvite.group_ids || (inviteForm.groupId ? [inviteForm.groupId] : []),
+            groupIds:
+              newInvite.group_ids ||
+              (inviteForm.groupId ? [inviteForm.groupId] : []),
             status: "invited" as const,
             profileImage: null,
             bio: null,
@@ -423,8 +425,13 @@ export default function AthletesPage() {
 
           // Reload groups to show updated athlete count and membership
           await loadGroups();
-          
-          console.log("✅ New athlete added:", newAthlete.id, "Groups:", newAthlete.groupIds);
+
+          console.log(
+            "✅ New athlete added:",
+            newAthlete.id,
+            "Groups:",
+            newAthlete.groupIds
+          );
         }
 
         const successMsg = inviteForm.email
@@ -1020,23 +1027,27 @@ export default function AthletesPage() {
                               athlete.injuryStatus
                             )}
                           </span>
-                          
+
                           {/* Group badges - show groups this athlete belongs to */}
-                          {athlete.groupIds && athlete.groupIds.length > 0 && athlete.groupIds.map((groupId) => {
-                            const group = groups.find((g) => g.id === groupId);
-                            if (!group) return null;
-                            return (
-                              <span
-                                key={group.id}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                                style={{ backgroundColor: group.color }}
-                                title={group.name}
-                              >
-                                <Users className="w-3 h-3" />
-                                {group.name}
-                              </span>
-                            );
-                          })}
+                          {athlete.groupIds &&
+                            athlete.groupIds.length > 0 &&
+                            athlete.groupIds.map((groupId) => {
+                              const group = groups.find(
+                                (g) => g.id === groupId
+                              );
+                              if (!group) return null;
+                              return (
+                                <span
+                                  key={group.id}
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                                  style={{ backgroundColor: group.color }}
+                                  title={group.name}
+                                >
+                                  <Users className="w-3 h-3" />
+                                  {group.name}
+                                </span>
+                              );
+                            })}
                         </div>
                       </div>
                     </div>
@@ -1157,7 +1168,9 @@ export default function AthletesPage() {
                           e.preventDefault();
                           e.stopPropagation();
                           // TODO: Open edit modal to add email
-                          alert("Edit athlete feature coming soon - add email via detail modal");
+                          alert(
+                            "Edit athlete feature coming soon - add email via detail modal"
+                          );
                         }}
                         className="text-xs text-amber-600 hover:text-amber-800 font-medium hover:underline flex items-center gap-1 cursor-pointer"
                       >
@@ -1369,7 +1382,8 @@ export default function AthletesPage() {
                     placeholder="athlete@email.com (can add later)"
                   />
                   <p className="mt-1 text-xs text-gray-500">
-                    Leave blank to add athlete profile without sending invite yet
+                    Leave blank to add athlete profile without sending invite
+                    yet
                   </p>
                 </div>
 
@@ -1824,7 +1838,7 @@ export default function AthletesPage() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            
+
             <div className="p-6">
               {groups.length === 0 ? (
                 <div className="text-center py-8">
@@ -1844,35 +1858,46 @@ export default function AthletesPage() {
               ) : (
                 <div className="space-y-2">
                   {groups.map((group) => {
-                    const isInGroup = group.athleteIds?.includes(selectedAthlete.id);
+                    const isInGroup = group.athleteIds?.includes(
+                      selectedAthlete.id
+                    );
                     return (
                       <button
                         key={group.id}
                         onClick={async () => {
                           if (isInGroup) {
-                            toast.info(`${selectedAthlete.firstName} is already in ${group.name}`);
+                            toast.info(
+                              `${selectedAthlete.firstName} is already in ${group.name}`
+                            );
                             return;
                           }
-                          
+
                           try {
-                            const response = await fetch("/api/groups/members", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({
-                                groupId: group.id,
-                                athleteIds: [selectedAthlete.id],
-                              }),
-                            });
-                            
+                            const response = await fetch(
+                              "/api/groups/members",
+                              {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  groupId: group.id,
+                                  athleteIds: [selectedAthlete.id],
+                                }),
+                              }
+                            );
+
                             const data = await response.json();
-                            
+
                             if (data.success) {
-                              toast.success(`Added ${selectedAthlete.firstName} to ${group.name}`);
+                              toast.success(
+                                `Added ${selectedAthlete.firstName} to ${group.name}`
+                              );
                               loadGroups(); // Refresh groups
                               setShowAddToGroupModal(false);
                               setSelectedAthlete(null);
                             } else {
-                              toast.error(data.error || "Failed to add to group");
+                              toast.error(
+                                data.error || "Failed to add to group"
+                              );
                             }
                           } catch (error) {
                             console.error("Error adding to group:", error);
