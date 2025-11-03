@@ -39,10 +39,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if group exists
+    // Get current group
     const { data: group, error: groupError } = await supabase
       .from("athlete_groups")
-      .select("id")
+      .select("id, athlete_ids")
       .eq("id", groupId)
       .single();
 
@@ -53,33 +53,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add athletes to group
-    const memberships = athleteIds.map((athleteId) => ({
-      group_id: groupId,
-      user_id: athleteId,
-    }));
+    // Merge new athlete IDs with existing ones (avoid duplicates)
+    const currentAthleteIds = group.athlete_ids || [];
+    const updatedAthleteIds = Array.from(
+      new Set([...currentAthleteIds, ...athleteIds])
+    );
 
+    // Update the group with the new athlete_ids array
     const { data, error } = await supabase
-      .from("group_members")
-      .insert(memberships)
+      .from("athlete_groups")
+      .update({ athlete_ids: updatedAthleteIds })
+      .eq("id", groupId)
       .select();
 
-    if (error) {
-      // Handle duplicate key errors gracefully
-      if (error.code === "23505") {
-        return NextResponse.json({
-          success: true,
-          message: "Some athletes were already in this group",
-          memberships: [],
-        });
-      }
-      throw error;
-    }
+    if (error) throw error;
 
     return NextResponse.json({
       success: true,
-      memberships: data,
       message: `Added ${athleteIds.length} athlete(s) to group`,
+      athleteIds: updatedAthleteIds,
     });
   } catch (error) {
     console.error("Error adding group members:", error);
@@ -122,34 +114,114 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data: members, error } = await supabase
-      .from("group_members")
-      .select(
-        `
-          user_id,
-          users!inner (
-            id,
-            first_name,
-            last_name,
-            email,
-            role
-          )
-        `
-      )
-      .eq("group_id", groupId);
+    // Get the group with its athlete_ids
+    const { data: group, error: groupError } = await supabase
+      .from("athlete_groups")
+      .select("id, athlete_ids")
+      .eq("id", groupId)
+      .single();
+
+    if (groupError) throw groupError;
+
+    if (!group || !group.athlete_ids || group.athlete_ids.length === 0) {
+      return NextResponse.json({
+        success: true,
+        athletes: [],
+      });
+    }
+
+    // Fetch all athletes that are in this group
+    const { data: athletes, error } = await supabase
+      .from("users")
+      .select("id, first_name, last_name, email, role")
+      .in("id", group.athlete_ids)
+      .eq("role", "athlete");
 
     if (error) throw error;
 
-    const athletes = members?.map((m) => m.users) || [];
-
     return NextResponse.json({
       success: true,
-      athletes,
+      athletes: athletes || [],
     });
   } catch (error) {
     console.error("Error fetching group members:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch group members" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/groups/members?groupId=xxx&athleteId=yyy
+ * Remove an athlete from a group
+ */
+export async function DELETE(request: NextRequest) {
+  const { user, error: authError } = await getAuthenticatedUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: "Forbidden - Coach access required" },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const groupId = searchParams.get("groupId");
+    const athleteId = searchParams.get("athleteId");
+
+    if (!groupId || !athleteId) {
+      return NextResponse.json(
+        { success: false, error: "Group ID and athlete ID required" },
+        { status: 400 }
+      );
+    }
+
+    // Get current group
+    const { data: group, error: groupError } = await supabase
+      .from("athlete_groups")
+      .select("id, athlete_ids")
+      .eq("id", groupId)
+      .single();
+
+    if (groupError || !group) {
+      return NextResponse.json(
+        { success: false, error: "Group not found" },
+        { status: 404 }
+      );
+    }
+
+    // Remove athlete from the array
+    const currentAthleteIds = group.athlete_ids || [];
+    const updatedAthleteIds = currentAthleteIds.filter(
+      (id: string) => id !== athleteId
+    );
+
+    // Update the group
+    const { error } = await supabase
+      .from("athlete_groups")
+      .update({ athlete_ids: updatedAthleteIds })
+      .eq("id", groupId);
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      success: true,
+      message: "Athlete removed from group",
+      athleteIds: updatedAthleteIds,
+    });
+  } catch (error) {
+    console.error("Error removing group member:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to remove athlete from group" },
       { status: 500 }
     );
   }

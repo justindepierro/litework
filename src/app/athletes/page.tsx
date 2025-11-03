@@ -826,12 +826,26 @@ export default function AthletesPage() {
                             {group.description}
                           </p>
                         )}
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Users className="w-4 h-4" />
-                          <span>
-                            {athleteCount} athlete
-                            {athleteCount !== 1 ? "s" : ""}
-                          </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <Users className="w-4 h-4" />
+                            <span>
+                              {athleteCount} athlete
+                              {athleteCount !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedGroup(group);
+                              setShowManageGroupModal(true);
+                            }}
+                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-full transition-colors"
+                            aria-label="Add athletes to group"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>Add</span>
+                          </button>
                         </div>
                       </button>
                     </div>
