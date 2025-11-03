@@ -380,7 +380,17 @@ export async function getSession() {
 export async function getCurrentUser(): Promise<User | null> {
   try {
     console.log('[AUTH_CLIENT] Getting session...');
-    const session = await getSession();
+    
+    // Add timeout for session fetch (3 seconds)
+    const sessionPromise = getSession();
+    const timeoutPromise = new Promise<null>((resolve) => {
+      setTimeout(() => {
+        console.warn('[AUTH_CLIENT] Session fetch timeout after 3s');
+        resolve(null);
+      }, 3000);
+    });
+    
+    const session = await Promise.race([sessionPromise, timeoutPromise]);
     
     if (!session?.user) {
       console.log('[AUTH_CLIENT] No session found');
@@ -389,12 +399,21 @@ export async function getCurrentUser(): Promise<User | null> {
     
     console.log('[AUTH_CLIENT] Session found, fetching profile...');
 
-    // Get user profile from database with timeout
-    const { data: profile, error } = await supabase
+    // Get user profile from database with timeout (2 seconds)
+    const profilePromise = supabase
       .from("users")
       .select("*")
       .eq("id", session.user.id)
       .single();
+      
+    const profileTimeoutPromise = new Promise<{ data: null; error: Error }>((resolve) => {
+      setTimeout(() => {
+        console.warn('[AUTH_CLIENT] Profile fetch timeout after 2s');
+        resolve({ data: null, error: new Error('Profile fetch timeout') });
+      }, 2000);
+    });
+    
+    const { data: profile, error } = await Promise.race([profilePromise, profileTimeoutPromise]);
 
     if (error) {
       console.error('[AUTH_CLIENT] Profile fetch error:', error);

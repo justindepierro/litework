@@ -56,15 +56,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log('[AUTH] Initializing authentication...');
 
-      // Set a timeout to prevent infinite loading (reduced to 5 seconds)
+      // Set a timeout to prevent infinite loading (8 seconds to allow for getCurrentUser timeouts)
       const timeout = setTimeout(() => {
-        console.error('[AUTH] Authentication initialization timeout - Supabase may be unreachable');
+        console.warn('[AUTH] Authentication initialization taking longer than expected');
         if (mountedRef.current && initializingRef.current) {
+          console.log('[AUTH] Proceeding without authentication - user can login manually');
           setUser(null);
           setLoading(false);
           setInitializing(false);
         }
-      }, 5000); // 5 second timeout
+      }, 8000); // 8 second timeout (allows for 3s session + 2s profile + buffer)
 
       try {
         const currentUser = await authClient.getCurrentUser();
