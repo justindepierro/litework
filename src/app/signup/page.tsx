@@ -176,8 +176,14 @@ function SignUpForm() {
     }
 
     try {
-      // Call signUp with 4 separate parameters as expected by AuthContext
-      const result = await signUp(email, password, firstName.trim(), lastName.trim());
+      // Call signUp with inviteId if available
+      const result = await signUp(
+        email,
+        password,
+        firstName.trim(),
+        lastName.trim(),
+        inviteId || undefined
+      );
 
       // Check if email confirmation is required
       if (result.needsEmailConfirmation) {

@@ -21,7 +21,8 @@ interface AuthContextType {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    inviteId?: string
   ) => Promise<{ needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -165,7 +166,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: string,
       password: string,
       firstName: string,
-      lastName: string
+      lastName: string,
+      inviteId?: string
     ): Promise<{ needsEmailConfirmation?: boolean }> => {
       if (authOperationInProgress.current) {
         throw new Error("Authentication operation already in progress");
@@ -179,7 +181,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           email,
           password,
           firstName,
-          lastName
+          lastName,
+          inviteId
         );
 
         // If email confirmation is required, don't try to load user or navigate

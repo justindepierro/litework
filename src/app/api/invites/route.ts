@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { firstName, lastName, email, groupId } = body;
+    const { firstName, lastName, email, groupId, notes, bio, dateOfBirth, injuryStatus } = body;
 
     if (!firstName || !lastName) {
       return NextResponse.json(
@@ -80,11 +80,16 @@ export async function POST(request: NextRequest) {
         last_name: lastName,
         invited_by: user.id,
         role: "athlete",
-        group_id: groupId || null,
+        group_ids: groupId ? [groupId] : [],
         status: email ? "pending" : "draft", // "draft" status if no email
         expires_at: email
           ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
           : null, // No expiration for drafts
+        // Profile data that will transfer on signup
+        notes: notes || null,
+        bio: bio || null,
+        date_of_birth: dateOfBirth || null,
+        injury_status: injuryStatus || null,
       })
       .select()
       .single();

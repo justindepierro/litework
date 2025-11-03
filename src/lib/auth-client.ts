@@ -31,7 +31,8 @@ export async function signUp(
   email: string,
   password: string,
   firstName: string,
-  lastName: string
+  lastName: string,
+  inviteId?: string // Add optional invite ID parameter
 ) {
   // Rate limiting
   const clientId = getClientFingerprint();
@@ -74,6 +75,21 @@ export async function signUp(
   const sanitizedEmail = email.trim().toLowerCase();
 
   try {
+    // Load invite data if invite ID provided
+    let inviteData = null;
+    if (inviteId) {
+      const { data: invite, error: inviteError } = await supabase
+        .from("invites")
+        .select("*")
+        .eq("id", inviteId)
+        .eq("status", "pending")
+        .single();
+
+      if (!inviteError && invite) {
+        inviteData = invite;
+      }
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email: sanitizedEmail,
       password,
@@ -99,7 +115,7 @@ export async function signUp(
       throw new Error("Signup succeeded but no user data returned");
     }
 
-    // Create user profile in database
+    // Create user profile in database with data from invite if available
     const fullName = `${sanitizedFirstName} ${sanitizedLastName}`.trim();
     const { error: profileError } = await supabase.from("users").insert({
       id: data.user.id,
@@ -108,6 +124,13 @@ export async function signUp(
       first_name: sanitizedFirstName,
       last_name: sanitizedLastName,
       role: "athlete", // Default role
+      // Transfer profile data from invite if available
+      bio: inviteData?.bio || null,
+      notes: inviteData?.notes || null,
+      date_of_birth: inviteData?.date_of_birth || null,
+      injury_status: inviteData?.injury_status || null,
+      group_ids: inviteData?.group_ids || [],
+      coach_id: inviteData?.invited_by || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });
@@ -115,6 +138,36 @@ export async function signUp(
     if (profileError) {
       console.error("Failed to create user profile:", profileError);
       // Don't throw here - user is created in auth, trigger might handle it
+    }
+
+    // Add athlete to groups from invite
+    if (inviteData?.group_ids && inviteData.group_ids.length > 0) {
+      for (const groupId of inviteData.group_ids) {
+        try {
+          // Get current group
+          const { data: group } = await supabase
+            .from("athlete_groups")
+            .select("athlete_ids")
+            .eq("id", groupId)
+            .single();
+
+          if (group) {
+            // Add athlete to group's athlete_ids array
+            const currentAthleteIds = group.athlete_ids || [];
+            const updatedAthleteIds = Array.from(
+              new Set([...currentAthleteIds, data.user.id])
+            );
+
+            await supabase
+              .from("athlete_groups")
+              .update({ athlete_ids: updatedAthleteIds })
+              .eq("id", groupId);
+          }
+        } catch (err) {
+          console.error(`Failed to add athlete to group ${groupId}:`, err);
+          // Continue with other groups even if one fails
+        }
+      }
     }
 
     // Reset rate limit on success
@@ -125,6 +178,7 @@ export async function signUp(
         email: sanitizedEmail,
         userId: data.user?.id,
         emailConfirmed: !!data.user?.email_confirmed_at,
+        inviteUsed: !!inviteId,
       })
     );
 
