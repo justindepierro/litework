@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withPermission } from '@/lib/auth-utils';
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 import { sendEmailNotification, sendEmailToUsers } from '@/lib/email-service';
 import type { EmailNotificationPayload } from '@/lib/email-service';
 import type { NotificationCategory } from '@/lib/notification-service';
@@ -18,9 +18,24 @@ import type { NotificationCategory } from '@/lib/notification-service';
  * - Multiple users: { users: [{ userId, email, name }], subject, category, templateData }
  */
 export async function POST(request: NextRequest) {
-  return withPermission(request, 'assign-workouts', async () => {
-    try {
-      const body = await request.json();
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const body = await request.json();
 
       // Single email
       if (body.email && !body.users) {
@@ -82,23 +97,22 @@ export async function POST(request: NextRequest) {
           sent: totalSuccess,
           failed: totalFailed,
           results,
-        });
-      }
-
-      return NextResponse.json(
-        { error: 'Invalid request body. Provide either email or users array.' },
-        { status: 400 }
-      );
-
-    } catch (error) {
-      console.error('❌ Error sending email notifications:', error);
-      return NextResponse.json(
-        { 
-          error: 'Internal server error',
-          message: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
+      });
     }
-  });
+
+    return NextResponse.json(
+      { error: 'Invalid request body. Provide either email or users array.' },
+      { status: 400 }
+    );
+
+  } catch (error) {
+    console.error('❌ Error sending email notifications:', error);
+    return NextResponse.json(
+      { 
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
+  }
 }

@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  verifySupabaseAuth as verifyToken,
-  canManageGroups,
-} from "@/lib/supabase-auth";
+import { getAuthenticatedUser, canManageGroups } from "@/lib/auth-server";
 import { getGroupById, updateGroup, deleteGroup } from "@/lib/database-service";
 
 // PUT /api/groups/[id] - Update group (coaches only)
@@ -11,24 +8,24 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  if (!canManageGroups(user)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
   try {
-    const authHeader = request.headers.get("authorization");
-    const auth = await verifyToken(authHeader);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    if (!canManageGroups(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-
     const groupId = id;
 
     // Check if group exists
@@ -71,25 +68,25 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  if (!canManageGroups(user)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
   try {
-    const { id } = await params;
-    const authHeader = request.headers.get("authorization");
-    const auth = await verifyToken(authHeader);
-
-    if (!auth.success || !auth.user) {
-      return NextResponse.json(
-        { error: auth.error || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    if (!canManageGroups(auth.user)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-
     const groupId = id;
 
     // Check if group exists

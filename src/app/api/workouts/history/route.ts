@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withAuth } from "@/lib/auth-utils";
+import { getAuthenticatedUser } from '@/lib/auth-server';
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 /**
@@ -11,61 +11,69 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
  * - offset: pagination offset (default 0)
  */
 export async function GET(request: NextRequest) {
-  return withAuth(request, async (user) => {
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    try {
-      // Fetch workout sessions for the user with related data
-      const { data: sessions, error: sessionsError } = await supabaseAdmin
-        .from("workout_sessions")
-        .select(
-          `
+    // Fetch workout sessions for the user with related data
+    const { data: sessions, error: sessionsError } = await supabaseAdmin
+      .from("workout_sessions")
+      .select(
+        `
+        id,
+        workout_plan_name,
+        date,
+        mode,
+        started,
+        completed,
+        progress_percentage,
+        started_at,
+        completed_at,
+        created_at,
+        session_exercises (
           id,
-          workout_plan_name,
-          date,
-          mode,
+          exercise_name,
+          target_sets,
+          completed_sets,
           started,
           completed,
-          progress_percentage,
-          started_at,
-          completed_at,
-          created_at,
-          session_exercises (
+          set_records (
             id,
-            exercise_name,
-            target_sets,
-            completed_sets,
-            started,
+            set_number,
+            target_reps,
+            actual_reps,
+            target_weight,
+            actual_weight,
             completed,
-            set_records (
-              id,
-              set_number,
-              target_reps,
-              actual_reps,
-              target_weight,
-              actual_weight,
-              completed,
-              completed_at
-            )
+            completed_at
           )
-        `
         )
-        .eq("user_id", user.userId)
-        .order("date", { ascending: false })
-        .range(offset, offset + limit - 1);
+      `
+      )
+      .eq("user_id", user.id)
+      .order("date", { ascending: false })
+      .range(offset, offset + limit - 1);
 
-      if (sessionsError) {
-        console.error("Error fetching workout history:", sessionsError);
-        return NextResponse.json(
-          { error: "Failed to fetch workout history" },
-          { status: 500 }
-        );
-      }
+    if (sessionsError) {
+      console.error("Error fetching workout history:", sessionsError);
+      return NextResponse.json(
+        { error: "Failed to fetch workout history" },
+        { status: 500 }
+      );
+    }
 
-      // Calculate statistics for each session
-      const enrichedSessions = sessions?.map((session) => {
+    // Calculate statistics for each session
+    const enrichedSessions = sessions?.map((session) => {
         const totalExercises = session.session_exercises?.length || 0;
         const completedExercises =
           session.session_exercises?.filter((ex) => ex.completed).length || 0;
@@ -110,20 +118,19 @@ export async function GET(request: NextRequest) {
         };
       });
 
-      return NextResponse.json({
-        sessions: enrichedSessions || [],
-        pagination: {
-          limit,
-          offset,
-          hasMore: (sessions?.length || 0) === limit,
-        },
-      });
-    } catch (error) {
-      console.error("Unexpected error in workout history:", error);
-      return NextResponse.json(
-        { error: "An unexpected error occurred" },
-        { status: 500 }
-      );
-    }
-  });
+    return NextResponse.json({
+      sessions: enrichedSessions || [],
+      pagination: {
+        limit,
+        offset,
+        hasMore: (sessions?.length || 0) === limit,
+      },
+    });
+  } catch (error) {
+    console.error("Unexpected error in workout history:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 }
+    );
+  }
 }

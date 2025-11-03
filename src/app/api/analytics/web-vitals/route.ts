@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withAuth } from "@/lib/auth-utils";
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 
 interface WebVitalData {
   name: string;
@@ -17,22 +17,30 @@ interface WebVitalData {
 const webVitalsData: WebVitalData[] = [];
 
 export async function POST(request: NextRequest) {
-  return withAuth(request, async (user) => {
-    try {
-      const webVital: WebVitalData = await request.json();
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
 
-      // Validate the data
-      if (!webVital.name || typeof webVital.value !== "number") {
-        return NextResponse.json(
-          { error: "Invalid web vital data" },
-          { status: 400 }
-        );
-      }
+  try {
+    const webVital: WebVitalData = await request.json();
+
+    // Validate the data
+    if (!webVital.name || typeof webVital.value !== "number") {
+      return NextResponse.json(
+        { error: "Invalid web vital data" },
+        { status: 400 }
+      );
+    }
 
       // Add metadata
       const enrichedVital = {
         ...webVital,
-        userId: user.userId,
+        userId: user.id,
         timestamp: Date.now(),
       };
 
@@ -42,26 +50,33 @@ export async function POST(request: NextRequest) {
       // Keep only the last 1000 entries to prevent memory issues
       if (webVitalsData.length > 1000) {
         webVitalsData.splice(0, webVitalsData.length - 1000);
-      }
-
-      return NextResponse.json({ success: true });
-    } catch (error) {
-      console.error("Error storing web vital:", error);
-      return NextResponse.json(
-        { error: "Failed to store web vital" },
-        { status: 500 }
-      );
     }
-  });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error storing web vital:", error);
+    return NextResponse.json(
+      { error: "Failed to store web vital" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(request: NextRequest) {
-  return withAuth(request, async () => {
-    try {
-      const url = new URL(request.url);
-      const metric = url.searchParams.get("metric");
-      const limit = parseInt(url.searchParams.get("limit") || "100");
-      const timeframe = url.searchParams.get("timeframe") || "24h";
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const url = new URL(request.url);
+    const metric = url.searchParams.get("metric");
+    const limit = parseInt(url.searchParams.get("limit") || "100");
+    const timeframe = url.searchParams.get("timeframe") || "24h";
 
       // Calculate time filter
       const now = Date.now();
@@ -107,18 +122,17 @@ export async function GET(request: NextRequest) {
         },
       };
 
-      return NextResponse.json({
-        data: filteredData,
-        stats,
-        timeframe,
-        metric: metric || "all",
-      });
-    } catch (error) {
-      console.error("Error retrieving web vitals:", error);
-      return NextResponse.json(
-        { error: "Failed to retrieve web vitals" },
-        { status: 500 }
-      );
-    }
-  });
+    return NextResponse.json({
+      data: filteredData,
+      stats,
+      timeframe,
+      metric: metric || "all",
+    });
+  } catch (error) {
+    console.error("Error retrieving web vitals:", error);
+    return NextResponse.json(
+      { error: "Failed to retrieve web vitals" },
+      { status: 500 }
+    );
+  }
 }

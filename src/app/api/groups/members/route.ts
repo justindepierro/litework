@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withRole } from '@/lib/auth-utils';
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 import { supabase } from '@/lib/supabase';
 
 /**
@@ -12,10 +12,25 @@ import { supabase } from '@/lib/supabase';
  * Add athlete(s) to a group
  */
 export async function POST(request: NextRequest) {
-  return withRole(request, 'coach', async () => {
-    try {
-      const body = await request.json();
-      const { groupId, athleteIds } = body;
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const { groupId, athleteIds } = body;
 
       if (!groupId || !athleteIds || !Array.isArray(athleteIds)) {
         return NextResponse.json(
@@ -62,69 +77,42 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json({
-        success: true,
-        memberships: data,
-        message: `Added ${athleteIds.length} athlete(s) to group`
-      });
+      success: true,
+      memberships: data,
+      message: `Added ${athleteIds.length} athlete(s) to group`
+    });
 
-    } catch (error) {
-      console.error('Add group members error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to add athletes to group' },
-        { status: 500 }
-      );
-    }
-  });
-}
-
-/**
- * DELETE /api/groups/members
- * Remove athlete from a group
- */
-export async function DELETE(request: NextRequest) {
-  return withRole(request, 'coach', async () => {
-    try {
-      const { searchParams } = new URL(request.url);
-      const groupId = searchParams.get('groupId');
-      const athleteId = searchParams.get('athleteId');
-
-      if (!groupId || !athleteId) {
-        return NextResponse.json(
-          { success: false, error: 'Group ID and athlete ID required' },
-          { status: 400 }
-        );
-      }
-
-      const { error } = await supabase
-        .from('group_members')
-        .delete()
-        .eq('group_id', groupId)
-        .eq('user_id', athleteId);
-
-      if (error) throw error;
-
-      return NextResponse.json({
-        success: true,
-        message: 'Athlete removed from group'
-      });
-
-    } catch (error) {
-      console.error('Remove group member error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to remove athlete from group' },
-        { status: 500 }
-      );
-    }
-  });
+  } catch (error) {
+    console.error('Error adding group members:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to add athletes to group' },
+      { status: 500 }
+    );
+  }
 }
 
 /**
  * GET /api/groups/members?groupId=xxx
- * Get all athletes in a group
+ * Get all members of a specific group
  */
 export async function GET(request: NextRequest) {
-  return withRole(request, 'coach', async () => {
-    try {
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
       const { searchParams } = new URL(request.url);
       const groupId = searchParams.get('groupId');
 
@@ -158,12 +146,11 @@ export async function GET(request: NextRequest) {
         athletes
       });
 
-    } catch (error) {
-      console.error('Get group members error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to get group members' },
-        { status: 500 }
-      );
-    }
-  });
+  } catch (error) {
+    console.error('Error fetching group members:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch group members' },
+      { status: 500 }
+    );
+  }
 }

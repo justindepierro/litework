@@ -7,16 +7,31 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withRole } from '@/lib/auth-utils';
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
-  return withRole(request, 'coach', async () => {
-    try {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
       // Fetch all assignments scheduled for today
       const { data: assignments, error: assignmentError } = await supabase
@@ -104,21 +119,19 @@ export async function GET(request: NextRequest) {
         })
       );
 
-      return NextResponse.json({
-        success: true,
-        workouts: workoutsWithStats
-      });
-
-    } catch (error) {
-      console.error('Today schedule error:', error);
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Failed to fetch today\'s schedule',
-          workouts: []
-        },
-        { status: 500 }
-      );
-    }
-  });
+    return NextResponse.json({
+      success: true,
+      workouts: workoutsWithStats
+    });
+  } catch (error) {
+    console.error('Today schedule error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Failed to fetch today\'s schedule',
+        workouts: []
+      },
+      { status: 500 }
+    );
+  }
 }

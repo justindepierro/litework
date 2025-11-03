@@ -378,28 +378,47 @@ export async function getSession() {
 
 // Get current user with profile data
 export async function getCurrentUser(): Promise<User | null> {
-  const session = await getSession();
-  if (!session?.user) return null;
+  try {
+    console.log('[AUTH_CLIENT] Getting session...');
+    const session = await getSession();
+    
+    if (!session?.user) {
+      console.log('[AUTH_CLIENT] No session found');
+      return null;
+    }
+    
+    console.log('[AUTH_CLIENT] Session found, fetching profile...');
 
-  // Get user profile from database
-  const { data: profile, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", session.user.id)
-    .single();
+    // Get user profile from database with timeout
+    const { data: profile, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", session.user.id)
+      .single();
 
-  if (error || !profile) {
+    if (error) {
+      console.error('[AUTH_CLIENT] Profile fetch error:', error);
+      return null;
+    }
+    
+    if (!profile) {
+      console.error('[AUTH_CLIENT] No profile found for user:', session.user.id);
+      return null;
+    }
+
+    console.log('[AUTH_CLIENT] Profile loaded successfully');
+    return {
+      id: profile.id,
+      email: profile.email,
+      role: profile.role,
+      firstName: profile.first_name || profile.name?.split(" ")[0] || "",
+      lastName: profile.last_name || profile.name?.split(" ")[1] || "",
+      fullName: profile.name,
+    };
+  } catch (error) {
+    console.error('[AUTH_CLIENT] Unexpected error in getCurrentUser:', error);
     return null;
   }
-
-  return {
-    id: profile.id,
-    email: profile.email,
-    role: profile.role,
-    firstName: profile.first_name || profile.name?.split(" ")[0] || "",
-    lastName: profile.last_name || profile.name?.split(" ")[1] || "",
-    fullName: profile.name,
-  };
 }
 
 // Listen to auth changes

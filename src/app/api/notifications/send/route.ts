@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withPermission } from '@/lib/auth-utils';
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 import { sendPushNotification, sendPushNotificationToUsers } from '@/lib/notification-service';
 import type { PushNotificationPayload } from '@/lib/notification-service';
 
@@ -18,14 +18,29 @@ import type { PushNotificationPayload } from '@/lib/notification-service';
  * - payload: PushNotificationPayload - Notification content
  */
 export async function POST(request: NextRequest) {
-  return withPermission(request, 'assign-workouts', async () => {
-    try {
-      const body = await request.json();
-      const { userId, userIds, payload } = body as {
-        userId?: string;
-        userIds?: string[];
-        payload: PushNotificationPayload;
-      };
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const { userId, userIds, payload } = body as {
+      userId?: string;
+      userIds?: string[];
+      payload: PushNotificationPayload;
+    };
 
       // Validate payload
       if (!payload || !payload.title) {
@@ -75,23 +90,22 @@ export async function POST(request: NextRequest) {
           failed: totalFailed,
           results,
           errors: allErrors.length > 0 ? allErrors : undefined
-        });
-      }
-
-      return NextResponse.json(
-        { error: 'No valid recipients specified' },
-        { status: 400 }
-      );
-
-    } catch (error) {
-      console.error('❌ Error sending push notifications:', error);
-      return NextResponse.json(
-        { 
-          error: 'Internal server error',
-          message: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
+      });
     }
-  });
+
+    return NextResponse.json(
+      { error: 'No valid recipients specified' },
+      { status: 400 }
+    );
+
+  } catch (error) {
+    console.error('❌ Error sending push notifications:', error);
+    return NextResponse.json(
+      { 
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
+  }
 }

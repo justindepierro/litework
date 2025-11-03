@@ -1,100 +1,203 @@
-// SERVER-SIDE AUTH ONLY
-// For use in API routes and server components
+/**
+ * Server-Side Authentication Utilities
+ * For use in API routes and server components
+ * 
+ * Uses Supabase cookie-based authentication (no Authorization headers needed)
+ */
 
-import { headers } from "next/headers";
-import { supabase } from "./supabase";
-import { supabaseAdmin } from "./supabase-admin";
+import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from './supabase-admin';
 
-export interface User {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export interface AuthUser {
   id: string;
   email: string;
-  role: "admin" | "coach" | "athlete";
+  role: 'admin' | 'coach' | 'athlete';
   firstName: string;
   lastName: string;
   fullName: string;
 }
 
-// Get current authenticated user in API routes
-export async function getCurrentUser(): Promise<User | null> {
+export interface AuthResult {
+  user: AuthUser | null;
+  error: string | null;
+}
+
+/**
+ * Get authenticated user from Supabase session cookies
+ * This is the ONLY function you need for server-side auth
+ * 
+ * Usage in API routes:
+ * ```ts
+ * const { user, error } = await getAuthenticatedUser();
+ * if (!user) {
+ *   return NextResponse.json({ error }, { status: 401 });
+ * }
+ * // Use user.id, user.role, etc.
+ * ```
+ */
+export async function getAuthenticatedUser(): Promise<AuthResult> {
   try {
-    // Get auth token from headers
-    const headersList = await headers();
-    const authHeader = headersList.get("authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return null;
-    }
-
-    const token = authHeader.substring(7); // Remove "Bearer " prefix
-
-    // Verify token with Supabase
+    // Ensure cookies are accessed (required for Next.js)
+    await cookies();
+    
+    // Create Supabase client (automatically reads auth cookies)
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
+    // Get authenticated user from session
     const {
       data: { user: authUser },
-      error,
-    } = await supabase.auth.getUser(token);
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (error || !authUser) {
-      return null;
+    if (authError || !authUser) {
+      return {
+        user: null,
+        error: 'Authentication required',
+      };
     }
 
-    // Get profile with admin client (bypasses RLS)
-    const { data: profile, error: profileError } = await supabaseAdmin
-      .from("users")
-      .select("*")
-      .eq("id", authUser.id)
+    // Get user profile from database
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', authUser.id)
       .single();
 
     if (profileError || !profile) {
-      return null;
+      return {
+        user: null,
+        error: 'User profile not found',
+      };
     }
 
     return {
-      id: profile.id,
-      email: profile.email || authUser.email || "",
-      role: profile.role,
-      firstName: profile.first_name || profile.name?.split(" ")[0] || "",
-      lastName: profile.last_name || profile.name?.split(" ")[1] || "",
-      fullName: profile.name,
+      user: {
+        id: profile.id,
+        email: profile.email,
+        role: profile.role as 'admin' | 'coach' | 'athlete',
+        firstName: profile.first_name || profile.name?.split(' ')[0] || '',
+        lastName: profile.last_name || profile.name?.split(' ')[1] || '',
+        fullName: profile.name,
+      },
+      error: null,
     };
-  } catch {
-    // Silent fail - auth errors should not expose details
-    return null;
+  } catch (error) {
+    console.error('[AUTH_SERVER] Error getting authenticated user:', error);
+    return {
+      user: null,
+      error: 'Authentication failed',
+    };
   }
 }
 
-// Check if user is authenticated
-export async function requireAuth(): Promise<User> {
-  const user = await getCurrentUser();
+/**
+ * Role hierarchy helper
+ */
+const ROLE_HIERARCHY = {
+  admin: 3,
+  coach: 2,
+  athlete: 1,
+};
+
+/**
+ * Check if user has required role or higher
+ */
+export function hasRoleOrHigher(
+  user: AuthUser,
+  requiredRole: 'admin' | 'coach' | 'athlete'
+): boolean {
+  return ROLE_HIERARCHY[user.role] >= ROLE_HIERARCHY[requiredRole];
+}
+
+/**
+ * Check if user is admin
+ */
+export function isAdmin(user: AuthUser): boolean {
+  return user.role === 'admin';
+}
+
+/**
+ * Check if user is coach or admin
+ */
+export function isCoach(user: AuthUser): boolean {
+  return user.role === 'coach' || user.role === 'admin';
+}
+
+/**
+ * Check if user is athlete (any authenticated user)
+ */
+export function isAthlete(user: AuthUser): boolean {
+  return user.role === 'athlete' || user.role === 'coach' || user.role === 'admin';
+}
+
+/**
+ * Permission helpers
+ */
+export function canManageGroups(user: AuthUser): boolean {
+  return isCoach(user);
+}
+
+export function canAssignWorkouts(user: AuthUser): boolean {
+  return isCoach(user);
+}
+
+export function canViewAllAthletes(user: AuthUser): boolean {
+  return isCoach(user);
+}
+
+export function canModifyWorkouts(user: AuthUser): boolean {
+  return isCoach(user);
+}
+
+/**
+ * Legacy support - for gradual migration
+ * @deprecated Use getAuthenticatedUser() instead
+ */
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const { user } = await getAuthenticatedUser();
+  return user;
+}
+
+/**
+ * @deprecated Use getAuthenticatedUser() with role check instead
+ */
+export async function requireAuth(): Promise<AuthUser> {
+  const { user, error } = await getAuthenticatedUser();
   if (!user) {
-    throw new Error("Unauthorized");
+    throw new Error(error || 'Unauthorized');
   }
   return user;
 }
 
-// Check if user has required role
+/**
+ * @deprecated Use getAuthenticatedUser() with hasRoleOrHigher() instead
+ */
 export async function requireRole(
-  role: "admin" | "coach" | "athlete"
-): Promise<User> {
+  role: 'admin' | 'coach' | 'athlete'
+): Promise<AuthUser> {
   const user = await requireAuth();
-
-  // Admin has all permissions
-  if (user.role === "admin") return user;
-
-  if (user.role !== role) {
-    throw new Error("Forbidden");
+  
+  if (!hasRoleOrHigher(user, role)) {
+    throw new Error('Forbidden');
   }
-
+  
   return user;
 }
 
-// Check if user is coach or admin
-export async function requireCoach(): Promise<User> {
+/**
+ * @deprecated Use getAuthenticatedUser() with isCoach() instead
+ */
+export async function requireCoach(): Promise<AuthUser> {
   const user = await requireAuth();
-
-  if (user.role !== "coach" && user.role !== "admin") {
-    throw new Error("Forbidden - Coach access required");
+  
+  if (!isCoach(user)) {
+    throw new Error('Forbidden - Coach access required');
   }
-
+  
   return user;
 }
 

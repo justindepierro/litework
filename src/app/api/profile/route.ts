@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { withAuth } from '@/lib/auth-utils';
+import { getAuthenticatedUser } from '@/lib/auth-server';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,14 +24,22 @@ interface ProfileUpdate {
   emergency_contact_phone?: string;
 }
 
-export async function GET(request: NextRequest) {
-  return withAuth(request, async (user) => {
-    try {
-      const { data, error } = await supabase
-        .from('users_with_metrics')
-        .select('*')
-        .eq('id', user.userId)
-        .single();
+export async function GET() {
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('users_with_metrics')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
       if (error) {
         console.error('Fetch error:', error);
@@ -46,20 +54,27 @@ export async function GET(request: NextRequest) {
         profile: data
       });
 
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Internal server error' },
-        { status: 500 }
-      );
-    }
-  });
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PATCH(request: NextRequest) {
-  return withAuth(request, async (user) => {
-    try {
-      const updates: ProfileUpdate = await request.json();
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const updates: ProfileUpdate = await request.json();
 
       // Validate data
       if (updates.height_inches !== undefined) {
@@ -97,7 +112,7 @@ export async function PATCH(request: NextRequest) {
       const { data, error } = await supabase
         .from('users')
         .update(updates)
-        .eq('id', user.userId)
+        .eq('id', user.id)
         .select()
         .single();
 
@@ -113,7 +128,7 @@ export async function PATCH(request: NextRequest) {
       const { data: profileData, error: fetchError } = await supabase
         .from('users_with_metrics')
         .select('*')
-        .eq('id', user.userId)
+        .eq('id', user.id)
         .single();
 
       if (fetchError) {
@@ -130,12 +145,11 @@ export async function PATCH(request: NextRequest) {
         profile: profileData
       });
 
-    } catch (error) {
-      console.error('Profile update error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Internal server error' },
-        { status: 500 }
-      );
-    }
-  });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withAuth } from "@/lib/auth-utils";
+import { getAuthenticatedUser } from '@/lib/auth-server';
 
 interface CustomMetricData {
   name: string;
@@ -12,9 +12,17 @@ interface CustomMetricData {
 const customMetricsData: (CustomMetricData & { userId: string })[] = [];
 
 export async function POST(request: NextRequest) {
-  return withAuth(request, async (user) => {
-    try {
-      const metric: CustomMetricData = await request.json();
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const metric: CustomMetricData = await request.json();
 
       // Validate the data
       if (!metric.name || typeof metric.value !== "number") {
@@ -27,7 +35,7 @@ export async function POST(request: NextRequest) {
       // Add metadata
       const enrichedMetric = {
         ...metric,
-        userId: user.userId,
+        userId: user.id,
         timestamp: Date.now(),
       };
 
@@ -38,25 +46,32 @@ export async function POST(request: NextRequest) {
       if (customMetricsData.length > 1000) {
         customMetricsData.splice(0, customMetricsData.length - 1000);
       }
-
+      
       return NextResponse.json({ success: true });
-    } catch (error) {
-      console.error("Error storing custom metric:", error);
-      return NextResponse.json(
-        { error: "Failed to store custom metric" },
-        { status: 500 }
-      );
-    }
-  });
+  } catch (error) {
+    console.error("Error storing custom metric:", error);
+    return NextResponse.json(
+      { error: "Failed to store custom metric" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(request: NextRequest) {
-  return withAuth(request, async () => {
-    try {
-      const url = new URL(request.url);
-      const metricName = url.searchParams.get("name");
-      const limit = parseInt(url.searchParams.get("limit") || "100");
-      const timeframe = url.searchParams.get("timeframe") || "24h";
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const url = new URL(request.url);
+    const metricName = url.searchParams.get("name");
+    const limit = parseInt(url.searchParams.get("limit") || "100");
+    const timeframe = url.searchParams.get("timeframe") || "24h";
 
       // Calculate time filter
       const now = Date.now();
@@ -118,5 +133,4 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
-  });
 }

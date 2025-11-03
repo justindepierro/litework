@@ -54,15 +54,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (hasInitialized.current) return;
       hasInitialized.current = true;
 
+      console.log('[AUTH] Initializing authentication...');
+
+      // Set a timeout to prevent infinite loading (reduced to 5 seconds)
+      const timeout = setTimeout(() => {
+        console.error('[AUTH] Authentication initialization timeout - Supabase may be unreachable');
+        if (mountedRef.current && initializingRef.current) {
+          setUser(null);
+          setLoading(false);
+          setInitializing(false);
+        }
+      }, 5000); // 5 second timeout
+
       try {
         const currentUser = await authClient.getCurrentUser();
+        clearTimeout(timeout);
+        console.log('[AUTH] Current user:', currentUser ? `Found (${currentUser.email})` : 'Not found');
         if (mountedRef.current) {
           setUser(currentUser);
           setLoading(false);
           setInitializing(false);
         }
       } catch (error) {
-        console.error("Auth initialization error:", error);
+        clearTimeout(timeout);
+        console.error('[AUTH] Auth initialization error:', error);
         if (mountedRef.current) {
           setUser(null);
           setLoading(false);

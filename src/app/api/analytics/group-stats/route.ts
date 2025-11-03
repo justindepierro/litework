@@ -7,17 +7,32 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withRole } from '@/lib/auth-utils';
+import { getAuthenticatedUser, hasRoleOrHigher, isCoach } from '@/lib/auth-server';
 import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
-  return withRole(request, 'coach', async () => {
-    try {
-      // Fetch all groups
-      const { data: groups, error: groupError } = await supabase
-        .from('groups')
-        .select('id, name')
-        .order('name', { ascending: true });
+  const { user, error: authError } = await getAuthenticatedUser();
+  
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: authError || 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+  
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden - Coach access required' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    // Fetch all groups
+    const { data: groups, error: groupError } = await supabase
+      .from('groups')
+      .select('id, name')
+      .order('name', { ascending: true });
 
       if (groupError) throw groupError;
 
@@ -92,24 +107,22 @@ export async function GET(request: NextRequest) {
 
       const groupStats = await Promise.all(groupStatsPromises);
 
-      // Sort by completion rate descending
-      groupStats.sort((a, b) => b.avgCompletionRate - a.avgCompletionRate);
+    // Sort by completion rate descending
+    groupStats.sort((a, b) => b.avgCompletionRate - a.avgCompletionRate);
 
-      return NextResponse.json({
-        success: true,
-        groups: groupStats
-      });
-
-    } catch (error) {
-      console.error('Group stats error:', error);
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Failed to fetch group statistics',
-          groups: []
-        },
-        { status: 500 }
-      );
-    }
-  });
+    return NextResponse.json({
+      success: true,
+      groups: groupStats
+    });
+  } catch (error) {
+    console.error('Group stats error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Failed to fetch group statistics',
+        groups: []
+      },
+      { status: 500 }
+    );
+  }
 }
