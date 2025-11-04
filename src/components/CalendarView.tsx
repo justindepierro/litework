@@ -20,10 +20,10 @@ export default function CalendarView() {
   // API hooks
   const {
     groups,
-    loading: groupsLoading,
+    isLoading: groupsLoading,
     refetch: refetchGroups,
   } = useGroups();
-  const { assignments, loading: assignmentsLoading } = useAssignments();
+  const { assignments, isLoading: assignmentsLoading } = useAssignments();
 
   // Load athletes data
   useEffect(() => {

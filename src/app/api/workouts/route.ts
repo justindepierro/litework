@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, requireCoach } from "@/lib/auth-server";
 import { getAllWorkoutPlans, createWorkoutPlan } from "@/lib/database-service";
+import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 // GET /api/workouts - Get workout plans
 export async function GET() {
@@ -19,17 +20,24 @@ export async function GET() {
 
     // Coaches/admins see all workouts, athletes see workouts for their groups
     if (user.role === "coach" || user.role === "admin") {
-      return NextResponse.json({
-        success: true,
-        data: { workouts: allWorkoutPlans },
-      });
+      // Cache coach's workout list for 1 minute (workouts don't change very often)
+      return cachedResponse(
+        {
+          success: true,
+          data: { workouts: allWorkoutPlans },
+        },
+        CacheDurations.SHORT
+      );
     } else {
       // For athletes, filter by target groups they belong to
       // This would require cross-referencing with user's groups
-      return NextResponse.json({
-        success: true,
-        data: { workouts: allWorkoutPlans }, // For now, return all
-      });
+      return cachedResponse(
+        {
+          success: true,
+          data: { workouts: allWorkoutPlans }, // For now, return all
+        },
+        CacheDurations.SHORT
+      );
     }
   } catch (error) {
     console.error("Workouts GET error:", error);
