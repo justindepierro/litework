@@ -1025,13 +1025,13 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
           <div className="flex gap-3 pt-4">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="flex-1 px-6 py-3 border-2 border-navy-400 text-navy-800 bg-white rounded-lg font-semibold hover:bg-navy-50 hover:border-navy-600 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors border-2 border-blue-700"
             >
               Create Group
             </button>
@@ -1494,7 +1494,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 {ungroupedExercises.filter((ex) => !ex.blockInstanceId).length > 0 && (
                   <button
                     onClick={() => setSelectionMode(true)}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-100 hover:bg-green-200 text-green-700"
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
                   >
                     <Users className="w-5 h-5 sm:w-4 sm:h-4" />
                     <span>Group Exercises</span>
@@ -1503,7 +1503,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               </>
             ) : (
               <>
-                <div className="col-span-full bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
                   {selectedExerciseIds.size === 0 ? (
                     "Select exercises to group together"
                   ) : (
@@ -1529,7 +1529,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
                 <button
                   onClick={clearSelection}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-100 hover:bg-red-200 text-red-700"
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
                 >
                   <span>Cancel</span>
                 </button>

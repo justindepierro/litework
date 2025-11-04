@@ -221,16 +221,16 @@ export default function NotificationBell() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 max-h-[600px] bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-96 max-w-[95vw] max-h-[600px] bg-white rounded-lg shadow-2xl border-2 border-gray-300 z-50 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="flex items-center justify-between px-4 py-3 border-b-2 border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+            <h3 className="text-lg font-bold text-gray-900">
               Notifications
             </h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                className="text-sm text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1 px-3 py-1.5 bg-white rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
               >
                 <CheckCheck className="w-4 h-4" />
                 Mark all read

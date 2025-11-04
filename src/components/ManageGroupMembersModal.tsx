@@ -211,7 +211,7 @@ export default function ManageGroupMembersModal({
         <div className="p-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            className="w-full py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+            className="w-full py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 font-semibold transition-colors border-2 border-navy-700"
           >
             Done
           </button>
