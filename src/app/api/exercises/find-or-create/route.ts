@@ -39,24 +39,24 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingExercise) {
-      // Exercise exists - increment usage count
-      const { data: updated, error: updateError } = await supabase
-        .from("exercises")
-        .update({
-          usage_count: (existingExercise.usage_count || 0) + 1,
-          last_used: new Date().toISOString(),
-        })
-        .eq("id", existingExercise.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        console.error("Error updating exercise usage:", updateError);
-      }
+      // Exercise exists - update analytics (using upsert for exercise_analytics)
+      await supabase
+        .from("exercise_analytics")
+        .upsert(
+          {
+            exercise_id: existingExercise.id,
+            usage_count: 1, // Will be incremented by the trigger
+            last_used_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "exercise_id",
+            ignoreDuplicates: false,
+          }
+        );
 
       return NextResponse.json({
         success: true,
-        exercise: updated || existingExercise,
+        exercise: existingExercise,
         created: false,
       });
     }
@@ -74,16 +74,14 @@ export async function POST(request: NextRequest) {
         name: normalizedName,
         description: `Custom exercise: ${normalizedName}`,
         category_id: inferredCategory,
-        muscle_groups: inferredMuscleGroups,
         equipment_needed: inferredEquipment,
         difficulty_level: 2, // Default to intermediate
         is_compound: false, // Will be updated by user if needed
         is_bodyweight: inferredEquipment.length === 0,
         instructions: [`Perform ${normalizedName} with proper form`],
-        usage_count: 1,
-        last_used: new Date().toISOString(),
         created_by: "id" in user ? user.id : null, // User ID if available
-        is_custom: true, // Flag to distinguish user-created exercises
+        is_active: true,
+        is_approved: false, // User-created exercises need approval
       })
       .select()
       .single();
@@ -94,6 +92,28 @@ export async function POST(request: NextRequest) {
         { success: false, error: "Failed to create exercise" },
         { status: 500 }
       );
+    }
+
+    // Create analytics entry for new exercise
+    await supabase.from("exercise_analytics").insert({
+      exercise_id: newExercise.id,
+      usage_count: 1,
+      last_used_at: new Date().toISOString(),
+    });
+
+    // Add muscle group associations if provided
+    if (inferredMuscleGroups && inferredMuscleGroups.length > 0) {
+      // Note: This assumes inferredMuscleGroups is an array of muscle group names or IDs
+      // You may need to adjust based on the actual format
+      const muscleGroupInserts = inferredMuscleGroups.map((mg: string) => ({
+        exercise_id: newExercise.id,
+        muscle_group_id: mg, // Assuming mg is a UUID
+        involvement_type: "primary",
+      }));
+
+      await supabase
+        .from("exercise_muscle_groups")
+        .insert(muscleGroupInserts);
     }
 
     return NextResponse.json({
