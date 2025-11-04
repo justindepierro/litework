@@ -25,9 +25,22 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
       if (typeof document === "undefined") return;
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
-        if (options?.maxAge) cookie += `; max-age=${options.maxAge}`;
+        
+        // Set max age - default to 7 days if not specified
+        const maxAge = options?.maxAge || 604800; // 7 days in seconds
+        cookie += `; max-age=${maxAge}`;
+        
         if (options?.domain) cookie += `; domain=${options.domain}`;
-        if (options?.sameSite) cookie += `; samesite=${options.sameSite}`;
+        
+        // Use Lax for better compatibility, falls back to Strict if specified
+        const sameSite = options?.sameSite || "Lax";
+        cookie += `; samesite=${sameSite}`;
+        
+        // Add secure flag in production (HTTPS)
+        if (window.location.protocol === "https:") {
+          cookie += "; secure";
+        }
+        
         document.cookie = cookie;
       });
     },
@@ -36,6 +49,16 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
     headers: {
       "X-Client-Info": "litework-web",
     },
+  },
+  auth: {
+    // Persist session across page reloads
+    persistSession: true,
+    // Auto refresh token before expiry
+    autoRefreshToken: true,
+    // Detect session from URL (for email confirmations, password resets)
+    detectSessionInUrl: true,
+    // Storage key for session
+    storageKey: "litework-auth-token",
   },
 });
 

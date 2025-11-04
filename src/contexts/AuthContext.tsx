@@ -41,10 +41,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const authOperationInProgress = useRef(false);
   const hasInitialized = useRef(false);
   const initializingRef = useRef(initializing);
+  const userRef = useRef<User | null>(user);
 
   useEffect(() => {
     initializingRef.current = initializing;
   }, [initializing]);
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   // Initialize auth on mount
   useEffect(() => {
@@ -103,20 +108,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = authClient.onAuthChange((newUser) => {
       // Ignore auth changes during active operations (sign in/up/out)
       if (!authOperationInProgress.current && mountedRef.current) {
+        const previousUser = user;
         setUser(newUser);
+
+        // Log session changes for debugging
+        if (previousUser && !newUser) {
+          console.warn("[AUTH] User session ended - possible logout or expiry");
+        } else if (!previousUser && newUser) {
+          console.log("[AUTH] User session started:", newUser.email);
+        } else if (newUser && previousUser && newUser.id !== previousUser.id) {
+          console.log("[AUTH] User session changed from", previousUser.email, "to", newUser.email);
+        }
 
         // If user logged out elsewhere, redirect to login
         if (!newUser && !initializingRef.current) {
+          console.log("[AUTH] Redirecting to login page");
           router.push("/login");
         }
       }
     });
 
+    // Set up periodic session refresh to prevent expiry
+    const refreshInterval = setInterval(async () => {
+      if (mountedRef.current && userRef.current && !authOperationInProgress.current) {
+        try {
+          // Refresh session every 4 hours (tokens expire after 1 hour by default, but are auto-refreshed)
+          console.log("[AUTH] Refreshing session...");
+          await authClient.refreshSession();
+          console.log("[AUTH] Session refreshed successfully");
+        } catch (error) {
+          console.error("[AUTH] Failed to refresh session:", error);
+        }
+      }
+    }, 4 * 60 * 60 * 1000); // 4 hours
+
     return () => {
       mountedRef.current = false;
       subscription.unsubscribe();
+      clearInterval(refreshInterval);
     };
-  }, [router]); // Run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]); // Run once on mount, user tracked via userRef
 
   // Sign in with proper state management
   const signIn = useCallback(

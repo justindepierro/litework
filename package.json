@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
+    "dev:stable": "./scripts/dev/dev-server-stable.sh",
     "dev:restart": "./scripts/dev/dev-restart.sh",
     "dev:kill": "pkill -f 'next dev' || lsof -ti:3000 | xargs kill -9 2>/dev/null || true",
+    "dev:clean": "rm -rf .next && npm run dev",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

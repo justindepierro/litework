@@ -503,6 +503,26 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
+/**
+ * Refresh the current session to prevent expiry
+ */
+export async function refreshSession() {
+  try {
+    const { data, error } = await supabase.auth.refreshSession();
+    
+    if (error) {
+      console.error("[AUTH_CLIENT] Session refresh failed:", error);
+      throw error;
+    }
+    
+    console.log("[AUTH_CLIENT] Session refreshed successfully");
+    return data.session;
+  } catch (error) {
+    console.error("[AUTH_CLIENT] Unexpected error refreshing session:", error);
+    throw error;
+  }
+}
+
 // Listen to auth changes
 export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
