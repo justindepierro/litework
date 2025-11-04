@@ -1,7 +1,7 @@
 "use client";
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
-import { useState, useEffect, lazy } from "react";
+import { useState, useEffect, lazy, useMemo, useCallback } from "react";
 import { ApiResponse } from "@/lib/api-response";
 import {
   User,
@@ -745,17 +745,33 @@ export default function AthletesPage() {
     return "Unknown";
   };
 
-  const filteredAthletes = athletes.filter((athlete) => {
-    const matchesSearch =
-      athlete.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      athlete.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "active" && athlete.status === "active") ||
-      (statusFilter === "invited" && athlete.status === "invited") ||
-      (statusFilter === "injured" && athlete.injuryStatus);
-    return matchesSearch && matchesStatus;
-  });
+  // Memoize filtered athletes to prevent recalculation on every render
+  const filteredAthletes = useMemo(() => {
+    return athletes.filter((athlete) => {
+      const matchesSearch =
+        athlete.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        athlete.email.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && athlete.status === "active") ||
+        (statusFilter === "invited" && athlete.status === "invited") ||
+        (statusFilter === "injured" && athlete.injuryStatus);
+      return matchesSearch && matchesStatus;
+    });
+  }, [athletes, searchTerm, statusFilter]);
+
+  // Memoize counts to prevent recalculation
+  const athleteCounts = useMemo(() => ({
+    active: athletes.filter((a) => a.status === "active").length,
+    invited: athletes.filter((a) => a.status === "invited").length,
+    injured: athletes.filter((a) => a.injuryStatus).length,
+  }), [athletes]);
+
+  // Memoize active groups
+  const activeGroups = useMemo(() => 
+    groups.filter((g) => !g.archived),
+    [groups]
+  );
 
   if (isLoading) {
     return (
@@ -799,13 +815,13 @@ export default function AthletesPage() {
             <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-blue-50 rounded-xl sm:bg-transparent sm:p-0">
               <Users className="h-5 w-5 text-blue-600" />
               <span className="text-sm font-medium">
-                {athletes.filter((a) => a.status === "active").length} Active
+                {athleteCounts.active} Active
               </span>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-orange-50 rounded-xl sm:bg-transparent sm:p-0">
               <Clock className="h-5 w-5 text-orange-600" />
               <span className="text-sm font-medium">
-                {athletes.filter((a) => a.status === "invited").length} Pending
+                {athleteCounts.invited} Pending
               </span>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-green-50 rounded-xl sm:bg-transparent sm:p-0">
@@ -821,7 +837,7 @@ export default function AthletesPage() {
             <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-yellow-50 rounded-xl sm:bg-transparent sm:p-0">
               <AlertCircle className="h-5 w-5 text-yellow-600" />
               <span className="text-sm font-medium">
-                {athletes.filter((a) => a.injuryStatus).length} Injured
+                {athleteCounts.injured} Injured
               </span>
             </div>
           </div>
@@ -860,15 +876,14 @@ export default function AthletesPage() {
         </div>
 
         {/* Groups Section */}
-        {groups.filter((g) => !g.archived).length > 0 && (
+        {activeGroups.length > 0 && (
           <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-purple-600" />
-              Groups ({groups.filter((g) => !g.archived).length})
+              Groups ({activeGroups.length})
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {groups
-                .filter((g) => !g.archived)
+              {activeGroups
                 .map((group) => {
                   // Get athlete count directly from group's athleteIds array
                   const athleteCount = group.athleteIds?.length || 0;

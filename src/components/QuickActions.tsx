@@ -2,8 +2,9 @@
 
 import { Dumbbell, Users, Calendar, Plus } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 
-export default function QuickActions() {
+const QuickActions = memo(function QuickActions() {
   const actions = [
     {
       icon: Plus,
@@ -89,4 +90,6 @@ export default function QuickActions() {
       </div>
     </div>
   );
-}
+});
+
+export default QuickActions;

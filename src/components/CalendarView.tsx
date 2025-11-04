@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, memo } from "react";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus } from "lucide-react";
@@ -9,7 +9,7 @@ import { Calendar, Users, X, Plus } from "lucide-react";
 const GroupFormModal = lazy(() => import("./GroupFormModal"));
 const GroupAssignmentModal = lazy(() => import("./GroupAssignmentModal"));
 
-export default function CalendarView() {
+const CalendarView = memo(function CalendarView() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedGroup, setSelectedGroup] = useState<string>("all");
   const [showGroupModal, setShowGroupModal] = useState(false);
@@ -416,4 +416,6 @@ export default function CalendarView() {
       )}
     </div>
   );
-}
+});
+
+export default CalendarView;
