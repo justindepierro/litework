@@ -67,11 +67,7 @@ export async function GET() {
         updatedAt: group.updated_at,
       }));
 
-      return cachedResponse(
-        { success: true, groups: mappedGroups },
-        60,
-        300
-      );
+      return cachedResponse({ success: true, groups: mappedGroups }, 60, 300);
     }
   } catch (error) {
     console.error("Groups GET error:", error);

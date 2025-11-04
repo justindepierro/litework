@@ -45,10 +45,10 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
-  
+
   // Performance: Preconnect to critical external domains
   other: {
-    "preconnect": "https://fonts.googleapis.com",
+    preconnect: "https://fonts.googleapis.com",
     "dns-prefetch": "https://fonts.gstatic.com",
   },
 };
@@ -81,10 +81,16 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        
+
         {/* Preconnect to Supabase for faster API calls */}
-        <link rel="preconnect" href="https://xnodqasubbpvxonrqhkp.supabase.co" />
-        <link rel="dns-prefetch" href="https://xnodqasubbpvxonrqhkp.supabase.co" />
+        <link
+          rel="preconnect"
+          href="https://xnodqasubbpvxonrqhkp.supabase.co"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://xnodqasubbpvxonrqhkp.supabase.co"
+        />
       </head>
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}

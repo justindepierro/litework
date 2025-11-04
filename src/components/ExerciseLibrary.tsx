@@ -210,7 +210,9 @@ function ExerciseLibrary({
       setShowCreateForm(false);
       fetchExercises(); // Refresh the list
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create exercise");
+      setError(
+        err instanceof Error ? err.message : "Failed to create exercise"
+      );
     } finally {
       setCreating(false);
     }
@@ -549,7 +551,9 @@ function ExerciseLibrary({
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Create New Exercise</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Create New Exercise
+                </h2>
                 <button
                   onClick={() => setShowCreateForm(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg"
@@ -803,7 +807,9 @@ function ExerciseLibrary({
                 <button
                   onClick={handleCreateExercise}
                   className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={creating || !newExercise.name || !newExercise.categoryId}
+                  disabled={
+                    creating || !newExercise.name || !newExercise.categoryId
+                  }
                 >
                   {creating ? "Creating..." : "Create Exercise"}
                 </button>

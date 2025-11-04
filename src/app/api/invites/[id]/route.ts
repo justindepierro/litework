@@ -180,10 +180,7 @@ export async function PUT(
     const { email } = body;
 
     if (!email) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
     const supabase = getAdminClient();
@@ -211,7 +208,11 @@ export async function PUT(
     }
 
     // Can only update pending invites (not accepted, expired, or cancelled)
-    if (invite.status === "accepted" || invite.status === "expired" || invite.status === "cancelled") {
+    if (
+      invite.status === "accepted" ||
+      invite.status === "expired" ||
+      invite.status === "cancelled"
+    ) {
       return NextResponse.json(
         { error: `Cannot update ${invite.status} invitations` },
         { status: 400 }
@@ -249,8 +250,7 @@ export async function PUT(
 
     // Send the invitation email
     try {
-      const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       const inviteUrl = `${appUrl}/signup?invite=${inviteId}`;
 
       await sendEmailNotification({

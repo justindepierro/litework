@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface UseIntersectionObserverOptions extends IntersectionObserverInit {
   /**
@@ -14,7 +14,7 @@ interface UseIntersectionObserverOptions extends IntersectionObserverInit {
 /**
  * Hook to detect when an element is visible in the viewport
  * Perfect for lazy loading components, infinite scroll, or triggering animations
- * 
+ *
  * @example
  * const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.5 });
  * return <div ref={ref}>{isIntersecting && <HeavyComponent />}</div>;
@@ -25,7 +25,7 @@ export function useIntersectionObserver<T extends Element = HTMLDivElement>(
   const {
     threshold = 0,
     root = null,
-    rootMargin = '0px',
+    rootMargin = "0px",
     triggerOnce = false,
     delay = 0,
   } = options;
@@ -83,7 +83,7 @@ export function useIntersectionObserver<T extends Element = HTMLDivElement>(
 
 /**
  * Hook for lazy loading images
- * 
+ *
  * @example
  * const { ref, isVisible } = useLazyLoad();
  * return <img ref={ref} src={isVisible ? actualSrc : placeholder} />;
@@ -93,7 +93,7 @@ export function useLazyLoad<T extends Element = HTMLImageElement>(
 ) {
   return useIntersectionObserver<T>({
     triggerOnce: true,
-    rootMargin: '50px', // Start loading 50px before entering viewport
+    rootMargin: "50px", // Start loading 50px before entering viewport
     ...options,
   });
 }

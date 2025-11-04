@@ -135,7 +135,10 @@ export async function signUp(
         .eq("id", data.user.id);
 
       if (profileError) {
-        console.error("Failed to update user profile with invite data:", profileError);
+        console.error(
+          "Failed to update user profile with invite data:",
+          profileError
+        );
         // Don't throw here - user is created, just missing some profile data
       }
     }

@@ -387,7 +387,13 @@ const CalendarView = memo(function CalendarView() {
 
           {/* Assignment Modal */}
           {showAssignModal && selectedDate && (
-            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div>}>
+            <Suspense
+              fallback={
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                </div>
+              }
+            >
               <GroupAssignmentModal
                 isOpen={showAssignModal}
                 onClose={() => setShowAssignModal(false)}
@@ -402,7 +408,13 @@ const CalendarView = memo(function CalendarView() {
 
           {/* Group Form Modal */}
           {showGroupFormModal && (
-            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div>}>
+            <Suspense
+              fallback={
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                </div>
+              }
+            >
               <GroupFormModal
                 isOpen={showGroupFormModal}
                 onClose={() => setShowGroupFormModal(false)}

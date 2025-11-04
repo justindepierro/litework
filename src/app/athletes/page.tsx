@@ -554,8 +554,8 @@ export default function AthletesPage() {
         setAthletes((prev) =>
           prev.map((a) =>
             a.id === selectedAthlete.id
-              ? { 
-                  ...a, 
+              ? {
+                  ...a,
                   email: response.invite?.email || editEmailForm.email,
                   status: "invited" as const, // Update status to invited
                 }
@@ -564,13 +564,17 @@ export default function AthletesPage() {
         );
         setShowEditEmailModal(false);
         setEditEmailForm({ email: "" });
-        toast.success("Email updated successfully! You can now send the invite.");
+        toast.success(
+          "Email updated successfully! You can now send the invite."
+        );
       } else {
         toast.error(response.error || "Failed to update email");
       }
     } catch (err) {
       console.error("Error updating email:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to update email");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update email"
+      );
     }
   };
 
@@ -761,15 +765,18 @@ export default function AthletesPage() {
   }, [athletes, searchTerm, statusFilter]);
 
   // Memoize counts to prevent recalculation
-  const athleteCounts = useMemo(() => ({
-    active: athletes.filter((a) => a.status === "active").length,
-    invited: athletes.filter((a) => a.status === "invited").length,
-    injured: athletes.filter((a) => a.injuryStatus).length,
-  }), [athletes]);
+  const athleteCounts = useMemo(
+    () => ({
+      active: athletes.filter((a) => a.status === "active").length,
+      invited: athletes.filter((a) => a.status === "invited").length,
+      injured: athletes.filter((a) => a.injuryStatus).length,
+    }),
+    [athletes]
+  );
 
   // Memoize active groups
-  const activeGroups = useMemo(() => 
-    groups.filter((g) => !g.archived),
+  const activeGroups = useMemo(
+    () => groups.filter((g) => !g.archived),
     [groups]
   );
 
@@ -883,119 +890,118 @@ export default function AthletesPage() {
               Groups ({activeGroups.length})
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {activeGroups
-                .map((group) => {
-                  // Get athlete count directly from group's athleteIds array
-                  const athleteCount = group.athleteIds?.length || 0;
+              {activeGroups.map((group) => {
+                // Get athlete count directly from group's athleteIds array
+                const athleteCount = group.athleteIds?.length || 0;
 
-                  return (
-                    <div
-                      key={group.id}
-                      className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
-                    >
-                      {/* 3-dot menu */}
-                      <div className="absolute top-3 right-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenGroupMenuId(
-                              openGroupMenuId === group.id ? null : group.id
-                            );
-                          }}
-                          className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                          aria-label="Group menu"
-                        >
-                          <MoreVertical className="w-5 h-5 text-gray-600" />
-                        </button>
+                return (
+                  <div
+                    key={group.id}
+                    className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
+                  >
+                    {/* 3-dot menu */}
+                    <div className="absolute top-3 right-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenGroupMenuId(
+                            openGroupMenuId === group.id ? null : group.id
+                          );
+                        }}
+                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                        aria-label="Group menu"
+                      >
+                        <MoreVertical className="w-5 h-5 text-gray-600" />
+                      </button>
 
-                        {/* Dropdown menu */}
-                        {openGroupMenuId === group.id && (
-                          <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingGroup(group);
-                                setShowGroupFormModal(true);
-                                setOpenGroupMenuId(null);
-                              }}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                              Edit Group
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleArchiveGroup(group);
-                              }}
-                              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
-                            >
-                              <Archive className="w-4 h-4" />
-                              Archive Group
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteGroup(group.id);
-                              }}
-                              className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Delete Group
-                            </button>
-                          </div>
+                      {/* Dropdown menu */}
+                      {openGroupMenuId === group.id && (
+                        <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingGroup(group);
+                              setShowGroupFormModal(true);
+                              setOpenGroupMenuId(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                            Edit Group
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleArchiveGroup(group);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                          >
+                            <Archive className="w-4 h-4" />
+                            Archive Group
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteGroup(group.id);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Delete Group
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Group content (clickable to manage members) */}
+                    <div className="w-full">
+                      <div className="flex items-center justify-between mb-2 pr-8">
+                        <h4 className="font-semibold text-gray-900">
+                          {group.name}
+                        </h4>
+                        {group.color && (
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: group.color }}
+                          />
                         )}
                       </div>
-
-                      {/* Group content (clickable to manage members) */}
-                      <div className="w-full">
-                        <div className="flex items-center justify-between mb-2 pr-8">
-                          <h4 className="font-semibold text-gray-900">
-                            {group.name}
-                          </h4>
-                          {group.color && (
-                            <div
-                              className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: group.color }}
-                            />
-                          )}
-                        </div>
-                        {group.description && (
-                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                            {group.description}
-                          </p>
-                        )}
-                        <div className="flex items-center justify-between">
-                          <button
-                            onClick={() => {
-                              setSelectedGroup(group);
-                              setShowManageGroupModal(true);
-                            }}
-                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-                            aria-label={`Manage ${group.name} members`}
-                          >
-                            <Users className="w-4 h-4" />
-                            <span>
-                              {athleteCount} athlete
-                              {athleteCount !== 1 ? "s" : ""}
-                            </span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedGroup(group);
-                              setShowManageGroupModal(true);
-                            }}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-full transition-colors"
-                            aria-label="Add athletes to group"
-                          >
-                            <Plus className="w-3 h-3" />
-                            <span>Add</span>
-                          </button>
-                        </div>
+                      {group.description && (
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          {group.description}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <button
+                          onClick={() => {
+                            setSelectedGroup(group);
+                            setShowManageGroupModal(true);
+                          }}
+                          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                          aria-label={`Manage ${group.name} members`}
+                        >
+                          <Users className="w-4 h-4" />
+                          <span>
+                            {athleteCount} athlete
+                            {athleteCount !== 1 ? "s" : ""}
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedGroup(group);
+                            setShowManageGroupModal(true);
+                          }}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-full transition-colors"
+                          aria-label="Add athletes to group"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>Add</span>
+                        </button>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -1113,7 +1119,7 @@ export default function AthletesPage() {
                               );
                             })}
                         </div>
-                        
+
                         {/* Email Address Display */}
                         {athlete.email && (
                           <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
@@ -1124,7 +1130,9 @@ export default function AthletesPage() {
                         {!athlete.email && athlete.status === "invited" && (
                           <div className="flex items-center gap-1 text-sm text-orange-600 mt-1">
                             <AlertCircle className="w-3.5 h-3.5" />
-                            <span className="text-xs">No email - Add to send invite</span>
+                            <span className="text-xs">
+                              No email - Add to send invite
+                            </span>
                           </div>
                         )}
                       </div>
@@ -1373,7 +1381,11 @@ export default function AthletesPage() {
                           }}
                           className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
                           disabled={!athlete.email}
-                          title={!athlete.email ? "Add email first to send invite" : "Resend invitation email"}
+                          title={
+                            !athlete.email
+                              ? "Add email first to send invite"
+                              : "Resend invitation email"
+                          }
                         >
                           <RefreshCw className="w-4 h-4" />
                           Resend
@@ -1435,7 +1447,9 @@ export default function AthletesPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Athlete
                   </label>
-                  <p className="text-gray-900 font-medium">{selectedAthlete.fullName}</p>
+                  <p className="text-gray-900 font-medium">
+                    {selectedAthlete.fullName}
+                  </p>
                 </div>
 
                 <div>
@@ -1467,7 +1481,8 @@ export default function AthletesPage() {
                         Ready to Send Invite
                       </h4>
                       <p className="text-sm text-blue-700">
-                        After updating the email, you can use the &ldquo;Resend&rdquo; button to send the invitation.
+                        After updating the email, you can use the
+                        &ldquo;Resend&rdquo; button to send the invitation.
                       </p>
                     </div>
                   </div>

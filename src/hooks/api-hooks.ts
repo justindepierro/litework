@@ -1,12 +1,12 @@
 /**
  * API Hooks - Now powered by SWR for optimal performance
- * 
+ *
  * These hooks have been migrated to use SWR for:
  * - Automatic caching and revalidation
  * - Request deduplication
  * - Background refetching
  * - Optimistic updates
- * 
+ *
  * Simply re-export from use-swr-hooks for backward compatibility
  */
 
@@ -32,5 +32,4 @@ export {
   prefetchWorkouts,
   prefetchAthletes,
   prefetchExercises,
-} from './use-swr-hooks';
-
+} from "./use-swr-hooks";

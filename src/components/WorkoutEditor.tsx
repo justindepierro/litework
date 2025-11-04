@@ -146,49 +146,210 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   placeholder="Exercise Name"
                 />
 
-                {/* Enhanced mobile input grid */}
+                {/* Sets and Reps Grid */}
                 <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="number"
-                    value={editedExercise.sets}
-                    onChange={(e) =>
-                      setEditedExercise({
-                        ...editedExercise,
-                        sets: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                    placeholder="Sets"
-                    min="1"
-                  />
-                  <input
-                    type="number"
-                    value={editedExercise.reps}
-                    onChange={(e) =>
-                      setEditedExercise({
-                        ...editedExercise,
-                        reps: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                    placeholder="Reps"
-                    min="1"
-                  />
-                  {editedExercise.weightType === "fixed" && (
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Sets
+                    </label>
                     <input
                       type="number"
-                      value={editedExercise.weight || 0}
+                      value={editedExercise.sets}
                       onChange={(e) =>
                         setEditedExercise({
                           ...editedExercise,
-                          weight: parseFloat(e.target.value) || 0,
+                          sets: parseInt(e.target.value) || 0,
                         })
                       }
-                      className="col-span-2 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="Sets"
+                      min="1"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Reps
+                    </label>
+                    <input
+                      type="number"
+                      value={editedExercise.reps}
+                      onChange={(e) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          reps: parseInt(e.target.value) || 0,
+                        })
+                      }
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="Reps"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
+                {/* Weight Type Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-silver-700 mb-2">
+                    Weight Type
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          weightType: "fixed",
+                          percentage: undefined,
+                        })
+                      }
+                      className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        editedExercise.weightType === "fixed"
+                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          : "border-silver-300 text-silver-600 hover:border-silver-400"
+                      }`}
+                    >
+                      Fixed
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          weightType: "percentage",
+                          weight: undefined,
+                        })
+                      }
+                      className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        editedExercise.weightType === "percentage"
+                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          : "border-silver-300 text-silver-600 hover:border-silver-400"
+                      }`}
+                    >
+                      % 1RM
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          weightType: "bodyweight",
+                          weight: undefined,
+                          percentage: undefined,
+                        })
+                      }
+                      className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        editedExercise.weightType === "bodyweight"
+                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          : "border-silver-300 text-silver-600 hover:border-silver-400"
+                      }`}
+                    >
+                      Body
+                    </button>
+                  </div>
+                </div>
+
+                {/* Weight/Percentage Input */}
+                {editedExercise.weightType === "fixed" && (
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Weight (lbs)
+                    </label>
+                    <input
+                      type="number"
+                      value={editedExercise.weight || ""}
+                      onChange={(e) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          weight: parseFloat(e.target.value) || undefined,
+                        })
+                      }
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                       placeholder="Weight (lbs)"
                       min="0"
+                      step="5"
                     />
-                  )}
+                  </div>
+                )}
+
+                {editedExercise.weightType === "percentage" && (
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Percentage of 1RM
+                    </label>
+                    <input
+                      type="number"
+                      value={editedExercise.percentage || ""}
+                      onChange={(e) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          percentage: parseFloat(e.target.value) || undefined,
+                        })
+                      }
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="% of 1RM"
+                      min="0"
+                      max="100"
+                      step="5"
+                    />
+                  </div>
+                )}
+
+                {/* Rest Time and Tempo */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Rest (seconds)
+                    </label>
+                    <input
+                      type="number"
+                      value={editedExercise.restTime || ""}
+                      onChange={(e) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          restTime: parseInt(e.target.value) || undefined,
+                        })
+                      }
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="Rest (sec)"
+                      min="0"
+                      step="15"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-silver-700 mb-1">
+                      Tempo
+                    </label>
+                    <input
+                      type="text"
+                      value={editedExercise.tempo || ""}
+                      onChange={(e) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          tempo: e.target.value || undefined,
+                        })
+                      }
+                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                      placeholder="e.g. 3-1-1-0"
+                    />
+                  </div>
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <label className="block text-sm font-medium text-silver-700 mb-1">
+                    Notes
+                  </label>
+                  <textarea
+                    value={editedExercise.notes || ""}
+                    onChange={(e) =>
+                      setEditedExercise({
+                        ...editedExercise,
+                        notes: e.target.value || undefined,
+                      })
+                    }
+                    className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation resize-none"
+                    placeholder="Add notes about this exercise..."
+                    rows={2}
+                  />
                 </div>
 
                 {/* Enhanced mobile action buttons */}

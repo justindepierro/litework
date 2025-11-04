@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
         },
       },
       300, // Cache for 5 minutes (exercises don't change often)
-      900  // Stale-while-revalidate for 15 minutes
+      900 // Stale-while-revalidate for 15 minutes
     );
   } catch (error) {
     console.error("Unexpected error:", error);

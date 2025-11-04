@@ -1,6 +1,6 @@
 /**
  * Optimized SWR Data Fetching Hooks
- * 
+ *
  * Benefits:
  * - Automatic caching and revalidation
  * - Request deduplication (multiple components, one request)
@@ -10,18 +10,18 @@
  * - Significantly reduced API calls
  */
 
-import useSWR, { mutate } from 'swr';
-import { AthleteGroup, WorkoutPlan, WorkoutAssignment } from '@/types';
+import useSWR, { mutate } from "swr";
+import { AthleteGroup, WorkoutPlan, WorkoutAssignment } from "@/types";
 
 // Generic fetcher function
 const fetcher = async (url: string) => {
   const response = await fetch(url);
-  
+
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the data.');
+    const error = new Error("An error occurred while fetching the data.");
     throw error;
   }
-  
+
   return response.json();
 };
 
@@ -40,19 +40,20 @@ const defaultConfig = {
  * Multiple components can call this simultaneously - only one request made!
  */
 export function useGroups() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/groups',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 60000, // Groups change infrequently, cache for 1 minute
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/groups", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 60000, // Groups change infrequently, cache for 1 minute
+  });
 
   return {
     groups: (data?.groups || []) as AthleteGroup[],
     isLoading,
-    error: error ? 'Failed to load groups' : null,
+    error: error ? "Failed to load groups" : null,
     refetch,
   };
 }
@@ -61,19 +62,20 @@ export function useGroups() {
  * Hook for fetching workouts with automatic caching
  */
 export function useWorkouts() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/workouts',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 30000, // Cache for 30 seconds
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/workouts", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 30000, // Cache for 30 seconds
+  });
 
   return {
     workouts: (data?.data?.workouts || []) as WorkoutPlan[],
     isLoading,
-    error: error ? 'Failed to load workouts' : null,
+    error: error ? "Failed to load workouts" : null,
     refetch,
   };
 }
@@ -88,25 +90,30 @@ export function useAssignments(params?: {
   date?: string;
 }) {
   // Build query string from params
-  const queryString = params 
-    ? '?' + new URLSearchParams(
-        Object.entries(params).filter(([, v]) => v != null) as [string, string][]
+  const queryString = params
+    ? "?" +
+      new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null) as [
+          string,
+          string,
+        ][]
       ).toString()
-    : '';
-    
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    `/api/assignments${queryString}`,
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 20000, // Assignments change more frequently, 20s cache
-    }
-  );
+    : "";
+
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR(`/api/assignments${queryString}`, fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 20000, // Assignments change more frequently, 20s cache
+  });
 
   return {
     assignments: (data?.data?.assignments || []) as WorkoutAssignment[],
     isLoading,
-    error: error ? 'Failed to load assignments' : null,
+    error: error ? "Failed to load assignments" : null,
     refetch,
   };
 }
@@ -115,20 +122,21 @@ export function useAssignments(params?: {
  * Hook for fetching athletes with caching
  */
 export function useAthletes() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/athletes',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 45000, // Athletes list changes occasionally, 45s cache
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/athletes", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 45000, // Athletes list changes occasionally, 45s cache
+  });
 
   return {
     athletes: data?.data?.athletes || [],
     invites: data?.data?.invites || [],
     isLoading,
-    error: error ? 'Failed to load athletes' : null,
+    error: error ? "Failed to load athletes" : null,
     refetch,
   };
 }
@@ -142,26 +150,31 @@ export function useExercises(params?: {
   favorites?: boolean;
 }) {
   // Build query string from params
-  const queryString = params 
-    ? '?' + new URLSearchParams(
-        Object.entries(params).filter(([, v]) => v != null && v !== '') as [string, string][]
+  const queryString = params
+    ? "?" +
+      new URLSearchParams(
+        Object.entries(params).filter(([, v]) => v != null && v !== "") as [
+          string,
+          string,
+        ][]
       ).toString()
-    : '';
-    
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    `/api/exercises${queryString}`,
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 120000, // Exercises rarely change, cache for 2 minutes
-      revalidateOnFocus: false,
-    }
-  );
+    : "";
+
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR(`/api/exercises${queryString}`, fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 120000, // Exercises rarely change, cache for 2 minutes
+    revalidateOnFocus: false,
+  });
 
   return {
     exercises: data?.data || [],
     isLoading,
-    error: error ? 'Failed to load exercises' : null,
+    error: error ? "Failed to load exercises" : null,
     refetch,
   };
 }
@@ -170,14 +183,15 @@ export function useExercises(params?: {
  * Hook for fetching dashboard stats (athletes only)
  */
 export function useDashboardStats() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/analytics/dashboard-stats',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 60000, // Stats update every minute at most
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/analytics/dashboard-stats", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 60000, // Stats update every minute at most
+  });
 
   return {
     stats: data?.stats || {
@@ -186,7 +200,7 @@ export function useDashboardStats() {
       currentStreak: 0,
     },
     isLoading,
-    error: error ? 'Failed to load dashboard stats' : null,
+    error: error ? "Failed to load dashboard stats" : null,
     refetch,
   };
 }
@@ -195,19 +209,20 @@ export function useDashboardStats() {
  * Hook for fetching group stats (coaches/admins)
  */
 export function useGroupStats() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/analytics/group-stats',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 60000, // Group stats update every minute
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/analytics/group-stats", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 60000, // Group stats update every minute
+  });
 
   return {
     groups: data?.groups || [],
     isLoading,
-    error: error ? 'Failed to load group stats' : null,
+    error: error ? "Failed to load group stats" : null,
     refetch,
   };
 }
@@ -216,20 +231,21 @@ export function useGroupStats() {
  * Hook for fetching today's schedule
  */
 export function useTodaySchedule() {
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    '/api/analytics/today-schedule',
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 30000, // Today's schedule can change, 30s cache
-      revalidateOnFocus: true, // DO refetch when user comes back to check schedule
-    }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR("/api/analytics/today-schedule", fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 30000, // Today's schedule can change, 30s cache
+    revalidateOnFocus: true, // DO refetch when user comes back to check schedule
+  });
 
   return {
     workouts: data?.workouts || [],
     isLoading,
-    error: error ? 'Failed to load today\'s schedule' : null,
+    error: error ? "Failed to load today's schedule" : null,
     refetch,
   };
 }
@@ -241,24 +257,26 @@ export function useNotifications(params?: {
   limit?: number;
   unread_only?: boolean;
 }) {
-  const queryString = params 
-    ? '?' + new URLSearchParams(
+  const queryString = params
+    ? "?" +
+      new URLSearchParams(
         Object.entries(params)
           .filter(([, v]) => v != null)
           .map(([k, v]) => [k, String(v)])
       ).toString()
-    : '';
-    
-  const { data, error, isLoading, mutate: refetch } = useSWR(
-    `/api/notifications/inbox${queryString}`,
-    fetcher,
-    {
-      ...defaultConfig,
-      dedupingInterval: 15000, // Notifications need frequent checks, 15s cache
-      revalidateOnFocus: true, // Refetch when user returns to check notifications
-      shouldRetryOnError: false, // Don't retry on 401 errors
-    }
-  );
+    : "";
+
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR(`/api/notifications/inbox${queryString}`, fetcher, {
+    ...defaultConfig,
+    dedupingInterval: 15000, // Notifications need frequent checks, 15s cache
+    revalidateOnFocus: true, // Refetch when user returns to check notifications
+    shouldRetryOnError: false, // Don't retry on 401 errors
+  });
 
   return {
     notifications: data?.notifications || [],
@@ -273,26 +291,30 @@ export function useNotifications(params?: {
  * Global cache invalidation functions
  * Use these after mutations (create, update, delete) to refresh data
  */
-export const invalidateGroups = () => mutate('/api/groups');
-export const invalidateWorkouts = () => mutate('/api/workouts');
-export const invalidateAssignments = () => mutate((key) => 
-  typeof key === 'string' && key.startsWith('/api/assignments')
-);
-export const invalidateAthletes = () => mutate('/api/athletes');
-export const invalidateExercises = () => mutate((key) => 
-  typeof key === 'string' && key.startsWith('/api/exercises')
-);
+export const invalidateGroups = () => mutate("/api/groups");
+export const invalidateWorkouts = () => mutate("/api/workouts");
+export const invalidateAssignments = () =>
+  mutate(
+    (key) => typeof key === "string" && key.startsWith("/api/assignments")
+  );
+export const invalidateAthletes = () => mutate("/api/athletes");
+export const invalidateExercises = () =>
+  mutate((key) => typeof key === "string" && key.startsWith("/api/exercises"));
 export const invalidateDashboard = () => {
-  mutate('/api/analytics/dashboard-stats');
-  mutate('/api/analytics/group-stats');
-  mutate('/api/analytics/today-schedule');
+  mutate("/api/analytics/dashboard-stats");
+  mutate("/api/analytics/group-stats");
+  mutate("/api/analytics/today-schedule");
 };
 
 /**
  * Prefetch functions - use these to load data before navigation
  * Example: await prefetchWorkouts() before navigating to /workouts
  */
-export const prefetchGroups = () => mutate('/api/groups', fetcher('/api/groups'));
-export const prefetchWorkouts = () => mutate('/api/workouts', fetcher('/api/workouts'));
-export const prefetchAthletes = () => mutate('/api/athletes', fetcher('/api/athletes'));
-export const prefetchExercises = () => mutate('/api/exercises', fetcher('/api/exercises'));
+export const prefetchGroups = () =>
+  mutate("/api/groups", fetcher("/api/groups"));
+export const prefetchWorkouts = () =>
+  mutate("/api/workouts", fetcher("/api/workouts"));
+export const prefetchAthletes = () =>
+  mutate("/api/athletes", fetcher("/api/athletes"));
+export const prefetchExercises = () =>
+  mutate("/api/exercises", fetcher("/api/exercises"));
