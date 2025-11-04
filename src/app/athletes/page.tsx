@@ -30,13 +30,15 @@ import {
 } from "lucide-react";
 import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 import { apiClient } from "@/lib/api-client";
-import GroupFormModal from "@/components/GroupFormModal";
-import ManageGroupMembersModal from "@/components/ManageGroupMembersModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
 
 // Dynamic imports for large components
+const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
+const ManageGroupMembersModal = lazy(
+  () => import("@/components/ManageGroupMembersModal")
+);
 const BulkOperationModal = lazy(
   () => import("@/components/BulkOperationModal")
 );

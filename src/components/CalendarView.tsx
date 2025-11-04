@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
-import GroupAssignmentModal from "./GroupAssignmentModal";
-import GroupFormModal from "./GroupFormModal";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus } from "lucide-react";
+
+// Dynamic imports for heavy modals
+const GroupFormModal = lazy(() => import("./GroupFormModal"));
+const GroupAssignmentModal = lazy(() => import("./GroupAssignmentModal"));
 
 export default function CalendarView() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -385,26 +387,30 @@ export default function CalendarView() {
 
           {/* Assignment Modal */}
           {showAssignModal && selectedDate && (
-            <GroupAssignmentModal
-              isOpen={showAssignModal}
-              onClose={() => setShowAssignModal(false)}
-              selectedDate={selectedDate}
-              groups={groups}
-              workoutPlans={[]}
-              athletes={athletes}
-              onAssignWorkout={handleAssignWorkout}
-            />
+            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div>}>
+              <GroupAssignmentModal
+                isOpen={showAssignModal}
+                onClose={() => setShowAssignModal(false)}
+                selectedDate={selectedDate}
+                groups={groups}
+                workoutPlans={[]}
+                athletes={athletes}
+                onAssignWorkout={handleAssignWorkout}
+              />
+            </Suspense>
           )}
 
           {/* Group Form Modal */}
           {showGroupFormModal && (
-            <GroupFormModal
-              isOpen={showGroupFormModal}
-              onClose={() => setShowGroupFormModal(false)}
-              editingGroup={editingGroup}
-              existingGroups={groups}
-              onSave={handleGroupSave}
-            />
+            <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div>}>
+              <GroupFormModal
+                isOpen={showGroupFormModal}
+                onClose={() => setShowGroupFormModal(false)}
+                editingGroup={editingGroup}
+                existingGroups={groups}
+                onSave={handleGroupSave}
+              />
+            </Suspense>
           )}
         </>
       )}
