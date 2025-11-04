@@ -4,6 +4,7 @@ import {
   getAdminClient,
   requireCoach,
 } from "@/lib/auth-server";
+import { cachedResponse } from "@/lib/api-cache-headers";
 
 export async function GET(request: NextRequest) {
   try {
@@ -69,17 +70,21 @@ export async function GET(request: NextRequest) {
       console.error("Error fetching equipment types:", equipmentError);
     }
 
-    return NextResponse.json({
-      exercises: exercises || [],
-      categories: categories || [],
-      muscleGroups: muscleGroups || [],
-      equipmentTypes: equipmentTypes || [],
-      pagination: {
-        limit,
-        offset,
-        total: exercises?.length || 0,
+    return cachedResponse(
+      {
+        exercises: exercises || [],
+        categories: categories || [],
+        muscleGroups: muscleGroups || [],
+        equipmentTypes: equipmentTypes || [],
+        pagination: {
+          limit,
+          offset,
+          total: exercises?.length || 0,
+        },
       },
-    });
+      300, // Cache for 5 minutes (exercises don't change often)
+      900  // Stale-while-revalidate for 15 minutes
+    );
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(

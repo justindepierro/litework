@@ -8,6 +8,7 @@ import {
 } from "@/lib/database-service";
 import { notifyWorkoutAssignment } from "@/lib/unified-notification-service";
 import { createClient } from "@supabase/supabase-js";
+import { cachedResponse } from "@/lib/api-cache-headers";
 
 // GET /api/assignments - Get assignments
 export async function GET(request: NextRequest) {
@@ -63,10 +64,14 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: filteredAssignments,
-    });
+    return cachedResponse(
+      {
+        success: true,
+        data: filteredAssignments,
+      },
+      30, // Cache for 30s (assignments change frequently)
+      120 // Stale-while-revalidate for 2 minutes
+    );
   } catch (error) {
     console.error("Assignments GET error:", error);
     return NextResponse.json(

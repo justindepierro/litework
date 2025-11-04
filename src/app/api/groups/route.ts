@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
 export async function GET() {
@@ -36,7 +37,11 @@ export async function GET() {
         updatedAt: group.updated_at,
       }));
 
-      return NextResponse.json({ success: true, groups: mappedGroups });
+      return cachedResponse(
+        { success: true, groups: mappedGroups },
+        60, // Cache for 60s
+        300 // Stale-while-revalidate for 300s
+      );
     } else {
       // Athletes see only their groups
       const { data: groups, error } = await supabase
@@ -62,7 +67,11 @@ export async function GET() {
         updatedAt: group.updated_at,
       }));
 
-      return NextResponse.json({ success: true, groups: mappedGroups });
+      return cachedResponse(
+        { success: true, groups: mappedGroups },
+        60,
+        300
+      );
     }
   } catch (error) {
     console.error("Groups GET error:", error);
