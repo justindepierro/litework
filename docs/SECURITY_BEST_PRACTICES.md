@@ -141,8 +141,8 @@ SUPABASE_SERVICE_ROLE_KEY=<your-supabase-service-role-key>
 
 ❌ **Bad:**
 ```bash
-RESEND_API_KEY=re_27tVrfYy_DG3nsu5VCLjqM9Acy3MXUoiL
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_DkY_QlH0rSudeDIUZToOxw_COasy2FK
+RESEND_API_KEY=re_AbCdEfGh1234567890XyZ
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_ExAmPlEkEy123456789
 ```
 
 ---
