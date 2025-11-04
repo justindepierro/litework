@@ -48,6 +48,9 @@ interface ExerciseItemProps {
   canMoveUp: boolean;
   canMoveDown: boolean;
   onExerciseNameChange?: (name: string) => Promise<string>;
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: (exerciseId: string) => void;
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = ({
@@ -62,6 +65,9 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   canMoveUp,
   canMoveDown,
   onExerciseNameChange,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelection,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedExercise, setEditedExercise] = useState(exercise);
@@ -97,10 +103,22 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
   return (
     <div
-      className={`bg-white border border-silver-300 rounded-lg p-4 ${groupId ? "ml-4" : ""}`}
+      className={`bg-white border rounded-lg p-4 ${groupId ? "ml-4" : ""} ${
+        isSelected ? "border-blue-500 border-2 bg-blue-50" : "border-silver-300"
+      }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3 flex-1">
+          {/* Selection checkbox */}
+          {selectionMode && !groupId && onToggleSelection && (
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={() => onToggleSelection(exercise.id)}
+              className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+            />
+          )}
+          
           <div className="flex flex-col space-y-1">
             <button
               onClick={onMoveUp}
@@ -861,6 +879,169 @@ const GroupItem: React.FC<GroupItemProps> = ({
   );
 };
 
+// Group Creation Modal Component
+interface GroupCreationModalProps {
+  selectedCount: number;
+  onClose: () => void;
+  onCreateGroup: (
+    groupType: "superset" | "circuit" | "section",
+    rounds?: number,
+    restBetweenExercises?: number,
+    restBetweenRounds?: number
+  ) => void;
+}
+
+const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
+  selectedCount,
+  onClose,
+  onCreateGroup,
+}) => {
+  const [groupType, setGroupType] = useState<"superset" | "circuit" | "section">("superset");
+  const [rounds, setRounds] = useState<number>(3);
+  const [restBetweenExercises, setRestBetweenExercises] = useState<number>(30);
+  const [restBetweenRounds, setRestBetweenRounds] = useState<number>(90);
+
+  const handleSubmit = () => {
+    onCreateGroup(
+      groupType,
+      groupType === "circuit" ? rounds : undefined,
+      restBetweenExercises,
+      groupType === "circuit" ? restBetweenRounds : undefined
+    );
+  };
+
+  return (
+    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">
+            Create Group from {selectedCount} Exercises
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Group Type Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Group Type
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                onClick={() => setGroupType("superset")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  groupType === "superset"
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                <Zap className="w-6 h-6 mx-auto mb-2" />
+                <div className="text-sm font-medium">Superset</div>
+                <div className="text-xs text-gray-500 mt-1">2-4 exercises</div>
+              </button>
+
+              <button
+                onClick={() => setGroupType("circuit")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  groupType === "circuit"
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                <RotateCcw className="w-6 h-6 mx-auto mb-2" />
+                <div className="text-sm font-medium">Circuit</div>
+                <div className="text-xs text-gray-500 mt-1">Multiple rounds</div>
+              </button>
+
+              <button
+                onClick={() => setGroupType("section")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  groupType === "section"
+                    ? "border-blue-500 bg-blue-50 text-blue-700"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                <Target className="w-6 h-6 mx-auto mb-2" />
+                <div className="text-sm font-medium">Section</div>
+                <div className="text-xs text-gray-500 mt-1">Workout phase</div>
+              </button>
+            </div>
+          </div>
+
+          {/* Rest Between Exercises */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Rest Between Exercises (seconds)
+            </label>
+            <input
+              type="number"
+              value={restBetweenExercises}
+              onChange={(e) => setRestBetweenExercises(parseInt(e.target.value) || 0)}
+              min="0"
+              step="15"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Circuit-specific settings */}
+          {groupType === "circuit" && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Number of Rounds
+                </label>
+                <input
+                  type="number"
+                  value={rounds}
+                  onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
+                  min="1"
+                  max="10"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rest Between Rounds (seconds)
+                </label>
+                <input
+                  type="number"
+                  value={restBetweenRounds}
+                  onChange={(e) => setRestBetweenRounds(parseInt(e.target.value) || 0)}
+                  min="0"
+                  step="15"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4">
+            <button
+              onClick={onClose}
+              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Create Group
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main Workout Editor Component
 const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   workout,
@@ -872,6 +1053,11 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   const [showBlockEditor, setShowBlockEditor] = useState(false);
   const [editingBlockInstance, setEditingBlockInstance] =
     useState<BlockInstance | null>(null);
+  
+  // Multi-select state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedExerciseIds, setSelectedExerciseIds] = useState<Set<string>>(new Set());
+  const [showGroupModal, setShowGroupModal] = useState(false);
 
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
@@ -994,7 +1180,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       (group) => group.id !== groupId
     );
 
-    // Remove groupId from exercises in this group
+    // Move exercises out of the deleted group
     const updatedExercises = localWorkout.exercises.map((ex) =>
       ex.groupId === groupId ? { ...ex, groupId: undefined } : ex
     );
@@ -1004,6 +1190,65 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       groups: updatedGroups,
       exercises: updatedExercises,
     });
+  };
+
+  // Multi-select functions
+  const toggleExerciseSelection = (exerciseId: string) => {
+    setSelectedExerciseIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(exerciseId)) {
+        newSet.delete(exerciseId);
+      } else {
+        newSet.add(exerciseId);
+      }
+      return newSet;
+    });
+  };
+
+  const selectAllExercises = () => {
+    const ungroupedIds = localWorkout.exercises
+      .filter((ex) => !ex.groupId && !ex.blockInstanceId)
+      .map((ex) => ex.id);
+    setSelectedExerciseIds(new Set(ungroupedIds));
+  };
+
+  const clearSelection = () => {
+    setSelectedExerciseIds(new Set());
+    setSelectionMode(false);
+  };
+
+  const groupSelectedExercises = (
+    groupType: "superset" | "circuit" | "section",
+    rounds?: number,
+    restBetweenExercises?: number,
+    restBetweenRounds?: number
+  ) => {
+    if (selectedExerciseIds.size === 0) return;
+
+    const newGroupId = Date.now().toString();
+    const newGroup: ExerciseGroup = {
+      id: newGroupId,
+      name: `New ${groupType.charAt(0).toUpperCase() + groupType.slice(1)}`,
+      type: groupType,
+      order: (localWorkout.groups?.length || 0) + 1,
+      rounds: rounds,
+      restBetweenExercises: restBetweenExercises,
+      restBetweenRounds: restBetweenRounds,
+    };
+
+    // Move selected exercises into the new group
+    const updatedExercises = localWorkout.exercises.map((ex) =>
+      selectedExerciseIds.has(ex.id) ? { ...ex, groupId: newGroupId } : ex
+    );
+
+    updateWorkout({
+      ...localWorkout,
+      groups: [...(localWorkout.groups || []), newGroup],
+      exercises: updatedExercises,
+    });
+
+    clearSelection();
+    setShowGroupModal(false);
   };
 
   // Move exercise up or down
@@ -1203,46 +1448,93 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           </div>
 
           {/* Enhanced mobile action buttons */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2">
-            <button
-              onClick={() => setShowBlockLibrary(true)}
-              className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-            >
-              <Package className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Add Block</span>
-            </button>
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
+            {!selectionMode ? (
+              <>
+                <button
+                  onClick={() => setShowBlockLibrary(true)}
+                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  <Package className="w-5 h-5 sm:w-4 sm:h-4" />
+                  <span>Add Block</span>
+                </button>
 
-            <button
-              onClick={addExercise}
-              className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-            >
-              <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Add Exercise</span>
-            </button>
+                <button
+                  onClick={addExercise}
+                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                >
+                  <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
+                  <span>Add Exercise</span>
+                </button>
 
-            <button
-              onClick={() => addGroup("superset")}
-              className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-            >
-              <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Add Superset</span>
-            </button>
+                <button
+                  onClick={() => addGroup("superset")}
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                >
+                  <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                  <span>Add Superset</span>
+                </button>
 
-            <button
-              onClick={() => addGroup("circuit")}
-              className="btn-secondary flex items-center space-x-2"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Add Circuit</span>
-            </button>
+                <button
+                  onClick={() => addGroup("circuit")}
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Add Circuit</span>
+                </button>
 
-            <button
-              onClick={() => addGroup("section")}
-              className="btn-secondary flex items-center space-x-2"
-            >
-              <Target className="w-4 h-4" />
-              <span>Add Section</span>
-            </button>
+                <button
+                  onClick={() => addGroup("section")}
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                >
+                  <Target className="w-4 h-4" />
+                  <span>Add Section</span>
+                </button>
+
+                {ungroupedExercises.filter((ex) => !ex.blockInstanceId).length > 0 && (
+                  <button
+                    onClick={() => setSelectionMode(true)}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-100 hover:bg-green-200 text-green-700"
+                  >
+                    <Users className="w-5 h-5 sm:w-4 sm:h-4" />
+                    <span>Group Exercises</span>
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="col-span-full bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                  {selectedExerciseIds.size === 0 ? (
+                    "Select exercises to group together"
+                  ) : (
+                    `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`
+                  )}
+                </div>
+
+                <button
+                  onClick={selectAllExercises}
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                >
+                  <span>Select All</span>
+                </button>
+
+                <button
+                  onClick={() => setShowGroupModal(true)}
+                  disabled={selectedExerciseIds.size < 2}
+                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                  <span>Create Group</span>
+                </button>
+
+                <button
+                  onClick={clearSelection}
+                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-100 hover:bg-red-200 text-red-700"
+                >
+                  <span>Cancel</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -1283,6 +1575,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   canMoveUp={index > 0}
                   canMoveDown={index < ungroupedExercises.length - 1}
                   onExerciseNameChange={handleExerciseNameChange}
+                  selectionMode={selectionMode}
+                  isSelected={selectedExerciseIds.has(exercise.id)}
+                  onToggleSelection={toggleExerciseSelection}
                 />
               ))}
 
@@ -1353,6 +1648,15 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           blockInstance={editingBlockInstance}
           workout={localWorkout}
           onSave={handleSaveBlockInstance}
+        />
+      )}
+
+      {/* Group Creation Modal */}
+      {showGroupModal && (
+        <GroupCreationModal
+          selectedCount={selectedExerciseIds.size}
+          onClose={() => setShowGroupModal(false)}
+          onCreateGroup={groupSelectedExercises}
         />
       )}
     </div>
