@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 
 interface TodayWorkout {
@@ -13,7 +13,7 @@ interface TodayWorkout {
   endTime: string;
 }
 
-export default function TodayOverview() {
+const TodayOverview = memo(function TodayOverview() {
   const [todayWorkouts, setTodayWorkouts] = useState<TodayWorkout[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -135,4 +135,6 @@ export default function TodayOverview() {
       )}
     </div>
   );
-}
+});
+
+export default TodayOverview;

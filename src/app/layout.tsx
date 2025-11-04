@@ -33,37 +33,23 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Workout Tracker - Weight Lifting Club",
+  title: "LiteWork - Weight Lifting Tracker",
   description:
-    "Track workouts, progress, and schedules for weight lifting club members",
-  keywords:
-    "workout, fitness, weight lifting, gym, progress tracking, mobile app",
-  authors: [{ name: "Weight Lifting Club" }],
-
-  // PWA manifest
+    "Track your weight lifting workouts, manage athlete groups, and monitor progress with LiteWork.",
   manifest: "/manifest.json",
-
-  // App icons
-  icons: {
-    icon: "/icons/icon-192x192.png",
-    apple: "/icons/apple-touch-icon.png",
-    shortcut: "/icons/icon-192x192.png",
-  },
-
-  // Mobile app capabilities
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Workout Tracker",
+    title: "LiteWork",
   },
-
-  // Open Graph for social sharing
-  openGraph: {
-    title: "Workout Tracker - Weight Lifting Club",
-    description:
-      "Track workouts, progress, and schedules for weight lifting club members",
-    type: "website",
-    siteName: "Workout Tracker",
+  formatDetection: {
+    telephone: false,
+  },
+  
+  // Performance: Preconnect to critical external domains
+  other: {
+    "preconnect": "https://fonts.googleapis.com",
+    "dns-prefetch": "https://fonts.gstatic.com",
   },
 };
 
@@ -95,6 +81,10 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        
+        {/* Preconnect to Supabase for faster API calls */}
+        <link rel="preconnect" href="https://xnodqasubbpvxonrqhkp.supabase.co" />
+        <link rel="dns-prefetch" href="https://xnodqasubbpvxonrqhkp.supabase.co" />
       </head>
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}
