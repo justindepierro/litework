@@ -34,7 +34,7 @@ interface WorkoutEditorProps {
   onClose: () => void;
 }
 
-// Individual Exercise Component
+// Individual Exercise Component - Memoized for performance
 interface ExerciseItemProps {
   exercise: WorkoutExercise;
   index: number;
@@ -53,7 +53,7 @@ interface ExerciseItemProps {
   onToggleSelection?: (exerciseId: string) => void;
 }
 
-const ExerciseItem: React.FC<ExerciseItemProps> = ({
+const ExerciseItem = React.memo<ExerciseItemProps>(({
   exercise,
   groupId,
   onUpdate,
@@ -517,7 +517,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
       </div>
     </div>
   );
-};
+});
+ExerciseItem.displayName = 'ExerciseItem';
 
 // Block Instance Component - Shows blocks added to the workout
 interface BlockInstanceItemProps {
@@ -1102,7 +1103,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   onChange,
   onClose,
 }) => {
-  const [localWorkout, setLocalWorkout] = useState<WorkoutPlan>(workout);
+  // UI-only state (not part of workout data)
   const [showBlockLibrary, setShowBlockLibrary] = useState(false);
   const [showBlockEditor, setShowBlockEditor] = useState(false);
   const [editingBlockInstance, setEditingBlockInstance] =
@@ -1113,9 +1114,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<Set<string>>(new Set());
   const [showGroupModal, setShowGroupModal] = useState(false);
 
+  // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
-      setLocalWorkout(updatedWorkout);
       onChange(updatedWorkout);
     },
     [onChange]
@@ -1167,12 +1168,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       weightType: "fixed",
       weight: 0,
       restTime: 120,
-      order: localWorkout.exercises.length + 1,
+      order: workout.exercises.length + 1,
     };
 
     updateWorkout({
-      ...localWorkout,
-      exercises: [...localWorkout.exercises, newExercise],
+      ...workout,
+      exercises: [...workout.exercises, newExercise],
     });
   };
 
@@ -1182,65 +1183,65 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       id: Date.now().toString(),
       name: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
       type,
-      order: (localWorkout.groups?.length || 0) + 1,
+      order: (workout.groups?.length || 0) + 1,
       ...(type === "circuit" && { rounds: 3, restBetweenRounds: 60 }),
     };
 
     updateWorkout({
-      ...localWorkout,
-      groups: [...(localWorkout.groups || []), newGroup],
+      ...workout,
+      groups: [...(workout.groups || []), newGroup],
     });
   };
 
   // Update exercise
   const updateExercise = (updatedExercise: WorkoutExercise) => {
-    const updatedExercises = localWorkout.exercises.map((ex) =>
+    const updatedExercises = workout.exercises.map((ex) =>
       ex.id === updatedExercise.id ? updatedExercise : ex
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       exercises: updatedExercises,
     });
   };
 
   // Delete exercise
   const deleteExercise = (exerciseId: string) => {
-    const updatedExercises = localWorkout.exercises.filter(
+    const updatedExercises = workout.exercises.filter(
       (ex) => ex.id !== exerciseId
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       exercises: updatedExercises,
     });
   };
 
   // Update group
   const updateGroup = (updatedGroup: ExerciseGroup) => {
-    const updatedGroups = (localWorkout.groups || []).map((group) =>
+    const updatedGroups = (workout.groups || []).map((group) =>
       group.id === updatedGroup.id ? updatedGroup : group
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       groups: updatedGroups,
     });
   };
 
   // Delete group
   const deleteGroup = (groupId: string) => {
-    const updatedGroups = (localWorkout.groups || []).filter(
+    const updatedGroups = (workout.groups || []).filter(
       (group) => group.id !== groupId
     );
 
     // Move exercises out of the deleted group
-    const updatedExercises = localWorkout.exercises.map((ex) =>
+    const updatedExercises = workout.exercises.map((ex) =>
       ex.groupId === groupId ? { ...ex, groupId: undefined } : ex
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       groups: updatedGroups,
       exercises: updatedExercises,
     });
@@ -1260,7 +1261,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   };
 
   const selectAllExercises = () => {
-    const ungroupedIds = localWorkout.exercises
+    const ungroupedIds = workout.exercises
       .filter((ex) => !ex.groupId && !ex.blockInstanceId)
       .map((ex) => ex.id);
     setSelectedExerciseIds(new Set(ungroupedIds));
@@ -1284,20 +1285,20 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       id: newGroupId,
       name: `New ${groupType.charAt(0).toUpperCase() + groupType.slice(1)}`,
       type: groupType,
-      order: (localWorkout.groups?.length || 0) + 1,
+      order: (workout.groups?.length || 0) + 1,
       rounds: rounds,
       restBetweenExercises: restBetweenExercises,
       restBetweenRounds: restBetweenRounds,
     };
 
     // Move selected exercises into the new group
-    const updatedExercises = localWorkout.exercises.map((ex) =>
+    const updatedExercises = workout.exercises.map((ex) =>
       selectedExerciseIds.has(ex.id) ? { ...ex, groupId: newGroupId } : ex
     );
 
     updateWorkout({
-      ...localWorkout,
-      groups: [...(localWorkout.groups || []), newGroup],
+      ...workout,
+      groups: [...(workout.groups || []), newGroup],
       exercises: updatedExercises,
     });
 
@@ -1312,8 +1313,8 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     groupId?: string
   ) => {
     const relevantExercises = groupId
-      ? localWorkout.exercises.filter((ex) => ex.groupId === groupId)
-      : localWorkout.exercises.filter((ex) => !ex.groupId);
+      ? workout.exercises.filter((ex) => ex.groupId === groupId)
+      : workout.exercises.filter((ex) => !ex.groupId);
 
     const exerciseIndex = relevantExercises.findIndex(
       (ex) => ex.id === exerciseId
@@ -1324,7 +1325,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     if (newIndex < 0 || newIndex >= relevantExercises.length) return;
 
     // Create new exercise array with reordered items
-    const updatedExercises = [...localWorkout.exercises];
+    const updatedExercises = [...workout.exercises];
     const exerciseToMove = updatedExercises.find((ex) => ex.id === exerciseId);
     const exerciseToSwap = updatedExercises.find(
       (ex) => ex.id === relevantExercises[newIndex].id
@@ -1337,19 +1338,19 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     }
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       exercises: updatedExercises.sort((a, b) => a.order - b.order),
     });
   };
 
   // Move exercise to different group
   const moveExerciseToGroup = (exerciseId: string, targetGroupId?: string) => {
-    const updatedExercises = localWorkout.exercises.map((ex) =>
+    const updatedExercises = workout.exercises.map((ex) =>
       ex.id === exerciseId ? { ...ex, groupId: targetGroupId } : ex
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       exercises: updatedExercises,
     });
   };
@@ -1361,11 +1362,11 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     const blockInstanceId = `block-instance-${timestamp}`;
 
     const maxOrder = Math.max(
-      ...localWorkout.exercises.map((ex) => ex.order),
+      ...workout.exercises.map((ex) => ex.order),
       0
     );
     const maxGroupOrder = Math.max(
-      ...(localWorkout.groups || []).map((g) => g.order),
+      ...(workout.groups || []).map((g) => g.order),
       0
     );
 
@@ -1406,12 +1407,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
     // Update the workout with the new block instance
     updateWorkout({
-      ...localWorkout,
-      exercises: [...localWorkout.exercises, ...newExercises],
-      groups: [...(localWorkout.groups || []), ...newGroups],
-      blockInstances: [...(localWorkout.blockInstances || []), blockInstance],
+      ...workout,
+      exercises: [...workout.exercises, ...newExercises],
+      groups: [...(workout.groups || []), ...newGroups],
+      blockInstances: [...(workout.blockInstances || []), blockInstance],
       estimatedDuration:
-        localWorkout.estimatedDuration + block.estimatedDuration,
+        workout.estimatedDuration + block.estimatedDuration,
     });
 
     // Close the block library
@@ -1461,20 +1462,20 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     updatedInstance: BlockInstance
   ) => {
     // Replace exercises for this block instance
-    const otherExercises = localWorkout.exercises.filter(
+    const otherExercises = workout.exercises.filter(
       (ex) => ex.blockInstanceId !== updatedInstance.id
     );
-    const otherGroups = (localWorkout.groups || []).filter(
+    const otherGroups = (workout.groups || []).filter(
       (g) => g.blockInstanceId !== updatedInstance.id
     );
 
     // Replace block instance
-    const otherInstances = (localWorkout.blockInstances || []).filter(
+    const otherInstances = (workout.blockInstances || []).filter(
       (bi) => bi.id !== updatedInstance.id
     );
 
     updateWorkout({
-      ...localWorkout,
+      ...workout,
       exercises: [...otherExercises, ...updatedExercises],
       groups: [...otherGroups, ...updatedGroups],
       blockInstances: [...otherInstances, updatedInstance],
@@ -1482,10 +1483,10 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   };
 
   // Get ungrouped exercises
-  const ungroupedExercises = localWorkout.exercises.filter((ex) => !ex.groupId);
+  const ungroupedExercises = workout.exercises.filter((ex) => !ex.groupId);
 
   // State for workout name editing
-  const [workoutName, setWorkoutName] = useState(localWorkout.name || "");
+  const [workoutName, setWorkoutName] = useState(workout.name || "");
   const [isSaving, setIsSaving] = useState(false);
 
   // Save workout to library
@@ -1498,12 +1499,10 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     setIsSaving(true);
     try {
       const workoutData = {
-        ...localWorkout,
+        ...workout,
         name: workoutName.trim(),
         updatedAt: new Date(),
       };
-
-      console.log("[WORKOUT EDITOR] Saving workout:", workoutData);
 
       // Update the parent component's workout
       // This will trigger the parent's onChange which should handle the save
@@ -1652,18 +1651,18 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="space-y-6 sm:space-y-4">
             {/* Block Instances */}
-            {localWorkout.blockInstances?.map((blockInstance) => (
+            {workout.blockInstances?.map((blockInstance) => (
               <BlockInstanceItem
                 key={blockInstance.id}
                 blockInstance={blockInstance}
-                exercises={localWorkout.exercises}
-                groups={localWorkout.groups || []}
+                exercises={workout.exercises}
+                groups={workout.groups || []}
                 onCustomize={setEditingBlockInstance}
                 onDeleteExercise={deleteExercise}
                 onUpdateExercise={updateExercise}
                 onMoveExercise={moveExercise}
                 onMoveExerciseToGroup={moveExerciseToGroup}
-                availableGroups={localWorkout.groups || []}
+                availableGroups={workout.groups || []}
                 onExerciseNameChange={handleExerciseNameChange}
               />
             ))}
@@ -1681,7 +1680,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   onMoveUp={() => moveExercise(exercise.id, "up")}
                   onMoveDown={() => moveExercise(exercise.id, "down")}
                   onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
-                  availableGroups={localWorkout.groups || []}
+                  availableGroups={workout.groups || []}
                   canMoveUp={index > 0}
                   canMoveDown={index < ungroupedExercises.length - 1}
                   onExerciseNameChange={handleExerciseNameChange}
@@ -1692,27 +1691,27 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               ))}
 
             {/* Exercise Groups (not in blocks) */}
-            {localWorkout.groups
+            {workout.groups
               ?.filter((g) => !g.blockInstanceId)
               .map((group) => (
                 <GroupItem
                   key={group.id}
                   group={group}
-                  exercises={localWorkout.exercises}
+                  exercises={workout.exercises}
                   onUpdateGroup={updateGroup}
                   onDeleteGroup={deleteGroup}
                   onUpdateExercise={updateExercise}
                   onDeleteExercise={deleteExercise}
                   onMoveExercise={moveExercise}
                   onMoveExerciseToGroup={moveExerciseToGroup}
-                  availableGroups={localWorkout.groups || []}
+                  availableGroups={workout.groups || []}
                   onExerciseNameChange={handleExerciseNameChange}
                 />
               ))}
 
             {/* Enhanced mobile empty state */}
             {ungroupedExercises.length === 0 &&
-              (!localWorkout.groups || localWorkout.groups.length === 0) && (
+              (!workout.groups || workout.groups.length === 0) && (
                 <div className="text-center text-body-secondary py-16 sm:py-12">
                   <Dumbbell className="w-16 h-16 sm:w-12 sm:h-12 mx-auto mb-6 sm:mb-4 text-silver-400" />
                   <p className="text-xl sm:text-lg font-medium mb-2">
@@ -1739,7 +1738,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           setShowBlockEditor(true);
         }}
         selectedBlocks={
-          localWorkout.blockInstances?.map((bi) => bi.sourceBlockId) || []
+          workout.blockInstances?.map((bi) => bi.sourceBlockId) || []
         }
       />
 
@@ -1756,7 +1755,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           isOpen={!!editingBlockInstance}
           onClose={() => setEditingBlockInstance(null)}
           blockInstance={editingBlockInstance}
-          workout={localWorkout}
+          workout={workout}
           onSave={handleSaveBlockInstance}
         />
       )}
