@@ -7,6 +7,13 @@ import { WorkoutPlan, WorkoutExercise } from "@/types";
 import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
+import {
+  validateWorkout,
+  canSaveWorkout,
+  formatValidationErrors,
+  getMinimumRequirements,
+} from "@/lib/workout-validation";
+import { WorkoutEditorErrorBoundary } from "@/components/WorkoutEditorErrorBoundary";
 
 // Dynamic imports for large components
 const ExerciseLibrary = lazy(() => import("@/components/ExerciseLibrary"));
@@ -376,43 +383,81 @@ export default function WorkoutsPage() {
 
       {/* Workout Editor Modal */}
       {(editingWorkout || creatingWorkout) && (
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
-              <div className="bg-white rounded-lg p-8">
-                <div className="text-lg text-gray-600">
-                  Loading workout editor...
+        <WorkoutEditorErrorBoundary
+          workout={
+            editingWorkout || {
+              id: "new-workout",
+              name: newWorkout.name || "",
+              description: newWorkout.description || "",
+              exercises: newWorkout.exercises || [],
+              estimatedDuration: newWorkout.estimatedDuration || 30,
+              createdBy: user.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }
+          }
+          onRecover={(recoveredWorkout) => {
+            // Recover workout from localStorage after error
+            if (creatingWorkout) {
+              setNewWorkout(recoveredWorkout);
+            } else if (editingWorkout) {
+              setEditingWorkout(recoveredWorkout as WorkoutPlan);
+            }
+          }}
+        >
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+                <div className="bg-white rounded-lg p-8">
+                  <div className="text-lg text-gray-600">
+                    Loading workout editor...
+                  </div>
                 </div>
               </div>
-            </div>
-          }
-        >
-          <WorkoutEditor
-            workout={
-              editingWorkout || {
-                id: "new-workout",
-                name: newWorkout.name || "",
-                description: newWorkout.description || "",
-                exercises: newWorkout.exercises || [],
-                estimatedDuration: newWorkout.estimatedDuration || 30,
-                createdBy: user.id,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-              }
             }
+          >
+            <WorkoutEditor
+              workout={
+                editingWorkout || {
+                  id: "new-workout",
+                  name: newWorkout.name || "",
+                  description: newWorkout.description || "",
+                  exercises: newWorkout.exercises || [],
+                  estimatedDuration: newWorkout.estimatedDuration || 30,
+                  createdBy: user.id,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                }
+              }
             onChange={async (updatedWorkout) => {
               // For creating new workouts, save to API immediately on save button click
               if (creatingWorkout) {
                 // Always update local state first
                 setNewWorkout(updatedWorkout);
                 
-                // Check if workout has required fields for saving
-                if (
-                  !updatedWorkout.name ||
-                  !updatedWorkout.exercises ||
-                  updatedWorkout.exercises.length === 0
-                ) {
-                  // Not ready to save yet - just update local state
+                // Validate workout before saving
+                const validationResult = validateWorkout(updatedWorkout);
+                
+                // Check if workout can be saved (has minimum requirements)
+                if (!canSaveWorkout(updatedWorkout)) {
+                  // Not ready to save yet - show what's missing
+                  const missing = getMinimumRequirements(updatedWorkout);
+                  if (missing.length > 0) {
+                    console.log("Workout not ready to save. Missing:", missing);
+                  }
+                  return;
+                }
+
+                // Show validation warnings to user (non-blocking)
+                if (validationResult.warnings.length > 0) {
+                  console.warn("Workout validation warnings:", validationResult.warnings);
+                }
+
+                // Block save if there are critical errors
+                if (!validationResult.isValid) {
+                  const errorMessage = formatValidationErrors(validationResult);
+                  showErrorToast("Please fix validation errors before saving");
+                  console.error("Validation errors:\n", errorMessage);
                   return;
                 }
 
@@ -478,6 +523,7 @@ export default function WorkoutsPage() {
             }}
           />
         </Suspense>
+        </WorkoutEditorErrorBoundary>
       )}
     </div>
   );
