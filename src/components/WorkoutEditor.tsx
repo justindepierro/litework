@@ -1491,13 +1491,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           </div>
 
           {/* Enhanced mobile action buttons */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
-            {!selectionMode ? (
-              <>
-                <button
-                  onClick={() => setShowBlockLibrary(true)}
-                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                >
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
+              {!selectionMode ? (
+                <>
+                  <button
+                    onClick={() => setShowBlockLibrary(true)}
+                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  >
                   <Package className="w-5 h-5 sm:w-4 sm:h-4" />
                   <span>Add Block</span>
                 </button>
@@ -1543,15 +1544,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     <span>Group Exercises</span>
                   </button>
                 )}
-
-                {/* Save Workout Button */}
-                <button
-                  onClick={saveWorkout}
-                  disabled={isSaving || !workoutName.trim()}
-                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700 ml-auto"
-                >
-                  <span>{isSaving ? "Saving..." : "💾 Save Workout"}</span>
-                </button>
               </>
             ) : (
               <>
@@ -1586,6 +1578,18 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   <span>Cancel</span>
                 </button>
               </>
+            )}
+            </div>
+
+            {/* Save Workout Button - Separate Row */}
+            {!selectionMode && (
+              <button
+                onClick={saveWorkout}
+                disabled={isSaving || !workoutName.trim()}
+                className="w-full btn-primary flex items-center justify-center gap-2 py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700"
+              >
+                <span>{isSaving ? "Saving..." : "Save Workout"}</span>
+              </button>
             )}
           </div>
         </div>
