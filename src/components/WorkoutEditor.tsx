@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Plus,
   GripVertical,
@@ -72,6 +72,11 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
   const [isEditing, setIsEditing] = useState(false);
   const [editedExercise, setEditedExercise] = useState(exercise);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
+
+  // Sync local state when exercise prop changes
+  useEffect(() => {
+    setEditedExercise(exercise);
+  }, [exercise]);
 
   const saveExercise = async () => {
     let updatedExercise = editedExercise;
