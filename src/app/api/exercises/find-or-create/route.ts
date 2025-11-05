@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, category, muscleGroups, equipment } = await request.json();
+    const { name, equipment } = await request.json();
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json(
@@ -62,10 +62,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Exercise doesn't exist - create it
-    // Determine category based on name or use provided category
-    const inferredCategory = category || inferCategory(normalizedName);
-    const inferredMuscleGroups =
-      muscleGroups || inferMuscleGroups(normalizedName);
+    // For user-created exercises, we'll leave category_id as null
+    // since we don't have a simple way to map string categories to UUIDs
     const inferredEquipment = equipment || inferEquipment(normalizedName);
 
     const { data: newExercise, error: createError } = await supabase
@@ -73,7 +71,7 @@ export async function POST(request: NextRequest) {
       .insert({
         name: normalizedName,
         description: `Custom exercise: ${normalizedName}`,
-        category_id: inferredCategory,
+        category_id: null, // User-created exercises don't have a category initially
         equipment_needed: inferredEquipment,
         difficulty_level: 2, // Default to intermediate
         is_compound: false, // Will be updated by user if needed
@@ -101,21 +99,6 @@ export async function POST(request: NextRequest) {
       last_used_at: new Date().toISOString(),
     });
 
-    // Add muscle group associations if provided
-    if (inferredMuscleGroups && inferredMuscleGroups.length > 0) {
-      // Note: This assumes inferredMuscleGroups is an array of muscle group names or IDs
-      // You may need to adjust based on the actual format
-      const muscleGroupInserts = inferredMuscleGroups.map((mg: string) => ({
-        exercise_id: newExercise.id,
-        muscle_group_id: mg, // Assuming mg is a UUID
-        involvement_type: "primary",
-      }));
-
-      await supabase
-        .from("exercise_muscle_groups")
-        .insert(muscleGroupInserts);
-    }
-
     return NextResponse.json({
       success: true,
       exercise: newExercise,
@@ -130,87 +113,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Helper functions to infer exercise metadata from name
-function inferCategory(name: string): string {
-  const lowerName = name.toLowerCase();
-
-  // Category ID mappings (adjust based on your actual category IDs)
-  if (
-    lowerName.includes("squat") ||
-    lowerName.includes("lunge") ||
-    lowerName.includes("leg")
-  ) {
-    return "legs";
-  }
-  if (
-    lowerName.includes("bench") ||
-    lowerName.includes("chest") ||
-    lowerName.includes("press") ||
-    lowerName.includes("fly")
-  ) {
-    return "chest";
-  }
-  if (
-    lowerName.includes("back") ||
-    lowerName.includes("row") ||
-    lowerName.includes("pull")
-  ) {
-    return "back";
-  }
-  if (
-    lowerName.includes("shoulder") ||
-    lowerName.includes("raise") ||
-    lowerName.includes("overhead")
-  ) {
-    return "shoulders";
-  }
-  if (lowerName.includes("curl") || lowerName.includes("bicep")) {
-    return "biceps";
-  }
-  if (lowerName.includes("tricep") || lowerName.includes("extension")) {
-    return "triceps";
-  }
-  if (lowerName.includes("core") || lowerName.includes("plank")) {
-    return "core";
-  }
-
-  return "other"; // Default category
-}
-
-function inferMuscleGroups(name: string): Array<{
-  name: string;
-  involvement: string;
-}> {
-  const lowerName = name.toLowerCase();
-  const groups: Array<{ name: string; involvement: string }> = [];
-
-  // Map common exercise names to muscle groups
-  if (lowerName.includes("squat")) {
-    groups.push({ name: "Quadriceps", involvement: "primary" });
-    groups.push({ name: "Glutes", involvement: "secondary" });
-  } else if (lowerName.includes("bench")) {
-    groups.push({ name: "Chest", involvement: "primary" });
-    groups.push({ name: "Triceps", involvement: "secondary" });
-  } else if (lowerName.includes("deadlift")) {
-    groups.push({ name: "Back", involvement: "primary" });
-    groups.push({ name: "Hamstrings", involvement: "primary" });
-  } else if (lowerName.includes("row")) {
-    groups.push({ name: "Back", involvement: "primary" });
-    groups.push({ name: "Biceps", involvement: "secondary" });
-  } else if (lowerName.includes("curl")) {
-    groups.push({ name: "Biceps", involvement: "primary" });
-  } else if (lowerName.includes("press") && lowerName.includes("shoulder")) {
-    groups.push({ name: "Shoulders", involvement: "primary" });
-  }
-
-  // Default if no matches
-  if (groups.length === 0) {
-    groups.push({ name: "Unknown", involvement: "primary" });
-  }
-
-  return groups;
-}
-
+// Helper function to infer equipment from exercise name
 function inferEquipment(name: string): string[] {
   const lowerName = name.toLowerCase();
   const equipment: string[] = [];

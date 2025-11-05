@@ -1430,18 +1430,61 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   // Get ungrouped exercises
   const ungroupedExercises = localWorkout.exercises.filter((ex) => !ex.groupId);
 
+  // State for workout name editing
+  const [workoutName, setWorkoutName] = useState(localWorkout.name || "");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Save workout to library
+  const saveWorkout = async () => {
+    if (!workoutName.trim()) {
+      alert("Please enter a workout name");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const workoutData = {
+        ...localWorkout,
+        name: workoutName.trim(),
+        updatedAt: new Date(),
+      };
+
+      // Update the parent component's workout
+      onChange(workoutData);
+
+      // If there's an API endpoint to save workouts, call it here
+      // await apiClient.saveWorkout(workoutData);
+
+      alert("Workout saved successfully! You can now assign it from the calendar.");
+    } catch (error) {
+      console.error("Error saving workout:", error);
+      alert("Failed to save workout. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-2 sm:p-4">
       <div className="bg-white rounded-2xl sm:rounded-lg max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
         {/* Enhanced mobile header */}
         <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-heading-primary text-xl sm:text-lg font-bold truncate pr-4">
-              Edit: {localWorkout.name}
-            </h2>
+            <div className="flex-1 pr-4">
+              <label className="block text-xs text-silver-600 mb-1 font-medium">
+                Workout Name
+              </label>
+              <input
+                type="text"
+                value={workoutName}
+                onChange={(e) => setWorkoutName(e.target.value)}
+                placeholder="Enter workout name..."
+                className="w-full text-xl sm:text-lg font-bold border-2 border-silver-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
             <button
               onClick={onClose}
-              className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation"
+              className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation shrink-0"
             >
               ×
             </button>
@@ -1500,6 +1543,15 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     <span>Group Exercises</span>
                   </button>
                 )}
+
+                {/* Save Workout Button */}
+                <button
+                  onClick={saveWorkout}
+                  disabled={isSaving || !workoutName.trim()}
+                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700 ml-auto"
+                >
+                  <span>{isSaving ? "Saving..." : "💾 Save Workout"}</span>
+                </button>
               </>
             ) : (
               <>

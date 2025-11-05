@@ -52,16 +52,32 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorData: { error?: string; details?: string } = {};
+      let errorText = "";
+      
+      try {
+        // Try to get the response text first
+        errorText = await response.text();
+        // Then try to parse it as JSON
+        errorData = JSON.parse(errorText);
+      } catch {
+        // If JSON parsing fails, use the text as the error
+        errorData = { error: errorText || "Unknown error" };
+      }
+
       console.error("API request failed:", {
         url: `${this.baseUrl}${endpoint}`,
+        method: options.method || "GET",
         status: response.status,
         statusText: response.statusText,
         errorData,
+        rawResponse: errorText.substring(0, 500), // First 500 chars
       });
+      
       throw new Error(
         errorData.error ||
           errorData.details ||
+          errorText ||
           `API Error: ${response.status} ${response.statusText}`
       );
     }
