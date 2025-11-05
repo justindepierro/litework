@@ -2,6 +2,7 @@
 
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
+import { useToast } from "@/components/ToastProvider";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
 import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
@@ -30,6 +31,7 @@ interface LibraryExercise {
 
 export default function WorkoutsPage() {
   const { user, isLoading: authLoading } = useRequireCoach();
+  const { success, error: showErrorToast } = useToast();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -434,18 +436,22 @@ export default function WorkoutsPage() {
                     const createdWorkout = apiResponse.workout;
                     if (createdWorkout) {
                       setWorkouts([...workouts, createdWorkout]);
+                      success("Workout saved successfully!");
                     }
                   } else {
-                    setError(
+                    const errorMsg =
                       typeof response.error === "string"
                         ? response.error
-                        : "Failed to create workout"
-                    );
+                        : "Failed to create workout";
+                    setError(errorMsg);
+                    showErrorToast(errorMsg);
                     // Don't close if save failed
                     return;
                   }
                 } catch (err) {
-                  setError("Failed to create workout");
+                  const errorMsg = "Failed to create workout";
+                  setError(errorMsg);
+                  showErrorToast(errorMsg);
                   console.error("Error creating workout:", err);
                   // Don't close if save failed
                   return;

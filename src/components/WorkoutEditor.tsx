@@ -1506,14 +1506,11 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       // Update the parent component's workout
       onChange(workoutData);
 
-      // If there's an API endpoint to save workouts, call it here
-      // await apiClient.saveWorkout(workoutData);
-
-      alert("Workout saved successfully! You can now assign it from the calendar.");
+      // Close the modal - this triggers the parent's onClose which saves to API
+      onClose();
     } catch (error) {
       console.error("Error saving workout:", error);
       alert("Failed to save workout. Please try again.");
-    } finally {
       setIsSaving(false);
     }
   };
