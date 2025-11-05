@@ -1503,11 +1503,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         updatedAt: new Date(),
       };
 
+      console.log("[WORKOUT EDITOR] Saving workout:", workoutData);
+
       // Update the parent component's workout
+      // This will trigger the parent's onChange which should handle the save
       onChange(workoutData);
 
-      // Close the modal - this triggers the parent's onClose which saves to API
-      onClose();
+      // DON'T close here - let the parent handle closing after successful save
+      // onClose();
     } catch (error) {
       console.error("Error saving workout:", error);
       alert("Failed to save workout. Please try again.");

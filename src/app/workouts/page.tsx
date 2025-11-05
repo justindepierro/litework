@@ -400,11 +400,83 @@ export default function WorkoutsPage() {
                 updatedAt: new Date(),
               }
             }
-            onChange={(updatedWorkout) => {
-              // For creating new workouts, just track changes locally
-              // Only save to API when user closes/saves (handled in onClose)
+            onChange={async (updatedWorkout) => {
+              console.log("[WORKOUT SAVE DEBUG] onChange called", {
+                creatingWorkout,
+                updatedWorkout,
+              });
+
+              // For creating new workouts, save to API immediately
               if (creatingWorkout) {
-                setNewWorkout(updatedWorkout);
+                // Check if workout has required fields
+                if (
+                  !updatedWorkout.name ||
+                  !updatedWorkout.exercises ||
+                  updatedWorkout.exercises.length === 0
+                ) {
+                  console.log(
+                    "[WORKOUT SAVE DEBUG] Missing required fields, updating local state only"
+                  );
+                  setNewWorkout(updatedWorkout);
+                  return;
+                }
+
+                try {
+                  console.log("[WORKOUT SAVE DEBUG] Calling API with:", {
+                    name: updatedWorkout.name,
+                    description: updatedWorkout.description,
+                    exerciseCount: updatedWorkout.exercises.length,
+                    estimatedDuration: updatedWorkout.estimatedDuration || 30,
+                  });
+
+                  const response = (await apiClient.createWorkout({
+                    name: updatedWorkout.name,
+                    description: updatedWorkout.description,
+                    exercises: updatedWorkout.exercises,
+                    estimatedDuration: updatedWorkout.estimatedDuration || 30,
+                  })) as ApiResponse;
+
+                  console.log("[WORKOUT SAVE DEBUG] API response:", response);
+
+                  if (response.success && response.data) {
+                    const apiResponse = response.data as {
+                      workout?: WorkoutPlan;
+                    };
+                    const createdWorkout = apiResponse.workout;
+                    if (createdWorkout) {
+                      console.log(
+                        "[WORKOUT SAVE DEBUG] Workout created successfully:",
+                        createdWorkout
+                      );
+                      setWorkouts([...workouts, createdWorkout]);
+                      success("Workout saved successfully!");
+
+                      // Reset state and close modal
+                      setCreatingWorkout(false);
+                      setNewWorkout({
+                        name: "",
+                        description: "",
+                        exercises: [],
+                        estimatedDuration: 30,
+                      });
+                    } else {
+                      console.error(
+                        "[WORKOUT SAVE DEBUG] No workout in response"
+                      );
+                      showErrorToast("Failed to create workout");
+                    }
+                  } else {
+                    const errorMsg =
+                      typeof response.error === "string"
+                        ? response.error
+                        : "Failed to create workout";
+                    console.error("[WORKOUT SAVE DEBUG] Save failed:", errorMsg);
+                    showErrorToast(errorMsg);
+                  }
+                } catch (err) {
+                  console.error("[WORKOUT SAVE DEBUG] Exception:", err);
+                  showErrorToast("Failed to create workout");
+                }
               } else {
                 // For editing existing workouts, update local state
                 const updatedWorkouts = workouts.map((w) =>
@@ -413,52 +485,10 @@ export default function WorkoutsPage() {
                 setWorkouts(updatedWorkouts);
               }
             }}
-            onClose={async () => {
-              // If creating a new workout, save it to the API
-              if (
-                creatingWorkout &&
-                newWorkout.name &&
-                newWorkout.exercises &&
-                newWorkout.exercises.length > 0
-              ) {
-                try {
-                  const response = (await apiClient.createWorkout({
-                    name: newWorkout.name,
-                    description: newWorkout.description,
-                    exercises: newWorkout.exercises,
-                    estimatedDuration: newWorkout.estimatedDuration || 30,
-                  })) as ApiResponse;
-
-                  if (response.success && response.data) {
-                    const apiResponse = response.data as {
-                      workout?: WorkoutPlan;
-                    };
-                    const createdWorkout = apiResponse.workout;
-                    if (createdWorkout) {
-                      setWorkouts([...workouts, createdWorkout]);
-                      success("Workout saved successfully!");
-                    }
-                  } else {
-                    const errorMsg =
-                      typeof response.error === "string"
-                        ? response.error
-                        : "Failed to create workout";
-                    setError(errorMsg);
-                    showErrorToast(errorMsg);
-                    // Don't close if save failed
-                    return;
-                  }
-                } catch (err) {
-                  const errorMsg = "Failed to create workout";
-                  setError(errorMsg);
-                  showErrorToast(errorMsg);
-                  console.error("Error creating workout:", err);
-                  // Don't close if save failed
-                  return;
-                }
-              }
-
-              // Reset state
+            onClose={() => {
+              console.log("[WORKOUT SAVE DEBUG] onClose called - just closing modal");
+              // Reset state and close modal
+              // Save is handled in onChange now
               setEditingWorkout(null);
               setCreatingWorkout(false);
               setNewWorkout({
