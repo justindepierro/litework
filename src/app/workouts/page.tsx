@@ -56,6 +56,8 @@ export default function WorkoutsPage() {
     name: "",
     description: "",
     exercises: [],
+    groups: [],
+    blockInstances: [],
     estimatedDuration: 30,
   });
 
@@ -439,6 +441,8 @@ export default function WorkoutsPage() {
                   name: newWorkout.name || "",
                   description: newWorkout.description || "",
                   exercises: newWorkout.exercises || [],
+                  groups: newWorkout.groups || [],
+                  blockInstances: newWorkout.blockInstances || [],
                   estimatedDuration: newWorkout.estimatedDuration || 30,
                   createdBy: user.id,
                   createdAt: new Date(),
@@ -452,11 +456,19 @@ export default function WorkoutsPage() {
                 const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
                 const shouldSave = workoutWithFlag._shouldSave;
                 
+                console.log("🔍 onChange called:", { 
+                  shouldSave, 
+                  name: updatedWorkout.name,
+                  exerciseCount: updatedWorkout.exercises?.length,
+                  firstExercise: updatedWorkout.exercises?.[0]?.exerciseName
+                });
+                
                 // ALWAYS update local state first (for UI reactivity)
                 setNewWorkout(updatedWorkout);
                 
                 if (!shouldSave) {
                   // Just editing - update state only, don't save to API yet
+                  console.log("✅ State updated, not saving to API yet");
                   return;
                 }
                 
