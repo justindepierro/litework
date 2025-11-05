@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -15,10 +16,15 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
  * Helper to create authenticated Supabase client from cookies
  */
 async function getAuthenticatedSupabase() {
-  // Ensure cookies are accessed (required for Next.js cookie handling)
-  await cookies();
+  const cookieStore = await cookies();
   
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return cookieStore.get(name)?.value;
+      },
+    },
+  });
   
   const {
     data: { user },

@@ -436,13 +436,15 @@ export async function getCurrentUser(): Promise<User | null> {
   try {
     console.log("[AUTH_CLIENT] Getting session...");
 
-    // Add timeout for session fetch (3 seconds)
+    // Get session with timeout (5 seconds)
     const sessionPromise = getSession();
     const timeoutPromise = new Promise<null>((resolve) => {
       setTimeout(() => {
-        console.warn("[AUTH_CLIENT] Session fetch timeout after 3s");
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[AUTH_CLIENT] Session fetch slow (>5s)");
+        }
         resolve(null);
-      }, 3000);
+      }, 5000);
     });
 
     const session = await Promise.race([sessionPromise, timeoutPromise]);
@@ -454,7 +456,7 @@ export async function getCurrentUser(): Promise<User | null> {
 
     console.log("[AUTH_CLIENT] Session found, fetching profile...");
 
-    // Get user profile from database with timeout (2 seconds)
+    // Get user profile from database with timeout (4 seconds)
     const profilePromise = supabase
       .from("users")
       .select("*")
@@ -464,9 +466,11 @@ export async function getCurrentUser(): Promise<User | null> {
     const profileTimeoutPromise = new Promise<{ data: null; error: Error }>(
       (resolve) => {
         setTimeout(() => {
-          console.warn("[AUTH_CLIENT] Profile fetch timeout after 2s");
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[AUTH_CLIENT] Profile fetch slow (>4s)");
+          }
           resolve({ data: null, error: new Error("Profile fetch timeout") });
-        }, 2000);
+        }, 4000);
       }
     );
 
