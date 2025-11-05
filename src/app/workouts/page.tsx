@@ -4,7 +4,7 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useToast } from "@/components/ToastProvider";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
-import { Dumbbell, Plus, Library, XCircle } from "lucide-react";
+import { Dumbbell, Plus, Library, XCircle, ChevronDown, ChevronUp, Users } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import {
@@ -49,6 +49,7 @@ export default function WorkoutsPage() {
     null
   );
   const [creatingWorkout, setCreatingWorkout] = useState<boolean>(false);
+  const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<"workouts" | "library">(
     "workouts"
   );
@@ -237,6 +238,7 @@ export default function WorkoutsPage() {
                   workouts.map((workout) => {
                     // Check if this is a temporary (optimistic) workout
                     const isOptimistic = workout.id.startsWith("temp-");
+                    const isExpanded = expandedWorkout === workout.id;
                     
                     return (
                       <div
@@ -245,58 +247,109 @@ export default function WorkoutsPage() {
                           isOptimistic ? "opacity-70 animate-pulse" : ""
                         }`}
                       >
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <h3 className="text-body-primary font-semibold">
-                              {workout.name}
-                              {isOptimistic && (
-                                <span className="ml-2 text-xs text-blue-600 font-normal">
-                                  (Saving...)
-                                </span>
+                        {/* Header - Always visible, clickable to expand */}
+                        <div 
+                          className="flex justify-between items-start mb-3 cursor-pointer hover:bg-gray-50 -m-4 p-4 rounded-lg transition-colors"
+                          onClick={() => setExpandedWorkout(isExpanded ? null : workout.id)}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-body-primary font-semibold">
+                                {workout.name}
+                                {isOptimistic && (
+                                  <span className="ml-2 text-xs text-blue-600 font-normal">
+                                    (Saving...)
+                                  </span>
+                                )}
+                              </h3>
+                              {isExpanded ? (
+                                <ChevronUp className="w-5 h-5 text-gray-500" />
+                              ) : (
+                                <ChevronDown className="w-5 h-5 text-gray-500" />
                               )}
-                            </h3>
-                            <p className="text-body-small text-gray-600">
-                              {workout.description}
-                            </p>
+                            </div>
+                            {workout.description && (
+                              <p className="text-body-small text-gray-600 mt-1">
+                                {workout.description}
+                              </p>
+                            )}
                           </div>
-                          <span className="text-body-small bg-gray-100 px-2 py-1 rounded">
+                          <span className="text-body-small bg-gray-100 px-2 py-1 rounded ml-4">
                             {workout.estimatedDuration}min
                           </span>
                         </div>
 
-                      <div className="space-y-1 mb-4">
-                        {workout.exercises
-                          .slice(0, 3)
-                          .map((exercise, index) => (
-                            <div key={exercise.id} className="text-body-small">
-                              {index + 1}. {exercise.exerciseName} -{" "}
-                              {exercise.sets}×{exercise.reps} @{" "}
-                              {formatWeight(exercise)}
-                            </div>
-                          ))}
-                        {workout.exercises.length > 3 && (
-                          <div className="text-body-small text-gray-500">
-                            +{workout.exercises.length - 3} more exercises
-                          </div>
-                        )}
-                      </div>
+                        {/* Exercise Preview or Full List */}
+                        <div className="space-y-1 mb-4">
+                          {isExpanded ? (
+                            // Expanded view - show all exercises with full details
+                            <>
+                              <div className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                                Exercises ({workout.exercises.length})
+                              </div>
+                              {workout.exercises.map((exercise, index) => (
+                                <div key={exercise.id} className="border-l-2 border-blue-500 pl-3 py-2 bg-gray-50 rounded">
+                                  <div className="font-medium text-body-small">
+                                    {index + 1}. {exercise.exerciseName}
+                                  </div>
+                                  <div className="text-xs text-gray-600 mt-1 space-y-1">
+                                    <div>Sets: {exercise.sets} × Reps: {exercise.reps}</div>
+                                    <div>Weight: {formatWeight(exercise)}</div>
+                                    {exercise.restTime && (
+                                      <div>Rest: {exercise.restTime}s</div>
+                                    )}
+                                    {exercise.tempo && (
+                                      <div>Tempo: {exercise.tempo}</div>
+                                    )}
+                                    {exercise.notes && (
+                                      <div className="italic">Note: {exercise.notes}</div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          ) : (
+                            // Collapsed view - show first 3 exercises
+                            <>
+                              {workout.exercises
+                                .slice(0, 3)
+                                .map((exercise, index) => (
+                                  <div key={exercise.id} className="text-body-small">
+                                    {index + 1}. {exercise.exerciseName} -{" "}
+                                    {exercise.sets}×{exercise.reps} @{" "}
+                                    {formatWeight(exercise)}
+                                  </div>
+                                ))}
+                              {workout.exercises.length > 3 && (
+                                <div className="text-body-small text-gray-500">
+                                  +{workout.exercises.length - 3} more exercises
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
 
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setEditingWorkout(workout)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingWorkout(workout);
+                          }}
                           className="btn-secondary flex-1"
                           disabled={isOptimistic}
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSelectedWorkout(workout);
                             setShowAssignForm(true);
                           }}
-                          className="btn-primary flex-1"
+                          className="btn-primary flex-1 flex items-center justify-center gap-1"
                           disabled={isOptimistic}
                         >
+                          <Users className="w-4 h-4" />
                           Assign
                         </button>
                       </div>
