@@ -173,12 +173,13 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <input
                       type="number"
                       value={editedExercise.sets}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const value = e.target.value;
                         setEditedExercise({
                           ...editedExercise,
-                          sets: parseInt(e.target.value) || 0,
-                        })
-                      }
+                          sets: value === '' ? 1 : parseInt(value) || 1,
+                        });
+                      }}
                       className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                       placeholder="Sets"
                       min="1"
@@ -191,12 +192,13 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <input
                       type="number"
                       value={editedExercise.reps}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const value = e.target.value;
                         setEditedExercise({
                           ...editedExercise,
-                          reps: parseInt(e.target.value) || 0,
-                        })
-                      }
+                          reps: value === '' ? 1 : parseInt(value) || 1,
+                        });
+                      }}
                       className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                       placeholder="Reps"
                       min="1"
@@ -271,20 +273,40 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <label className="block text-sm font-medium text-silver-700 mb-1">
                       Weight (lbs)
                     </label>
-                    <input
-                      type="number"
-                      value={editedExercise.weight || ""}
-                      onChange={(e) =>
-                        setEditedExercise({
-                          ...editedExercise,
-                          weight: parseFloat(e.target.value) || undefined,
-                        })
-                      }
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="Weight (lbs)"
-                      min="0"
-                      step="5"
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={editedExercise.weight || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setEditedExercise({
+                            ...editedExercise,
+                            weight: value === '' ? undefined : parseFloat(value),
+                          });
+                        }}
+                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                        placeholder="Min"
+                        min="0"
+                        step="5"
+                      />
+                      <span className="text-silver-600 font-medium">-</span>
+                      <input
+                        type="number"
+                        value={editedExercise.weightMax || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setEditedExercise({
+                            ...editedExercise,
+                            weightMax: value === '' ? undefined : parseFloat(value),
+                          });
+                        }}
+                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                        placeholder="Max (optional)"
+                        min="0"
+                        step="5"
+                      />
+                    </div>
+                    <p className="text-xs text-silver-500 mt-1">Leave max empty for single weight, or fill for range (e.g., 20-30 lbs)</p>
                   </div>
                 )}
 
@@ -293,21 +315,42 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <label className="block text-sm font-medium text-silver-700 mb-1">
                       Percentage of 1RM
                     </label>
-                    <input
-                      type="number"
-                      value={editedExercise.percentage || ""}
-                      onChange={(e) =>
-                        setEditedExercise({
-                          ...editedExercise,
-                          percentage: parseFloat(e.target.value) || undefined,
-                        })
-                      }
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="% of 1RM"
-                      min="0"
-                      max="100"
-                      step="5"
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={editedExercise.percentage || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setEditedExercise({
+                            ...editedExercise,
+                            percentage: value === '' ? undefined : parseFloat(value),
+                          });
+                        }}
+                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                        placeholder="Min %"
+                        min="0"
+                        max="100"
+                        step="5"
+                      />
+                      <span className="text-silver-600 font-medium">-</span>
+                      <input
+                        type="number"
+                        value={editedExercise.percentageMax || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setEditedExercise({
+                            ...editedExercise,
+                            percentageMax: value === '' ? undefined : parseFloat(value),
+                          });
+                        }}
+                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                        placeholder="Max % (optional)"
+                        min="0"
+                        max="100"
+                        step="5"
+                      />
+                    </div>
+                    <p className="text-xs text-silver-500 mt-1">Leave max empty for single %, or fill for range (e.g., 70-80%)</p>
                   </div>
                 )}
 
@@ -394,11 +437,22 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 <div className="text-sm text-body-secondary mt-1">
                   {exercise.sets} sets × {exercise.reps} reps
                   {exercise.weightType === "fixed" && exercise.weight && (
-                    <span> @ {exercise.weight}lbs</span>
+                    <span>
+                      {" "}
+                      @ {exercise.weight}
+                      {exercise.weightMax ? `-${exercise.weightMax}` : ""}lbs
+                    </span>
                   )}
                   {exercise.weightType === "percentage" &&
                     exercise.percentage && (
-                      <span> @ {exercise.percentage}% 1RM</span>
+                      <span>
+                        {" "}
+                        @ {exercise.percentage}
+                        {exercise.percentageMax
+                          ? `-${exercise.percentageMax}`
+                          : ""}
+                        % 1RM
+                      </span>
                     )}
                   {exercise.restTime && (
                     <span> • {exercise.restTime}s rest</span>

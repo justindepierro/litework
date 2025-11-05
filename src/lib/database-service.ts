@@ -327,18 +327,29 @@ export const getWorkoutPlanById = async (
 export const createWorkoutPlan = async (
   workoutData: Omit<WorkoutPlan, "id" | "createdAt" | "updatedAt">
 ): Promise<WorkoutPlan | null> => {
-  const { data, error } = await supabase
+  // Separate exercises and groups from workout plan data
+  const { exercises, groups, blockInstances, ...planData } = workoutData;
+
+  // Insert workout plan metadata only
+  const { data: newPlan, error: planError } = await supabase
     .from("workout_plans")
-    .insert([workoutData])
+    .insert([planData])
     .select()
     .single();
 
-  if (error) {
-    console.error("Error creating workout plan:", error);
+  if (planError) {
+    console.error("Error creating workout plan:", planError);
     return null;
   }
 
-  return data;
+  // Return the workout plan with exercises (even if not persisted to separate table yet)
+  // This maintains backward compatibility with existing code that expects exercises in the response
+  return {
+    ...newPlan,
+    exercises: exercises || [],
+    groups: groups || [],
+    blockInstances: blockInstances || [],
+  };
 };
 
 export const updateWorkoutPlan = async (

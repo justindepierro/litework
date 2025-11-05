@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: newWorkout,
+      data: { workout: newWorkout },
     });
   } catch (error) {
     console.error("Workouts POST error:", error);

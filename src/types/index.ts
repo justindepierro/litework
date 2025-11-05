@@ -115,7 +115,9 @@ export interface WorkoutExercise {
   // Load/Weight configuration
   weightType: "percentage" | "fixed" | "bodyweight";
   weight?: number; // For fixed weight
+  weightMax?: number; // For weight ranges (e.g., 20-30lbs)
   percentage?: number; // For percentage-based (e.g., 75% of 1RM)
+  percentageMax?: number; // For percentage ranges (e.g., 70-80% of 1RM)
   percentageBaseKPI?: string; // KPI exercise ID to base percentage on (e.g., "bench-press")
 
   // Unilateral exercise flag
