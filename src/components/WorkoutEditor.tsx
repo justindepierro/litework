@@ -1103,6 +1103,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   onChange,
   onClose,
 }) => {
+  // Workout name state - MUST be at top so it's available to updateWorkout
+  const [workoutName, setWorkoutName] = useState(workout.name || "");
+  
   // UI-only state (not part of workout data)
   const [showBlockLibrary, setShowBlockLibrary] = useState(false);
   const [showBlockEditor, setShowBlockEditor] = useState(false);
@@ -1117,9 +1120,15 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
-      onChange(updatedWorkout);
+      // CRITICAL: Always include the current workout name from local state
+      // This ensures the name persists even when other properties change
+      const workoutWithName = {
+        ...updatedWorkout,
+        name: workoutName || updatedWorkout.name,
+      };
+      onChange(workoutWithName);
     },
-    [onChange]
+    [onChange, workoutName]
   );
 
   // Auto-add exercise to library when name is set/changed
@@ -1485,8 +1494,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   // Get ungrouped exercises
   const ungroupedExercises = workout.exercises.filter((ex) => !ex.groupId);
 
-  // State for workout name editing
-  const [workoutName, setWorkoutName] = useState(workout.name || "");
+  // State for saving
   const [isSaving, setIsSaving] = useState(false);
 
   // Save workout to library
@@ -1530,7 +1538,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               <input
                 type="text"
                 value={workoutName}
-                onChange={(e) => setWorkoutName(e.target.value)}
+                onChange={(e) => {
+                  const newName = e.target.value;
+                  setWorkoutName(newName);
+                  // Immediately sync name to workout state
+                  onChange({ ...workout, name: newName });
+                }}
                 placeholder="Enter workout name..."
                 className="w-full text-xl sm:text-lg font-bold border-2 border-silver-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors"
               />
