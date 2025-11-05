@@ -11,9 +11,46 @@ This is a modern full-stack web application built with:
 - **Styling**: Tailwind CSS with custom design token system
 - **State Management**: React Context API with local component state
 - **Authentication**: Supabase Auth with role-based access control (RBAC)
-- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS)
+- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS) - 34 tables
 - **PWA**: Progressive Web App capabilities for mobile installation
 - **Deployment**: Vercel (production), optimized for serverless
+
+## Database Schema (REFERENCE THIS!)
+
+**Complete Documentation**: `docs/DATABASE_SCHEMA.md` (500+ lines)
+
+### Core Tables (34 total)
+
+**Workouts** (6 tables):
+- `workout_plans` - Workout templates
+- `workout_exercises` - Exercises with 23 columns (sets, reps, weight, tempo, notes, etc.)
+- `workout_exercise_groups` - Supersets, circuits, sections
+- `workout_block_instances` - Reusable templates
+- `workout_sessions` - Completed workouts
+- `workout_assignments` - Workout assignments to athletes
+
+**Exercises** (5 tables):
+- `exercises` - Exercise library (500+ movements)
+- `exercise_muscle_groups` - Exercise-to-muscle mapping
+- `muscle_groups` - Muscle group definitions
+- `exercise_analytics` - Usage tracking
+- `user_exercise_preferences` - Athlete preferences
+
+**Progress Tracking** (4 tables):
+- `athlete_kpis` - 1RMs and performance metrics
+- `progress_entries` - Weight, measurements
+- `session_exercises` - Exercises per session
+- `set_records` - Individual set data (weight, reps, RPE)
+
+**IMPORTANT**: Always check `docs/DATABASE_SCHEMA.md` before:
+- Creating new database queries
+- Adding new tables or columns
+- Understanding data relationships
+- Writing migrations
+
+### Current Schema Export
+- **Live Schema**: `database-export/schema-dump.sql` (auto-generated from production)
+- **Export Tool**: `./scripts/database/export-schema.sh`
 
 ## Authentication & Authorization (CRITICAL)
 

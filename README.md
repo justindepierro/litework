@@ -287,7 +287,45 @@ This project uses **Supabase Authentication** with role-based access control (RB
 - **TypeScript Validation**: All builds include type checking
 - **Performance**: Optimized with Turbopack and Next.js 16
 
-## �📄 License
+## 🗄️ Database Schema
+
+### Database Overview
+
+LiteWork uses **Supabase PostgreSQL** with 34 tables covering:
+
+- **Workouts**: Plans, exercises, groups (supersets/circuits), sessions, assignments
+- **Exercise Library**: 500+ exercises with muscle groups and analytics
+- **Progress Tracking**: KPIs, set records, progress entries
+- **User Management**: Roles, groups, authentication
+- **Communication**: Notifications, messages, preferences
+
+### Key Tables
+
+- `workout_plans` - Workout templates created by coaches
+- `workout_exercises` - Individual exercises with 23 columns (sets, reps, weight, tempo, notes, etc.)
+- `workout_exercise_groups` - Supersets, circuits, and sections
+- `workout_block_instances` - Reusable workout templates
+- `workout_sessions` - Completed workouts by athletes
+- `set_records` - Individual set data (weight, reps, RPE)
+
+### Database Documentation
+
+- **📊 docs/DATABASE_SCHEMA.md**: Complete schema documentation with all 34 tables, columns, relationships, and example queries
+- **🔍 database-export/schema-dump.sql**: Current production schema (auto-generated)
+- **📝 database/schema.sql**: Base schema reference
+- **🔧 scripts/database/**: Database export and migration tools
+
+### Schema Export & Inspection
+
+```bash
+# Export complete schema
+./scripts/database/export-schema.sh
+
+# View current tables
+cat database-export/TABLES_SUMMARY.txt
+```
+
+## 📄 License
 
 Built for educational and team use. Modify and distribute as needed for your weight lifting club.
 

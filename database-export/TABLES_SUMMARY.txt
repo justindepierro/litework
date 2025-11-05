@@ -1,0 +1,44 @@
+======================================================================
+LiteWork Database Tables Summary
+Generated: Wed Nov  5 12:42:32 EST 2025
+======================================================================
+
+TABLES IN DATABASE:
+  ✅ IF NOT EXISTS "public"."activity_log"
+  ✅ IF NOT EXISTS "public"."athlete_groups"
+  ✅ IF NOT EXISTS "public"."athlete_kpis"
+  ✅ IF NOT EXISTS "public"."block_exercise_groups"
+  ✅ IF NOT EXISTS "public"."block_exercises"
+  ✅ IF NOT EXISTS "public"."bulk_operations"
+  ✅ IF NOT EXISTS "public"."communication_preferences"
+  ✅ IF NOT EXISTS "public"."equipment_types"
+  ✅ IF NOT EXISTS "public"."exercise_analytics"
+  ✅ IF NOT EXISTS "public"."exercise_categories"
+  ✅ IF NOT EXISTS "public"."exercise_muscle_groups"
+  ✅ IF NOT EXISTS "public"."exercise_variations"
+  ✅ IF NOT EXISTS "public"."exercises"
+  ✅ IF NOT EXISTS "public"."in_app_notifications"
+  ✅ IF NOT EXISTS "public"."invites"
+  ✅ IF NOT EXISTS "public"."messages"
+  ✅ IF NOT EXISTS "public"."muscle_groups"
+  ✅ IF NOT EXISTS "public"."notification_log"
+  ✅ IF NOT EXISTS "public"."notification_preferences"
+  ✅ IF NOT EXISTS "public"."notifications"
+  ✅ IF NOT EXISTS "public"."progress_analytics"
+  ✅ IF NOT EXISTS "public"."progress_entries"
+  ✅ IF NOT EXISTS "public"."push_subscriptions"
+  ✅ IF NOT EXISTS "public"."session_exercises"
+  ✅ IF NOT EXISTS "public"."set_records"
+  ✅ IF NOT EXISTS "public"."user_exercise_preferences"
+  ✅ IF NOT EXISTS "public"."users"
+  ✅ IF NOT EXISTS "public"."workout_assignments"
+  ✅ IF NOT EXISTS "public"."workout_block_instances"
+  ✅ IF NOT EXISTS "public"."workout_blocks"
+  ✅ IF NOT EXISTS "public"."workout_exercise_groups"
+  ✅ IF NOT EXISTS "public"."workout_exercises"
+  ✅ IF NOT EXISTS "public"."workout_plans"
+  ✅ IF NOT EXISTS "public"."workout_sessions"
+
+======================================================================
+FULL SCHEMA FILE: schema-dump.sql
+======================================================================

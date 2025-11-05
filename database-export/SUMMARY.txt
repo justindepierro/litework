@@ -1,0 +1,32 @@
+================================================================================
+LiteWork Database Export Summary
+Generated: 2025-11-05T17:40:29.855Z
+================================================================================
+
+TABLES FOUND:
+────────────────────────────────────────────────────────────────────────────────
+
+MISSING TABLES (not found in database):
+────────────────────────────────────────────────────────────────────────────────
+❌ users
+❌ athlete_groups
+❌ workout_plans
+❌ workout_exercises
+❌ workout_exercise_groups
+❌ workout_block_instances
+❌ workout_sessions
+❌ workout_assignments
+❌ session_exercises
+❌ set_records
+❌ exercises
+❌ exercise_muscle_groups
+❌ exercise_analytics
+
+================================================================================
+FILES EXPORTED:
+────────────────────────────────────────────────────────────────────────────────
+Total schema files: 0
+Total data files: 0
+
+To share: Zip the database-export/ folder and share
+================================================================================

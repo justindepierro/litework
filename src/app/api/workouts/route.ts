@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, description, exercises, estimatedDuration, targetGroupId } =
+    const { name, description, exercises, groups, blockInstances, estimatedDuration, targetGroupId } =
       await request.json();
 
     if (!name || !exercises || !Array.isArray(exercises)) {
@@ -78,6 +78,8 @@ export async function POST(request: NextRequest) {
         id: `ex-${Date.now()}-${index}`,
         order: index + 1,
       })),
+      groups: groups || [], // Pass groups to database service
+      blockInstances: blockInstances || [], // Pass block instances to database service
       estimatedDuration: estimatedDuration || 60,
       targetGroupId,
       createdBy: user.id,
