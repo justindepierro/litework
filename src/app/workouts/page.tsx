@@ -233,21 +233,35 @@ export default function WorkoutsPage() {
                     </button>
                   </div>
                 ) : (
-                  workouts.map((workout) => (
-                    <div key={workout.id} className="card-primary">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h3 className="text-body-primary font-semibold">
-                            {workout.name}
-                          </h3>
-                          <p className="text-body-small text-gray-600">
-                            {workout.description}
-                          </p>
+                  workouts.map((workout) => {
+                    // Check if this is a temporary (optimistic) workout
+                    const isOptimistic = workout.id.startsWith("temp-");
+                    
+                    return (
+                      <div
+                        key={workout.id}
+                        className={`card-primary ${
+                          isOptimistic ? "opacity-70 animate-pulse" : ""
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h3 className="text-body-primary font-semibold">
+                              {workout.name}
+                              {isOptimistic && (
+                                <span className="ml-2 text-xs text-blue-600 font-normal">
+                                  (Saving...)
+                                </span>
+                              )}
+                            </h3>
+                            <p className="text-body-small text-gray-600">
+                              {workout.description}
+                            </p>
+                          </div>
+                          <span className="text-body-small bg-gray-100 px-2 py-1 rounded">
+                            {workout.estimatedDuration}min
+                          </span>
                         </div>
-                        <span className="text-body-small bg-gray-100 px-2 py-1 rounded">
-                          {workout.estimatedDuration}min
-                        </span>
-                      </div>
 
                       <div className="space-y-1 mb-4">
                         {workout.exercises
@@ -270,6 +284,7 @@ export default function WorkoutsPage() {
                         <button
                           onClick={() => setEditingWorkout(workout)}
                           className="btn-secondary flex-1"
+                          disabled={isOptimistic}
                         >
                           Edit
                         </button>
@@ -279,12 +294,14 @@ export default function WorkoutsPage() {
                             setShowAssignForm(true);
                           }}
                           className="btn-primary flex-1"
+                          disabled={isOptimistic}
                         >
                           Assign
                         </button>
                       </div>
                     </div>
-                  ))
+                  );
+                })
                 )}
               </div>
             )}
@@ -461,6 +478,30 @@ export default function WorkoutsPage() {
                   return;
                 }
 
+                // OPTIMISTIC UPDATE: Add workout to list immediately with temporary ID
+                const tempId = `temp-${Date.now()}`;
+                const optimisticWorkout: WorkoutPlan = {
+                  ...updatedWorkout,
+                  id: tempId,
+                  createdBy: user.id,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  exercises: updatedWorkout.exercises || [],
+                  groups: updatedWorkout.groups || [],
+                } as WorkoutPlan;
+
+                // Show workout in list immediately (optimistic)
+                setWorkouts([...workouts, optimisticWorkout]);
+                
+                // Close modal immediately for instant UX
+                setCreatingWorkout(false);
+                setNewWorkout({
+                  name: "",
+                  description: "",
+                  exercises: [],
+                  estimatedDuration: 30,
+                });
+
                 try {
                   const response = (await apiClient.createWorkout({
                     name: updatedWorkout.name,
@@ -475,21 +516,25 @@ export default function WorkoutsPage() {
                     };
                     const createdWorkout = apiResponse.workout;
                     if (createdWorkout) {
-                      setWorkouts([...workouts, createdWorkout]);
+                      // Replace temporary workout with real one from API
+                      setWorkouts((prevWorkouts) =>
+                        prevWorkouts.map((w) =>
+                          w.id === tempId ? createdWorkout : w
+                        )
+                      );
                       success("Workout saved successfully!");
-
-                      // Reset state and close modal
-                      setCreatingWorkout(false);
-                      setNewWorkout({
-                        name: "",
-                        description: "",
-                        exercises: [],
-                        estimatedDuration: 30,
-                      });
                     } else {
+                      // Rollback: Remove temporary workout
+                      setWorkouts((prevWorkouts) =>
+                        prevWorkouts.filter((w) => w.id !== tempId)
+                      );
                       showErrorToast("Failed to create workout");
                     }
                   } else {
+                    // Rollback: Remove temporary workout
+                    setWorkouts((prevWorkouts) =>
+                      prevWorkouts.filter((w) => w.id !== tempId)
+                    );
                     const errorMsg =
                       typeof response.error === "string"
                         ? response.error
@@ -497,6 +542,10 @@ export default function WorkoutsPage() {
                     showErrorToast(errorMsg);
                   }
                 } catch (err) {
+                  // Rollback: Remove temporary workout
+                  setWorkouts((prevWorkouts) =>
+                    prevWorkouts.filter((w) => w.id !== tempId)
+                  );
                   console.error("Error creating workout:", err);
                   showErrorToast("Failed to create workout");
                 }
