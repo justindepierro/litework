@@ -11,7 +11,6 @@ import {
   validateWorkout,
   canSaveWorkout,
   formatValidationErrors,
-  getMinimumRequirements,
 } from "@/lib/workout-validation";
 import { WorkoutEditorErrorBoundary } from "@/components/WorkoutEditorErrorBoundary";
 
@@ -457,20 +456,7 @@ export default function WorkoutsPage() {
                 
                 // Check if workout can be saved (has minimum requirements)
                 if (!canSaveWorkout(updatedWorkout)) {
-                  // Not ready to save yet - show what's missing
-                  const missing = getMinimumRequirements(updatedWorkout);
-                  if (missing.length > 0) {
-                    console.log("Workout not ready to save. Missing:", missing);
-                    console.log("Current workout state:", {
-                      name: updatedWorkout.name,
-                      exerciseCount: updatedWorkout.exercises?.length || 0,
-                      exercises: updatedWorkout.exercises?.map(ex => ({
-                        name: ex.exerciseName,
-                        sets: ex.sets,
-                        reps: ex.reps,
-                      }))
-                    });
-                  }
+                  // Not ready to save yet - silently return (user sees UI feedback)
                   return;
                 }
 
