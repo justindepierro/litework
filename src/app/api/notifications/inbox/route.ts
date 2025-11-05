@@ -18,11 +18,16 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 async function getAuthenticatedSupabase() {
   const cookieStore = await cookies();
   
+  // IMPORTANT: storageKey must match client-side (supabase.ts)
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
+    },
+    auth: {
+      // Must match client storageKey from supabase.ts
+      storageKey: "litework-auth-token",
     },
   });
   

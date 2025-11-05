@@ -45,11 +45,26 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
     const cookieStore = await cookies();
 
     // Create Supabase server client with cookie access
+    // IMPORTANT: storageKey must match client-side (supabase.ts)
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        set(name: string, value: string, options: any) {
+          // Server-side cookie setting (for auth operations)
+          cookieStore.set({ name, value, ...options });
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        remove(name: string, options: any) {
+          // Server-side cookie removal (for signout)
+          cookieStore.set({ name, value: "", ...options });
+        },
+      },
+      auth: {
+        // Must match client storageKey from supabase.ts
+        storageKey: "litework-auth-token",
       },
     });
 

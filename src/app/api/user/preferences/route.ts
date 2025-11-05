@@ -35,6 +35,10 @@ export async function GET() {
           return cookieStore.get(name)?.value;
         },
       },
+      auth: {
+        // Must match client storageKey from supabase.ts
+        storageKey: "litework-auth-token",
+      },
     });
 
     const { data, error } = await supabase
@@ -115,6 +119,10 @@ export async function PATCH(request: NextRequest) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
+      },
+      auth: {
+        // Must match client storageKey from supabase.ts
+        storageKey: "litework-auth-token",
       },
     });
 

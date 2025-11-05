@@ -20,6 +20,10 @@ async function getSupabaseClient() {
         return cookieStore.get(name)?.value;
       },
     },
+    auth: {
+      // Must match client storageKey from supabase.ts
+      storageKey: "litework-auth-token",
+    },
   });
 }
 
