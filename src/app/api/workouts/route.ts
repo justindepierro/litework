@@ -69,6 +69,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate each exercise has required fields
+    const invalidExercise = exercises.find(
+      (ex: {
+        exerciseName?: string;
+        sets?: number;
+        reps?: number;
+        weightType?: string;
+      }) =>
+        !ex.exerciseName ||
+        typeof ex.exerciseName !== "string" ||
+        ex.exerciseName.trim().length === 0 ||
+        typeof ex.sets !== "number" ||
+        ex.sets < 1 ||
+        typeof ex.reps !== "number" ||
+        ex.reps < 1 ||
+        !ex.weightType ||
+        !["fixed", "percentage", "bodyweight"].includes(ex.weightType)
+    );
+
+    if (invalidExercise) {
+      return NextResponse.json(
+        {
+          error: "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
+        },
+        { status: 400 }
+      );
+    }
+
     // Create new workout plan in database
     const newWorkout = await createWorkoutPlan({
       name,
