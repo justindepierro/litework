@@ -175,10 +175,20 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
                       value={editedExercise.sets}
                       onChange={(e) => {
                         const value = e.target.value;
+                        // Allow empty string while typing, convert to number or default to 1
                         setEditedExercise({
                           ...editedExercise,
-                          sets: value === '' ? 1 : parseInt(value) || 1,
+                          sets: value === '' ? 0 : parseInt(value) || 0,
                         });
+                      }}
+                      onBlur={() => {
+                        // On blur, ensure minimum value of 1
+                        if (!editedExercise.sets || editedExercise.sets < 1) {
+                          setEditedExercise({
+                            ...editedExercise,
+                            sets: 1,
+                          });
+                        }
                       }}
                       className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                       placeholder="Sets"
@@ -194,10 +204,20 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
                       value={editedExercise.reps}
                       onChange={(e) => {
                         const value = e.target.value;
+                        // Allow empty string while typing
                         setEditedExercise({
                           ...editedExercise,
-                          reps: value === '' ? 1 : parseInt(value) || 1,
+                          reps: value === '' ? 0 : parseInt(value) || 0,
                         });
+                      }}
+                      onBlur={() => {
+                        // On blur, ensure minimum value of 1
+                        if (!editedExercise.reps || editedExercise.reps < 1) {
+                          setEditedExercise({
+                            ...editedExercise,
+                            reps: 1,
+                          });
+                        }
                       }}
                       className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                       placeholder="Reps"

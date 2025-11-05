@@ -516,6 +516,7 @@ export default function WorkoutsPage() {
                     name: updatedWorkout.name,
                     description: updatedWorkout.description,
                     exercises: updatedWorkout.exercises,
+                    groups: updatedWorkout.groups, // CRITICAL: Include groups!
                     estimatedDuration: updatedWorkout.estimatedDuration || 30,
                   })) as ApiResponse;
 
