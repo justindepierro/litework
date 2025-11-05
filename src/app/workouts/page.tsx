@@ -450,6 +450,12 @@ export default function WorkoutsPage() {
                 }
               }
             onChange={async (updatedWorkout) => {
+              console.log("[page.tsx] onChange ENTRY:", {
+                creatingWorkout,
+                editingWorkout: !!editingWorkout,
+                updatedWorkoutName: updatedWorkout.name
+              });
+              
               // For creating new workouts
               if (creatingWorkout) {
                 // Check if this is an explicit save request (user clicked "Save Workout" button)
@@ -570,12 +576,30 @@ export default function WorkoutsPage() {
                   showErrorToast("Failed to create workout");
                 }
               } else {
-                // For editing existing workouts, update local state only
-                // Save will be handled separately when implemented
+                // For editing existing workouts
+                console.log("[page.tsx] EDITING existing workout");
+                
+                // Check if this is an explicit save request
+                const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
+                const shouldSave = workoutWithFlag._shouldSave;
+                
+                // ALWAYS update local state first
+                setEditingWorkout(updatedWorkout as WorkoutPlan);
                 const updatedWorkouts = workouts.map((w) =>
                   w.id === updatedWorkout.id ? updatedWorkout : w
                 );
                 setWorkouts(updatedWorkouts);
+                
+                if (!shouldSave) {
+                  console.log("[page.tsx] Editing - state updated, not saving yet");
+                  return;
+                }
+                
+                // Remove the flag
+                delete workoutWithFlag._shouldSave;
+                
+                console.log("[page.tsx] Saving edited workout to API");
+                // TODO: Implement save to API for edited workouts
               }
             }}
             onClose={() => {
