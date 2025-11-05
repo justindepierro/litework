@@ -357,19 +357,33 @@ export function validateGroup(
  * Quick validation - just check if workout is saveable
  */
 export function canSaveWorkout(workout: Partial<WorkoutPlan>): boolean {
-  return !!(
-    workout.name &&
-    workout.name.trim().length >= 3 &&
-    workout.exercises &&
-    workout.exercises.length > 0 &&
-    workout.exercises.every(
-      (ex) =>
-        ex.exerciseName &&
-        ex.sets !== undefined &&
-        ex.sets > 0 &&
-        (ex.reps !== undefined || ex.reps === null) // Reps can be optional for some exercises
-    )
-  );
+  // Must have a name with at least 3 characters
+  if (!workout.name || workout.name.trim().length < 3) {
+    return false;
+  }
+
+  // Must have at least one exercise
+  if (!workout.exercises || workout.exercises.length === 0) {
+    return false;
+  }
+
+  // Check each exercise has minimum required fields
+  return workout.exercises.every((ex) => {
+    // Must have exercise name
+    if (!ex.exerciseName || ex.exerciseName.trim().length === 0) {
+      return false;
+    }
+
+    // Must have sets (greater than 0)
+    if (ex.sets === undefined || ex.sets === null || ex.sets < 1) {
+      return false;
+    }
+
+    // Reps are optional (some exercises use time, AMRAP, etc.)
+    // So we don't validate reps here
+
+    return true;
+  });
 }
 
 /**

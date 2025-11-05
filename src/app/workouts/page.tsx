@@ -461,6 +461,15 @@ export default function WorkoutsPage() {
                   const missing = getMinimumRequirements(updatedWorkout);
                   if (missing.length > 0) {
                     console.log("Workout not ready to save. Missing:", missing);
+                    console.log("Current workout state:", {
+                      name: updatedWorkout.name,
+                      exerciseCount: updatedWorkout.exercises?.length || 0,
+                      exercises: updatedWorkout.exercises?.map(ex => ({
+                        name: ex.exerciseName,
+                        sets: ex.sets,
+                        reps: ex.reps,
+                      }))
+                    });
                   }
                   return;
                 }

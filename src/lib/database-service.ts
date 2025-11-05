@@ -330,7 +330,14 @@ export const getAllWorkoutPlans = async (): Promise<WorkoutPlan[]> => {
 
   // Combine plans with their exercises and groups
   return plans.map((plan) => ({
-    ...plan,
+    id: plan.id,
+    name: plan.name,
+    description: plan.description,
+    estimatedDuration: plan.estimated_duration,
+    targetGroupId: plan.target_group_id,
+    createdBy: plan.created_by,
+    createdAt: new Date(plan.created_at),
+    updatedAt: new Date(plan.updated_at),
     exercises: (exercises || [])
       .filter((ex) => ex.workout_plan_id === plan.id)
       .map((ex) => ({
@@ -491,10 +498,19 @@ export const createWorkoutPlan = async (
   // Separate exercises, groups, and blocks from workout plan data
   const { exercises, groups, blockInstances, ...planData } = workoutData;
 
+  // Transform camelCase to snake_case for database
+  const dbPlanData = {
+    name: planData.name,
+    description: planData.description,
+    estimated_duration: planData.estimatedDuration,
+    target_group_id: planData.targetGroupId,
+    created_by: planData.createdBy,
+  };
+
   // 1. Insert workout plan metadata
   const { data: newPlan, error: planError } = await supabase
     .from("workout_plans")
-    .insert([planData])
+    .insert([dbPlanData])
     .select()
     .single();
 
@@ -592,8 +608,16 @@ export const createWorkoutPlan = async (
   }
 
   // Return the complete workout plan with all data
+  // Transform snake_case response back to camelCase
   return {
-    ...newPlan,
+    id: newPlan.id,
+    name: newPlan.name,
+    description: newPlan.description,
+    estimatedDuration: newPlan.estimated_duration,
+    targetGroupId: newPlan.target_group_id,
+    createdBy: newPlan.created_by,
+    createdAt: new Date(newPlan.created_at),
+    updatedAt: new Date(newPlan.updated_at),
     exercises: exercises || [],
     groups: groups || [],
     blockInstances: blockInstances || [],
