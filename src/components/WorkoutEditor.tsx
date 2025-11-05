@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Plus,
   GripVertical,
@@ -53,7 +53,8 @@ interface ExerciseItemProps {
   onToggleSelection?: (exerciseId: string) => void;
 }
 
-const ExerciseItem = React.memo<ExerciseItemProps>(({
+// Individual Exercise Component - No longer memoized to ensure prop updates work
+const ExerciseItem: React.FC<ExerciseItemProps> = ({
   exercise,
   groupId,
   onUpdate,
@@ -73,13 +74,14 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
   const [editedExercise, setEditedExercise] = useState(exercise);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
 
-  // Sync local state when exercise prop changes
-  useEffect(() => {
-    setEditedExercise(exercise);
-  }, [exercise]);
-
   const saveExercise = async () => {
     let updatedExercise = editedExercise;
+    
+    console.log("[ExerciseItem] saveExercise called:", {
+      original: exercise.exerciseName,
+      edited: editedExercise.exerciseName,
+      exerciseId: exercise.id
+    });
 
     // If exercise name changed and we have the callback, add to library
     if (
@@ -97,6 +99,7 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
       };
     }
 
+    console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
     onUpdate(updatedExercise);
     setIsEditing(false);
   };
@@ -542,8 +545,7 @@ const ExerciseItem = React.memo<ExerciseItemProps>(({
       </div>
     </div>
   );
-});
-ExerciseItem.displayName = 'ExerciseItem';
+};
 
 // Block Instance Component - Shows blocks added to the workout
 interface BlockInstanceItemProps {
@@ -1145,12 +1147,23 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
+      console.log("[WorkoutEditor] updateWorkout called:", {
+        name: updatedWorkout.name,
+        exerciseCount: updatedWorkout.exercises?.length,
+        exercises: updatedWorkout.exercises?.map(ex => ({
+          id: ex.id,
+          name: ex.exerciseName
+        }))
+      });
+      
       // CRITICAL: Always include the current workout name from local state
       // This ensures the name persists even when other properties change
       const workoutWithName = {
         ...updatedWorkout,
         name: workoutName || updatedWorkout.name,
       };
+      
+      console.log("[WorkoutEditor] Calling parent onChange with workout");
       onChange(workoutWithName);
     },
     [onChange, workoutName]
@@ -1229,9 +1242,20 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
   // Update exercise
   const updateExercise = (updatedExercise: WorkoutExercise) => {
+    console.log("[WorkoutEditor] updateExercise called:", {
+      id: updatedExercise.id,
+      name: updatedExercise.exerciseName,
+      currentExercises: workout.exercises.length
+    });
+    
     const updatedExercises = workout.exercises.map((ex) =>
       ex.id === updatedExercise.id ? updatedExercise : ex
     );
+    
+    console.log("[WorkoutEditor] Updated exercises array:", updatedExercises.map(ex => ({
+      id: ex.id,
+      name: ex.exerciseName
+    })));
 
     updateWorkout({
       ...workout,

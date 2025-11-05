@@ -456,7 +456,7 @@ export default function WorkoutsPage() {
                 const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
                 const shouldSave = workoutWithFlag._shouldSave;
                 
-                console.log("🔍 onChange called:", { 
+                console.log("[page.tsx] onChange called:", { 
                   shouldSave, 
                   name: updatedWorkout.name,
                   exerciseCount: updatedWorkout.exercises?.length,
@@ -468,7 +468,7 @@ export default function WorkoutsPage() {
                 
                 if (!shouldSave) {
                   // Just editing - update state only, don't save to API yet
-                  console.log("✅ State updated, not saving to API yet");
+                  console.log("[page.tsx] State updated, not saving to API yet");
                   return;
                 }
                 
