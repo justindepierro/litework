@@ -436,18 +436,8 @@ export async function getCurrentUser(): Promise<User | null> {
   try {
     console.log("[AUTH_CLIENT] Getting session...");
 
-    // Get session with timeout (5 seconds)
-    const sessionPromise = getSession();
-    const timeoutPromise = new Promise<null>((resolve) => {
-      setTimeout(() => {
-        if (process.env.NODE_ENV === "development") {
-          console.warn("[AUTH_CLIENT] Session fetch slow (>5s)");
-        }
-        resolve(null);
-      }, 5000);
-    });
-
-    const session = await Promise.race([sessionPromise, timeoutPromise]);
+    // Get session - no artificial timeout
+    const session = await getSession();
 
     if (!session?.user) {
       console.log("[AUTH_CLIENT] No session found");
@@ -456,28 +446,12 @@ export async function getCurrentUser(): Promise<User | null> {
 
     console.log("[AUTH_CLIENT] Session found, fetching profile...");
 
-    // Get user profile from database with timeout (4 seconds)
-    const profilePromise = supabase
+    // Get user profile from database
+    const { data: profile, error } = await supabase
       .from("users")
       .select("*")
       .eq("id", session.user.id)
       .single();
-
-    const profileTimeoutPromise = new Promise<{ data: null; error: Error }>(
-      (resolve) => {
-        setTimeout(() => {
-          if (process.env.NODE_ENV === "development") {
-            console.warn("[AUTH_CLIENT] Profile fetch slow (>4s)");
-          }
-          resolve({ data: null, error: new Error("Profile fetch timeout") });
-        }, 4000);
-      }
-    );
-
-    const { data: profile, error } = await Promise.race([
-      profilePromise,
-      profileTimeoutPromise,
-    ]);
 
     if (error) {
       console.error("[AUTH_CLIENT] Profile fetch error:", error);
