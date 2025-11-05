@@ -446,17 +446,29 @@ export default function WorkoutsPage() {
                 }
               }
             onChange={async (updatedWorkout) => {
-              // For creating new workouts, save to API immediately on save button click
+              // For creating new workouts
               if (creatingWorkout) {
-                // Always update local state first
+                // Check if this is an explicit save request (user clicked "Save Workout" button)
+                const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
+                const shouldSave = workoutWithFlag._shouldSave;
+                
+                // ALWAYS update local state first (for UI reactivity)
                 setNewWorkout(updatedWorkout);
+                
+                if (!shouldSave) {
+                  // Just editing - update state only, don't save to API yet
+                  return;
+                }
+                
+                // Remove the flag before saving
+                delete workoutWithFlag._shouldSave;
                 
                 // Validate workout before saving
                 const validationResult = validateWorkout(updatedWorkout);
                 
                 // Check if workout can be saved (has minimum requirements)
                 if (!canSaveWorkout(updatedWorkout)) {
-                  // Not ready to save yet - silently return (user sees UI feedback)
+                  // Not ready to save yet - just update state and return
                   return;
                 }
 

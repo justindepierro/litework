@@ -1530,7 +1530,8 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         ...workout,
         name: workoutName.trim(),
         updatedAt: new Date(),
-      };
+        _shouldSave: true, // Flag to tell parent to save to API
+      } as WorkoutPlan & { _shouldSave: boolean };
 
       // Update the parent component's workout
       // This will trigger the parent's onChange which should handle the save
