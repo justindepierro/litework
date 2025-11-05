@@ -122,6 +122,13 @@ class ApiClient {
     });
   }
 
+  async updateWorkout(id: string, workoutData: Record<string, unknown>) {
+    return this.request("/workouts", {
+      method: "PUT",
+      body: JSON.stringify({ id, ...workoutData }),
+    });
+  }
+
   // Exercises
   async getExercises() {
     return this.request("/exercises");

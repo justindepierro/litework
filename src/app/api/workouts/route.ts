@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, requireCoach } from "@/lib/auth-server";
-import { getAllWorkoutPlans, createWorkoutPlan } from "@/lib/database-service";
+import { getAllWorkoutPlans, createWorkoutPlan, updateWorkoutPlan } from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 // GET /api/workouts - Get workout plans
@@ -126,6 +126,91 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Workouts POST error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT /api/workouts - Update existing workout plan (coaches only)
+export async function PUT(request: NextRequest) {
+  try {
+    const user = await requireCoach();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    const { id, name, description, exercises, groups, blockInstances, estimatedDuration } =
+      await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Workout ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!name || !exercises || !Array.isArray(exercises)) {
+      return NextResponse.json(
+        { error: "Workout name and exercises are required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate each exercise has required fields
+    const invalidExercise = exercises.find(
+      (ex: {
+        exerciseName?: string;
+        sets?: number;
+        reps?: number;
+        weightType?: string;
+      }) =>
+        !ex.exerciseName ||
+        typeof ex.exerciseName !== "string" ||
+        ex.exerciseName.trim().length === 0 ||
+        typeof ex.sets !== "number" ||
+        ex.sets < 1 ||
+        typeof ex.reps !== "number" ||
+        ex.reps < 1 ||
+        !ex.weightType ||
+        !["fixed", "percentage", "bodyweight"].includes(ex.weightType)
+    );
+
+    if (invalidExercise) {
+      return NextResponse.json(
+        {
+          error: "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Update workout plan in database
+    // Note: This currently only updates the workout_plans table
+    // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
+    const updatedWorkout = await updateWorkoutPlan(id, {
+      name,
+      description,
+      estimatedDuration: estimatedDuration || 60,
+    });
+
+    if (!updatedWorkout) {
+      return NextResponse.json(
+        { error: "Failed to update workout plan" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: { workout: updatedWorkout },
+    });
+  } catch (error) {
+    console.error("Workouts PUT error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

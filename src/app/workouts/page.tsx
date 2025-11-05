@@ -653,13 +653,30 @@ export default function WorkoutsPage() {
                 
                 console.log("[page.tsx] Saving edited workout to API");
                 
-                // TODO: Add PUT/PATCH endpoint to update existing workouts
-                // For now, just close the modal since state is already updated
-                setEditingWorkout(null);
-                success("Workout updated successfully!");
-                
-                // Note: This currently only updates local state
-                // The workout will revert on page reload until we add the API endpoint
+                try {
+                  const response = await apiClient.updateWorkout(updatedWorkout.id!, {
+                    name: updatedWorkout.name,
+                    description: updatedWorkout.description,
+                    exercises: updatedWorkout.exercises,
+                    groups: updatedWorkout.groups,
+                    blockInstances: updatedWorkout.blockInstances,
+                    estimatedDuration: updatedWorkout.estimatedDuration || 30,
+                  }) as ApiResponse;
+
+                  if (response.success && response.data) {
+                    setEditingWorkout(null);
+                    success("Workout updated successfully!");
+                  } else {
+                    const errorMsg =
+                      typeof response.error === "string"
+                        ? response.error
+                        : "Failed to update workout";
+                    showErrorToast(errorMsg);
+                  }
+                } catch (err) {
+                  console.error("Error updating workout:", err);
+                  showErrorToast("Failed to update workout");
+                }
               }
             }}
             onClose={() => {
