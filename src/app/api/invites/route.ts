@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
+import { checkRateLimit, getRateLimitStatus, getClientIP } from "@/lib/rate-limit-server";
 
 // Type for invite insert data
 interface InviteInsertData {
@@ -22,6 +23,28 @@ interface InviteInsertData {
 // POST /api/invites - Create athlete invitation
 export async function POST(request: NextRequest) {
   try {
+    // 1. Check rate limit (prevent spam invite creation)
+    const ip = getClientIP(request.headers);
+    const allowed = checkRateLimit(ip, "api");
+
+    if (!allowed) {
+      const status = getRateLimitStatus(ip, "api");
+      return NextResponse.json(
+        {
+          error: "Too many requests. Please slow down.",
+          resetTime: status.resetAt,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": "100",
+            "X-RateLimit-Remaining": `${status.remaining}`,
+            "X-RateLimit-Reset": `${status.resetAt}`,
+          },
+        }
+      );
+    }
+
     const user = await getCurrentUser();
 
     if (!user) {

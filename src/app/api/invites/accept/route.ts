@@ -1,9 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
+import {
+  checkRateLimit,
+  getRateLimitStatus,
+  getClientIP,
+  resetRateLimit,
+} from "@/lib/rate-limit-server";
 
 // POST /api/invites/accept - Accept invitation and create athlete account
 export async function POST(request: NextRequest) {
   try {
+    // 1. Check rate limit FIRST (prevent brute force signup attempts)
+    const ip = getClientIP(request.headers);
+    const allowed = checkRateLimit(ip, "signup");
+
+    if (!allowed) {
+      const status = getRateLimitStatus(ip, "signup");
+      console.warn(`[RATE_LIMIT] Signup attempt blocked for IP: ${ip}`);
+      return NextResponse.json(
+        {
+          error: "Too many signup attempts. Please try again later.",
+          details: `Rate limit exceeded. Try again after ${new Date(status.resetAt).toLocaleTimeString()}`,
+          resetTime: status.resetAt,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": "3",
+            "X-RateLimit-Remaining": `${status.remaining}`,
+            "X-RateLimit-Reset": `${status.resetAt}`,
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const { inviteCode, password } = body;
 
@@ -103,6 +133,9 @@ export async function POST(request: NextRequest) {
         accepted_at: new Date().toISOString(),
       })
       .eq("id", inviteCode);
+
+    // 2. Reset rate limit on successful signup
+    resetRateLimit(ip, "signup");
 
     return NextResponse.json({
       success: true,
