@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
 import { X, Settings, Check } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
+import DateTimePicker from "./DateTimePicker";
 
 import { WorkoutModification } from "@/types";
 
@@ -22,7 +23,7 @@ interface GroupAssignmentModalProps {
 export default function GroupAssignmentModal({
   isOpen,
   onClose,
-  selectedDate,
+  selectedDate: initialDate,
   groups,
   workoutPlans,
   athletes,
@@ -30,8 +31,10 @@ export default function GroupAssignmentModal({
 }: GroupAssignmentModalProps) {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
   const [startTime, setStartTime] = useState("15:30");
   const [endTime, setEndTime] = useState("16:30");
+  const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
   const [showModificationModal, setShowModificationModal] = useState(false);
   const [selectedAthlete, setSelectedAthlete] = useState<User | null>(null);
@@ -85,6 +88,7 @@ export default function GroupAssignmentModal({
         modifications: Object.values(groupModifications).flat(),
         startTime,
         endTime,
+        location: location || undefined,
         notes: notes || undefined,
       };
 
@@ -94,8 +98,10 @@ export default function GroupAssignmentModal({
     // Reset form
     setSelectedGroupIds([]);
     setSelectedWorkoutId("");
+    setSelectedDate(initialDate);
     setStartTime("15:30");
     setEndTime("16:30");
+    setLocation("");
     setNotes("");
     setGroupModifications({});
 
@@ -124,7 +130,12 @@ export default function GroupAssignmentModal({
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-heading-primary text-xl">
-                Assign Group Workout - {selectedDate.toLocaleDateString()}
+                Assign Group Workout -{" "}
+                {selectedDate.toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}
               </h2>
               <button
                 onClick={onClose}
@@ -195,34 +206,29 @@ export default function GroupAssignmentModal({
                   </select>
                 </div>
 
+                {/* Date & Time Picker */}
+                <DateTimePicker
+                  selectedDate={selectedDate}
+                  startTime={startTime}
+                  endTime={endTime}
+                  onDateChange={setSelectedDate}
+                  onStartTimeChange={setStartTime}
+                  onEndTimeChange={setEndTime}
+                  minDate={new Date()}
+                  showTimePicker={true}
+                />
+
                 <div>
                   <label className="text-body-primary font-medium block mb-2">
-                    Training Time
+                    Location (optional)
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-body-small block mb-1">
-                        Start Time
-                      </label>
-                      <input
-                        type="time"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        className="w-full p-3 border border-silver-400 rounded-md"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-body-small block mb-1">
-                        End Time
-                      </label>
-                      <input
-                        type="time"
-                        value={endTime}
-                        onChange={(e) => setEndTime(e.target.value)}
-                        className="w-full p-3 border border-silver-400 rounded-md"
-                      />
-                    </div>
-                  </div>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g., Main Gym, Weight Room"
+                    className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
                 </div>
 
                 <div>

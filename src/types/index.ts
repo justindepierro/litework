@@ -237,6 +237,7 @@ export interface WorkoutAssignment {
   scheduledDate: Date;
   startTime?: string;
   endTime?: string;
+  location?: string; // Location where workout takes place (e.g., Main Gym)
   dueDate?: Date;
   status: "assigned" | "started" | "completed" | "overdue";
 
@@ -364,4 +365,48 @@ export interface ProgressEntry {
   weight: number;
   reps: number;
   oneRepMax?: number;
+}
+
+// Workout Feedback System
+export interface WorkoutFeedback {
+  id: string;
+  workoutSessionId: string;
+  athleteId: string;
+
+  // Quantitative ratings (1-10 scales)
+  difficultyRating: number; // 1=too easy, 10=way too hard
+  difficultyNotes?: string;
+
+  sorenessLevel: number; // 1=none, 10=extremely sore
+  sorenessAreas?: string[]; // Array of muscle groups
+  energyLevel: number; // 1=exhausted, 10=energized
+
+  // Qualitative feedback
+  enjoyed?: boolean;
+  whatWentWell?: string;
+  whatWasDifficult?: string;
+  suggestions?: string;
+
+  // Coach interaction
+  coachViewed: boolean;
+  coachResponse?: string;
+  coachRespondedAt?: Date;
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Form data for submitting feedback (before it's saved)
+export interface WorkoutFeedbackFormData {
+  workoutSessionId: string;
+  difficultyRating: number;
+  difficultyNotes?: string;
+  sorenessLevel: number;
+  sorenessAreas?: string[];
+  energyLevel: number;
+  enjoyed?: boolean;
+  whatWentWell?: string;
+  whatWasDifficult?: string;
+  suggestions?: string;
 }
