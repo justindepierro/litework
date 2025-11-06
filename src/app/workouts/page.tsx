@@ -12,6 +12,8 @@ import {
   ChevronDown,
   ChevronUp,
   Users,
+  Archive,
+  ArchiveRestore,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
@@ -58,6 +60,7 @@ export default function WorkoutsPage() {
   );
   const [creatingWorkout, setCreatingWorkout] = useState<boolean>(false);
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
   const [currentView, setCurrentView] = useState<"workouts" | "library">(
     "workouts"
   );
@@ -76,15 +79,24 @@ export default function WorkoutsPage() {
       try {
         setLoading(true);
         setError(null);
-        const response = (await apiClient.getWorkouts()) as ApiResponse;
+        
+        // Build query params based on showArchived state
+        const queryParams = new URLSearchParams();
+        if (showArchived) {
+          queryParams.set('onlyArchived', 'true');
+        }
+        
+        const url = `/api/workouts${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+        const response = await fetch(url);
+        const data = (await response.json()) as ApiResponse;
 
-        if (response.success && response.data) {
-          const apiResponse = response.data as { workouts?: WorkoutPlan[] };
+        if (data.success && data.data) {
+          const apiResponse = data.data as { workouts?: WorkoutPlan[] };
           setWorkouts(apiResponse.workouts || []);
         } else {
           setError(
-            typeof response.error === "string"
-              ? response.error
+            typeof data.error === "string"
+              ? data.error
               : "Failed to load workouts"
           );
         }
@@ -99,7 +111,7 @@ export default function WorkoutsPage() {
     if (user) {
       loadWorkouts();
     }
-  }, [user]);
+  }, [user, showArchived]);
 
   if (authLoading) {
     return (
@@ -130,6 +142,29 @@ export default function WorkoutsPage() {
     if (exercise.weightType === "percentage")
       return `${exercise.percentage}% 1RM`;
     return `${exercise.weight} lbs`;
+  };
+
+  const handleArchiveToggle = async (workoutId: string, currentArchived: boolean) => {
+    try {
+      const response = await fetch(`/api/workouts/${workoutId}/archive`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: !currentArchived }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from current list (will be in opposite list now)
+        setWorkouts(prev => prev.filter(w => w.id !== workoutId));
+        success(currentArchived ? 'Workout restored' : 'Workout archived');
+      } else {
+        showErrorToast(data.error || 'Failed to update workout');
+      }
+    } catch (err) {
+      console.error('Archive error:', err);
+      showErrorToast('Failed to update workout');
+    }
   };
 
   return (
@@ -206,17 +241,35 @@ export default function WorkoutsPage() {
 
             {/* Action Buttons */}
             {!loading && (
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-heading-secondary text-xl">
-                  Your Workouts
-                </h2>
+              <div className="flex flex-col gap-4 mb-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-heading-secondary text-xl">
+                    {showArchived ? 'Archived Workouts' : 'Your Workouts'}
+                  </h2>
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      setCreatingWorkout(true);
+                    }}
+                  >
+                    <Plus className="w-4 h-4" /> Create Workout
+                  </button>
+                </div>
                 <button
-                  className="btn-primary"
-                  onClick={() => {
-                    setCreatingWorkout(true);
-                  }}
+                  onClick={() => setShowArchived(!showArchived)}
+                  className="btn-secondary w-full sm:w-auto self-start flex items-center justify-center gap-2"
                 >
-                  <Plus className="w-4 h-4" /> Create Workout
+                  {showArchived ? (
+                    <>
+                      <Dumbbell className="w-4 h-4" />
+                      View Active Workouts
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="w-4 h-4" />
+                      View Archived Workouts
+                    </>
+                  )}
                 </button>
               </div>
             )}
@@ -351,27 +404,51 @@ export default function WorkoutsPage() {
                         </div>
 
                         <div className="flex gap-2">
+                          {!showArchived && (
+                            <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingWorkout(workout);
+                                }}
+                                className="btn-secondary flex-1"
+                                disabled={isOptimistic}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedWorkout(workout);
+                                  setShowAssignForm(true);
+                                }}
+                                className="btn-primary flex-1 flex items-center justify-center gap-1"
+                                disabled={isOptimistic}
+                              >
+                                <Users className="w-4 h-4" />
+                                Assign
+                              </button>
+                            </>
+                          )}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setEditingWorkout(workout);
+                              handleArchiveToggle(workout.id, workout.archived || false);
                             }}
-                            className="btn-secondary flex-1"
+                            className={`${showArchived ? 'btn-primary flex-1' : 'btn-secondary'} flex items-center justify-center gap-1`}
                             disabled={isOptimistic}
+                            title={workout.archived ? 'Restore workout' : 'Archive workout'}
                           >
-                            Edit
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedWorkout(workout);
-                              setShowAssignForm(true);
-                            }}
-                            className="btn-primary flex-1 flex items-center justify-center gap-1"
-                            disabled={isOptimistic}
-                          >
-                            <Users className="w-4 h-4" />
-                            Assign
+                            {workout.archived ? (
+                              <>
+                                <ArchiveRestore className="w-4 h-4" />
+                                {showArchived && 'Restore'}
+                              </>
+                            ) : (
+                              <>
+                                <Archive className="w-4 h-4" />
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
