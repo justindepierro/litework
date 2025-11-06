@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
-import { useState, useEffect } from "react";
-import CalendarView from "@/components/CalendarView";
+import { useState, useEffect, useCallback } from "react";
+import AthleteCalendar from "@/components/AthleteCalendar";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
+import GroupAssignmentModal from "@/components/GroupAssignmentModal";
+import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
+import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import {
   TrendingUp,
   ClipboardList,
@@ -16,6 +19,9 @@ import {
   Dumbbell,
   Hand,
   Flame,
+  Plus,
+  Users,
+  UserPlus,
 } from "lucide-react";
 
 interface DashboardStats {
@@ -32,6 +38,18 @@ export default function DashboardPage() {
     currentStreak: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  
+  // Assignment state
+  const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
+  const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
+  const [groups, setGroups] = useState<AthleteGroup[]>([]);
+  const [athletes, setAthletes] = useState<User[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
+  
+  // Modal state
+  const [showGroupAssignment, setShowGroupAssignment] = useState(false);
+  const [showIndividualAssignment, setShowIndividualAssignment] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
 
@@ -39,8 +57,17 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user && user.role === "athlete") {
       fetchDashboardStats();
+      fetchAthleteAssignments();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  // Fetch assignment data for coaches
+  useEffect(() => {
+    if (user && isCoachOrAdmin) {
+      fetchCoachData();
+    }
+  }, [user, isCoachOrAdmin]);
 
   const fetchDashboardStats = async () => {
     try {
@@ -60,6 +87,94 @@ export default function DashboardPage() {
     } finally {
       setLoadingStats(false);
     }
+  };
+
+  const fetchAthleteAssignments = async () => {
+    try {
+      setLoadingData(true);
+      const response = await fetch(`/api/assignments?athleteId=${user?.id}`);
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        setAssignments(data.data.assignments || data.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch athlete assignments:", error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const fetchCoachData = async () => {
+    try {
+      setLoadingData(true);
+      
+      // Fetch assignments, workouts, groups, and athletes in parallel
+      const [assignmentsRes, workoutsRes, groupsRes, athletesRes] = await Promise.all([
+        fetch("/api/assignments"),
+        fetch("/api/workouts"),
+        fetch("/api/groups"),
+        fetch("/api/athletes"),
+      ]);
+
+      const [assignmentsData, workoutsData, groupsData, athletesData] = await Promise.all([
+        assignmentsRes.json(),
+        workoutsRes.json(),
+        groupsRes.json(),
+        athletesRes.json(),
+      ]);
+
+      if (assignmentsData.success && assignmentsData.data) {
+        setAssignments(assignmentsData.data.assignments || assignmentsData.data || []);
+      }
+
+      if (workoutsData.success && workoutsData.data) {
+        setWorkoutPlans(workoutsData.data.workouts || workoutsData.data || []);
+      }
+
+      if (groupsData.success && groupsData.data) {
+        setGroups(groupsData.data.groups || groupsData.data || []);
+      }
+
+      if (athletesData.success && athletesData.data) {
+        setAthletes(athletesData.data.athletes || athletesData.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch coach data:", error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const handleAssignWorkout = async (assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">) => {
+    try {
+      const response = await fetch("/api/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignments: [assignment] }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh assignments
+        await fetchCoachData();
+        // Show success message (could add toast notification here)
+        console.log("Assignment created successfully!");
+      }
+    } catch (error) {
+      console.error("Failed to create assignment:", error);
+    }
+  };
+
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    setShowGroupAssignment(true);
+  };
+
+  const handleAssignmentClick = (assignment: WorkoutAssignment) => {
+    // TODO: Open assignment detail modal
+    console.log("Assignment clicked:", assignment);
   };
 
   if (isLoading) {
@@ -106,10 +221,72 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Full-width calendar */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <CalendarView />
+          {/* Full-width calendar with assignment buttons */}
+          <div className="space-y-4">
+            {/* Action buttons */}
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setSelectedDate(new Date());
+                  setShowIndividualAssignment(true);
+                }}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                Assign to Athlete
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedDate(new Date());
+                  setShowGroupAssignment(true);
+                }}
+                className="btn-primary flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                Assign to Group
+              </button>
+            </div>
+
+            {/* Calendar */}
+            <div className="bg-white rounded-lg shadow-sm">
+              {loadingData ? (
+                <div className="p-12 text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading calendar...</p>
+                </div>
+              ) : (
+                <AthleteCalendar
+                  assignments={assignments}
+                  onAssignmentClick={handleAssignmentClick}
+                  onDateClick={handleDateClick}
+                  viewMode="month"
+                />
+              )}
+            </div>
           </div>
+
+          {/* Assignment Modals */}
+          {showGroupAssignment && (
+            <GroupAssignmentModal
+              isOpen={showGroupAssignment}
+              onClose={() => setShowGroupAssignment(false)}
+              selectedDate={selectedDate}
+              groups={groups}
+              workoutPlans={workoutPlans}
+              athletes={athletes}
+              onAssignWorkout={handleAssignWorkout}
+            />
+          )}
+
+          {showIndividualAssignment && (
+            <IndividualAssignmentModal
+              isOpen={showIndividualAssignment}
+              onClose={() => setShowIndividualAssignment(false)}
+              athletes={athletes}
+              workoutPlans={workoutPlans}
+              onAssignWorkout={handleAssignWorkout}
+            />
+          )}
         </div>
       </div>
     );
@@ -199,12 +376,17 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Calendar View for Coaches */}
-        {(user.role === "coach" || user.role === "admin") && (
-          <div className="mb-8">
-            <CalendarView />
-          </div>
-        )}
+        {/* Athlete Calendar View - Shows only their assignments */}
+        <div className="mb-8">
+          <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
+            <Calendar className="w-6 h-6" /> Your Schedule
+          </h2>
+          <AthleteCalendar
+            assignments={assignments}
+            onAssignmentClick={handleAssignmentClick}
+            viewMode="week"
+          />
+        </div>
 
         {/* Enhanced assigned workouts for athletes */}
         {user.role === "athlete" && (

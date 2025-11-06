@@ -86,22 +86,37 @@
   - Status legend (assigned, completed, overdue)
   - **Status**: ✅ COMPLETE - 480+ lines, zero TypeScript errors
 
-- [ ] 🔄 **Integrate calendar into Coach Dashboard** (Next task)
-- [ ] 🔄 **Integrate calendar into Athlete Dashboard**
-- [ ] 🔄 **Wire assignment modals to calendar**
-- [ ] 🔄 **Add assignment detail modal from calendar**
+- [x] ✅ **Integrated calendar into Coach Dashboard** (`src/app/dashboard/page.tsx`)
+  - Full AthleteCalendar with all assignments
+  - "Assign to Group" and "Assign to Athlete" action buttons
+  - Modal integration for GroupAssignmentModal and IndividualAssignmentModal
+  - Parallel data fetching (assignments, workouts, groups, athletes)
+  - Click handler to open assignments on calendar
+  - Date click to pre-fill assignment modal with selected date
+  - **Status**: ✅ COMPLETE
+
+- [x] ✅ **Integrated calendar into Athlete Dashboard** (`src/app/dashboard/page.tsx`)
+  - Personal calendar showing only athlete's assignments
+  - Week view by default (optimal for mobile)
+  - Fetches assignments filtered by athlete ID
+  - Assignment click handler (ready for detail modal)
+  - **Status**: ✅ COMPLETE
+
+- [ ] 🔄 **Create WorkoutAssignmentDetailModal** (Next task - 2 hours)
+- [ ] 🔄 **Add assignment detail view on calendar click**
+- [ ] 🔄 **Test on mobile devices**
 
 ---
 
 ## 🎯 Current Focus
 
-**Current Phase**: Week 1 - Calendar & Coach Assignment Flow (Days 4-5)  
-**Next Task**: Integrate AthleteCalendar into Coach Dashboard  
-**Estimated Time**: 3 hours  
+**Current Phase**: Week 1 - Calendar & Coach Assignment Flow (Day 5)  
+**Next Task**: Create WorkoutAssignmentDetailModal component  
+**Estimated Time**: 2 hours  
 **Priority**: 🔥 HIGH
 
-**Phase 1.4 (Calendar Component) - 60% COMPLETE!**  
-Calendar UI built, now integrating into dashboard views.
+**Phase 1.4 (Calendar Integration) - 80% COMPLETE!**  
+Calendar fully integrated into dashboards. Creating detail modal next.
 
 ---
 
