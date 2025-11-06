@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
  * Access at: /api/auth/diagnose
  */
 export async function GET() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const diagnostics: Record<string, any> = {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
@@ -23,7 +24,6 @@ export async function GET() {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
       ? "✅ SET"
       : "❌ MISSING",
-    JWT_SECRET: process.env.JWT_SECRET ? "✅ SET" : "❌ MISSING",
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "NOT SET",
   };
 
@@ -91,7 +91,6 @@ export async function GET() {
   };
 
   // 5. Overall health
-  const allChecks = Object.values(diagnostics.checks).flat();
   const failedChecks =
     JSON.stringify(diagnostics.checks).match(/❌/g)?.length || 0;
 
