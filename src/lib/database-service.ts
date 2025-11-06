@@ -629,7 +629,7 @@ export const updateWorkoutPlan = async (
   updates: Partial<WorkoutPlan>
 ): Promise<WorkoutPlan | null> => {
   console.log("[database-service] updateWorkoutPlan called:", { id, updates });
-  
+
   const { data, error } = await supabase
     .from("workout_plans")
     .update({ ...updates, updated_at: new Date().toISOString() })

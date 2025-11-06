@@ -12,6 +12,7 @@
 ## 🔑 Most Important Tables
 
 ### Workouts
+
 ```
 workout_plans (id, name, description, created_by, estimated_duration)
   └─ workout_exercises (23 columns: sets, reps, weight, tempo, notes, etc.)
@@ -25,6 +26,7 @@ workout_assignments (athlete_id, group_id, scheduled_date, status)
 ```
 
 ### Exercises
+
 ```
 exercises (id, name, description, category, equipment)
   └─ exercise_muscle_groups (exercise_id, muscle_group_id, is_primary)
@@ -32,6 +34,7 @@ exercises (id, name, description, category, equipment)
 ```
 
 ### Users & Groups
+
 ```
 users (id, email, role, first_name, last_name)
   └─ athlete_kpis (exercise_id, kpi_type, value, date)
@@ -43,8 +46,9 @@ athlete_groups (id, name, sport, season, created_by)
 ## 🎯 Common Queries
 
 ### Get Workout with Exercises & Groups
+
 ```sql
-SELECT wp.*, 
+SELECT wp.*,
   json_agg(DISTINCT we.*) as exercises,
   json_agg(DISTINCT weg.*) FILTER (WHERE weg.id IS NOT NULL) as groups
 FROM workout_plans wp
@@ -55,6 +59,7 @@ GROUP BY wp.id;
 ```
 
 ### Get Athlete's Progress
+
 ```sql
 SELECT sr.*, se.exercise_name, ws.completed_at
 FROM set_records sr
@@ -94,6 +99,7 @@ cat database-export/schema-dump.sql | less
 ## 🔄 Schema Changes
 
 When adding tables/columns:
+
 1. Update `docs/DATABASE_SCHEMA.md`
 2. Create migration in `/database/`
 3. Run via Supabase Dashboard SQL Editor

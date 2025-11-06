@@ -54,7 +54,7 @@ class ApiClient {
     if (!response.ok) {
       let errorData: { error?: string; details?: string } = {};
       let errorText = "";
-      
+
       try {
         // Try to get the response text first
         errorText = await response.text();
@@ -73,7 +73,7 @@ class ApiClient {
         errorData,
         rawResponse: errorText.substring(0, 500), // First 500 chars
       });
-      
+
       throw new Error(
         errorData.error ||
           errorData.details ||

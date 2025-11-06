@@ -25,22 +25,22 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
       if (typeof document === "undefined") return;
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
-        
+
         // Set max age - default to 7 days if not specified
         const maxAge = options?.maxAge || 604800; // 7 days in seconds
         cookie += `; max-age=${maxAge}`;
-        
+
         if (options?.domain) cookie += `; domain=${options.domain}`;
-        
+
         // Use Lax for better compatibility, falls back to Strict if specified
         const sameSite = options?.sameSite || "Lax";
         cookie += `; samesite=${sameSite}`;
-        
+
         // Add secure flag in production (HTTPS)
         if (window.location.protocol === "https:") {
           cookie += "; secure";
         }
-        
+
         document.cookie = cookie;
       });
     },

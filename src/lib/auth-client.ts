@@ -487,12 +487,12 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function refreshSession() {
   try {
     const { data, error } = await supabase.auth.refreshSession();
-    
+
     if (error) {
       console.error("[AUTH_CLIENT] Session refresh failed:", error);
       throw error;
     }
-    
+
     console.log("[AUTH_CLIENT] Session refreshed successfully");
     return data.session;
   } catch (error) {

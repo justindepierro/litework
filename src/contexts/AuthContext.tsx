@@ -117,7 +117,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else if (!previousUser && newUser) {
           console.log("[AUTH] User session started:", newUser.email);
         } else if (newUser && previousUser && newUser.id !== previousUser.id) {
-          console.log("[AUTH] User session changed from", previousUser.email, "to", newUser.email);
+          console.log(
+            "[AUTH] User session changed from",
+            previousUser.email,
+            "to",
+            newUser.email
+          );
         }
 
         // If user logged out elsewhere, redirect to login
@@ -129,18 +134,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Set up periodic session refresh to prevent expiry
-    const refreshInterval = setInterval(async () => {
-      if (mountedRef.current && userRef.current && !authOperationInProgress.current) {
-        try {
-          // Refresh session every 4 hours (tokens expire after 1 hour by default, but are auto-refreshed)
-          console.log("[AUTH] Refreshing session...");
-          await authClient.refreshSession();
-          console.log("[AUTH] Session refreshed successfully");
-        } catch (error) {
-          console.error("[AUTH] Failed to refresh session:", error);
+    const refreshInterval = setInterval(
+      async () => {
+        if (
+          mountedRef.current &&
+          userRef.current &&
+          !authOperationInProgress.current
+        ) {
+          try {
+            // Refresh session every 4 hours (tokens expire after 1 hour by default, but are auto-refreshed)
+            console.log("[AUTH] Refreshing session...");
+            await authClient.refreshSession();
+            console.log("[AUTH] Session refreshed successfully");
+          } catch (error) {
+            console.error("[AUTH] Failed to refresh session:", error);
+          }
         }
-      }
-    }, 4 * 60 * 60 * 1000); // 4 hours
+      },
+      4 * 60 * 60 * 1000
+    ); // 4 hours
 
     return () => {
       mountedRef.current = false;

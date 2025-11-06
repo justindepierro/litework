@@ -10,6 +10,7 @@ Completed comprehensive audit of workout save workflow and fixed all database sc
 ## What Was Missing
 
 ### Before:
+
 - ❌ Exercises weren't being saved to `workout_exercises` table
 - ❌ Groups (supersets/circuits/sections) had no database table
 - ❌ Blocks had no database table
@@ -17,6 +18,7 @@ Completed comprehensive audit of workout save workflow and fixed all database sc
 - ❌ Code tried to save entire workout object to one table (failed)
 
 ### After:
+
 - ✅ Exercises save to `workout_exercises` table with ALL fields
 - ✅ Groups save to `workout_exercise_groups` table
 - ✅ Blocks save to `workout_blocks` table
@@ -63,15 +65,17 @@ Completed comprehensive audit of workout save workflow and fixed all database sc
 ### `src/lib/database-service.ts`
 
 **`createWorkoutPlan()`** - Now saves everything:
+
 ```typescript
 // 1. Insert workout plan metadata
 // 2. Insert exercises → workout_exercises table
-// 3. Insert groups → workout_exercise_groups table  
+// 3. Insert groups → workout_exercise_groups table
 // 4. Insert block instances → workout_block_instances table
 // Returns fully hydrated WorkoutPlan object
 ```
 
 **`getAllWorkoutPlans()`** - Now fetches everything:
+
 ```typescript
 // 1. Fetch all plans
 // 2. Fetch all exercises for those plans
@@ -82,6 +86,7 @@ Completed comprehensive audit of workout save workflow and fixed all database sc
 ```
 
 **`getWorkoutPlanById()`** - Same for single plan:
+
 ```typescript
 // Fetches plan + exercises + groups + block instances
 // Maps database columns to TypeScript types
@@ -90,6 +95,7 @@ Completed comprehensive audit of workout save workflow and fixed all database sc
 ### `src/app/api/workouts/route.ts`
 
 Fixed response format:
+
 ```typescript
 // OLD: data: newWorkout
 // NEW: data: { workout: newWorkout }
@@ -156,6 +162,7 @@ This will show you the SQL to run and provide instructions.
 ## Features Now Fully Supported
 
 ### Exercise Features:
+
 - ✅ Weight ranges (20-30 lbs, 70-80% 1RM)
 - ✅ Tempo notation (3-1-1-0)
 - ✅ Unilateral exercises (each side flag)
@@ -164,6 +171,7 @@ This will show you the SQL to run and provide instructions.
 - ✅ Substitution tracking
 
 ### Grouping Features:
+
 - ✅ Supersets (2-4 exercises)
 - ✅ Circuits (5+ exercises)
 - ✅ Sections (logical grouping)
@@ -171,6 +179,7 @@ This will show you the SQL to run and provide instructions.
 - ✅ Rest between rounds/exercises
 
 ### Block Features:
+
 - ✅ Reusable workout templates
 - ✅ Block categories (warmup, main, etc.)
 - ✅ Block customization in workouts

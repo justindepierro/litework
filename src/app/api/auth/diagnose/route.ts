@@ -37,16 +37,21 @@ export async function GET() {
 
   if (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     diagnostics.checks.supabaseAnonKey = {
-      preview: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.substring(0, 20) + "...",
+      preview:
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.substring(0, 20) + "...",
       length: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length,
-      startsWithEyJ: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.startsWith("eyJ"),
+      startsWithEyJ:
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.startsWith("eyJ"),
     };
   }
 
   // 2. Test Supabase connection
   try {
-    const { data, error } = await supabase.from("users").select("count").limit(1);
-    
+    const { data, error } = await supabase
+      .from("users")
+      .select("count")
+      .limit(1);
+
     diagnostics.checks.supabaseConnection = {
       status: error ? "❌ FAILED" : "✅ WORKING",
       error: error?.message,
@@ -61,8 +66,11 @@ export async function GET() {
 
   // 3. Test Supabase Auth
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+
     diagnostics.checks.supabaseAuth = {
       status: error ? "❌ FAILED" : "✅ WORKING",
       error: error?.message,
@@ -84,13 +92,18 @@ export async function GET() {
 
   // 5. Overall health
   const allChecks = Object.values(diagnostics.checks).flat();
-  const failedChecks = JSON.stringify(diagnostics.checks).match(/❌/g)?.length || 0;
-  
+  const failedChecks =
+    JSON.stringify(diagnostics.checks).match(/❌/g)?.length || 0;
+
   diagnostics.summary = {
-    status: failedChecks === 0 ? "✅ ALL CHECKS PASSED" : `⚠️ ${failedChecks} ISSUES FOUND`,
-    recommendation: failedChecks === 0
-      ? "Authentication should work. If you're still having issues, check browser console for client-side errors."
-      : "Fix the issues marked with ❌ above. Most likely: missing environment variables in Vercel dashboard.",
+    status:
+      failedChecks === 0
+        ? "✅ ALL CHECKS PASSED"
+        : `⚠️ ${failedChecks} ISSUES FOUND`,
+    recommendation:
+      failedChecks === 0
+        ? "Authentication should work. If you're still having issues, check browser console for client-side errors."
+        : "Fix the issues marked with ❌ above. Most likely: missing environment variables in Vercel dashboard.",
   };
 
   return NextResponse.json(diagnostics, { status: 200 });

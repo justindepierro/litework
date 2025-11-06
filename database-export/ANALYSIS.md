@@ -5,14 +5,16 @@
 The database migration has already been applied. All required tables are present:
 
 ### Workout Core Tables
+
 - ✅ **workout_plans** - Main workout container
-- ✅ **workout_exercises** - Exercises within workouts  
+- ✅ **workout_exercises** - Exercises within workouts
 - ✅ **workout_exercise_groups** - Supersets, circuits, sections
 - ✅ **workout_block_instances** - Workout templates
 - ✅ **workout_assignments** - Workout assignments to athletes
 - ✅ **workout_sessions** - Completed workout sessions
 
 ### workout_exercises Columns (ALL PRESENT)
+
 ```sql
 - id (uuid)
 - workout_plan_id (uuid)
@@ -40,6 +42,7 @@ The database migration has already been applied. All required tables are present
 ```
 
 ### workout_exercise_groups Columns (ALL PRESENT)
+
 ```sql
 - id (uuid)
 - workout_plan_id (uuid)
@@ -67,12 +70,14 @@ The tables exist NOW, but they may not have existed when you first tested. Possi
 ## 🚨 Potential Issues Found
 
 ### 1. Type Mismatch - block_instance_id
+
 **Database**: `block_instance_id TEXT`
 **Code**: May expect `UUID`
 
 This could cause issues if code tries to use UUID functions on this field.
 
 ### 2. API Route Not Accepting Groups
+
 Need to verify `/api/workouts` POST route accepts and passes the `groups` parameter.
 
 ## ✅ Next Steps
@@ -90,6 +95,7 @@ Need to verify `/api/workouts` POST route accepts and passes the `groups` parame
 ## 🎯 Summary
 
 **The database is ready!** All tables and columns exist. The issue is likely in:
+
 1. API route not passing groups data
 2. RLS policies blocking inserts
 3. Type mismatches between code and database

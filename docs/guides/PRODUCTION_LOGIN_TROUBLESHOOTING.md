@@ -13,6 +13,7 @@
 Go to: [Vercel Dashboard](https://vercel.com/dashboard) → Your Project → Settings → Environment Variables
 
 **Required variables:**
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
@@ -22,8 +23,9 @@ NEXT_PUBLIC_APP_URL=<your-production-url>
 ```
 
 **CRITICAL**: Make sure to set these for **all environments**:
+
 - Production
-- Preview  
+- Preview
 - Development
 
 ## Step 3: Verify Supabase Keys
@@ -44,11 +46,13 @@ Your Supabase keys might be old or placeholder values. Get fresh keys:
 ### Issue: "Invalid email or password"
 
 **Possible causes**:
+
 - Wrong credentials
 - Email not verified in Supabase
 - User doesn't exist in production database
 
 **Solution**:
+
 1. Check [Supabase Authentication](https://supabase.com/dashboard/project/lzsjaqkhdoqsafptqpnt/auth/users)
 2. Verify user exists
 3. Check if email is confirmed
@@ -57,11 +61,13 @@ Your Supabase keys might be old or placeholder values. Get fresh keys:
 ### Issue: "Network error" or "Failed to fetch"
 
 **Possible causes**:
+
 - Supabase project paused
 - Wrong Supabase URL
 - CORS issues
 
 **Solution**:
+
 1. Check Supabase project is active
 2. Verify `NEXT_PUBLIC_SUPABASE_URL` matches your project
 3. Check Supabase dashboard for any service issues
@@ -69,11 +75,13 @@ Your Supabase keys might be old or placeholder values. Get fresh keys:
 ### Issue: Cookies not working
 
 **Possible causes**:
+
 - Not using HTTPS
 - Browser blocking third-party cookies
 - Incorrect cookie settings
 
 **Solution**:
+
 1. Ensure production URL uses `https://` not `http://`
 2. Check browser allows cookies
 3. Try in incognito/private mode
@@ -82,18 +90,21 @@ Your Supabase keys might be old or placeholder values. Get fresh keys:
 ### Issue: "Too many login attempts"
 
 **Solution**:
+
 - Wait 15 minutes (rate limiting)
 - Or use diagnostic page → "Clear LocalStorage" button
 
 ## Step 5: Test Login
 
 **Test credentials** (coach account):
+
 ```
 Email: jdepierro@burkecatholic.org
 Password: TempPassword123!
 ```
 
 Try logging in:
+
 1. In production: `https://your-app.vercel.app/login`
 2. In diagnostic page: Use "Test Login" button
 
@@ -118,6 +129,7 @@ git push origin main
 ```
 
 Or in Vercel Dashboard:
+
 - Go to Deployments tab
 - Click "..." on latest deployment
 - Click "Redeploy"
@@ -127,7 +139,7 @@ Or in Vercel Dashboard:
 If nothing works, try this on the diagnostic page:
 
 1. Click "Clear LocalStorage"
-2. Click "Clear All Cookies"  
+2. Click "Clear All Cookies"
 3. Click "Force Sign Out"
 4. Close browser completely
 5. Reopen and try logging in

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser, requireCoach } from "@/lib/auth-server";
-import { getAllWorkoutPlans, createWorkoutPlan, updateWorkoutPlan } from "@/lib/database-service";
+import {
+  getAllWorkoutPlans,
+  createWorkoutPlan,
+  updateWorkoutPlan,
+} from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 // GET /api/workouts - Get workout plans
@@ -59,8 +63,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, description, exercises, groups, blockInstances, estimatedDuration, targetGroupId } =
-      await request.json();
+    const {
+      name,
+      description,
+      exercises,
+      groups,
+      blockInstances,
+      estimatedDuration,
+      targetGroupId,
+    } = await request.json();
 
     if (!name || !exercises || !Array.isArray(exercises)) {
       return NextResponse.json(
@@ -91,7 +102,8 @@ export async function POST(request: NextRequest) {
     if (invalidExercise) {
       return NextResponse.json(
         {
-          error: "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
+          error:
+            "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
         },
         { status: 400 }
       );
@@ -144,8 +156,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const { id, name, description, exercises, groups, blockInstances, estimatedDuration } =
-      await request.json();
+    const {
+      id,
+      name,
+      description,
+      exercises,
+      groups,
+      blockInstances,
+      estimatedDuration,
+    } = await request.json();
 
     if (!id) {
       return NextResponse.json(
@@ -183,7 +202,8 @@ export async function PUT(request: NextRequest) {
     if (invalidExercise) {
       return NextResponse.json(
         {
-          error: "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
+          error:
+            "Invalid exercise data. Each exercise must have name, sets, reps, and valid weight type",
         },
         { status: 400 }
       );
@@ -192,8 +212,13 @@ export async function PUT(request: NextRequest) {
     // Update workout plan in database
     // Note: This currently only updates the workout_plans table
     // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
-    console.log("[PUT /api/workouts] Updating workout:", { id, name, description, estimatedDuration });
-    
+    console.log("[PUT /api/workouts] Updating workout:", {
+      id,
+      name,
+      description,
+      estimatedDuration,
+    });
+
     const updatedWorkout = await updateWorkoutPlan(id, {
       name,
       description,
@@ -203,9 +228,15 @@ export async function PUT(request: NextRequest) {
     console.log("[PUT /api/workouts] Update result:", updatedWorkout);
 
     if (!updatedWorkout) {
-      console.error("[PUT /api/workouts] updateWorkoutPlan returned null for ID:", id);
+      console.error(
+        "[PUT /api/workouts] updateWorkoutPlan returned null for ID:",
+        id
+      );
       return NextResponse.json(
-        { error: "Failed to update workout plan - workout not found or update failed" },
+        {
+          error:
+            "Failed to update workout plan - workout not found or update failed",
+        },
         { status: 500 }
       );
     }

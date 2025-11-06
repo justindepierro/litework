@@ -1,10 +1,12 @@
 # Workout Database Component Audit
+
 **Date**: November 5, 2025  
 **Status**: CRITICAL ISSUES FOUND AND FIXED
 
 ## Executive Summary
 
 🚨 **CRITICAL FINDING**: The database schema was MISSING two essential tables that the code was trying to use:
+
 1. `workout_exercise_groups` - For supersets, circuits, and sections
 2. `workout_block_instances` - For reusable workout templates
 
@@ -19,7 +21,9 @@
 ### ✅ EXISTING TABLES (Working)
 
 #### 1. `workout_plans` - Main workout container
+
 **Columns**:
+
 - ✅ id (UUID)
 - ✅ name (TEXT) - **WIRED**: Yes, from WorkoutEditor name input
 - ✅ description (TEXT) - **WIRED**: Yes, optional field
@@ -32,7 +36,9 @@
 **TypeScript Mapping**: `WorkoutPlan` interface → ✅ CORRECT
 
 #### 2. `workout_exercises` - Exercises within a workout
+
 **Columns**:
+
 - ✅ id (UUID)
 - ✅ workout_plan_id (UUID)
 - ✅ exercise_id (TEXT) - **WIRED**: Yes, from exercise library
@@ -64,9 +70,11 @@
 ### ❌ MISSING TABLES (Code expects but don't exist)
 
 #### 3. `workout_exercise_groups` - Exercise groupings
+
 **Status**: 🚨 **DOES NOT EXIST IN DATABASE**
 
 **What Code Tries to Save**:
+
 - id (UUID)
 - workout_plan_id (UUID)
 - name (TEXT) - Group name (e.g., "Superset 1")
@@ -86,9 +94,11 @@
 **TypeScript Mapping**: `ExerciseGroup` interface → ❌ NO TABLE
 
 #### 4. `workout_block_instances` - Reusable workout templates
+
 **Status**: 🚨 **DOES NOT EXIST IN DATABASE**
 
 **What Code Tries to Save**:
+
 - id (UUID)
 - workout_plan_id (UUID)
 - source_block_id (UUID) - Original template
@@ -116,6 +126,7 @@
 ### 1. **Creating a Workout** ✅ MOSTLY WORKING (groups fail)
 
 **Flow**:
+
 ```
 WorkoutEditor (user input)
   ↓
@@ -131,6 +142,7 @@ Supabase INSERT
 ```
 
 **What Gets Saved**:
+
 - ✅ Workout plan metadata (name, description, duration)
 - ✅ Exercises (name, sets, reps, weight, rest, order)
 - ❌ Exercise groups (FAILS - table doesn't exist)
@@ -140,6 +152,7 @@ Supabase INSERT
 **Critical Code Locations**:
 
 1. **Frontend - WorkoutEditor.tsx (Line 1537)**:
+
    ```typescript
    onChange={(e) => {
      const newName = e.target.value;
@@ -149,27 +162,32 @@ Supabase INSERT
    ```
 
 2. **Frontend - page.tsx (Line 516)**:
+
    ```typescript
    const response = await apiClient.createWorkout({
-     name: updatedWorkout.name,        // ✅ Sent
+     name: updatedWorkout.name, // ✅ Sent
      description: updatedWorkout.description, // ✅ Sent
-     exercises: updatedWorkout.exercises,     // ✅ Sent
-     groups: updatedWorkout.groups,           // ✅ Sent (NEW FIX)
+     exercises: updatedWorkout.exercises, // ✅ Sent
+     groups: updatedWorkout.groups, // ✅ Sent (NEW FIX)
      estimatedDuration: updatedWorkout.estimatedDuration || 30, // ✅ Sent
    });
    ```
 
 3. **API - /api/workouts/route.ts (Line 64)**:
+
    ```typescript
    const { name, description, exercises, estimatedDuration, targetGroupId } =
      await request.json();
    ```
+
    ⚠️ **ISSUE**: API route doesn't expect `groups` parameter!
 
 4. **Database Service - database-service.ts (Line 496)**:
+
    ```typescript
    const { exercises, groups, blockInstances, ...planData } = workoutData;
    ```
+
    ✅ Extracts groups from workout data
 
 5. **Database Service - database-service.ts (Line 558)**:
@@ -187,6 +205,7 @@ Supabase INSERT
 ### 2. **Loading Workouts** ✅ WORKING (but no groups returned)
 
 **Flow**:
+
 ```
 page.tsx useEffect
   ↓
@@ -200,18 +219,21 @@ Supabase SELECT
 ```
 
 **What Gets Loaded**:
+
 - ✅ Workout plan metadata
 - ✅ Exercises with all fields
 - ❌ Groups (query tries but table doesn't exist)
 - ❌ Block instances (query tries but table doesn't exist)
 
 **Code Location - database-service.ts (Line 318)**:
+
 ```typescript
 const { data: groups } = await supabase
   .from("workout_exercise_groups") // ❌ TABLE DOESN'T EXIST
   .select("*")
   .in("workout_plan_id", planIds);
 ```
+
 Returns empty array when table doesn't exist
 
 ---
@@ -219,6 +241,7 @@ Returns empty array when table doesn't exist
 ### 3. **Editing Exercises** ✅ WORKING
 
 **Flow**:
+
 ```
 ExerciseItem component
   ↓
@@ -232,6 +255,7 @@ onChange() to parent
 ```
 
 **What Gets Updated**:
+
 - ✅ Exercise name (with auto-add to library)
 - ✅ Sets (with improved backspace UX)
 - ✅ Reps (with improved backspace UX)
@@ -251,6 +275,7 @@ onChange() to parent
 ### 4. **Creating Groups** ❌ PARTIALLY WORKING (saves to state but not DB)
 
 **Flow**:
+
 ```
 GroupCreationModal
   ↓
@@ -268,6 +293,7 @@ Save workout
 ```
 
 **What SHOULD Save**:
+
 - Group name (e.g., "Superset 1")
 - Group type (superset/circuit/section)
 - Rest between exercises
@@ -277,6 +303,7 @@ Save workout
 - Exercise group assignments (via groupId on exercises)
 
 **Current Status**:
+
 - ✅ Groups created in UI state
 - ✅ Exercises assigned to groups
 - ✅ Group data passed to API
@@ -289,18 +316,18 @@ Save workout
 
 ### `workout_exercises` table needs these columns:
 
-| Column | Type | Code Uses | DB Has | Impact |
-|--------|------|-----------|--------|--------|
-| weight_max | DECIMAL | ✅ Yes | ❌ No | Weight ranges don't save (20-30 lbs) |
-| percentage_max | INTEGER | ✅ Yes | ❌ No | % ranges don't save (70-80%) |
-| percentage_base_kpi | TEXT | ✅ Yes | ❌ No | Can't specify which KPI for % |
-| tempo | TEXT | ✅ Yes | ❌ No | Rep tempo lost |
-| each_side | BOOLEAN | ✅ Yes | ❌ No | Unilateral flag lost |
-| notes | TEXT | ✅ Yes | ❌ No | Exercise notes lost |
-| block_instance_id | UUID | ✅ Yes | ❌ No | Can't track block source |
-| substitution_reason | TEXT | ✅ Yes | ❌ No | Substitution info lost |
-| original_exercise | TEXT | ✅ Yes | ❌ No | Original exercise name lost |
-| progression_notes | TEXT | ✅ Yes | ❌ No | Progression suggestions lost |
+| Column              | Type    | Code Uses | DB Has | Impact                               |
+| ------------------- | ------- | --------- | ------ | ------------------------------------ |
+| weight_max          | DECIMAL | ✅ Yes    | ❌ No  | Weight ranges don't save (20-30 lbs) |
+| percentage_max      | INTEGER | ✅ Yes    | ❌ No  | % ranges don't save (70-80%)         |
+| percentage_base_kpi | TEXT    | ✅ Yes    | ❌ No  | Can't specify which KPI for %        |
+| tempo               | TEXT    | ✅ Yes    | ❌ No  | Rep tempo lost                       |
+| each_side           | BOOLEAN | ✅ Yes    | ❌ No  | Unilateral flag lost                 |
+| notes               | TEXT    | ✅ Yes    | ❌ No  | Exercise notes lost                  |
+| block_instance_id   | UUID    | ✅ Yes    | ❌ No  | Can't track block source             |
+| substitution_reason | TEXT    | ✅ Yes    | ❌ No  | Substitution info lost               |
+| original_exercise   | TEXT    | ✅ Yes    | ❌ No  | Original exercise name lost          |
+| progression_notes   | TEXT    | ✅ Yes    | ❌ No  | Progression suggestions lost         |
 
 **Total Missing**: 10 columns that code uses but database doesn't have
 
@@ -311,6 +338,7 @@ Save workout
 ### `/api/workouts` POST - Create Workout
 
 **Current Implementation**:
+
 ```typescript
 const { name, description, exercises, estimatedDuration, targetGroupId } =
   await request.json();
@@ -319,12 +347,21 @@ const { name, description, exercises, estimatedDuration, targetGroupId } =
 🚨 **MISSING**: Does not accept `groups` parameter!
 
 **Fix Needed**:
+
 ```typescript
-const { name, description, exercises, groups, blockInstances, estimatedDuration, targetGroupId } =
-  await request.json();
+const {
+  name,
+  description,
+  exercises,
+  groups,
+  blockInstances,
+  estimatedDuration,
+  targetGroupId,
+} = await request.json();
 ```
 
 Then pass groups to `createWorkoutPlan()`:
+
 ```typescript
 const newWorkout = await createWorkoutPlan({
   name,
@@ -347,6 +384,7 @@ const newWorkout = await createWorkoutPlan({
 Execute `/database/add-workout-groups-and-blocks.sql` in Supabase SQL Editor
 
 This will:
+
 1. ✅ Create `workout_exercise_groups` table
 2. ✅ Create `workout_block_instances` table
 3. ✅ Add missing columns to `workout_exercises`
@@ -361,6 +399,7 @@ Update `/api/workouts/route.ts` to accept and pass groups/blocks
 ### Step 3: Verify Data Flow
 
 After migration:
+
 1. Create workout with exercises
 2. Group exercises into superset
 3. Save workout
@@ -374,6 +413,7 @@ After migration:
 After running migration:
 
 ### Create Workout Flow
+
 - [ ] Create new workout
 - [ ] Add workout name → Saves correctly
 - [ ] Add exercises → Save correctly
@@ -386,6 +426,7 @@ After running migration:
 - [ ] Reload page → All data persists
 
 ### Edit Workout Flow
+
 - [ ] Open existing workout
 - [ ] Modify exercise in group → Updates correctly
 - [ ] Move exercise to different group → Updates correctly
@@ -394,6 +435,7 @@ After running migration:
 - [ ] Reload → Changes persist
 
 ### Group Operations
+
 - [ ] Create superset (2-4 exercises) → Works
 - [ ] Create circuit (5+ exercises, multiple rounds) → Works
 - [ ] Create section (workout phase) → Works
@@ -405,16 +447,19 @@ After running migration:
 ## Summary of Fixes Applied
 
 ### ✅ COMPLETED
+
 1. **Workout Name Persistence** - Name syncs immediately, persists through all operations
 2. **Groups Passed to API** - Frontend now sends groups in API call
 3. **Number Input UX** - Backspace works smoothly, validates on blur
 4. **Database Column Mapping** - camelCase ↔ snake_case properly handled
 
 ### 🔧 REQUIRES MANUAL STEP
+
 1. **Run Database Migration** - Execute `add-workout-groups-and-blocks.sql` in Supabase
 2. **Update API Route** - Add groups/blocks to request parameters
 
 ### 📊 IMPACT
+
 - **Before**: Groups silently fail, all group data lost on save
 - **After**: Complete workout structure persists, including supersets, circuits, all metadata
 
@@ -423,6 +468,7 @@ After running migration:
 ## Recommendation
 
 **CRITICAL**: Run the database migration IMMEDIATELY. Until these tables exist:
+
 - ❌ All exercise groups will be lost on save
 - ❌ Users will lose their superset/circuit configurations
 - ❌ Advanced exercise features (weight ranges, tempo, notes) won't persist

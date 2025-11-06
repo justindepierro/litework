@@ -22,6 +22,7 @@ This is a modern full-stack web application built with:
 ### Core Tables (34 total)
 
 **Workouts** (6 tables):
+
 - `workout_plans` - Workout templates
 - `workout_exercises` - Exercises with 23 columns (sets, reps, weight, tempo, notes, etc.)
 - `workout_exercise_groups` - Supersets, circuits, sections
@@ -30,6 +31,7 @@ This is a modern full-stack web application built with:
 - `workout_assignments` - Workout assignments to athletes
 
 **Exercises** (5 tables):
+
 - `exercises` - Exercise library (500+ movements)
 - `exercise_muscle_groups` - Exercise-to-muscle mapping
 - `muscle_groups` - Muscle group definitions
@@ -37,18 +39,21 @@ This is a modern full-stack web application built with:
 - `user_exercise_preferences` - Athlete preferences
 
 **Progress Tracking** (4 tables):
+
 - `athlete_kpis` - 1RMs and performance metrics
 - `progress_entries` - Weight, measurements
 - `session_exercises` - Exercises per session
 - `set_records` - Individual set data (weight, reps, RPE)
 
 **IMPORTANT**: Always check `docs/DATABASE_SCHEMA.md` before:
+
 - Creating new database queries
 - Adding new tables or columns
 - Understanding data relationships
 - Writing migrations
 
 ### Current Schema Export
+
 - **Live Schema**: `database-export/schema-dump.sql` (auto-generated from production)
 - **Export Tool**: `./scripts/database/export-schema.sh`
 

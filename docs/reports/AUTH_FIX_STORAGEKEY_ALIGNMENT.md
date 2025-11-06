@@ -12,6 +12,7 @@
 ## Problem Description
 
 ### Symptoms
+
 - User successfully logs in (client-side auth works)
 - All API routes return 401 Unauthorized
 - Session appears to exist in browser but server can't read it
@@ -25,6 +26,7 @@
 ### Root Cause
 
 **Client-Side** (`src/lib/supabase.ts`):
+
 ```typescript
 createBrowserClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -34,6 +36,7 @@ createBrowserClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 **Server-Side** (`src/lib/auth-server.ts` - BEFORE FIX):
+
 ```typescript
 createServerClient(supabaseUrl, supabaseAnonKey, {
   cookies: {
@@ -54,6 +57,7 @@ createServerClient(supabaseUrl, supabaseAnonKey, {
 ### Files Modified (4 files)
 
 #### 1. `src/lib/auth-server.ts`
+
 **Primary fix** - Added storageKey to main authentication helper:
 
 ```typescript
@@ -79,11 +83,13 @@ const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 **Added Features**:
+
 - ✅ Matching `storageKey` configuration
 - ✅ `set()` handler for server-side cookie operations
 - ✅ `remove()` handler for signout functionality
 
 #### 2. `src/app/api/notifications/inbox/route.ts`
+
 Fixed `getAuthenticatedSupabase()` helper:
 
 ```typescript
@@ -100,6 +106,7 @@ const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 #### 3. `src/app/api/user/preferences/route.ts`
+
 Fixed both GET and PATCH handlers (2 instances):
 
 ```typescript
@@ -116,6 +123,7 @@ const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 #### 4. `src/app/api/groups/members/route.ts`
+
 Fixed `getSupabaseClient()` helper:
 
 ```typescript
@@ -139,7 +147,9 @@ async function getSupabaseClient() {
 ## Verification Steps
 
 ### 1. Check Cookie Configuration
+
 **Before Fix**:
+
 ```
 Client cookies: litework-auth-token, litework-auth-token-code-verifier
 Server expects: sb-<project>-auth-token, sb-<project>-auth-token-code-verifier
@@ -147,6 +157,7 @@ Result: Cookie mismatch → 401 errors
 ```
 
 **After Fix**:
+
 ```
 Client cookies: litework-auth-token, litework-auth-token-code-verifier
 Server reads:   litework-auth-token, litework-auth-token-code-verifier
@@ -156,6 +167,7 @@ Result: Cookie match → Successful authentication ✅
 ### 2. Test Authentication Flow
 
 **Step 1**: Clear browser data
+
 ```
 1. Open DevTools → Application → Storage
 2. Clear site data (cookies, localStorage, sessionStorage)
@@ -163,6 +175,7 @@ Result: Cookie match → Successful authentication ✅
 ```
 
 **Step 2**: Sign in again
+
 ```
 1. Navigate to /login
 2. Enter credentials
@@ -170,6 +183,7 @@ Result: Cookie match → Successful authentication ✅
 ```
 
 **Step 3**: Verify API calls succeed
+
 ```
 Expected results:
 ✅ /api/notifications/inbox → 200 OK
@@ -180,13 +194,16 @@ Expected results:
 ```
 
 ### 3. Check Browser Console
+
 **Before Fix**:
+
 ```
 ❌ Failed to load resource: 401 (Unauthorized)
 ❌ API request failed: Unauthorized
 ```
 
 **After Fix**:
+
 ```
 ✅ No 401 errors
 ✅ Clean console output
@@ -198,25 +215,30 @@ Expected results:
 ## Impact Assessment
 
 ### Immediate Impact
+
 - ✅ All authenticated API routes now work correctly
 - ✅ Session persists across page reloads and navigation
 - ✅ No more 401 Unauthorized errors for logged-in users
 - ✅ Consistent authentication behavior client-server
 
 ### Code Quality
+
 - **Lines Modified**: 32 insertions across 4 files
 - **Breaking Changes**: None (users just need to re-login)
 - **TypeScript Errors**: 0
 - **Lint Warnings**: 0
 
 ### User Experience
+
 **Before**:
+
 - User logs in successfully
 - Dashboard loads but shows no data
 - API calls fail silently or show errors
 - User confused about authentication status
 
 **After**:
+
 - User logs in successfully
 - Dashboard loads with all data
 - All API calls work seamlessly
@@ -227,6 +249,7 @@ Expected results:
 ## Best Practices Established
 
 ### 1. Consistent Cookie Configuration
+
 ```typescript
 // ✅ ALWAYS specify storageKey in BOTH client and server
 
@@ -242,6 +265,7 @@ auth: {
 ```
 
 ### 2. Complete Cookie Handler
+
 ```typescript
 // ✅ Provide ALL cookie methods for full SSR support
 cookies: {
@@ -252,6 +276,7 @@ cookies: {
 ```
 
 ### 3. Centralized Auth Utilities
+
 - Primary auth logic in `src/lib/auth-server.ts`
 - API routes use `getAuthenticatedUser()` when possible
 - Consistent storageKey across all API helpers
@@ -261,6 +286,7 @@ cookies: {
 ## Future Prevention
 
 ### Code Review Checklist
+
 When adding new API routes that use Supabase authentication:
 
 - [ ] Uses `getAuthenticatedUser()` from `auth-server.ts` (preferred)
@@ -271,6 +297,7 @@ When adding new API routes that use Supabase authentication:
   - [ ] `cookies.remove()` handler (if needed)
 
 ### Testing Protocol
+
 For any authentication-related changes:
 
 1. Test with fresh browser session (clear cookies)
@@ -300,6 +327,7 @@ For any authentication-related changes:
 **Status**: Deployed ✅
 
 **Commit Message**:
+
 ```
 fix: align Supabase SSR storageKey across client and server
 

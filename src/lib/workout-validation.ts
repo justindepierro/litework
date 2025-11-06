@@ -1,6 +1,6 @@
 /**
  * Workout Validation Utilities
- * 
+ *
  * Client-side validation for workout data to provide instant feedback
  * and reduce unnecessary API calls. Validates structure, required fields,
  * and business logic constraints.
@@ -23,7 +23,9 @@ export interface ValidationResult {
 /**
  * Validate a complete workout plan
  */
-export function validateWorkout(workout: Partial<WorkoutPlan>): ValidationResult {
+export function validateWorkout(
+  workout: Partial<WorkoutPlan>
+): ValidationResult {
   const errors: ValidationError[] = [];
   const warnings: ValidationError[] = [];
 
@@ -145,8 +147,11 @@ export function validateExercise(
 
   // Reps validation
   if (exercise.reps) {
-    const repsNum = typeof exercise.reps === "string" ? parseInt(exercise.reps) : exercise.reps;
-    
+    const repsNum =
+      typeof exercise.reps === "string"
+        ? parseInt(exercise.reps)
+        : exercise.reps;
+
     if (isNaN(repsNum)) {
       // Allow rep ranges like "8-12" or "AMRAP"
       const repsStr = String(exercise.reps);
@@ -193,7 +198,10 @@ export function validateExercise(
   }
 
   // Percentage validation
-  if (exercise.weightType === "percentage" && exercise.percentage !== undefined) {
+  if (
+    exercise.weightType === "percentage" &&
+    exercise.percentage !== undefined
+  ) {
     if (exercise.percentage < 0 || exercise.percentage > 200) {
       errors.push({
         field: `exercises[${index}].percentage`,
@@ -201,7 +209,7 @@ export function validateExercise(
         severity: "error",
       });
     }
-    
+
     // Check for percentage base KPI
     if (!exercise.percentageBaseKPI) {
       warnings.push({
@@ -283,7 +291,7 @@ export function validateGroup(
 
   // Check that group has exercises
   const groupExercises = allExercises.filter((ex) => ex.groupId === group.id);
-  
+
   if (groupExercises.length === 0) {
     warnings.push({
       field: `groups[${index}].exercises`,
@@ -338,7 +346,10 @@ export function validateGroup(
     });
   }
 
-  if (group.restBetweenExercises !== undefined && group.restBetweenExercises < 0) {
+  if (
+    group.restBetweenExercises !== undefined &&
+    group.restBetweenExercises < 0
+  ) {
     errors.push({
       field: `groups[${index}].restBetweenExercises`,
       message: `Group ${position} "${group.name}": Rest between exercises cannot be negative`,
@@ -420,7 +431,9 @@ export function getCriticalErrors(result: ValidationResult): ValidationError[] {
 /**
  * Check if workout meets minimum requirements for saving
  */
-export function getMinimumRequirements(workout: Partial<WorkoutPlan>): string[] {
+export function getMinimumRequirements(
+  workout: Partial<WorkoutPlan>
+): string[] {
   const missing: string[] = [];
 
   if (!workout.name || workout.name.trim().length === 0) {
@@ -431,14 +444,13 @@ export function getMinimumRequirements(workout: Partial<WorkoutPlan>): string[] 
     missing.push("At least one exercise");
   } else {
     const invalidExercises = workout.exercises.filter(
-      (ex) =>
-        !ex.exerciseName ||
-        ex.sets === undefined ||
-        ex.sets < 1
+      (ex) => !ex.exerciseName || ex.sets === undefined || ex.sets < 1
     );
-    
+
     if (invalidExercises.length > 0) {
-      missing.push(`${invalidExercises.length} exercise(s) missing name or sets`);
+      missing.push(
+        `${invalidExercises.length} exercise(s) missing name or sets`
+      );
     }
   }
 

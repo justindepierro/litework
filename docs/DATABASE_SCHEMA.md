@@ -7,6 +7,7 @@
 ## Quick Reference
 
 ### Core Tables
+
 - [Users & Authentication](#users--authentication)
 - [Workouts](#workouts)
 - [Exercises](#exercises)
@@ -19,9 +20,11 @@
 ## Users & Authentication
 
 ### `users`
+
 **Purpose**: User profiles and authentication data
 
 **Key Columns**:
+
 - `id` (UUID, PK) - User identifier (matches auth.users)
 - `email` (TEXT) - User email
 - `role` (TEXT) - 'admin', 'coach', 'athlete'
@@ -37,9 +40,11 @@
 ## Workouts
 
 ### `workout_plans`
+
 **Purpose**: Main workout templates created by coaches
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Workout identifier
 - `name` (TEXT, NOT NULL) - Workout name (e.g., "Monday Upper Body")
 - `description` (TEXT) - Workout description/notes
@@ -54,9 +59,11 @@
 ---
 
 ### `workout_exercises`
+
 **Purpose**: Individual exercises within a workout
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Exercise instance identifier
 - `workout_plan_id` (UUID, FK) - Parent workout
 - `exercise_id` (TEXT, NOT NULL) - Reference to exercise in library
@@ -84,6 +91,7 @@
 **Related Tables**: workout_plans, workout_exercise_groups, exercises
 
 **Weight Type Examples**:
+
 ```javascript
 // Fixed weight
 { weight_type: 'fixed', weight: 135, weight_max: 155 } // 135-155 lbs
@@ -98,9 +106,11 @@
 ---
 
 ### `workout_exercise_groups`
+
 **Purpose**: Groups of exercises (supersets, circuits, sections)
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Group identifier
 - `workout_plan_id` (UUID, FK) - Parent workout
 - `name` (TEXT, NOT NULL) - Group name (e.g., "Superset 1", "Upper Body Circuit")
@@ -115,6 +125,7 @@
 - `created_at` (TIMESTAMP) - Creation timestamp
 
 **Type Definitions**:
+
 - **Superset**: 2-4 exercises performed back-to-back with minimal rest
 - **Circuit**: 5+ exercises performed in sequence, often for conditioning
 - **Section**: Workout phase grouping (e.g., "Warmup", "Main Lifts", "Accessory Work")
@@ -122,6 +133,7 @@
 **Related Tables**: workout_plans, workout_exercises
 
 **Usage Example**:
+
 ```javascript
 {
   name: "Superset 1",
@@ -139,9 +151,11 @@
 ---
 
 ### `workout_block_instances`
+
 **Purpose**: Instances of reusable workout templates (blocks)
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Instance identifier
 - `workout_plan_id` (UUID, FK) - Parent workout
 - `source_block_id` (UUID) - Reference to original block template
@@ -165,9 +179,11 @@
 ---
 
 ### `workout_blocks`
+
 **Purpose**: Reusable workout templates
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Block identifier
 - `name` (TEXT, NOT NULL) - Block name
 - `description` (TEXT) - Block description
@@ -181,9 +197,11 @@
 ---
 
 ### `workout_sessions`
+
 **Purpose**: Completed workout instances by athletes
 
 **Key Columns**:
+
 - `id` (UUID, PK) - Session identifier
 - `athlete_id` (UUID, FK) - User who performed the workout
 - `workout_plan_id` (UUID, FK) - Original workout plan
@@ -199,9 +217,11 @@
 ---
 
 ### `session_exercises`
+
 **Purpose**: Exercises performed during a workout session
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `workout_session_id` (UUID, FK) - Parent session
 - `workout_exercise_id` (UUID, FK) - Original planned exercise
@@ -216,9 +236,11 @@
 ---
 
 ### `set_records`
+
 **Purpose**: Individual set records (weight, reps, RPE per set)
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `session_exercise_id` (UUID, FK) - Parent session exercise
 - `set_number` (INTEGER) - Which set (1, 2, 3, etc.)
@@ -232,6 +254,7 @@
 **Related Tables**: session_exercises
 
 **Example**:
+
 ```javascript
 // Bench Press - Set 1
 { set_number: 1, reps: 8, weight: 135, rpe: 7 }
@@ -244,9 +267,11 @@
 ## Exercises
 
 ### `exercises`
+
 **Purpose**: Exercise library (movements database)
 
 **Key Columns**:
+
 - `id` (TEXT, PK) - Unique exercise identifier (slug format)
 - `name` (TEXT, NOT NULL) - Display name
 - `description` (TEXT) - Exercise description/instructions
@@ -260,9 +285,11 @@
 ---
 
 ### `exercise_muscle_groups`
+
 **Purpose**: Many-to-many mapping of exercises to muscle groups
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `exercise_id` (TEXT, FK) - Exercise
 - `muscle_group_id` (UUID, FK) - Muscle group
@@ -274,9 +301,11 @@
 ---
 
 ### `muscle_groups`
+
 **Purpose**: Muscle groups database
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `name` (TEXT, NOT NULL) - e.g., "Quadriceps", "Chest", "Hamstrings"
 - `description` (TEXT)
@@ -285,9 +314,11 @@
 ---
 
 ### `exercise_analytics`
+
 **Purpose**: Exercise usage tracking and analytics
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `exercise_id` (TEXT, FK) - Exercise being tracked
 - `user_id` (UUID, FK) - User (coach or athlete)
@@ -302,9 +333,11 @@
 ## Progress Tracking
 
 ### `athlete_kpis`
+
 **Purpose**: Key Performance Indicators for athletes (1RMs, etc.)
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `athlete_id` (UUID, FK) - User
 - `exercise_id` (TEXT, FK) - Exercise
@@ -317,8 +350,9 @@
 **Related Tables**: users, exercises
 
 **Example**:
+
 ```javascript
-{ 
+{
   athlete_id: "uuid",
   exercise_id: "back-squat",
   kpi_type: "one_rm",
@@ -330,9 +364,11 @@
 ---
 
 ### `progress_entries`
+
 **Purpose**: General progress tracking (weight, measurements, etc.)
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `athlete_id` (UUID, FK)
 - `entry_type` (TEXT) - 'bodyweight', 'body_fat', 'measurement'
@@ -349,9 +385,11 @@
 ## Groups & Assignments
 
 ### `athlete_groups`
+
 **Purpose**: Groups of athletes (teams, positions, etc.)
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `name` (TEXT, NOT NULL) - Group name (e.g., "Varsity Football", "Volleyball Girls")
 - `description` (TEXT)
@@ -366,9 +404,11 @@
 ---
 
 ### `workout_assignments`
+
 **Purpose**: Assigns workouts to athletes or groups
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `workout_plan_id` (UUID, FK) - Workout being assigned
 - `athlete_id` (UUID, FK) - Individual athlete (if individual assignment)
@@ -388,9 +428,11 @@
 ## Communication
 
 ### `notifications`
+
 **Purpose**: User notifications
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK) - Recipient
 - `type` (TEXT) - Notification type
@@ -405,9 +447,11 @@
 ---
 
 ### `messages`
+
 **Purpose**: Direct messages between users
 
 **Key Columns**:
+
 - `id` (UUID, PK)
 - `sender_id` (UUID, FK)
 - `recipient_id` (UUID, FK)
@@ -430,6 +474,7 @@ All tables have Row Level Security enabled with policies for:
 - **DELETE**: Users can delete records they own
 
 **Role Hierarchy**:
+
 - **admin**: Full access to all data
 - **coach**: Can manage athletes, workouts, groups
 - **athlete**: Can view assigned workouts, record sessions, track progress
@@ -439,8 +484,9 @@ All tables have Row Level Security enabled with policies for:
 ## Common Queries
 
 ### Get Workout with All Exercises and Groups
+
 ```sql
-SELECT 
+SELECT
   wp.*,
   json_agg(DISTINCT jsonb_build_object(
     'id', we.id,
@@ -464,8 +510,9 @@ GROUP BY wp.id;
 ```
 
 ### Get Athlete's Assigned Workouts
+
 ```sql
-SELECT 
+SELECT
   wa.*,
   wp.name as workout_name,
   wp.estimated_duration,
@@ -479,8 +526,9 @@ ORDER BY wa.scheduled_date;
 ```
 
 ### Get Athlete's Progress for Exercise
+
 ```sql
-SELECT 
+SELECT
   sr.*,
   se.exercise_name,
   ws.completed_at
@@ -498,6 +546,7 @@ LIMIT 20;
 ## Migration History
 
 ### November 2025 - Groups and Blocks Enhancement
+
 - Added `workout_exercise_groups` table for supersets/circuits
 - Added `workout_block_instances` table for template customization
 - Enhanced `workout_exercises` with 10 additional columns:
@@ -506,6 +555,7 @@ LIMIT 20;
   - `block_instance_id`, `substitution_reason`, `original_exercise`, `progression_notes`
 
 ### Schema File Location
+
 - **Full Schema**: `database-export/schema-dump.sql`
 - **Schema Documentation**: This file
 - **Migration Scripts**: `database/*.sql`
@@ -515,6 +565,7 @@ LIMIT 20;
 ## Maintenance
 
 ### Backup Strategy
+
 ```bash
 # Export full schema
 supabase db dump --linked --data-only=false > backup-schema.sql
@@ -524,6 +575,7 @@ supabase db dump --linked --data-only --table public.workout_plans > workout_pla
 ```
 
 ### Schema Updates
+
 1. Test changes locally first
 2. Create migration script in `/database/`
 3. Apply to production via Supabase Dashboard → SQL Editor
@@ -533,6 +585,7 @@ supabase db dump --linked --data-only --table public.workout_plans > workout_pla
 ---
 
 **For more information**:
+
 - See `database/schema.sql` for legacy schema reference
 - See `database-export/schema-dump.sql` for current production schema
 - See `ARCHITECTURE.md` for application architecture and auth patterns

@@ -40,19 +40,17 @@ export async function POST(request: NextRequest) {
 
     if (existingExercise) {
       // Exercise exists - update analytics (using upsert for exercise_analytics)
-      await supabase
-        .from("exercise_analytics")
-        .upsert(
-          {
-            exercise_id: existingExercise.id,
-            usage_count: 1, // Will be incremented by the trigger
-            last_used_at: new Date().toISOString(),
-          },
-          {
-            onConflict: "exercise_id",
-            ignoreDuplicates: false,
-          }
-        );
+      await supabase.from("exercise_analytics").upsert(
+        {
+          exercise_id: existingExercise.id,
+          usage_count: 1, // Will be incremented by the trigger
+          last_used_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "exercise_id",
+          ignoreDuplicates: false,
+        }
+      );
 
       return NextResponse.json({
         success: true,

@@ -76,11 +76,11 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
   const saveExercise = async () => {
     let updatedExercise = editedExercise;
-    
+
     console.log("[ExerciseItem] saveExercise called:", {
       original: exercise.exerciseName,
       edited: editedExercise.exerciseName,
-      exerciseId: exercise.id
+      exerciseId: exercise.id,
     });
 
     // If exercise name changed and we have the callback, add to library
@@ -126,7 +126,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
               className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
             />
           )}
-          
+
           <div className="flex flex-col space-y-1">
             <button
               onClick={onMoveUp}
@@ -186,7 +186,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         // Allow empty string while typing, convert to number or default to 1
                         setEditedExercise({
                           ...editedExercise,
-                          sets: value === '' ? 0 : parseInt(value) || 0,
+                          sets: value === "" ? 0 : parseInt(value) || 0,
                         });
                       }}
                       onBlur={() => {
@@ -215,7 +215,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         // Allow empty string while typing
                         setEditedExercise({
                           ...editedExercise,
-                          reps: value === '' ? 0 : parseInt(value) || 0,
+                          reps: value === "" ? 0 : parseInt(value) || 0,
                         });
                       }}
                       onBlur={() => {
@@ -309,7 +309,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           const value = e.target.value;
                           setEditedExercise({
                             ...editedExercise,
-                            weight: value === '' ? undefined : parseFloat(value),
+                            weight:
+                              value === "" ? undefined : parseFloat(value),
                           });
                         }}
                         className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
@@ -325,7 +326,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           const value = e.target.value;
                           setEditedExercise({
                             ...editedExercise,
-                            weightMax: value === '' ? undefined : parseFloat(value),
+                            weightMax:
+                              value === "" ? undefined : parseFloat(value),
                           });
                         }}
                         className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
@@ -334,7 +336,10 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         step="5"
                       />
                     </div>
-                    <p className="text-xs text-silver-500 mt-1">Leave max empty for single weight, or fill for range (e.g., 20-30 lbs)</p>
+                    <p className="text-xs text-silver-500 mt-1">
+                      Leave max empty for single weight, or fill for range
+                      (e.g., 20-30 lbs)
+                    </p>
                   </div>
                 )}
 
@@ -351,7 +356,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           const value = e.target.value;
                           setEditedExercise({
                             ...editedExercise,
-                            percentage: value === '' ? undefined : parseFloat(value),
+                            percentage:
+                              value === "" ? undefined : parseFloat(value),
                           });
                         }}
                         className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
@@ -368,7 +374,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           const value = e.target.value;
                           setEditedExercise({
                             ...editedExercise,
-                            percentageMax: value === '' ? undefined : parseFloat(value),
+                            percentageMax:
+                              value === "" ? undefined : parseFloat(value),
                           });
                         }}
                         className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
@@ -378,7 +385,10 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         step="5"
                       />
                     </div>
-                    <p className="text-xs text-silver-500 mt-1">Leave max empty for single %, or fill for range (e.g., 70-80%)</p>
+                    <p className="text-xs text-silver-500 mt-1">
+                      Leave max empty for single %, or fill for range (e.g.,
+                      70-80%)
+                    </p>
                   </div>
                 )}
 
@@ -978,7 +988,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
   onClose,
   onCreateGroup,
 }) => {
-  const [groupType, setGroupType] = useState<"superset" | "circuit" | "section">("superset");
+  const [groupType, setGroupType] = useState<
+    "superset" | "circuit" | "section"
+  >("superset");
   const [rounds, setRounds] = useState<number>(3);
   const [restBetweenExercises, setRestBetweenExercises] = useState<number>(30);
   const [restBetweenRounds, setRestBetweenRounds] = useState<number>(90);
@@ -1037,7 +1049,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
               >
                 <RotateCcw className="w-6 h-6 mx-auto mb-2" />
                 <div className="text-sm font-medium">Circuit</div>
-                <div className="text-xs text-gray-500 mt-1">Multiple rounds</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Multiple rounds
+                </div>
               </button>
 
               <button
@@ -1063,7 +1077,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
             <input
               type="number"
               value={restBetweenExercises}
-              onChange={(e) => setRestBetweenExercises(parseInt(e.target.value) || 0)}
+              onChange={(e) =>
+                setRestBetweenExercises(parseInt(e.target.value) || 0)
+              }
               min="0"
               step="15"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1094,7 +1110,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 <input
                   type="number"
                   value={restBetweenRounds}
-                  onChange={(e) => setRestBetweenRounds(parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    setRestBetweenRounds(parseInt(e.target.value) || 0)
+                  }
                   min="0"
                   step="15"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1132,16 +1150,18 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 }) => {
   // Workout name state - MUST be at top so it's available to updateWorkout
   const [workoutName, setWorkoutName] = useState(workout.name || "");
-  
+
   // UI-only state (not part of workout data)
   const [showBlockLibrary, setShowBlockLibrary] = useState(false);
   const [showBlockEditor, setShowBlockEditor] = useState(false);
   const [editingBlockInstance, setEditingBlockInstance] =
     useState<BlockInstance | null>(null);
-  
+
   // Multi-select state
   const [selectionMode, setSelectionMode] = useState(false);
-  const [selectedExerciseIds, setSelectedExerciseIds] = useState<Set<string>>(new Set());
+  const [selectedExerciseIds, setSelectedExerciseIds] = useState<Set<string>>(
+    new Set()
+  );
   const [showGroupModal, setShowGroupModal] = useState(false);
 
   // Update workout data - single source of truth through onChange
@@ -1150,19 +1170,19 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       console.log("[WorkoutEditor] updateWorkout called:", {
         name: updatedWorkout.name,
         exerciseCount: updatedWorkout.exercises?.length,
-        exercises: updatedWorkout.exercises?.map(ex => ({
+        exercises: updatedWorkout.exercises?.map((ex) => ({
           id: ex.id,
-          name: ex.exerciseName
-        }))
+          name: ex.exerciseName,
+        })),
       });
-      
+
       // CRITICAL: Always include the current workout name from local state
       // This ensures the name persists even when other properties change
       const workoutWithName = {
         ...updatedWorkout,
         name: workoutName || updatedWorkout.name,
       };
-      
+
       console.log("[WorkoutEditor] Calling parent onChange with workout");
       onChange(workoutWithName);
     },
@@ -1245,17 +1265,20 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     console.log("[WorkoutEditor] updateExercise called:", {
       id: updatedExercise.id,
       name: updatedExercise.exerciseName,
-      currentExercises: workout.exercises.length
+      currentExercises: workout.exercises.length,
     });
-    
+
     const updatedExercises = workout.exercises.map((ex) =>
       ex.id === updatedExercise.id ? updatedExercise : ex
     );
-    
-    console.log("[WorkoutEditor] Updated exercises array:", updatedExercises.map(ex => ({
-      id: ex.id,
-      name: ex.exerciseName
-    })));
+
+    console.log(
+      "[WorkoutEditor] Updated exercises array:",
+      updatedExercises.map((ex) => ({
+        id: ex.id,
+        name: ex.exerciseName,
+      }))
+    );
 
     updateWorkout({
       ...workout,
@@ -1419,10 +1442,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     const timestamp = Date.now();
     const blockInstanceId = `block-instance-${timestamp}`;
 
-    const maxOrder = Math.max(
-      ...workout.exercises.map((ex) => ex.order),
-      0
-    );
+    const maxOrder = Math.max(...workout.exercises.map((ex) => ex.order), 0);
     const maxGroupOrder = Math.max(
       ...(workout.groups || []).map((g) => g.order),
       0
@@ -1469,8 +1489,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       exercises: [...workout.exercises, ...newExercises],
       groups: [...(workout.groups || []), ...newGroups],
       blockInstances: [...(workout.blockInstances || []), blockInstance],
-      estimatedDuration:
-        workout.estimatedDuration + block.estimatedDuration,
+      estimatedDuration: workout.estimatedDuration + block.estimatedDuration,
     });
 
     // Close the block library
@@ -1615,86 +1634,85 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     onClick={() => setShowBlockLibrary(true)}
                     className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                   >
-                  <Package className="w-5 h-5 sm:w-4 sm:h-4" />
-                  <span>Add Block</span>
-                </button>
-
-                <button
-                  onClick={addExercise}
-                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                >
-                  <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-                  <span>Add Exercise</span>
-                </button>
-
-                <button
-                  onClick={() => addGroup("superset")}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                >
-                  <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                  <span>Add Superset</span>
-                </button>
-
-                <button
-                  onClick={() => addGroup("circuit")}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>Add Circuit</span>
-                </button>
-
-                <button
-                  onClick={() => addGroup("section")}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                >
-                  <Target className="w-4 h-4" />
-                  <span>Add Section</span>
-                </button>
-
-                {ungroupedExercises.filter((ex) => !ex.blockInstanceId).length > 0 && (
-                  <button
-                    onClick={() => setSelectionMode(true)}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
-                  >
-                    <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-                    <span>Group Exercises</span>
+                    <Package className="w-5 h-5 sm:w-4 sm:h-4" />
+                    <span>Add Block</span>
                   </button>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
-                  {selectedExerciseIds.size === 0 ? (
-                    "Select exercises to group together"
-                  ) : (
-                    `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`
+
+                  <button
+                    onClick={addExercise}
+                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                  >
+                    <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
+                    <span>Add Exercise</span>
+                  </button>
+
+                  <button
+                    onClick={() => addGroup("superset")}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                  >
+                    <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                    <span>Add Superset</span>
+                  </button>
+
+                  <button
+                    onClick={() => addGroup("circuit")}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    <span>Add Circuit</span>
+                  </button>
+
+                  <button
+                    onClick={() => addGroup("section")}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                  >
+                    <Target className="w-4 h-4" />
+                    <span>Add Section</span>
+                  </button>
+
+                  {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
+                    .length > 0 && (
+                    <button
+                      onClick={() => setSelectionMode(true)}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
+                    >
+                      <Users className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span>Group Exercises</span>
+                    </button>
                   )}
-                </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
+                    {selectedExerciseIds.size === 0
+                      ? "Select exercises to group together"
+                      : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
+                  </div>
 
-                <button
-                  onClick={selectAllExercises}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                >
-                  <span>Select All</span>
-                </button>
+                  <button
+                    onClick={selectAllExercises}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                  >
+                    <span>Select All</span>
+                  </button>
 
-                <button
-                  onClick={() => setShowGroupModal(true)}
-                  disabled={selectedExerciseIds.size < 2}
-                  className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                  <span>Create Group</span>
-                </button>
+                  <button
+                    onClick={() => setShowGroupModal(true)}
+                    disabled={selectedExerciseIds.size < 2}
+                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                    <span>Create Group</span>
+                  </button>
 
-                <button
-                  onClick={clearSelection}
-                  className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
-                >
-                  <span>Cancel</span>
-                </button>
-              </>
-            )}
+                  <button
+                    onClick={clearSelection}
+                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
+                  >
+                    <span>Cancel</span>
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Save Workout Button - Separate Row */}

@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { RefreshCw, TestTube, Smartphone, Monitor, Lightbulb, Trash2, Cookie, LogOut } from "lucide-react";
+import {
+  RefreshCw,
+  TestTube,
+  Smartphone,
+  Monitor,
+  Lightbulb,
+  Trash2,
+  Cookie,
+  LogOut,
+} from "lucide-react";
 
 interface DiagnosticResult {
   timestamp: string;
@@ -15,8 +24,11 @@ interface DiagnosticResult {
 }
 
 export default function DiagnosePage() {
-  const [serverDiagnostics, setServerDiagnostics] = useState<DiagnosticResult | null>(null);
-  const [clientDiagnostics, setClientDiagnostics] = useState<Record<string, any>>({});
+  const [serverDiagnostics, setServerDiagnostics] =
+    useState<DiagnosticResult | null>(null);
+  const [clientDiagnostics, setClientDiagnostics] = useState<
+    Record<string, any>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -41,15 +53,16 @@ export default function DiagnosePage() {
       },
       localStorage: {
         available: typeof Storage !== "undefined",
-        supabaseKeys: Object.keys(localStorage).filter(key => 
+        supabaseKeys: Object.keys(localStorage).filter((key) =>
           key.includes("supabase")
         ),
       },
       cookies: {
-        all: document.cookie.split("; ").map(c => c.split("=")[0]),
-        supabaseCookies: document.cookie.split("; ")
-          .filter(c => c.includes("supabase"))
-          .map(c => c.split("=")[0]),
+        all: document.cookie.split("; ").map((c) => c.split("=")[0]),
+        supabaseCookies: document.cookie
+          .split("; ")
+          .filter((c) => c.includes("supabase"))
+          .map((c) => c.split("=")[0]),
       },
     };
 
@@ -71,8 +84,8 @@ export default function DiagnosePage() {
 
     // Check environment variables accessible to client
     clientChecks.publicEnvVars = {
-      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL 
-        ? "✅ SET" 
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL
+        ? "✅ SET"
         : "❌ MISSING",
       NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "NOT SET",
     };
@@ -94,7 +107,7 @@ export default function DiagnosePage() {
   const testLogin = async () => {
     const email = prompt("Enter email to test:");
     const password = prompt("Enter password to test:");
-    
+
     if (!email || !password) return;
 
     try {
@@ -103,12 +116,15 @@ export default function DiagnosePage() {
         password,
       });
 
-      alert(error 
-        ? `❌ Login failed: ${error.message}` 
-        : `✅ Login successful! User: ${data.user?.email}`
+      alert(
+        error
+          ? `❌ Login failed: ${error.message}`
+          : `✅ Login successful! User: ${data.user?.email}`
       );
     } catch (error) {
-      alert(`❌ Login error: ${error instanceof Error ? error.message : "Unknown"}`);
+      alert(
+        `❌ Login error: ${error instanceof Error ? error.message : "Unknown"}`
+      );
     }
   };
 
@@ -124,11 +140,13 @@ export default function DiagnosePage() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-2xl font-bold mb-4">Authentication Diagnostics</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            Authentication Diagnostics
+          </h1>
           <p className="text-gray-600 mb-4">
             This page helps diagnose login issues. Check for any ❌ marks below.
           </p>
-          
+
           <div className="flex gap-4">
             <button
               onClick={runDiagnostics}
@@ -137,7 +155,7 @@ export default function DiagnosePage() {
               <RefreshCw className="w-4 h-4" />
               Refresh Diagnostics
             </button>
-            
+
             <button
               onClick={testLogin}
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
@@ -166,7 +184,7 @@ export default function DiagnosePage() {
               <Monitor className="w-5 h-5" />
               Server-Side Checks
             </h2>
-            
+
             <div className="mb-4 p-4 bg-blue-50 rounded border-l-4 border-blue-500">
               <div className="font-bold text-lg mb-2">
                 {serverDiagnostics.summary.status}
@@ -188,12 +206,13 @@ export default function DiagnosePage() {
             <Lightbulb className="w-5 h-5" />
             Common Issues & Solutions
           </h2>
-          
+
           <div className="space-y-4">
             <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-bold">Missing Environment Variables</h3>
               <p className="text-gray-700">
-                If you see &ldquo;MISSING&rdquo; for any environment variables, add them in Vercel:
+                If you see &ldquo;MISSING&rdquo; for any environment variables,
+                add them in Vercel:
                 <br />
                 <code className="bg-gray-100 px-2 py-1 rounded text-sm">
                   Vercel Dashboard → Project Settings → Environment Variables
@@ -209,8 +228,7 @@ export default function DiagnosePage() {
                 • Browser allows cookies
                 <br />
                 • You&apos;re using HTTPS in production (not HTTP)
-                <br />
-                • No browser extensions blocking cookies
+                <br />• No browser extensions blocking cookies
               </p>
             </div>
 
@@ -222,17 +240,23 @@ export default function DiagnosePage() {
                 • Check Supabase dashboard is accessible
                 <br />
                 • Verify your Supabase project is not paused
-                <br />
-                • Check network tab in browser DevTools for blocked requests
+                <br />• Check network tab in browser DevTools for blocked
+                requests
               </p>
             </div>
 
             <div className="border-l-4 border-green-500 pl-4">
               <h3 className="font-bold">Test Credentials</h3>
               <p className="text-gray-700">
-                Coach account: <code className="bg-gray-100 px-2 py-1 rounded text-sm">jdepierro@burkecatholic.org</code>
+                Coach account:{" "}
+                <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                  jdepierro@burkecatholic.org
+                </code>
                 <br />
-                Password: <code className="bg-gray-100 px-2 py-1 rounded text-sm">TempPassword123!</code>
+                Password:{" "}
+                <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                  TempPassword123!
+                </code>
               </p>
             </div>
           </div>
@@ -241,7 +265,7 @@ export default function DiagnosePage() {
         {/* QUICK FIXES */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold mb-4">Quick Fixes</h2>
-          
+
           <div className="space-y-3">
             <button
               onClick={() => {
@@ -256,8 +280,10 @@ export default function DiagnosePage() {
 
             <button
               onClick={async () => {
-                document.cookie.split(";").forEach(c => {
-                  document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+                document.cookie.split(";").forEach((c) => {
+                  document.cookie =
+                    c.trim().split("=")[0] +
+                    "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
                 });
                 alert("✅ All cookies cleared. Try logging in again.");
               }}

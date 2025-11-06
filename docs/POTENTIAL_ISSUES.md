@@ -3,7 +3,7 @@
 ## ✅ Verified Working
 
 1. **TypeScript Compilation**: ✅ No errors (`npm run typecheck`)
-2. **API Route**: ✅ Accepts `groups` and `blockInstances` 
+2. **API Route**: ✅ Accepts `groups` and `blockInstances`
 3. **Database Service**: ✅ Maps camelCase ↔ snake_case correctly
 4. **Frontend Data Flow**: ✅ Groups passed to API
 5. **Exercise Order**: ✅ Set correctly in WorkoutEditor
@@ -13,19 +13,21 @@
 ## ⚠️ Potential Issues to Watch
 
 ### 1. Exercise ID Collision (Low Risk)
+
 **Location**: `src/app/api/workouts/route.ts` line 76
 
 ```typescript
 exercises: exercises.map((ex, index: number) => ({
   ...ex,
-  id: `ex-${Date.now()}-${index}`,  // ⚠️ Overwrites existing ID
-  order: index + 1,                  // ⚠️ Overwrites existing order
-}))
+  id: `ex-${Date.now()}-${index}`, // ⚠️ Overwrites existing ID
+  order: index + 1, // ⚠️ Overwrites existing order
+}));
 ```
 
 **Issue**: Exercises from frontend already have IDs (e.g., `"1730832000000"`). API overwrites with new IDs.
 
-**Impact**: 
+**Impact**:
+
 - Frontend optimistic UI shows temp ID
 - After save, API returns different ID
 - Frontend maps temp → real ID correctly (line 531-534)
@@ -35,6 +37,7 @@ exercises: exercises.map((ex, index: number) => ({
 ---
 
 ### 2. Group ID Type Mismatch (Low Risk)
+
 **Location**: Database schema
 
 ```sql
@@ -54,6 +57,7 @@ id UUID
 ---
 
 ### 3. Block Instance ID (Medium Risk)
+
 **Location**: Multiple files
 
 ```typescript
@@ -66,7 +70,8 @@ block_instance_id TEXT  // Not UUID!
 
 **Issue**: Type mismatch could cause confusion.
 
-**Current State**: 
+**Current State**:
+
 - Database has TEXT
 - Code uses string
 - ✅ Actually compatible
@@ -76,17 +81,19 @@ block_instance_id TEXT  // Not UUID!
 ---
 
 ### 4. RLS Policy Edge Case (Low Risk)
+
 **Location**: Supabase RLS policies
 
 **Scenario**: User creates workout, then loses auth, tries to add groups.
 
 **Current Policies**:
+
 ```sql
 -- INSERT policy requires workout created_by = auth.uid()
 WITH CHECK (
   EXISTS (
-    SELECT 1 FROM workout_plans 
-    WHERE id = workout_plan_id 
+    SELECT 1 FROM workout_plans
+    WHERE id = workout_plan_id
     AND created_by = auth.uid()
   )
 )
@@ -97,9 +104,11 @@ WITH CHECK (
 ---
 
 ### 5. Missing exerciseId Validation (Low Risk)
+
 **Location**: `src/app/api/workouts/route.ts`
 
 **Current Validation**:
+
 ```typescript
 if (!name || !exercises || !Array.isArray(exercises)) {
   return NextResponse.json(
@@ -114,20 +123,15 @@ if (!name || !exercises || !Array.isArray(exercises)) {
 **Impact**: Could insert malformed exercises into database.
 
 **Recommendation**: Add exercise validation:
+
 ```typescript
 // Validate each exercise
-const invalidExercise = exercises.find(ex => 
-  !ex.exerciseName || 
-  !ex.sets || 
-  !ex.reps || 
-  !ex.weightType
+const invalidExercise = exercises.find(
+  (ex) => !ex.exerciseName || !ex.sets || !ex.reps || !ex.weightType
 );
 
 if (invalidExercise) {
-  return NextResponse.json(
-    { error: "Invalid exercise data" },
-    { status: 400 }
-  );
+  return NextResponse.json({ error: "Invalid exercise data" }, { status: 400 });
 }
 ```
 
@@ -136,21 +140,24 @@ if (invalidExercise) {
 ---
 
 ### 6. Group Order vs Exercise Order (Low Risk)
+
 **Location**: Multiple files
 
 **Issue**: Both groups and exercises have an `order` field.
 
 **Current Behavior**:
-- Groups ordered by `order_index` 
+
+- Groups ordered by `order_index`
 - Exercises ordered by `order_index`
 - Groups are separate from exercise order
 
 **Example**:
+
 ```
 Group 1 (order: 1) - Warmup
   Exercise 1 (order: 1)
   Exercise 2 (order: 2)
-Group 2 (order: 2) - Main Lifts  
+Group 2 (order: 2) - Main Lifts
   Exercise 3 (order: 3)
   Exercise 4 (order: 4)
 ```
@@ -164,6 +171,7 @@ Group 2 (order: 2) - Main Lifts
 ## 🧪 Testing Recommendations
 
 ### Test 1: Basic Group Creation
+
 ```
 1. Create workout
 2. Add 3 exercises
@@ -175,6 +183,7 @@ Group 2 (order: 2) - Main Lifts
 ```
 
 ### Test 2: Multiple Groups
+
 ```
 1. Create workout
 2. Add 6 exercises
@@ -186,6 +195,7 @@ Group 2 (order: 2) - Main Lifts
 ```
 
 ### Test 3: Edit After Reload
+
 ```
 1. Create workout with groups
 2. Save
@@ -196,6 +206,7 @@ Group 2 (order: 2) - Main Lifts
 ```
 
 ### Test 4: Delete Group
+
 ```
 1. Create workout with superset
 2. Save
@@ -228,8 +239,11 @@ node scripts/database/test-workout-groups.mjs
 ## 📊 Summary
 
 ### Critical Issues: 0
-### High Priority: 0  
+
+### High Priority: 0
+
 ### Medium Priority: 0
+
 ### Low Priority: 1 (exercise validation)
 
 **Overall Status**: 🟢 READY TO USE

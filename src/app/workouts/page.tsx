@@ -4,7 +4,15 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useToast } from "@/components/ToastProvider";
 import { WorkoutPlan, WorkoutExercise } from "@/types";
-import { Dumbbell, Plus, Library, XCircle, ChevronDown, ChevronUp, Users } from "lucide-react";
+import {
+  Dumbbell,
+  Plus,
+  Library,
+  XCircle,
+  ChevronDown,
+  ChevronUp,
+  Users,
+} from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import {
@@ -239,7 +247,7 @@ export default function WorkoutsPage() {
                     // Check if this is a temporary (optimistic) workout
                     const isOptimistic = workout.id.startsWith("temp-");
                     const isExpanded = expandedWorkout === workout.id;
-                    
+
                     return (
                       <div
                         key={workout.id}
@@ -248,9 +256,11 @@ export default function WorkoutsPage() {
                         }`}
                       >
                         {/* Header - Always visible, clickable to expand */}
-                        <div 
+                        <div
                           className="flex justify-between items-start mb-3 cursor-pointer hover:bg-gray-50 -m-4 p-4 rounded-lg transition-colors"
-                          onClick={() => setExpandedWorkout(isExpanded ? null : workout.id)}
+                          onClick={() =>
+                            setExpandedWorkout(isExpanded ? null : workout.id)
+                          }
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
@@ -288,12 +298,18 @@ export default function WorkoutsPage() {
                                 Exercises ({workout.exercises.length})
                               </div>
                               {workout.exercises.map((exercise, index) => (
-                                <div key={exercise.id} className="border-l-2 border-blue-500 pl-3 py-2 bg-gray-50 rounded">
+                                <div
+                                  key={exercise.id}
+                                  className="border-l-2 border-blue-500 pl-3 py-2 bg-gray-50 rounded"
+                                >
                                   <div className="font-medium text-body-small">
                                     {index + 1}. {exercise.exerciseName}
                                   </div>
                                   <div className="text-xs text-gray-600 mt-1 space-y-1">
-                                    <div>Sets: {exercise.sets} × Reps: {exercise.reps}</div>
+                                    <div>
+                                      Sets: {exercise.sets} × Reps:{" "}
+                                      {exercise.reps}
+                                    </div>
                                     <div>Weight: {formatWeight(exercise)}</div>
                                     {exercise.restTime && (
                                       <div>Rest: {exercise.restTime}s</div>
@@ -302,7 +318,9 @@ export default function WorkoutsPage() {
                                       <div>Tempo: {exercise.tempo}</div>
                                     )}
                                     {exercise.notes && (
-                                      <div className="italic">Note: {exercise.notes}</div>
+                                      <div className="italic">
+                                        Note: {exercise.notes}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -314,7 +332,10 @@ export default function WorkoutsPage() {
                               {workout.exercises
                                 .slice(0, 3)
                                 .map((exercise, index) => (
-                                  <div key={exercise.id} className="text-body-small">
+                                  <div
+                                    key={exercise.id}
+                                    className="text-body-small"
+                                  >
                                     {index + 1}. {exercise.exerciseName} -{" "}
                                     {exercise.sets}×{exercise.reps} @{" "}
                                     {formatWeight(exercise)}
@@ -329,33 +350,33 @@ export default function WorkoutsPage() {
                           )}
                         </div>
 
-                      <div className="flex gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingWorkout(workout);
-                          }}
-                          className="btn-secondary flex-1"
-                          disabled={isOptimistic}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedWorkout(workout);
-                            setShowAssignForm(true);
-                          }}
-                          className="btn-primary flex-1 flex items-center justify-center gap-1"
-                          disabled={isOptimistic}
-                        >
-                          <Users className="w-4 h-4" />
-                          Assign
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingWorkout(workout);
+                            }}
+                            className="btn-secondary flex-1"
+                            disabled={isOptimistic}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedWorkout(workout);
+                              setShowAssignForm(true);
+                            }}
+                            className="btn-primary flex-1 flex items-center justify-center gap-1"
+                            disabled={isOptimistic}
+                          >
+                            <Users className="w-4 h-4" />
+                            Assign
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
                 )}
               </div>
             )}
@@ -502,76 +523,223 @@ export default function WorkoutsPage() {
                   updatedAt: new Date(),
                 }
               }
-            onChange={async (updatedWorkout) => {
-              console.log("[page.tsx] onChange ENTRY:", {
-                creatingWorkout,
-                editingWorkout: !!editingWorkout,
-                updatedWorkoutName: updatedWorkout.name
-              });
-              
-              // For creating new workouts
-              if (creatingWorkout) {
-                // Check if this is an explicit save request (user clicked "Save Workout" button)
-                const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
-                const shouldSave = workoutWithFlag._shouldSave;
-                
-                console.log("[page.tsx] onChange called:", { 
-                  shouldSave, 
-                  name: updatedWorkout.name,
-                  exerciseCount: updatedWorkout.exercises?.length,
-                  firstExercise: updatedWorkout.exercises?.[0]?.exerciseName
+              onChange={async (updatedWorkout) => {
+                console.log("[page.tsx] onChange ENTRY:", {
+                  creatingWorkout,
+                  editingWorkout: !!editingWorkout,
+                  updatedWorkoutName: updatedWorkout.name,
                 });
-                
-                // ALWAYS update local state first (for UI reactivity)
-                setNewWorkout(updatedWorkout);
-                
-                if (!shouldSave) {
-                  // Just editing - update state only, don't save to API yet
-                  console.log("[page.tsx] State updated, not saving to API yet");
-                  return;
-                }
-                
-                // Remove the flag before saving
-                delete workoutWithFlag._shouldSave;
-                
-                // Validate workout before saving
-                const validationResult = validateWorkout(updatedWorkout);
-                
-                // Check if workout can be saved (has minimum requirements)
-                if (!canSaveWorkout(updatedWorkout)) {
-                  // Not ready to save yet - just update state and return
-                  return;
-                }
 
-                // Show validation warnings to user (non-blocking)
-                if (validationResult.warnings.length > 0) {
-                  console.warn("Workout validation warnings:", validationResult.warnings);
+                // For creating new workouts
+                if (creatingWorkout) {
+                  // Check if this is an explicit save request (user clicked "Save Workout" button)
+                  const workoutWithFlag = updatedWorkout as WorkoutPlan & {
+                    _shouldSave?: boolean;
+                  };
+                  const shouldSave = workoutWithFlag._shouldSave;
+
+                  console.log("[page.tsx] onChange called:", {
+                    shouldSave,
+                    name: updatedWorkout.name,
+                    exerciseCount: updatedWorkout.exercises?.length,
+                    firstExercise: updatedWorkout.exercises?.[0]?.exerciseName,
+                  });
+
+                  // ALWAYS update local state first (for UI reactivity)
+                  setNewWorkout(updatedWorkout);
+
+                  if (!shouldSave) {
+                    // Just editing - update state only, don't save to API yet
+                    console.log(
+                      "[page.tsx] State updated, not saving to API yet"
+                    );
+                    return;
+                  }
+
+                  // Remove the flag before saving
+                  delete workoutWithFlag._shouldSave;
+
+                  // Validate workout before saving
+                  const validationResult = validateWorkout(updatedWorkout);
+
+                  // Check if workout can be saved (has minimum requirements)
+                  if (!canSaveWorkout(updatedWorkout)) {
+                    // Not ready to save yet - just update state and return
+                    return;
+                  }
+
+                  // Show validation warnings to user (non-blocking)
+                  if (validationResult.warnings.length > 0) {
+                    console.warn(
+                      "Workout validation warnings:",
+                      validationResult.warnings
+                    );
+                  }
+
+                  // Block save if there are critical errors
+                  if (!validationResult.isValid) {
+                    const errorMessage =
+                      formatValidationErrors(validationResult);
+                    showErrorToast(
+                      "Please fix validation errors before saving"
+                    );
+                    console.error("Validation errors:\n", errorMessage);
+                    return;
+                  }
+
+                  // OPTIMISTIC UPDATE: Add workout to list immediately with temporary ID
+                  const tempId = `temp-${Date.now()}`;
+                  const optimisticWorkout: WorkoutPlan = {
+                    ...updatedWorkout,
+                    id: tempId,
+                    createdBy: user.id,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    exercises: updatedWorkout.exercises || [],
+                    groups: updatedWorkout.groups || [],
+                  } as WorkoutPlan;
+
+                  // Show workout in list immediately (optimistic)
+                  setWorkouts([...workouts, optimisticWorkout]);
+
+                  // Close modal immediately for instant UX
+                  setCreatingWorkout(false);
+                  setNewWorkout({
+                    name: "",
+                    description: "",
+                    exercises: [],
+                    estimatedDuration: 30,
+                  });
+
+                  try {
+                    const response = (await apiClient.createWorkout({
+                      name: updatedWorkout.name,
+                      description: updatedWorkout.description,
+                      exercises: updatedWorkout.exercises,
+                      groups: updatedWorkout.groups, // CRITICAL: Include groups!
+                      estimatedDuration: updatedWorkout.estimatedDuration || 30,
+                    })) as ApiResponse;
+
+                    if (response.success && response.data) {
+                      const apiResponse = response.data as {
+                        workout?: WorkoutPlan;
+                      };
+                      const createdWorkout = apiResponse.workout;
+                      if (createdWorkout) {
+                        // Replace temporary workout with real one from API
+                        setWorkouts((prevWorkouts) =>
+                          prevWorkouts.map((w) =>
+                            w.id === tempId ? createdWorkout : w
+                          )
+                        );
+                        success("Workout saved successfully!");
+                      } else {
+                        // Rollback: Remove temporary workout
+                        setWorkouts((prevWorkouts) =>
+                          prevWorkouts.filter((w) => w.id !== tempId)
+                        );
+                        showErrorToast("Failed to create workout");
+                      }
+                    } else {
+                      // Rollback: Remove temporary workout
+                      setWorkouts((prevWorkouts) =>
+                        prevWorkouts.filter((w) => w.id !== tempId)
+                      );
+                      const errorMsg =
+                        typeof response.error === "string"
+                          ? response.error
+                          : "Failed to create workout";
+                      showErrorToast(errorMsg);
+                    }
+                  } catch (err) {
+                    // Rollback: Remove temporary workout
+                    setWorkouts((prevWorkouts) =>
+                      prevWorkouts.filter((w) => w.id !== tempId)
+                    );
+                    console.error("Error creating workout:", err);
+                    showErrorToast("Failed to create workout");
+                  }
+                } else {
+                  // For editing existing workouts
+                  console.log("[page.tsx] EDITING existing workout");
+
+                  // Check if this is an explicit save request
+                  const workoutWithFlag = updatedWorkout as WorkoutPlan & {
+                    _shouldSave?: boolean;
+                  };
+                  const shouldSave = workoutWithFlag._shouldSave;
+
+                  // ALWAYS update local state first
+                  setEditingWorkout(updatedWorkout as WorkoutPlan);
+                  const updatedWorkouts = workouts.map((w) =>
+                    w.id === updatedWorkout.id ? updatedWorkout : w
+                  );
+                  setWorkouts(updatedWorkouts);
+
+                  if (!shouldSave) {
+                    console.log(
+                      "[page.tsx] Editing - state updated, not saving yet"
+                    );
+                    return;
+                  }
+
+                  // Remove the flag
+                  delete workoutWithFlag._shouldSave;
+
+                  console.log("[page.tsx] Saving edited workout to API");
+                  console.log("[page.tsx] Workout ID:", updatedWorkout.id);
+                  console.log("[page.tsx] Workout name:", updatedWorkout.name);
+                  console.log(
+                    "[page.tsx] Is temp ID?",
+                    updatedWorkout.id?.startsWith("temp-")
+                  );
+                  console.log(
+                    "[page.tsx] Full workout object:",
+                    updatedWorkout
+                  );
+
+                  // Safety check: Don't try to save temp workouts
+                  if (updatedWorkout.id?.startsWith("temp-")) {
+                    showErrorToast(
+                      "Cannot save workout that is still being created. Please wait a moment."
+                    );
+                    return;
+                  }
+
+                  try {
+                    const response = (await apiClient.updateWorkout(
+                      updatedWorkout.id!,
+                      {
+                        name: updatedWorkout.name,
+                        description: updatedWorkout.description,
+                        exercises: updatedWorkout.exercises,
+                        groups: updatedWorkout.groups,
+                        blockInstances: updatedWorkout.blockInstances,
+                        estimatedDuration:
+                          updatedWorkout.estimatedDuration || 30,
+                      }
+                    )) as ApiResponse;
+
+                    if (response.success && response.data) {
+                      setEditingWorkout(null);
+                      success("Workout updated successfully!");
+                    } else {
+                      const errorMsg =
+                        typeof response.error === "string"
+                          ? response.error
+                          : "Failed to update workout";
+                      showErrorToast(errorMsg);
+                    }
+                  } catch (err) {
+                    console.error("Error updating workout:", err);
+                    showErrorToast("Failed to update workout");
+                  }
                 }
-
-                // Block save if there are critical errors
-                if (!validationResult.isValid) {
-                  const errorMessage = formatValidationErrors(validationResult);
-                  showErrorToast("Please fix validation errors before saving");
-                  console.error("Validation errors:\n", errorMessage);
-                  return;
-                }
-
-                // OPTIMISTIC UPDATE: Add workout to list immediately with temporary ID
-                const tempId = `temp-${Date.now()}`;
-                const optimisticWorkout: WorkoutPlan = {
-                  ...updatedWorkout,
-                  id: tempId,
-                  createdBy: user.id,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  exercises: updatedWorkout.exercises || [],
-                  groups: updatedWorkout.groups || [],
-                } as WorkoutPlan;
-
-                // Show workout in list immediately (optimistic)
-                setWorkouts([...workouts, optimisticWorkout]);
-                
-                // Close modal immediately for instant UX
+              }}
+              onClose={() => {
+                // Reset state and close modal
+                // Save is handled in onChange now
+                setEditingWorkout(null);
                 setCreatingWorkout(false);
                 setNewWorkout({
                   name: "",
@@ -579,130 +747,9 @@ export default function WorkoutsPage() {
                   exercises: [],
                   estimatedDuration: 30,
                 });
-
-                try {
-                  const response = (await apiClient.createWorkout({
-                    name: updatedWorkout.name,
-                    description: updatedWorkout.description,
-                    exercises: updatedWorkout.exercises,
-                    groups: updatedWorkout.groups, // CRITICAL: Include groups!
-                    estimatedDuration: updatedWorkout.estimatedDuration || 30,
-                  })) as ApiResponse;
-
-                  if (response.success && response.data) {
-                    const apiResponse = response.data as {
-                      workout?: WorkoutPlan;
-                    };
-                    const createdWorkout = apiResponse.workout;
-                    if (createdWorkout) {
-                      // Replace temporary workout with real one from API
-                      setWorkouts((prevWorkouts) =>
-                        prevWorkouts.map((w) =>
-                          w.id === tempId ? createdWorkout : w
-                        )
-                      );
-                      success("Workout saved successfully!");
-                    } else {
-                      // Rollback: Remove temporary workout
-                      setWorkouts((prevWorkouts) =>
-                        prevWorkouts.filter((w) => w.id !== tempId)
-                      );
-                      showErrorToast("Failed to create workout");
-                    }
-                  } else {
-                    // Rollback: Remove temporary workout
-                    setWorkouts((prevWorkouts) =>
-                      prevWorkouts.filter((w) => w.id !== tempId)
-                    );
-                    const errorMsg =
-                      typeof response.error === "string"
-                        ? response.error
-                        : "Failed to create workout";
-                    showErrorToast(errorMsg);
-                  }
-                } catch (err) {
-                  // Rollback: Remove temporary workout
-                  setWorkouts((prevWorkouts) =>
-                    prevWorkouts.filter((w) => w.id !== tempId)
-                  );
-                  console.error("Error creating workout:", err);
-                  showErrorToast("Failed to create workout");
-                }
-              } else {
-                // For editing existing workouts
-                console.log("[page.tsx] EDITING existing workout");
-                
-                // Check if this is an explicit save request
-                const workoutWithFlag = updatedWorkout as WorkoutPlan & { _shouldSave?: boolean };
-                const shouldSave = workoutWithFlag._shouldSave;
-                
-                // ALWAYS update local state first
-                setEditingWorkout(updatedWorkout as WorkoutPlan);
-                const updatedWorkouts = workouts.map((w) =>
-                  w.id === updatedWorkout.id ? updatedWorkout : w
-                );
-                setWorkouts(updatedWorkouts);
-                
-                if (!shouldSave) {
-                  console.log("[page.tsx] Editing - state updated, not saving yet");
-                  return;
-                }
-                
-                // Remove the flag
-                delete workoutWithFlag._shouldSave;
-                
-                console.log("[page.tsx] Saving edited workout to API");
-                console.log("[page.tsx] Workout ID:", updatedWorkout.id);
-                console.log("[page.tsx] Workout name:", updatedWorkout.name);
-                console.log("[page.tsx] Is temp ID?", updatedWorkout.id?.startsWith("temp-"));
-                console.log("[page.tsx] Full workout object:", updatedWorkout);
-                
-                // Safety check: Don't try to save temp workouts
-                if (updatedWorkout.id?.startsWith("temp-")) {
-                  showErrorToast("Cannot save workout that is still being created. Please wait a moment.");
-                  return;
-                }
-                
-                try {
-                  const response = await apiClient.updateWorkout(updatedWorkout.id!, {
-                    name: updatedWorkout.name,
-                    description: updatedWorkout.description,
-                    exercises: updatedWorkout.exercises,
-                    groups: updatedWorkout.groups,
-                    blockInstances: updatedWorkout.blockInstances,
-                    estimatedDuration: updatedWorkout.estimatedDuration || 30,
-                  }) as ApiResponse;
-
-                  if (response.success && response.data) {
-                    setEditingWorkout(null);
-                    success("Workout updated successfully!");
-                  } else {
-                    const errorMsg =
-                      typeof response.error === "string"
-                        ? response.error
-                        : "Failed to update workout";
-                    showErrorToast(errorMsg);
-                  }
-                } catch (err) {
-                  console.error("Error updating workout:", err);
-                  showErrorToast("Failed to update workout");
-                }
-              }
-            }}
-            onClose={() => {
-              // Reset state and close modal
-              // Save is handled in onChange now
-              setEditingWorkout(null);
-              setCreatingWorkout(false);
-              setNewWorkout({
-                name: "",
-                description: "",
-                exercises: [],
-                estimatedDuration: 30,
-              });
-            }}
-          />
-        </Suspense>
+              }}
+            />
+          </Suspense>
         </WorkoutEditorErrorBoundary>
       )}
     </div>

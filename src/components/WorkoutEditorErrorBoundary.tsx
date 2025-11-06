@@ -1,6 +1,6 @@
 /**
  * Error Boundary for WorkoutEditor
- * 
+ *
  * Catches errors in the workout editor and provides recovery options.
  * Automatically saves workout draft to localStorage for recovery.
  */
@@ -204,10 +204,11 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
  */
 export function useWorkoutRecovery() {
   const [recoveryData, setRecoveryData] = React.useState<
-    (WorkoutPlan | Partial<WorkoutPlan>) & {
-      _savedAt?: string;
-      _errorMessage?: string;
-    } | null
+    | ((WorkoutPlan | Partial<WorkoutPlan>) & {
+        _savedAt?: string;
+        _errorMessage?: string;
+      })
+    | null
   >(null);
 
   React.useEffect(() => {
