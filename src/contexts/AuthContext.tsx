@@ -59,23 +59,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Prevent multiple initializations
       if (hasInitialized.current) return;
       hasInitialized.current = true;
+      initializingRef.current = true;
 
       console.log("[AUTH] Initializing authentication...");
 
-      // Set a timeout to prevent infinite loading (8 seconds to allow for getCurrentUser timeouts)
+      // Set a timeout to prevent infinite loading (5 seconds should be enough)
       const timeout = setTimeout(() => {
         console.warn(
           "[AUTH] Authentication initialization taking longer than expected"
         );
-        if (mountedRef.current && initializingRef.current) {
+        if (mountedRef.current) {
           console.log(
             "[AUTH] Proceeding without authentication - user can login manually"
           );
           setUser(null);
           setLoading(false);
           setInitializing(false);
+          initializingRef.current = false;
         }
-      }, 8000); // 8 second timeout (allows for 3s session + 2s profile + buffer)
+      }, 5000); // 5 second timeout (should be plenty for local dev)
 
       try {
         const currentUser = await authClient.getCurrentUser();
@@ -88,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(currentUser);
           setLoading(false);
           setInitializing(false);
+          initializingRef.current = false;
         }
       } catch (error) {
         clearTimeout(timeout);
@@ -96,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(null);
           setLoading(false);
           setInitializing(false);
+          initializingRef.current = false;
         }
       }
     };
