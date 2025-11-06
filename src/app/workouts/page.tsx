@@ -652,6 +652,8 @@ export default function WorkoutsPage() {
                 delete workoutWithFlag._shouldSave;
                 
                 console.log("[page.tsx] Saving edited workout to API");
+                console.log("[page.tsx] Workout ID:", updatedWorkout.id);
+                console.log("[page.tsx] Workout name:", updatedWorkout.name);
                 
                 try {
                   const response = await apiClient.updateWorkout(updatedWorkout.id!, {
