@@ -12,29 +12,13 @@
 
 Go to: [Vercel Dashboard](https://vercel.com/dashboard) → Your Project → Settings → Environment Variables
 
-**Required Variables** (must match your `.env.local`):
-
+**Required variables:**
 ```bash
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://lzsjaqkhdoqsafptqpnt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...your-anon-key...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...your-service-role-key...
-
-# JWT
-JWT_SECRET=U2VcJCvOzpwTA1jLoarCXljX3XohXiEMsoi54DArie0
-
-# App Configuration
-NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
-NEXT_PUBLIC_APP_VERSION=1.0.0
-
-# Notifications (if using)
-VAPID_PUBLIC_KEY=your-key
-VAPID_PRIVATE_KEY=your-key
-VAPID_SUBJECT=mailto:your-email
-NEXT_PUBLIC_VAPID_PUBLIC_KEY=your-key
-RESEND_API_KEY=your-key
-RESEND_FROM_EMAIL=noreply@yourdomain.com
-CRON_SECRET=your-secret
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+JWT_SECRET=<your-jwt-secret>
+NEXT_PUBLIC_APP_URL=<your-production-url>
 ```
 
 **CRITICAL**: Make sure to set these for **all environments**:
@@ -46,11 +30,14 @@ CRON_SECRET=your-secret
 
 Your Supabase keys might be old or placeholder values. Get fresh keys:
 
-1. Go to [Supabase Dashboard](https://supabase.com/dashboard/project/lzsjaqkhdoqsafptqpnt/settings/api)
-2. Copy the **anon/public** key
-3. Copy the **service_role** key (secret!)
-4. Update in Vercel environment variables
-5. **Redeploy** the app after updating
+### 🔍 How to Get Fresh Supabase Keys
+
+1. Go to: https://supabase.com/dashboard (find your project)
+2. Go to Settings → API
+3. Copy **anon/public** key (long JWT starting with eyJ)
+4. Copy **service_role** key (long JWT starting with eyJ)
+5. Update both in Vercel environment variables
+6. Redeploy
 
 ## Step 4: Common Issues & Solutions
 
@@ -158,7 +145,7 @@ If still having issues, share:
 
 **Diagnostic page**: `/diagnose`
 **Login page**: `/login`
-**Supabase Dashboard**: https://supabase.com/dashboard/project/lzsjaqkhdoqsafptqpnt
+**Supabase Dashboard**: https://supabase.com/dashboard
 **Vercel Dashboard**: https://vercel.com/dashboard
 
 ## Most Likely Solutions
@@ -166,7 +153,7 @@ If still having issues, share:
 Based on common issues:
 
 1. **80% chance**: Missing `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel
-2. **15% chance**: Using old/placeholder Supabase keys
+2. **15% chance**: Using old/wrong Supabase keys
 3. **5% chance**: Supabase project paused or billing issue
 
-**First thing to check**: Vercel environment variables are set!
+**First thing to check**: Vercel environment variables are set correctly!
