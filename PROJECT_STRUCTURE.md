@@ -99,12 +99,15 @@ Reusable UI components organized by feature.
 
 ```
 components/
+├── AthleteCalendar.tsx           # Calendar with month/week/day views (NEW)
 ├── AthleteModificationModal.tsx  # Individual athlete customizations
 ├── BulkOperationModal.tsx        # Bulk athlete operations
-├── CalendarView.tsx              # Schedule calendar
+├── CalendarView.tsx              # Schedule calendar (legacy)
+├── DateTimePicker.tsx            # Date and time selection (NEW)
 ├── ExerciseLibrary.tsx           # Exercise browser
-├── GroupAssignmentModal.tsx      # Assign workouts to groups
+├── GroupAssignmentModal.tsx      # Assign workouts to groups (enhanced)
 ├── GroupFormModal.tsx            # Create/edit athlete groups
+├── IndividualAssignmentModal.tsx # Assign workouts to individuals (NEW)
 ├── Navigation.tsx                # Main navigation
 ├── ProgressAnalytics.tsx         # Progress charts
 ├── WorkoutEditor.tsx             # Advanced workout builder

@@ -75,18 +75,33 @@
   - Returns statistics (individual count, group count)
   - **Status**: ✅ COMPLETE - 210+ lines
 
-- [ ] 🔄 **Calendar Integration** (Next task - Week 1, Day 4-5)
+### Phase 1.4: Calendar Integration (10 hours estimated)
+- [x] ✅ **Created AthleteCalendar component** (`src/components/AthleteCalendar.tsx`)
+  - Month/Week/Day view modes with toggle
+  - Interactive date navigation (previous/next/today)
+  - Assignment display with color-coded status (assigned/completed/overdue)
+  - Click handlers for assignments and dates
+  - Time and location display for assignments
+  - Mobile-responsive design with touch-friendly UI
+  - Status legend (assigned, completed, overdue)
+  - **Status**: ✅ COMPLETE - 480+ lines, zero TypeScript errors
+
+- [ ] 🔄 **Integrate calendar into Coach Dashboard** (Next task)
+- [ ] 🔄 **Integrate calendar into Athlete Dashboard**
+- [ ] 🔄 **Wire assignment modals to calendar**
+- [ ] 🔄 **Add assignment detail modal from calendar**
 
 ---
 
 ## 🎯 Current Focus
 
-**Current Phase**: Week 1 - Calendar & Coach Assignment Flow  
-**Next Task**: Calendar Integration (AthleteCalendar component)  
-**Estimated Time**: 10 hours  
+**Current Phase**: Week 1 - Calendar & Coach Assignment Flow (Days 4-5)  
+**Next Task**: Integrate AthleteCalendar into Coach Dashboard  
+**Estimated Time**: 3 hours  
 **Priority**: 🔥 HIGH
 
-**Phase 1.3 (Assignment API) COMPLETE!**
+**Phase 1.4 (Calendar Component) - 60% COMPLETE!**  
+Calendar UI built, now integrating into dashboard views.
 
 ---
 
