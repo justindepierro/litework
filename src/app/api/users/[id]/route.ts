@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import { getAdminClient, requireRole, getCurrentUser } from "@/lib/auth-server";
+import { getAdminClient, getAuthenticatedUser, isAdmin } from "@/lib/auth-server";
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
+    
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
@@ -17,7 +18,7 @@ export async function PATCH(
     const { id } = await params;
 
     // Users can only update their own profile (unless admin)
-    if (user.id !== id && user.role !== "admin") {
+    if (user.id !== id && !isAdmin(user)) {
       return NextResponse.json(
         { error: "You can only update your own profile" },
         { status: 403 }
@@ -57,7 +58,21 @@ export async function DELETE(
 ) {
   try {
     // Only admins can delete users
-    await requireRole("admin");
+    const { user, error: authError } = await getAuthenticatedUser();
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    if (!isAdmin(user)) {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 }
+      );
+    }
 
     const { id } = await params;
     const supabase = getAdminClient();

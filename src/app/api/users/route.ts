@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, requireCoach } from "@/lib/auth-server";
+import { getAdminClient, getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 
 export async function GET() {
   try {
     // Verify authentication and require coach/admin
-    await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
 
     const supabase = getAdminClient();
 
@@ -22,20 +36,6 @@ export async function GET() {
       data: { users: athletes },
     });
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Forbidden")) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-
     console.error("Error fetching users:", error);
     return NextResponse.json(
       {
@@ -50,17 +50,16 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication and require coach/admin
-    const user = await requireCoach();
+    const { user, error: authenticationError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authenticationError || "Authentication required" },
         { status: 401 }
       );
     }
 
-    // Only coaches and admins can create users
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
