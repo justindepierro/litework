@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, requireCoach } from "@/lib/auth-server";
+import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { WorkoutAssignment } from "@/types";
 import {
   getAllAssignments,
@@ -13,11 +13,11 @@ import { cachedResponse } from "@/lib/api-cache-headers";
 // GET /api/assignments - Get assignments
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
@@ -84,11 +84,18 @@ export async function GET(request: NextRequest) {
 // POST /api/assignments - Create new assignment (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
+      );
+    }
+
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
       );
     }
 

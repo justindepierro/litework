@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, requireCoach } from "@/lib/auth-server";
+import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import {
   getAllWorkoutPlans,
   createWorkoutPlan,
@@ -11,11 +11,11 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 // GET /api/workouts - Get workout plans
 export async function GET() {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
@@ -24,7 +24,7 @@ export async function GET() {
     const allWorkoutPlans = await getAllWorkoutPlans();
 
     // Coaches/admins see all workouts, athletes see workouts for their groups
-    if (user.role === "coach" || user.role === "admin") {
+    if (isCoach(user)) {
       // Cache coach's workout list for 1 minute (workouts don't change very often)
       return cachedResponse(
         {
@@ -56,11 +56,18 @@ export async function GET() {
 // POST /api/workouts - Create new workout plan (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
+      );
+    }
+
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
       );
     }
 
@@ -149,11 +156,18 @@ export async function POST(request: NextRequest) {
 // PUT /api/workouts - Update existing workout plan (coaches only)
 export async function PUT(request: NextRequest) {
   try {
-    const user = await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
+      );
+    }
+
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
       );
     }
 

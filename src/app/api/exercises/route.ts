@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getCurrentUser,
+  getAuthenticatedUser,
   getAdminClient,
-  requireCoach,
+  isCoach,
 } from "@/lib/auth-server";
 import { cachedResponse } from "@/lib/api-cache-headers";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     const supabase = getAdminClient();
@@ -96,16 +99,16 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
 
     // Only coaches and admins can create exercises
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
