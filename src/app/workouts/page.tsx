@@ -654,6 +654,14 @@ export default function WorkoutsPage() {
                 console.log("[page.tsx] Saving edited workout to API");
                 console.log("[page.tsx] Workout ID:", updatedWorkout.id);
                 console.log("[page.tsx] Workout name:", updatedWorkout.name);
+                console.log("[page.tsx] Is temp ID?", updatedWorkout.id?.startsWith("temp-"));
+                console.log("[page.tsx] Full workout object:", updatedWorkout);
+                
+                // Safety check: Don't try to save temp workouts
+                if (updatedWorkout.id?.startsWith("temp-")) {
+                  showErrorToast("Cannot save workout that is still being created. Please wait a moment.");
+                  return;
+                }
                 
                 try {
                   const response = await apiClient.updateWorkout(updatedWorkout.id!, {
