@@ -168,6 +168,7 @@ export function canAssignWorkouts(user: AuthUser): boolean {
   return isCoach(user);
 }
 
+
 export function canViewAllAthletes(user: AuthUser): boolean {
   return isCoach(user);
 }
@@ -176,55 +177,8 @@ export function canModifyWorkouts(user: AuthUser): boolean {
   return isCoach(user);
 }
 
-/**
- * Legacy support - for gradual migration
- * @deprecated Use getAuthenticatedUser() instead
- */
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const { user } = await getAuthenticatedUser();
-  return user;
-}
-
-/**
- * @deprecated Use getAuthenticatedUser() with role check instead
- */
-export async function requireAuth(): Promise<AuthUser> {
-  const { user, error } = await getAuthenticatedUser();
-  if (!user) {
-    throw new Error(error || "Unauthorized");
-  }
-  return user;
-}
-
-/**
- * @deprecated Use getAuthenticatedUser() with hasRoleOrHigher() instead
- */
-export async function requireRole(
-  role: "admin" | "coach" | "athlete"
-): Promise<AuthUser> {
-  const user = await requireAuth();
-
-  if (!hasRoleOrHigher(user, role)) {
-    throw new Error("Forbidden");
-  }
-
-  return user;
-}
-
-/**
- * @deprecated Use getAuthenticatedUser() with isCoach() instead
- */
-export async function requireCoach(): Promise<AuthUser> {
-  const user = await requireAuth();
-
-  if (!isCoach(user)) {
-    throw new Error("Forbidden - Coach access required");
-  }
-
-  return user;
-}
-
 // Get admin Supabase client (bypasses RLS)
 export function getAdminClient() {
   return supabaseAdmin;
 }
+
