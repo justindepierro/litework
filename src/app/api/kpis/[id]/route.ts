@@ -1,13 +1,30 @@
 import { NextResponse } from "next/server";
-import { getAdminClient, requireCoach } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isCoach,
+} from "@/lib/auth-server";
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Only coaches/admins can update KPIs
+  const { user, error: authError } = await getAuthenticatedUser();
+  if (!user) {
+    return NextResponse.json(
+      { error: authError || "Authentication required" },
+      { status: 401 }
+    );
+  }
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
   try {
-    // Only coaches/admins can update KPIs
-    await requireCoach();
 
     const { id } = await params;
     const body = await request.json();
@@ -42,9 +59,22 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Only coaches/admins can delete KPIs
+  const { user, error: authError } = await getAuthenticatedUser();
+  if (!user) {
+    return NextResponse.json(
+      { error: authError || "Authentication required" },
+      { status: 401 }
+    );
+  }
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
   try {
-    // Only coaches/admins can delete KPIs
-    await requireCoach();
 
     const { id } = await params;
     const supabase = getAdminClient();

@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, requireCoach } from "@/lib/auth-server";
+import { getAdminClient, getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 
 export async function POST(request: NextRequest) {
   try {
     // Only coaches/admins can create KPIs
-    await requireCoach();
+    const { user, error: authError } = await getAuthenticatedUser();
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
 
     const supabase = getAdminClient();
 

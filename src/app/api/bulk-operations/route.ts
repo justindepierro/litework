@@ -1,11 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, requireCoach } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isCoach,
+} from "@/lib/auth-server";
 
 // POST /api/bulk-operations - Execute bulk operations
 export async function POST(request: NextRequest) {
+  // Only coaches/admins can perform bulk operations
+  const { user, error: authError } = await getAuthenticatedUser();
+  if (!user) {
+    return NextResponse.json(
+      { error: authError || "Authentication required" },
+      { status: 401 }
+    );
+  }
+  if (!isCoach(user)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
   try {
-    // Only coaches/admins can perform bulk operations
-    await requireCoach();
 
     const body = await request.json();
     const { type, targetAthletes, targetGroups, data } = body;
