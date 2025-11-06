@@ -628,6 +628,8 @@ export const updateWorkoutPlan = async (
   id: string,
   updates: Partial<WorkoutPlan>
 ): Promise<WorkoutPlan | null> => {
+  console.log("[database-service] updateWorkoutPlan called:", { id, updates });
+  
   const { data, error } = await supabase
     .from("workout_plans")
     .update({ ...updates, updated_at: new Date().toISOString() })
@@ -636,10 +638,12 @@ export const updateWorkoutPlan = async (
     .single();
 
   if (error) {
-    console.error("Error updating workout plan:", error);
+    console.error("[database-service] Error updating workout plan:", error);
+    console.error("[database-service] Attempted to update ID:", id);
     return null;
   }
 
+  console.log("[database-service] Successfully updated workout:", data);
   return data;
 };
 

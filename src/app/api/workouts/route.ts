@@ -192,15 +192,20 @@ export async function PUT(request: NextRequest) {
     // Update workout plan in database
     // Note: This currently only updates the workout_plans table
     // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
+    console.log("[PUT /api/workouts] Updating workout:", { id, name, description, estimatedDuration });
+    
     const updatedWorkout = await updateWorkoutPlan(id, {
       name,
       description,
       estimatedDuration: estimatedDuration || 60,
     });
 
+    console.log("[PUT /api/workouts] Update result:", updatedWorkout);
+
     if (!updatedWorkout) {
+      console.error("[PUT /api/workouts] updateWorkoutPlan returned null for ID:", id);
       return NextResponse.json(
-        { error: "Failed to update workout plan" },
+        { error: "Failed to update workout plan - workout not found or update failed" },
         { status: 500 }
       );
     }
