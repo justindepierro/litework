@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, getAuthenticatedUser, isCoach } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isCoach,
+} from "@/lib/auth-server";
 
 export async function POST(request: NextRequest) {
   try {
     // Only coaches/admins can create KPIs
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return NextResponse.json(
         { error: authError || "Authentication required" },

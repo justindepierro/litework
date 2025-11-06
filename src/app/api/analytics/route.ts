@@ -61,10 +61,7 @@ export async function GET(request: NextRequest) {
         .eq("id", athleteId)
         .single();
 
-      if (
-        !athlete ||
-        (athlete.coach_id !== user?.id && !isAdmin(user))
-      ) {
+      if (!athlete || (athlete.coach_id !== user?.id && !isAdmin(user))) {
         return NextResponse.json(
           { error: "Access denied to athlete data" },
           { status: 403 }

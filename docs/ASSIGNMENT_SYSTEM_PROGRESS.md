@@ -53,15 +53,40 @@
 
 - [ ] 🔄 **Test assignment modals on mobile** (Next task)
 
+### Phase 1.3: Assignment API (6 hours estimated)
+- [x] ✅ **Enhanced main assignments route** (`src/app/api/assignments/route.ts`)
+  - Updated POST handler to support new fields (startTime, endTime, location)
+  - Existing GET handler for filtered queries
+  - Auth protection with role-based access
+  - **Status**: ✅ COMPLETE
+
+- [x] ✅ **Created individual assignment route** (`src/app/api/assignments/[id]/route.ts`)
+  - GET: Fetch single assignment with full workout details
+  - PUT: Update assignment fields (coaches only)
+  - DELETE: Remove single assignment (coaches only)
+  - PATCH: Mark assignment as complete (athletes)
+  - Permission checks for athletes vs coaches
+  - **Status**: ✅ COMPLETE - 280+ lines
+
+- [x] ✅ **Created bulk assignment route** (`src/app/api/assignments/bulk/route.ts`)
+  - POST: Create multiple assignments efficiently
+  - DELETE: Bulk delete assignments
+  - Support for both athlete_ids and group_ids
+  - Returns statistics (individual count, group count)
+  - **Status**: ✅ COMPLETE - 210+ lines
+
+- [ ] 🔄 **Calendar Integration** (Next task - Week 1, Day 4-5)
+
 ---
 
 ## 🎯 Current Focus
 
-**Next Task**: Create Assignment API endpoints  
-**Estimated Time**: 6 hours  
+**Current Phase**: Week 1 - Calendar & Coach Assignment Flow  
+**Next Task**: Calendar Integration (AthleteCalendar component)  
+**Estimated Time**: 10 hours  
 **Priority**: 🔥 HIGH
 
-**Phase 1.2 (Enhanced Assignment Modals) COMPLETE!**
+**Phase 1.3 (Assignment API) COMPLETE!**
 
 ---
 

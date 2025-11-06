@@ -31,6 +31,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 **File**: `src/lib/auth-client.ts` (lines 207-257)
 
 **Security Measures**:
+
 - ✅ Client-side rate limiting (5 attempts per 15 minutes)
 - ✅ Email validation and sanitization
 - ✅ Password requirements enforced
@@ -39,6 +40,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 - ✅ Rate limit reset on successful login
 
 **Flow**:
+
 ```typescript
 1. Check rate limit (prevent brute force)
 2. Validate and sanitize email
@@ -50,6 +52,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 ```
 
 **Vulnerabilities**: ⚠️ NONE CRITICAL
+
 - Client-side rate limiting can be bypassed (but server-side protection available)
 
 ---
@@ -59,6 +62,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 **File**: `src/lib/auth-client.ts` (lines 259-369)
 
 **Security Measures**:
+
 - ✅ Email validation and uniqueness check
 - ✅ Password strength requirements
 - ✅ Name sanitization (XSS prevention)
@@ -68,6 +72,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 - ✅ Security event logging
 
 **Flow**:
+
 ```typescript
 1. Validate all inputs (email, password, names)
 2. Check for existing user (prevent duplicates)
@@ -80,6 +85,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 ```
 
 **Vulnerabilities**: ⚠️ NONE CRITICAL
+
 - 1-second delay for profile creation (acceptable tradeoff)
 
 ---
@@ -89,6 +95,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 **File**: `src/lib/auth-client.ts` (lines 371-432)
 
 **Security Measures**:
+
 - ✅ Rate limiting (3 attempts per hour)
 - ✅ Email validation
 - ✅ Uses Supabase's secure reset flow
@@ -104,6 +111,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 **File**: `src/contexts/AuthContext.tsx` (lines 150-329)
 
 **Security Measures**:
+
 - ✅ Race condition prevention (`authOperationInProgress` ref)
 - ✅ Auto token refresh (prevents expiry)
 - ✅ 4-hour manual session refresh
@@ -112,6 +120,7 @@ After comprehensive analysis of the authentication system following legacy JWT c
 - ✅ Automatic logout on session expiry
 
 **Flow**:
+
 ```typescript
 Initialization:
 1. Listen for auth state changes
@@ -127,6 +136,7 @@ Session Refresh:
 ```
 
 **Edge Cases Handled**:
+
 - ✅ Concurrent auth operations blocked
 - ✅ Session expiry during operations
 - ✅ Network failures
@@ -144,6 +154,7 @@ Session Refresh:
 **File**: `src/lib/supabase.ts` (lines 13-62)
 
 **Settings**:
+
 ```javascript
 {
   path: "/",                    // ✅ Available app-wide
@@ -155,6 +166,7 @@ Session Refresh:
 ```
 
 **Security Analysis**:
+
 - ✅ **SameSite=Lax**: Protects against CSRF while allowing normal navigation
 - ✅ **Secure flag**: HTTPS-only in production (auto-detected)
 - ✅ **MaxAge**: 7 days is reasonable for workout app
@@ -162,12 +174,14 @@ Session Refresh:
 - ✅ **HttpOnly**: Handled by Supabase (not directly accessible via JS)
 
 **Attack Prevention**:
+
 - ✅ **CSRF**: SameSite=Lax prevents most CSRF attacks
 - ✅ **XSS**: Input sanitization + HttpOnly cookies
 - ✅ **Session Hijacking**: Secure flag + auto-refresh
 - ✅ **Cookie Theft**: HTTPS + secure flag
 
 **Potential Improvements**:
+
 - ⚠️ Consider `SameSite=Strict` for admin accounts (stricter CSRF protection)
 - ℹ️ `HttpOnly` flag automatically set by Supabase (verified)
 
@@ -176,13 +190,15 @@ Session Refresh:
 ### 2.2 Storage Key Consistency ✅ VERIFIED
 
 **Client**: `src/lib/supabase.ts` line 60
+
 ```typescript
-storageKey: "litework-auth-token"
+storageKey: "litework-auth-token";
 ```
 
 **Server**: `src/lib/auth-server.ts` line 65
+
 ```typescript
-storageKey: "litework-auth-token"
+storageKey: "litework-auth-token";
 ```
 
 **Status**: ✅ CONSISTENT (critical for auth to work)
@@ -196,9 +212,11 @@ storageKey: "litework-auth-token"
 Analyzed **39 API routes** - here's the breakdown:
 
 #### ✅ Properly Protected (36 routes)
+
 All use `getAuthenticatedUser()` with proper error handling:
 
 **Examples**:
+
 - `/api/profile` - User profile management
 - `/api/workouts` - Workout CRUD operations
 - `/api/assignments` - Workout assignments
@@ -210,6 +228,7 @@ All use `getAuthenticatedUser()` with proper error handling:
 - `/api/notifications/*` - Notification system
 
 **Pattern Used** (consistent):
+
 ```typescript
 const { user, error } = await getAuthenticatedUser();
 if (!user) {
@@ -240,12 +259,13 @@ if (!user) {
 #### 🔒 CRON Protected (1 route)
 
 **`/api/cron/workout-reminders`** - Scheduled reminders
+
 - Status: ✅ SECURE
 - Protection: Bearer token validation (`CRON_SECRET`)
 - Used by: Vercel Cron Jobs only
 - Code:
   ```typescript
-  const authHeader = request.headers.get('authorization');
+  const authHeader = request.headers.get("authorization");
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
     return 401;
   }
@@ -258,10 +278,12 @@ if (!user) {
 #### Role-Based Access Control (RBAC)
 
 **Files**:
+
 - `src/lib/auth-server.ts` - Role helpers
 - API routes use role checks consistently
 
 **Role Hierarchy** (properly implemented):
+
 ```
 admin (level 3) → Full system access
   ↓
@@ -271,6 +293,7 @@ athlete (level 1) → View own data, complete workouts
 ```
 
 **Helper Functions**:
+
 - ✅ `hasRoleOrHigher(user, role)` - Hierarchy check
 - ✅ `isAdmin(user)` - Admin-only check
 - ✅ `isCoach(user)` - Coach OR admin (correct!)
@@ -279,6 +302,7 @@ athlete (level 1) → View own data, complete workouts
 - ✅ `canViewAllAthletes(user)` - Coach/admin permission
 
 **Critical**: All permission checks properly include admin role:
+
 ```typescript
 export function isCoach(user: AuthUser): boolean {
   return user.role === "coach" || user.role === "admin"; // ✅ Correct
@@ -288,11 +312,13 @@ export function isCoach(user: AuthUser): boolean {
 **Examples of Proper Usage**:
 
 1. **`/api/athletes/route.ts`** - Coach/admin only:
+
    ```typescript
    await requireCoach(); // Allows coach OR admin
    ```
 
 2. **`/api/users/route.ts`** - Coach/admin only:
+
    ```typescript
    const user = await requireCoach();
    if (user.role !== "coach" && user.role !== "admin") {
@@ -315,17 +341,20 @@ export function isCoach(user: AuthUser): boolean {
 **File**: `src/lib/auth-client.ts`
 
 **Limits**:
+
 - Login: 5 attempts per 15 minutes
 - Password Reset: 3 attempts per hour
 
 **Storage**: `localStorage` (key: `litework-rate-limit-[operation]`)
 
 **Strengths**:
+
 - ✅ Prevents accidental rapid attempts
 - ✅ Good UX (immediate feedback)
 - ✅ Rate limit reset on success
 
 **Weaknesses**:
+
 - ⚠️ Can be bypassed by clearing localStorage
 - ⚠️ Can be bypassed by switching browsers/incognito
 - ⚠️ Not sufficient for production security
@@ -339,12 +368,14 @@ export function isCoach(user: AuthUser): boolean {
 **File**: `src/lib/rate-limit-server.ts` (164 lines)
 
 **Implementation**:
+
 - ✅ IP-based tracking (cannot be bypassed)
 - ✅ Configurable limits per operation
 - ✅ In-memory storage with auto-cleanup
 - ✅ Helper function `getClientIP(headers)`
 
 **Limits Available**:
+
 ```typescript
 {
   login: { maxRequests: 5, windowMs: 15 * 60 * 1000 },     // 5 per 15min
@@ -355,6 +386,7 @@ export function isCoach(user: AuthUser): boolean {
 ```
 
 **Functions**:
+
 - `checkRateLimit(ip, operation)` - Check and increment
 - `resetRateLimit(ip, operation)` - Reset on success
 - `getRateLimitStatus(ip, operation)` - Get current status
@@ -373,6 +405,7 @@ export function isCoach(user: AuthUser): boolean {
 **File**: `src/lib/auth-client.ts`
 
 **Function**: `validateEmail(email: string)`
+
 ```typescript
 - Check for @ symbol
 - Validate format with regex
@@ -389,6 +422,7 @@ export function isCoach(user: AuthUser): boolean {
 ### 5.2 Password Validation ✅ SECURE
 
 **Requirements** (enforced):
+
 - Minimum 8 characters
 - At least one uppercase letter
 - At least one lowercase letter
@@ -406,6 +440,7 @@ export function isCoach(user: AuthUser): boolean {
 **File**: `src/lib/auth-client.ts`
 
 **Function**: `sanitizeName(name: string)`
+
 ```typescript
 - Trim whitespace
 - Remove HTML tags
@@ -424,21 +459,26 @@ export function isCoach(user: AuthUser): boolean {
 ### 6.1 Error Messages ✅ SECURE
 
 **Auth Client** (`auth-client.ts`):
+
 - ✅ Doesn't leak user existence ("Invalid credentials" not "User not found")
 - ✅ Generic error messages to client
 - ✅ Detailed error logging server-side
 - ✅ Rate limit messages inform without exposing internals
 
 **API Routes**:
+
 - ✅ Consistent error format: `{ error: "message" }`
 - ✅ Proper HTTP status codes (401, 403, 500)
 - ✅ No stack traces exposed
 - ✅ Detailed logging to console
 
 **Example** (good practice):
+
 ```typescript
 // Client sees:
-{ error: "Authentication failed" }
+{
+  error: "Authentication failed";
+}
 
 // Server logs:
 console.error("[AUTH] Sign in failed:", error.message);
@@ -451,12 +491,14 @@ console.error("[AUTH] Sign in failed:", error.message);
 ### 6.2 Network Failure Handling ✅ ROBUST
 
 **Auth Context** (`AuthContext.tsx`):
+
 - ✅ Try-catch blocks around all API calls
 - ✅ Graceful degradation (logout continues even if API fails)
 - ✅ Error state management
 - ✅ User-friendly error messages
 
 **Example**:
+
 ```typescript
 try {
   await signInCall();
@@ -477,6 +519,7 @@ try {
 **File**: `src/lib/auth-server.ts` (lines 181-231)
 
 **Functions**:
+
 1. `getCurrentUser()` - @deprecated Use `getAuthenticatedUser()` instead
 2. `requireAuth()` - @deprecated Use `getAuthenticatedUser()` with role check
 3. `requireRole(role)` - @deprecated Use `getAuthenticatedUser()` with `hasRoleOrHigher()`
@@ -485,15 +528,18 @@ try {
 **Current Usage**: Found in 20+ API routes (via grep search)
 
 **Status**: ⚠️ INCONSISTENT
+
 - Some routes use new pattern: `getAuthenticatedUser()`
 - Some routes use deprecated: `requireCoach()`, `requireAuth()`
 
 **Recommendation**: **HIGH PRIORITY**
+
 - Decision needed: Remove or keep with clear documentation
 - If keeping: Update documentation to clarify they're convenience wrappers
 - If removing: Update all API routes to use `getAuthenticatedUser()` pattern
 
 **Impact**:
+
 - Functionality: ✅ Working (not broken)
 - Consistency: ⚠️ Mixed patterns
 - Maintainability: ⚠️ Confusing for developers
@@ -507,6 +553,7 @@ try {
 **File**: `src/contexts/AuthContext.tsx`
 
 **Protection**: `authOperationInProgress` ref
+
 ```typescript
 if (authOperationInProgress.current) {
   throw new Error("Authentication operation already in progress");
@@ -514,6 +561,7 @@ if (authOperationInProgress.current) {
 ```
 
 **Prevents**:
+
 - ✅ Double login attempts
 - ✅ Login during logout
 - ✅ Concurrent profile updates
@@ -525,6 +573,7 @@ if (authOperationInProgress.current) {
 ### 8.2 Session Expiry During Operations ✅ HANDLED
 
 **Mechanisms**:
+
 1. **Auto Token Refresh** (Supabase):
    - Configured: `autoRefreshToken: true`
    - Refreshes before expiry automatically
@@ -547,6 +596,7 @@ if (authOperationInProgress.current) {
 **Scenario**: Token refresh fails (network issue, expired session)
 
 **Handling**:
+
 ```typescript
 refreshSession() catches errors
 → Logs error
@@ -564,6 +614,7 @@ refreshSession() catches errors
 **Scenario**: User exists in auth but profile missing
 
 **Handling**:
+
 ```typescript
 getAuthenticatedUser() checks profile
 → Returns error: "User profile not found"
@@ -583,6 +634,7 @@ getAuthenticatedUser() checks profile
 **File**: `src/lib/security.ts`
 
 **Events Logged**:
+
 - ✅ Login attempts (success/failure)
 - ✅ Signup attempts
 - ✅ Password reset requests
@@ -592,6 +644,7 @@ getAuthenticatedUser() checks profile
 - ✅ Authentication errors
 
 **Log Format**:
+
 ```typescript
 {
   type: "auth",
@@ -611,11 +664,13 @@ getAuthenticatedUser() checks profile
 ### 9.2 Sensitive Data Handling ✅ SECURE
 
 **What's Logged**:
+
 - ✅ User ID, email, action, timestamp
 - ✅ IP address (for security analysis)
 - ✅ User agent (for device tracking)
 
 **What's NOT Logged**:
+
 - ✅ Passwords (never logged)
 - ✅ Session tokens (never logged)
 - ✅ Personal information beyond email
@@ -630,17 +685,20 @@ getAuthenticatedUser() checks profile
 ### 10.1 Brute Force Attacks
 
 **Protection Layers**:
+
 1. ✅ Client-side rate limiting (5 attempts / 15 min)
 2. ✅ Server-side rate limiting available (not integrated)
 3. ✅ Supabase built-in rate limiting
 4. ⚠️ Account lockout: NOT IMPLEMENTED
 
 **Risk Level**: 🟡 MEDIUM
+
 - Current: Protected by client + Supabase
 - Gap: Server-side library not integrated
 - Gap: No account lockout after X failed attempts
 
 **Recommendation**: **MEDIUM PRIORITY**
+
 - Integrate server-side rate limiting
 - Consider account lockout (temporarily disable after 10 failed attempts)
 
@@ -649,6 +707,7 @@ getAuthenticatedUser() checks profile
 ### 10.2 Session Hijacking
 
 **Protection**:
+
 - ✅ HTTPS enforced (secure cookie flag)
 - ✅ SameSite=Lax (prevents CSRF)
 - ✅ Auto token refresh (limits token lifetime)
@@ -663,6 +722,7 @@ getAuthenticatedUser() checks profile
 ### 10.3 XSS (Cross-Site Scripting)
 
 **Protection**:
+
 - ✅ Input sanitization (names, emails)
 - ✅ React's built-in XSS protection
 - ✅ No dangerouslySetInnerHTML usage
@@ -677,6 +737,7 @@ getAuthenticatedUser() checks profile
 ### 10.4 CSRF (Cross-Site Request Forgery)
 
 **Protection**:
+
 - ✅ SameSite=Lax cookies
 - ✅ Supabase handles CSRF tokens
 - ✅ API routes check auth on every request
@@ -690,6 +751,7 @@ getAuthenticatedUser() checks profile
 ### 10.5 SQL Injection
 
 **Protection**:
+
 - ✅ Using Supabase ORM (parameterized queries)
 - ✅ No raw SQL in application code
 - ✅ Input validation before database operations
@@ -703,6 +765,7 @@ getAuthenticatedUser() checks profile
 ### 10.6 Account Enumeration
 
 **Protection**:
+
 - ✅ Generic error messages ("Invalid credentials" not "User not found")
 - ✅ Signup doesn't reveal if email exists
 - ✅ Password reset doesn't confirm email existence
@@ -722,6 +785,7 @@ getAuthenticatedUser() checks profile
 **Risk Level**: 🟡 MEDIUM (for admin accounts)
 
 **Recommendation**: **LOW PRIORITY**
+
 - Consider for admin accounts
 - Not critical for athlete accounts
 - Supabase supports 2FA (can be added later)
@@ -735,6 +799,7 @@ getAuthenticatedUser() checks profile
 **Risk Level**: 🟡 MEDIUM
 
 **Recommendation**: **MEDIUM PRIORITY**
+
 - Implement temporary lockout after 10 failed attempts
 - Reset after 1 hour or admin override
 - Send email notification on lockout
@@ -746,6 +811,7 @@ getAuthenticatedUser() checks profile
 **Status**: Basic logging only
 
 **Recommendation**: **LOW PRIORITY**
+
 - Track concurrent sessions
 - Monitor unusual login patterns
 - Alert on login from new device/location
@@ -759,6 +825,7 @@ getAuthenticatedUser() checks profile
 **Risk Level**: 🟡 MEDIUM (for maintainability)
 
 **Recommendation**: **HIGH PRIORITY**
+
 - Test rate limiting
 - Test role checks
 - Test session expiry handling
@@ -772,6 +839,7 @@ getAuthenticatedUser() checks profile
 ### 12.1 Environment Variables ✅ SECURE
 
 **Required Variables**:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
@@ -780,6 +848,7 @@ CRON_SECRET=xxx (for cron jobs)
 ```
 
 **Security**:
+
 - ✅ No hardcoded secrets in code
 - ✅ Service role key used only server-side
 - ✅ Anon key properly limited by RLS policies
@@ -792,6 +861,7 @@ CRON_SECRET=xxx (for cron jobs)
 ### 12.2 HTTPS Enforcement ✅ CONFIGURED
 
 **Client**: `src/lib/supabase.ts`
+
 ```typescript
 if (window.location.protocol === "https:") {
   cookie += "; secure";
@@ -809,6 +879,7 @@ if (window.location.protocol === "https:") {
 **Status**: Assumed to be configured in Supabase
 
 **Recommendation**: **CRITICAL TO VERIFY**
+
 - Verify RLS policies on all tables
 - Test: Athlete shouldn't see other athletes' data
 - Test: Coach can only modify assigned athletes
@@ -908,6 +979,7 @@ if (window.location.protocol === "https:") {
 ### Authentication System Status: ✅ **PRODUCTION READY**
 
 **Strengths**:
+
 - ✅ Solid architecture with single auth mechanism
 - ✅ Comprehensive input validation and sanitization
 - ✅ Proper session management with auto-refresh
@@ -917,6 +989,7 @@ if (window.location.protocol === "https:") {
 - ✅ Error handling secure and informative
 
 **Minor Gaps** (not blockers):
+
 - ⚠️ Server-side rate limiting not integrated
 - ⚠️ Deprecated functions causing inconsistency
 - ⚠️ No auth unit tests

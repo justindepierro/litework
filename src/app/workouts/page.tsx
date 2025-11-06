@@ -79,14 +79,14 @@ export default function WorkoutsPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Build query params based on showArchived state
         const queryParams = new URLSearchParams();
         if (showArchived) {
-          queryParams.set('onlyArchived', 'true');
+          queryParams.set("onlyArchived", "true");
         }
-        
-        const url = `/api/workouts${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+        const url = `/api/workouts${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
         const response = await fetch(url);
         const data = (await response.json()) as ApiResponse;
 
@@ -144,11 +144,14 @@ export default function WorkoutsPage() {
     return `${exercise.weight} lbs`;
   };
 
-  const handleArchiveToggle = async (workoutId: string, currentArchived: boolean) => {
+  const handleArchiveToggle = async (
+    workoutId: string,
+    currentArchived: boolean
+  ) => {
     try {
       const response = await fetch(`/api/workouts/${workoutId}/archive`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ archived: !currentArchived }),
       });
 
@@ -156,14 +159,14 @@ export default function WorkoutsPage() {
 
       if (data.success) {
         // Remove from current list (will be in opposite list now)
-        setWorkouts(prev => prev.filter(w => w.id !== workoutId));
-        success(currentArchived ? 'Workout restored' : 'Workout archived');
+        setWorkouts((prev) => prev.filter((w) => w.id !== workoutId));
+        success(currentArchived ? "Workout restored" : "Workout archived");
       } else {
-        showErrorToast(data.error || 'Failed to update workout');
+        showErrorToast(data.error || "Failed to update workout");
       }
     } catch (err) {
-      console.error('Archive error:', err);
-      showErrorToast('Failed to update workout');
+      console.error("Archive error:", err);
+      showErrorToast("Failed to update workout");
     }
   };
 
@@ -244,7 +247,7 @@ export default function WorkoutsPage() {
               <div className="flex flex-col gap-4 mb-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-heading-secondary text-xl">
-                    {showArchived ? 'Archived Workouts' : 'Your Workouts'}
+                    {showArchived ? "Archived Workouts" : "Your Workouts"}
                   </h2>
                   <button
                     className="btn-primary"
@@ -433,16 +436,23 @@ export default function WorkoutsPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleArchiveToggle(workout.id, workout.archived || false);
+                              handleArchiveToggle(
+                                workout.id,
+                                workout.archived || false
+                              );
                             }}
-                            className={`${showArchived ? 'btn-primary flex-1' : 'btn-secondary'} flex items-center justify-center gap-1`}
+                            className={`${showArchived ? "btn-primary flex-1" : "btn-secondary"} flex items-center justify-center gap-1`}
                             disabled={isOptimistic}
-                            title={workout.archived ? 'Restore workout' : 'Archive workout'}
+                            title={
+                              workout.archived
+                                ? "Restore workout"
+                                : "Archive workout"
+                            }
                           >
                             {workout.archived ? (
                               <>
                                 <ArchiveRestore className="w-4 h-4" />
-                                {showArchived && 'Restore'}
+                                {showArchived && "Restore"}
                               </>
                             ) : (
                               <>
@@ -809,7 +819,10 @@ export default function WorkoutsPage() {
                       showErrorToast(errorMsg);
                     }
                   } catch (err) {
-                    const errorMessage = err instanceof Error ? err.message : "Failed to update workout";
+                    const errorMessage =
+                      err instanceof Error
+                        ? err.message
+                        : "Failed to update workout";
                     console.error("Error updating workout:", {
                       error: err,
                       workoutId: updatedWorkout.id,

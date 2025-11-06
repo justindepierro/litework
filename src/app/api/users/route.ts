@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminClient, getAuthenticatedUser, isCoach } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isCoach,
+} from "@/lib/auth-server";
 
 export async function GET() {
   try {

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getAdminClient, getAuthenticatedUser, isAdmin } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isAdmin,
+} from "@/lib/auth-server";
 
 export async function PATCH(
   request: Request,
@@ -7,7 +11,7 @@ export async function PATCH(
 ) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return NextResponse.json(
         { error: authError || "Authentication required" },
@@ -59,7 +63,7 @@ export async function DELETE(
   try {
     // Only admins can delete users
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return NextResponse.json(
         { error: authError || "Authentication required" },

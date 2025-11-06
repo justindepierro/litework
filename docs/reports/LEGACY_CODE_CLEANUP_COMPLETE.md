@@ -1,7 +1,7 @@
 # Legacy Code Cleanup - Complete
 
 **Date**: November 6, 2025  
-**Status**: ✅ COMPLETED  
+**Status**: ✅ COMPLETED
 
 ---
 
@@ -16,6 +16,7 @@ Successfully removed all legacy authentication code and implemented modern, secu
 **Deleted**: `src/app/api/auth/login/route.ts`
 
 **Reason**: This endpoint created custom JWT tokens, but the entire app uses Supabase cookie-based authentication. This was:
+
 - Dead code (never used)
 - Security risk (had default JWT secret)
 - Confusing (two auth mechanisms)
@@ -27,6 +28,7 @@ Successfully removed all legacy authentication code and implemented modern, secu
 ### 2. ✅ Removed JWT Dependencies
 
 **Removed from `package.json`**:
+
 ```json
 - "jsonwebtoken": "^9.0.2"
 - "@types/jsonwebtoken": "^9.0.10"
@@ -41,12 +43,14 @@ Successfully removed all legacy authentication code and implemented modern, secu
 ### 3. ✅ Cleaned Environment Variables
 
 **Removed from `.env.local`**:
+
 ```bash
 # JWT Configuration (for backward compatibility with existing auth)
 JWT_SECRET=U2VcJCvOzpwTA1jLoarCXljX3XohXiEMsoi54DArie0
 ```
 
 **Updated**: `src/app/api/auth/diagnose/route.ts`
+
 - Removed JWT_SECRET check
 - No longer required for diagnostics
 
@@ -57,29 +61,29 @@ JWT_SECRET=U2VcJCvOzpwTA1jLoarCXljX3XohXiEMsoi54DArie0
 **Created**: `src/lib/rate-limit-server.ts`
 
 **Features**:
+
 - IP-based rate limiting
 - Configurable limits per endpoint type
 - Automatic cleanup of expired entries
 - Helper function to extract client IP
 
 **Usage**:
+
 ```typescript
-import { checkRateLimit, getClientIP } from '@/lib/rate-limit-server';
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit-server";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIP(req.headers);
-  
-  if (!checkRateLimit(ip, 'login')) {
-    return NextResponse.json(
-      { error: 'Too many attempts' },
-      { status: 429 }
-    );
+
+  if (!checkRateLimit(ip, "login")) {
+    return NextResponse.json({ error: "Too many attempts" }, { status: 429 });
   }
   // ... rest of endpoint
 }
 ```
 
 **Limits**:
+
 - Login: 5 attempts per 15 minutes
 - Signup: 3 attempts per hour
 - Password Reset: 3 attempts per hour
@@ -92,27 +96,32 @@ export async function POST(req: NextRequest) {
 ### ✅ Modern, Clean Architecture
 
 **Client-Side** (`src/lib/supabase.ts`):
+
 - Supabase browser client with `@supabase/ssr`
 - Cookie-based session storage
 - Storage key: `litework-auth-token`
 
 **Server-Side** (`src/lib/auth-server.ts`):
+
 - Reads session from cookies
 - Consistent storage key
 - Used in all API routes
 
 **Auth Client** (`src/lib/auth-client.ts`):
+
 - Wrapper around Supabase Auth
 - Input validation & sanitization
 - Client-side rate limiting (first line of defense)
 - Security event logging
 
 **Auth Context** (`src/contexts/AuthContext.tsx`):
+
 - React context for user state
 - Auto-refresh sessions
 - Auth state change listener
 
 **Server Rate Limiting** (`src/lib/rate-limit-server.ts`):
+
 - NEW! IP-based rate limiting
 - Prevents brute force attacks
 - Multiple protection layers
@@ -136,6 +145,7 @@ export async function POST(req: NextRequest) {
 ### Immediate Actions
 
 1. **Install Dependencies**
+
    ```bash
    npm install
    # This will remove jsonwebtoken from node_modules
@@ -154,22 +164,23 @@ export async function POST(req: NextRequest) {
 ### Recommended (Optional)
 
 4. **Implement Rate Limiting in API Routes**
-   
+
    Example for login (if you create a new login endpoint):
+
    ```typescript
    // src/app/api/auth/signin/route.ts
-   import { checkRateLimit, getClientIP } from '@/lib/rate-limit-server';
-   
+   import { checkRateLimit, getClientIP } from "@/lib/rate-limit-server";
+
    export async function POST(req: NextRequest) {
      const ip = getClientIP(req.headers);
-     
-     if (!checkRateLimit(ip, 'login')) {
+
+     if (!checkRateLimit(ip, "login")) {
        return NextResponse.json(
-         { error: 'Too many login attempts. Try again in 15 minutes.' },
+         { error: "Too many login attempts. Try again in 15 minutes." },
          { status: 429 }
        );
      }
-     
+
      // ... rest of login logic
    }
    ```
@@ -177,12 +188,12 @@ export async function POST(req: NextRequest) {
 5. **Add Rate Limiting Tests**
    ```typescript
    // tests/rate-limit.test.ts
-   describe('Rate Limiting', () => {
-     it('should block after max attempts', () => {
-       const ip = '192.168.1.1';
+   describe("Rate Limiting", () => {
+     it("should block after max attempts", () => {
+       const ip = "192.168.1.1";
        // Make 6 requests (limit is 5)
        for (let i = 0; i < 6; i++) {
-         const allowed = checkRateLimit(ip, 'login');
+         const allowed = checkRateLimit(ip, "login");
          if (i < 5) expect(allowed).toBe(true);
          else expect(allowed).toBe(false);
        }
@@ -201,7 +212,7 @@ export async function POST(req: NextRequest) {
 ❌ Unused dependencies  
 ❌ Client-side only rate limiting  
 ❌ Default secrets in code  
-❌ Confusing for developers  
+❌ Confusing for developers
 
 ### After Cleanup
 
@@ -210,7 +221,7 @@ export async function POST(req: NextRequest) {
 ✅ Minimal dependencies  
 ✅ Server-side rate limiting  
 ✅ No default secrets  
-✅ Clear, maintainable code  
+✅ Clear, maintainable code
 
 ---
 
@@ -236,16 +247,19 @@ export async function POST(req: NextRequest) {
 ## Files Changed
 
 ### Deleted
+
 ```
 - src/app/api/auth/login/route.ts (JWT endpoint)
 ```
 
 ### Created
+
 ```
 + src/lib/rate-limit-server.ts (Server rate limiting)
 ```
 
 ### Modified
+
 ```
 ~ package.json (removed JWT dependencies)
 ~ .env.local (removed JWT_SECRET)
@@ -268,9 +282,10 @@ export async function POST(req: NextRequest) {
 
 ## Breaking Changes
 
-**NONE!** 
+**NONE!**
 
 All changes are purely cleanup:
+
 - Removed unused code
 - No API contracts changed
 - No user-facing changes
@@ -283,7 +298,7 @@ All changes are purely cleanup:
 ✅ **Cleanup Complete**: All legacy JWT code removed  
 ✅ **Security Enhanced**: Server-side rate limiting added  
 ✅ **Code Quality**: Cleaner, more maintainable  
-✅ **Zero Errors**: TypeScript validates  
+✅ **Zero Errors**: TypeScript validates
 
 **Result**: Production-ready authentication system with no legacy cruft.
 

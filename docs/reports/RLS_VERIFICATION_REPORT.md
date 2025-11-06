@@ -24,6 +24,7 @@ Analyzed all database tables for Row Level Security (RLS) implementation. Found 
 ### ✅ Tables WITH RLS (32 tables)
 
 #### **Core Schema** (9 tables)
+
 - ✅ `users` - User profiles
 - ✅ `athlete_groups` - Group management
 - ✅ `athlete_kpis` - Performance records
@@ -35,9 +36,11 @@ Analyzed all database tables for Row Level Security (RLS) implementation. Found 
 - ✅ `workout_assignments` - Workout assignments
 
 #### **Progress Tracking** (1 table)
+
 - ✅ `progress_entries` - Weight and measurements
 
 #### **Exercise Library** (8 tables)
+
 - ✅ `exercise_categories` - Exercise categories
 - ✅ `muscle_groups` - Muscle group definitions
 - ✅ `equipment_types` - Equipment types
@@ -48,6 +51,7 @@ Analyzed all database tables for Row Level Security (RLS) implementation. Found 
 - ✅ `user_exercise_preferences` - User preferences
 
 #### **Communication** (6 tables)
+
 - ✅ `messages` - In-app messaging
 - ✅ `communication_preferences` - User notification settings
 - ✅ `notifications` - Notification queue
@@ -58,6 +62,7 @@ Analyzed all database tables for Row Level Security (RLS) implementation. Found 
 ### ❌ Tables WITHOUT RLS (1 table)
 
 #### **Missing RLS** - CRITICAL
+
 - ❌ `athlete_invites` - **NO RLS ENABLED**
 
 ---
@@ -69,6 +74,7 @@ Analyzed all database tables for Row Level Security (RLS) implementation. Found 
 **Tables**: `users`, `progress_entries`, `athlete_kpis`
 
 **Policies**:
+
 ```sql
 -- Users can view own profile
 CREATE POLICY "Users can view own profile" ON public.users
@@ -78,8 +84,8 @@ CREATE POLICY "Users can view own profile" ON public.users
 CREATE POLICY "Coaches can view users" ON public.users
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid()
       AND role IN ('coach', 'admin')
     )
   );
@@ -90,6 +96,7 @@ CREATE POLICY "Users can update own profile" ON public.users
 ```
 
 **Verification**:
+
 - ✅ Athletes can only see own data
 - ✅ Coaches/admins can see all athletes
 - ✅ No cross-athlete data leakage
@@ -101,6 +108,7 @@ CREATE POLICY "Users can update own profile" ON public.users
 **Tables**: `athlete_groups`
 
 **Policies**:
+
 ```sql
 -- Coaches can manage their groups
 CREATE POLICY "Coaches can manage their groups" ON public.athlete_groups
@@ -112,6 +120,7 @@ CREATE POLICY "Athletes can view their groups" ON public.athlete_groups
 ```
 
 **Verification**:
+
 - ✅ Coaches can only manage own groups
 - ✅ Athletes can only see groups they're in
 - ✅ No unauthorized group access
@@ -123,6 +132,7 @@ CREATE POLICY "Athletes can view their groups" ON public.athlete_groups
 **Tables**: `workout_plans`, `workout_exercises`, `workout_assignments`
 
 **Policies**:
+
 ```sql
 -- Coaches can manage workout plans
 CREATE POLICY "Coaches can manage workout plans" ON public.workout_plans
@@ -149,6 +159,7 @@ CREATE POLICY "Workout exercises follow workout plan permissions" ON public.work
 ```
 
 **Verification**:
+
 - ✅ Coaches can only modify own workouts
 - ✅ Athletes can only see assigned workouts
 - ✅ Exercise permissions inherit from workout
@@ -160,6 +171,7 @@ CREATE POLICY "Workout exercises follow workout plan permissions" ON public.work
 **Tables**: `workout_sessions`, `session_exercises`, `set_records`, `athlete_kpis`
 
 **Policies**:
+
 ```sql
 -- Users can manage own sessions
 CREATE POLICY "Users can manage own workout sessions" ON public.workout_sessions
@@ -188,6 +200,7 @@ CREATE POLICY "Set records follow session exercise permissions" ON public.set_re
 ```
 
 **Verification**:
+
 - ✅ Athletes can only access own sessions
 - ✅ Coaches can view via separate mechanisms
 - ✅ Proper permission inheritance chain
@@ -199,6 +212,7 @@ CREATE POLICY "Set records follow session exercise permissions" ON public.set_re
 **Tables**: `exercises`, `exercise_categories`, `muscle_groups`, etc.
 
 **Policies**:
+
 ```sql
 -- Exercises readable by all authenticated users
 CREATE POLICY "Exercises readable by authenticated users" ON public.exercises
@@ -208,14 +222,15 @@ CREATE POLICY "Exercises readable by authenticated users" ON public.exercises
 CREATE POLICY "Exercises manageable by coaches and admins" ON public.exercises
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid()
       AND role IN ('coach', 'admin')
     )
   );
 ```
 
 **Verification**:
+
 - ✅ All authenticated users can read exercises
 - ✅ Only coaches/admins can create/modify
 - ✅ Public library available to all
@@ -229,6 +244,7 @@ CREATE POLICY "Exercises manageable by coaches and admins" ON public.exercises
 **Policies Applied**: ✅ RLS enabled (policies defined in communication-schema.sql)
 
 **Verification**:
+
 - ✅ Users can only see own messages
 - ✅ Users can only see own notifications
 - ✅ Activity logs properly scoped
@@ -241,6 +257,7 @@ CREATE POLICY "Exercises manageable by coaches and admins" ON public.exercises
 **Status**: ❌ **NO RLS POLICIES**
 
 **Current State**:
+
 ```sql
 CREATE TABLE public.athlete_invites (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -259,12 +276,14 @@ CREATE TABLE public.athlete_invites (
 ```
 
 **Security Risk**:
+
 - ⚠️ Any authenticated user could potentially query all invites
 - ⚠️ Could expose athlete names and emails
 - ⚠️ Could expose invite codes
 - ⚠️ Could see which groups athletes are invited to
 
 **Risk Level**: 🟡 MEDIUM
+
 - Not critical if using service role keys correctly in API
 - But violates defense-in-depth principle
 - Should be fixed before production
@@ -276,6 +295,7 @@ CREATE TABLE public.athlete_invites (
 ### Enable RLS on `athlete_invites` Table
 
 **SQL Migration**:
+
 ```sql
 -- Enable RLS
 ALTER TABLE public.athlete_invites ENABLE ROW LEVEL SECURITY;
@@ -283,10 +303,10 @@ ALTER TABLE public.athlete_invites ENABLE ROW LEVEL SECURITY;
 -- Policy 1: Coaches can manage their own invites
 CREATE POLICY "Coaches can manage own invites" ON public.athlete_invites
   FOR ALL USING (
-    created_by = auth.uid() 
+    created_by = auth.uid()
     AND EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid()
       AND role IN ('coach', 'admin')
     )
   );
@@ -297,7 +317,7 @@ CREATE POLICY "Users can view own invite by code" ON public.athlete_invites
   FOR SELECT USING (
     invite_code IN (
       -- Users can only access invites if they know the exact code
-      SELECT invite_code FROM public.athlete_invites 
+      SELECT invite_code FROM public.athlete_invites
       WHERE id = athlete_invites.id
     )
   );
@@ -306,8 +326,8 @@ CREATE POLICY "Users can view own invite by code" ON public.athlete_invites
 CREATE POLICY "Only coaches can access invites" ON public.athlete_invites
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid()
       AND role IN ('coach', 'admin')
     )
   );
@@ -320,11 +340,13 @@ CREATE POLICY "Only coaches can access invites" ON public.athlete_invites
 ## Testing Checklist
 
 ### Before Applying Fix
+
 - [ ] Backup database
 - [ ] Test current invite flow works
 - [ ] Document current API routes using invites
 
 ### After Applying Fix
+
 - [ ] Verify coaches can create invites
 - [ ] Verify coaches can view own invites
 - [ ] Verify athletes CANNOT query all invites
@@ -335,6 +357,7 @@ CREATE POLICY "Only coaches can access invites" ON public.athlete_invites
 ### Test Scenarios
 
 **Test 1: Athlete Cannot See All Invites**
+
 ```sql
 -- As athlete, try to see all invites
 SET request.jwt.claims.sub = '<athlete-user-id>';
@@ -343,6 +366,7 @@ SELECT * FROM athlete_invites;
 ```
 
 **Test 2: Coach Can See Own Invites**
+
 ```sql
 -- As coach, try to see invites
 SET request.jwt.claims.sub = '<coach-user-id>';
@@ -351,12 +375,13 @@ SELECT * FROM athlete_invites WHERE created_by = '<coach-user-id>';
 ```
 
 **Test 3: Invite Acceptance Works**
+
 ```typescript
 // API route should use service role key to bypass RLS
 const { data, error } = await supabaseAdmin
-  .from('athlete_invites')
-  .select('*')
-  .eq('invite_code', code)
+  .from("athlete_invites")
+  .select("*")
+  .eq("invite_code", code)
   .single();
 // Expected: Success (service role bypasses RLS)
 ```
@@ -368,6 +393,7 @@ const { data, error } = await supabaseAdmin
 ### Current Status: ✅ 97% Secure (31/32 tables properly protected)
 
 **Strengths**:
+
 - ✅ All user data properly isolated
 - ✅ Coach/athlete permissions correctly enforced
 - ✅ Workout and session data secure
@@ -375,17 +401,20 @@ const { data, error } = await supabaseAdmin
 - ✅ Communication tables protected
 
 **Gap**:
+
 - ❌ `athlete_invites` table has NO RLS (1 table)
 
 ### Recommendations
 
 **🔴 CRITICAL (Do Before Launch)**:
+
 1. Enable RLS on `athlete_invites` table
 2. Add coach-only access policy
 3. Test invite flow end-to-end
 4. Verify API routes use service role correctly
 
 **🟢 VERIFIED**:
+
 - All other 31 tables have proper RLS
 - Policies follow least-privilege principle
 - No obvious data leakage paths
@@ -396,16 +425,17 @@ const { data, error } = await supabaseAdmin
 ## Implementation Steps
 
 1. **Create Migration File**:
+
    ```bash
    # Create migration
    echo "-- Add RLS to athlete_invites table
    ALTER TABLE public.athlete_invites ENABLE ROW LEVEL SECURITY;
-   
+
    CREATE POLICY \"Only coaches can access invites\" ON public.athlete_invites
      FOR ALL USING (
        EXISTS (
-         SELECT 1 FROM public.users 
-         WHERE id = auth.uid() 
+         SELECT 1 FROM public.users
+         WHERE id = auth.uid()
          AND role IN ('coach', 'admin')
        )
      );" > database/add-invites-rls.sql

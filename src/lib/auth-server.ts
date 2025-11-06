@@ -168,7 +168,6 @@ export function canAssignWorkouts(user: AuthUser): boolean {
   return isCoach(user);
 }
 
-
 export function canViewAllAthletes(user: AuthUser): boolean {
   return isCoach(user);
 }
@@ -181,4 +180,3 @@ export function canModifyWorkouts(user: AuthUser): boolean {
 export function getAdminClient() {
   return supabaseAdmin;
 }
-

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getAdminClient, getAuthenticatedUser, isCoach } from "@/lib/auth-server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isCoach,
+} from "@/lib/auth-server";
 
 /**
  * GET /api/athletes - Get all athletes and pending invites
@@ -9,7 +13,7 @@ export async function GET() {
   try {
     // Verify authentication and require coach/admin
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return NextResponse.json(
         { error: authError || "Authentication required" },

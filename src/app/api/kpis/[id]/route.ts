@@ -25,7 +25,6 @@ export async function PUT(
   }
 
   try {
-
     const { id } = await params;
     const body = await request.json();
     const supabase = getAdminClient();
@@ -75,7 +74,6 @@ export async function DELETE(
   }
 
   try {
-
     const { id } = await params;
     const supabase = getAdminClient();
 

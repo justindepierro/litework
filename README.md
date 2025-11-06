@@ -11,6 +11,7 @@ A comprehensive web-based workout tracking application designed for weight lifti
 - **🏋️ Workout Assignment**: Bulk assign workouts to entire groups with scheduling
 - **⚙️ Individual Modifications**: Customize group workouts for individual athletes based on experience, injury status, or specific needs
 - **📊 Progress Tracking**: Monitor athlete progress and performance metrics
+- **💬 Feedback Dashboard**: View athlete feedback on difficulty, soreness, and performance
 
 ### For Athletes:
 
@@ -18,6 +19,25 @@ A comprehensive web-based workout tracking application designed for weight lifti
 - **🔴 Live Mode**: Interactive workout session with big buttons for recording sets, weights, and reps
 - **📈 Progress Tracking**: Monitor personal improvements and workout history
 - **📱 Mobile-First Design**: Optimized for use on phones and tablets in the gym
+- **💭 Workout Feedback**: Provide feedback to coaches on difficulty and performance
+
+## 🚧 In Development: Enhanced Assignment & Feedback System
+
+We're building a comprehensive workout assignment and feedback system. **[View complete roadmap →](docs/ASSIGNMENT_SYSTEM_SUMMARY.md)**
+
+### Coming Soon (4-Week Implementation)
+
+**Week 1**: Enhanced assignment with date/time picker, individual athlete assignment, and calendar integration  
+**Week 2**: Complete workout session tracking with live mode and offline support  
+**Week 3**: Bi-directional feedback system between athletes and coaches  
+**Week 4**: Advanced features including history, notifications, and analytics
+
+📚 **Documentation**:
+- [Executive Summary](docs/ASSIGNMENT_SYSTEM_SUMMARY.md) - High-level overview
+- [Complete Roadmap](docs/WORKOUT_ASSIGNMENT_ROADMAP.md) - Detailed implementation plan
+- [Quick Start Guide](docs/ASSIGNMENT_SYSTEM_QUICKSTART.md) - Developer getting started
+- [UI Mockups](docs/ASSIGNMENT_SYSTEM_UI_MOCKUPS.md) - Visual design reference
+- [Dev Reference](docs/ASSIGNMENT_SYSTEM_DEV_REFERENCE.md) - One-page cheat sheet
 
 ## 🛠️ Technical Stack
 

@@ -73,7 +73,9 @@ class ApiClient {
         status: response.status,
         statusText: response.statusText,
         errorData,
-        rawResponse: errorText ? errorText.substring(0, 500) : "No response text", // First 500 chars
+        rawResponse: errorText
+          ? errorText.substring(0, 500)
+          : "No response text", // First 500 chars
       });
 
       throw new Error(

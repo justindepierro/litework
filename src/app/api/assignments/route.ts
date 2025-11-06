@@ -108,11 +108,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create new assignment in database
+    // Create new assignment in database with enhanced fields
     const newAssignment = await createAssignment({
       ...assignmentData,
       assignedBy: user.id,
       scheduledDate: new Date(assignmentData.scheduledDate),
+      startTime: assignmentData.startTime || undefined,
+      endTime: assignmentData.endTime || undefined,
+      location: assignmentData.location || undefined,
       status: "assigned",
     });
 

@@ -41,10 +41,7 @@ export async function PATCH(
       .single();
 
     if (checkError || !existingWorkout) {
-      return NextResponse.json(
-        { error: "Workout not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Workout not found" }, { status: 404 });
     }
 
     // Coaches can only archive their own workouts (admins can archive any)

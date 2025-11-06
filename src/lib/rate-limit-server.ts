@@ -1,14 +1,14 @@
 /**
  * Server-Side Rate Limiting
  * IP-based rate limiting for API routes
- * 
+ *
  * Usage:
  * ```typescript
  * import { checkRateLimit } from '@/lib/rate-limit-server';
- * 
+ *
  * export async function POST(req: NextRequest) {
  *   const ip = req.headers.get('x-forwarded-for') || 'unknown';
- *   
+ *
  *   if (!checkRateLimit(ip, 'login')) {
  *     return NextResponse.json(
  *       { error: 'Too many attempts. Please try again later.' },
@@ -58,7 +58,7 @@ type RateLimitType = keyof typeof RATE_LIMITS;
  */
 export function checkRateLimit(
   identifier: string,
-  type: RateLimitType = 'api'
+  type: RateLimitType = "api"
 ): boolean {
   const key = `${type}:${identifier}`;
   const config = RATE_LIMITS[type];
@@ -146,7 +146,7 @@ export function cleanupExpiredEntries(): void {
 }
 
 // Auto-cleanup every 10 minutes
-if (typeof setInterval !== 'undefined') {
+if (typeof setInterval !== "undefined") {
   setInterval(cleanupExpiredEntries, 10 * 60 * 1000);
 }
 
@@ -155,17 +155,17 @@ if (typeof setInterval !== 'undefined') {
  */
 export function getClientIP(headers: Headers): string {
   // Try various headers that might contain the IP
-  const forwardedFor = headers.get('x-forwarded-for');
+  const forwardedFor = headers.get("x-forwarded-for");
   if (forwardedFor) {
     // x-forwarded-for can be a comma-separated list
-    return forwardedFor.split(',')[0].trim();
+    return forwardedFor.split(",")[0].trim();
   }
 
-  const realIP = headers.get('x-real-ip');
+  const realIP = headers.get("x-real-ip");
   if (realIP) {
     return realIP;
   }
 
   // Fallback
-  return 'unknown';
+  return "unknown";
 }
