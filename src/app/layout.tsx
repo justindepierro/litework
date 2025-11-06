@@ -85,11 +85,11 @@ export default function RootLayout({
         {/* Preconnect to Supabase for faster API calls */}
         <link
           rel="preconnect"
-          href="https://xnodqasubbpvxonrqhkp.supabase.co"
+          href="https://lzsjaqkhdoqsafptqpnt.supabase.co"
         />
         <link
           rel="dns-prefetch"
-          href="https://xnodqasubbpvxonrqhkp.supabase.co"
+          href="https://lzsjaqkhdoqsafptqpnt.supabase.co"
         />
       </head>
       <body
