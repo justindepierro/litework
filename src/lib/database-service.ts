@@ -637,10 +637,23 @@ export const updateWorkoutPlan = async (
   // Extract exercises, groups, and blockInstances from updates
   const { exercises, groups, blockInstances, ...basicUpdates } = updates;
 
+  // Transform camelCase to snake_case for database
+  const dbUpdates: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (basicUpdates.name !== undefined) dbUpdates.name = basicUpdates.name;
+  if (basicUpdates.description !== undefined)
+    dbUpdates.description = basicUpdates.description;
+  if (basicUpdates.estimatedDuration !== undefined)
+    dbUpdates.estimated_duration = basicUpdates.estimatedDuration;
+  if (basicUpdates.targetGroupId !== undefined)
+    dbUpdates.target_group_id = basicUpdates.targetGroupId;
+
   // Update basic workout plan fields
   const { data, error } = await supabase
     .from("workout_plans")
-    .update({ ...basicUpdates, updated_at: new Date().toISOString() })
+    .update(dbUpdates)
     .eq("id", id)
     .select()
     .single();
@@ -670,7 +683,21 @@ export const updateWorkoutPlan = async (
   }
 
   console.log("[database-service] Successfully updated workout:", data);
-  return data;
+
+  // Transform snake_case response back to camelCase
+  return {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    estimatedDuration: data.estimated_duration,
+    targetGroupId: data.target_group_id,
+    createdBy: data.created_by,
+    createdAt: new Date(data.created_at),
+    updatedAt: new Date(data.updated_at),
+    exercises: exercises || [],
+    groups: groups || [],
+    blockInstances: blockInstances || [],
+  };
 };
 
 export const deleteWorkoutPlan = async (id: string): Promise<boolean> => {
