@@ -9,7 +9,7 @@ import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 // GET /api/workouts - Get workout plans
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
 
@@ -20,8 +20,21 @@ export async function GET() {
       );
     }
 
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const includeArchived = searchParams.get("includeArchived") === "true";
+    const onlyArchived = searchParams.get("onlyArchived") === "true";
+
     // Get all workout plans from database
-    const allWorkoutPlans = await getAllWorkoutPlans();
+    let allWorkoutPlans = await getAllWorkoutPlans();
+
+    // Filter based on archived status
+    if (onlyArchived) {
+      allWorkoutPlans = allWorkoutPlans.filter((w) => w.archived === true);
+    } else if (!includeArchived) {
+      // By default, hide archived workouts
+      allWorkoutPlans = allWorkoutPlans.filter((w) => w.archived !== true);
+    }
 
     // Coaches/admins see all workouts, athletes see workouts for their groups
     if (isCoach(user)) {

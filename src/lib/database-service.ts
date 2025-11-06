@@ -338,6 +338,7 @@ export const getAllWorkoutPlans = async (): Promise<WorkoutPlan[]> => {
     createdBy: plan.created_by,
     createdAt: new Date(plan.created_at),
     updatedAt: new Date(plan.updated_at),
+    archived: plan.archived || false,
     exercises: (exercises || [])
       .filter((ex) => ex.workout_plan_id === plan.id)
       .map((ex) => ({
@@ -435,7 +436,15 @@ export const getWorkoutPlanById = async (
     .eq("workout_plan_id", id);
 
   return {
-    ...plan,
+    id: plan.id,
+    name: plan.name,
+    description: plan.description,
+    estimatedDuration: plan.estimated_duration,
+    targetGroupId: plan.target_group_id,
+    createdBy: plan.created_by,
+    createdAt: new Date(plan.created_at),
+    updatedAt: new Date(plan.updated_at),
+    archived: plan.archived || false,
     exercises: (exercises || []).map((ex) => ({
       id: ex.id,
       exerciseId: ex.exercise_id,

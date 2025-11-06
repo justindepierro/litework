@@ -201,6 +201,7 @@ export interface WorkoutPlan {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  archived?: boolean; // Whether workout is archived (hidden from default views)
 }
 
 // Individual modifications to a group workout
