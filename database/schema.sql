@@ -190,6 +190,7 @@ CREATE INDEX idx_progress_entries_user_exercise ON public.progress_entries(user_
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.athlete_groups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.athlete_kpis ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.athlete_invites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workout_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workout_exercises ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workout_sessions ENABLE ROW LEVEL SECURITY;
@@ -231,6 +232,16 @@ CREATE POLICY "Athletes can manage own KPIs" ON public.athlete_kpis
   FOR ALL USING (athlete_id = auth.uid());
 
 CREATE POLICY "Coaches can manage all KPIs" ON public.athlete_kpis
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM public.users 
+      WHERE id = auth.uid() 
+      AND role IN ('coach', 'admin')
+    )
+  );
+
+-- Only coaches and admins can access athlete invites
+CREATE POLICY "Only coaches can access invites" ON public.athlete_invites
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.users 
