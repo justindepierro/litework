@@ -728,11 +728,17 @@ export default function WorkoutsPage() {
                         typeof response.error === "string"
                           ? response.error
                           : "Failed to update workout";
+                      console.error("Workout update failed:", response);
                       showErrorToast(errorMsg);
                     }
                   } catch (err) {
-                    console.error("Error updating workout:", err);
-                    showErrorToast("Failed to update workout");
+                    const errorMessage = err instanceof Error ? err.message : "Failed to update workout";
+                    console.error("Error updating workout:", {
+                      error: err,
+                      workoutId: updatedWorkout.id,
+                      workoutName: updatedWorkout.name,
+                    });
+                    showErrorToast(errorMessage);
                   }
                 }
               }}

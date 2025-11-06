@@ -59,7 +59,9 @@ class ApiClient {
         // Try to get the response text first
         errorText = await response.text();
         // Then try to parse it as JSON
-        errorData = JSON.parse(errorText);
+        if (errorText) {
+          errorData = JSON.parse(errorText);
+        }
       } catch {
         // If JSON parsing fails, use the text as the error
         errorData = { error: errorText || "Unknown error" };
@@ -71,7 +73,7 @@ class ApiClient {
         status: response.status,
         statusText: response.statusText,
         errorData,
-        rawResponse: errorText.substring(0, 500), // First 500 chars
+        rawResponse: errorText ? errorText.substring(0, 500) : "No response text", // First 500 chars
       });
 
       throw new Error(

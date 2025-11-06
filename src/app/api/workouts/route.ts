@@ -6,6 +6,7 @@ import {
   updateWorkoutPlan,
 } from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 // GET /api/workouts - Get workout plans
 export async function GET() {
@@ -217,12 +218,39 @@ export async function PUT(request: NextRequest) {
       name,
       description,
       estimatedDuration,
+      hasExercises: exercises?.length > 0,
+      hasGroups: groups?.length > 0,
+      hasBlockInstances: blockInstances?.length > 0,
     });
+
+    // First check if the workout exists
+    const { data: existingWorkout, error: checkError } = await supabaseAdmin
+      .from("workout_plans")
+      .select("id, name")
+      .eq("id", id)
+      .single();
+
+    if (checkError || !existingWorkout) {
+      console.error("[PUT /api/workouts] Workout not found:", {
+        id,
+        error: checkError,
+      });
+      return NextResponse.json(
+        {
+          error: `Workout not found with ID: ${id}`,
+          details: "The workout may have been deleted or the ID is invalid",
+        },
+        { status: 404 }
+      );
+    }
 
     const updatedWorkout = await updateWorkoutPlan(id, {
       name,
       description,
       estimatedDuration: estimatedDuration || 60,
+      exercises, // Pass through for future implementation
+      groups, // Pass through for future implementation
+      blockInstances, // Pass through for future implementation
     });
 
     console.log("[PUT /api/workouts] Update result:", updatedWorkout);
@@ -234,8 +262,8 @@ export async function PUT(request: NextRequest) {
       );
       return NextResponse.json(
         {
-          error:
-            "Failed to update workout plan - workout not found or update failed",
+          error: "Failed to update workout plan",
+          details: "Database update operation failed",
         },
         { status: 500 }
       );
