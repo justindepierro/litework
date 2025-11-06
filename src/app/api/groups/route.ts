@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import {
+  getAuthenticatedUser,
+  getAdminClient,
+  isCoach,
+} from "@/lib/auth-server";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
 export async function GET() {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     const supabase = getAdminClient();
 
     // Coaches/admins can see all groups, athletes only see their groups
-    if (user.role === "coach" || user.role === "admin") {
+    if (isCoach(user)) {
       const { data: groups, error } = await supabase
         .from("athlete_groups")
         .select("*")
@@ -81,13 +88,16 @@ export async function GET() {
 // POST /api/groups - Create new group (coaches only)
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Forbidden - Coach access required" },
         { status: 403 }

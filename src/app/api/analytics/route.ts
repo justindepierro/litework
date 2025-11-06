@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import {
+  getAuthenticatedUser,
+  getAdminClient,
+  isCoach,
+  isAdmin,
+} from "@/lib/auth-server";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
@@ -48,7 +53,7 @@ export async function GET(request: NextRequest) {
     let targetUserId = user?.id;
 
     // If athleteId is specified and user is coach/admin, analyze that athlete
-    if (athleteId && user && (user.role === "coach" || user.role === "admin")) {
+    if (athleteId && user && isCoach(user)) {
       // Verify coach has access to this athlete
       const { data: athlete } = await supabase
         .from("users")
@@ -58,7 +63,7 @@ export async function GET(request: NextRequest) {
 
       if (
         !athlete ||
-        (athlete.coach_id !== user?.id && user?.role !== "admin")
+        (athlete.coach_id !== user?.id && !isAdmin(user))
       ) {
         return NextResponse.json(
           { error: "Access denied to athlete data" },
@@ -317,15 +322,15 @@ export async function GET(request: NextRequest) {
 // POST endpoint for generating analytics reports
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
 
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }

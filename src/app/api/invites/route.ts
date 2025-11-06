@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import {
+  getAuthenticatedUser,
+  getAdminClient,
+  isCoach,
+} from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
-import { checkRateLimit, getRateLimitStatus, getClientIP } from "@/lib/rate-limit-server";
+import {
+  checkRateLimit,
+  getRateLimitStatus,
+  getClientIP,
+} from "@/lib/rate-limit-server";
 
 // Type for invite insert data
 interface InviteInsertData {
@@ -45,14 +53,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can invite athletes
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Only coaches can invite athletes" },
         { status: 403 }
@@ -253,14 +264,17 @@ export async function POST(request: NextRequest) {
 // GET /api/invites - Get all invitations (for coaches)
 export async function GET() {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can view invitations
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Only coaches can view invitations" },
         { status: 403 }

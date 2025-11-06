@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 
 // GET /api/messages - Get messages for current user
 export async function GET() {
   try {
     // Verify authentication
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }
@@ -29,11 +29,11 @@ export async function GET() {
 export async function POST() {
   try {
     // Verify authentication
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: authError || "Authentication required" },
         { status: 401 }
       );
     }

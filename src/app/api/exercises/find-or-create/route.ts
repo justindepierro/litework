@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { getCurrentUser } from "@/lib/auth-server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,11 +11,11 @@ const supabase = createClient(
 // Finds an exercise by name or creates it if it doesn't exist
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
       return NextResponse.json(
-        { success: false, error: "Authentication required" },
+        { success: false, error: authError || "Authentication required" },
         { status: 401 }
       );
     }

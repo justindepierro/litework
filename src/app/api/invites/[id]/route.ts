@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getAdminClient } from "@/lib/auth-server";
+import {
+  getAuthenticatedUser,
+  getAdminClient,
+  isCoach,
+  isAdmin,
+} from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
 
 // GET /api/invites/[id] - Fetch invitation details (public endpoint for signup)
@@ -58,14 +63,17 @@ export async function DELETE(
 ) {
   try {
     const { id: inviteId } = await params;
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can delete invitations
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Only coaches can delete invitations" },
         { status: 403 }
@@ -89,7 +97,7 @@ export async function DELETE(
     }
 
     // Check ownership (admins can delete any invite)
-    if (user.role !== "admin" && invite.invited_by !== user.id) {
+    if (!isAdmin(user) && invite.invited_by !== user.id) {
       return NextResponse.json(
         { error: "You can only delete your own invitations" },
         { status: 403 }
@@ -162,14 +170,17 @@ export async function PUT(
 ) {
   try {
     const { id: inviteId } = await params;
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can update invitations
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Only coaches can update invitations" },
         { status: 403 }
@@ -200,7 +211,7 @@ export async function PUT(
     }
 
     // Check ownership (admins can update any invite)
-    if (user.role !== "admin" && invite.invited_by !== user.id) {
+    if (!isAdmin(user) && invite.invited_by !== user.id) {
       return NextResponse.json(
         { error: "You can only update your own invitations" },
         { status: 403 }
@@ -345,14 +356,17 @@ export async function PATCH(
     }
 
     // For resending (no status provided), require authentication
-    const user = await getCurrentUser();
+    const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: authError || "Authentication required" },
+        { status: 401 }
+      );
     }
 
     // Only coaches and admins can resend invitations
-    if (user.role !== "coach" && user.role !== "admin") {
+    if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Only coaches can resend invitations" },
         { status: 403 }
@@ -376,7 +390,7 @@ export async function PATCH(
     }
 
     // Check ownership (admins can resend any invite)
-    if (user.role !== "admin" && invite.invited_by !== user.id) {
+    if (!isAdmin(user) && invite.invited_by !== user.id) {
       return NextResponse.json(
         { error: "You can only resend your own invitations" },
         { status: 403 }
