@@ -1,12 +1,12 @@
--- Add Row Level Security to athlete_invites table
+-- Add Row Level Security to invites table
 -- This fixes the security gap identified in RLS verification
 
 -- Enable RLS on the table
-ALTER TABLE public.athlete_invites ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invites ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Only coaches and admins can access invites
 -- This prevents athletes from seeing other athletes' invite information
-CREATE POLICY "Only coaches can access invites" ON public.athlete_invites
+CREATE POLICY "Only coaches can access invites" ON public.invites
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.users 
