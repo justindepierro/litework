@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import AthleteCalendar from "@/components/AthleteCalendar";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
 import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
+import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import {
   TrendingUp,
@@ -19,7 +20,6 @@ import {
   Dumbbell,
   Hand,
   Flame,
-  Plus,
   Users,
   UserPlus,
 } from "lucide-react";
@@ -49,7 +49,9 @@ export default function DashboardPage() {
   // Modal state
   const [showGroupAssignment, setShowGroupAssignment] = useState(false);
   const [showIndividualAssignment, setShowIndividualAssignment] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
 
   const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
 
@@ -173,8 +175,46 @@ export default function DashboardPage() {
   };
 
   const handleAssignmentClick = (assignment: WorkoutAssignment) => {
-    // TODO: Open assignment detail modal
-    console.log("Assignment clicked:", assignment);
+    setSelectedAssignmentId(assignment.id);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowDetailModal(false);
+    setSelectedAssignmentId(null);
+  };
+
+  const handleStartWorkout = (assignmentId: string) => {
+    // Navigate to workout live mode
+    window.location.href = `/workout/live/${assignmentId}`;
+  };
+
+  const handleEditAssignment = (assignmentId: string) => {
+    // TODO: Open edit modal or navigate to edit page
+    console.log("Edit assignment:", assignmentId);
+    handleCloseDetailModal();
+  };
+
+  const handleDeleteAssignment = async (assignmentId: string) => {
+    try {
+      const response = await fetch(`/api/assignments/${assignmentId}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        handleCloseDetailModal();
+        // Refresh assignments
+        if (isCoachOrAdmin) {
+          fetchCoachData();
+        } else {
+          fetchAthleteAssignments();
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
   };
 
   if (isLoading) {
@@ -285,6 +325,19 @@ export default function DashboardPage() {
               athletes={athletes}
               workoutPlans={workoutPlans}
               onAssignWorkout={handleAssignWorkout}
+            />
+          )}
+
+          {/* Assignment Detail Modal */}
+          {selectedAssignmentId && (
+            <WorkoutAssignmentDetailModal
+              isOpen={showDetailModal}
+              onClose={handleCloseDetailModal}
+              assignmentId={selectedAssignmentId}
+              userRole={user?.role || "athlete"}
+              onStartWorkout={handleStartWorkout}
+              onEdit={handleEditAssignment}
+              onDelete={handleDeleteAssignment}
             />
           )}
         </div>
@@ -463,6 +516,19 @@ export default function DashboardPage() {
             <span className="text-2xl sm:text-xl font-bold">+</span>
           </Link>
         </div>
+
+        {/* Assignment Detail Modal */}
+        {selectedAssignmentId && (
+          <WorkoutAssignmentDetailModal
+            isOpen={showDetailModal}
+            onClose={handleCloseDetailModal}
+            assignmentId={selectedAssignmentId}
+            userRole={user?.role || "athlete"}
+            onStartWorkout={handleStartWorkout}
+            onEdit={handleEditAssignment}
+            onDelete={handleDeleteAssignment}
+          />
+        )}
       </div>
     </div>
   );
