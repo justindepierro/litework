@@ -20,16 +20,25 @@ import type { WorkoutExercise as WorkoutExerciseType, ExerciseGroup } from "@/ty
 
 interface WorkoutExercise {
   id: string;
-  exercise_name: string;
+  exercise_name?: string;
+  exerciseName?: string;
+  exercise_id?: string;
+  exerciseId?: string;
   sets: number;
-  reps: string;
-  weight: number | null;
-  weight_percentage: number | null;
-  rest_seconds: number;
-  tempo: string | null;
-  notes: string | null;
-  order_index: number;
+  reps: string | number;
+  weight?: number | null;
+  weight_type?: string;
+  weightType?: string;
+  weight_percentage?: number | null;
+  weightPercentage?: number | null;
+  rest_seconds?: number;
+  restTime?: number;
+  tempo?: string | null;
+  notes?: string | null;
+  order_index?: number;
+  orderIndex?: number;
   group_id?: string | null;
+  groupId?: string | null;
 }
 
 interface AssignmentDetail {
@@ -431,18 +440,18 @@ export default function WorkoutAssignmentDetailModal({
                 <ExerciseGroupDisplay
                   exercises={getExercises(assignment).map(ex => ({
                     id: ex.id,
-                    exerciseId: ex.id,
-                    exerciseName: ex.exercise_name,
+                    exerciseId: ex.exercise_id || ex.exerciseId || ex.id,
+                    exerciseName: ex.exercise_name || ex.exerciseName || 'Exercise',
                     sets: ex.sets,
-                    reps: ex.reps ? parseInt(ex.reps) : 0,
+                    reps: typeof ex.reps === 'string' ? parseInt(ex.reps) : ex.reps,
                     tempo: ex.tempo || undefined,
                     weightType: "fixed" as const,
                     weight: ex.weight || undefined,
-                    percentage: ex.weight_percentage || undefined,
-                    restTime: ex.rest_seconds || undefined,
+                    percentage: ex.weight_percentage || ex.weightPercentage || undefined,
+                    restTime: ex.rest_seconds || ex.restTime || undefined,
                     notes: ex.notes || undefined,
-                    order: ex.order_index,
-                    groupId: ex.group_id || undefined,
+                    order: ex.order_index || ex.orderIndex || 0,
+                    groupId: ex.group_id || ex.groupId || undefined,
                   }))}
                   groups={getGroups(assignment).map((g: {
                     id: string;
@@ -450,8 +459,11 @@ export default function WorkoutAssignmentDetailModal({
                     type: string;
                     description?: string | null;
                     order_index?: number;
+                    orderIndex?: number;
                     rest_between_rounds?: number | null;
+                    restBetweenRounds?: number | null;
                     rest_between_exercises?: number | null;
+                    restBetweenExercises?: number | null;
                     rounds?: number | null;
                     notes?: string | null;
                   }) => ({
@@ -459,9 +471,9 @@ export default function WorkoutAssignmentDetailModal({
                     name: g.name,
                     type: g.type as "superset" | "circuit" | "section",
                     description: g.description || undefined,
-                    order: g.order_index || 0,
-                    restBetweenRounds: g.rest_between_rounds || undefined,
-                    restBetweenExercises: g.rest_between_exercises || undefined,
+                    order: g.order_index || g.orderIndex || 0,
+                    restBetweenRounds: g.rest_between_rounds || g.restBetweenRounds || undefined,
+                    restBetweenExercises: g.rest_between_exercises || g.restBetweenExercises || undefined,
                     rounds: g.rounds || undefined,
                     notes: g.notes || undefined,
                   }))}

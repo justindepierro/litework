@@ -5,12 +5,14 @@ import { useState, useEffect } from "react";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
+import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { parseDate } from "@/lib/date-utils";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
 
   // Check if user is a coach or admin (can drag-and-drop)
   const isCoachUser = user
@@ -105,8 +107,8 @@ export default function SchedulePage() {
   };
 
   const handleAssignmentClick = (assignment: WorkoutAssignment) => {
-    // Navigate to assignment detail or workout view
-    window.location.href = `/workouts/view/${assignment.workoutPlanId}?assignmentId=${assignment.id}`;
+    // Open the modal to show workout details
+    setSelectedAssignmentId(assignment.id);
   };
 
   const handleDateClick = (date: Date) => {
@@ -188,6 +190,16 @@ export default function SchedulePage() {
           </div>
         )}
       </div>
+
+      {/* Workout Detail Modal */}
+      {selectedAssignmentId && (
+        <WorkoutAssignmentDetailModal
+          isOpen={true}
+          assignmentId={selectedAssignmentId}
+          onClose={() => setSelectedAssignmentId(null)}
+          userRole={user?.role || "athlete"}
+        />
+      )}
     </div>
   );
 }
