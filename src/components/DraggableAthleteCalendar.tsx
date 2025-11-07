@@ -11,6 +11,8 @@ import {
   MapPin,
   Users,
   MoveIcon,
+  Dumbbell,
+  CheckCircle,
 } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
@@ -87,40 +89,57 @@ function DraggableAssignment({
           onClick();
         }
       }}
-      className={`w-full text-left p-2 rounded text-xs transition-all ${
+      className={`w-full text-left p-3 rounded-lg text-xs transition-all shadow-sm ${
         isCompleted
-          ? "bg-green-50 border border-green-200 text-green-800"
+          ? "bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 text-green-900"
           : isOverdue
-            ? "bg-red-50 border border-red-200 text-red-800"
-            : "bg-blue-50 border border-blue-200 text-blue-800"
-      } hover:shadow-md ${isDragging ? "opacity-50 cursor-move" : ""} ${
+            ? "bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 text-red-900"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 text-blue-900"
+      } hover:shadow-lg hover:scale-[1.02] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
-      <div className="flex items-start justify-between gap-1">
-        <div className="font-medium truncate flex-1">
-          {assignment.workoutPlanName || "Workout"}
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
+            isCompleted 
+              ? "bg-green-500" 
+              : isOverdue 
+                ? "bg-red-500" 
+                : "bg-blue-500"
+          }`}>
+            {isCompleted ? (
+              <CheckCircle className="w-4 h-4 text-white" />
+            ) : (
+              <Dumbbell className="w-4 h-4 text-white" />
+            )}
+          </div>
+          <div className="font-semibold truncate text-sm">
+            {assignment.workoutPlanName || "Workout"}
+          </div>
         </div>
-        {isCoach && <MoveIcon className="w-3 h-3 opacity-50 shrink-0" />}
+        {isCoach && <MoveIcon className="w-3 h-3 opacity-50 shrink-0 mt-1" />}
       </div>
       {!compact && (
         <>
           {assignment.startTime && (
-            <div className="flex items-center gap-1 mt-1 text-xs opacity-75">
-              <Clock className="w-3 h-3" />
-              {assignment.startTime}
+            <div className="flex items-center gap-1.5 mt-1.5 text-xs font-medium">
+              <Clock className="w-3.5 h-3.5" />
+              <span>{assignment.startTime}</span>
             </div>
           )}
           {assignment.location && (
-            <div className="flex items-center gap-1 mt-1 text-xs opacity-75">
-              <MapPin className="w-3 h-3" />
-              {assignment.location}
+            <div className="flex items-center gap-1.5 mt-1.5 text-xs font-medium">
+              <MapPin className="w-3.5 h-3.5" />
+              <span>{assignment.location}</span>
             </div>
           )}
           {assignment.groupId && (
-            <div className="flex items-center gap-1 mt-1 text-xs opacity-75">
-              <Users className="w-3 h-3" />
-              Group
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-white bg-opacity-60 rounded-full">
+                <Users className="w-3 h-3" />
+                <span className="text-xs font-semibold">Group</span>
+              </div>
             </div>
           )}
         </>
