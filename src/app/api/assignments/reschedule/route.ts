@@ -100,6 +100,12 @@ export async function PATCH(request: NextRequest) {
         // Format date as YYYY-MM-DD for DATE column
         const dateOnly = targetDate.toISOString().split('T')[0];
         
+        console.log(`[RESCHEDULE] About to update ${assignmentIds.length} assignments`, {
+          assignmentIds,
+          dateOnly,
+          oldDate: assignment.scheduled_date,
+        });
+        
         const { error: updateError } = await supabase
           .from("workout_assignments")
           .update({
@@ -109,14 +115,14 @@ export async function PATCH(request: NextRequest) {
           .in("id", assignmentIds);
 
         if (updateError) {
-          console.error("Error updating group assignments:", updateError);
+          console.error("[RESCHEDULE] Error updating group assignments:", updateError);
           return NextResponse.json(
             { success: false, error: "Failed to update group assignments" },
             { status: 500 }
           );
         }
 
-        console.log(`[RESCHEDULE] Updated ${assignmentIds.length} group assignments to ${dateOnly}`);
+        console.log(`[RESCHEDULE] Successfully updated ${assignmentIds.length} group assignments from ${assignment.scheduled_date} to ${dateOnly}`);
 
         // Create notifications for all affected athletes
         const notifications = groupAssignments

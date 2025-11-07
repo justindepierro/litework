@@ -13,6 +13,7 @@ import {
   MoveIcon,
 } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
+import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 
 interface DraggableAthleteCalendarProps {
   assignments: WorkoutAssignment[];
@@ -68,19 +69,12 @@ function DraggableAssignment({
   );
 
   const isCompleted = assignment.status === "completed";
+  const scheduledDate = parseDate(assignment.scheduledDate);
+  const now = new Date();
   const isOverdue =
     !isCompleted &&
-    new Date(assignment.scheduledDate) < new Date() &&
-    !isSameDay(new Date(assignment.scheduledDate), new Date());
-
-  // Helper function
-  function isSameDay(date1: Date, date2: Date) {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  }
+    isPast(scheduledDate) &&
+    !isSameDay(scheduledDate, now);
 
   return (
     <div
@@ -230,7 +224,7 @@ export default function DraggableAthleteCalendar({
   // Get assignments for a specific date
   const getAssignmentsForDate = (date: Date): WorkoutAssignment[] => {
     return assignments.filter((assignment) => {
-      const assignmentDate = new Date(assignment.scheduledDate);
+      const assignmentDate = parseDate(assignment.scheduledDate);
       return isSameDay(assignmentDate, date);
     });
   };
@@ -269,7 +263,7 @@ export default function DraggableAthleteCalendar({
   const handleDrop = useCallback(
     (item: DragItem, newDate: Date) => {
       const assignment = item.assignment;
-      const oldDate = new Date(assignment.scheduledDate);
+      const oldDate = parseDate(assignment.scheduledDate);
 
       console.log("[DROP] Drop detected:", {
         assignmentId: assignment.id,

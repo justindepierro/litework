@@ -11,6 +11,7 @@ import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
+import { parseDate, isToday as checkIsToday, isPast as checkIsPast, isFuture as checkIsFuture } from "@/lib/date-utils";
 import {
   TrendingUp,
   ClipboardList,
@@ -519,11 +520,10 @@ export default function DashboardPage() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {assignments.slice(0, 6).map((assignment) => {
-                  const scheduledDate = new Date(assignment.scheduledDate);
-                  const isToday =
-                    scheduledDate.toDateString() === new Date().toDateString();
-                  const isPast = scheduledDate < new Date() && !isToday;
-                  const isFuture = scheduledDate > new Date();
+                  const scheduledDate = parseDate(assignment.scheduledDate);
+                  const isToday = checkIsToday(scheduledDate);
+                  const isPast = checkIsPast(scheduledDate);
+                  const isFuture = checkIsFuture(scheduledDate);
 
                   return (
                     <div

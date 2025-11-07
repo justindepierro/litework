@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
+import { parseDate } from "@/lib/date-utils";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
@@ -29,16 +30,16 @@ export default function SchedulePage() {
       const data = await response.json();
 
       if (data.success) {
-        // Convert string dates to Date objects
+        // Convert string dates to Date objects using centralized utility
         const assignmentsWithDates = (data.data || []).map(
           (assignment: Record<string, unknown>) => ({
             ...assignment,
-            scheduledDate: new Date(assignment.scheduledDate as string),
-            assignedDate: new Date(assignment.assignedDate as string),
+            scheduledDate: parseDate(assignment.scheduledDate as string),
+            assignedDate: parseDate(assignment.assignedDate as string),
             createdAt: new Date(assignment.createdAt as string),
             updatedAt: new Date(assignment.updatedAt as string),
             dueDate: assignment.dueDate
-              ? new Date(assignment.dueDate as string)
+              ? parseDate(assignment.dueDate as string)
               : undefined,
           })
         ) as WorkoutAssignment[];

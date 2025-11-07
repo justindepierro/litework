@@ -9,6 +9,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
+import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 
 interface AthleteCalendarProps {
   assignments: WorkoutAssignment[];
@@ -61,7 +62,7 @@ export default function AthleteCalendar({
   // Get assignments for a specific date
   const getAssignmentsForDate = (date: Date): WorkoutAssignment[] => {
     return assignments.filter((assignment) => {
-      const assignmentDate = new Date(assignment.scheduledDate);
+      const assignmentDate = parseDate(assignment.scheduledDate);
       return isSameDay(assignmentDate, date);
     });
   };
@@ -152,10 +153,12 @@ export default function AthleteCalendar({
     compact: boolean = false
   ) => {
     const isCompleted = assignment.status === "completed";
+    const scheduledDate = parseDate(assignment.scheduledDate);
+    const now = new Date();
     const isOverdue =
       !isCompleted &&
-      new Date(assignment.scheduledDate) < new Date() &&
-      !isSameDay(new Date(assignment.scheduledDate), new Date());
+      isPast(scheduledDate) &&
+      !isSameDay(scheduledDate, now);
 
     return (
       <button
