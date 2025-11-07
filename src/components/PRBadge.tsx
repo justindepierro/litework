@@ -1,6 +1,6 @@
 /**
  * PR Badge Component
- * 
+ *
  * Displays a personal record achievement badge
  * Shows inline during workout or in celebration modal
  */
@@ -9,7 +9,11 @@
 
 import React from "react";
 import { Trophy, TrendingUp, Award, Zap } from "lucide-react";
-import { PRComparison, getPRBadgeColor, formatPRMessage } from "@/lib/pr-detection";
+import {
+  PRComparison,
+  getPRBadgeColor,
+  formatPRMessage,
+} from "@/lib/pr-detection";
 
 interface PRBadgeProps {
   comparison: PRComparison;
@@ -17,7 +21,11 @@ interface PRBadgeProps {
   animated?: boolean;
 }
 
-export function PRBadge({ comparison, variant = "inline", animated = true }: PRBadgeProps) {
+export function PRBadge({
+  comparison,
+  variant = "inline",
+  animated = true,
+}: PRBadgeProps) {
   if (!comparison.isPR) return null;
 
   const message = formatPRMessage(comparison);
@@ -41,11 +49,15 @@ export function PRBadge({ comparison, variant = "inline", animated = true }: PRB
 
   if (variant === "large") {
     return (
-      <div className={`rounded-xl p-6 ${colorClasses} ${animated ? "animate-bounce" : ""}`}>
+      <div
+        className={`rounded-xl p-6 ${colorClasses} ${animated ? "animate-bounce" : ""}`}
+      >
         <div className="flex items-center gap-3">
           <Icon className="w-8 h-8" />
           <div>
-            <div className="text-sm font-semibold uppercase tracking-wide">Personal Record!</div>
+            <div className="text-sm font-semibold uppercase tracking-wide">
+              Personal Record!
+            </div>
             <div className="text-lg font-bold">{message}</div>
           </div>
         </div>
@@ -55,7 +67,9 @@ export function PRBadge({ comparison, variant = "inline", animated = true }: PRB
 
   // Inline variant
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold ${colorClasses} ${animated ? "animate-pulse" : ""}`}>
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold ${colorClasses} ${animated ? "animate-pulse" : ""}`}
+    >
       <Icon className="w-4 h-4" />
       <span>PR!</span>
     </div>
@@ -64,7 +78,7 @@ export function PRBadge({ comparison, variant = "inline", animated = true }: PRB
 
 /**
  * PR Celebration Modal
- * 
+ *
  * Full-screen celebration when athlete achieves a PR
  */
 interface PRCelebrationModalProps {
@@ -73,7 +87,11 @@ interface PRCelebrationModalProps {
   onClose: () => void;
 }
 
-export function PRCelebrationModal({ comparison, exerciseName, onClose }: PRCelebrationModalProps) {
+export function PRCelebrationModal({
+  comparison,
+  exerciseName,
+  onClose,
+}: PRCelebrationModalProps) {
   if (!comparison.isPR) return null;
 
   const message = formatPRMessage(comparison);
@@ -107,7 +125,7 @@ export function PRCelebrationModal({ comparison, exerciseName, onClose }: PRCele
               {currentPerformance.weight}lbs × {currentPerformance.reps}
             </div>
             <div className="text-sm text-gray-600 mb-4">{message}</div>
-            
+
             {previousBest && (
               <div className="text-xs text-gray-500 pt-4 border-t border-gray-200">
                 Previous Best: {previousBest.weight}lbs × {previousBest.reps} (

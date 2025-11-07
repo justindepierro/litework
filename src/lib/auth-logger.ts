@@ -1,6 +1,6 @@
 /**
  * Authentication Logging and Tracing System
- * 
+ *
  * Provides comprehensive logging for auth operations with:
  * - Correlation IDs for tracing requests
  * - Timestamps for performance tracking
@@ -19,22 +19,22 @@ function getTimestamp(): string {
 }
 
 // Auth event types
-export type AuthEventType = 
-  | 'init'
-  | 'session_check'
-  | 'profile_fetch'
-  | 'sign_in'
-  | 'sign_up'
-  | 'sign_out'
-  | 'refresh'
-  | 'error'
-  | 'success'
-  | 'timeout'
-  | 'network'
-  | 'validation';
+export type AuthEventType =
+  | "init"
+  | "session_check"
+  | "profile_fetch"
+  | "sign_in"
+  | "sign_up"
+  | "sign_out"
+  | "refresh"
+  | "error"
+  | "success"
+  | "timeout"
+  | "network"
+  | "validation";
 
 // Log levels
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = "debug" | "info" | "warn" | "error";
 
 // Auth log entry
 export interface AuthLogEntry {
@@ -52,7 +52,7 @@ const authLogs: AuthLogEntry[] = [];
 const MAX_LOGS = 100;
 
 // Debug mode (enabled in development)
-const DEBUG_MODE = process.env.NODE_ENV === 'development';
+const DEBUG_MODE = process.env.NODE_ENV === "development";
 
 /**
  * Log an auth event
@@ -83,21 +83,21 @@ export function logAuthEvent(
 
   // Console logging with color coding
   const prefix = `[AUTH:${event}:${correlationId.slice(-6)}]`;
-  const durationStr = duration ? ` (${duration}ms)` : '';
+  const durationStr = duration ? ` (${duration}ms)` : "";
   const fullMessage = `${prefix} ${message}${durationStr}`;
 
   switch (level) {
-    case 'debug':
-      if (DEBUG_MODE) console.debug(fullMessage, data || '');
+    case "debug":
+      if (DEBUG_MODE) console.debug(fullMessage, data || "");
       break;
-    case 'info':
-      console.log(fullMessage, data || '');
+    case "info":
+      console.log(fullMessage, data || "");
       break;
-    case 'warn':
-      console.warn(fullMessage, data || '');
+    case "warn":
+      console.warn(fullMessage, data || "");
       break;
-    case 'error':
-      console.error(fullMessage, data || '');
+    case "error":
+      console.error(fullMessage, data || "");
       break;
   }
 }
@@ -135,18 +135,34 @@ export class AuthTimer {
     this.startTime = Date.now();
     this.correlationId = correlationId;
     this.event = event;
-    logAuthEvent(correlationId, 'debug', event, 'Started', { startTime: this.startTime });
+    logAuthEvent(correlationId, "debug", event, "Started", {
+      startTime: this.startTime,
+    });
   }
 
   end(message: string, data?: unknown) {
     const duration = Date.now() - this.startTime;
-    logAuthEvent(this.correlationId, 'info', this.event, message, data, duration);
+    logAuthEvent(
+      this.correlationId,
+      "info",
+      this.event,
+      message,
+      data,
+      duration
+    );
     return duration;
   }
 
   error(message: string, error: unknown) {
     const duration = Date.now() - this.startTime;
-    logAuthEvent(this.correlationId, 'error', this.event, message, { error, duration }, duration);
+    logAuthEvent(
+      this.correlationId,
+      "error",
+      this.event,
+      message,
+      { error, duration },
+      duration
+    );
     return duration;
   }
 }
@@ -155,54 +171,72 @@ export class AuthTimer {
  * Error classification
  */
 export function classifyAuthError(error: unknown): {
-  type: 'network' | 'validation' | 'timeout' | 'permission' | 'unknown';
+  type: "network" | "validation" | "timeout" | "permission" | "unknown";
   userMessage: string;
   technicalMessage: string;
 } {
-  const err = error as { message?: string; code?: string | number; status?: number };
+  const err = error as {
+    message?: string;
+    code?: string | number;
+    status?: number;
+  };
   const errorMessage = err?.message || String(error);
   const errorCode = err?.code || err?.status;
 
   // Network errors
-  if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('ECONNREFUSED')) {
+  if (
+    errorMessage.includes("fetch") ||
+    errorMessage.includes("network") ||
+    errorMessage.includes("ECONNREFUSED")
+  ) {
     return {
-      type: 'network',
-      userMessage: 'Unable to connect to the server. Please check your internet connection.',
+      type: "network",
+      userMessage:
+        "Unable to connect to the server. Please check your internet connection.",
       technicalMessage: `Network error: ${errorMessage}`,
     };
   }
 
   // Timeout errors
-  if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
+  if (errorMessage.includes("timeout") || errorMessage.includes("aborted")) {
     return {
-      type: 'timeout',
-      userMessage: 'The request took too long. Please try again.',
+      type: "timeout",
+      userMessage: "The request took too long. Please try again.",
       technicalMessage: `Timeout error: ${errorMessage}`,
     };
   }
 
   // Validation errors
-  if (errorMessage.includes('Invalid') || errorMessage.includes('required') || errorCode === 400) {
+  if (
+    errorMessage.includes("Invalid") ||
+    errorMessage.includes("required") ||
+    errorCode === 400
+  ) {
     return {
-      type: 'validation',
+      type: "validation",
       userMessage: errorMessage,
       technicalMessage: `Validation error: ${errorMessage}`,
     };
   }
 
   // Permission errors
-  if (errorMessage.includes('Unauthorized') || errorMessage.includes('Forbidden') || errorCode === 401 || errorCode === 403) {
+  if (
+    errorMessage.includes("Unauthorized") ||
+    errorMessage.includes("Forbidden") ||
+    errorCode === 401 ||
+    errorCode === 403
+  ) {
     return {
-      type: 'permission',
-      userMessage: 'Invalid credentials or insufficient permissions.',
+      type: "permission",
+      userMessage: "Invalid credentials or insufficient permissions.",
       technicalMessage: `Permission error: ${errorMessage}`,
     };
   }
 
   // Unknown errors
   return {
-    type: 'unknown',
-    userMessage: 'An unexpected error occurred. Please try again.',
+    type: "unknown",
+    userMessage: "An unexpected error occurred. Please try again.",
     technicalMessage: `Unknown error: ${errorMessage}`,
   };
 }
@@ -227,36 +261,37 @@ export async function checkAuthHealth(): Promise<{
   };
 
   // Check if we're in browser
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return {
       healthy: false,
       checks,
-      errors: ['Not in browser environment'],
+      errors: ["Not in browser environment"],
     };
   }
 
   // Check cookies
   try {
-    document.cookie = 'auth_test=1; path=/';
-    checks.cookiesEnabled = document.cookie.includes('auth_test=1');
-    document.cookie = 'auth_test=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = "auth_test=1; path=/";
+    checks.cookiesEnabled = document.cookie.includes("auth_test=1");
+    document.cookie =
+      "auth_test=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     if (!checks.cookiesEnabled) {
-      errors.push('Cookies are disabled');
+      errors.push("Cookies are disabled");
     }
   } catch {
-    errors.push('Cookie access error');
+    errors.push("Cookie access error");
   }
 
   // Check localStorage
   try {
-    localStorage.setItem('auth_test', '1');
-    checks.localStorageEnabled = localStorage.getItem('auth_test') === '1';
-    localStorage.removeItem('auth_test');
+    localStorage.setItem("auth_test", "1");
+    checks.localStorageEnabled = localStorage.getItem("auth_test") === "1";
+    localStorage.removeItem("auth_test");
     if (!checks.localStorageEnabled) {
-      errors.push('localStorage is disabled');
+      errors.push("localStorage is disabled");
     }
   } catch {
-    errors.push('localStorage access error');
+    errors.push("localStorage access error");
   }
 
   // Check Supabase connection (basic check)
@@ -264,21 +299,24 @@ export async function checkAuthHealth(): Promise<{
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     if (url) {
       const response = await fetch(`${url}/rest/v1/`, {
-        method: 'HEAD',
+        method: "HEAD",
         signal: AbortSignal.timeout(3000),
       });
       checks.supabaseConnection = response.status !== 0;
       if (!checks.supabaseConnection) {
-        errors.push('Cannot reach Supabase server');
+        errors.push("Cannot reach Supabase server");
       }
     } else {
-      errors.push('Supabase URL not configured');
+      errors.push("Supabase URL not configured");
     }
   } catch {
-    errors.push('Supabase connection failed');
+    errors.push("Supabase connection failed");
   }
 
-  const healthy = checks.cookiesEnabled && checks.localStorageEnabled && checks.supabaseConnection;
+  const healthy =
+    checks.cookiesEnabled &&
+    checks.localStorageEnabled &&
+    checks.supabaseConnection;
 
   return { healthy, checks, errors };
 }

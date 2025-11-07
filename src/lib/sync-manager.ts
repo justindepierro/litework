@@ -148,11 +148,12 @@ class SyncManager {
    */
   private async syncSessions(): Promise<void> {
     const unsyncedSessions = await getUnsyncedSessions();
-    
+
     if (unsyncedSessions.length === 0) {
       console.log("[Sync] No sessions to sync");
       return;
-    }    console.log(`📤 Syncing ${unsyncedSessions.length} sessions`);
+    }
+    console.log(`📤 Syncing ${unsyncedSessions.length} sessions`);
 
     for (let i = 0; i < unsyncedSessions.length; i++) {
       const session = unsyncedSessions[i];
@@ -197,11 +198,12 @@ class SyncManager {
    */
   private async syncSets(): Promise<void> {
     const unsyncedSets = await getUnsyncedSets();
-    
+
     if (unsyncedSets.length === 0) {
       console.log("[Sync] No sets to sync");
       return;
-    }    console.log(`📤 Syncing ${unsyncedSets.length} sets`);
+    }
+    console.log(`📤 Syncing ${unsyncedSets.length} sets`);
 
     // Batch sets by session for efficient API calls
     const setsBySession = unsyncedSets.reduce(
@@ -265,11 +267,12 @@ class SyncManager {
    */
   private async processSyncQueue(): Promise<void> {
     const queue = await getSyncQueue();
-    
+
     if (queue.length === 0) {
       console.log("[Sync] Sync queue empty");
       return;
-    }    console.log(`📤 Processing ${queue.length} queued operations`);
+    }
+    console.log(`📤 Processing ${queue.length} queued operations`);
 
     for (const item of queue) {
       // Skip if max retries exceeded

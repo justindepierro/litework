@@ -56,7 +56,7 @@
 
 .confetti::before,
 .confetti::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 10px;
   height: 10px;
@@ -76,7 +76,8 @@
 
 /* Pulse animation for inline badges */
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -90,7 +91,8 @@
 
 /* Bounce animation for large badges */
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

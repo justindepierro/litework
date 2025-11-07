@@ -10,9 +10,9 @@ import React, {
 } from "react";
 import { useRouter } from "next/navigation";
 import * as authClient from "@/lib/auth-client";
-import { 
-  generateCorrelationId, 
-  logAuthEvent, 
+import {
+  generateCorrelationId,
+  logAuthEvent,
   checkAuthHealth,
   AuthTimer,
 } from "@/lib/auth-logger";
@@ -68,42 +68,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       initializingRef.current = true;
 
       const correlationId = generateCorrelationId();
-      const timer = new AuthTimer(correlationId, 'init');
+      const timer = new AuthTimer(correlationId, "init");
 
-      logAuthEvent(correlationId, 'info', 'init', 'Initializing authentication system');
+      logAuthEvent(
+        correlationId,
+        "info",
+        "init",
+        "Initializing authentication system"
+      );
 
       // Run health check first
       try {
         const healthCheck = await checkAuthHealth();
-        
+
         if (!healthCheck.healthy) {
-          logAuthEvent(correlationId, 'warn', 'init', 'Auth system health check failed', {
-            checks: healthCheck.checks,
-            errors: healthCheck.errors,
-          });
-          
+          logAuthEvent(
+            correlationId,
+            "warn",
+            "init",
+            "Auth system health check failed",
+            {
+              checks: healthCheck.checks,
+              errors: healthCheck.errors,
+            }
+          );
+
           // Show warnings in console for debugging
-          healthCheck.errors.forEach(error => {
+          healthCheck.errors.forEach((error) => {
             console.warn(`[AUTH_HEALTH] ${error}`);
           });
         } else {
-          logAuthEvent(correlationId, 'debug', 'init', 'Auth system health check passed', {
-            checks: healthCheck.checks,
-          });
+          logAuthEvent(
+            correlationId,
+            "debug",
+            "init",
+            "Auth system health check passed",
+            {
+              checks: healthCheck.checks,
+            }
+          );
         }
       } catch (error) {
-        logAuthEvent(correlationId, 'warn', 'init', 'Health check failed but continuing', { error });
+        logAuthEvent(
+          correlationId,
+          "warn",
+          "init",
+          "Health check failed but continuing",
+          { error }
+        );
       }
 
       // Set a timeout to prevent infinite loading
       const timeout = setTimeout(() => {
         logAuthEvent(
           correlationId,
-          'warn',
-          'timeout',
-          'Authentication initialization timeout - proceeding without auth'
+          "warn",
+          "timeout",
+          "Authentication initialization timeout - proceeding without auth"
         );
-        
+
         if (mountedRef.current) {
           setUser(null);
           setLoading(false);
@@ -113,16 +136,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, 5000);
 
       try {
-        logAuthEvent(correlationId, 'debug', 'init', 'Fetching current user');
-        
+        logAuthEvent(correlationId, "debug", "init", "Fetching current user");
+
         const currentUser = await authClient.getCurrentUser();
         clearTimeout(timeout);
-        
+
         timer.end(
-          currentUser ? 'User session restored' : 'No existing session',
+          currentUser ? "User session restored" : "No existing session",
           { userId: currentUser?.id, email: currentUser?.email }
         );
-        
+
         if (mountedRef.current) {
           setUser(currentUser);
           setLoading(false);
@@ -131,8 +154,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         clearTimeout(timeout);
-        timer.error('Auth initialization failed', error);
-        
+        timer.error("Auth initialization failed", error);
+
         if (mountedRef.current) {
           setUser(null);
           setLoading(false);
@@ -208,9 +231,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = useCallback(
     async (email: string, password: string) => {
       const correlationId = generateCorrelationId();
-      
+
       if (authOperationInProgress.current) {
-        logAuthEvent(correlationId, 'warn', 'sign_in', 'Auth operation already in progress');
+        logAuthEvent(
+          correlationId,
+          "warn",
+          "sign_in",
+          "Auth operation already in progress"
+        );
         throw new Error("Authentication operation already in progress");
       }
 
@@ -218,18 +246,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
 
       try {
-        logAuthEvent(correlationId, 'info', 'sign_in', 'Starting sign in process', { email });
-        
+        logAuthEvent(
+          correlationId,
+          "info",
+          "sign_in",
+          "Starting sign in process",
+          { email }
+        );
+
         // Sign in with Supabase
         await authClient.signIn(email, password);
 
-        logAuthEvent(correlationId, 'debug', 'sign_in', 'Sign in successful, fetching user data');
-        
+        logAuthEvent(
+          correlationId,
+          "debug",
+          "sign_in",
+          "Sign in successful, fetching user data"
+        );
+
         // Get fresh user data
         const currentUser = await authClient.getCurrentUser();
 
         if (!currentUser) {
-          logAuthEvent(correlationId, 'error', 'sign_in', 'Failed to retrieve user data after successful auth');
+          logAuthEvent(
+            correlationId,
+            "error",
+            "sign_in",
+            "Failed to retrieve user data after successful auth"
+          );
           throw new Error(
             "Authentication succeeded but failed to retrieve user data"
           );
@@ -240,15 +284,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
         }
 
-        logAuthEvent(correlationId, 'info', 'sign_in', 'Sign in complete, navigating to dashboard', {
-          userId: currentUser.id,
-        });
-        
+        logAuthEvent(
+          correlationId,
+          "info",
+          "sign_in",
+          "Sign in complete, navigating to dashboard",
+          {
+            userId: currentUser.id,
+          }
+        );
+
         // Navigate to dashboard
         router.push("/dashboard");
       } catch (error) {
-        logAuthEvent(correlationId, 'error', 'sign_in', 'Sign in failed', { error });
-        
+        logAuthEvent(correlationId, "error", "sign_in", "Sign in failed", {
+          error,
+        });
+
         if (mountedRef.current) {
           setLoading(false);
         }

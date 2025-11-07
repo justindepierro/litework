@@ -93,7 +93,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
       completed_at: new Date().toISOString(),
     };
     addSetRecord(session.current_exercise_index, setRecord);
-    
+
     // Check for PR
     if (weightNum) {
       try {
@@ -111,7 +111,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
         console.error("[PR Detection] Failed to check for PR:", error);
       }
     }
-    
+
     try {
       await fetch(`/api/sessions/${session.id}/sets`, {
         method: "POST",

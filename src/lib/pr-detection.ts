@@ -1,6 +1,6 @@
 /**
  * PR (Personal Record) Detection Service
- * 
+ *
  * Detects when an athlete achieves a personal record for:
  * - Weight lifted for a given rep range
  * - Total reps at a given weight
@@ -58,12 +58,13 @@ export async function checkForPR(
   reps: number
 ): Promise<PRComparison> {
   const supabase = await createClient();
-  
+
   try {
     // Get athlete's previous best for this exercise
     const { data: previousSets, error } = await supabase
       .from("set_records")
-      .select(`
+      .select(
+        `
         weight_used,
         reps_completed,
         completed_at,
@@ -74,7 +75,8 @@ export async function checkForPR(
         workout_sessions!inner(
           athlete_id
         )
-      `)
+      `
+      )
       .eq("workout_sessions.athlete_id", athleteId)
       .eq("session_exercises.exercise_id", exerciseId)
       .not("weight_used", "is", null)
@@ -116,7 +118,9 @@ export async function checkForPR(
 
       if (setOneRM > bestOneRM) {
         bestOneRM = setOneRM;
-        const sessionExercise = set.session_exercises as unknown as { exercises: { name: string } };
+        const sessionExercise = set.session_exercises as unknown as {
+          exercises: { name: string };
+        };
         bestOneRMSet = {
           exerciseId,
           exerciseName: sessionExercise?.exercises?.name || "Unknown",

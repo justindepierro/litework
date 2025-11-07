@@ -111,12 +111,14 @@ export default function WorkoutsPage() {
         athletesRes.json(),
       ]);
 
-      if (groupsData.success && groupsData.data) {
-        setGroups(groupsData.data.groups || groupsData.data || []);
+      if (groupsData.success) {
+        // API returns { success, groups } for groups endpoint
+        setGroups(groupsData.groups || []);
       }
 
       if (athletesData.success && athletesData.data) {
-        setAthletes(athletesData.data.athletes || athletesData.data || []);
+        // API returns { success, data: { athletes, invites } } for athletes endpoint
+        setAthletes(athletesData.data.athletes || []);
       }
     } catch (err) {
       console.error("Failed to load assignment data:", err);
@@ -683,7 +685,7 @@ export default function WorkoutsPage() {
               }}
               selectedDate={new Date()}
               groups={groups}
-              workoutPlans={[selectedWorkout, ...workouts]}
+              workoutPlans={workouts}
               athletes={athletes}
               onAssignWorkout={handleAssignWorkout}
             />
@@ -706,7 +708,7 @@ export default function WorkoutsPage() {
                 setSelectedWorkout(null);
               }}
               athletes={athletes}
-              workoutPlans={[selectedWorkout, ...workouts]}
+              workoutPlans={workouts}
               onAssignWorkout={handleAssignWorkout}
             />
           </Suspense>

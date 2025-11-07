@@ -15,6 +15,7 @@ Look for auth logs in the browser console. All auth operations are logged with t
 ```
 
 **Event Types:**
+
 - `init` - Auth system initialization
 - `session_check` - Checking for existing session
 - `profile_fetch` - Loading user profile from database
@@ -34,6 +35,7 @@ On page load, you'll see health check results:
 ```
 
 **Common Issues:**
+
 - **Cookies disabled**: Enable cookies in browser settings
 - **localStorage disabled**: Disable private/incognito mode
 - **Supabase unreachable**: Check network connection or Supabase status
@@ -53,16 +55,19 @@ Each auth flow has a unique correlation ID (e.g., `auth_1699347281234_a1b2c3d4e`
 ### Issue: "Session fetch timeout"
 
 **Symptoms:**
+
 ```
 [AUTH:session_check:xyz123] Session fetch timeout
 ```
 
 **Causes:**
+
 - Slow network connection
 - Supabase service degraded
 - Browser blocking third-party cookies
 
 **Solutions:**
+
 1. Check network connection
 2. Verify Supabase status: https://status.supabase.com
 3. Disable ad blockers/tracking protection
@@ -71,16 +76,19 @@ Each auth flow has a unique correlation ID (e.g., `auth_1699347281234_a1b2c3d4e`
 ### Issue: "Profile fetch timeout"
 
 **Symptoms:**
+
 ```
 [AUTH:profile_fetch:xyz123] Profile fetch timeout
 ```
 
 **Causes:**
+
 - Database query taking too long
 - Network issues
 - Missing user profile in database
 
 **Solutions:**
+
 1. Check database connection
 2. Verify user exists in `users` table
 3. Check Row Level Security (RLS) policies
@@ -88,15 +96,18 @@ Each auth flow has a unique correlation ID (e.g., `auth_1699347281234_a1b2c3d4e`
 ### Issue: "Authentication initialization taking longer than expected"
 
 **Symptoms:**
+
 - Page shows loading spinner for 5+ seconds
 - Console warning about initialization timeout
 
 **Causes:**
+
 - `getSession()` hanging
 - Database query slow
 - Network connectivity issues
 
 **Solutions:**
+
 1. Refresh the page
 2. Clear browser cache and cookies
 3. Check Supabase connection
@@ -105,14 +116,17 @@ Each auth flow has a unique correlation ID (e.g., `auth_1699347281234_a1b2c3d4e`
 ### Issue: "Too many login attempts"
 
 **Symptoms:**
+
 ```
 [AUTH:sign_in:xyz123] Rate limit exceeded
 ```
 
 **Causes:**
+
 - Failed login attempts exceeded limit (5 per 15 minutes per email)
 
 **Solutions:**
+
 1. Wait 15 minutes before trying again
 2. Verify correct password
 3. Request password reset if needed
@@ -120,15 +134,18 @@ Each auth flow has a unique correlation ID (e.g., `auth_1699347281234_a1b2c3d4e`
 ### Issue: "Invalid credentials or insufficient permissions"
 
 **Symptoms:**
+
 - Login fails with permission error
 - 401 or 403 error in logs
 
 **Causes:**
+
 - Wrong email or password
 - User account deactivated
 - RLS policies blocking access
 
 **Solutions:**
+
 1. Verify email and password are correct
 2. Check user exists in database
 3. Verify user role is set correctly
@@ -151,8 +168,8 @@ exportAuthLogs();
 ### Check Auth Health Manually
 
 ```javascript
-checkAuthHealth().then(health => {
-  console.log('Health Check:', health);
+checkAuthHealth().then((health) => {
+  console.log("Health Check:", health);
 });
 ```
 
@@ -160,8 +177,8 @@ checkAuthHealth().then(health => {
 
 ```javascript
 supabase.auth.getSession().then(({ data, error }) => {
-  console.log('Session:', data);
-  console.log('Error:', error);
+  console.log("Session:", data);
+  console.log("Error:", error);
 });
 ```
 
@@ -174,14 +191,16 @@ All auth operations are timed. Look for duration in logs:
 ```
 
 **Expected Durations:**
+
 - `session_check`: 50-300ms
 - `profile_fetch`: 100-500ms
 - `sign_in`: 500-2000ms (includes network round trip)
 - `init`: 200-1000ms
 
 **Slow Operations:**
-- >3000ms: Timeout will occur
-- >1000ms: Investigate network or database performance
+
+- > 3000ms: Timeout will occur
+- > 1000ms: Investigate network or database performance
 
 ## Error Messages
 
@@ -214,7 +233,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 **Check in browser console:**
 
 ```javascript
-console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
 // Should show the URL, not "undefined"
 ```
 

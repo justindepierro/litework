@@ -212,8 +212,8 @@ export async function signUp(
  */
 export async function signIn(email: string, password: string) {
   const correlationId = generateCorrelationId();
-  const timer = new AuthTimer(correlationId, 'sign_in');
-  
+  const timer = new AuthTimer(correlationId, "sign_in");
+
   // Rate limiting per email to prevent brute force
   const emailKey = email.trim().toLowerCase();
   const rateCheck = checkRateLimit(emailKey, getRateLimit("login"));
@@ -221,31 +221,37 @@ export async function signIn(email: string, password: string) {
   if (!rateCheck.allowed) {
     const waitMinutes = Math.ceil((rateCheck.resetAt - Date.now()) / 60000);
     const message = `Too many login attempts. Please try again in ${waitMinutes} minutes.`;
-    
-    logAuthEvent(correlationId, 'warn', 'sign_in', 'Rate limit exceeded', {
+
+    logAuthEvent(correlationId, "warn", "sign_in", "Rate limit exceeded", {
       email: emailKey,
       waitMinutes,
     });
-    
+
     logSecurityEvent(
       createAuditLog("login_rate_limited", false, { email: emailKey })
     );
-    
+
     throw new Error(message);
   }
 
   // Validate email
   const emailValidation = validateEmail(email);
   if (!emailValidation.valid) {
-    logAuthEvent(correlationId, 'warn', 'validation', 'Email validation failed', {
-      error: emailValidation.error,
-    });
+    logAuthEvent(
+      correlationId,
+      "warn",
+      "validation",
+      "Email validation failed",
+      {
+        error: emailValidation.error,
+      }
+    );
     throw new Error(emailValidation.error);
   }
 
   const sanitizedEmail = email.trim().toLowerCase();
-  
-  logAuthEvent(correlationId, 'info', 'sign_in', 'Attempting sign in', {
+
+  logAuthEvent(correlationId, "info", "sign_in", "Attempting sign in", {
     email: sanitizedEmail,
   });
 
@@ -257,13 +263,13 @@ export async function signIn(email: string, password: string) {
 
     if (error) {
       const classified = classifyAuthError(error);
-      
-      logAuthEvent(correlationId, 'error', 'sign_in', classified.userMessage, {
+
+      logAuthEvent(correlationId, "error", "sign_in", classified.userMessage, {
         email: sanitizedEmail,
         errorType: classified.type,
         remainingAttempts: rateCheck.remainingAttempts,
       });
-      
+
       logSecurityEvent(
         createAuditLog("login_failed", false, {
           email: sanitizedEmail,
@@ -271,14 +277,14 @@ export async function signIn(email: string, password: string) {
           remainingAttempts: rateCheck.remainingAttempts,
         })
       );
-      
+
       throw new Error(classified.userMessage);
     }
 
     // Reset rate limit on successful login
     resetRateLimit(emailKey);
 
-    timer.end('Sign in successful', {
+    timer.end("Sign in successful", {
       email: sanitizedEmail,
       userId: data.user?.id,
     });
@@ -293,15 +299,15 @@ export async function signIn(email: string, password: string) {
     return data;
   } catch (error) {
     const classified = classifyAuthError(error);
-    timer.error('Sign in error', classified);
-    
+    timer.error("Sign in error", classified);
+
     logSecurityEvent(
       createAuditLog("login_error", false, {
         email: sanitizedEmail,
         error: error instanceof Error ? error.message : "Unknown error",
       })
     );
-    
+
     throw error;
   }
 }
@@ -309,23 +315,29 @@ export async function signIn(email: string, password: string) {
 // Sign out
 export async function signOut() {
   const correlationId = generateCorrelationId();
-  const timer = new AuthTimer(correlationId, 'sign_out');
-  
+  const timer = new AuthTimer(correlationId, "sign_out");
+
   try {
-    logAuthEvent(correlationId, 'info', 'sign_out', 'Signing out user');
-    
+    logAuthEvent(correlationId, "info", "sign_out", "Signing out user");
+
     const { error } = await supabase.auth.signOut();
-    
+
     if (error) {
       const classified = classifyAuthError(error);
-      timer.error('Sign out failed', classified);
+      timer.error("Sign out failed", classified);
       throw error;
     }
-    
-    timer.end('Sign out successful');
+
+    timer.end("Sign out successful");
   } catch (error) {
     const classified = classifyAuthError(error);
-    logAuthEvent(correlationId, 'error', 'sign_out', classified.technicalMessage, { error });
+    logAuthEvent(
+      correlationId,
+      "error",
+      "sign_out",
+      classified.technicalMessage,
+      { error }
+    );
     throw error;
   }
 }
@@ -482,33 +494,42 @@ export async function completePasswordReset(newPassword: string) {
 // Get current session
 export async function getSession() {
   const correlationId = generateCorrelationId();
-  const timer = new AuthTimer(correlationId, 'session_check');
-  
+  const timer = new AuthTimer(correlationId, "session_check");
+
   try {
-    logAuthEvent(correlationId, 'debug', 'session_check', 'Fetching session from Supabase');
-    
+    logAuthEvent(
+      correlationId,
+      "debug",
+      "session_check",
+      "Fetching session from Supabase"
+    );
+
     // Add a timeout to prevent infinite hanging
     const sessionPromise = supabase.auth.getSession();
-    const timeoutPromise = new Promise<never>((_, reject) => 
-      setTimeout(() => reject(new Error('Session fetch timeout')), 3000)
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Session fetch timeout")), 3000)
     );
-    
+
     const {
       data: { session },
       error,
     } = await Promise.race([sessionPromise, timeoutPromise]);
-    
+
     if (error) {
       const classified = classifyAuthError(error);
-      timer.error('Session fetch failed', classified);
+      timer.error("Session fetch failed", classified);
       throw error;
     }
-    
-    timer.end(session ? 'Session found' : 'No active session', { hasSession: !!session });
+
+    timer.end(session ? "Session found" : "No active session", {
+      hasSession: !!session,
+    });
     return session;
   } catch (error) {
     const classified = classifyAuthError(error);
-    logAuthEvent(correlationId, 'error', 'error', classified.technicalMessage, { error });
+    logAuthEvent(correlationId, "error", "error", classified.technicalMessage, {
+      error,
+    });
     return null;
   }
 }
@@ -516,22 +537,33 @@ export async function getSession() {
 // Get current user with profile data
 export async function getCurrentUser(): Promise<User | null> {
   const correlationId = generateCorrelationId();
-  const timer = new AuthTimer(correlationId, 'profile_fetch');
-  
+  const timer = new AuthTimer(correlationId, "profile_fetch");
+
   try {
-    logAuthEvent(correlationId, 'info', 'profile_fetch', 'Getting current user');
+    logAuthEvent(
+      correlationId,
+      "info",
+      "profile_fetch",
+      "Getting current user"
+    );
 
     // Get session with timeout protection
     const session = await getSession();
 
     if (!session?.user) {
-      timer.end('No session found - user not authenticated');
+      timer.end("No session found - user not authenticated");
       return null;
     }
 
-    logAuthEvent(correlationId, 'debug', 'profile_fetch', 'Session found, fetching user profile', {
-      userId: session.user.id,
-    });
+    logAuthEvent(
+      correlationId,
+      "debug",
+      "profile_fetch",
+      "Session found, fetching user profile",
+      {
+        userId: session.user.id,
+      }
+    );
 
     // Get user profile from database with timeout
     const profilePromise = supabase
@@ -539,24 +571,24 @@ export async function getCurrentUser(): Promise<User | null> {
       .select("*")
       .eq("id", session.user.id)
       .single();
-      
+
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Profile fetch timeout')), 3000)
+      setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)
     );
 
     const { data: profile, error } = await Promise.race([
       profilePromise,
-      timeoutPromise
+      timeoutPromise,
     ]);
 
     if (error) {
       const classified = classifyAuthError(error);
-      timer.error('Profile fetch failed', classified);
+      timer.error("Profile fetch failed", classified);
       return null;
     }
 
     if (!profile) {
-      timer.error('No profile found in database', { userId: session.user.id });
+      timer.error("No profile found in database", { userId: session.user.id });
       return null;
     }
 
@@ -569,11 +601,11 @@ export async function getCurrentUser(): Promise<User | null> {
       fullName: profile.name,
     };
 
-    timer.end('User profile loaded successfully', {
+    timer.end("User profile loaded successfully", {
       userId: user.id,
       role: user.role,
     });
-    
+
     return user;
   } catch (error) {
     const classified = classifyAuthError(error);

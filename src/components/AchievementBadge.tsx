@@ -1,22 +1,26 @@
 /**
  * Achievement Badge Display Components
- * 
+ *
  * Shows earned achievements and progress towards locked badges
  */
 
 "use client";
 
 import React from "react";
-import { Achievement, ACHIEVEMENTS, AchievementType } from "@/lib/achievement-system";
-import { 
-  Lock, 
-  Trophy, 
-  Target, 
-  Flame, 
-  Zap, 
-  Crown, 
-  Dumbbell, 
-  BarChart3 
+import {
+  Achievement,
+  ACHIEVEMENTS,
+  AchievementType,
+} from "@/lib/achievement-system";
+import {
+  Lock,
+  Trophy,
+  Target,
+  Flame,
+  Zap,
+  Crown,
+  Dumbbell,
+  BarChart3,
 } from "lucide-react";
 
 // Map icon names to Lucide components
@@ -36,13 +40,13 @@ interface AchievementBadgeProps {
   showDate?: boolean;
 }
 
-export function AchievementBadge({ 
-  achievement, 
-  size = "medium", 
-  showDate = false 
+export function AchievementBadge({
+  achievement,
+  size = "medium",
+  showDate = false,
 }: AchievementBadgeProps) {
   const IconComponent = ICON_MAP[achievement.icon] || Trophy;
-  
+
   const sizeClasses = {
     small: "w-16 h-16",
     medium: "w-24 h-24",
@@ -89,7 +93,7 @@ interface LockedBadgeProps {
 
 export function LockedBadge({ type, size = "medium" }: LockedBadgeProps) {
   const achievement = ACHIEVEMENTS[type];
-  
+
   const sizeClasses = {
     small: "w-16 h-16 text-sm",
     medium: "w-24 h-24 text-base",
@@ -126,8 +130,11 @@ interface AchievementGridProps {
   showLocked?: boolean;
 }
 
-export function AchievementGrid({ achievements, showLocked = true }: AchievementGridProps) {
-  const earnedTypes = new Set(achievements.map(a => a.type));
+export function AchievementGrid({
+  achievements,
+  showLocked = true,
+}: AchievementGridProps) {
+  const earnedTypes = new Set(achievements.map((a) => a.type));
   const allTypes = Object.keys(ACHIEVEMENTS) as AchievementType[];
 
   return (
@@ -156,9 +163,12 @@ interface AchievementNotificationProps {
   onClose: () => void;
 }
 
-export function AchievementNotification({ achievement, onClose }: AchievementNotificationProps) {
+export function AchievementNotification({
+  achievement,
+  onClose,
+}: AchievementNotificationProps) {
   const IconComponent = ICON_MAP[achievement.icon] || Trophy;
-  
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 animate-fade-in">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center animate-scale-in">
@@ -172,11 +182,15 @@ export function AchievementNotification({ achievement, onClose }: AchievementNot
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Achievement Unlocked!</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          Achievement Unlocked!
+        </h2>
 
         {/* Achievement name and description */}
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">{achievement.name}</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            {achievement.name}
+          </h3>
           <p className="text-gray-600">{achievement.description}</p>
         </div>
 
