@@ -7,22 +7,27 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("[SUPABASE] Missing environment variables!");
   console.error("[SUPABASE] URL:", supabaseUrl ? "SET" : "MISSING");
   console.error("[SUPABASE] KEY:", supabaseAnonKey ? "SET" : "MISSING");
+} else {
+  console.log("[SUPABASE] Client initialized with URL:", supabaseUrl);
 }
 
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
   cookies: {
     getAll() {
       if (typeof document === "undefined") return [];
-      return document.cookie.split("; ").map((cookie) => {
+      const cookies = document.cookie.split("; ").map((cookie) => {
         const [name, ...valueParts] = cookie.split("=");
         return {
           name,
           value: valueParts.join("="),
         };
       });
+      console.log("[SUPABASE] getAll cookies:", cookies.length);
+      return cookies;
     },
     setAll(cookies) {
       if (typeof document === "undefined") return;
+      console.log("[SUPABASE] setAll cookies:", cookies.length);
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
 
