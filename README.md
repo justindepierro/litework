@@ -23,7 +23,7 @@ A comprehensive web-based workout tracking application designed for weight lifti
 
 ## 🚧 In Development: Session Tracking & Offline Support
 
-We're building a comprehensive workout execution and offline-first system. **Progress: ~72% complete (51/71 hours)**
+We're building a comprehensive workout execution and offline-first system. **Progress: ~76% complete (54/71 hours)**
 
 ### ✅ PHASE 1 COMPLETE (Week 1 - 30 hours)
 
@@ -34,7 +34,7 @@ We're building a comprehensive workout execution and offline-first system. **Pro
 **Dashboard Integration** - Coach & Athlete calendars fully wired ✅  
 **Detail Modal** - Full assignment view with role-based actions ✅
 
-### ✅ PHASE 2.1-2.4 COMPLETE (Week 2 - 21 hours)
+### ✅ PHASE 2.1-2.5 COMPLETE (Week 2 - 24 hours)
 
 **Session Management** - Start/pause/complete workout flow ✅  
 **Live Workout Mode** - Set recording, rest timers, progress tracking ✅  
@@ -42,7 +42,9 @@ We're building a comprehensive workout execution and offline-first system. **Pro
 **Offline Support** - IndexedDB + auto-sync with retry logic ✅  
 **Network Detection** - Real-time connectivity monitoring ✅  
 **Sync Manager** - Automatic 30s sync with progress tracking ✅  
-**UI Indicators** - Offline banner, sync status, visual feedback ✅
+**UI Indicators** - Offline banner, sync status, visual feedback ✅  
+**PR Detection** - 1RM calculation, 4 PR types, celebration modal ✅  
+**Achievement System** - 11 badge types, streak tracking, volume milestones ✅
 
 📚 **Phase 2 Documentation**:
 - [Phase 2 Roadmap](docs/PHASE2_SESSION_TRACKING_ROADMAP.md) - Implementation plan
@@ -50,9 +52,8 @@ We're building a comprehensive workout execution and offline-first system. **Pro
 - [Offline Infrastructure](docs/reports/PHASE2_4_OFFLINE_INFRASTRUCTURE.md) - Technical spec
 - [Phase 2.4 Complete](docs/reports/PHASE2_4_COMPLETE.md) - Implementation summary
 
-### 🎯 Next Up (Week 2 - Remaining 6 hours)
+### 🎯 Next Up (Week 2 - Remaining 3 hours)
 
-**Progress Indicators** - PR detection, celebration animations, achievement badges  
 **Integration Testing** - End-to-end testing and bug fixes  
 **Testing & Polish** - Mobile testing and final optimization
 

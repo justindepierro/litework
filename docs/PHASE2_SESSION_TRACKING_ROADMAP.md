@@ -30,7 +30,7 @@ Transform the assignment system into a fully functional workout execution platfo
 2. ✅ **Enhanced Live Mode** (8 hours) - Set recording UI with rest timers **COMPLETE**
 3. ✅ **Session API** (4 hours) - Backend endpoints for session tracking **COMPLETE**
 4. ✅ **Offline Support** (5 hours) - IndexedDB with auto-sync **COMPLETE**
-5. ⏳ **Progress Indicators** (3 hours) - Visual feedback and completion tracking
+5. ✅ **Progress Indicators** (3 hours) - PR detection and achievements **COMPLETE**
 6. ⏳ **Integration** (2 hours) - Wire everything together
 7. ⏳ **Testing & Polish** (1 hour) - Mobile testing and bug fixes
 
@@ -72,6 +72,21 @@ Transform the assignment system into a fully functional workout execution platfo
 **Documentation**:
 - 📄 `/docs/reports/PHASE2_4_OFFLINE_INFRASTRUCTURE.md` - Technical spec
 - 📄 `/docs/reports/PHASE2_4_COMPLETE.md` - Implementation summary
+
+### Phase 2.5: Progress Indicators ✅
+- ✅ PR detection service (1RM calculation, 4 PR types)
+- ✅ PR celebration modal with confetti animation
+- ✅ Achievement system (11 badge types)
+- ✅ Achievement display components
+- ✅ Streak calculation and volume tracking
+- ✅ Database schema for athlete_achievements
+- ✅ Integration with WorkoutLive
+
+**Features**:
+- Personal record detection across weight, reps, 1RM, volume
+- Achievement tracking for workouts, streaks, volume milestones
+- Celebration animations with Lucide icons
+- Badge system with locked/unlocked states
 
 ---
 
@@ -250,35 +265,39 @@ Transform the assignment system into a fully functional workout execution platfo
 
 ---
 
-### 2.5 Progress Indicators & Feedback (3 hours)
+### 2.5 Progress Indicators & Feedback (3 hours) ✅
 
-**Goal**: Visual feedback for workout progress and completion
+**Goal**: Visual feedback for workout progress and PR detection
+
+**Status**: ✅ COMPLETE (November 7, 2025)
 
 #### Tasks:
 
-- [ ] **Workout progress bar** (1 hour)
-  - Overall completion percentage
-  - Exercises completed vs total
-  - Sets completed vs total
-  - **Component**: `src/components/WorkoutProgress.tsx`
+- ✅ **PR Detection Service** (1 hour)
+  - 1RM calculation using Epley formula
+  - Compare to last 100 sets
+  - Detect 4 PR types (1RM, weight, reps, volume)
+  - **File**: `src/lib/pr-detection.ts`
 
-- [ ] **Exercise completion animations** (1 hour)
-  - Checkmark animation on complete
-  - Confetti/celebration on workout complete
-  - Success toasts for milestones
-  - **Updates**: Multiple components
+- ✅ **Celebration Components** (1 hour)
+  - PRCelebrationModal with confetti
+  - PRBadge inline display
+  - CSS animations (scale, bounce, confetti fall)
+  - **Files**: `src/components/PRBadge.tsx`, `src/styles/celebrations.css`
 
-- [ ] **Set completion feedback** (1 hour)
-  - Visual confirmation on set complete
-  - Compare to previous performance
-  - Show PR indicators (personal records)
-  - **Updates**: `src/components/WorkoutLive.tsx`
+- ✅ **Achievement System** (1 hour)
+  - 11 badge types (streaks, volume, sets, firsts)
+  - Streak calculation logic
+  - Volume and set counting
+  - **Files**: `src/lib/achievement-system.ts`, `src/components/AchievementBadge.tsx`
+  - **Database**: `database/achievements-schema.sql`
 
 **Deliverables**:
 
-- Clear visual progress tracking
-- Motivating completion feedback
-- Performance comparison indicators
+- PR detection on every set completion
+- Celebration modals with animations
+- Achievement tracking and display
+- Database schema with RLS policies
 
 ---
 
