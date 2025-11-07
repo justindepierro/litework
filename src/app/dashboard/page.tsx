@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect } from "react";
-import AthleteCalendar from "@/components/AthleteCalendar";
+import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
@@ -226,6 +226,42 @@ export default function DashboardPage() {
     }
   };
 
+  const handleAssignmentMove = async (
+    assignmentId: string,
+    newDate: Date,
+    isGroupAssignment: boolean
+  ) => {
+    try {
+      const response = await fetch("/api/assignments/reschedule", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assignmentId,
+          newDate: newDate.toISOString(),
+          moveGroup: isGroupAssignment,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh assignments to show new date
+        if (isCoachOrAdmin) {
+          await fetchCoachData();
+        } else {
+          await fetchAthleteAssignments();
+        }
+        console.log(data.message);
+      } else {
+        console.error("Failed to reschedule:", data.error);
+        alert("Failed to reschedule workout. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error rescheduling assignment:", error);
+      alert("An error occurred while rescheduling. Please try again.");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -304,11 +340,13 @@ export default function DashboardPage() {
                   <p className="mt-4 text-gray-600">Loading calendar...</p>
                 </div>
               ) : (
-                <AthleteCalendar
+                <DraggableAthleteCalendar
                   assignments={assignments}
                   onAssignmentClick={handleAssignmentClick}
                   onDateClick={handleDateClick}
+                  onAssignmentMove={handleAssignmentMove}
                   viewMode="month"
+                  isCoach={true}
                 />
               )}
             </div>
@@ -443,10 +481,11 @@ export default function DashboardPage() {
           <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
             <Calendar className="w-6 h-6" /> Your Schedule
           </h2>
-          <AthleteCalendar
+          <DraggableAthleteCalendar
             assignments={assignments}
             onAssignmentClick={handleAssignmentClick}
             viewMode="week"
+            isCoach={false}
           />
         </div>
 

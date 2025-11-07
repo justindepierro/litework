@@ -5,6 +5,7 @@ import {
   isCoach,
 } from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 import {
   checkRateLimit,
   getRateLimitStatus,

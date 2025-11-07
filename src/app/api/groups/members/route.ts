@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

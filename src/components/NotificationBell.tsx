@@ -17,7 +17,7 @@ interface InAppNotification {
   icon?: string;
   url?: string;
   read: boolean;
-  created_at: string;
+  createdAt: string;
 }
 
 export default function NotificationBell() {
@@ -291,7 +291,7 @@ export default function NotificationBell() {
                         )}
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-xs text-gray-500">
-                            {formatTime(notification.created_at)}
+                            {formatTime(notification.createdAt)}
                           </span>
                           {!notification.read && (
                             <button

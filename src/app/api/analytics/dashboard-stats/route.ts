@@ -15,6 +15,7 @@ import {
   isCoach,
 } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 // GET /api/assignments/[id] - Get single assignment
 export async function GET(
@@ -18,6 +19,8 @@ export async function GET(
     }
 
     const { id } = await params;
+
+    console.log(`[API] Fetching assignment ${id} for user ${user.id}`);
 
     // Fetch assignment with related data
     const { data: assignment, error } = await supabaseAdmin
@@ -39,7 +42,7 @@ export async function GET(
             weight,
             weight_type,
             percentage,
-            rest_seconds,
+            rest_time,
             notes,
             order_index
           )
@@ -60,9 +63,19 @@ export async function GET(
       .eq("id", id)
       .single();
 
+    console.log(`[API] Assignment query result:`, {
+      hasData: !!assignment,
+      error: error?.message,
+    });
+
     if (error || !assignment) {
+      console.error("Assignment fetch error:", {
+        id,
+        error,
+        hasAssignment: !!assignment,
+      });
       return NextResponse.json(
-        { error: "Assignment not found" },
+        { error: "Assignment not found", details: error?.message },
         { status: 404 }
       );
     }
@@ -84,7 +97,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: assignment,
+      data: transformToCamel(assignment),
     });
   } catch (error) {
     console.error("Error in GET /api/assignments/[id]:", error);
@@ -119,7 +132,8 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const updates = await request.json();
+    const updatesInput = await request.json();
+    const updates = transformToSnake(updatesInput);
 
     // Validate allowed fields
     const allowedFields = [
@@ -168,7 +182,7 @@ export async function PUT(
 
     return NextResponse.json({
       success: true,
-      data: updatedAssignment,
+      data: transformToCamel(updatedAssignment),
       message: "Assignment updated successfully",
     });
   } catch (error) {

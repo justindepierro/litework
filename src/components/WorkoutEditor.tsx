@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Plus,
   GripVertical,
@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronRight,
   Package,
+  Check,
 } from "lucide-react";
 import {
   WorkoutPlan,
@@ -24,6 +25,8 @@ import {
   BlockInstance,
 } from "@/types";
 import { apiClient } from "@/lib/api-client";
+import ExerciseAutocomplete from "./ExerciseAutocomplete";
+import ExerciseLibraryPanel from "./ExerciseLibraryPanel";
 import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
@@ -73,6 +76,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedExercise, setEditedExercise] = useState(exercise);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
+  const [inlineEditField, setInlineEditField] = useState<string | null>(null);
 
   const saveExercise = async () => {
     let updatedExercise = editedExercise;
@@ -107,6 +111,16 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   const cancelEdit = () => {
     setEditedExercise(exercise);
     setIsEditing(false);
+  };
+
+  // Quick inline edit handler
+  const handleInlineEdit = (
+    field: string,
+    value: string | number | undefined
+  ) => {
+    const updated = { ...exercise, [field]: value };
+    onUpdate(updated);
+    setInlineEditField(null);
   };
 
   return (
@@ -158,19 +172,30 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
           <div className="flex-1">
             {isEditing ? (
               <div className="space-y-4">
-                {/* Enhanced mobile exercise name input */}
-                <input
-                  type="text"
-                  value={editedExercise.exerciseName}
-                  onChange={(e) =>
-                    setEditedExercise({
-                      ...editedExercise,
-                      exerciseName: e.target.value,
-                    })
-                  }
-                  className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                  placeholder="Exercise Name"
-                />
+                {/* Enhanced mobile exercise name input with autocomplete */}
+                <div>
+                  <label className="block text-sm font-medium text-silver-700 mb-1">
+                    Exercise Name
+                  </label>
+                  <ExerciseAutocomplete
+                    value={editedExercise.exerciseName}
+                    onChange={(name) =>
+                      setEditedExercise({
+                        ...editedExercise,
+                        exerciseName: name,
+                      })
+                    }
+                    onExerciseSelect={(exercise) => {
+                      setEditedExercise({
+                        ...editedExercise,
+                        exerciseId: exercise.id,
+                        exerciseName: exercise.name,
+                        videoUrl: exercise.video_url,
+                      } as WorkoutExercise);
+                    }}
+                    placeholder="Search or create exercise..."
+                  />
+                </div>
 
                 {/* Sets and Reps Grid */}
                 <div className="grid grid-cols-2 gap-3">
@@ -451,6 +476,29 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   />
                 </div>
 
+                {/* YouTube Video URL */}
+                <div>
+                  <label className="block text-sm font-medium text-silver-700 mb-1">
+                    Demo Video (YouTube URL)
+                  </label>
+                  <input
+                    type="url"
+                    value={editedExercise.videoUrl || ""}
+                    onChange={(e) =>
+                      setEditedExercise({
+                        ...editedExercise,
+                        videoUrl: e.target.value || undefined,
+                      } as WorkoutExercise)
+                    }
+                    className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
+                    placeholder="https://youtu.be/VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Paste a YouTube link to show athletes how to perform this
+                    exercise
+                  </p>
+                </div>
+
                 {/* Enhanced mobile action buttons */}
                 <div className="flex gap-3">
                   <button
@@ -468,34 +516,307 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 </div>
               </div>
             ) : (
-              <div>
-                <h4 className="font-medium text-heading-primary">
-                  {exercise.exerciseName}
-                </h4>
-                <div className="text-sm text-body-secondary mt-1">
-                  {exercise.sets} sets × {exercise.reps} reps
-                  {exercise.weightType === "fixed" && exercise.weight && (
-                    <span>
-                      {" "}
-                      @ {exercise.weight}
-                      {exercise.weightMax ? `-${exercise.weightMax}` : ""}lbs
+              <div className="space-y-2">
+                {/* Exercise Name - Click to search/edit */}
+                {inlineEditField === "name" ? (
+                  <div className="flex items-center gap-2">
+                    <ExerciseAutocomplete
+                      value={editedExercise.exerciseName}
+                      onChange={(name) =>
+                        setEditedExercise({
+                          ...editedExercise,
+                          exerciseName: name,
+                        })
+                      }
+                      onExerciseSelect={(ex) => {
+                        handleInlineEdit("exerciseName", ex.name);
+                        if (ex.video_url) {
+                          handleInlineEdit("videoUrl", ex.video_url);
+                        }
+                      }}
+                      placeholder="Search exercises..."
+                    />
+                    <button
+                      onClick={() => {
+                        handleInlineEdit(
+                          "exerciseName",
+                          editedExercise.exerciseName
+                        );
+                      }}
+                      className="p-2 text-green-600 hover:bg-green-50 rounded"
+                    >
+                      <Check className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setInlineEditField(null);
+                        setEditedExercise(exercise);
+                      }}
+                      className="p-2 text-silver-500 hover:bg-gray-50 rounded"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <h4
+                    className="font-medium text-heading-primary cursor-pointer hover:text-accent-blue transition-colors"
+                    onClick={() => {
+                      setInlineEditField("name");
+                      setEditedExercise(exercise);
+                    }}
+                    title="Click to search/edit exercise"
+                  >
+                    {exercise.exerciseName}
+                  </h4>
+                )}
+
+                {/* Sets, Reps, Weight - Inline editable */}
+                <div className="flex items-center gap-3 text-sm text-body-secondary">
+                  {/* Sets */}
+                  {inlineEditField === "sets" ? (
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        value={editedExercise.sets}
+                        onChange={(e) =>
+                          setEditedExercise({
+                            ...editedExercise,
+                            sets: parseInt(e.target.value) || 1,
+                          })
+                        }
+                        className="w-14 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                        min="1"
+                        autoFocus
+                        onBlur={() =>
+                          handleInlineEdit("sets", editedExercise.sets)
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter")
+                            handleInlineEdit("sets", editedExercise.sets);
+                          if (e.key === "Escape") setInlineEditField(null);
+                        }}
+                      />
+                      <span>sets</span>
+                    </div>
+                  ) : (
+                    <span
+                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                      onClick={() => {
+                        setInlineEditField("sets");
+                        setEditedExercise(exercise);
+                      }}
+                      title="Click to edit"
+                    >
+                      {exercise.sets} sets
                     </span>
                   )}
+
+                  <span>×</span>
+
+                  {/* Reps */}
+                  {inlineEditField === "reps" ? (
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        value={editedExercise.reps}
+                        onChange={(e) =>
+                          setEditedExercise({
+                            ...editedExercise,
+                            reps: parseInt(e.target.value) || 1,
+                          })
+                        }
+                        className="w-14 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                        min="1"
+                        autoFocus
+                        onBlur={() =>
+                          handleInlineEdit("reps", editedExercise.reps)
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter")
+                            handleInlineEdit("reps", editedExercise.reps);
+                          if (e.key === "Escape") setInlineEditField(null);
+                        }}
+                      />
+                      <span>reps</span>
+                    </div>
+                  ) : (
+                    <span
+                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                      onClick={() => {
+                        setInlineEditField("reps");
+                        setEditedExercise(exercise);
+                      }}
+                      title="Click to edit"
+                    >
+                      {exercise.reps} reps
+                    </span>
+                  )}
+
+                  {/* Weight */}
+                  {exercise.weightType === "fixed" && exercise.weight && (
+                    <>
+                      <span>@</span>
+                      {inlineEditField === "weight" ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            value={editedExercise.weight || ""}
+                            onChange={(e) =>
+                              setEditedExercise({
+                                ...editedExercise,
+                                weight: parseFloat(e.target.value) || undefined,
+                              })
+                            }
+                            className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                            min="0"
+                            step="5"
+                            autoFocus
+                            onBlur={() =>
+                              handleInlineEdit("weight", editedExercise.weight)
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter")
+                                handleInlineEdit(
+                                  "weight",
+                                  editedExercise.weight
+                                );
+                              if (e.key === "Escape") setInlineEditField(null);
+                            }}
+                          />
+                          <span>lbs</span>
+                        </div>
+                      ) : (
+                        <span
+                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                          onClick={() => {
+                            setInlineEditField("weight");
+                            setEditedExercise(exercise);
+                          }}
+                          title="Click to edit"
+                        >
+                          {exercise.weight}
+                          {exercise.weightMax ? `-${exercise.weightMax}` : ""}
+                          lbs
+                        </span>
+                      )}
+                    </>
+                  )}
+
+                  {/* Percentage */}
                   {exercise.weightType === "percentage" &&
                     exercise.percentage && (
-                      <span>
-                        {" "}
-                        @ {exercise.percentage}
-                        {exercise.percentageMax
-                          ? `-${exercise.percentageMax}`
-                          : ""}
-                        % 1RM
-                      </span>
+                      <>
+                        <span>@</span>
+                        {inlineEditField === "percentage" ? (
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="number"
+                              value={editedExercise.percentage || ""}
+                              onChange={(e) =>
+                                setEditedExercise({
+                                  ...editedExercise,
+                                  percentage:
+                                    parseFloat(e.target.value) || undefined,
+                                })
+                              }
+                              className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                              min="0"
+                              max="100"
+                              step="5"
+                              autoFocus
+                              onBlur={() =>
+                                handleInlineEdit(
+                                  "percentage",
+                                  editedExercise.percentage
+                                )
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter")
+                                  handleInlineEdit(
+                                    "percentage",
+                                    editedExercise.percentage
+                                  );
+                                if (e.key === "Escape")
+                                  setInlineEditField(null);
+                              }}
+                            />
+                            <span>% 1RM</span>
+                          </div>
+                        ) : (
+                          <span
+                            className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                            onClick={() => {
+                              setInlineEditField("percentage");
+                              setEditedExercise(exercise);
+                            }}
+                            title="Click to edit"
+                          >
+                            {exercise.percentage}
+                            {exercise.percentageMax
+                              ? `-${exercise.percentageMax}`
+                              : ""}
+                            % 1RM
+                          </span>
+                        )}
+                      </>
                     )}
+
+                  {/* Rest Time */}
                   {exercise.restTime && (
-                    <span> • {exercise.restTime}s rest</span>
+                    <>
+                      <span>•</span>
+                      {inlineEditField === "restTime" ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            value={editedExercise.restTime || ""}
+                            onChange={(e) =>
+                              setEditedExercise({
+                                ...editedExercise,
+                                restTime: parseInt(e.target.value) || undefined,
+                              })
+                            }
+                            className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                            min="0"
+                            step="15"
+                            autoFocus
+                            onBlur={() =>
+                              handleInlineEdit(
+                                "restTime",
+                                editedExercise.restTime
+                              )
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter")
+                                handleInlineEdit(
+                                  "restTime",
+                                  editedExercise.restTime
+                                );
+                              if (e.key === "Escape") setInlineEditField(null);
+                            }}
+                          />
+                          <span>s rest</span>
+                        </div>
+                      ) : (
+                        <span
+                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                          onClick={() => {
+                            setInlineEditField("restTime");
+                            setEditedExercise(exercise);
+                          }}
+                          title="Click to edit"
+                        >
+                          {exercise.restTime}s rest
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
+
+                {/* Edit button hint */}
+                <p className="text-xs text-silver-400 italic">
+                  Click any value to edit • Click ✏️ for advanced options
+                </p>
               </div>
             )}
           </div>
@@ -1164,6 +1485,39 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   );
   const [showGroupModal, setShowGroupModal] = useState(false);
 
+  // Fix orphaned exercises on load - if exercises have groupIds that don't exist, clear them
+  useEffect(() => {
+    const groupIds = new Set((workout.groups || []).map((g) => g.id));
+    const orphanedExercises = workout.exercises.filter(
+      (ex) => ex.groupId && !groupIds.has(ex.groupId)
+    );
+
+    if (orphanedExercises.length > 0) {
+      console.log(
+        "[WorkoutEditor] Found orphaned exercises, clearing invalid groupIds:",
+        orphanedExercises.map((ex) => ({
+          name: ex.exerciseName,
+          oldGroupId: ex.groupId,
+        }))
+      );
+
+      // Update exercises to remove invalid groupIds
+      const fixedExercises = workout.exercises.map((ex) => {
+        if (ex.groupId && !groupIds.has(ex.groupId)) {
+          return { ...ex, groupId: undefined };
+        }
+        return ex;
+      });
+
+      // Trigger an update with fixed exercises
+      onChange({
+        ...workout,
+        exercises: fixedExercises,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
+
   // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
@@ -1596,193 +1950,153 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
   return (
     <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white rounded-2xl sm:rounded-lg max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-        {/* Enhanced mobile header */}
-        <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex-1 pr-4">
-              <label className="block text-xs text-silver-600 mb-1 font-medium">
-                Workout Name
-              </label>
-              <input
-                type="text"
-                value={workoutName}
-                onChange={(e) => {
-                  const newName = e.target.value;
-                  setWorkoutName(newName);
-                  // Immediately sync name to workout state
-                  onChange({ ...workout, name: newName });
-                }}
-                placeholder="Enter workout name..."
-                className="w-full text-xl sm:text-lg font-bold border-2 border-silver-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors"
-              />
+      <div className="bg-white rounded-2xl sm:rounded-lg w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex shadow-2xl">
+        {/* Main workout editor */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Enhanced mobile header */}
+          <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex-1 pr-4">
+                <label className="block text-xs text-silver-600 mb-1 font-medium">
+                  Workout Name
+                </label>
+                <input
+                  type="text"
+                  value={workoutName}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setWorkoutName(newName);
+                    // Immediately sync name to workout state
+                    onChange({ ...workout, name: newName });
+                  }}
+                  placeholder="Enter workout name..."
+                  className="w-full text-xl sm:text-lg font-bold border-2 border-silver-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors"
+                />
+              </div>
+              <button
+                onClick={onClose}
+                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation shrink-0"
+              >
+                ×
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation shrink-0"
-            >
-              ×
-            </button>
-          </div>
 
-          {/* Enhanced mobile action buttons */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
-              {!selectionMode ? (
-                <>
-                  <button
-                    onClick={() => setShowBlockLibrary(true)}
-                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    <Package className="w-5 h-5 sm:w-4 sm:h-4" />
-                    <span>Add Block</span>
-                  </button>
-
-                  <button
-                    onClick={addExercise}
-                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                  >
-                    <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-                    <span>Add Exercise</span>
-                  </button>
-
-                  <button
-                    onClick={() => addGroup("superset")}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                  >
-                    <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                    <span>Add Superset</span>
-                  </button>
-
-                  <button
-                    onClick={() => addGroup("circuit")}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                    <span>Add Circuit</span>
-                  </button>
-
-                  <button
-                    onClick={() => addGroup("section")}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                  >
-                    <Target className="w-4 h-4" />
-                    <span>Add Section</span>
-                  </button>
-
-                  {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
-                    .length > 0 && (
+            {/* Enhanced mobile action buttons */}
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
+                {!selectionMode ? (
+                  <>
                     <button
-                      onClick={() => setSelectionMode(true)}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
+                      onClick={() => setShowBlockLibrary(true)}
+                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                     >
-                      <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-                      <span>Group Exercises</span>
+                      <Package className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span>Add Block</span>
                     </button>
-                  )}
-                </>
-              ) : (
-                <>
-                  <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
-                    {selectedExerciseIds.size === 0
-                      ? "Select exercises to group together"
-                      : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
-                  </div>
 
-                  <button
-                    onClick={selectAllExercises}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
-                  >
-                    <span>Select All</span>
-                  </button>
+                    <button
+                      onClick={addExercise}
+                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                    >
+                      <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span>Add Exercise</span>
+                    </button>
 
-                  <button
-                    onClick={() => setShowGroupModal(true)}
-                    disabled={selectedExerciseIds.size < 2}
-                    className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                    <span>Create Group</span>
-                  </button>
+                    <button
+                      onClick={() => addGroup("superset")}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                    >
+                      <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span>Add Superset</span>
+                    </button>
 
-                  <button
-                    onClick={clearSelection}
-                    className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
-                  >
-                    <span>Cancel</span>
-                  </button>
-                </>
+                    <button
+                      onClick={() => addGroup("circuit")}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>Add Circuit</span>
+                    </button>
+
+                    <button
+                      onClick={() => addGroup("section")}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                    >
+                      <Target className="w-4 h-4" />
+                      <span>Add Section</span>
+                    </button>
+
+                    {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
+                      .length > 0 && (
+                      <button
+                        onClick={() => setSelectionMode(true)}
+                        className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
+                      >
+                        <Users className="w-5 h-5 sm:w-4 sm:h-4" />
+                        <span>Group Exercises</span>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
+                      {selectedExerciseIds.size === 0
+                        ? "Select exercises to group together"
+                        : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
+                    </div>
+
+                    <button
+                      onClick={selectAllExercises}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                    >
+                      <span>Select All</span>
+                    </button>
+
+                    <button
+                      onClick={() => setShowGroupModal(true)}
+                      disabled={selectedExerciseIds.size < 2}
+                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <span>Create Group</span>
+                    </button>
+
+                    <button
+                      onClick={clearSelection}
+                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
+                    >
+                      <span>Cancel</span>
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Save Workout Button - Separate Row */}
+              {!selectionMode && (
+                <button
+                  onClick={saveWorkout}
+                  disabled={isSaving || !workoutName.trim()}
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700"
+                >
+                  <span>{isSaving ? "Saving..." : "Save Workout"}</span>
+                </button>
               )}
             </div>
-
-            {/* Save Workout Button - Separate Row */}
-            {!selectionMode && (
-              <button
-                onClick={saveWorkout}
-                disabled={isSaving || !workoutName.trim()}
-                className="w-full btn-primary flex items-center justify-center gap-2 py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700"
-              >
-                <span>{isSaving ? "Saving..." : "Save Workout"}</span>
-              </button>
-            )}
           </div>
-        </div>
 
-        {/* Enhanced mobile content area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="space-y-6 sm:space-y-4">
-            {/* Block Instances */}
-            {workout.blockInstances?.map((blockInstance) => (
-              <BlockInstanceItem
-                key={blockInstance.id}
-                blockInstance={blockInstance}
-                exercises={workout.exercises}
-                groups={workout.groups || []}
-                onCustomize={setEditingBlockInstance}
-                onDeleteExercise={deleteExercise}
-                onUpdateExercise={updateExercise}
-                onMoveExercise={moveExercise}
-                onMoveExerciseToGroup={moveExerciseToGroup}
-                availableGroups={workout.groups || []}
-                onExerciseNameChange={handleExerciseNameChange}
-              />
-            ))}
-
-            {/* Ungrouped Exercises (not in blocks) */}
-            {ungroupedExercises
-              .filter((ex) => !ex.blockInstanceId)
-              .map((exercise, index) => (
-                <ExerciseItem
-                  key={exercise.id}
-                  exercise={exercise}
-                  index={index}
-                  onUpdate={updateExercise}
-                  onDelete={deleteExercise}
-                  onMoveUp={() => moveExercise(exercise.id, "up")}
-                  onMoveDown={() => moveExercise(exercise.id, "down")}
-                  onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
-                  availableGroups={workout.groups || []}
-                  canMoveUp={index > 0}
-                  canMoveDown={index < ungroupedExercises.length - 1}
-                  onExerciseNameChange={handleExerciseNameChange}
-                  selectionMode={selectionMode}
-                  isSelected={selectedExerciseIds.has(exercise.id)}
-                  onToggleSelection={toggleExerciseSelection}
-                />
-              ))}
-
-            {/* Exercise Groups (not in blocks) */}
-            {workout.groups
-              ?.filter((g) => !g.blockInstanceId)
-              .map((group) => (
-                <GroupItem
-                  key={group.id}
-                  group={group}
+          {/* Enhanced mobile content area */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <div className="space-y-6 sm:space-y-4">
+              {/* Block Instances */}
+              {workout.blockInstances?.map((blockInstance) => (
+                <BlockInstanceItem
+                  key={blockInstance.id}
+                  blockInstance={blockInstance}
                   exercises={workout.exercises}
-                  onUpdateGroup={updateGroup}
-                  onDeleteGroup={deleteGroup}
-                  onUpdateExercise={updateExercise}
+                  groups={workout.groups || []}
+                  onCustomize={setEditingBlockInstance}
                   onDeleteExercise={deleteExercise}
+                  onUpdateExercise={updateExercise}
                   onMoveExercise={moveExercise}
                   onMoveExerciseToGroup={moveExerciseToGroup}
                   availableGroups={workout.groups || []}
@@ -1790,26 +2104,76 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 />
               ))}
 
-            {/* Enhanced mobile empty state */}
-            {ungroupedExercises.length === 0 &&
-              (!workout.groups || workout.groups.length === 0) && (
-                <div className="text-center text-body-secondary py-16 sm:py-12">
-                  <Dumbbell className="w-16 h-16 sm:w-12 sm:h-12 mx-auto mb-6 sm:mb-4 text-silver-400" />
-                  <p className="text-xl sm:text-lg font-medium mb-2">
-                    No exercises added yet
-                  </p>
-                  <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto mb-4">
-                    Click &quot;Add Exercise&quot; to start building your
-                    workout, or use &quot;Add Block&quot; to insert pre-built
-                    workout templates
-                  </p>
-                </div>
-              )}
+              {/* Ungrouped Exercises (not in blocks) */}
+              {ungroupedExercises
+                .filter((ex) => !ex.blockInstanceId)
+                .map((exercise, index) => (
+                  <ExerciseItem
+                    key={exercise.id}
+                    exercise={exercise}
+                    index={index}
+                    onUpdate={updateExercise}
+                    onDelete={deleteExercise}
+                    onMoveUp={() => moveExercise(exercise.id, "up")}
+                    onMoveDown={() => moveExercise(exercise.id, "down")}
+                    onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
+                    availableGroups={workout.groups || []}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < ungroupedExercises.length - 1}
+                    onExerciseNameChange={handleExerciseNameChange}
+                    selectionMode={selectionMode}
+                    isSelected={selectedExerciseIds.has(exercise.id)}
+                    onToggleSelection={toggleExerciseSelection}
+                  />
+                ))}
+
+              {/* Exercise Groups (not in blocks) */}
+              {workout.groups
+                ?.filter((g) => !g.blockInstanceId)
+                .map((group) => (
+                  <GroupItem
+                    key={group.id}
+                    group={group}
+                    exercises={workout.exercises}
+                    onUpdateGroup={updateGroup}
+                    onDeleteGroup={deleteGroup}
+                    onUpdateExercise={updateExercise}
+                    onDeleteExercise={deleteExercise}
+                    onMoveExercise={moveExercise}
+                    onMoveExerciseToGroup={moveExerciseToGroup}
+                    availableGroups={workout.groups || []}
+                    onExerciseNameChange={handleExerciseNameChange}
+                  />
+                ))}
+
+              {/* Enhanced mobile empty state */}
+              {ungroupedExercises.length === 0 &&
+                (!workout.groups || workout.groups.length === 0) && (
+                  <div className="text-center text-body-secondary py-16 sm:py-12">
+                    <Dumbbell className="w-16 h-16 sm:w-12 sm:h-12 mx-auto mb-6 sm:mb-4 text-silver-400" />
+                    <p className="text-xl sm:text-lg font-medium mb-2">
+                      No exercises added yet
+                    </p>
+                    <p className="text-base sm:text-sm leading-relaxed max-w-md mx-auto mb-4">
+                      Click &quot;Add Exercise&quot; to start building your
+                      workout, or use &quot;Add Block&quot; to insert pre-built
+                      workout templates
+                    </p>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
+
+        {/* Exercise Library Panel - Right Side */}
+        <ExerciseLibraryPanel
+          onDragStart={(exercise) => {
+            console.log("Dragging exercise:", exercise.name);
+          }}
+        />
       </div>
 
-      {/* Block Library Modal */}
+      {/* Modals */}
       <BlockLibrary
         isOpen={showBlockLibrary}
         onClose={() => setShowBlockLibrary(false)}

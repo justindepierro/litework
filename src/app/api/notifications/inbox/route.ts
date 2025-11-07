@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -103,7 +104,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      notifications,
+      notifications: transformToCamel(notifications),
       unreadCount: unreadCount || 0,
     });
   } catch (error) {

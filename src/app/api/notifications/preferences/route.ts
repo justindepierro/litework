@@ -10,6 +10,7 @@ import {
   isCoach,
 } from "@/lib/auth-server";
 import { createClient } from "@supabase/supabase-js";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;

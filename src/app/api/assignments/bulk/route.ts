@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 interface BulkAssignmentRequest {
-  workout_plan_id: string;
-  athlete_ids?: string[];
-  group_ids?: string[];
-  scheduled_date: string;
-  start_time?: string;
-  end_time?: string;
+  workoutPlanId: string;
+  athleteIds?: string[];
+  groupIds?: string[];
+  scheduledDate: string;
+  startTime?: string;
+  endTime?: string;
   location?: string;
   notes?: string;
-  notification_preferences?: object;
+  notificationPreferences?: object;
 }
 
 // POST /api/assignments/bulk - Create multiple assignments efficiently
@@ -34,40 +35,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body: BulkAssignmentRequest = await request.json();
+    const bodyInput = await request.json();
+    const body: BulkAssignmentRequest = transformToCamel(bodyInput);
     const {
-      workout_plan_id,
-      athlete_ids,
-      group_ids,
-      scheduled_date,
-      start_time,
-      end_time,
+      workoutPlanId,
+      athleteIds,
+      groupIds,
+      scheduledDate,
+      startTime,
+      endTime,
       location,
       notes,
-      notification_preferences,
+      notificationPreferences,
     } = body;
 
     // Validate required fields
-    if (!workout_plan_id) {
+    if (!workoutPlanId) {
       return NextResponse.json(
-        { error: "workout_plan_id is required" },
+        { error: "workoutPlanId is required" },
         { status: 400 }
       );
     }
 
-    if (!scheduled_date) {
+    if (!scheduledDate) {
       return NextResponse.json(
-        { error: "scheduled_date is required" },
+        { error: "scheduledDate is required" },
         { status: 400 }
       );
     }
 
     if (
-      (!athlete_ids || athlete_ids.length === 0) &&
-      (!group_ids || group_ids.length === 0)
+      (!athleteIds || athleteIds.length === 0) &&
+      (!groupIds || groupIds.length === 0)
     ) {
       return NextResponse.json(
-        { error: "Either athlete_ids or group_ids must be provided" },
+        { error: "Either athleteIds or groupIds must be provided" },
         { status: 400 }
       );
     }
@@ -77,41 +79,41 @@ export async function POST(request: NextRequest) {
     > = [];
 
     // Create individual athlete assignments
-    if (athlete_ids && athlete_ids.length > 0) {
-      athlete_ids.forEach((athleteId) => {
+    if (athleteIds && athleteIds.length > 0) {
+      athleteIds.forEach((athleteId: string) => {
         assignmentsToInsert.push({
-          workout_plan_id,
+          workout_plan_id: workoutPlanId,
           assigned_by: user.id,
           assigned_to_user_id: athleteId,
           assigned_to_group_id: null,
-          scheduled_date,
-          start_time: start_time || null,
-          end_time: end_time || null,
+          scheduled_date: scheduledDate,
+          start_time: startTime || null,
+          end_time: endTime || null,
           location: location || null,
           notes: notes || null,
           completed: false,
           reminder_sent: false,
-          notification_preferences: notification_preferences || {},
+          notification_preferences: notificationPreferences || {},
         });
       });
     }
 
     // Create group assignments
-    if (group_ids && group_ids.length > 0) {
-      group_ids.forEach((groupId) => {
+    if (groupIds && groupIds.length > 0) {
+      groupIds.forEach((groupId: string) => {
         assignmentsToInsert.push({
-          workout_plan_id,
+          workout_plan_id: workoutPlanId,
           assigned_by: user.id,
           assigned_to_user_id: null,
           assigned_to_group_id: groupId,
-          scheduled_date,
-          start_time: start_time || null,
-          end_time: end_time || null,
+          scheduled_date: scheduledDate,
+          start_time: startTime || null,
+          end_time: endTime || null,
           location: location || null,
           notes: notes || null,
           completed: false,
           reminder_sent: false,
-          notification_preferences: notification_preferences || {},
+          notification_preferences: notificationPreferences || {},
         });
       });
     }
@@ -146,7 +148,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        data: { assignments: insertedAssignments },
+        data: { assignments: transformToCamel(insertedAssignments) },
         message: `Successfully created ${individualCount} individual assignment(s) and ${groupCount} group assignment(s)`,
         stats: {
           total: insertedAssignments?.length || 0,
@@ -185,16 +187,17 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const { assignment_ids } = body;
+    const bodyInput = await request.json();
+    const body = transformToCamel(bodyInput);
+    const { assignmentIds } = body;
 
     if (
-      !assignment_ids ||
-      !Array.isArray(assignment_ids) ||
-      assignment_ids.length === 0
+      !assignmentIds ||
+      !Array.isArray(assignmentIds) ||
+      assignmentIds.length === 0
     ) {
       return NextResponse.json(
-        { error: "assignment_ids array is required" },
+        { error: "assignmentIds array is required" },
         { status: 400 }
       );
     }
@@ -203,7 +206,7 @@ export async function DELETE(request: NextRequest) {
     const { error } = await supabaseAdmin
       .from("workout_assignments")
       .delete()
-      .in("id", assignment_ids);
+      .in("id", assignmentIds);
 
     if (error) {
       console.error("Error bulk deleting assignments:", error);
@@ -215,7 +218,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Successfully deleted ${assignment_ids.length} assignment(s)`,
+      message: `Successfully deleted ${assignmentIds.length} assignment(s)`,
     });
   } catch (error) {
     console.error("Unexpected error in DELETE /api/assignments/bulk:", error);

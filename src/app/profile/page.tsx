@@ -29,19 +29,19 @@ import {
 interface ProfileData {
   id: string;
   email: string;
-  first_name: string;
-  last_name: string;
-  avatar_url?: string;
-  date_of_birth?: string;
-  height_inches?: number;
-  weight_lbs?: number;
+  firstName: string;
+  lastName: string;
+  avatarUrl?: string;
+  dateOfBirth?: string;
+  heightInches?: number;
+  weightLbs?: number;
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
   bio?: string;
-  emergency_contact_name?: string;
-  emergency_contact_phone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
   age?: number;
   bmi?: number;
-  bmi_category?: string;
+  bmiCategory?: string;
 }
 
 export default function ProfilePage() {
@@ -107,15 +107,15 @@ export default function ProfilePage() {
 
       if (data.success && data.profile) {
         setProfile(data.profile);
-        setFirstName(data.profile.first_name || "");
-        setLastName(data.profile.last_name || "");
-        setDateOfBirth(data.profile.date_of_birth || "");
-        setHeightInches(data.profile.height_inches?.toString() || "");
-        setWeightLbs(data.profile.weight_lbs?.toString() || "");
+        setFirstName(data.profile.firstName || "");
+        setLastName(data.profile.lastName || "");
+        setDateOfBirth(data.profile.dateOfBirth || "");
+        setHeightInches(data.profile.heightInches?.toString() || "");
+        setWeightLbs(data.profile.weightLbs?.toString() || "");
         setGender(data.profile.gender || "");
         setBio(data.profile.bio || "");
-        setEmergencyName(data.profile.emergency_contact_name || "");
-        setEmergencyPhone(data.profile.emergency_contact_phone || "");
+        setEmergencyName(data.profile.emergencyContactName || "");
+        setEmergencyPhone(data.profile.emergencyContactPhone || "");
       }
     } catch (err) {
       console.error("Failed to load profile:", err);
@@ -173,7 +173,7 @@ export default function ProfilePage() {
       if (data.success) {
         setSuccess("Profile picture updated!");
         setProfile((prev) =>
-          prev ? { ...prev, avatar_url: data.avatarUrl } : null
+          prev ? { ...prev, avatarUrl: data.avatarUrl } : null
         );
         setAvatarFile(null);
         setAvatarPreview(null);
@@ -208,7 +208,7 @@ export default function ProfilePage() {
           if (data.success) {
             toast.success("Profile picture removed");
             setProfile((prev) =>
-              prev ? { ...prev, avatar_url: undefined } : null
+              prev ? { ...prev, avatarUrl: undefined } : null
             );
           } else {
             toast.error(data.error || "Failed to delete avatar");
@@ -229,21 +229,21 @@ export default function ProfilePage() {
     setSuccess("");
 
     try {
-      const updates: Record<string, any> = {
-        first_name: firstName,
-        last_name: lastName,
+      const updates: Record<string, string | number> = {
+        firstName: firstName,
+        lastName: lastName,
       };
 
       if (activeTab === "profile") {
         updates.bio = bio;
-        updates.emergency_contact_name = emergencyName;
-        updates.emergency_contact_phone = emergencyPhone;
+        updates.emergencyContactName = emergencyName;
+        updates.emergencyContactPhone = emergencyPhone;
       }
 
       if (activeTab === "metrics") {
-        if (dateOfBirth) updates.date_of_birth = dateOfBirth;
-        if (heightInches) updates.height_inches = parseFloat(heightInches);
-        if (weightLbs) updates.weight_lbs = parseFloat(weightLbs);
+        if (dateOfBirth) updates.dateOfBirth = dateOfBirth;
+        if (heightInches) updates.heightInches = parseFloat(heightInches);
+        if (weightLbs) updates.weightLbs = parseFloat(weightLbs);
         if (gender) updates.gender = gender;
       }
 
@@ -297,8 +297,10 @@ export default function ProfilePage() {
       setNewPassword("");
       setConfirmPassword("");
       setTimeout(() => setSuccess(""), 3000);
-    } catch (err: any) {
-      setError(err.message || "Failed to change password");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to change password"
+      );
     } finally {
       setIsChangingPassword(false);
     }
@@ -368,9 +370,9 @@ export default function ProfilePage() {
           <div className="flex items-center gap-6">
             {/* Avatar Display */}
             <div className="relative">
-              {avatarPreview || profile?.avatar_url ? (
+              {avatarPreview || profile?.avatarUrl ? (
                 <img
-                  src={avatarPreview || profile?.avatar_url}
+                  src={avatarPreview || profile?.avatarUrl}
                   alt="Profile"
                   className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
                 />
@@ -429,7 +431,7 @@ export default function ProfilePage() {
                       <Upload className="w-4 h-4" />
                       Choose Photo
                     </button>
-                    {profile?.avatar_url && (
+                    {profile?.avatarUrl && (
                       <button
                         onClick={handleAvatarDelete}
                         disabled={isUploadingAvatar}
@@ -687,7 +689,7 @@ export default function ProfilePage() {
                         {profile.bmi}
                       </span>
                       <span className="px-3 py-1 bg-white border border-blue-300 text-blue-700 rounded-full text-sm font-medium capitalize">
-                        {profile.bmi_category}
+                        {profile.bmiCategory}
                       </span>
                     </div>
                     <p className="text-xs text-gray-600 mt-2">

@@ -7,6 +7,7 @@ import { OfflineStatusBanner } from "@/components/OfflineStatus";
 import { PRCelebrationModal } from "@/components/PRBadge";
 import { checkForPR, PRComparison } from "@/lib/pr-detection";
 import { useAuth } from "@/contexts/AuthContext";
+import YouTubeEmbed from "@/components/YouTubeEmbed";
 import RestTimer from "./RestTimer";
 import {
   ChevronLeft,
@@ -358,11 +359,26 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
                   <Info className="w-5 h-5 text-gray-400" />
                 </button>
               </div>
-              {showNotesPanel && currentExercise.notes && (
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-900">
-                    {currentExercise.notes}
-                  </p>
+              {showNotesPanel && (
+                <div className="mt-4 space-y-4">
+                  {/* Exercise Notes */}
+                  {currentExercise.notes && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-900">
+                        {currentExercise.notes}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* YouTube Demo Video */}
+                  {(currentExercise as any).videoUrl && (
+                    <div className="bg-white rounded-lg p-4">
+                      <YouTubeEmbed
+                        url={(currentExercise as any).videoUrl}
+                        title={`${currentExercise.exercise_name} demonstration`}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               <div className="mt-4">

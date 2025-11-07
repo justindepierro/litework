@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { transformToCamel } from "@/lib/case-transform";
 
 interface HealthCheck {
   status: "healthy" | "unhealthy" | "degraded";
@@ -249,7 +250,9 @@ export async function GET() {
 
     // Add response time header
     const responseTime = Date.now() - startCheck;
-    const response = NextResponse.json(healthCheck, { status: statusCode });
+    const response = NextResponse.json(transformToCamel(healthCheck), {
+      status: statusCode,
+    });
     response.headers.set("X-Response-Time", `${responseTime}ms`);
     response.headers.set(
       "Cache-Control",

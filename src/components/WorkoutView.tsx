@@ -4,6 +4,7 @@ import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutSession, WorkoutPlan } from "@/types";
+import YouTubeEmbed from "@/components/YouTubeEmbed";
 import {
   Dumbbell,
   Calendar,
@@ -353,6 +354,17 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                           {exercise.notes}
                         </span>
                       </div>
+                    </div>
+                  )}
+
+                  {/* YouTube Demo Video */}
+                  {(exercise as any).videoUrl && (
+                    <div className="mt-6">
+                      <YouTubeEmbed
+                        url={(exercise as any).videoUrl}
+                        title={`${exercise.exerciseName} demonstration`}
+                        className="max-w-2xl mx-auto"
+                      />
                     </div>
                   )}
                 </div>

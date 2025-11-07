@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { transformToCamel } from "@/lib/case-transform";
 
 export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
@@ -108,7 +109,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      workouts: workoutsWithStats,
+      workouts: transformToCamel(workoutsWithStats),
     });
   } catch (error) {
     console.error("Today schedule error:", error);

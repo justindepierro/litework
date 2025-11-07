@@ -6,6 +6,7 @@ import {
   getClientIP,
   resetRateLimit,
 } from "@/lib/rate-limit-server";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 // POST /api/invites/accept - Accept invitation and create athlete account
 export async function POST(request: NextRequest) {
@@ -47,22 +48,24 @@ export async function POST(request: NextRequest) {
     const supabase = createClient();
 
     // Find and validate invitation
-    const { data: invite, error: inviteError } = await supabase
+    const { data: inviteRaw, error: inviteError } = await supabase
       .from("invites")
       .select("*")
       .eq("id", inviteCode)
       .eq("status", "pending")
       .single();
 
-    if (inviteError || !invite) {
+    if (inviteError || !inviteRaw) {
       return NextResponse.json(
         { error: "Invalid or expired invitation" },
         { status: 404 }
       );
     }
 
+    const invite = transformToCamel(inviteRaw);
+
     // Check if invitation has expired
-    const expiresAt = new Date(invite.expires_at);
+    const expiresAt = new Date(invite.expiresAt);
     if (expiresAt < new Date()) {
       return NextResponse.json(
         { error: "Invitation has expired" },
@@ -90,8 +93,8 @@ export async function POST(request: NextRequest) {
       password,
       options: {
         data: {
-          firstName: invite.first_name,
-          lastName: invite.last_name,
+          firstName: invite.firstName,
+          lastName: invite.lastName,
           role: invite.role || "athlete",
         },
       },
@@ -106,14 +109,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user profile in users table
-    const { error: profileError } = await supabase.from("users").insert({
-      id: authData.user.id,
-      email: invite.email.toLowerCase(),
-      first_name: invite.first_name,
-      last_name: invite.last_name,
-      role: invite.role || "athlete",
-      group_ids: invite.group_id ? [invite.group_id] : [],
-    });
+    const { error: profileError } = await supabase.from("users").insert(
+      transformToSnake({
+        id: authData.user.id,
+        email: invite.email.toLowerCase(),
+        firstName: invite.firstName,
+        lastName: invite.lastName,
+        role: invite.role || "athlete",
+        groupIds: invite.groupId ? [invite.groupId] : [],
+      })
+    );
 
     if (profileError) {
       console.error("Error creating user profile:", profileError);
@@ -128,10 +133,12 @@ export async function POST(request: NextRequest) {
     // Update invitation status
     await supabase
       .from("invites")
-      .update({
-        status: "accepted",
-        accepted_at: new Date().toISOString(),
-      })
+      .update(
+        transformToSnake({
+          status: "accepted",
+          acceptedAt: new Date().toISOString(),
+        })
+      )
       .eq("id", inviteCode);
 
     // 2. Reset rate limit on successful signup
@@ -143,8 +150,8 @@ export async function POST(request: NextRequest) {
       user: {
         id: authData.user.id,
         email: authData.user.email,
-        firstName: invite.first_name,
-        lastName: invite.last_name,
+        firstName: invite.firstName,
+        lastName: invite.lastName,
       },
     });
   } catch (error) {

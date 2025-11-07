@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAuthenticatedUser } from "@/lib/auth-server";
+import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,20 +33,22 @@ export async function POST(request: NextRequest) {
     const normalizedName = name.trim();
 
     // First, try to find existing exercise (case-insensitive)
-    const { data: existingExercise } = await supabase
+    const { data: existingExerciseRaw } = await supabase
       .from("exercises")
       .select("*")
       .ilike("name", normalizedName)
       .single();
 
-    if (existingExercise) {
+    if (existingExerciseRaw) {
+      const existingExercise = transformToCamel(existingExerciseRaw);
+
       // Exercise exists - update analytics (using upsert for exercise_analytics)
       await supabase.from("exercise_analytics").upsert(
-        {
-          exercise_id: existingExercise.id,
-          usage_count: 1, // Will be incremented by the trigger
-          last_used_at: new Date().toISOString(),
-        },
+        transformToSnake({
+          exerciseId: existingExercise.id,
+          usageCount: 1, // Will be incremented by the trigger
+          lastUsedAt: new Date().toISOString(),
+        }),
         {
           onConflict: "exercise_id",
           ignoreDuplicates: false,
@@ -64,21 +67,23 @@ export async function POST(request: NextRequest) {
     // since we don't have a simple way to map string categories to UUIDs
     const inferredEquipment = equipment || inferEquipment(normalizedName);
 
-    const { data: newExercise, error: createError } = await supabase
+    const { data: newExerciseRaw, error: createError } = await supabase
       .from("exercises")
-      .insert({
-        name: normalizedName,
-        description: `Custom exercise: ${normalizedName}`,
-        category_id: null, // User-created exercises don't have a category initially
-        equipment_needed: inferredEquipment,
-        difficulty_level: 2, // Default to intermediate
-        is_compound: false, // Will be updated by user if needed
-        is_bodyweight: inferredEquipment.length === 0,
-        instructions: [`Perform ${normalizedName} with proper form`],
-        created_by: "id" in user ? user.id : null, // User ID if available
-        is_active: true,
-        is_approved: false, // User-created exercises need approval
-      })
+      .insert(
+        transformToSnake({
+          name: normalizedName,
+          description: `Custom exercise: ${normalizedName}`,
+          categoryId: null, // User-created exercises don't have a category initially
+          equipmentNeeded: inferredEquipment,
+          difficultyLevel: 2, // Default to intermediate
+          isCompound: false, // Will be updated by user if needed
+          isBodyweight: inferredEquipment.length === 0,
+          instructions: [`Perform ${normalizedName} with proper form`],
+          createdBy: "id" in user ? user.id : null, // User ID if available
+          isActive: true,
+          isApproved: false, // User-created exercises need approval
+        })
+      )
       .select()
       .single();
 
@@ -90,12 +95,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const newExercise = transformToCamel(newExerciseRaw);
+
     // Create analytics entry for new exercise
-    await supabase.from("exercise_analytics").insert({
-      exercise_id: newExercise.id,
-      usage_count: 1,
-      last_used_at: new Date().toISOString(),
-    });
+    await supabase.from("exercise_analytics").insert(
+      transformToSnake({
+        exerciseId: newExercise.id,
+        usageCount: 1,
+        lastUsedAt: new Date().toISOString(),
+      })
+    );
 
     return NextResponse.json({
       success: true,

@@ -125,6 +125,7 @@ export interface WorkoutExercise {
 
   restTime?: number; // Rest time in seconds
   notes?: string; // Exercise-specific notes (equipment, cues, modifications)
+  videoUrl?: string; // YouTube URL for exercise demonstration video
   order: number; // Order in the workout
   variations?: ExerciseVariation[]; // Available modifications
   groupId?: string; // ID of the group this exercise belongs to

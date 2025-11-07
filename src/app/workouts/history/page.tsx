@@ -7,37 +7,37 @@ import { Check } from "lucide-react";
 
 interface SetRecord {
   id: string;
-  set_number: number;
-  target_reps: number;
-  actual_reps: number;
-  target_weight: number;
-  actual_weight: number;
+  setNumber: number;
+  targetReps: number;
+  actualReps: number;
+  targetWeight: number;
+  actualWeight: number;
   completed: boolean;
-  completed_at: string;
+  completedAt: string;
 }
 
 interface SessionExercise {
   id: string;
-  exercise_name: string;
-  target_sets: number;
-  completed_sets: number;
+  exerciseName: string;
+  targetSets: number;
+  completedSets: number;
   started: boolean;
   completed: boolean;
-  set_records: SetRecord[];
+  setRecords: SetRecord[];
 }
 
 interface WorkoutSession {
   id: string;
-  workout_plan_name: string;
+  workoutPlanName: string;
   date: string;
   mode: string;
   started: boolean;
   completed: boolean;
-  progress_percentage: number;
-  started_at: string | null;
-  completed_at: string | null;
-  created_at: string;
-  session_exercises: SessionExercise[];
+  progressPercentage: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  createdAt: string;
+  sessionExercises: SessionExercise[];
   stats: {
     totalExercises: number;
     completedExercises: number;
@@ -236,7 +236,7 @@ export default function WorkoutHistoryPage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
                           <h3 className="text-lg font-semibold text-gray-900">
-                            {session.workout_plan_name}
+                            {session.workoutPlanName}
                           </h3>
                           {session.completed ? (
                             <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">
@@ -295,14 +295,14 @@ export default function WorkoutHistoryPage() {
                         Exercises
                       </h4>
                       <div className="space-y-4">
-                        {session.session_exercises.map((exercise) => (
+                        {session.sessionExercises.map((exercise) => (
                           <div
                             key={exercise.id}
                             className="bg-white rounded-lg p-3"
                           >
                             <div className="flex items-center justify-between mb-2">
                               <h5 className="font-medium text-gray-900">
-                                {exercise.exercise_name}
+                                {exercise.exerciseName}
                               </h5>
                               {exercise.completed && (
                                 <span className="text-green-600 text-sm flex items-center gap-1">
@@ -311,25 +311,24 @@ export default function WorkoutHistoryPage() {
                                 </span>
                               )}
                             </div>
-                            {exercise.set_records.length > 0 && (
+                            {exercise.setRecords.length > 0 && (
                               <div className="space-y-1">
-                                {exercise.set_records.map((set) => (
+                                {exercise.setRecords.map((set) => (
                                   <div
                                     key={set.id}
                                     className="flex items-center justify-between text-sm"
                                   >
                                     <span className="text-gray-600">
-                                      Set {set.set_number}
+                                      Set {set.setNumber}
                                     </span>
                                     <span className="text-gray-900">
-                                      {set.actual_weight} lbs ×{" "}
-                                      {set.actual_reps} reps
-                                      {set.actual_weight !==
-                                        set.target_weight ||
-                                      set.actual_reps !== set.target_reps ? (
+                                      {set.actualWeight} lbs × {set.actualReps}{" "}
+                                      reps
+                                      {set.actualWeight !== set.targetWeight ||
+                                      set.actualReps !== set.targetReps ? (
                                         <span className="text-gray-500 ml-2">
-                                          (target: {set.target_weight} lbs ×{" "}
-                                          {set.target_reps})
+                                          (target: {set.targetWeight} lbs ×{" "}
+                                          {set.targetReps})
                                         </span>
                                       ) : null}
                                     </span>

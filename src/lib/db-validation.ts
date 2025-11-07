@@ -1,17 +1,13 @@
 /**
  * Database Response Validation
- * 
+ *
  * Runtime checks to ensure database responses match TypeScript types
  * and catch snake_case/camelCase issues before they reach the UI
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type {
-  User,
-  AthleteGroup,
-  WorkoutAssignment,
-} from "@/types";
+import type { User, AthleteGroup, WorkoutAssignment } from "@/types";
 
 /**
  * Expected field names for each entity type (in camelCase)
@@ -151,8 +147,14 @@ export function validateTransformation(
   }
 
   // Log if field types don't match expectations
-  if ("createdAt" in obj && !(obj.createdAt instanceof Date) && typeof obj.createdAt !== 'string') {
-    warnings.push(`${context}: createdAt should be a Date or string, got ${typeof obj.createdAt}`);
+  if (
+    "createdAt" in obj &&
+    !(obj.createdAt instanceof Date) &&
+    typeof obj.createdAt !== "string"
+  ) {
+    warnings.push(
+      `${context}: createdAt should be a Date or string, got ${typeof obj.createdAt}`
+    );
   }
 
   return {
@@ -179,7 +181,11 @@ export function validateTransformationArray<T>(
   }
 
   arr.forEach((item, index) => {
-    const result = validateTransformation(item, entityType, `${context}[${index}]`);
+    const result = validateTransformation(
+      item,
+      entityType,
+      `${context}[${index}]`
+    );
     allErrors.push(...result.errors);
     allWarnings.push(...result.warnings);
   });
@@ -251,12 +257,12 @@ export function devValidate(
 ): void {
   if (process.env.NODE_ENV === "development") {
     const result = validateTransformation(obj, entityType, context);
-    
+
     if (!result.isValid) {
       console.error(
         `[DEV VALIDATION FAILED] ${context}\n` +
-        `Errors: ${result.errors.join("\n")}\n` +
-        `This transformation needs to be fixed!\n`,
+          `Errors: ${result.errors.join("\n")}\n` +
+          `This transformation needs to be fixed!\n`,
         obj
       );
     }

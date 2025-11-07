@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { transformToCamel } from "@/lib/case-transform";
 
 /**
  * GET /api/workouts/history
@@ -119,7 +120,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      sessions: enrichedSessions || [],
+      sessions: transformToCamel(enrichedSessions || []),
       pagination: {
         limit,
         offset,

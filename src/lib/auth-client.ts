@@ -668,7 +668,10 @@ export function onAuthChange(callback: (user: User | null) => void) {
         ]);
 
         if (error || !profile) {
-          timer.error("Profile fetch failed", { error, userId: session.user.id });
+          timer.error("Profile fetch failed", {
+            error,
+            userId: session.user.id,
+          });
           callback(null);
           return;
         }

@@ -1,0 +1,160 @@
+🔍 Scanning API routes...
+
+🔍 Scanning components...
+
+🔍 Scanning pages...
+
+📊 AUDIT REPORT
+================================================================================
+
+Total files scanned: 33
+High severity issues: 2
+Medium severity issues: 31
+
+🚨 HIGH SEVERITY ISSUES:
+--------------------------------------------------------------------------------
+
+📁 /src/app/api/exercises/find-or-create/route.ts
+   ⚠️  Has direct database queries with snake_case fields but no transformation
+      Fields: exercise_id
+
+📁 /src/app/api/invites/accept/route.ts
+   ⚠️  Has direct database queries with snake_case fields but no transformation
+      Fields: first_name, last_name, group_id
+
+⚠️  MEDIUM SEVERITY ISSUES:
+--------------------------------------------------------------------------------
+
+📁 /src/app/api/analytics/dashboard-stats/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: exercise_id
+
+📁 /src/app/api/analytics/group-stats/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: group_id
+
+📁 /src/app/api/analytics/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, last_name, coach_id, created_at, exercise_id
+
+📁 /src/app/api/analytics/today-schedule/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: athlete_ids, workout_plan_id, workout_plan_name, assigned_to_group_id, scheduled_date...
+
+📁 /src/app/api/assignments/[id]/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: notification_preferences, assigned_to_user_id, scheduled_date, start_time, end_time
+
+📁 /src/app/api/assignments/bulk/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: assigned_to_user_id, assigned_to_group_id
+
+📁 /src/app/api/athletes/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, created_at
+
+📁 /src/app/api/blocks/[id]/favorite/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_by
+
+📁 /src/app/api/blocks/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_by
+
+📁 /src/app/api/cron/workout-reminders/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: notification_preferences, scheduled_date
+
+📁 /src/app/api/groups/members/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: athlete_ids
+
+📁 /src/app/api/health/route.ts
+   ⚡ Has direct database queries without transformation utilities
+
+📁 /src/app/api/invites/[id]/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, last_name, group_ids, athlete_ids
+
+📁 /src/app/api/invites/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: group_ids, athlete_ids, created_at, date_of_birth, injury_status...
+
+📁 /src/app/api/invites/validate/[code]/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: group_id
+
+📁 /src/app/api/notifications/inbox/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_at
+
+📁 /src/app/api/notifications/preferences/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: notification_preferences
+
+📁 /src/app/api/profile/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: date_of_birth
+
+📁 /src/app/api/sessions/[id]/complete/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: start_time
+
+📁 /src/app/api/sessions/[id]/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_at, workout_plan_name, start_time, end_time, exercise_id...
+
+📁 /src/app/api/sessions/start/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: workout_plan_id, exercise_id, order_index
+
+📁 /src/app/api/user/preferences/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: notification_preferences
+
+📁 /src/app/api/workouts/[id]/archive/route.ts
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_by
+
+📁 /src/app/athletes/page.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, last_name, group_ids, created_at
+
+📁 /src/app/notifications/page.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_at
+
+📁 /src/app/profile/page.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, last_name, date_of_birth
+
+📁 /src/app/signup/page.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: first_name, last_name
+
+📁 /src/app/workouts/history/page.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: workout_plan_name, exercise_name
+
+📁 /src/components/NotificationBell.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: created_at
+
+📁 /src/components/WorkoutAssignmentDetailModal.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: full_name, scheduled_date, start_time, end_time, exercise_name
+
+📁 /src/components/WorkoutLive.tsx
+   ⚡ Accesses snake_case fields without transformation
+      Fields: exercise_id, exercise_name
+
+💡 RECOMMENDATIONS:
+--------------------------------------------------------------------------------
+1. Fix HIGH severity issues immediately - they will cause data display bugs
+2. Review MEDIUM severity issues - may need transformation utilities
+3. Run validation in development mode to catch runtime issues
+4. Use transformToCamel/transformToSnake from /src/lib/case-transform.ts
+5. Add devValidate() calls to verify transformations
+
+📄 Detailed report saved to: audit-report.json
+

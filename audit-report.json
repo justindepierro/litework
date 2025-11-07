@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-11-07T15:50:08.787Z",
+  "summary": {
+    "totalFiles": 3,
+    "highSeverity": 0,
+    "mediumSeverity": 3
+  },
+  "results": [
+    {
+      "file": "/src/app/athletes/page.tsx",
+      "issues": [
+        {
+          "severity": "MEDIUM",
+          "message": "Accesses snake_case fields without transformation",
+          "fields": [
+            "first_name",
+            "last_name",
+            "group_ids",
+            "created_at"
+          ]
+        }
+      ],
+      "hasTransformation": false,
+      "hasDirectQuery": false,
+      "snakeCaseFields": [
+        "first_name",
+        "last_name",
+        "group_ids",
+        "created_at"
+      ]
+    },
+    {
+      "file": "/src/components/WorkoutAssignmentDetailModal.tsx",
+      "issues": [
+        {
+          "severity": "MEDIUM",
+          "message": "Accesses snake_case fields without transformation",
+          "fields": [
+            "full_name",
+            "scheduled_date",
+            "start_time",
+            "end_time",
+            "exercise_name"
+          ]
+        }
+      ],
+      "hasTransformation": false,
+      "hasDirectQuery": false,
+      "snakeCaseFields": [
+        "full_name",
+        "scheduled_date",
+        "start_time",
+        "end_time",
+        "exercise_name"
+      ]
+    },
+    {
+      "file": "/src/components/WorkoutLive.tsx",
+      "issues": [
+        {
+          "severity": "MEDIUM",
+          "message": "Accesses snake_case fields without transformation",
+          "fields": [
+            "exercise_id",
+            "exercise_name"
+          ]
+        }
+      ],
+      "hasTransformation": false,
+      "hasDirectQuery": false,
+      "snakeCaseFields": [
+        "exercise_id",
+        "exercise_name"
+      ]
+    }
+  ]
+}

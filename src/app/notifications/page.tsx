@@ -18,7 +18,7 @@ interface InAppNotification {
   icon?: string;
   url?: string;
   read: boolean;
-  created_at: string;
+  createdAt: string;
 }
 
 export default function NotificationsPage() {
@@ -261,7 +261,7 @@ export default function NotificationsPage() {
                             {notification.title}
                           </h3>
                           <span className="text-sm text-gray-500 shrink-0">
-                            {formatTime(notification.created_at)}
+                            {formatTime(notification.createdAt)}
                           </span>
                         </div>
                         {notification.body && (

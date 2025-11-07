@@ -196,20 +196,20 @@ export default function AthletesPage() {
         data: {
           athletes: Array<{
             id: string;
-            first_name: string;
-            last_name: string;
+            firstName: string;
+            lastName: string;
             email: string;
             role: string;
-            created_at: string;
+            createdAt: string;
           }>;
           invites: Array<{
             id: string;
-            first_name: string;
-            last_name: string;
+            firstName: string;
+            lastName: string;
             email: string | null;
             status: string;
-            created_at: string;
-            group_ids?: string[];
+            createdAt: string;
+            groupIds?: string[];
           }>;
         };
       };
@@ -220,9 +220,9 @@ export default function AthletesPage() {
           // Map registered athletes
           ...response.data.athletes.map((athlete) => ({
             id: athlete.id,
-            firstName: athlete.first_name,
-            lastName: athlete.last_name,
-            fullName: `${athlete.first_name} ${athlete.last_name}`,
+            firstName: athlete.firstName,
+            lastName: athlete.lastName,
+            fullName: `${athlete.firstName} ${athlete.lastName}`,
             email: athlete.email,
             role: "athlete" as const,
             groupIds: [],
@@ -246,18 +246,18 @@ export default function AthletesPage() {
               preferredContact: "app" as const,
             },
             personalRecords: [],
-            createdAt: new Date(athlete.created_at),
-            updatedAt: new Date(athlete.created_at),
+            createdAt: new Date(athlete.createdAt),
+            updatedAt: new Date(athlete.createdAt),
           })),
           // Map pending invites (including drafts)
           ...response.data.invites.map((invite) => ({
             id: invite.id,
-            firstName: invite.first_name,
-            lastName: invite.last_name,
-            fullName: `${invite.first_name} ${invite.last_name}`,
+            firstName: invite.firstName,
+            lastName: invite.lastName,
+            fullName: `${invite.firstName} ${invite.lastName}`,
             email: invite.email || "",
             role: "athlete" as const,
-            groupIds: invite.group_ids || [],
+            groupIds: invite.groupIds || [],
             status: "invited" as const,
             profileImage: null,
             bio: null,
@@ -278,8 +278,8 @@ export default function AthletesPage() {
               preferredContact: "app" as const,
             },
             personalRecords: [],
-            createdAt: new Date(invite.created_at),
-            updatedAt: new Date(invite.created_at),
+            createdAt: new Date(invite.createdAt),
+            updatedAt: new Date(invite.createdAt),
           })),
         ];
 

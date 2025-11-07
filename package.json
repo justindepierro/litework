@@ -42,7 +42,6 @@
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-dnd": "^2.0.36",
     "@types/react-dom": "^19",
     "@types/react-window": "^1.8.8",
     "@types/web-push": "^3.6.4",

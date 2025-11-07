@@ -10,10 +10,10 @@ import { validateEmail, validatePassword } from "@/lib/security";
 interface InviteData {
   id: string;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   role: string;
-  expires_at: string;
+  expiresAt: string;
   status: string;
 }
 
@@ -82,7 +82,7 @@ function SignUpForm() {
         }
 
         // Check expiration
-        if (new Date(data.expires_at) < new Date()) {
+        if (new Date(data.expiresAt) < new Date()) {
           setInviteError(
             "This invitation has expired. Please contact your coach for a new invitation."
           );
@@ -92,8 +92,8 @@ function SignUpForm() {
 
         // Pre-fill form with invite data
         setInviteData(data);
-        setFirstName(data.first_name);
-        setLastName(data.last_name);
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
         setEmail(data.email);
         setInviteLoading(false);
       } catch (err) {

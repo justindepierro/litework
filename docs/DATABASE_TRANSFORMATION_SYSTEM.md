@@ -7,16 +7,19 @@ This document describes the comprehensive snake_case/camelCase transformation sy
 ## The Problem
 
 **Database** (PostgreSQL/Supabase) uses `snake_case` field names:
+
 - `first_name`, `last_name`, `created_at`, `updated_at`
 - `workout_plan_id`, `assigned_to_user_id`, `athlete_ids`
 - `scheduled_date`, `assignment_type`, `start_time`
 
 **Frontend** (TypeScript/React) uses `camelCase` field names:
+
 - `firstName`, `lastName`, `createdAt`, `updatedAt`
 - `workoutPlanId`, `assignedToUserId`, `athleteIds`
 - `scheduledDate`, `assignmentType`, `startTime`
 
 **Without proper transformation**, the frontend receives snake_case fields but tries to access camelCase properties, resulting in:
+
 - `undefined` values everywhere
 - Data not displaying in the UI
 - Silent failures (no error messages)
@@ -30,19 +33,20 @@ This document describes the comprehensive snake_case/camelCase transformation sy
 
 ```typescript
 // Convert single field names
-snakeToCamel('first_name') // → 'firstName'
-camelToSnake('firstName')  // → 'first_name'
+snakeToCamel("first_name"); // → 'firstName'
+camelToSnake("firstName"); // → 'first_name'
 
 // Transform entire objects recursively
-transformToCamel({ first_name: 'John', last_name: 'Doe' })
+transformToCamel({ first_name: "John", last_name: "Doe" });
 // → { firstName: 'John', lastName: 'Doe' }
 
-transformToSnake({ firstName: 'John', lastName: 'Doe' })
+transformToSnake({ firstName: "John", lastName: "Doe" });
 // → { first_name: 'John', last_name: 'Doe' }
 ```
 
 **Field Mappings:**
 Predefined mappings for all database tables in `DB_FIELD_MAPS`:
+
 - `users` - User profile fields
 - `athlete_groups` - Group management fields
 - `workout_plans` - Workout template fields
@@ -55,20 +59,22 @@ Predefined mappings for all database tables in `DB_FIELD_MAPS`:
 
 ```typescript
 // Validates that transformation happened correctly
-devValidate(user, 'user', 'getAllUsers');
+devValidate(user, "user", "getAllUsers");
 // Logs errors if snake_case fields are found
 
 // Logs validation results without throwing
-logValidationResults(assignment, 'workoutAssignment', 'createAssignment');
+logValidationResults(assignment, "workoutAssignment", "createAssignment");
 ```
 
 **What It Checks:**
+
 - ✅ No snake_case fields present (e.g., `first_name`, `created_at`)
 - ✅ All required fields exist (`id`, `createdAt`, `updatedAt`)
 - ✅ Date fields are proper Date objects or strings
 - ✅ Field types match expectations
 
 **When Validation Fails:**
+
 ```
 [DEV VALIDATION FAILED] getAllAssignments
 Errors: Found snake_case fields: workout_plan_id, assigned_by, scheduled_date
@@ -82,9 +88,7 @@ This transformation needs to be fixed!
 ```typescript
 export const getEntity = async (): Promise<Entity[]> => {
   // 1. Fetch from database (returns snake_case)
-  const { data, error } = await supabase
-    .from("table_name")
-    .select("*");
+  const { data, error } = await supabase.from("table_name").select("*");
 
   if (error) {
     console.error("Error fetching:", error);
@@ -92,13 +96,13 @@ export const getEntity = async (): Promise<Entity[]> => {
   }
 
   // 2. Transform to camelCase
-  const entities = (data || []).map(item => transformToCamel<Entity>(item));
-  
+  const entities = (data || []).map((item) => transformToCamel<Entity>(item));
+
   // 3. Validate in development (optional)
   if (process.env.NODE_ENV === "development" && entities.length > 0) {
     devValidate(entities[0], "entityType", "getEntity");
   }
-  
+
   return entities;
 };
 
@@ -107,7 +111,7 @@ export const createEntity = async (
 ): Promise<Entity | null> => {
   // 1. Transform input to snake_case for database
   const dbData = transformToSnake(entityData);
-  
+
   // 2. Insert into database
   const { data, error } = await supabase
     .from("table_name")
@@ -122,10 +126,10 @@ export const createEntity = async (
 
   // 3. Transform response back to camelCase
   const entity = transformToCamel<Entity>(data);
-  
+
   // 4. Validate in development
   devValidate(entity, "entityType", "createEntity");
-  
+
   return entity;
 };
 ```
@@ -135,12 +139,14 @@ export const createEntity = async (
 ### Fully Transformed Functions ✅
 
 **Users:**
+
 - `getAllUsers()` - ✅ Transform + validation
 - `getUserById()` - ✅ Transform only
 - `createUser()` - ✅ Transform input/output
 - `updateUser()` - ✅ Transform input/output
 
 **Athlete Groups:**
+
 - `getAllGroups()` - ✅ Manual transformation (predates system)
 - `getGroupById()` - ✅ Manual transformation
 - `createGroup()` - ✅ Manual transformation
@@ -148,6 +154,7 @@ export const createEntity = async (
 - `getGroupsByCoach()` - ✅ Transform output
 
 **Workout Assignments:**
+
 - `getAllAssignments()` - ✅ Manual + validation
 - `getAssignmentById()` - ✅ Manual transformation
 - `createAssignment()` - ✅ Manual input/output transformation
@@ -158,11 +165,13 @@ export const createEntity = async (
 ### Functions Using Manual Transformation (Pre-existing)
 
 **Workout Plans:**
+
 - All workout plan functions use explicit field mapping
 - Works correctly but could be migrated to `transformToCamel`
 - Not a priority since they're working
 
 **Exercises:**
+
 - Exercise functions return data directly from database
 - Exercises table has minimal snake_case fields
 - No transformation needed currently
@@ -178,7 +187,7 @@ return data;
 
 // ✅ GOOD - Returns camelCase
 const { data } = await supabase.from("users").select("*");
-return (data || []).map(user => transformToCamel<User>(user));
+return (data || []).map((user) => transformToCamel<User>(user));
 ```
 
 ### 2. Always Transform Input Data
@@ -204,6 +213,7 @@ if (process.env.NODE_ENV === "development" && data) {
 ### 4. Check Console for Warnings
 
 Development mode logs:
+
 ```
 [DEV VALIDATION FAILED] createAssignment
 Errors: Found snake_case fields: workout_plan_id
@@ -221,18 +231,18 @@ import { devValidate } from "@/lib/db-validation";
 
 export const getNewEntity = async (): Promise<NewEntity[]> => {
   const { data, error } = await supabase.from("new_entities").select("*");
-  
+
   if (error) {
     console.error("Error:", error);
     return [];
   }
 
-  const entities = (data || []).map(e => transformToCamel<NewEntity>(e));
-  
+  const entities = (data || []).map((e) => transformToCamel<NewEntity>(e));
+
   if (process.env.NODE_ENV === "development" && entities.length > 0) {
     devValidate(entities[0], "newEntity", "getNewEntity");
   }
-  
+
   return entities;
 };
 ```
@@ -252,7 +262,7 @@ Edit `/src/lib/db-validation.ts`:
 ```typescript
 const EXPECTED_FIELDS = {
   // ... existing types
-  
+
   newEntity: [
     "id",
     "fieldOne",
@@ -285,11 +295,13 @@ const SNAKE_CASE_FIELDS = [
 ### Expected Behavior
 
 **Development Mode:**
+
 - Console logs validation results
 - Warnings for snake_case fields
 - Errors logged with object details
 
 **Production Mode:**
+
 - No validation overhead
 - Silent operation
 - Data still transformed correctly
@@ -301,6 +313,7 @@ const SNAKE_CASE_FIELDS = [
 **Cause:** Function returns raw database response without transformation
 
 **Fix:**
+
 ```typescript
 // Before
 return data;
@@ -314,6 +327,7 @@ return transformToCamel<Entity>(data);
 **Cause:** Data is null/undefined before validation
 
 **Fix:** Check for null before validating:
+
 ```typescript
 if (data) {
   devValidate(data, "entity", "function");
@@ -324,7 +338,8 @@ if (data) {
 
 **Cause:** Database column doesn't exist or SELECT query incomplete
 
-**Fix:** 
+**Fix:**
+
 1. Check migration ran: `SELECT * FROM table_name LIMIT 1;`
 2. Check SELECT includes all fields: `.select("*")`
 3. Add column if missing
@@ -332,11 +347,13 @@ if (data) {
 ## Performance
 
 **Development Mode:**
+
 - ~0.1ms per validation check
 - Only validates first item in arrays
 - Logs to console (no UI impact)
 
 **Production Mode:**
+
 - Zero overhead (validation skipped)
 - Transformations are fast (~0.01ms per object)
 - No console logging

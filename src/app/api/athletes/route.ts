@@ -4,6 +4,7 @@ import {
   getAuthenticatedUser,
   isCoach,
 } from "@/lib/auth-server";
+import { transformToCamel } from "@/lib/case-transform";
 
 /**
  * GET /api/athletes - Get all athletes and pending invites
@@ -57,7 +58,7 @@ export async function GET() {
       return NextResponse.json({
         success: true,
         data: {
-          athletes: athletes || [],
+          athletes: transformToCamel(athletes || []),
           invites: [],
         },
       });
@@ -66,8 +67,8 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        athletes: athletes || [],
-        invites: invites || [],
+        athletes: transformToCamel(athletes || []),
+        invites: transformToCamel(invites || []),
       },
     });
   } catch (error) {

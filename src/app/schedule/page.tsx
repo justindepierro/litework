@@ -2,20 +2,25 @@
 
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect } from "react";
-import { Calendar, Settings, BarChart3, Clock, Users } from "lucide-react";
+import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
+import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
-  const [currentWeek, setCurrentWeek] = useState(0);
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
+
+  // Check if user is a coach or admin (can drag-and-drop)
+  const isCoachUser = user
+    ? user.role === "coach" || user.role === "admin"
+    : false;
 
   useEffect(() => {
     if (user) {
       fetchAssignments();
     }
-  }, [user, currentWeek]);
+  }, [user]);
 
   const fetchAssignments = async () => {
     try {
@@ -24,13 +29,89 @@ export default function SchedulePage() {
       const data = await response.json();
 
       if (data.success) {
-        setAssignments(data.data || []);
+        // Convert string dates to Date objects
+        const assignmentsWithDates = (data.data || []).map(
+          (assignment: Record<string, unknown>) => ({
+            ...assignment,
+            scheduledDate: new Date(assignment.scheduledDate as string),
+            assignedDate: new Date(assignment.assignedDate as string),
+            createdAt: new Date(assignment.createdAt as string),
+            updatedAt: new Date(assignment.updatedAt as string),
+            dueDate: assignment.dueDate
+              ? new Date(assignment.dueDate as string)
+              : undefined,
+          })
+        ) as WorkoutAssignment[];
+        setAssignments(assignmentsWithDates);
       }
     } catch (error) {
       console.error("Failed to fetch assignments:", error);
     } finally {
       setLoadingAssignments(false);
     }
+  };
+
+  const handleAssignmentMove = async (
+    assignmentId: string,
+    newDate: Date,
+    isGroupAssignment: boolean
+  ) => {
+    console.log("[SCHEDULE] Moving assignment:", {
+      assignmentId,
+      newDate: newDate.toDateString(),
+      isGroupAssignment,
+    });
+
+    // Optimistic update - update UI immediately before API call
+    const updatedAssignments = assignments.map((assignment) => {
+      if (assignment.id === assignmentId) {
+        return { ...assignment, scheduledDate: newDate };
+      }
+      return assignment;
+    });
+    setAssignments(updatedAssignments);
+
+    try {
+      const response = await fetch("/api/assignments/reschedule", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assignmentId,
+          newDate: newDate.toISOString(),
+          moveGroup: isGroupAssignment,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("[SCHEDULE] Reschedule response:", data);
+
+      if (data.success) {
+        console.log("[SCHEDULE] Successfully rescheduled");
+        // Don't refetch - optimistic update already applied
+        // await fetchAssignments();
+      } else {
+        console.error("[SCHEDULE] Failed to reschedule:", data);
+        // Revert optimistic update on failure
+        await fetchAssignments(); // Refetch to get correct state
+        alert(data.error || data.message || "Failed to reschedule workout");
+      }
+    } catch (error) {
+      console.error("[SCHEDULE] Error rescheduling assignment:", error);
+      // Revert optimistic update on error
+      await fetchAssignments(); // Refetch to get correct state
+      alert("Failed to reschedule workout. Please try again.");
+    }
+  };
+
+  const handleAssignmentClick = (assignment: WorkoutAssignment) => {
+    // Navigate to assignment detail or workout view
+    window.location.href = `/workouts/view/${assignment.workoutPlanId}?assignmentId=${assignment.id}`;
+  };
+
+  const handleDateClick = (date: Date) => {
+    // Store selected date for future functionality (e.g., creating assignments)
+    console.log("Date clicked:", date);
+    // You can open a modal to create new assignments on this date
   };
 
   if (isLoading) {
@@ -45,166 +126,63 @@ export default function SchedulePage() {
     return null;
   }
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  // Get start of current week
-  const getWeekStart = () => {
-    const now = new Date();
-    const currentDay = now.getDay();
-    const diff = currentDay === 0 ? -6 : 1 - currentDay; // Adjust for Monday start
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + diff + currentWeek * 7);
-    monday.setHours(0, 0, 0, 0);
-    return monday;
-  };
-
-  const weekStart = getWeekStart();
-
-  // Get assignments for each day
-  const getAssignmentsForDay = (dayIndex: number) => {
-    const dayDate = new Date(weekStart);
-    dayDate.setDate(weekStart.getDate() + dayIndex);
-    
-    return assignments.filter(assignment => {
-      const scheduledDate = new Date(assignment.scheduledDate);
-      return (
-        scheduledDate.getFullYear() === dayDate.getFullYear() &&
-        scheduledDate.getMonth() === dayDate.getMonth() &&
-        scheduledDate.getDate() === dayDate.getDate()
-      );
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-primary container-responsive section-spacing px-4 py-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <h1 className="text-heading-primary text-3xl sm:text-2xl font-bold">
-              Weekly Schedule
+              Schedule
             </h1>
             <p className="text-heading-secondary text-base sm:text-sm mt-1">
-              Week{" "}
-              {currentWeek === 0
-                ? "Current"
-                : currentWeek > 0
-                  ? `+${currentWeek}`
-                  : currentWeek}
+              View and manage your workout schedule
             </p>
           </div>
-          <div className="flex gap-3 w-full sm:w-auto">
+          {isCoachUser && (
             <button
-              onClick={() => setCurrentWeek((prev) => prev - 1)}
-              className="flex-1 sm:flex-none btn-secondary py-3 px-4 rounded-xl font-medium touch-manipulation"
+              onClick={() => (window.location.href = "/dashboard")}
+              className="btn-primary flex items-center gap-2 py-3 px-4 rounded-xl font-medium touch-manipulation"
             >
-              ← Previous
+              <Plus className="w-5 h-5" />
+              Assign Workout
             </button>
-            <button
-              onClick={() => setCurrentWeek((prev) => prev + 1)}
-              className="flex-1 sm:flex-none btn-secondary py-3 px-4 rounded-xl font-medium touch-manipulation"
-            >
-              Next →
-            </button>
-          </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
-          {days.map((day, index) => {
-            const dayDate = new Date(weekStart);
-            dayDate.setDate(weekStart.getDate() + index);
-            const dayAssignments = getAssignmentsForDay(index);
-            const isToday =
-              dayDate.toDateString() === new Date().toDateString();
+        {/* Draggable Calendar */}
+        <div className="bg-white rounded-lg shadow-sm">
+          {loadingAssignments ? (
+            <div className="p-12 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading schedule...</p>
+            </div>
+          ) : (
+            <DraggableAthleteCalendar
+              assignments={assignments}
+              onAssignmentClick={handleAssignmentClick}
+              onDateClick={handleDateClick}
+              onAssignmentMove={handleAssignmentMove}
+              viewMode="month"
+              isCoach={isCoachUser}
+            />
+          )}
+        </div>
 
-            return (
-              <div
-                key={day}
-                className={`bg-white rounded-xl shadow-sm border ${
-                  isToday ? "border-blue-500 ring-2 ring-blue-200" : "border-gray-100"
-                } p-6 min-h-48 hover:shadow-md transition-shadow`}
-              >
-                <div className="text-center border-b border-gray-200 pb-3 mb-4">
-                  <h3 className="text-gray-700 text-lg font-semibold">
-                    {day}
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {dayDate.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                  {isToday && (
-                    <span className="inline-block mt-1 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                      Today
-                    </span>
-                  )}
-                </div>
-
-                {loadingAssignments ? (
-                  <div className="space-y-2">
-                    <div className="h-16 bg-gray-100 rounded animate-pulse"></div>
-                  </div>
-                ) : dayAssignments.length === 0 ? (
-                  <div className="text-center text-body-small py-4 text-silver-600">
-                    No workouts
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {dayAssignments.map((assignment) => (
-                      <div
-                        key={assignment.id}
-                        className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer"
-                      >
-                        <h4 className="font-semibold text-sm text-gray-900 mb-1">
-                          {assignment.workoutPlanName}
-                        </h4>
-                        {assignment.startTime && (
-                          <div className="flex items-center gap-1 text-xs text-gray-600">
-                            <Clock className="w-3 h-3" />
-                            <span>{assignment.startTime}</span>
-                          </div>
-                        )}
-                        {assignment.athleteIds && assignment.athleteIds.length > 0 && (
-                          <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
-                            <Users className="w-3 h-3" />
-                            <span>{assignment.athleteIds.length} athletes</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+        {/* Quick Actions for Coaches */}
+        {isCoachUser && (
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <CalendarIcon className="w-5 h-5 text-blue-600 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">
+                  Drag and Drop to Reschedule
+                </h3>
+                <p className="text-sm text-blue-800">
+                  Click and drag workouts to different dates to reschedule them.
+                  Group assignments will prompt for confirmation before moving
+                  all athletes.
+                </p>
               </div>
-            );
-          })}
-        </div>
-
-        {user.role !== "athlete" && (
-          <div className="mt-8 card-primary">
-            <h2 className="text-heading-secondary text-xl mb-4">
-              Schedule Management
-            </h2>
-            <div className="flex flex-wrap gap-3">
-              <button className="btn-primary flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Add Workout
-              </button>
-              <button className="btn-secondary flex items-center gap-2">
-                <Settings className="w-4 h-4" />
-                Edit Schedule
-              </button>
-              <button className="btn-secondary flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </button>
             </div>
           </div>
         )}

@@ -29,13 +29,13 @@ export const getAllUsers = async (): Promise<User[]> => {
   }
 
   // Transform snake_case to camelCase
-  const users = (data || []).map(user => transformToCamel<User>(user));
-  
+  const users = (data || []).map((user) => transformToCamel<User>(user));
+
   // Validate transformations in development
   if (process.env.NODE_ENV === "development" && users.length > 0) {
     devValidate(users[0], "user", "getAllUsers");
   }
-  
+
   return users;
 };
 
@@ -60,7 +60,7 @@ export const createUser = async (
 ): Promise<User | null> => {
   // Transform camelCase to snake_case for database
   const dbData = transformToSnake(userData);
-  
+
   const { data, error } = await supabase
     .from("users")
     .insert([dbData])
@@ -82,7 +82,7 @@ export const updateUser = async (
 ): Promise<User | null> => {
   // Transform camelCase to snake_case for database
   const dbUpdates = transformToSnake({ ...updates, updatedAt: new Date() });
-  
+
   const { data, error } = await supabase
     .from("users")
     .update(dbUpdates)
@@ -234,7 +234,7 @@ export const updateGroup = async (
 ): Promise<AthleteGroup | null> => {
   // Transform camelCase to snake_case for database
   const dbUpdates = transformToSnake({ ...updates, updatedAt: new Date() });
-  
+
   const { data, error } = await supabase
     .from("athlete_groups")
     .update(dbUpdates)
@@ -551,7 +551,42 @@ export const createWorkoutPlan = async (
     return null;
   }
 
-  // 2. Insert exercises if provided
+  // 2. Insert groups first and create ID mapping (groups must be inserted before exercises)
+  const groupIdMapping: Record<string, string> = {}; // Maps temporary IDs to database UUIDs
+
+  if (groups && groups.length > 0) {
+    const groupsToInsert = groups.map((group) => ({
+      workout_plan_id: newPlan.id,
+      name: group.name,
+      type: group.type,
+      description: group.description,
+      order_index: group.order,
+      rest_between_rounds: group.restBetweenRounds,
+      rest_between_exercises: group.restBetweenExercises,
+      rounds: group.rounds,
+      notes: group.notes,
+      block_instance_id: group.blockInstanceId,
+    }));
+
+    const { data: insertedGroups, error: groupsError } = await supabase
+      .from("workout_exercise_groups")
+      .insert(groupsToInsert)
+      .select();
+
+    if (groupsError) {
+      console.error("Error creating workout groups:", groupsError);
+      // Continue anyway - plan was created
+    } else if (insertedGroups) {
+      // Map temporary group IDs to database UUIDs
+      groups.forEach((group, index) => {
+        if (insertedGroups[index]) {
+          groupIdMapping[group.id] = insertedGroups[index].id;
+        }
+      });
+    }
+  }
+
+  // 3. Insert exercises with corrected group IDs
   if (exercises && exercises.length > 0) {
     const exercisesToInsert = exercises.map((ex) => ({
       workout_plan_id: newPlan.id,
@@ -570,7 +605,11 @@ export const createWorkoutPlan = async (
       rest_time: ex.restTime,
       notes: ex.notes,
       order_index: ex.order,
-      group_id: ex.groupId,
+      // Map temporary group ID to database UUID
+      group_id:
+        ex.groupId && groupIdMapping[ex.groupId]
+          ? groupIdMapping[ex.groupId]
+          : ex.groupId,
       block_instance_id: ex.blockInstanceId,
       substitution_reason: ex.substitutionReason,
       original_exercise: ex.originalExercise,
@@ -583,31 +622,6 @@ export const createWorkoutPlan = async (
 
     if (exercisesError) {
       console.error("Error creating workout exercises:", exercisesError);
-      // Continue anyway - plan was created
-    }
-  }
-
-  // 3. Insert groups if provided
-  if (groups && groups.length > 0) {
-    const groupsToInsert = groups.map((group) => ({
-      workout_plan_id: newPlan.id,
-      name: group.name,
-      type: group.type,
-      description: group.description,
-      order_index: group.order,
-      rest_between_rounds: group.restBetweenRounds,
-      rest_between_exercises: group.restBetweenExercises,
-      rounds: group.rounds,
-      notes: group.notes,
-      block_instance_id: group.blockInstanceId,
-    }));
-
-    const { error: groupsError } = await supabase
-      .from("workout_exercise_groups")
-      .insert(groupsToInsert);
-
-    if (groupsError) {
-      console.error("Error creating workout groups:", groupsError);
       // Continue anyway - plan was created
     }
   }
@@ -697,21 +711,136 @@ export const updateWorkoutPlan = async (
   }
 
   // If exercises, groups, or blockInstances are provided, update them
-  // Note: This is a simplified approach - in production, you'd want to:
-  // 1. Delete existing exercises/groups/blocks for this workout
-  // 2. Insert the new ones
-  // For now, we just update the basic workout info
   if (exercises || groups || blockInstances) {
-    console.log(
-      "[database-service] Note: Full exercise/group/block update not yet implemented"
-    );
-    console.log("[database-service] Received:", {
-      exercisesCount: exercises?.length,
-      groupsCount: groups?.length,
-      blockInstancesCount: blockInstances?.length,
-    });
-    // TODO: Implement full workout structure update
-    // This requires updating workout_exercises, workout_exercise_groups, and workout_block_instances tables
+    // 1. Delete existing data
+    if (exercises) {
+      await supabase
+        .from("workout_exercises")
+        .delete()
+        .eq("workout_plan_id", id);
+    }
+
+    if (groups) {
+      await supabase
+        .from("workout_exercise_groups")
+        .delete()
+        .eq("workout_plan_id", id);
+    }
+
+    if (blockInstances) {
+      await supabase
+        .from("workout_block_instances")
+        .delete()
+        .eq("workout_plan_id", id);
+    }
+
+    // 2. Insert groups first and create ID mapping
+    const groupIdMapping: Record<string, string> = {};
+
+    if (groups && groups.length > 0) {
+      const groupsToInsert = groups.map((group: Record<string, unknown>) => ({
+        workout_plan_id: id,
+        name: group.name,
+        type: group.type,
+        description: group.description,
+        order_index: group.order,
+        rest_between_rounds: group.restBetweenRounds,
+        rest_between_exercises: group.restBetweenExercises,
+        rounds: group.rounds,
+        notes: group.notes,
+        block_instance_id: group.blockInstanceId,
+      }));
+
+      const { data: insertedGroups, error: groupsError } = await supabase
+        .from("workout_exercise_groups")
+        .insert(groupsToInsert)
+        .select();
+
+      if (groupsError) {
+        console.error("Error updating workout groups:", groupsError);
+      } else if (insertedGroups) {
+        // Map temporary group IDs to database UUIDs
+        groups.forEach((group: Record<string, unknown>, index) => {
+          if (insertedGroups[index]) {
+            groupIdMapping[group.id as string] = insertedGroups[index].id;
+          }
+        });
+      }
+    }
+
+    // 3. Insert exercises with corrected group IDs
+    if (exercises && exercises.length > 0) {
+      const exercisesToInsert = exercises.map(
+        (ex: Record<string, unknown>) => ({
+          workout_plan_id: id,
+          exercise_id: ex.exerciseId,
+          exercise_name: ex.exerciseName,
+          sets: ex.sets,
+          reps: ex.reps,
+          weight_type: ex.weightType,
+          weight: ex.weight,
+          weight_max: ex.weightMax,
+          percentage: ex.percentage,
+          percentage_max: ex.percentageMax,
+          percentage_base_kpi: ex.percentageBaseKPI,
+          tempo: ex.tempo,
+          each_side: ex.eachSide,
+          rest_time: ex.restTime,
+          notes: ex.notes,
+          order_index: ex.order,
+          // Map temporary group ID to database UUID
+          group_id:
+            ex.groupId && groupIdMapping[ex.groupId as string]
+              ? groupIdMapping[ex.groupId as string]
+              : ex.groupId,
+          block_instance_id: ex.blockInstanceId,
+          substitution_reason: ex.substitutionReason,
+          original_exercise: ex.originalExercise,
+          progression_notes: ex.progressionNotes,
+        })
+      );
+
+      const { error: exercisesError } = await supabase
+        .from("workout_exercises")
+        .insert(exercisesToInsert);
+
+      if (exercisesError) {
+        console.error("Error updating workout exercises:", exercisesError);
+      }
+    }
+
+    // 4. Insert block instances
+    if (blockInstances && blockInstances.length > 0) {
+      const instancesToInsert = blockInstances.map(
+        (instance: Record<string, unknown>) => {
+          const customizations = instance.customizations as
+            | Record<string, unknown>
+            | undefined;
+          return {
+            workout_plan_id: id,
+            source_block_id: instance.sourceBlockId,
+            source_block_name: instance.sourceBlockName,
+            instance_name: instance.instanceName,
+            notes: instance.notes,
+            estimated_duration: instance.estimatedDuration,
+            modified_exercises: customizations?.modifiedExercises,
+            added_exercises: customizations?.addedExercises,
+            removed_exercises: customizations?.removedExercises,
+            modified_groups: customizations?.modifiedGroups,
+            added_groups: customizations?.addedGroups,
+            removed_groups: customizations?.removedGroups,
+          };
+        }
+      );
+
+      const { error: instancesError } = await supabase
+        .from("workout_block_instances")
+        .insert(instancesToInsert);
+
+      if (instancesError) {
+        console.error("Error updating block instances:", instancesError);
+      }
+    }
   }
 
   console.log("[database-service] Successfully updated workout:", data);
@@ -769,8 +898,9 @@ export const getAllAssignments = async (): Promise<WorkoutAssignment[]> => {
     athleteIds: assignment.athlete_ids || [],
     scheduledDate: assignment.scheduled_date,
     assignedDate: assignment.assigned_date || assignment.created_at,
-    assignmentType: assignment.assignment_type || 'individual',
-    status: assignment.status || (assignment.completed ? 'completed' : 'assigned'),
+    assignmentType: assignment.assignment_type || "individual",
+    status:
+      assignment.status || (assignment.completed ? "completed" : "assigned"),
     modifications: assignment.modifications || [],
     startTime: assignment.start_time || undefined,
     endTime: assignment.end_time || undefined,
@@ -779,12 +909,16 @@ export const getAllAssignments = async (): Promise<WorkoutAssignment[]> => {
     createdAt: assignment.created_at,
     updatedAt: assignment.updated_at,
   }));
-  
+
   // Validate first assignment in development
   if (process.env.NODE_ENV === "development" && assignments.length > 0) {
-    logValidationResults(assignments[0], "workoutAssignment", "getAllAssignments");
+    logValidationResults(
+      assignments[0],
+      "workoutAssignment",
+      "getAllAssignments"
+    );
   }
-  
+
   return assignments;
 };
 
@@ -813,8 +947,8 @@ export const getAssignmentById = async (
     athleteIds: data.athlete_ids || [],
     scheduledDate: data.scheduled_date,
     assignedDate: data.assigned_date || data.created_at,
-    assignmentType: data.assignment_type || 'individual',
-    status: data.status || (data.completed ? 'completed' : 'assigned'),
+    assignmentType: data.assignment_type || "individual",
+    status: data.status || (data.completed ? "completed" : "assigned"),
     modifications: data.modifications || [],
     startTime: data.start_time || undefined,
     endTime: data.end_time || undefined,
@@ -837,17 +971,22 @@ export const createAssignment = async (
     assigned_to_group_id: assignmentData.groupId || null,
     scheduled_date: assignmentData.scheduledDate,
     notes: assignmentData.notes || null,
-    completed: assignmentData.status === 'completed' || false,
+    completed: assignmentData.status === "completed" || false,
   };
 
   // Try to add new fields - if they don't exist, they'll be ignored
   try {
-    if (assignmentData.workoutPlanName) dbData.workout_plan_name = assignmentData.workoutPlanName;
-    if (assignmentData.athleteIds) dbData.athlete_ids = assignmentData.athleteIds;
-    if (assignmentData.assignedDate) dbData.assigned_date = assignmentData.assignedDate;
-    if (assignmentData.assignmentType) dbData.assignment_type = assignmentData.assignmentType;
+    if (assignmentData.workoutPlanName)
+      dbData.workout_plan_name = assignmentData.workoutPlanName;
+    if (assignmentData.athleteIds)
+      dbData.athlete_ids = assignmentData.athleteIds;
+    if (assignmentData.assignedDate)
+      dbData.assigned_date = assignmentData.assignedDate;
+    if (assignmentData.assignmentType)
+      dbData.assignment_type = assignmentData.assignmentType;
     if (assignmentData.status) dbData.status = assignmentData.status;
-    if (assignmentData.modifications) dbData.modifications = assignmentData.modifications;
+    if (assignmentData.modifications)
+      dbData.modifications = assignmentData.modifications;
     if (assignmentData.startTime) dbData.start_time = assignmentData.startTime;
     if (assignmentData.endTime) dbData.end_time = assignmentData.endTime;
     if (assignmentData.location) dbData.location = assignmentData.location;
@@ -863,7 +1002,10 @@ export const createAssignment = async (
 
   if (error) {
     console.error("[Assignment] Error creating assignment:", error);
-    console.error("[Assignment] Attempted data:", JSON.stringify(dbData, null, 2));
+    console.error(
+      "[Assignment] Attempted data:",
+      JSON.stringify(dbData, null, 2)
+    );
     return null;
   }
 
@@ -878,8 +1020,8 @@ export const createAssignment = async (
     athleteIds: data.athlete_ids || [],
     scheduledDate: data.scheduled_date,
     assignedDate: data.assigned_date || data.created_at,
-    assignmentType: data.assignment_type || 'individual',
-    status: data.status || (data.completed ? 'completed' : 'assigned'),
+    assignmentType: data.assignment_type || "individual",
+    status: data.status || (data.completed ? "completed" : "assigned"),
     modifications: data.modifications || [],
     startTime: data.start_time || undefined,
     endTime: data.end_time || undefined,
@@ -896,7 +1038,7 @@ export const updateAssignment = async (
 ): Promise<WorkoutAssignment | null> => {
   // Transform camelCase to snake_case for database
   const dbUpdates = transformToSnake({ ...updates, updatedAt: new Date() });
-  
+
   const { data, error } = await supabase
     .from("workout_assignments")
     .update(dbUpdates)
@@ -920,8 +1062,8 @@ export const updateAssignment = async (
     athleteIds: data.athlete_ids || [],
     scheduledDate: data.scheduled_date,
     assignedDate: data.assigned_date || data.created_at,
-    assignmentType: data.assignment_type || 'individual',
-    status: data.status || (data.completed ? 'completed' : 'assigned'),
+    assignmentType: data.assignment_type || "individual",
+    status: data.status || (data.completed ? "completed" : "assigned"),
     modifications: data.modifications || [],
     startTime: data.start_time || undefined,
     endTime: data.end_time || undefined,
@@ -951,7 +1093,7 @@ export const getGroupsByCoach = async (
   }
 
   // Transform snake_case to camelCase
-  return (data || []).map(group => transformToCamel<AthleteGroup>(group));
+  return (data || []).map((group) => transformToCamel<AthleteGroup>(group));
 };
 
 export const getAssignmentsByAthlete = async (
@@ -979,8 +1121,9 @@ export const getAssignmentsByAthlete = async (
     athleteIds: assignment.athlete_ids || [],
     scheduledDate: assignment.scheduled_date,
     assignedDate: assignment.assigned_date || assignment.created_at,
-    assignmentType: assignment.assignment_type || 'individual',
-    status: assignment.status || (assignment.completed ? 'completed' : 'assigned'),
+    assignmentType: assignment.assignment_type || "individual",
+    status:
+      assignment.status || (assignment.completed ? "completed" : "assigned"),
     modifications: assignment.modifications || [],
     startTime: assignment.start_time || undefined,
     endTime: assignment.end_time || undefined,
@@ -1016,8 +1159,9 @@ export const getAssignmentsByGroup = async (
     athleteIds: assignment.athlete_ids || [],
     scheduledDate: assignment.scheduled_date,
     assignedDate: assignment.assigned_date || assignment.created_at,
-    assignmentType: assignment.assignment_type || 'individual',
-    status: assignment.status || (assignment.completed ? 'completed' : 'assigned'),
+    assignmentType: assignment.assignment_type || "individual",
+    status:
+      assignment.status || (assignment.completed ? "completed" : "assigned"),
     modifications: assignment.modifications || [],
     startTime: assignment.start_time || undefined,
     endTime: assignment.end_time || undefined,
