@@ -97,10 +97,13 @@ export async function PATCH(request: NextRequest) {
       const assignmentIds = groupAssignments?.map((a) => a.id) || [];
 
       if (assignmentIds.length > 0) {
+        // Format date as YYYY-MM-DD for DATE column
+        const dateOnly = targetDate.toISOString().split('T')[0];
+        
         const { error: updateError } = await supabase
           .from("workout_assignments")
           .update({
-            scheduled_date: targetDate.toISOString(),
+            scheduled_date: dateOnly,
             updated_at: new Date().toISOString(),
           })
           .in("id", assignmentIds);
@@ -113,7 +116,7 @@ export async function PATCH(request: NextRequest) {
           );
         }
 
-        console.log(`[RESCHEDULE] Updated ${assignmentIds.length} group assignments`);
+        console.log(`[RESCHEDULE] Updated ${assignmentIds.length} group assignments to ${dateOnly}`);
 
         // Create notifications for all affected athletes
         const notifications = groupAssignments
@@ -133,17 +136,21 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({
           success: true,
           message: `Updated ${assignmentIds.length} group assignments`,
-          data: { assignmentIds, newDate: targetDate.toISOString() },
+          data: { assignmentIds, newDate: dateOnly },
         });
       }
     }
 
     // Individual assignment update
     console.log("[RESCHEDULE] Processing individual assignment move");
+    
+    // Format date as YYYY-MM-DD for DATE column
+    const dateOnly = targetDate.toISOString().split('T')[0];
+    
     const { error: updateError } = await supabase
       .from("workout_assignments")
       .update({
-        scheduled_date: targetDate.toISOString(),
+        scheduled_date: dateOnly,
         updated_at: new Date().toISOString(),
       })
       .eq("id", assignmentId);
@@ -156,7 +163,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    console.log("[RESCHEDULE] Successfully updated individual assignment");
+    console.log(`[RESCHEDULE] Successfully updated individual assignment to ${dateOnly}`);
 
     // Create notification for the athlete (if assignment has an athlete_id)
     if (assignment.athlete_id) {
@@ -173,7 +180,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Assignment updated successfully",
-      data: { assignmentId, newDate: targetDate.toISOString() },
+      data: { assignmentId, newDate: dateOnly },
     });
   } catch (error) {
     console.error("Error in reschedule endpoint:", error);
