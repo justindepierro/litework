@@ -149,7 +149,7 @@ export default function WorkoutsPage() {
       const response = await fetch("/api/assignments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assignments: [assignment] }),
+        body: JSON.stringify(assignment), // Send assignment directly, not wrapped in array
       });
 
       const data = await response.json();

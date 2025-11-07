@@ -57,8 +57,22 @@ export default function DateTimePicker({
   };
 
   const isDateDisabled = (date: Date) => {
-    if (minDate && date < minDate) return true;
-    if (maxDate && date > maxDate) return true;
+    // Normalize dates to midnight for comparison (ignore time)
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    
+    if (minDate) {
+      const normalizedMinDate = new Date(minDate);
+      normalizedMinDate.setHours(0, 0, 0, 0);
+      if (normalizedDate < normalizedMinDate) return true;
+    }
+    
+    if (maxDate) {
+      const normalizedMaxDate = new Date(maxDate);
+      normalizedMaxDate.setHours(0, 0, 0, 0);
+      if (normalizedDate > normalizedMaxDate) return true;
+    }
+    
     return false;
   };
 

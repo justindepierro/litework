@@ -214,7 +214,6 @@ export default function GroupAssignmentModal({
                   onDateChange={setSelectedDate}
                   onStartTimeChange={setStartTime}
                   onEndTimeChange={setEndTime}
-                  minDate={new Date()}
                   showTimePicker={true}
                 />
 

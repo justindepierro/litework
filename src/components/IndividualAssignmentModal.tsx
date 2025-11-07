@@ -198,7 +198,6 @@ export default function IndividualAssignmentModal({
                 onDateChange={setSelectedDate}
                 onStartTimeChange={setStartTime}
                 onEndTimeChange={setEndTime}
-                minDate={new Date()}
                 showTimePicker={true}
               />
               {errors.time && (
