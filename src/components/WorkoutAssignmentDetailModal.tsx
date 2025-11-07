@@ -254,6 +254,7 @@ export default function WorkoutAssignmentDetailModal({
                 <span className="font-medium">Date:</span>
                 <span>
                   {(() => {
+                    if (!assignment?.scheduled_date) return 'No date set';
                     const date = typeof assignment.scheduled_date === 'string'
                       ? parseDate(assignment.scheduled_date)
                       : assignment.scheduled_date;
