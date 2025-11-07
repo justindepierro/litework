@@ -132,12 +132,12 @@ export function ExerciseGroupDisplay({
               className={`border-2 ${colors?.border} ${colors?.bg} rounded-xl p-4 shadow-sm`}
             >
               {/* Group Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
+              <div className="mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className={`${colors?.badge} text-white p-2 rounded-lg`}>
                     {getGroupIcon(group.type)}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className={`font-bold text-lg ${colors?.text}`}>
                         {group.name}
@@ -156,25 +156,39 @@ export function ExerciseGroupDisplay({
                   </div>
                 </div>
 
-                {/* Group metadata */}
-                <div className="flex gap-3 text-sm">
-                  {group.rounds && (
-                    <div
-                      className={`flex items-center gap-1 ${colors?.text} font-medium`}
-                    >
-                      <Repeat className="w-4 h-4" />
-                      {group.rounds} rounds
+                {/* Prominent Group Instructions */}
+                {(group.rounds || group.restBetweenRounds) && (
+                  <div className="bg-white bg-opacity-70 rounded-lg p-3 border-2 border-white">
+                    <div className="flex items-center justify-center gap-6">
+                      {group.rounds && (
+                        <div className="flex items-center gap-2">
+                          <div className={`${colors?.badge} text-white p-2 rounded-lg`}>
+                            <Repeat className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-medium text-gray-600 uppercase">Complete</div>
+                            <div className={`text-2xl font-bold ${colors?.text}`}>
+                              {group.rounds} {group.rounds === 1 ? 'Round' : 'Rounds'}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {group.restBetweenRounds && (
+                        <div className="flex items-center gap-2">
+                          <div className={`${colors?.badge} text-white p-2 rounded-lg`}>
+                            <Clock className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-medium text-gray-600 uppercase">Rest Between Rounds</div>
+                            <div className={`text-2xl font-bold ${colors?.text}`}>
+                              {formatRestTime(group.restBetweenRounds)}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {group.restBetweenRounds && (
-                    <div
-                      className={`flex items-center gap-1 ${colors?.text} font-medium`}
-                    >
-                      <Clock className="w-4 h-4" />
-                      {formatRestTime(group.restBetweenRounds)} rest
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Exercises in group */}
