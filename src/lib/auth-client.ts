@@ -658,14 +658,28 @@ export function onAuthChange(callback: (user: User | null) => void) {
           .eq("id", session.user.id)
           .single();
 
+        // 8 second timeout to account for potential cold starts
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
+          setTimeout(() => {
+            reject(new Error("Profile fetch timeout - database query exceeded 8 seconds. This may indicate network issues or database cold start."));
+          }, 8000)
         );
 
-        const { data: profile, error } = await Promise.race([
+        const result = await Promise.race([
           profilePromise,
           timeoutPromise,
-        ]);
+        ]).catch((err) => {
+          // Log timeout or error with details
+          const errorMessage = err?.message || String(err);
+          timer.error("Profile fetch failed", {
+            error: errorMessage,
+            userId: session.user.id,
+            isTimeout: errorMessage.includes("timeout"),
+          });
+          throw err;
+        });
+
+        const { data: profile, error } = result;
 
         if (error || !profile) {
           timer.error("Profile fetch failed", {
@@ -693,7 +707,12 @@ export function onAuthChange(callback: (user: User | null) => void) {
         callback(user);
       } catch (error) {
         const classified = classifyAuthError(error);
-        timer.error("Auth state change error", classified);
+        timer.error("Auth state change error", {
+          type: classified.type,
+          userMessage: classified.userMessage,
+          technicalMessage: classified.technicalMessage,
+          userId: session.user.id,
+        });
         callback(null);
       }
     } else {
