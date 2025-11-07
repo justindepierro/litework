@@ -34,7 +34,7 @@ WHERE assigned_to_user_id IS NOT NULL
 
 -- Backfill athlete_ids for group assignments from athlete_groups
 UPDATE public.workout_assignments wa
-SET athlete_ids = ag.athlete_ids
+SET athlete_ids = ag.athlete_ids::uuid[]
 FROM public.athlete_groups ag
 WHERE wa.assigned_to_group_id = ag.id
   AND wa.athlete_ids = '{}';
