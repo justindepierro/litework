@@ -735,7 +735,27 @@ export const getAllAssignments = async (): Promise<WorkoutAssignment[]> => {
     return [];
   }
 
-  return data || [];
+  // Transform snake_case to camelCase
+  return (data || []).map((assignment) => ({
+    id: assignment.id,
+    workoutPlanId: assignment.workout_plan_id,
+    workoutPlanName: assignment.workout_plan_name || undefined,
+    assignedBy: assignment.assigned_by,
+    athleteId: assignment.assigned_to_user_id || undefined,
+    groupId: assignment.assigned_to_group_id || undefined,
+    athleteIds: assignment.athlete_ids || [],
+    scheduledDate: assignment.scheduled_date,
+    assignedDate: assignment.assigned_date || assignment.created_at,
+    assignmentType: assignment.assignment_type || 'individual',
+    status: assignment.status || (assignment.completed ? 'completed' : 'assigned'),
+    modifications: assignment.modifications || [],
+    startTime: assignment.start_time || undefined,
+    endTime: assignment.end_time || undefined,
+    location: assignment.location || undefined,
+    notes: assignment.notes || undefined,
+    createdAt: assignment.created_at,
+    updatedAt: assignment.updated_at,
+  }));
 };
 
 export const getAssignmentById = async (
@@ -752,7 +772,27 @@ export const getAssignmentById = async (
     return null;
   }
 
-  return data;
+  // Transform snake_case to camelCase
+  return {
+    id: data.id,
+    workoutPlanId: data.workout_plan_id,
+    workoutPlanName: data.workout_plan_name || undefined,
+    assignedBy: data.assigned_by,
+    athleteId: data.assigned_to_user_id || undefined,
+    groupId: data.assigned_to_group_id || undefined,
+    athleteIds: data.athlete_ids || [],
+    scheduledDate: data.scheduled_date,
+    assignedDate: data.assigned_date || data.created_at,
+    assignmentType: data.assignment_type || 'individual',
+    status: data.status || (data.completed ? 'completed' : 'assigned'),
+    modifications: data.modifications || [],
+    startTime: data.start_time || undefined,
+    endTime: data.end_time || undefined,
+    location: data.location || undefined,
+    notes: data.notes || undefined,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
 };
 
 export const createAssignment = async (
@@ -797,7 +837,27 @@ export const createAssignment = async (
     return null;
   }
 
-  return data;
+  // Transform snake_case response to camelCase
+  return {
+    id: data.id,
+    workoutPlanId: data.workout_plan_id,
+    workoutPlanName: data.workout_plan_name || undefined,
+    assignedBy: data.assigned_by,
+    athleteId: data.assigned_to_user_id || undefined,
+    groupId: data.assigned_to_group_id || undefined,
+    athleteIds: data.athlete_ids || [],
+    scheduledDate: data.scheduled_date,
+    assignedDate: data.assigned_date || data.created_at,
+    assignmentType: data.assignment_type || 'individual',
+    status: data.status || (data.completed ? 'completed' : 'assigned'),
+    modifications: data.modifications || [],
+    startTime: data.start_time || undefined,
+    endTime: data.end_time || undefined,
+    location: data.location || undefined,
+    notes: data.notes || undefined,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
 };
 
 export const updateAssignment = async (
@@ -854,7 +914,27 @@ export const getAssignmentsByAthlete = async (
     return [];
   }
 
-  return data || [];
+  // Transform snake_case to camelCase
+  return (data || []).map((assignment) => ({
+    id: assignment.id,
+    workoutPlanId: assignment.workout_plan_id,
+    workoutPlanName: assignment.workout_plan_name || undefined,
+    assignedBy: assignment.assigned_by,
+    athleteId: assignment.assigned_to_user_id || undefined,
+    groupId: assignment.assigned_to_group_id || undefined,
+    athleteIds: assignment.athlete_ids || [],
+    scheduledDate: assignment.scheduled_date,
+    assignedDate: assignment.assigned_date || assignment.created_at,
+    assignmentType: assignment.assignment_type || 'individual',
+    status: assignment.status || (assignment.completed ? 'completed' : 'assigned'),
+    modifications: assignment.modifications || [],
+    startTime: assignment.start_time || undefined,
+    endTime: assignment.end_time || undefined,
+    location: assignment.location || undefined,
+    notes: assignment.notes || undefined,
+    createdAt: assignment.created_at,
+    updatedAt: assignment.updated_at,
+  }));
 };
 
 export const getAssignmentsByGroup = async (
