@@ -180,3 +180,35 @@ export function canModifyWorkouts(user: AuthUser): boolean {
 export function getAdminClient() {
   return supabaseAdmin;
 }
+
+/**
+ * Higher-order function to wrap API route handlers with authentication
+ *
+ * Usage:
+ * ```ts
+ * export async function GET(request: NextRequest) {
+ *   return withAuth(request, async (user) => {
+ *     // Your authenticated logic here
+ *     return NextResponse.json({ data: "success" });
+ *   });
+ * }
+ * ```
+ */
+export async function withAuth(
+  request: Request,
+  handler: (user: AuthUser) => Promise<Response>
+): Promise<Response> {
+  const { user, error } = await getAuthenticatedUser();
+
+  if (!user) {
+    return new Response(
+      JSON.stringify({ error: error || "Authentication required" }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  return handler(user);
+}

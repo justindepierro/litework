@@ -63,7 +63,10 @@ export type SessionAction =
   | { type: "RESUME_SESSION" }
   | { type: "COMPLETE_SESSION" }
   | { type: "UPDATE_EXERCISE_INDEX"; payload: number }
-  | { type: "ADD_SET_RECORD"; payload: { exerciseIndex: number; setRecord: SetRecord } }
+  | {
+      type: "ADD_SET_RECORD";
+      payload: { exerciseIndex: number; setRecord: SetRecord };
+    }
   | { type: "COMPLETE_EXERCISE"; payload: number }
   | { type: "UPDATE_SESSION"; payload: Partial<WorkoutSession> }
   | { type: "CLEAR_SESSION" }

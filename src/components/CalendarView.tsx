@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, lazy, Suspense, memo } from "react";
+import { useRouter } from "next/navigation";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
-import { Calendar, Users, X, Plus } from "lucide-react";
+import { Calendar, Users, X, Plus, Play } from "lucide-react";
 
 // Dynamic imports for heavy modals
 const GroupFormModal = lazy(() => import("./GroupFormModal"));
 const GroupAssignmentModal = lazy(() => import("./GroupAssignmentModal"));
 
 const CalendarView = memo(function CalendarView() {
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedGroup, setSelectedGroup] = useState<string>("all");
   const [showGroupModal, setShowGroupModal] = useState(false);
@@ -17,6 +19,8 @@ const CalendarView = memo(function CalendarView() {
   const [showGroupFormModal, setShowGroupFormModal] = useState(false);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedAssignment, setSelectedAssignment] =
+    useState<WorkoutAssignment | null>(null);
   const [athletes, setAthletes] = useState<User[]>([]);
 
   // API hooks
@@ -242,10 +246,9 @@ const CalendarView = memo(function CalendarView() {
                 return (
                   <div
                     key={index}
-                    className={`min-h-[120px] p-2 border-b border-r border-silver-200 cursor-pointer hover:bg-silver-50 ${
+                    className={`min-h-[120px] p-2 border-b border-r border-silver-200 ${
                       !isCurrentMonthDay ? "bg-silver-100 text-silver-600" : ""
                     } ${isTodayDay ? "bg-accent-blue/10" : ""}`}
-                    onClick={() => openAssignModal(day)}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <span
@@ -255,11 +258,25 @@ const CalendarView = memo(function CalendarView() {
                       >
                         {day.getDate()}
                       </span>
-                      {assignments.length > 0 && (
-                        <span className="text-xs bg-accent-orange text-white px-1 rounded">
-                          {assignments.length}
-                        </span>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {assignments.length > 0 && (
+                          <span className="text-xs bg-accent-orange text-white px-1 rounded">
+                            {assignments.length}
+                          </span>
+                        )}
+                        {assignments.length > 0 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openAssignModal(day);
+                            }}
+                            className="text-xs text-accent-blue hover:text-accent-blue/80 p-1"
+                            title="Assign workout"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {/* Assignments */}
@@ -268,10 +285,16 @@ const CalendarView = memo(function CalendarView() {
                         .slice(0, 3)
                         .map((assignment: WorkoutAssignment) => {
                           const group = getGroupById(assignment.groupId || "");
+                          const isPastOrToday = day <= new Date();
+
                           return (
                             <div
                               key={assignment.id}
-                              className="text-xs p-1 rounded truncate"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedAssignment(assignment);
+                              }}
+                              className="text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
                               style={{
                                 backgroundColor: group
                                   ? `${group.color}20`
@@ -280,17 +303,41 @@ const CalendarView = memo(function CalendarView() {
                               }}
                               title={`${assignment.workoutPlanName} - ${group?.name}`}
                             >
-                              <div className="font-medium truncate">
-                                {assignment.workoutPlanName}
-                              </div>
-                              <div className="text-xs opacity-75 truncate">
-                                {group?.name}
+                              <div className="flex items-center justify-between gap-1">
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium truncate">
+                                    {assignment.workoutPlanName}
+                                  </div>
+                                  <div className="text-xs opacity-75 truncate">
+                                    {group?.name}
+                                  </div>
+                                </div>
+                                {isPastOrToday && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      router.push(
+                                        `/workouts/live/${assignment.id}`
+                                      );
+                                    }}
+                                    className="shrink-0 p-1 bg-accent-blue text-white rounded hover:bg-accent-blue/90"
+                                    title="Start workout"
+                                  >
+                                    <Play className="w-3 h-3" />
+                                  </button>
+                                )}
                               </div>
                             </div>
                           );
                         })}
                       {assignments.length > 3 && (
-                        <div className="text-xs text-silver-600">
+                        <div
+                          className="text-xs text-silver-600 cursor-pointer hover:text-accent-blue"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedAssignment(assignments[0]);
+                          }}
+                        >
                           +{assignments.length - 3} more
                         </div>
                       )}
@@ -423,6 +470,94 @@ const CalendarView = memo(function CalendarView() {
                 onSave={handleGroupSave}
               />
             </Suspense>
+          )}
+
+          {/* Assignment Details Modal */}
+          {selectedAssignment && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-xl max-w-lg w-full p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {selectedAssignment.workoutPlanName}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {getGroupById(selectedAssignment.groupId || "")?.name ||
+                        "Individual"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedAssignment(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">
+                      Scheduled:{" "}
+                    </span>
+                    <span className="text-sm text-gray-900">
+                      {new Date(
+                        selectedAssignment.scheduledDate
+                      ).toLocaleDateString()}
+                    </span>
+                  </div>
+                  {selectedAssignment.startTime && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">
+                        Time:{" "}
+                      </span>
+                      <span className="text-sm text-gray-900">
+                        {selectedAssignment.startTime}
+                        {selectedAssignment.endTime &&
+                          ` - ${selectedAssignment.endTime}`}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAssignment.location && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">
+                        Location:{" "}
+                      </span>
+                      <span className="text-sm text-gray-900">
+                        {selectedAssignment.location}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAssignment.notes && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-700 block mb-1">
+                        Notes:
+                      </span>
+                      <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                        {selectedAssignment.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setSelectedAssignment(null)}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() =>
+                      router.push(`/workouts/live/${selectedAssignment.id}`)
+                    }
+                    className="flex-1 px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/90 font-medium flex items-center justify-center gap-2"
+                  >
+                    <Play className="w-5 h-5" />
+                    Start Workout
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </>
       )}

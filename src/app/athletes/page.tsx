@@ -1,8 +1,7 @@
 "use client";
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
-import { useState, useEffect, lazy, useMemo, useCallback } from "react";
-import { ApiResponse } from "@/lib/api-response";
+import { useState, useEffect, lazy, useMemo, Suspense } from "react";
 import {
   User,
   Trophy,
@@ -14,7 +13,6 @@ import {
   Trash2,
   MessageCircle,
   Send,
-  Calendar,
   AlertCircle,
   CheckCircle,
   Clock,
@@ -28,7 +26,13 @@ import {
   Edit3,
   Archive,
 } from "lucide-react";
-import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
+import {
+  User as UserType,
+  AthleteKPI,
+  AthleteGroup,
+  WorkoutPlan,
+  WorkoutAssignment,
+} from "@/types";
 import { apiClient } from "@/lib/api-client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
@@ -48,6 +52,9 @@ const BulkOperationHistory = lazy(
 const ProgressAnalytics = lazy(() => import("@/components/ProgressAnalytics"));
 const AthleteDetailModal = lazy(
   () => import("@/components/AthleteDetailModal")
+);
+const IndividualAssignmentModal = lazy(
+  () => import("@/components/IndividualAssignmentModal")
 );
 
 interface InviteForm {
@@ -118,6 +125,8 @@ export default function AthletesPage() {
   const [showManageGroupModal, setShowManageGroupModal] = useState(false);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [showEditEmailModal, setShowEditEmailModal] = useState(false);
+  const [showIndividualAssignment, setShowIndividualAssignment] =
+    useState(false);
   const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
@@ -126,6 +135,9 @@ export default function AthletesPage() {
   const [editEmailForm, setEditEmailForm] = useState({
     email: "",
   });
+
+  // Assignment data
+  const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
 
   // Confirmation modal state
   const [confirmModal, setConfirmModal] = useState<{
@@ -333,8 +345,47 @@ export default function AthletesPage() {
     if (!isLoading && user) {
       loadGroups();
       loadAthletes();
+      loadWorkoutPlans();
     }
   }, [isLoading, user]);
+
+  const loadWorkoutPlans = async () => {
+    try {
+      const response = await fetch("/api/workouts");
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        setWorkoutPlans(data.data.workouts || data.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to load workout plans:", err);
+    }
+  };
+
+  const handleAssignWorkout = async (
+    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+  ) => {
+    try {
+      const response = await fetch("/api/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignments: [assignment] }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Workout assigned successfully!");
+        setShowIndividualAssignment(false);
+        setSelectedAthlete(null);
+      } else {
+        toast.error(data.error || "Failed to assign workout");
+      }
+    } catch (err) {
+      console.error("Failed to assign workout:", err);
+      toast.error("Failed to assign workout");
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -1325,8 +1376,19 @@ export default function AthletesPage() {
                   {athlete.status === "active" ? (
                     <div className="grid grid-cols-2 gap-2">
                       <button
+                        onClick={() => {
+                          setSelectedAthlete(athlete);
+                          setShowIndividualAssignment(true);
+                        }}
+                        className="btn-primary flex items-center justify-center gap-2 text-sm py-2 col-span-2"
+                        title="Assign a workout to this athlete"
+                      >
+                        <Dumbbell className="w-4 h-4" />
+                        Assign Workout
+                      </button>
+                      <button
                         onClick={() => handleMessageAthlete(athlete)}
-                        className="btn-primary flex items-center justify-center gap-2 text-sm py-2"
+                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
                       >
                         <MessageCircle className="w-4 h-4" />
                         Message
@@ -2137,6 +2199,28 @@ export default function AthletesPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Individual Assignment Modal */}
+      {showIndividualAssignment && selectedAthlete && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+              <div className="text-white">Loading...</div>
+            </div>
+          }
+        >
+          <IndividualAssignmentModal
+            isOpen={showIndividualAssignment}
+            onClose={() => {
+              setShowIndividualAssignment(false);
+              setSelectedAthlete(null);
+            }}
+            athletes={[selectedAthlete]}
+            workoutPlans={workoutPlans}
+            onAssignWorkout={handleAssignWorkout}
+          />
+        </Suspense>
       )}
 
       {/* Confirmation Modal */}

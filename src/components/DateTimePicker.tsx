@@ -86,9 +86,7 @@ export default function DateTimePicker({
 
   // Add all days of the month
   for (let i = 1; i <= daysInMonth; i++) {
-    days.push(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i)
-    );
+    days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i));
   }
 
   const monthNames = [
@@ -160,8 +158,7 @@ export default function DateTimePicker({
               );
             }
 
-            const isSelected =
-              selectedDate && isSameDay(day, selectedDate);
+            const isSelected = selectedDate && isSameDay(day, selectedDate);
             const isTodayDay = isToday(day);
             const isDisabled = isDateDisabled(day);
 
@@ -194,7 +191,9 @@ export default function DateTimePicker({
         {/* Selected Date Display */}
         {selectedDate && (
           <div className="mt-4 pt-4 border-t border-silver-300">
-            <div className="text-body-small text-silver-600">Selected Date:</div>
+            <div className="text-body-small text-silver-600">
+              Selected Date:
+            </div>
             <div className="text-body-primary font-medium">
               {selectedDate.toLocaleDateString("en-US", {
                 weekday: "long",

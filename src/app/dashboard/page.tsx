@@ -38,20 +38,23 @@ export default function DashboardPage() {
     currentStreak: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
-  
+
   // Assignment state
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
   const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
   const [groups, setGroups] = useState<AthleteGroup[]>([]);
   const [athletes, setAthletes] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(false);
-  
+
   // Modal state
   const [showGroupAssignment, setShowGroupAssignment] = useState(false);
-  const [showIndividualAssignment, setShowIndividualAssignment] = useState(false);
+  const [showIndividualAssignment, setShowIndividualAssignment] =
+    useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
+    string | null
+  >(null);
 
   const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
 
@@ -110,24 +113,28 @@ export default function DashboardPage() {
   const fetchCoachData = async () => {
     try {
       setLoadingData(true);
-      
-      // Fetch assignments, workouts, groups, and athletes in parallel
-      const [assignmentsRes, workoutsRes, groupsRes, athletesRes] = await Promise.all([
-        fetch("/api/assignments"),
-        fetch("/api/workouts"),
-        fetch("/api/groups"),
-        fetch("/api/athletes"),
-      ]);
 
-      const [assignmentsData, workoutsData, groupsData, athletesData] = await Promise.all([
-        assignmentsRes.json(),
-        workoutsRes.json(),
-        groupsRes.json(),
-        athletesRes.json(),
-      ]);
+      // Fetch assignments, workouts, groups, and athletes in parallel
+      const [assignmentsRes, workoutsRes, groupsRes, athletesRes] =
+        await Promise.all([
+          fetch("/api/assignments"),
+          fetch("/api/workouts"),
+          fetch("/api/groups"),
+          fetch("/api/athletes"),
+        ]);
+
+      const [assignmentsData, workoutsData, groupsData, athletesData] =
+        await Promise.all([
+          assignmentsRes.json(),
+          workoutsRes.json(),
+          groupsRes.json(),
+          athletesRes.json(),
+        ]);
 
       if (assignmentsData.success && assignmentsData.data) {
-        setAssignments(assignmentsData.data.assignments || assignmentsData.data || []);
+        setAssignments(
+          assignmentsData.data.assignments || assignmentsData.data || []
+        );
       }
 
       if (workoutsData.success && workoutsData.data) {
@@ -148,7 +155,9 @@ export default function DashboardPage() {
     }
   };
 
-  const handleAssignWorkout = async (assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">) => {
+  const handleAssignWorkout = async (
+    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+  ) => {
     try {
       const response = await fetch("/api/assignments", {
         method: "POST",
@@ -447,22 +456,102 @@ export default function DashboardPage() {
             <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
               <ClipboardList className="w-6 h-6" /> Your Assigned Workouts
             </h2>
-            {/* No assigned workouts yet - will be loaded from API */}
-            <div className="text-center py-16">
-              <ClipboardList className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-xl font-semibold text-gray-500 mb-2">
-                No Workouts Assigned Yet
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Your coach will assign workouts that will appear here.
-              </p>
-              <Link
-                href="/workouts"
-                className="btn-primary inline-flex items-center gap-2"
-              >
-                <Eye className="w-4 h-4" /> Browse Workout Library
-              </Link>
-            </div>
+            {loadingData ? (
+              <div className="text-center py-16">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading workouts...</p>
+              </div>
+            ) : assignments.length === 0 ? (
+              <div className="text-center py-16">
+                <ClipboardList className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <h3 className="text-xl font-semibold text-gray-500 mb-2">
+                  No Workouts Assigned Yet
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Your coach will assign workouts that will appear here.
+                </p>
+                <Link
+                  href="/workouts"
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  <Eye className="w-4 h-4" /> Browse Workout Library
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {assignments.slice(0, 6).map((assignment) => {
+                  const scheduledDate = new Date(assignment.scheduledDate);
+                  const isToday =
+                    scheduledDate.toDateString() === new Date().toDateString();
+                  const isPast = scheduledDate < new Date() && !isToday;
+                  const isFuture = scheduledDate > new Date();
+
+                  return (
+                    <div
+                      key={assignment.id}
+                      className={`card-primary rounded-lg border-2 p-4 ${
+                        isToday
+                          ? "border-accent-blue bg-blue-50"
+                          : isPast
+                            ? "border-gray-200 bg-gray-50"
+                            : "border-gray-200"
+                      }`}
+                    >
+                      <div className="mb-3">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-lg font-bold text-gray-900">
+                            {assignment.workoutPlanName}
+                          </h3>
+                          {isToday && (
+                            <span className="text-xs bg-accent-blue text-white px-2 py-1 rounded">
+                              Today
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          {scheduledDate.toLocaleDateString("en-US", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                        {assignment.startTime && (
+                          <p className="text-sm text-gray-600">
+                            {assignment.startTime}
+                            {assignment.endTime && ` - ${assignment.endTime}`}
+                          </p>
+                        )}
+                        {assignment.location && (
+                          <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
+                            <span>📍</span> {assignment.location}
+                          </p>
+                        )}
+                      </div>
+
+                      {(isToday || isPast) && (
+                        <Link
+                          href={`/workouts/live/${assignment.id}`}
+                          className="w-full btn-primary flex items-center justify-center gap-2 py-2"
+                        >
+                          <Dumbbell className="w-4 h-4" />
+                          {isPast ? "Start Workout" : "Start Now"}
+                        </Link>
+                      )}
+
+                      {isFuture && (
+                        <button
+                          onClick={() => handleAssignmentClick(assignment)}
+                          className="w-full btn-secondary flex items-center justify-center gap-2 py-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View Details
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

@@ -3,7 +3,13 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useToast } from "@/components/ToastProvider";
-import { WorkoutPlan, WorkoutExercise } from "@/types";
+import {
+  WorkoutPlan,
+  WorkoutExercise,
+  WorkoutAssignment,
+  AthleteGroup,
+  User as UserType,
+} from "@/types";
 import {
   Dumbbell,
   Plus,
@@ -14,6 +20,7 @@ import {
   Users,
   Archive,
   ArchiveRestore,
+  User,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
@@ -27,6 +34,12 @@ import { WorkoutEditorErrorBoundary } from "@/components/WorkoutEditorErrorBound
 // Dynamic imports for large components
 const ExerciseLibrary = lazy(() => import("@/components/ExerciseLibrary"));
 const WorkoutEditor = lazy(() => import("@/components/WorkoutEditor"));
+const GroupAssignmentModal = lazy(
+  () => import("@/components/GroupAssignmentModal")
+);
+const IndividualAssignmentModal = lazy(
+  () => import("@/components/IndividualAssignmentModal")
+);
 
 // Exercise interface to match the one in ExerciseLibrary component
 interface LibraryExercise {
@@ -52,6 +65,9 @@ export default function WorkoutsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAssignForm, setShowAssignForm] = useState(false);
+  const [showGroupAssignModal, setShowGroupAssignModal] = useState(false);
+  const [showIndividualAssignModal, setShowIndividualAssignModal] =
+    useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutPlan | null>(
     null
   );
@@ -72,6 +88,83 @@ export default function WorkoutsPage() {
     blockInstances: [],
     estimatedDuration: 30,
   });
+
+  // Assignment data - load when needed
+  const [groups, setGroups] = useState<AthleteGroup[]>([]);
+  const [athletes, setAthletes] = useState<UserType[]>([]);
+  const [loadingAssignmentData, setLoadingAssignmentData] = useState(false);
+
+  // Load assignment data when assign modal opens
+  const loadAssignmentData = async () => {
+    if (groups.length > 0 && athletes.length > 0) return; // Already loaded
+
+    try {
+      setLoadingAssignmentData(true);
+
+      const [groupsRes, athletesRes] = await Promise.all([
+        fetch("/api/groups"),
+        fetch("/api/athletes"),
+      ]);
+
+      const [groupsData, athletesData] = await Promise.all([
+        groupsRes.json(),
+        athletesRes.json(),
+      ]);
+
+      if (groupsData.success && groupsData.data) {
+        setGroups(groupsData.data.groups || groupsData.data || []);
+      }
+
+      if (athletesData.success && athletesData.data) {
+        setAthletes(athletesData.data.athletes || athletesData.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to load assignment data:", err);
+      showErrorToast("Failed to load groups and athletes");
+    } finally {
+      setLoadingAssignmentData(false);
+    }
+  };
+
+  const handleOpenAssignModal = async (
+    workout: WorkoutPlan,
+    mode: "group" | "individual"
+  ) => {
+    setSelectedWorkout(workout);
+    await loadAssignmentData();
+
+    if (mode === "group") {
+      setShowGroupAssignModal(true);
+    } else {
+      setShowIndividualAssignModal(true);
+    }
+  };
+
+  const handleAssignWorkout = async (
+    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+  ) => {
+    try {
+      const response = await fetch("/api/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignments: [assignment] }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        success("Workout assigned successfully!");
+        setShowGroupAssignModal(false);
+        setShowIndividualAssignModal(false);
+        setSelectedWorkout(null);
+      } else {
+        showErrorToast(data.error || "Failed to assign workout");
+      }
+    } catch (err) {
+      console.error("Failed to assign workout:", err);
+      showErrorToast("Failed to assign workout");
+    }
+  };
 
   // Load workouts from API
   useEffect(() => {
@@ -507,7 +600,7 @@ export default function WorkoutsPage() {
           </Suspense>
         )}
 
-        {/* Assign Workout Modal */}
+        {/* Assign Workout Modal - Choice between Group and Individual */}
         {showAssignForm && selectedWorkout && (
           <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg max-w-md w-full">
@@ -516,47 +609,107 @@ export default function WorkoutsPage() {
                   Assign Workout: {selectedWorkout.name}
                 </h2>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-body-primary text-sm font-medium block mb-2">
-                      Schedule Date
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full p-3 border border-silver-400 rounded-md"
-                    />
-                  </div>
+                <p className="text-body-secondary mb-6">
+                  Choose how you&apos;d like to assign this workout:
+                </p>
 
-                  <div>
-                    <label className="text-body-primary text-sm font-medium block mb-2">
-                      Select Athletes
-                    </label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                      <div className="text-body-secondary text-sm p-4 text-center">
-                        Athlete selection will be implemented with user
-                        management API
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      setShowAssignForm(false);
+                      handleOpenAssignModal(selectedWorkout, "group");
+                    }}
+                    className="w-full btn-primary flex items-center justify-center gap-2 py-4"
+                  >
+                    <Users className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="font-semibold">Assign to Group(s)</div>
+                      <div className="text-sm opacity-90">
+                        Assign to athlete groups with optional individual
+                        modifications
                       </div>
                     </div>
-                  </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowAssignForm(false);
+                      handleOpenAssignModal(selectedWorkout, "individual");
+                    }}
+                    className="w-full btn-secondary flex items-center justify-center gap-2 py-4"
+                  >
+                    <User className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="font-semibold">
+                        Assign to Individual Athletes
+                      </div>
+                      <div className="text-sm opacity-90">
+                        Select specific athletes to assign this workout to
+                      </div>
+                    </div>
+                  </button>
                 </div>
 
                 <div className="flex gap-3 mt-6">
                   <button
-                    onClick={() => setShowAssignForm(false)}
+                    onClick={() => {
+                      setShowAssignForm(false);
+                      setSelectedWorkout(null);
+                    }}
                     className="btn-secondary flex-1"
                   >
                     Cancel
-                  </button>
-                  <button
-                    onClick={() => setShowAssignForm(false)}
-                    className="btn-primary flex-1"
-                  >
-                    Assign Workout
                   </button>
                 </div>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Group Assignment Modal */}
+        {showGroupAssignModal && selectedWorkout && (
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+                <div className="text-white">Loading...</div>
+              </div>
+            }
+          >
+            <GroupAssignmentModal
+              isOpen={showGroupAssignModal}
+              onClose={() => {
+                setShowGroupAssignModal(false);
+                setSelectedWorkout(null);
+              }}
+              selectedDate={new Date()}
+              groups={groups}
+              workoutPlans={[selectedWorkout, ...workouts]}
+              athletes={athletes}
+              onAssignWorkout={handleAssignWorkout}
+            />
+          </Suspense>
+        )}
+
+        {/* Individual Assignment Modal */}
+        {showIndividualAssignModal && selectedWorkout && (
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+                <div className="text-white">Loading...</div>
+              </div>
+            }
+          >
+            <IndividualAssignmentModal
+              isOpen={showIndividualAssignModal}
+              onClose={() => {
+                setShowIndividualAssignModal(false);
+                setSelectedWorkout(null);
+              }}
+              athletes={athletes}
+              workoutPlans={[selectedWorkout, ...workouts]}
+              onAssignWorkout={handleAssignWorkout}
+            />
+          </Suspense>
         )}
       </div>
 

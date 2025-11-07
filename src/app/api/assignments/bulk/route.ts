@@ -62,14 +62,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if ((!athlete_ids || athlete_ids.length === 0) && (!group_ids || group_ids.length === 0)) {
+    if (
+      (!athlete_ids || athlete_ids.length === 0) &&
+      (!group_ids || group_ids.length === 0)
+    ) {
       return NextResponse.json(
         { error: "Either athlete_ids or group_ids must be provided" },
         { status: 400 }
       );
     }
 
-    const assignmentsToInsert: Array<Record<string, string | boolean | object | null>> = [];
+    const assignmentsToInsert: Array<
+      Record<string, string | boolean | object | null>
+    > = [];
 
     // Create individual athlete assignments
     if (athlete_ids && athlete_ids.length > 0) {
@@ -114,8 +119,7 @@ export async function POST(request: NextRequest) {
     // Insert all assignments at once
     const { data: insertedAssignments, error } = await supabaseAdmin
       .from("workout_assignments")
-      .insert(assignmentsToInsert)
-      .select(`
+      .insert(assignmentsToInsert).select(`
         *,
         workout_plan:workout_plans!workout_assignments_workout_plan_id_fkey(
           id,
@@ -134,12 +138,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Count assignments by type
-    const individualCount = insertedAssignments?.filter(
-      (a) => a.assigned_to_user_id
-    ).length || 0;
-    const groupCount = insertedAssignments?.filter(
-      (a) => a.assigned_to_group_id
-    ).length || 0;
+    const individualCount =
+      insertedAssignments?.filter((a) => a.assigned_to_user_id).length || 0;
+    const groupCount =
+      insertedAssignments?.filter((a) => a.assigned_to_group_id).length || 0;
 
     return NextResponse.json(
       {
@@ -186,7 +188,11 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
     const { assignment_ids } = body;
 
-    if (!assignment_ids || !Array.isArray(assignment_ids) || assignment_ids.length === 0) {
+    if (
+      !assignment_ids ||
+      !Array.isArray(assignment_ids) ||
+      assignment_ids.length === 0
+    ) {
       return NextResponse.json(
         { error: "assignment_ids array is required" },
         { status: 400 }

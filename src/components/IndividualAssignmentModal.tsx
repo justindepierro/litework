@@ -38,7 +38,8 @@ export default function IndividualAssignmentModal({
 
   // Filter athletes by search query
   const filteredAthletes = athletes.filter((athlete) => {
-    const fullName = athlete.fullName || `${athlete.firstName} ${athlete.lastName}`;
+    const fullName =
+      athlete.fullName || `${athlete.firstName} ${athlete.lastName}`;
     const searchLower = searchQuery.toLowerCase();
     return (
       fullName.toLowerCase().includes(searchLower) ||
@@ -239,20 +240,24 @@ export default function IndividualAssignmentModal({
                     Workout Preview
                   </h3>
                   <div className="space-y-2">
-                    {selectedWorkout.exercises.slice(0, 5).map((exercise, index) => (
-                      <div
-                        key={exercise.id}
-                        className="flex items-center gap-3 text-sm"
-                      >
-                        <span className="text-body-small w-6">
-                          {index + 1}.
-                        </span>
-                        <span className="flex-1">{exercise.exerciseName}</span>
-                        <span className="text-body-small">
-                          {exercise.sets}×{exercise.reps}
-                        </span>
-                      </div>
-                    ))}
+                    {selectedWorkout.exercises
+                      .slice(0, 5)
+                      .map((exercise, index) => (
+                        <div
+                          key={exercise.id}
+                          className="flex items-center gap-3 text-sm"
+                        >
+                          <span className="text-body-small w-6">
+                            {index + 1}.
+                          </span>
+                          <span className="flex-1">
+                            {exercise.exerciseName}
+                          </span>
+                          <span className="text-body-small">
+                            {exercise.sets}×{exercise.reps}
+                          </span>
+                        </div>
+                      ))}
                     {selectedWorkout.exercises.length > 5 && (
                       <div className="text-body-small text-silver-600 text-center pt-2">
                         +{selectedWorkout.exercises.length - 5} more exercises
@@ -306,7 +311,8 @@ export default function IndividualAssignmentModal({
                 {filteredAthletes.length > 0 ? (
                   filteredAthletes.map((athlete) => {
                     const isSelected = selectedAthleteIds.includes(athlete.id);
-                    const fullName = athlete.fullName || 
+                    const fullName =
+                      athlete.fullName ||
                       `${athlete.firstName} ${athlete.lastName}`;
 
                     return (
@@ -357,7 +363,8 @@ export default function IndividualAssignmentModal({
                         key={athlete.id}
                         className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-md text-sm border border-blue-300"
                       >
-                        {athlete.fullName || `${athlete.firstName} ${athlete.lastName}`}
+                        {athlete.fullName ||
+                          `${athlete.firstName} ${athlete.lastName}`}
                         <button
                           type="button"
                           onClick={() => toggleAthlete(athlete.id)}

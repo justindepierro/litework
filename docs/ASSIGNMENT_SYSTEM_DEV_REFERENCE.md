@@ -5,6 +5,7 @@
 ---
 
 ## 🎯 The Goal
+
 Coach assigns workout → Athlete sees it → Athlete completes it → Athlete gives feedback → Coach sees results
 
 ---
@@ -12,6 +13,7 @@ Coach assigns workout → Athlete sees it → Athlete completes it → Athlete g
 ## 📁 Files to Create/Modify
 
 ### Week 1: Assignment System
+
 ```
 CREATE:
 /database/enhance-assignments.sql          (Feedback table + indexes)
@@ -29,6 +31,7 @@ MODIFY:
 ```
 
 ### Week 2: Session Management
+
 ```
 CREATE:
 /src/app/api/sessions/route.ts                              (Create session)
@@ -43,6 +46,7 @@ MODIFY:
 ```
 
 ### Week 3: Feedback System
+
 ```
 CREATE:
 /src/app/api/feedback/route.ts             (Submit/get feedback)
@@ -60,6 +64,7 @@ CREATE:
 ## 🗄️ Database Schema
 
 ### New Table: workout_feedback
+
 ```sql
 CREATE TABLE workout_feedback (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -81,6 +86,7 @@ CREATE TABLE workout_feedback (
 ```
 
 ### Enhanced Table: workout_assignments
+
 ```sql
 ALTER TABLE workout_assignments
   ADD COLUMN start_time TIME,
@@ -93,6 +99,7 @@ ALTER TABLE workout_assignments
 ## 🔌 API Endpoint Patterns
 
 ### Assignments
+
 ```typescript
 // CREATE
 POST /api/assignments
@@ -115,6 +122,7 @@ Body: { assignments: [...] }
 ```
 
 ### Sessions
+
 ```typescript
 // START SESSION
 POST /api/sessions
@@ -135,6 +143,7 @@ Body: { status: "completed", completedAt: Date, notes }
 ```
 
 ### Feedback
+
 ```typescript
 // SUBMIT FEEDBACK
 POST /api/feedback
@@ -154,6 +163,7 @@ Body: { coachResponse, coachViewed: true }
 ## 🎨 Component Patterns
 
 ### Auth Wrapper (Required for all endpoints)
+
 ```typescript
 // API routes
 export async function GET(request: NextRequest) {
@@ -171,21 +181,23 @@ export async function POST(request: NextRequest) {
 ```
 
 ### Data Fetching (Frontend)
+
 ```typescript
 // Use SWR hooks
-import { useAssignments, useSessions } from '@/hooks/api-hooks';
+import { useAssignments, useSessions } from "@/hooks/api-hooks";
 
 function Component() {
   const { assignments, isLoading, error, refetch } = useAssignments({
     athleteId: user.id,
-    date: selectedDate
+    date: selectedDate,
   });
-  
+
   // Use assignments...
 }
 ```
 
 ### State Management (Workout Session)
+
 ```typescript
 // Create context in WorkoutSessionContext.tsx
 interface WorkoutSessionContextType {
@@ -205,6 +217,7 @@ const { session, recordSet, completeSession } = useWorkoutSession();
 ## 🎨 Design Tokens
 
 ### Colors
+
 ```typescript
 // Status colors
 const STATUS_COLORS = {
@@ -223,6 +236,7 @@ const TEXT_COLORS = {
 ```
 
 ### Touch Targets
+
 ```css
 /* Mobile workout mode */
 .btn-workout {
@@ -265,26 +279,29 @@ npm run test:e2e
 ## 🔍 Common Queries
 
 ### Get athlete's assignments for today
+
 ```typescript
 const { assignments } = useAssignments({
   athleteId: user.id,
-  date: new Date().toISOString().split('T')[0]
+  date: new Date().toISOString().split("T")[0],
 });
 ```
 
 ### Get active workout session
+
 ```typescript
 const { session } = useSessions({
   athleteId: user.id,
-  status: 'in_progress'
+  status: "in_progress",
 });
 ```
 
 ### Get unread feedback count
+
 ```typescript
 const { feedback } = useFeedback({
   coachId: user.id,
-  coachViewed: false
+  coachViewed: false,
 });
 const unreadCount = feedback.length;
 ```
@@ -294,16 +311,19 @@ const unreadCount = feedback.length;
 ## ⚡ Quick Wins
 
 ### Phase 1 Quick Wins
+
 1. Add date picker to existing assignment modal (2h)
 2. Create athlete calendar page (3h)
 3. Add assignment status badges (1h)
 
 ### Phase 2 Quick Wins
+
 1. Implement basic set recording (3h)
 2. Add rest timer (2h)
 3. Create completion summary (2h)
 
 ### Phase 3 Quick Wins
+
 1. Simple feedback form (3h)
 2. Feedback list view (2h)
 3. Coach response functionality (2h)
@@ -313,22 +333,27 @@ const unreadCount = feedback.length;
 ## 🚨 Common Pitfalls
 
 ### Authentication
+
 ❌ **DON'T**: `if (user.role === "coach")`  
 ✅ **DO**: `if (canAssignWorkouts(user))` or use `withPermission`
 
 ### Data Fetching
+
 ❌ **DON'T**: Fetch in useEffect without cleanup  
 ✅ **DO**: Use SWR hooks with proper cache config
 
 ### Mobile UI
+
 ❌ **DON'T**: Use small touch targets (<44px)  
 ✅ **DO**: Use 56px for primary workout actions
 
 ### Database Queries
+
 ❌ **DON'T**: Loop and make individual queries  
 ✅ **DO**: Use batch queries and joins
 
 ### Offline Support
+
 ❌ **DON'T**: Assume network is always available  
 ✅ **DO**: Cache data and queue mutations
 
@@ -337,6 +362,7 @@ const unreadCount = feedback.length;
 ## 📝 Code Snippets
 
 ### Create Assignment
+
 ```typescript
 const assignment = {
   workoutPlanId: selectedWorkout.id,
@@ -353,23 +379,24 @@ const assignment = {
   notes: notes || undefined,
 };
 
-const response = await fetch('/api/assignments', {
-  method: 'POST',
+const response = await fetch("/api/assignments", {
+  method: "POST",
   body: JSON.stringify(assignment),
 });
 ```
 
 ### Record Set
+
 ```typescript
 const recordSet = async (exerciseId: string, setData: SetRecord) => {
   const response = await fetch(
     `/api/sessions/${sessionId}/exercises/${exerciseId}/sets`,
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(setData),
     }
   );
-  
+
   if (response.ok) {
     // Update local state
     mutate(`/api/sessions/${sessionId}`);
@@ -378,10 +405,11 @@ const recordSet = async (exerciseId: string, setData: SetRecord) => {
 ```
 
 ### Submit Feedback
+
 ```typescript
 const submitFeedback = async (feedback: WorkoutFeedback) => {
-  const response = await fetch('/api/feedback', {
-    method: 'POST',
+  const response = await fetch("/api/feedback", {
+    method: "POST",
     body: JSON.stringify({
       workoutSessionId: sessionId,
       difficultyRating: feedback.difficultyRating,
@@ -394,7 +422,7 @@ const submitFeedback = async (feedback: WorkoutFeedback) => {
       suggestions: feedback.suggestions,
     }),
   });
-  
+
   return response.json();
 };
 ```
@@ -404,12 +432,14 @@ const submitFeedback = async (feedback: WorkoutFeedback) => {
 ## 🎯 Success Checklist
 
 ### Phase 1 Complete When:
+
 - [ ] Coach can select date in assignment modal
 - [ ] Coach can assign to individual athletes
 - [ ] Athletes see assignments on their calendar
 - [ ] Assignment status shows correctly (assigned/completed/overdue)
 
 ### Phase 2 Complete When:
+
 - [ ] Athletes can start a workout from assignment
 - [ ] Athletes can record weight/reps/RPE per set
 - [ ] Rest timer works automatically
@@ -417,6 +447,7 @@ const submitFeedback = async (feedback: WorkoutFeedback) => {
 - [ ] Works offline with sync when online
 
 ### Phase 3 Complete When:
+
 - [ ] Athletes see feedback modal after workout
 - [ ] Athletes can submit ratings and text feedback
 - [ ] Coaches see list of athlete feedback

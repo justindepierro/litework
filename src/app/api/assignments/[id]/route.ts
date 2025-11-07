@@ -22,7 +22,8 @@ export async function GET(
     // Fetch assignment with related data
     const { data: assignment, error } = await supabaseAdmin
       .from("workout_assignments")
-      .select(`
+      .select(
+        `
         *,
         workout_plan:workout_plans!workout_assignments_workout_plan_id_fkey(
           id,
@@ -54,7 +55,8 @@ export async function GET(
           name,
           description
         )
-      `)
+      `
+      )
       .eq("id", id)
       .single();
 
@@ -131,7 +133,10 @@ export async function PUT(
       "notification_preferences",
     ];
 
-    const updateData: Record<string, string | boolean | object | null | undefined> = {};
+    const updateData: Record<
+      string,
+      string | boolean | object | null | undefined
+    > = {};
     Object.keys(updates).forEach((key) => {
       if (allowedFields.includes(key)) {
         updateData[key] = updates[key];

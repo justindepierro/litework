@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Calendar, Clock, MapPin } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Clock,
+  MapPin,
+} from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 
 interface AthleteCalendarProps {
@@ -20,7 +26,9 @@ export default function AthleteCalendar({
   selectedDate: initialDate,
 }: AthleteCalendarProps) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
-  const [viewMode, setViewMode] = useState<"month" | "week" | "day">(initialViewMode);
+  const [viewMode, setViewMode] = useState<"month" | "week" | "day">(
+    initialViewMode
+  );
 
   // Helper functions for date calculations
   const startOfMonth = (date: Date) => {
@@ -139,7 +147,10 @@ export default function AthleteCalendar({
   };
 
   // Render assignment card
-  const renderAssignment = (assignment: WorkoutAssignment, compact: boolean = false) => {
+  const renderAssignment = (
+    assignment: WorkoutAssignment,
+    compact: boolean = false
+  ) => {
     const isCompleted = assignment.status === "completed";
     const isOverdue =
       !isCompleted &&
@@ -225,9 +236,9 @@ export default function AthleteCalendar({
                 {date.getDate()}
               </div>
               <div className="space-y-1">
-                {dayAssignments.slice(0, 2).map((assignment) =>
-                  renderAssignment(assignment, true)
-                )}
+                {dayAssignments
+                  .slice(0, 2)
+                  .map((assignment) => renderAssignment(assignment, true))}
                 {dayAssignments.length > 2 && (
                   <div className="text-xs text-gray-600 text-center">
                     +{dayAssignments.length - 2} more

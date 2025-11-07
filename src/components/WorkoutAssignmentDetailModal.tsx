@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { 
-  X, 
-  Clock, 
-  MapPin, 
-  User, 
-  Calendar, 
+import {
+  X,
+  Clock,
+  MapPin,
+  User,
+  Calendar,
   CheckCircle,
   Play,
   Edit,
@@ -82,7 +82,7 @@ export default function WorkoutAssignmentDetailModal({
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/assignments/${assignmentId}`);
       const data = await response.json();
 
@@ -107,7 +107,7 @@ export default function WorkoutAssignmentDetailModal({
 
   const handleMarkComplete = async () => {
     if (!assignment) return;
-    
+
     try {
       const response = await fetch(`/api/assignments/${assignmentId}`, {
         method: "PATCH",
@@ -117,7 +117,11 @@ export default function WorkoutAssignmentDetailModal({
       const data = await response.json();
 
       if (data.success) {
-        setAssignment({ ...assignment, status: "completed", completed_at: new Date().toISOString() });
+        setAssignment({
+          ...assignment,
+          status: "completed",
+          completed_at: new Date().toISOString(),
+        });
       }
     } catch (err) {
       console.error("Error marking complete:", err);
@@ -147,39 +151,39 @@ export default function WorkoutAssignmentDetailModal({
 
   const getStatusColor = () => {
     if (!assignment) return "gray";
-    
+
     if (assignment.status === "completed") {
       return "green";
     }
-    
+
     const scheduledDate = new Date(assignment.scheduled_date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     scheduledDate.setHours(0, 0, 0, 0);
-    
+
     if (scheduledDate < today) {
       return "red"; // Overdue
     }
-    
+
     return "blue"; // Pending
   };
 
   const getStatusText = () => {
     if (!assignment) return "";
-    
+
     if (assignment.status === "completed") {
       return "Completed";
     }
-    
+
     const scheduledDate = new Date(assignment.scheduled_date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     scheduledDate.setHours(0, 0, 0, 0);
-    
+
     if (scheduledDate < today) {
       return "Overdue";
     }
-    
+
     return "Assigned";
   };
 
@@ -248,12 +252,15 @@ export default function WorkoutAssignmentDetailModal({
                 <Calendar className="w-5 h-5 text-gray-500" />
                 <span className="font-medium">Date:</span>
                 <span>
-                  {new Date(assignment.scheduled_date).toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {new Date(assignment.scheduled_date).toLocaleDateString(
+                    "en-US",
+                    {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
                 </span>
               </div>
 
@@ -280,9 +287,7 @@ export default function WorkoutAssignmentDetailModal({
                 <div className="flex items-center gap-2 text-gray-700">
                   <User className="w-5 h-5 text-gray-500" />
                   <span className="font-medium">Assigned by:</span>
-                  <span>
-                    {assignment.assigned_by_user.full_name}
-                  </span>
+                  <span>{assignment.assigned_by_user.full_name}</span>
                 </div>
               )}
 
@@ -301,7 +306,9 @@ export default function WorkoutAssignmentDetailModal({
                 <div className="flex items-start gap-2">
                   <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
-                    <h3 className="font-medium text-blue-900 mb-1">Coach Notes</h3>
+                    <h3 className="font-medium text-blue-900 mb-1">
+                      Coach Notes
+                    </h3>
                     <p className="text-blue-800">{assignment.coach_notes}</p>
                   </div>
                 </div>
@@ -309,65 +316,75 @@ export default function WorkoutAssignmentDetailModal({
             )}
 
             {/* Workout Exercises */}
-            {assignment.workout_plan?.exercises && assignment.workout_plan.exercises.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  Exercises ({assignment.workout_plan.exercises.length})
-                </h3>
-                <div className="space-y-3">
-                  {assignment.workout_plan.exercises.map((exercise: WorkoutExercise, index: number) => (
-                    <div
-                      key={exercise.id}
-                      className="p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-medium text-sm">
-                          {index + 1}
-                        </span>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-1">
-                            {exercise.exercise_name}
-                          </h4>
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                            {exercise.sets && (
-                              <span>
-                                <span className="font-medium">Sets:</span> {exercise.sets}
-                              </span>
-                            )}
-                            {exercise.reps && (
-                              <span>
-                                <span className="font-medium">Reps:</span> {exercise.reps}
-                              </span>
-                            )}
-                            {exercise.weight && (
-                              <span>
-                                <span className="font-medium">Weight:</span> {exercise.weight} lbs
-                              </span>
-                            )}
-                            {exercise.weight_percentage && (
-                              <span>
-                                <span className="font-medium">Intensity:</span> {exercise.weight_percentage}% 1RM
-                              </span>
-                            )}
-                            {exercise.rest_seconds && (
-                              <span>
-                                <span className="font-medium">Rest:</span> {exercise.rest_seconds}s
-                              </span>
-                            )}
+            {assignment.workout_plan?.exercises &&
+              assignment.workout_plan.exercises.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Exercises ({assignment.workout_plan.exercises.length})
+                  </h3>
+                  <div className="space-y-3">
+                    {assignment.workout_plan.exercises.map(
+                      (exercise: WorkoutExercise, index: number) => (
+                        <div
+                          key={exercise.id}
+                          className="p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-medium text-sm">
+                              {index + 1}
+                            </span>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900 mb-1">
+                                {exercise.exercise_name}
+                              </h4>
+                              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                {exercise.sets && (
+                                  <span>
+                                    <span className="font-medium">Sets:</span>{" "}
+                                    {exercise.sets}
+                                  </span>
+                                )}
+                                {exercise.reps && (
+                                  <span>
+                                    <span className="font-medium">Reps:</span>{" "}
+                                    {exercise.reps}
+                                  </span>
+                                )}
+                                {exercise.weight && (
+                                  <span>
+                                    <span className="font-medium">Weight:</span>{" "}
+                                    {exercise.weight} lbs
+                                  </span>
+                                )}
+                                {exercise.weight_percentage && (
+                                  <span>
+                                    <span className="font-medium">
+                                      Intensity:
+                                    </span>{" "}
+                                    {exercise.weight_percentage}% 1RM
+                                  </span>
+                                )}
+                                {exercise.rest_seconds && (
+                                  <span>
+                                    <span className="font-medium">Rest:</span>{" "}
+                                    {exercise.rest_seconds}s
+                                  </span>
+                                )}
+                              </div>
+                              {exercise.notes && (
+                                <p className="mt-2 text-sm text-gray-600 italic">
+                                  {exercise.notes}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                          {exercise.notes && (
-                            <p className="mt-2 text-sm text-gray-600 italic">
-                              {exercise.notes}
-                            </p>
-                          )}
                         </div>
-                      </div>
-                    </div>
-                  ))}
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-6 border-t">
@@ -398,7 +415,9 @@ export default function WorkoutAssignmentDetailModal({
                   {statusText === "Completed" && (
                     <div className="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                       <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
-                      <p className="text-green-800 font-medium">Workout Completed!</p>
+                      <p className="text-green-800 font-medium">
+                        Workout Completed!
+                      </p>
                     </div>
                   )}
                 </>

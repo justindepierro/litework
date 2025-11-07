@@ -67,12 +67,14 @@ COACH                                    ATHLETE
 ## 📊 Current State vs Target State
 
 ### What Works Now ✅
+
 - Basic group assignment modal
 - Calendar display with assignments
 - Database tables exist
 - Some API endpoints work
 
 ### What's Missing ❌
+
 - No date picker in assignment modal
 - No individual athlete assignment
 - Athletes can't see their calendar
@@ -86,9 +88,11 @@ COACH                                    ATHLETE
 ## 🚀 Build Order (4 Weeks)
 
 ### **Week 1: Enhanced Assignment System**
+
 **Goal**: Complete assignment creation with calendar integration
 
 **What we're building**:
+
 1. ✨ **Date & Time Picker Component**
    - Visual calendar to pick date
    - Time range selection
@@ -115,9 +119,11 @@ COACH                                    ATHLETE
 ---
 
 ### **Week 2: Workout Session Experience**
+
 **Goal**: Athletes can complete workouts and record data
 
 **What we're building**:
+
 1. ✨ **WorkoutView Component** (Preview Mode)
    - See workout before starting
    - Review all exercises
@@ -144,9 +150,11 @@ COACH                                    ATHLETE
 ---
 
 ### **Week 3: Feedback Loop**
+
 **Goal**: Athletes provide feedback, coaches see results
 
 **What we're building**:
+
 1. ✨ **Post-Workout Feedback Modal**
    - Difficulty rating (1-10)
    - Soreness level (1-10)
@@ -170,9 +178,11 @@ COACH                                    ATHLETE
 ---
 
 ### **Week 4: Polish & Advanced Features**
+
 **Goal**: Enhance experience and add power features
 
 **What we're building**:
+
 1. ✨ **Workout History**
    - See all completed workouts
    - Track progress over time
@@ -196,16 +206,19 @@ COACH                                    ATHLETE
 ## 🎨 Key Design Decisions
 
 ### Mobile-First (Gym Use)
+
 - **Large touch targets**: Minimum 56px for workout mode
 - **High contrast**: Easy to read in bright gym
 - **Minimal scrolling**: Everything visible without hunting
 - **Offline capable**: Works without internet
 
 ### Simple Workflow
+
 - **Athletes**: Calendar → View → Start → Record → Feedback (5 steps)
 - **Coaches**: Pick workout → Pick people → Pick date → Assign (4 steps)
 
 ### Smart Defaults
+
 - Auto-suggest weights based on previous session
 - Default rest times from workout plan
 - Quick actions for common operations
@@ -215,6 +228,7 @@ COACH                                    ATHLETE
 ## 💾 Database Structure
 
 ### Key Tables
+
 ```
 workout_assignments (main assignment record)
   ├─ workout_plans (what to do)
@@ -244,6 +258,7 @@ workout_feedback (athlete feedback)
 ## 🔧 Technical Stack
 
 ### Frontend
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -251,12 +266,14 @@ workout_feedback (athlete feedback)
 - **Mobile**: PWA with offline support
 
 ### Backend
+
 - **API**: Next.js API routes
 - **Database**: Supabase (PostgreSQL)
 - **Auth**: Supabase Auth with RLS
 - **Real-time**: Supabase Realtime (optional)
 
 ### Key Patterns
+
 ```typescript
 // API endpoints use auth wrappers
 export async function POST(request: NextRequest) {
@@ -268,7 +285,7 @@ export async function POST(request: NextRequest) {
 // Frontend uses SWR for caching
 const { assignments, refetch } = useAssignments({
   athleteId: user.id,
-  date: selectedDate
+  date: selectedDate,
 });
 
 // State management with Context
@@ -280,6 +297,7 @@ const { session, recordSet, completeWorkout } = useWorkoutSession();
 ## 🧪 Testing Approach
 
 ### Must Test
+
 - ✅ Coach assigns workout to group → All athletes see it
 - ✅ Coach assigns workout to individual → Only that athlete sees it
 - ✅ Athlete starts workout → Session created in database
@@ -290,6 +308,7 @@ const { session, recordSet, completeWorkout } = useWorkoutSession();
 - ✅ Mobile responsive → Usable on iPhone and Android
 
 ### Test Devices
+
 - iPhone (Safari)
 - Android phone (Chrome)
 - iPad (Safari)
@@ -300,6 +319,7 @@ const { session, recordSet, completeWorkout } = useWorkoutSession();
 ## 📱 Mobile Experience Priority
 
 ### In the Gym (Live Mode)
+
 ```
 ┌─────────────────────────────┐
 │  Exercise: Bench Press      │ ← Large, clear
@@ -332,11 +352,13 @@ const { session, recordSet, completeWorkout } = useWorkoutSession();
 ## 🚦 Getting Started (For Developers)
 
 ### Step 1: Review Documents
+
 1. Read this file (you are here)
 2. Read full roadmap: `docs/WORKOUT_ASSIGNMENT_ROADMAP.md`
 3. Review database schema: `docs/DATABASE_SCHEMA.md`
 
 ### Step 2: Set Up Environment
+
 ```bash
 # Ensure you have latest dependencies
 npm install
@@ -349,12 +371,15 @@ npm run dev
 ```
 
 ### Step 3: Create Feature Branch
+
 ```bash
 git checkout -b feature/workout-assignment-system
 ```
 
 ### Step 4: Start with Phase 1
+
 Begin with database migration (Phase 1.1):
+
 ```bash
 # Create migration file
 touch database/enhance-assignments.sql
@@ -390,6 +415,7 @@ A: Polling with SWR is sufficient. Real-time optional for Phase 4.
 ## 🎯 Success Criteria
 
 ### Minimum Viable Product (MVP)
+
 - [x] Coach can assign workout to group with date
 - [ ] Coach can assign workout to individual(s) with date
 - [ ] Athletes see assignments on their calendar
@@ -402,6 +428,7 @@ A: Polling with SWR is sufficient. Real-time optional for Phase 4.
 - [ ] Basic offline support for live mode
 
 ### Stretch Goals (Nice to Have)
+
 - [ ] Real-time updates
 - [ ] Push notifications
 - [ ] Workout history graphs
@@ -414,11 +441,13 @@ A: Polling with SWR is sufficient. Real-time optional for Phase 4.
 ## 📞 Questions or Issues?
 
 **During Development**:
+
 - Check `docs/WORKOUT_ASSIGNMENT_ROADMAP.md` for detailed specs
 - Review `docs/DATABASE_SCHEMA.md` for data structure
 - Follow patterns in `ARCHITECTURE.md` for code style
 
 **Blockers**:
+
 - Document in GitHub Issues
 - Tag with `workout-assignment-system`
 - Include component/API route affected

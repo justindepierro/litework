@@ -1,5 +1,9 @@
 // Session storage utilities for persisting workout sessions
-import { WorkoutSession, SESSION_STORAGE_KEY, OFFLINE_QUEUE_KEY } from "@/types/session";
+import {
+  WorkoutSession,
+  SESSION_STORAGE_KEY,
+  OFFLINE_QUEUE_KEY,
+} from "@/types/session";
 
 /**
  * Save active session to localStorage
@@ -19,20 +23,21 @@ export function loadSession(): WorkoutSession | null {
   try {
     const stored = localStorage.getItem(SESSION_STORAGE_KEY);
     if (!stored) return null;
-    
+
     const session = JSON.parse(stored) as WorkoutSession;
-    
+
     // Validate session is not too old (e.g., > 24 hours)
     const startedAt = new Date(session.started_at);
     const now = new Date();
-    const hoursSinceStart = (now.getTime() - startedAt.getTime()) / (1000 * 60 * 60);
-    
+    const hoursSinceStart =
+      (now.getTime() - startedAt.getTime()) / (1000 * 60 * 60);
+
     if (hoursSinceStart > 24) {
       // Session is stale, clear it
       clearSession();
       return null;
     }
-    
+
     return session;
   } catch (error) {
     console.error("Failed to load session from localStorage:", error);
@@ -58,7 +63,7 @@ export function updateStoredSession(updates: Partial<WorkoutSession>): void {
   try {
     const stored = loadSession();
     if (!stored) return;
-    
+
     const updated = { ...stored, ...updates };
     saveSession(updated);
   } catch (error) {
@@ -71,13 +76,15 @@ export function updateStoredSession(updates: Partial<WorkoutSession>): void {
  */
 export function calculateSessionDuration(session: WorkoutSession): number {
   const start = new Date(session.started_at);
-  const end = session.completed_at ? new Date(session.completed_at) : new Date();
-  
+  const end = session.completed_at
+    ? new Date(session.completed_at)
+    : new Date();
+
   const duration = (end.getTime() - start.getTime()) / 1000; // seconds
-  
+
   // TODO: Track pause durations and subtract them
   // For now, just return elapsed time
-  
+
   return Math.floor(duration);
 }
 
@@ -92,7 +99,9 @@ export interface QueuedRequest {
   timestamp: string;
 }
 
-export function queueOfflineRequest(request: Omit<QueuedRequest, "id" | "timestamp">): void {
+export function queueOfflineRequest(
+  request: Omit<QueuedRequest, "id" | "timestamp">
+): void {
   try {
     const queue = getOfflineQueue();
     const queuedRequest: QueuedRequest = {
@@ -100,7 +109,7 @@ export function queueOfflineRequest(request: Omit<QueuedRequest, "id" | "timesta
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
     };
-    
+
     queue.push(queuedRequest);
     localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
   } catch (error) {
@@ -152,10 +161,10 @@ export function formatDuration(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
-  
+
   if (hours > 0) {
     return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   }
-  
+
   return `${minutes}:${secs.toString().padStart(2, "0")}`;
 }

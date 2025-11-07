@@ -8,6 +8,7 @@
 ## 🎨 Design System Reference
 
 ### Colors
+
 - **Primary Blue**: `#3b82f6` - Assigned workouts, primary actions
 - **Success Green**: `#10b981` - Completed workouts
 - **Warning Yellow**: `#f59e0b` - In progress, warnings
@@ -15,12 +16,23 @@
 - **Gray**: `#6b7280` - Secondary text, disabled
 
 ### Status Colors
+
 ```css
-.status-assigned   { background: #3b82f6; } /* Blue */
-.status-started    { background: #f59e0b; } /* Yellow */
-.status-completed  { background: #10b981; } /* Green */
-.status-overdue    { background: #ef4444; } /* Red */
-.status-skipped    { background: #6b7280; } /* Gray */
+.status-assigned {
+  background: #3b82f6;
+} /* Blue */
+.status-started {
+  background: #f59e0b;
+} /* Yellow */
+.status-completed {
+  background: #10b981;
+} /* Green */
+.status-overdue {
+  background: #ef4444;
+} /* Red */
+.status-skipped {
+  background: #6b7280;
+} /* Gray */
 ```
 
 ---
@@ -481,6 +493,7 @@
 ## 🎯 Key UI Patterns
 
 ### Touch Targets
+
 ```
 Small (44px):    Secondary actions, links
 Medium (48px):   Form inputs, checkboxes
@@ -489,6 +502,7 @@ Extra Large:     Emergency/critical actions
 ```
 
 ### Status Badges
+
 ```
 ┌─────────────────────┐
 │ 🔵 ASSIGNED         │  Blue background
@@ -508,6 +522,7 @@ Extra Large:     Emergency/critical actions
 ```
 
 ### Rating Scales
+
 ```
 Difficulty (1-10):
 😊 ●●●●●●●●○○ 😰  "Challenging but doable"
@@ -531,6 +546,7 @@ Easy ●●●●●●●○○○ Max  "7/10 - Hard but manageable"
 ## 📏 Spacing & Layout
 
 ### Mobile Workout Mode
+
 ```
 ┌─────────────────────────────┐
 │ [Header: 64px]              │ ← Always visible
@@ -564,6 +580,7 @@ Easy ●●●●●●●○○○ Max  "7/10 - Hard but manageable"
 ```
 
 ### Responsive Calendar
+
 ```
 Mobile (< 640px):    Month view only, stack assignments
 Tablet (640-1024px): Month + sidebar with day details
@@ -575,6 +592,7 @@ Desktop (> 1024px):  Month + week view + day details
 ## 🎨 Animation & Transitions
 
 ### Loading States
+
 ```
 Assignment cards:     Skeleton shimmer (200ms)
 Calendar days:        Fade in (300ms)
@@ -584,6 +602,7 @@ Progress bar:         Smooth fill (400ms)
 ```
 
 ### Micro-interactions
+
 ```
 Button press:         Scale 0.95 + shadow
 Complete set:         Checkmark animation + haptic
@@ -592,6 +611,7 @@ Feedback submitted:   Success checkmark grow
 ```
 
 ### Gestures (Mobile)
+
 ```
 Swipe left/right:     Navigate exercises
 Pull to refresh:      Reload assignments
@@ -605,18 +625,34 @@ Pinch to zoom:        Exercise demo images
 
 ```css
 /* Headings */
-.text-3xl { font-size: 48px; } /* Timer, weight display */
-.text-2xl { font-size: 32px; } /* Exercise name in live mode */
-.text-xl  { font-size: 24px; } /* Modal titles */
-.text-lg  { font-size: 20px; } /* Section headers */
+.text-3xl {
+  font-size: 48px;
+} /* Timer, weight display */
+.text-2xl {
+  font-size: 32px;
+} /* Exercise name in live mode */
+.text-xl {
+  font-size: 24px;
+} /* Modal titles */
+.text-lg {
+  font-size: 20px;
+} /* Section headers */
 
 /* Body */
-.text-base { font-size: 16px; } /* Normal text (desktop) */
-.text-base { font-size: 18px; } /* Normal text (mobile workout) */
+.text-base {
+  font-size: 16px;
+} /* Normal text (desktop) */
+.text-base {
+  font-size: 18px;
+} /* Normal text (mobile workout) */
 
 /* Small */
-.text-sm { font-size: 14px; } /* Labels, captions */
-.text-xs { font-size: 12px; } /* Timestamps, metadata */
+.text-sm {
+  font-size: 14px;
+} /* Labels, captions */
+.text-xs {
+  font-size: 12px;
+} /* Timestamps, metadata */
 ```
 
 ---
