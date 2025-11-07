@@ -15,6 +15,8 @@ import {
   FileText,
 } from "lucide-react";
 import { parseDate, isToday, isPast } from "@/lib/date-utils";
+import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
+import type { WorkoutExercise as WorkoutExerciseType, ExerciseGroup } from "@/types";
 
 interface WorkoutExercise {
   id: string;
@@ -27,6 +29,7 @@ interface WorkoutExercise {
   tempo: string | null;
   notes: string | null;
   order_index: number;
+  group_id?: string | null;
 }
 
 interface AssignmentDetail {
@@ -76,6 +79,7 @@ interface AssignmentDetail {
     duration_minutes?: number | null;
     estimated_duration?: number | null;
     exercises?: WorkoutExercise[];
+    groups?: ExerciseGroup[];
   };
   workoutPlan?: {
     name?: string;
@@ -83,6 +87,7 @@ interface AssignmentDetail {
     duration_minutes?: number | null;
     estimatedDuration?: number | null;
     exercises?: WorkoutExercise[];
+    groups?: ExerciseGroup[];
   };
   workoutPlanName?: string;
   assigned_group?: {
@@ -136,6 +141,9 @@ export default function WorkoutAssignmentDetailModal({
   
   const getExercises = (a: AssignmentDetail | null) =>
     a?.workout_plan?.exercises || a?.workoutPlan?.exercises || [];
+  
+  const getGroups = (a: AssignmentDetail | null) =>
+    a?.workout_plan?.groups || a?.workoutPlan?.groups || [];
   
   const getStartTime = (a: AssignmentDetail | null) =>
     a?.start_time || a?.startTime;
@@ -413,75 +421,54 @@ export default function WorkoutAssignmentDetailModal({
               </div>
             )}
 
-            {/* Workout Exercises */}
+            {/* Workout Exercises with Groups */}
             {getExercises(assignment).length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    Exercises ({getExercises(assignment).length})
-                  </h3>
-                  <div className="space-y-3">
-                    {getExercises(assignment).map(
-                      (exercise: WorkoutExercise, index: number) => (
-                        <div
-                          key={exercise.id}
-                          className="p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
-                        >
-                          <div className="flex items-start gap-3">
-                            <span className="shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-medium text-sm">
-                              {index + 1}
-                            </span>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900 mb-1">
-                                {exercise.exercise_name}
-                              </h4>
-                              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                                {exercise.sets && (
-                                  <span>
-                                    <span className="font-medium">Sets:</span>{" "}
-                                    {exercise.sets}
-                                  </span>
-                                )}
-                                {exercise.reps && (
-                                  <span>
-                                    <span className="font-medium">Reps:</span>{" "}
-                                    {exercise.reps}
-                                  </span>
-                                )}
-                                {exercise.weight && (
-                                  <span>
-                                    <span className="font-medium">Weight:</span>{" "}
-                                    {exercise.weight} lbs
-                                  </span>
-                                )}
-                                {exercise.weight_percentage && (
-                                  <span>
-                                    <span className="font-medium">
-                                      Intensity:
-                                    </span>{" "}
-                                    {exercise.weight_percentage}% 1RM
-                                  </span>
-                                )}
-                                {exercise.rest_seconds && (
-                                  <span>
-                                    <span className="font-medium">Rest:</span>{" "}
-                                    {exercise.rest_seconds}s
-                                  </span>
-                                )}
-                              </div>
-                              {exercise.notes && (
-                                <p className="mt-2 text-sm text-gray-600 italic">
-                                  {exercise.notes}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Workout ({getExercises(assignment).length} exercises)
+                </h3>
+                <ExerciseGroupDisplay
+                  exercises={getExercises(assignment).map(ex => ({
+                    id: ex.id,
+                    exerciseId: ex.id,
+                    exerciseName: ex.exercise_name,
+                    sets: ex.sets,
+                    reps: ex.reps ? parseInt(ex.reps) : 0,
+                    tempo: ex.tempo || undefined,
+                    weightType: "fixed" as const,
+                    weight: ex.weight || undefined,
+                    percentage: ex.weight_percentage || undefined,
+                    restTime: ex.rest_seconds || undefined,
+                    notes: ex.notes || undefined,
+                    order: ex.order_index,
+                    groupId: ex.group_id || undefined,
+                  }))}
+                  groups={getGroups(assignment).map((g: {
+                    id: string;
+                    name: string;
+                    type: string;
+                    description?: string | null;
+                    order_index?: number;
+                    rest_between_rounds?: number | null;
+                    rest_between_exercises?: number | null;
+                    rounds?: number | null;
+                    notes?: string | null;
+                  }) => ({
+                    id: g.id,
+                    name: g.name,
+                    type: g.type as "superset" | "circuit" | "section",
+                    description: g.description || undefined,
+                    order: g.order_index || 0,
+                    restBetweenRounds: g.rest_between_rounds || undefined,
+                    restBetweenExercises: g.rest_between_exercises || undefined,
+                    rounds: g.rounds || undefined,
+                    notes: g.notes || undefined,
+                  }))}
+                  showProgress={false}
+                />
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-6 border-t">

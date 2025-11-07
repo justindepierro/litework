@@ -41,10 +41,27 @@ export async function GET(
             reps,
             weight,
             weight_type,
+            weight_max,
             percentage,
+            percentage_max,
+            percentage_base_kpi,
+            tempo,
+            each_side,
             rest_time,
             notes,
-            order_index
+            order_index,
+            group_id
+          ),
+          groups:workout_exercise_groups(
+            id,
+            name,
+            type,
+            description,
+            order_index,
+            rest_between_rounds,
+            rest_between_exercises,
+            rounds,
+            notes
           )
         ),
         assigned_by_user:users!workout_assignments_assigned_by_fkey(
