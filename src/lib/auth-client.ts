@@ -504,10 +504,10 @@ export async function getSession() {
       "Fetching session from Supabase"
     );
 
-    // Add a timeout to prevent infinite hanging
+    // Add a timeout to prevent infinite hanging (5 seconds for network variability)
     const sessionPromise = supabase.auth.getSession();
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Session fetch timeout")), 3000)
+      setTimeout(() => reject(new Error("Session fetch timeout")), 5000)
     );
 
     const {
@@ -573,7 +573,7 @@ export async function getCurrentUser(): Promise<User | null> {
       .single();
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)
+      setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
     );
 
     const { data: profile, error } = await Promise.race([
@@ -637,9 +637,62 @@ export async function refreshSession() {
 // Listen to auth changes
 export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
+    // We already have the session from the event, no need to fetch it again
     if (session?.user) {
-      const user = await getCurrentUser();
-      callback(user);
+      const correlationId = generateCorrelationId();
+      const timer = new AuthTimer(correlationId, "profile_fetch");
+
+      try {
+        logAuthEvent(
+          correlationId,
+          "info",
+          "profile_fetch",
+          "Auth state changed, loading user profile",
+          { event, userId: session.user.id }
+        );
+
+        // Get user profile from database with timeout
+        const profilePromise = supabase
+          .from("users")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
+        );
+
+        const { data: profile, error } = await Promise.race([
+          profilePromise,
+          timeoutPromise,
+        ]);
+
+        if (error || !profile) {
+          timer.error("Profile fetch failed", { error, userId: session.user.id });
+          callback(null);
+          return;
+        }
+
+        const user: User = {
+          id: profile.id,
+          email: profile.email,
+          role: profile.role,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          fullName: profile.name,
+        };
+
+        timer.end("User profile loaded successfully", {
+          userId: user.id,
+          role: user.role,
+        });
+
+        callback(user);
+      } catch (error) {
+        const classified = classifyAuthError(error);
+        timer.error("Auth state change error", classified);
+        callback(null);
+      }
     } else {
       callback(null);
     }
