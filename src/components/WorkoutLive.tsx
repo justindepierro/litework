@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkoutSession } from "@/contexts/WorkoutSessionContext";
 import { OfflineStatusBanner } from "@/components/OfflineStatus";
+import { PRCelebrationModal } from "@/components/PRBadge";
+import { checkForPR, PRComparison } from "@/lib/pr-detection";
+import { useAuth } from "@/contexts/AuthContext";
 import RestTimer from "./RestTimer";
 import {
   ChevronLeft,
@@ -25,6 +28,7 @@ interface WorkoutLiveProps {
 
 export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const {
     session,
     isLoading,
@@ -44,6 +48,8 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
   const [showRestTimer, setShowRestTimer] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showNotesPanel, setShowNotesPanel] = useState(false);
+  const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
+  const [showPRModal, setShowPRModal] = useState(false);
 
   const currentExercise = session?.exercises[session.current_exercise_index];
   const isLastExercise = session
@@ -71,7 +77,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
   }, [currentExercise?.session_exercise_id]);
 
   const handleCompleteSet = useCallback(async () => {
-    if (!session || !currentExercise) return;
+    if (!session || !currentExercise || !user) return;
     const weightNum = weight ? parseFloat(weight) : null;
     const repsNum = reps ? parseInt(reps) : 0;
     if (repsNum === 0) {
@@ -87,6 +93,25 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
       completed_at: new Date().toISOString(),
     };
     addSetRecord(session.current_exercise_index, setRecord);
+    
+    // Check for PR
+    if (weightNum) {
+      try {
+        const comparison = await checkForPR(
+          user.id,
+          currentExercise.exercise_id,
+          weightNum,
+          repsNum
+        );
+        if (comparison.isPR) {
+          setPrComparison(comparison);
+          setShowPRModal(true);
+        }
+      } catch (error) {
+        console.error("[PR Detection] Failed to check for PR:", error);
+      }
+    }
+    
     try {
       await fetch(`/api/sessions/${session.id}/sets`, {
         method: "POST",
@@ -115,6 +140,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
     weight,
     reps,
     rpe,
+    user,
     addSetRecord,
     completeExercise,
     isLastExercise,
@@ -507,6 +533,13 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
           duration={currentExercise.rest_seconds}
           onComplete={handleRestComplete}
           onSkip={handleRestComplete}
+        />
+      )}
+      {showPRModal && prComparison && currentExercise && (
+        <PRCelebrationModal
+          comparison={prComparison}
+          exerciseName={currentExercise.exercise_name}
+          onClose={() => setShowPRModal(false)}
         />
       )}
       {showExitConfirm && (

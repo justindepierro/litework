@@ -1,0 +1,89 @@
+/**
+ * Celebration Animations
+ * 
+ * CSS animations for PR celebrations and achievements
+ */
+
+/* Scale-in animation for modals */
+@keyframes scale-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Confetti effect */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  animation: confetti-fall 3s linear infinite;
+}
+
+.confetti::before,
+.confetti::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+
+.confetti::before {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  left: -15px;
+  animation: confetti-fall 2.8s linear infinite;
+}
+
+.confetti::after {
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+  left: 15px;
+  animation: confetti-fall 3.2s linear infinite;
+}
+
+/* Pulse animation for inline badges */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Bounce animation for large badges */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
