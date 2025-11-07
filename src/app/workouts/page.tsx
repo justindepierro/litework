@@ -21,9 +21,12 @@ import {
   Archive,
   ArchiveRestore,
   User,
+  Layers,
+  Repeat,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
+import { ExerciseGroupDisplay } from "@/components/ExerciseGroupDisplay";
 import {
   validateWorkout,
   canSaveWorkout,
@@ -443,55 +446,54 @@ export default function WorkoutsPage() {
                         {/* Exercise Preview or Full List */}
                         <div className="space-y-1 mb-4">
                           {isExpanded ? (
-                            // Expanded view - show all exercises with full details
+                            // Expanded view - show all exercises with grouping
                             <>
-                              <div className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                              <div className="text-xs font-semibold text-gray-500 uppercase mb-3">
                                 Exercises ({workout.exercises.length})
+                                {workout.groups && workout.groups.length > 0 && (
+                                  <span className="ml-2 text-blue-600">
+                                    • {workout.groups.length} group{workout.groups.length !== 1 ? 's' : ''}
+                                  </span>
+                                )}
                               </div>
-                              {workout.exercises.map((exercise, index) => (
-                                <div
-                                  key={exercise.id}
-                                  className="border-l-2 border-blue-500 pl-3 py-2 bg-gray-50 rounded"
-                                >
-                                  <div className="font-medium text-body-small">
-                                    {index + 1}. {exercise.exerciseName}
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-1 space-y-1">
-                                    <div>
-                                      Sets: {exercise.sets} × Reps:{" "}
-                                      {exercise.reps}
-                                    </div>
-                                    <div>Weight: {formatWeight(exercise)}</div>
-                                    {exercise.restTime && (
-                                      <div>Rest: {exercise.restTime}s</div>
-                                    )}
-                                    {exercise.tempo && (
-                                      <div>Tempo: {exercise.tempo}</div>
-                                    )}
-                                    {exercise.notes && (
-                                      <div className="italic">
-                                        Note: {exercise.notes}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
+                              <ExerciseGroupDisplay
+                                exercises={workout.exercises}
+                                groups={workout.groups || []}
+                                showProgress={false}
+                              />
                             </>
                           ) : (
-                            // Collapsed view - show first 3 exercises
+                            // Collapsed view - show first 3 exercises with group indicators
                             <>
                               {workout.exercises
                                 .slice(0, 3)
-                                .map((exercise, index) => (
-                                  <div
-                                    key={exercise.id}
-                                    className="text-body-small"
-                                  >
-                                    {index + 1}. {exercise.exerciseName} -{" "}
-                                    {exercise.sets}×{exercise.reps} @{" "}
-                                    {formatWeight(exercise)}
-                                  </div>
-                                ))}
+                                .map((exercise, index) => {
+                                  const group = workout.groups?.find(g => g.id === exercise.groupId);
+                                  return (
+                                    <div
+                                      key={exercise.id}
+                                      className="text-body-small flex items-center gap-2"
+                                    >
+                                      <span>
+                                        {index + 1}. {exercise.exerciseName} -{" "}
+                                        {exercise.sets}×{exercise.reps} @{" "}
+                                        {formatWeight(exercise)}
+                                      </span>
+                                      {group && (
+                                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                                          group.type === 'superset' ? 'bg-purple-100 text-purple-700' :
+                                          group.type === 'circuit' ? 'bg-blue-100 text-blue-700' :
+                                          'bg-amber-100 text-amber-700'
+                                        }`}>
+                                          {group.type === 'superset' && <Layers className="w-3 h-3 inline mr-1" />}
+                                          {group.type === 'circuit' && <Repeat className="w-3 h-3 inline mr-1" />}
+                                          {group.type === 'section' && <Dumbbell className="w-3 h-3 inline mr-1" />}
+                                          {group.type}
+                                        </span>
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               {workout.exercises.length > 3 && (
                                 <div className="text-body-small text-gray-500">
                                   +{workout.exercises.length - 3} more exercises
