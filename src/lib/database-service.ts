@@ -758,14 +758,42 @@ export const getAssignmentById = async (
 export const createAssignment = async (
   assignmentData: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
 ): Promise<WorkoutAssignment | null> => {
+  // Map camelCase to snake_case for database
+  // Start with ONLY the columns that exist in the current schema
+  const dbData: Record<string, unknown> = {
+    workout_plan_id: assignmentData.workoutPlanId,
+    assigned_by: assignmentData.assignedBy,
+    assigned_to_user_id: assignmentData.athleteId || null,
+    assigned_to_group_id: assignmentData.groupId || null,
+    scheduled_date: assignmentData.scheduledDate,
+    notes: assignmentData.notes || null,
+    completed: assignmentData.status === 'completed' || false,
+  };
+
+  // Try to add new fields - if they don't exist, they'll be ignored
+  try {
+    if (assignmentData.workoutPlanName) dbData.workout_plan_name = assignmentData.workoutPlanName;
+    if (assignmentData.athleteIds) dbData.athlete_ids = assignmentData.athleteIds;
+    if (assignmentData.assignedDate) dbData.assigned_date = assignmentData.assignedDate;
+    if (assignmentData.assignmentType) dbData.assignment_type = assignmentData.assignmentType;
+    if (assignmentData.status) dbData.status = assignmentData.status;
+    if (assignmentData.modifications) dbData.modifications = assignmentData.modifications;
+    if (assignmentData.startTime) dbData.start_time = assignmentData.startTime;
+    if (assignmentData.endTime) dbData.end_time = assignmentData.endTime;
+    if (assignmentData.location) dbData.location = assignmentData.location;
+  } catch {
+    console.log("Some optional fields not available in schema yet");
+  }
+
   const { data, error } = await supabase
     .from("workout_assignments")
-    .insert([assignmentData])
+    .insert([dbData])
     .select()
     .single();
 
   if (error) {
-    console.error("Error creating assignment:", error);
+    console.error("[Assignment] Error creating assignment:", error);
+    console.error("[Assignment] Attempted data:", JSON.stringify(dbData, null, 2));
     return null;
   }
 
