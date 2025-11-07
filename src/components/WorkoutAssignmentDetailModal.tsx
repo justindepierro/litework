@@ -13,6 +13,7 @@ import {
   Trash2,
   FileText,
 } from "lucide-react";
+import { parseDate, isToday, isPast } from "@/lib/date-utils";
 
 interface WorkoutExercise {
   id: string;
@@ -156,12 +157,12 @@ export default function WorkoutAssignmentDetailModal({
       return "green";
     }
 
-    const scheduledDate = new Date(assignment.scheduled_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    scheduledDate.setHours(0, 0, 0, 0);
-
-    if (scheduledDate < today) {
+    // Handle both string and Date types for scheduled_date
+    const scheduledDate = typeof assignment.scheduled_date === 'string' 
+      ? parseDate(assignment.scheduled_date)
+      : assignment.scheduled_date;
+    
+    if (isPast(scheduledDate)) {
       return "red"; // Overdue
     }
 
@@ -175,12 +176,12 @@ export default function WorkoutAssignmentDetailModal({
       return "Completed";
     }
 
-    const scheduledDate = new Date(assignment.scheduled_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    scheduledDate.setHours(0, 0, 0, 0);
+    // Handle both string and Date types for scheduled_date
+    const scheduledDate = typeof assignment.scheduled_date === 'string'
+      ? parseDate(assignment.scheduled_date)
+      : assignment.scheduled_date;
 
-    if (scheduledDate < today) {
+    if (isPast(scheduledDate)) {
       return "Overdue";
     }
 
@@ -252,15 +253,17 @@ export default function WorkoutAssignmentDetailModal({
                 <Calendar className="w-5 h-5 text-gray-500" />
                 <span className="font-medium">Date:</span>
                 <span>
-                  {new Date(assignment.scheduled_date).toLocaleDateString(
-                    "en-US",
-                    {
+                  {(() => {
+                    const date = typeof assignment.scheduled_date === 'string'
+                      ? parseDate(assignment.scheduled_date)
+                      : assignment.scheduled_date;
+                    return date.toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    }
-                  )}
+                    });
+                  })()}
                 </span>
               </div>
 
