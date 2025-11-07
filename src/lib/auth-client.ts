@@ -504,10 +504,10 @@ export async function getSession() {
       "Fetching session from Supabase"
     );
 
-    // Add a timeout to prevent infinite hanging (5 seconds for network variability)
+    // Add a timeout to prevent infinite hanging (15 seconds for network variability and cold starts)
     const sessionPromise = supabase.auth.getSession();
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Session fetch timeout")), 5000)
+      setTimeout(() => reject(new Error("Session fetch timeout")), 15000)
     );
 
     const {
@@ -658,11 +658,11 @@ export function onAuthChange(callback: (user: User | null) => void) {
           .eq("id", session.user.id)
           .single();
 
-        // 8 second timeout to account for potential cold starts
+        // 15 second timeout to account for potential cold starts and network delays
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
-            reject(new Error("Profile fetch timeout - database query exceeded 8 seconds. This may indicate network issues or database cold start."));
-          }, 8000)
+            reject(new Error("Profile fetch timeout - database query exceeded 15 seconds. This may indicate network issues or database cold start."));
+          }, 15000)
         );
 
         const result = await Promise.race([
