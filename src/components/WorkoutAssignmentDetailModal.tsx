@@ -6,6 +6,7 @@ import {
   Clock,
   MapPin,
   User,
+  Users,
   Calendar,
   CheckCircle,
   Play,
@@ -30,27 +31,67 @@ interface WorkoutExercise {
 
 interface AssignmentDetail {
   id: string;
-  athlete_id: string;
-  workout_plan_id: string;
-  scheduled_date: string;
-  start_time: string | null;
-  end_time: string | null;
-  location: string | null;
-  coach_notes: string | null;
-  status: "assigned" | "completed" | "skipped";
-  completed_at: string | null;
-  assigned_by: string;
-  athlete: {
-    full_name: string;
+  athlete_id?: string;
+  athleteId?: string;
+  workout_plan_id?: string;
+  workoutPlanId?: string;
+  scheduled_date?: string | Date;
+  scheduledDate?: string | Date;
+  start_time?: string | null;
+  startTime?: string | null;
+  end_time?: string | null;
+  endTime?: string | null;
+  location?: string | null;
+  coach_notes?: string | null;
+  coachNotes?: string | null;
+  notes?: string | null;
+  status?: "assigned" | "completed" | "skipped";
+  completed_at?: string | null;
+  completedAt?: string | null;
+  assigned_by?: string;
+  assignedBy?: string;
+  athlete?: {
+    full_name?: string;
+    fullName?: string;
   };
-  assigned_by_user: {
-    full_name: string;
+  assigned_by_user?: {
+    full_name?: string;
+    fullName?: string;
+    first_name?: string;
+    firstName?: string;
+    last_name?: string;
+    lastName?: string;
   };
-  workout_plan: {
-    name: string;
-    description: string | null;
-    duration_minutes: number | null;
-    exercises: WorkoutExercise[];
+  assignedByUser?: {
+    full_name?: string;
+    fullName?: string;
+    first_name?: string;
+    firstName?: string;
+    last_name?: string;
+    lastName?: string;
+  };
+  workout_plan?: {
+    name?: string;
+    description?: string | null;
+    duration_minutes?: number | null;
+    estimated_duration?: number | null;
+    exercises?: WorkoutExercise[];
+  };
+  workoutPlan?: {
+    name?: string;
+    description?: string | null;
+    duration_minutes?: number | null;
+    estimatedDuration?: number | null;
+    exercises?: WorkoutExercise[];
+  };
+  workoutPlanName?: string;
+  assigned_group?: {
+    name?: string;
+    description?: string | null;
+  };
+  assignedGroup?: {
+    name?: string;
+    description?: string | null;
   };
 }
 
@@ -78,6 +119,46 @@ export default function WorkoutAssignmentDetailModal({
   const [error, setError] = useState<string | null>(null);
 
   const isCoach = userRole === "coach" || userRole === "admin";
+
+  // Helper functions to access fields regardless of naming convention
+  const getScheduledDate = (a: AssignmentDetail | null) => 
+    a?.scheduled_date || a?.scheduledDate;
+  
+  const getWorkoutName = (a: AssignmentDetail | null) => 
+    a?.workoutPlanName || a?.workout_plan?.name || a?.workoutPlan?.name || 'Untitled Workout';
+  
+  const getWorkoutDescription = (a: AssignmentDetail | null) =>
+    a?.workout_plan?.description || a?.workoutPlan?.description;
+  
+  const getWorkoutDuration = (a: AssignmentDetail | null) =>
+    a?.workout_plan?.estimated_duration || a?.workoutPlan?.estimatedDuration || 
+    a?.workout_plan?.duration_minutes || a?.workoutPlan?.duration_minutes;
+  
+  const getExercises = (a: AssignmentDetail | null) =>
+    a?.workout_plan?.exercises || a?.workoutPlan?.exercises || [];
+  
+  const getStartTime = (a: AssignmentDetail | null) =>
+    a?.start_time || a?.startTime;
+  
+  const getEndTime = (a: AssignmentDetail | null) =>
+    a?.end_time || a?.endTime;
+  
+  const getLocation = (a: AssignmentDetail | null) =>
+    a?.location;
+  
+  const getNotes = (a: AssignmentDetail | null) =>
+    a?.coach_notes || a?.coachNotes || a?.notes;
+  
+  const getAssignedBy = (a: AssignmentDetail | null) => {
+    const user = a?.assigned_by_user || a?.assignedByUser;
+    if (!user) return 'Unknown Coach';
+    return user.full_name || user.fullName || 
+           `${user.first_name || user.firstName || ''} ${user.last_name || user.lastName || ''}`.trim() ||
+           'Unknown Coach';
+  };
+  
+  const getGroupName = (a: AssignmentDetail | null) =>
+    a?.assigned_group?.name || a?.assignedGroup?.name;
 
   const fetchAssignment = useCallback(async () => {
     try {
@@ -158,9 +239,12 @@ export default function WorkoutAssignmentDetailModal({
     }
 
     // Handle both string and Date types for scheduled_date
-    const scheduledDate = typeof assignment.scheduled_date === 'string' 
-      ? parseDate(assignment.scheduled_date)
-      : assignment.scheduled_date;
+    const dateValue = getScheduledDate(assignment);
+    if (!dateValue) return "blue";
+    
+    const scheduledDate = typeof dateValue === 'string' 
+      ? parseDate(dateValue)
+      : dateValue;
     
     if (isPast(scheduledDate)) {
       return "red"; // Overdue
@@ -177,9 +261,12 @@ export default function WorkoutAssignmentDetailModal({
     }
 
     // Handle both string and Date types for scheduled_date
-    const scheduledDate = typeof assignment.scheduled_date === 'string'
-      ? parseDate(assignment.scheduled_date)
-      : assignment.scheduled_date;
+    const dateValue = getScheduledDate(assignment);
+    if (!dateValue) return "Assigned";
+    
+    const scheduledDate = typeof dateValue === 'string'
+      ? parseDate(dateValue)
+      : dateValue;
 
     if (isPast(scheduledDate)) {
       return "Overdue";
@@ -219,7 +306,7 @@ export default function WorkoutAssignmentDetailModal({
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {assignment.workout_plan?.name || "Workout Assignment"}
+                    {getWorkoutName(assignment)}
                   </h2>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -233,10 +320,18 @@ export default function WorkoutAssignmentDetailModal({
                     {statusText}
                   </span>
                 </div>
-                {assignment.workout_plan?.description && (
+                {getWorkoutDescription(assignment) && (
                   <p className="text-gray-600">
-                    {assignment.workout_plan.description}
+                    {getWorkoutDescription(assignment)}
                   </p>
+                )}
+                {getGroupName(assignment) && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Users className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600">
+                      Group: {getGroupName(assignment)}
+                    </span>
+                  </div>
                 )}
               </div>
               <button
@@ -254,10 +349,11 @@ export default function WorkoutAssignmentDetailModal({
                 <span className="font-medium">Date:</span>
                 <span>
                   {(() => {
-                    if (!assignment?.scheduled_date) return 'No date set';
-                    const date = typeof assignment.scheduled_date === 'string'
-                      ? parseDate(assignment.scheduled_date)
-                      : assignment.scheduled_date;
+                    const dateValue = getScheduledDate(assignment);
+                    if (!dateValue) return 'No date set';
+                    const date = typeof dateValue === 'string'
+                      ? parseDate(dateValue)
+                      : dateValue;
                     return date.toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
@@ -268,44 +364,42 @@ export default function WorkoutAssignmentDetailModal({
                 </span>
               </div>
 
-              {assignment.start_time && (
+              {getStartTime(assignment) && (
                 <div className="flex items-center gap-2 text-gray-700">
                   <Clock className="w-5 h-5 text-gray-500" />
                   <span className="font-medium">Time:</span>
                   <span>
-                    {assignment.start_time}
-                    {assignment.end_time && ` - ${assignment.end_time}`}
+                    {getStartTime(assignment)}
+                    {getEndTime(assignment) && ` - ${getEndTime(assignment)}`}
                   </span>
                 </div>
               )}
 
-              {assignment.location && (
+              {getLocation(assignment) && (
                 <div className="flex items-center gap-2 text-gray-700">
                   <MapPin className="w-5 h-5 text-gray-500" />
                   <span className="font-medium">Location:</span>
-                  <span>{assignment.location}</span>
+                  <span>{getLocation(assignment)}</span>
                 </div>
               )}
 
-              {assignment.assigned_by_user && (
-                <div className="flex items-center gap-2 text-gray-700">
-                  <User className="w-5 h-5 text-gray-500" />
-                  <span className="font-medium">Assigned by:</span>
-                  <span>{assignment.assigned_by_user.full_name}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-gray-700">
+                <User className="w-5 h-5 text-gray-500" />
+                <span className="font-medium">Assigned by:</span>
+                <span>{getAssignedBy(assignment)}</span>
+              </div>
 
-              {assignment.workout_plan?.duration_minutes && (
+              {getWorkoutDuration(assignment) && (
                 <div className="flex items-center gap-2 text-gray-700">
                   <Clock className="w-5 h-5 text-gray-500" />
                   <span className="font-medium">Duration:</span>
-                  <span>{assignment.workout_plan.duration_minutes} min</span>
+                  <span>{getWorkoutDuration(assignment)} min</span>
                 </div>
               )}
             </div>
 
             {/* Notes */}
-            {assignment.coach_notes && (
+            {getNotes(assignment) && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start gap-2">
                   <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
@@ -313,22 +407,21 @@ export default function WorkoutAssignmentDetailModal({
                     <h3 className="font-medium text-blue-900 mb-1">
                       Coach Notes
                     </h3>
-                    <p className="text-blue-800">{assignment.coach_notes}</p>
+                    <p className="text-blue-800">{getNotes(assignment)}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Workout Exercises */}
-            {assignment.workout_plan?.exercises &&
-              assignment.workout_plan.exercises.length > 0 && (
+            {getExercises(assignment).length > 0 && (
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <CheckCircle className="w-5 h-5" />
-                    Exercises ({assignment.workout_plan.exercises.length})
+                    Exercises ({getExercises(assignment).length})
                   </h3>
                   <div className="space-y-3">
-                    {assignment.workout_plan.exercises.map(
+                    {getExercises(assignment).map(
                       (exercise: WorkoutExercise, index: number) => (
                         <div
                           key={exercise.id}
