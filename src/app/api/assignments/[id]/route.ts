@@ -5,7 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 // GET /api/assignments/[id] - Get single assignment
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Fetch assignment with related data
     const { data: assignment, error } = await supabaseAdmin
@@ -96,7 +96,7 @@ export async function GET(
 // PUT /api/assignments/[id] - Update assignment
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
@@ -116,7 +116,7 @@ export async function PUT(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const updates = await request.json();
 
     // Validate allowed fields
@@ -178,7 +178,7 @@ export async function PUT(
 // DELETE /api/assignments/[id] - Delete assignment
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
@@ -198,7 +198,7 @@ export async function DELETE(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Delete assignment
     const { error } = await supabaseAdmin
@@ -230,7 +230,7 @@ export async function DELETE(
 // PATCH /api/assignments/[id]/complete - Mark assignment as complete (for athletes)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();
@@ -242,7 +242,7 @@ export async function PATCH(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verify user has access to this assignment
     const { data: assignment, error: fetchError } = await supabaseAdmin
