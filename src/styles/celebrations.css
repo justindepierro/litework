@@ -4,6 +4,20 @@
  * CSS animations for PR celebrations and achievements
  */
 
+/* Fade-in animation for overlays */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
 /* Scale-in animation for modals */
 @keyframes scale-in {
   0% {

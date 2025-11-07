@@ -14,7 +14,7 @@ Transform the assignment system into a fully functional workout execution platfo
 
 1. Start workouts from assignments
 2. Track sets, reps, and weights in real-time
-3. Use rest timers between sets
+3. Use rest timers between sets 
 4. Complete workouts with full data capture
 5. Work offline in the gym with auto-sync
 
