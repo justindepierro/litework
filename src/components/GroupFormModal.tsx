@@ -168,7 +168,7 @@ export default function GroupFormModal({
         }
       } else {
         const response = (await apiClient.createGroup(formData)) as ApiResponse;
-        console.log("Create group response:", response);
+        // [REMOVED] console.log("Create group response:", response);
         if (response.success) {
           const data = response as unknown as { group?: AthleteGroup };
           if (data.group) {

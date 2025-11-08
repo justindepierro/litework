@@ -626,7 +626,7 @@ export async function refreshSession() {
       throw error;
     }
 
-    console.log("[AUTH_CLIENT] Session refreshed successfully");
+    // [REMOVED] console.log("[AUTH_CLIENT] Session refreshed successfully");
     return data.session;
   } catch (error) {
     console.error("[AUTH_CLIENT] Unexpected error refreshing session:", error);

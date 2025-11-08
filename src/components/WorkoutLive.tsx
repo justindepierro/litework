@@ -7,7 +7,6 @@ import { OfflineStatusBanner } from "@/components/OfflineStatus";
 import { PRCelebrationModal } from "@/components/PRBadge";
 import { checkForPR, PRComparison } from "@/lib/pr-detection";
 import { useAuth } from "@/contexts/AuthContext";
-import YouTubeEmbed from "@/components/YouTubeEmbed";
 import RestTimer from "./RestTimer";
 import {
   ChevronLeft,
@@ -62,8 +61,11 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
       )
     : 0;
 
+  // Pre-fill form fields when exercise changes
   useEffect(() => {
     if (!currentExercise) return;
+    
+    // Pre-fill weight from last set or target
     if (currentExercise.set_records.length > 0) {
       const lastSet =
         currentExercise.set_records[currentExercise.set_records.length - 1];
@@ -71,10 +73,13 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
     } else if (currentExercise.weight_target) {
       setWeight(currentExercise.weight_target.toString());
     }
+    
+    // Pre-fill reps from target
     if (currentExercise.reps_target) {
       const repsNum = parseInt(currentExercise.reps_target);
       if (!isNaN(repsNum)) setReps(repsNum.toString());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExercise?.session_exercise_id]);
 
   const handleCompleteSet = useCallback(async () => {
@@ -361,24 +366,12 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
               </div>
               {showNotesPanel && (
                 <div className="mt-4 space-y-4">
-                  {/* Exercise Notes */}
-                  {currentExercise.notes && (
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-900">
-                        {currentExercise.notes}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* YouTube Demo Video */}
-                  {(currentExercise as any).videoUrl && (
-                    <div className="bg-white rounded-lg p-4">
-                      <YouTubeEmbed
-                        url={(currentExercise as any).videoUrl}
-                        title={`${currentExercise.exercise_name} demonstration`}
-                      />
-                    </div>
-                  )}
+                  {/* Exercise info panel - currently empty but can be extended */}
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">
+                      Exercise information panel
+                    </p>
+                  </div>
                 </div>
               )}
               <div className="mt-4">

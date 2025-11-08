@@ -133,7 +133,7 @@ export default function NotificationPermission({
       }
 
       setIsSubscribed(true);
-      console.log("✅ Successfully subscribed to push notifications");
+      // [REMOVED] console.log("✅ Successfully subscribed to push notifications");
     } catch (err) {
       console.error("Error subscribing to push:", err);
       throw err;
@@ -168,7 +168,7 @@ export default function NotificationPermission({
           });
 
           setIsSubscribed(false);
-          console.log("✅ Successfully unsubscribed from push notifications");
+          // [REMOVED] console.log("✅ Successfully unsubscribed from push notifications");
         }
       }
     } catch (err) {

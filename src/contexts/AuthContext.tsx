@@ -180,7 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (previousUser && !newUser) {
           console.warn("[AUTH] User session ended - possible logout or expiry");
         } else if (!previousUser && newUser) {
-          console.log("[AUTH] User session started:", newUser.email);
+          // [REMOVED] console.log("[AUTH] User session started:", newUser.email);
         } else if (newUser && previousUser && newUser.id !== previousUser.id) {
           console.log(
             "[AUTH] User session changed from",
@@ -192,7 +192,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If user logged out elsewhere, redirect to login
         if (!newUser && !initializingRef.current) {
-          console.log("[AUTH] Redirecting to login page");
+          // [REMOVED] console.log("[AUTH] Redirecting to login page");
           router.push("/login");
         }
       }
@@ -208,9 +208,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ) {
           try {
             // Refresh session every 4 hours (tokens expire after 1 hour by default, but are auto-refreshed)
-            console.log("[AUTH] Refreshing session...");
+            // [REMOVED] console.log("[AUTH] Refreshing session...");
             await authClient.refreshSession();
-            console.log("[AUTH] Session refreshed successfully");
+            // [REMOVED] console.log("[AUTH] Session refreshed successfully");
           } catch (error) {
             console.error("[AUTH] Failed to refresh session:", error);
           }

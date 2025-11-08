@@ -216,7 +216,7 @@ export const createGroup = async (
       updatedAt: new Date(data.updated_at),
     };
 
-    console.log("[database-service] Returning result:", JSON.stringify(result));
+    // [REMOVED] console.log("[database-service] Returning result:", JSON.stringify(result));
     return result;
   } catch (err) {
     console.error("[database-service] Exception in createGroup:", err);
@@ -678,7 +678,7 @@ export const updateWorkoutPlan = async (
     blockInstances?: Array<Record<string, unknown>>;
   }
 ): Promise<WorkoutPlan | null> => {
-  console.log("[database-service] updateWorkoutPlan called:", { id, updates });
+  // [REMOVED] console.log("[database-service] updateWorkoutPlan called:", { id, updates });
 
   // Extract exercises, groups, and blockInstances from updates
   const { exercises, groups, blockInstances, ...basicUpdates } = updates;
@@ -843,7 +843,7 @@ export const updateWorkoutPlan = async (
     }
   }
 
-  console.log("[database-service] Successfully updated workout:", data);
+  // [REMOVED] console.log("[database-service] Successfully updated workout:", data);
 
   // Transform snake_case response back to camelCase
   return {
@@ -991,7 +991,7 @@ export const createAssignment = async (
     if (assignmentData.endTime) dbData.end_time = assignmentData.endTime;
     if (assignmentData.location) dbData.location = assignmentData.location;
   } catch {
-    console.log("Some optional fields not available in schema yet");
+    // [REMOVED] console.log("Some optional fields not available in schema yet");
   }
 
   const { data, error } = await supabase

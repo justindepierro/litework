@@ -43,10 +43,10 @@ const resendApiKey = process.env.RESEND_API_KEY;
 const fromEmail =
   process.env.RESEND_FROM_EMAIL || "LiteWork <noreply@litework.app>";
 
-console.log("🔧 Email Service Initialization:");
-console.log("   - RESEND_API_KEY present:", !!resendApiKey);
-console.log("   - RESEND_API_KEY length:", resendApiKey?.length || 0);
-console.log("   - FROM_EMAIL:", fromEmail);
+// [REMOVED] console.log("🔧 Email Service Initialization:");
+// [REMOVED] console.log("   - RESEND_API_KEY present:", !!resendApiKey);
+// [REMOVED] console.log("   - RESEND_API_KEY length:", resendApiKey?.length || 0);
+// [REMOVED] console.log("   - FROM_EMAIL:", fromEmail);
 
 if (!resendApiKey) {
   console.error(
@@ -117,7 +117,7 @@ export async function sendEmailNotification(
       };
     }
 
-    console.log(`✅ Email sent successfully: ${data?.id}`);
+    // [REMOVED] console.log(`✅ Email sent successfully: ${data?.id}`);
 
     // Log successful delivery
     if (userId) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import {
   RefreshCw,
@@ -27,19 +27,16 @@ export default function DiagnosePage() {
   const [serverDiagnostics, setServerDiagnostics] =
     useState<DiagnosticResult | null>(null);
   const [clientDiagnostics, setClientDiagnostics] = useState<
-    Record<string, any>
+    Record<string, unknown>
   >({});
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    runDiagnostics();
-  }, []);
+  const hasInitialized = useRef(false);
 
   const runDiagnostics = async () => {
     setIsLoading(true);
 
     // CLIENT-SIDE CHECKS
-    const clientChecks: Record<string, any> = {
+    const clientChecks: Record<string, unknown> = {
       timestamp: new Date().toISOString(),
       browser: {
         userAgent: navigator.userAgent,
@@ -103,6 +100,15 @@ export default function DiagnosePage() {
 
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    // Run diagnostics on mount - prevent double execution in strict mode
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    runDiagnostics();
+  }, []);
 
   const testLogin = async () => {
     const email = prompt("Enter email to test:");

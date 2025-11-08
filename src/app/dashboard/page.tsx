@@ -172,7 +172,7 @@ export default function DashboardPage() {
         // Refresh assignments
         await fetchCoachData();
         // Show success message (could add toast notification here)
-        console.log("Assignment created successfully!");
+        // [REMOVED] console.log("Assignment created successfully!");
       }
     } catch (error) {
       console.error("Failed to create assignment:", error);
@@ -201,7 +201,7 @@ export default function DashboardPage() {
 
   const handleEditAssignment = (assignmentId: string) => {
     // TODO: Open edit modal or navigate to edit page
-    console.log("Edit assignment:", assignmentId);
+    // [REMOVED] console.log("Edit assignment:", assignmentId);
     handleCloseDetailModal();
   };
 
@@ -252,7 +252,7 @@ export default function DashboardPage() {
         } else {
           await fetchAthleteAssignments();
         }
-        console.log(data.message);
+        // [REMOVED] console.log(data.message);
       } else {
         console.error("Failed to reschedule:", data.error);
         alert("Failed to reschedule workout. Please try again.");

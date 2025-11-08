@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
             .update({ athlete_ids: updatedAthleteIds })
             .eq("id", groupId);
 
-          console.log(`✅ Added invite ${invite.id} to group ${groupId}`);
+          // [REMOVED] console.log(`✅ Added invite ${invite.id} to group ${groupId}`);
         }
       } catch (groupError) {
         console.error("❌ Failed to add invite to group:", groupError);
@@ -239,7 +239,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        console.log(`✅ Invitation email sent to ${email}`);
+        // [REMOVED] console.log(`✅ Invitation email sent to ${email}`);
       } catch (emailError) {
         console.error("❌ Failed to send invitation email:", emailError);
         // Don't fail the request if email fails - invite is still created

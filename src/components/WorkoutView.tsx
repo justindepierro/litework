@@ -358,10 +358,10 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   )}
 
                   {/* YouTube Demo Video */}
-                  {(exercise as any).videoUrl && (
+                  {"videoUrl" in exercise && exercise.videoUrl && (
                     <div className="mt-6">
                       <YouTubeEmbed
-                        url={(exercise as any).videoUrl}
+                        url={exercise.videoUrl as string}
                         title={`${exercise.exerciseName} demonstration`}
                         className="max-w-2xl mx-auto"
                       />

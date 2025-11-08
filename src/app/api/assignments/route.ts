@@ -175,7 +175,7 @@ async function sendAssignmentNotifications(
       (assignmentData.athleteId ? [assignmentData.athleteId] : []);
 
     if (athleteIds.length === 0) {
-      console.log("No athletes to notify for assignment");
+      // [REMOVED] console.log("No athletes to notify for assignment");
       return;
     }
 

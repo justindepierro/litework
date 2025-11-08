@@ -48,13 +48,13 @@ const CalendarView = memo(function CalendarView() {
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
   ) => {
     // In a real app, this would make an API call to save the assignment
-    console.log("Assigning workout:", assignment);
+    // [REMOVED] console.log("Assigning workout:", assignment);
     // For now, just close the modal
     setShowAssignModal(false);
   };
 
   const handleGroupSave = async (group: AthleteGroup) => {
-    console.log("Group saved:", group);
+    // [REMOVED] console.log("Group saved:", group);
     // Refetch groups to update the list
     refetchGroups();
     setShowGroupFormModal(false);

@@ -905,7 +905,7 @@ export default function WorkoutsPage() {
                   }
                 } else {
                   // For editing existing workouts
-                  console.log("[page.tsx] EDITING existing workout");
+                  // [REMOVED] console.log("[page.tsx] EDITING existing workout");
 
                   // Check if this is an explicit save request
                   const workoutWithFlag = updatedWorkout as WorkoutPlan & {
@@ -930,9 +930,9 @@ export default function WorkoutsPage() {
                   // Remove the flag
                   delete workoutWithFlag._shouldSave;
 
-                  console.log("[page.tsx] Saving edited workout to API");
-                  console.log("[page.tsx] Workout ID:", updatedWorkout.id);
-                  console.log("[page.tsx] Workout name:", updatedWorkout.name);
+                  // [REMOVED] console.log("[page.tsx] Saving edited workout to API");
+                  // [REMOVED] console.log("[page.tsx] Workout ID:", updatedWorkout.id);
+                  // [REMOVED] console.log("[page.tsx] Workout name:", updatedWorkout.name);
                   console.log(
                     "[page.tsx] Is temp ID?",
                     updatedWorkout.id?.startsWith("temp-")

@@ -35,7 +35,7 @@ class NetworkService {
    * Handle online event
    */
   private handleOnline = (): void => {
-    console.log("🌐 Network: ONLINE");
+    // [REMOVED] console.log("🌐 Network: ONLINE");
     this._isOnline = true;
     this.notifyListeners(true);
   };
@@ -44,7 +44,7 @@ class NetworkService {
    * Handle offline event
    */
   private handleOffline = (): void => {
-    console.log("📡 Network: OFFLINE");
+    // [REMOVED] console.log("📡 Network: OFFLINE");
     this._isOnline = false;
     this.notifyListeners(false);
   };

@@ -179,7 +179,7 @@ export async function sendNotification(
     if (inAppCreated) methods.push("in-app");
     if (pushSent) methods.push("push");
     if (emailSent) methods.push("email");
-    console.log(`✅ Notification sent to ${name} via ${methods.join(" and ")}`);
+    // [REMOVED] console.log(`✅ Notification sent to ${name} via ${methods.join(" and ")}`);
   } else {
     console.error(`❌ Failed to send notification to ${name}: ${lastError}`);
   }
@@ -255,7 +255,7 @@ export async function sendNotificationToUsers(
   console.log(
     `Notification Summary: ${totalSuccess} succeeded, ${totalFailed} failed`
   );
-  console.log(`   Push: ${totalPush}, Email: ${totalEmail}`);
+  // [REMOVED] console.log(`   Push: ${totalPush}, Email: ${totalEmail}`);
 
   return results;
 }

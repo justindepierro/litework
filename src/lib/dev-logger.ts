@@ -42,7 +42,7 @@ class DevLogger {
    */
   info(message: string, ...args: unknown[]) {
     if (this.logLevel >= LogLevel.INFO) {
-      console.log(`ℹ️ [INFO] ${message}`, ...args);
+      // [REMOVED] console.log(`ℹ️ [INFO] ${message}`, ...args);
     }
   }
 
@@ -51,7 +51,7 @@ class DevLogger {
    */
   debug(message: string, ...args: unknown[]) {
     if (this.logLevel >= LogLevel.DEBUG) {
-      console.log(`🔍 [DEBUG] ${message}`, ...args);
+      // [REMOVED] console.log(`🔍 [DEBUG] ${message}`, ...args);
     }
   }
 
@@ -63,7 +63,7 @@ class DevLogger {
       const hasData = data
         ? ` with data: ${JSON.stringify(data, null, 2)}`
         : "";
-      console.log(`🔗 [API] ${method} ${endpoint}${hasData}`);
+      // [REMOVED] console.log(`🔗 [API] ${method} ${endpoint}${hasData}`);
     }
   }
 
@@ -72,7 +72,7 @@ class DevLogger {
    */
   perf(label: string, duration: number) {
     if (this.isDev) {
-      console.log(`[PERF] ${label}: ${duration.toFixed(2)}ms`);
+      // [REMOVED] console.log(`[PERF] ${label}: ${duration.toFixed(2)}ms`);
     }
   }
 
@@ -82,7 +82,7 @@ class DevLogger {
   auth(event: string, userId?: string) {
     if (this.isDev) {
       const userInfo = userId ? ` for user ${userId.slice(0, 8)}...` : "";
-      console.log(`[AUTH] ${event}${userInfo}`);
+      // [REMOVED] console.log(`[AUTH] ${event}${userInfo}`);
     }
   }
 
@@ -117,7 +117,7 @@ class DevLogger {
    */
   dev(message: string, ...args: unknown[]) {
     if (this.isDev) {
-      console.log(`🔧 [DEV] ${message}`, ...args);
+      // [REMOVED] console.log(`🔧 [DEV] ${message}`, ...args);
     }
   }
 }

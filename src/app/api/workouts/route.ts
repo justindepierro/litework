@@ -280,7 +280,7 @@ export async function PUT(request: NextRequest) {
       blockInstances, // Pass through for future implementation
     });
 
-    console.log("[PUT /api/workouts] Update result:", updatedWorkout);
+    // [REMOVED] console.log("[PUT /api/workouts] Update result:", updatedWorkout);
 
     if (!updatedWorkout) {
       console.error(

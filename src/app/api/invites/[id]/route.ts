@@ -286,7 +286,7 @@ export async function PUT(
           footer: "This invitation will expire in 7 days.",
         },
       });
-      console.log(`✅ Invitation email sent to ${email}`);
+      // [REMOVED] console.log(`✅ Invitation email sent to ${email}`);
     } catch (emailError) {
       console.error("Error sending invitation email:", emailError);
       // Don't fail the request if email fails, but log it
@@ -432,8 +432,8 @@ export async function PATCH(
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       const inviteUrl = `${appUrl}/signup?invite=${updatedInvite.id}`;
 
-      console.log("Attempting to send email to:", updatedInvite.email);
-      console.log("Resend API Key present:", !!process.env.RESEND_API_KEY);
+      // [REMOVED] console.log("Attempting to send email to:", updatedInvite.email);
+      // [REMOVED] console.log("Resend API Key present:", !!process.env.RESEND_API_KEY);
 
       const emailResult = await sendEmailNotification({
         to: updatedInvite.email,

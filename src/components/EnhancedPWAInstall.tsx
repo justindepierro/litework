@@ -149,7 +149,7 @@ const EnhancedPWAInstall: React.FC = () => {
         .register("/sw.js")
         .then((registration) => {
           setSwRegistration(registration);
-          console.log("Enhanced service worker registered:", registration);
+          // [REMOVED] console.log("Enhanced service worker registered:", registration);
 
           // Monitor cache status
           monitorCacheStatus();

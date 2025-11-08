@@ -522,7 +522,7 @@ export default function AthletesPage() {
   };
 
   const handleResendInvite = async (inviteId: string) => {
-    console.log("Resending invite:", inviteId);
+    // [REMOVED] console.log("Resending invite:", inviteId);
     toast.info("Sending invitation email...");
     try {
       const response = (await apiClient.resendInvite(inviteId)) as {

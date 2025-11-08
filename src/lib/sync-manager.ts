@@ -51,7 +51,7 @@ class SyncManager {
     // Listen for network changes
     this.networkListener = networkService.addListener((isOnline) => {
       if (isOnline) {
-        console.log("[Sync] Network restored - starting sync");
+        // [REMOVED] console.log("[Sync] Network restored - starting sync");
         this.sync();
       }
     });
@@ -122,7 +122,7 @@ class SyncManager {
     this.notifyCallbacks("syncing");
 
     try {
-      console.log("[Sync] Starting sync...");
+      // [REMOVED] console.log("[Sync] Starting sync...");
 
       // Step 1: Sync sessions
       await this.syncSessions();
@@ -133,7 +133,7 @@ class SyncManager {
       // Step 3: Process sync queue
       await this.processSyncQueue();
 
-      console.log("✅ Sync completed successfully");
+      // [REMOVED] console.log("✅ Sync completed successfully");
       this.notifyCallbacks("idle");
     } catch (error) {
       console.error("❌ Sync failed:", error);
@@ -150,10 +150,10 @@ class SyncManager {
     const unsyncedSessions = await getUnsyncedSessions();
 
     if (unsyncedSessions.length === 0) {
-      console.log("[Sync] No sessions to sync");
+      // [REMOVED] console.log("[Sync] No sessions to sync");
       return;
     }
-    console.log(`📤 Syncing ${unsyncedSessions.length} sessions`);
+    // [REMOVED] console.log(`📤 Syncing ${unsyncedSessions.length} sessions`);
 
     for (let i = 0; i < unsyncedSessions.length; i++) {
       const session = unsyncedSessions[i];
@@ -200,10 +200,10 @@ class SyncManager {
     const unsyncedSets = await getUnsyncedSets();
 
     if (unsyncedSets.length === 0) {
-      console.log("[Sync] No sets to sync");
+      // [REMOVED] console.log("[Sync] No sets to sync");
       return;
     }
-    console.log(`📤 Syncing ${unsyncedSets.length} sets`);
+    // [REMOVED] console.log(`📤 Syncing ${unsyncedSets.length} sets`);
 
     // Batch sets by session for efficient API calls
     const setsBySession = unsyncedSets.reduce(
@@ -269,10 +269,10 @@ class SyncManager {
     const queue = await getSyncQueue();
 
     if (queue.length === 0) {
-      console.log("[Sync] Sync queue empty");
+      // [REMOVED] console.log("[Sync] Sync queue empty");
       return;
     }
-    console.log(`📤 Processing ${queue.length} queued operations`);
+    // [REMOVED] console.log(`📤 Processing ${queue.length} queued operations`);
 
     for (const item of queue) {
       // Skip if max retries exceeded

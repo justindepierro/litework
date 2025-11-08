@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('[CRON] Starting workout reminder cron job...');
+    // [REMOVED] console.log('[CRON] Starting workout reminder cron job...');
 
     const now = new Date();
     const currentHour = now.getHours();
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (!assignments || assignments.length === 0) {
-      console.log('[CRON] No upcoming workouts to remind about');
+      // [REMOVED] console.log('[CRON] No upcoming workouts to remind about');
       return NextResponse.json({
         success: true,
         message: 'No upcoming workouts',
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log(`[CRON] Found ${assignments.length} upcoming workouts`);
+    // [REMOVED] console.log(`[CRON] Found ${assignments.length} upcoming workouts`);
 
     // Get unique athlete IDs
     const athleteIds = [...new Set(assignments.map(a => a.athlete_id))];
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     }) || [];
 
     if (athletesWithReminders.length === 0) {
-      console.log('[CRON] No athletes have workout reminders enabled');
+      // [REMOVED] console.log('[CRON] No athletes have workout reminders enabled');
       return NextResponse.json({
         success: true,
         message: 'No athletes with reminders enabled',
@@ -127,7 +127,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log(`[CRON] ${athletesWithReminders.length} athletes have reminders enabled`);
+    // [REMOVED] console.log(`[CRON] ${athletesWithReminders.length} athletes have reminders enabled`);
 
     // Send reminders based on user preferences
     const reminders = [];
@@ -221,7 +221,7 @@ export async function GET(request: NextRequest) {
         const workoutUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/workouts/view/${assignment.id}`;
 
         // Send reminder
-        console.log(`[CRON] Sending reminder to ${athlete.name} for "${workoutName}" (timing: ${timing})`);
+        // [REMOVED] console.log(`[CRON] Sending reminder to ${athlete.name} for "${workoutName}" (timing: ${timing})`);
         
         reminders.push(
           notifyWorkoutReminder(
@@ -239,7 +239,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (reminders.length === 0) {
-      console.log('[CRON] No reminders to send at this time');
+      // [REMOVED] console.log('[CRON] No reminders to send at this time');
       return NextResponse.json({
         success: true,
         message: 'No reminders scheduled for this time',
@@ -259,7 +259,7 @@ export async function GET(request: NextRequest) {
       r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)
     ).length;
 
-    console.log(`[CRON] Workout reminders complete: ${successful} sent, ${failed} failed`);
+    // [REMOVED] console.log(`[CRON] Workout reminders complete: ${successful} sent, ${failed} failed`);
 
     return NextResponse.json({
       success: true,

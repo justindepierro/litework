@@ -34,7 +34,11 @@ const timeoutPromise = new Promise<never>((_, reject) =>
 // After: 8000ms timeout with better message
 const timeoutPromise = new Promise<never>((_, reject) =>
   setTimeout(() => {
-    reject(new Error("Profile fetch timeout - database query exceeded 8 seconds. This may indicate network issues or database cold start."));
+    reject(
+      new Error(
+        "Profile fetch timeout - database query exceeded 8 seconds. This may indicate network issues or database cold start."
+      )
+    );
   }, 8000)
 );
 ```
@@ -51,18 +55,17 @@ const { data: profile, error } = await Promise.race([
 ]);
 
 // After: Explicit catch with detailed logging
-const result = await Promise.race([
-  profilePromise,
-  timeoutPromise,
-]).catch((err) => {
-  const errorMessage = err?.message || String(err);
-  timer.error("Profile fetch failed", {
-    error: errorMessage,
-    userId: session.user.id,
-    isTimeout: errorMessage.includes("timeout"),
-  });
-  throw err;
-});
+const result = await Promise.race([profilePromise, timeoutPromise]).catch(
+  (err) => {
+    const errorMessage = err?.message || String(err);
+    timer.error("Profile fetch failed", {
+      error: errorMessage,
+      userId: session.user.id,
+      isTimeout: errorMessage.includes("timeout"),
+    });
+    throw err;
+  }
+);
 ```
 
 ### 3. Improved Error Classification
@@ -115,12 +118,12 @@ timer.error("Auth state change error", {
 
 ## Performance Expectations
 
-| Scenario | Expected Duration | Action |
-|----------|------------------|--------|
-| **Hot database** | 100-500ms | Normal operation |
-| **Warm database** | 500-2000ms | Acceptable |
-| **Cold start** | 2000-6000ms | Acceptable (first load after idle) |
-| **Timeout** | 8000ms+ | Investigate network/database issues |
+| Scenario          | Expected Duration | Action                              |
+| ----------------- | ----------------- | ----------------------------------- |
+| **Hot database**  | 100-500ms         | Normal operation                    |
+| **Warm database** | 500-2000ms        | Acceptable                          |
+| **Cold start**    | 2000-6000ms       | Acceptable (first load after idle)  |
+| **Timeout**       | 8000ms+           | Investigate network/database issues |
 
 ## Monitoring
 

@@ -72,11 +72,11 @@ export async function PATCH(request: NextRequest) {
       targetDate.setHours(12, 0, 0, 0);
     }
 
-    console.log("[RESCHEDULE] Target date calculated:", targetDate.toISOString());
+    // [REMOVED] console.log("[RESCHEDULE] Target date calculated:", targetDate.toISOString());
 
     // If it's a group assignment and moveGroup is true, update all assignments in the group
     if (assignment.athlete_group_id && moveGroup) {
-      console.log("[RESCHEDULE] Processing group assignment move");
+      // [REMOVED] console.log("[RESCHEDULE] Processing group assignment move");
       // Get all assignments for the same workout plan, group, and date
       const { data: groupAssignments, error: groupFetchError } = await supabase
         .from("workout_assignments")
@@ -122,7 +122,7 @@ export async function PATCH(request: NextRequest) {
           );
         }
 
-        console.log(`[RESCHEDULE] Successfully updated ${assignmentIds.length} group assignments from ${assignment.scheduled_date} to ${dateOnly}`);
+        // [REMOVED] console.log(`[RESCHEDULE] Successfully updated ${assignmentIds.length} group assignments from ${assignment.scheduled_date} to ${dateOnly}`);
 
         // Create notifications for all affected athletes
         const notifications = groupAssignments
@@ -148,7 +148,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Individual assignment update
-    console.log("[RESCHEDULE] Processing individual assignment move");
+    // [REMOVED] console.log("[RESCHEDULE] Processing individual assignment move");
     
     // Format date as YYYY-MM-DD for DATE column
     const dateOnly = targetDate.toISOString().split('T')[0];
@@ -169,7 +169,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    console.log(`[RESCHEDULE] Successfully updated individual assignment to ${dateOnly}`);
+    // [REMOVED] console.log(`[RESCHEDULE] Successfully updated individual assignment to ${dateOnly}`);
 
     // Create notification for the athlete (if assignment has an athlete_id)
     if (assignment.athlete_id) {

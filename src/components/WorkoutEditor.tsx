@@ -103,7 +103,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
       };
     }
 
-    console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
+    // [REMOVED] console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
     onUpdate(updatedExercise);
     setIsEditing(false);
   };
@@ -1537,7 +1537,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         name: workoutName || updatedWorkout.name,
       };
 
-      console.log("[WorkoutEditor] Calling parent onChange with workout");
+      // [REMOVED] console.log("[WorkoutEditor] Calling parent onChange with workout");
       onChange(workoutWithName);
     },
     [onChange, workoutName]
@@ -1877,7 +1877,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       setShowBlockEditor(false);
 
       // Could add a toast notification here
-      console.log("Block created successfully:", data.block);
+      // [REMOVED] console.log("Block created successfully:", data.block);
 
       return data.block;
     } catch (error) {
@@ -2168,7 +2168,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         {/* Exercise Library Panel - Right Side */}
         <ExerciseLibraryPanel
           onDragStart={(exercise) => {
-            console.log("Dragging exercise:", exercise.name);
+            // [REMOVED] console.log("Dragging exercise:", exercise.name);
           }}
         />
       </div>

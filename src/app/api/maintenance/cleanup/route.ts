@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('🧹 Starting database cleanup...');
+    // [REMOVED] console.log('🧹 Starting database cleanup...');
 
     const supabase = getAdminClient();
     const results = {
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     if (!invitesError && expiredInvites) {
       results.expiredInvites = expiredInvites.length;
-      console.log(`✅ Deleted ${results.expiredInvites} expired invites`);
+      // [REMOVED] console.log(`✅ Deleted ${results.expiredInvites} expired invites`);
     }
 
     // 2. Delete old workout sessions (completed > 90 days ago)
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     if (!sessionsError && oldSessions) {
       results.oldSessions = oldSessions.length;
-      console.log(`✅ Deleted ${results.oldSessions} old workout sessions`);
+      // [REMOVED] console.log(`✅ Deleted ${results.oldSessions} old workout sessions`);
     }
 
     // 3. Clean up cancelled invites older than 30 days
@@ -76,10 +76,10 @@ export async function GET(request: NextRequest) {
 
     if (!cancelledError && cancelledInvites) {
       results.orphanedData = cancelledInvites.length;
-      console.log(`✅ Deleted ${results.orphanedData} old cancelled invites`);
+      // [REMOVED] console.log(`✅ Deleted ${results.orphanedData} old cancelled invites`);
     }
 
-    console.log('✅ Database cleanup completed:', results);
+    // [REMOVED] console.log('✅ Database cleanup completed:', results);
 
     return NextResponse.json({
       success: true,

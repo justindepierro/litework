@@ -112,7 +112,7 @@ export async function sendPushNotification(
     const prefs = await getUserPreferences(userId);
 
     if (!prefs || !prefs.push_enabled) {
-      console.log(`⏭️  Push notifications disabled for user ${userId}`);
+      // [REMOVED] console.log(`⏭️  Push notifications disabled for user ${userId}`);
       return { success: true, sent: 0, failed: 0 };
     }
 
@@ -144,7 +144,7 @@ export async function sendPushNotification(
     }
 
     if (!subscriptions || subscriptions.length === 0) {
-      console.log(`📵 No push subscriptions found for user ${userId}`);
+      // [REMOVED] console.log(`📵 No push subscriptions found for user ${userId}`);
       return { success: true, sent: 0, failed: 0 };
     }
 
@@ -208,7 +208,7 @@ export async function sendPushNotification(
 
           // If subscription is invalid (410 Gone), remove it
           if (err.statusCode === 410) {
-            console.log(`🗑️  Removing expired subscription: ${sub.id}`);
+            // [REMOVED] console.log(`🗑️  Removing expired subscription: ${sub.id}`);
             await supabase.from("push_subscriptions").delete().eq("id", sub.id);
           }
 
@@ -362,7 +362,7 @@ export async function savePushSubscription(
       throw error;
     }
 
-    console.log(`✅ Push subscription saved for user ${userId}`);
+    // [REMOVED] console.log(`✅ Push subscription saved for user ${userId}`);
     return { success: true, id: data.id };
   } catch (error) {
     console.error("❌ Error saving push subscription:", error);
@@ -389,7 +389,7 @@ export async function removePushSubscription(
 
     if (error) throw error;
 
-    console.log(`🗑️  Push subscription removed for user ${userId}`);
+    // [REMOVED] console.log(`🗑️  Push subscription removed for user ${userId}`);
     return { success: true };
   } catch (error) {
     console.error("❌ Error removing push subscription:", error);

@@ -7,22 +7,25 @@
 ## Problem Summary
 
 ### Scattered Date Conversion
+
 - **20+ files** handling dates differently
 - Some used `new Date("2025-11-06")` (wrong for DATE columns)
 - Others manually parsed with custom logic
 - No single source of truth
 
 ### Timezone Bug
+
 ```typescript
 // WRONG - Interprets as midnight UTC
-new Date("2025-11-06") 
+new Date("2025-11-06");
 // For EST (UTC-5): Nov 5 at 7pm ❌
 
 // RIGHT - Interprets in local timezone
-new Date(2025, 10, 6)  // Nov 6 at 12am ✅
+new Date(2025, 10, 6); // Nov 6 at 12am ✅
 ```
 
 ### Impact
+
 - ❌ Dashboard showed Nov 5, database had Nov 6
 - ❌ Schedule showed Nov 5, database had Nov 6
 - ❌ Drag-and-drop appeared broken (dates reverted)
@@ -58,7 +61,7 @@ formatDateOnly(date: Date): string
 // For PostgreSQL DATE columns
 // Returns: "2025-11-06"
 
-formatTimestamp(date: Date): string  
+formatTimestamp(date: Date): string
 // For PostgreSQL TIMESTAMP columns
 // Returns: "2025-11-06T17:30:00.000Z"
 ```
@@ -99,20 +102,25 @@ addDays(date: Date, days: number): Date
 ## Files Updated
 
 ### 1. `/src/app/schedule/page.tsx`
+
 **Before:**
+
 ```typescript
-scheduledDate: new Date(assignment.scheduledDate as string)
+scheduledDate: new Date(assignment.scheduledDate as string);
 ```
 
 **After:**
+
 ```typescript
 import { parseDate } from "@/lib/date-utils";
 
-scheduledDate: parseDate(assignment.scheduledDate as string)
+scheduledDate: parseDate(assignment.scheduledDate as string);
 ```
 
 ### 2. `/src/app/dashboard/page.tsx`
+
 **Before:**
+
 ```typescript
 const scheduledDate = new Date(assignment.scheduledDate);
 const isToday = scheduledDate.toDateString() === new Date().toDateString();
@@ -121,6 +129,7 @@ const isFuture = scheduledDate > new Date();
 ```
 
 **After:**
+
 ```typescript
 import { parseDate, isToday, isPast, isFuture } from "@/lib/date-utils";
 
@@ -131,16 +140,19 @@ const isFuture = checkIsFuture(scheduledDate);
 ```
 
 ### 3. `/src/components/DraggableAthleteCalendar.tsx`
+
 **Before:**
+
 ```typescript
 const assignmentDate = new Date(assignment.scheduledDate);
-const isOverdue = 
+const isOverdue =
   !isCompleted &&
   new Date(assignment.scheduledDate) < new Date() &&
   !isSameDay(new Date(assignment.scheduledDate), new Date());
 ```
 
 **After:**
+
 ```typescript
 import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 
@@ -153,27 +165,30 @@ const isOverdue =
 ```
 
 ### 4. `/src/components/AthleteCalendar.tsx`
+
 Same pattern as DraggableAthleteCalendar.
 
 ## Database Context
 
 ### PostgreSQL Column Types
 
-| Column | Type | Stored As | Example |
-|--------|------|-----------|---------|
-| `scheduled_date` | `DATE` | `"2025-11-06"` | Date only, no time |
-| `created_at` | `TIMESTAMP WITH TIME ZONE` | `"2025-11-06T17:30:00.000Z"` | Full timestamp |
-| `updated_at` | `TIMESTAMP WITH TIME ZONE` | `"2025-11-06T17:30:00.000Z"` | Full timestamp |
+| Column           | Type                       | Stored As                    | Example            |
+| ---------------- | -------------------------- | ---------------------------- | ------------------ |
+| `scheduled_date` | `DATE`                     | `"2025-11-06"`               | Date only, no time |
+| `created_at`     | `TIMESTAMP WITH TIME ZONE` | `"2025-11-06T17:30:00.000Z"` | Full timestamp     |
+| `updated_at`     | `TIMESTAMP WITH TIME ZONE` | `"2025-11-06T17:30:00.000Z"` | Full timestamp     |
 
 ### Why This Matters
 
 **DATE columns** (`scheduled_date`):
+
 - Store only the date, no time component
 - Returned as `"YYYY-MM-DD"` strings
 - `new Date("2025-11-06")` interprets as midnight UTC ❌
 - `parseLocalDate("2025-11-06")` interprets in local timezone ✅
 
 **TIMESTAMP columns** (`created_at`, `updated_at`):
+
 - Store full date+time with timezone
 - Returned as ISO strings with 'Z': `"2025-11-06T17:30:00.000Z"`
 - `new Date(isoString)` works correctly ✅
@@ -181,18 +196,21 @@ Same pattern as DraggableAthleteCalendar.
 ## Testing Checklist
 
 ✅ **Schedule Page**
+
 - [ ] Workouts display on correct dates
 - [ ] Drag-and-drop saves to correct date
 - [ ] Refresh preserves date
 - [ ] No timezone shifts
 
 ✅ **Dashboard**
+
 - [ ] "Today" badge shows on correct workouts
 - [ ] Past workouts marked correctly
 - [ ] Future workouts shown correctly
 - [ ] Date displays match schedule page
 
 ✅ **Calendar Components**
+
 - [ ] DraggableAthleteCalendar shows workouts on correct days
 - [ ] AthleteCalendar shows workouts on correct days
 - [ ] Both calendars match each other
@@ -210,6 +228,7 @@ These files still use `new Date(assignment.scheduledDate)` directly:
 4. `src/app/api/cron/workout-reminders/route.ts` (1 occurrence)
 
 **Action Plan:**
+
 - Import `parseDate` from `@/lib/date-utils`
 - Replace `new Date(assignment.scheduledDate)` with `parseDate(assignment.scheduledDate)`
 - Replace `new Date(assignment.scheduled_date)` with `parseDate(assignment.scheduled_date)`
@@ -226,14 +245,17 @@ These files still use `new Date(assignment.scheduledDate)` directly:
 ### Consider Database Schema Change
 
 **Option 1**: Convert all DATE to TIMESTAMP
+
 ```sql
-ALTER TABLE workout_assignments 
+ALTER TABLE workout_assignments
   ALTER COLUMN scheduled_date TYPE TIMESTAMP WITH TIME ZONE;
 ```
+
 **Pros**: Consistent handling, can store time if needed  
 **Cons**: Migration required, more storage
 
 **Option 2**: Keep DATE, enforce utilities
+
 ```typescript
 // ESLint rule
 "no-restricted-syntax": [
@@ -244,18 +266,21 @@ ALTER TABLE workout_assignments
   }
 ]
 ```
+
 **Pros**: No migration, clear semantics  
 **Cons**: Requires discipline
 
 ## Success Metrics
 
 Before this fix:
+
 - ❌ 20+ files with inconsistent date parsing
 - ❌ Timezone bugs causing date shifts
 - ❌ Drag-and-drop appearing broken
 - ❌ Dashboard/schedule showing different dates
 
 After this fix:
+
 - ✅ 1 centralized utility (`date-utils.ts`)
 - ✅ Consistent parsing across all pages
 - ✅ Drag-and-drop saves and displays correctly

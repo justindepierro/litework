@@ -91,7 +91,7 @@ export function logAuthEvent(
       if (DEBUG_MODE) console.debug(fullMessage, data || "");
       break;
     case "info":
-      console.log(fullMessage, data || "");
+      // [REMOVED] console.log(fullMessage, data || "");
       break;
     case "warn":
       console.warn(fullMessage, data || "");

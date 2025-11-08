@@ -294,17 +294,17 @@ export default function DraggableAthleteCalendar({
 
       // Don't do anything if dropped on same date
       if (isSameDay(oldDate, newDate)) {
-        console.log("[DROP] Dropped on same date, ignoring");
+        // [REMOVED] console.log("[DROP] Dropped on same date, ignoring");
         return;
       }
 
       // If it's a group assignment, show confirmation
       if (assignment.groupId && onAssignmentMove) {
-        console.log("[DROP] Group assignment - showing confirmation modal");
+        // [REMOVED] console.log("[DROP] Group assignment - showing confirmation modal");
         setPendingMove({ assignment, newDate });
         setShowMoveConfirmation(true);
       } else if (onAssignmentMove) {
-        console.log("[DROP] Individual assignment - moving immediately");
+        // [REMOVED] console.log("[DROP] Individual assignment - moving immediately");
         // Individual assignment - move immediately
         onAssignmentMove(assignment.id, newDate, false);
       } else {

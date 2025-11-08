@@ -20,7 +20,7 @@ export async function GET(
 
     const { id } = await params;
 
-    console.log(`[API] Fetching assignment ${id} for user ${user.id}`);
+    // [REMOVED] console.log(`[API] Fetching assignment ${id} for user ${user.id}`);
 
     // Fetch assignment with related data
     const { data: assignment, error } = await supabaseAdmin

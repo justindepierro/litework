@@ -86,10 +86,10 @@ export default function SchedulePage() {
       });
 
       const data = await response.json();
-      console.log("[SCHEDULE] Reschedule response:", data);
+      // [REMOVED] console.log("[SCHEDULE] Reschedule response:", data);
 
       if (data.success) {
-        console.log("[SCHEDULE] Successfully rescheduled");
+        // [REMOVED] console.log("[SCHEDULE] Successfully rescheduled");
         // Don't refetch - optimistic update already applied
         // await fetchAssignments();
       } else {
@@ -113,7 +113,7 @@ export default function SchedulePage() {
 
   const handleDateClick = (date: Date) => {
     // Store selected date for future functionality (e.g., creating assignments)
-    console.log("Date clicked:", date);
+    // [REMOVED] console.log("Date clicked:", date);
     // You can open a modal to create new assignments on this date
   };
 

@@ -26,7 +26,7 @@ export function measureInteraction(name: string) {
     if (process.env.NODE_ENV === "development") {
       const label =
         duration < 100 ? "[FAST]" : duration < 500 ? "[OK]" : "[SLOW]";
-      console.log(`${label} ${name}: ${roundedDuration}ms`);
+      // [REMOVED] console.log(`${label} ${name}: ${roundedDuration}ms`);
     }
 
     // Send to Vercel Analytics in production
@@ -120,7 +120,7 @@ export const PerformanceMarks = {
 
         const measure = performance.getEntriesByName(`fetch-${resource}`)[0];
         if (measure && process.env.NODE_ENV === "development") {
-          console.log(`[FETCH] ${resource}: ${Math.round(measure.duration)}ms`);
+          // [REMOVED] console.log(`[FETCH] ${resource}: ${Math.round(measure.duration)}ms`);
         }
       } catch {
         // Mark doesn't exist, ignore

@@ -133,7 +133,7 @@ class AnalyticsService {
 
     // Log to console in development
     if (!this.isProduction) {
-      console.log("[Analytics Event]:", enrichedEvent);
+      // [REMOVED] console.log("[Analytics Event]:", enrichedEvent);
     }
   }
 

@@ -40,7 +40,7 @@ export function WebVitalsTracker() {
         }),
       }).catch((error) => {
         // Silently fail - don't break the app for analytics
-        console.debug("Failed to send web vitals:", error);
+        // [REMOVED] console.debug("Failed to send web vitals:", error);
       });
 
       // Also send to Vercel Analytics if available

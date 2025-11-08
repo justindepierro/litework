@@ -58,7 +58,7 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(workoutToSave));
         this.setState({ savedWorkout: this.props.workout });
-        console.log("✅ Workout draft saved to localStorage for recovery");
+        // [REMOVED] console.log("✅ Workout draft saved to localStorage for recovery");
       } catch (storageError) {
         console.error("Failed to save workout draft:", storageError);
       }
@@ -89,7 +89,7 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
   handleClearRecovery = () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
-      console.log("Recovery data cleared");
+      // [REMOVED] console.log("Recovery data cleared");
     } catch (error) {
       console.error("Failed to clear recovery data:", error);
     }

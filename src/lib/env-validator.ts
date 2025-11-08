@@ -88,7 +88,7 @@ class EnvironmentValidator {
     }
 
     if (this.errors.length === 0 && process.env.NODE_ENV === "development") {
-      console.log("✅ Environment variables validated successfully\n");
+      // [REMOVED] console.log("✅ Environment variables validated successfully\n");
     }
   }
 

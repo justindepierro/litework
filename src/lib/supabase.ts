@@ -8,7 +8,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("[SUPABASE] URL:", supabaseUrl ? "SET" : "MISSING");
   console.error("[SUPABASE] KEY:", supabaseAnonKey ? "SET" : "MISSING");
 } else {
-  console.log("[SUPABASE] Client initialized with URL:", supabaseUrl);
+  // [REMOVED] console.log("[SUPABASE] Client initialized with URL:", supabaseUrl);
 }
 
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
@@ -22,12 +22,12 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
           value: valueParts.join("="),
         };
       });
-      console.log("[SUPABASE] getAll cookies:", cookies.length);
+      // [REMOVED] console.log("[SUPABASE] getAll cookies:", cookies.length);
       return cookies;
     },
     setAll(cookies) {
       if (typeof document === "undefined") return;
-      console.log("[SUPABASE] setAll cookies:", cookies.length);
+      // [REMOVED] console.log("[SUPABASE] setAll cookies:", cookies.length);
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
 
