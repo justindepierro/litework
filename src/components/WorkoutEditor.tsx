@@ -200,64 +200,54 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
                 {/* Sets and Reps Grid */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Sets
-                    </label>
-                    <input
-                      type="number"
-                      value={editedExercise.sets}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // Allow empty string while typing, convert to number or default to 1
+                  <Input
+                    label="Sets"
+                    type="number"
+                    value={editedExercise.sets}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEditedExercise({
+                        ...editedExercise,
+                        sets: value === "" ? 0 : parseInt(value) || 0,
+                      });
+                    }}
+                    onBlur={() => {
+                      if (!editedExercise.sets || editedExercise.sets < 1) {
                         setEditedExercise({
                           ...editedExercise,
-                          sets: value === "" ? 0 : parseInt(value) || 0,
+                          sets: 1,
                         });
-                      }}
-                      onBlur={() => {
-                        // On blur, ensure minimum value of 1
-                        if (!editedExercise.sets || editedExercise.sets < 1) {
-                          setEditedExercise({
-                            ...editedExercise,
-                            sets: 1,
-                          });
-                        }
-                      }}
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="Sets"
-                      min="1"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Reps
-                    </label>
-                    <input
-                      type="number"
-                      value={editedExercise.reps}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // Allow empty string while typing
+                      }
+                    }}
+                    placeholder="Sets"
+                    min={1}
+                    fullWidth
+                    inputSize="lg"
+                  />
+                  <Input
+                    label="Reps"
+                    type="number"
+                    value={editedExercise.reps}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEditedExercise({
+                        ...editedExercise,
+                        reps: value === "" ? 0 : parseInt(value) || 0,
+                      });
+                    }}
+                    onBlur={() => {
+                      if (!editedExercise.reps || editedExercise.reps < 1) {
                         setEditedExercise({
                           ...editedExercise,
-                          reps: value === "" ? 0 : parseInt(value) || 0,
+                          reps: 1,
                         });
-                      }}
-                      onBlur={() => {
-                        // On blur, ensure minimum value of 1
-                        if (!editedExercise.reps || editedExercise.reps < 1) {
-                          setEditedExercise({
-                            ...editedExercise,
-                            reps: 1,
-                          });
-                        }
-                      }}
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="Reps"
-                      min="1"
-                    />
-                  </div>
+                      }
+                    }}
+                    placeholder="Reps"
+                    min={1}
+                    fullWidth
+                    inputSize="lg"
+                  />
                 </div>
 
                 {/* Weight Type Selection */}

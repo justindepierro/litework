@@ -38,7 +38,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { Input } from "@/components/ui/Input";
+import { Input, Select, Textarea } from "@/components/ui/Input";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -1581,109 +1581,87 @@ export default function AthletesPage() {
               </div>
 
               <div className="space-y-4">
+                {/* Name Inputs */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={inviteForm.firstName}
-                      onChange={(e) =>
-                        setInviteForm({
-                          ...inviteForm,
-                          firstName: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="First name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={inviteForm.lastName}
-                      onChange={(e) =>
-                        setInviteForm({
-                          ...inviteForm,
-                          lastName: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Last name"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address (Optional)
-                  </label>
-                  <input
-                    type="email"
-                    value={inviteForm.email}
+                  <Input
+                    label="First Name *"
+                    type="text"
+                    value={inviteForm.firstName}
                     onChange={(e) =>
-                      setInviteForm({ ...inviteForm, email: e.target.value })
+                      setInviteForm({
+                        ...inviteForm,
+                        firstName: e.target.value,
+                      })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="athlete@email.com (can add later)"
+                    placeholder="First name"
+                    fullWidth
+                    required
                   />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Leave blank to add athlete profile without sending invite
-                    yet
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Initial Group (Optional)
-                  </label>
-                  <select
-                    value={inviteForm.groupId}
-                    onChange={(e) => {
-                      if (e.target.value === "CREATE_NEW") {
-                        setShowGroupFormModal(true);
-                      } else {
-                        setInviteForm({
-                          ...inviteForm,
-                          groupId: e.target.value,
-                        });
-                      }
-                    }}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                  >
-                    <option value="">No group assigned</option>
-                    {groups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.name}
-                      </option>
-                    ))}
-                    <option
-                      value="CREATE_NEW"
-                      className="font-semibold text-blue-600"
-                    >
-                      + Create New Group
-                    </option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Notes (Optional)
-                  </label>
-                  <textarea
-                    value={inviteForm.notes}
+                  <Input
+                    label="Last Name *"
+                    type="text"
+                    value={inviteForm.lastName}
                     onChange={(e) =>
-                      setInviteForm({ ...inviteForm, notes: e.target.value })
+                      setInviteForm({
+                        ...inviteForm,
+                        lastName: e.target.value,
+                      })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={3}
-                    placeholder="Add any notes about this athlete..."
+                    placeholder="Last name"
+                    fullWidth
+                    required
                   />
                 </div>
+
+                {/* Email Input */}
+                <Input
+                  label="Email Address (Optional)"
+                  type="email"
+                  value={inviteForm.email}
+                  onChange={(e) =>
+                    setInviteForm({ ...inviteForm, email: e.target.value })
+                  }
+                  placeholder="athlete@email.com (can add later)"
+                  helperText="Leave blank to add athlete profile without sending invite yet"
+                  fullWidth
+                />
+
+                {/* Initial Group Select */}
+                <Select
+                  label="Initial Group (Optional)"
+                  value={inviteForm.groupId}
+                  onChange={(e) => {
+                    if (e.target.value === "CREATE_NEW") {
+                      setShowGroupFormModal(true);
+                    } else {
+                      setInviteForm({
+                        ...inviteForm,
+                        groupId: e.target.value,
+                      });
+                    }
+                  }}
+                  fullWidth
+                  options={[
+                    { value: "", label: "No group assigned" },
+                    ...groups.map((group) => ({
+                      value: group.id,
+                      label: group.name,
+                    })),
+                    { value: "CREATE_NEW", label: "+ Create New Group" },
+                  ]}
+                />
+
+                {/* Notes Textarea */}
+                <Textarea
+                  label="Notes (Optional)"
+                  value={inviteForm.notes}
+                  onChange={(e) =>
+                    setInviteForm({ ...inviteForm, notes: e.target.value })
+                  }
+                  rows={3}
+                  placeholder="Add any notes about this athlete..."
+                  fullWidth
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-start gap-3">
@@ -1736,62 +1714,55 @@ export default function AthletesPage() {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={messageForm.subject}
-                    onChange={(e) =>
-                      setMessageForm({
-                        ...messageForm,
-                        subject: e.target.value,
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter message subject..."
-                  />
-                </div>
+                {/* Subject Input */}
+                <Input
+                  label="Subject (Optional)"
+                  type="text"
+                  value={messageForm.subject}
+                  onChange={(e) =>
+                    setMessageForm({
+                      ...messageForm,
+                      subject: e.target.value,
+                    })
+                  }
+                  placeholder="Enter message subject..."
+                  fullWidth
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    value={messageForm.message}
-                    onChange={(e) =>
-                      setMessageForm({
-                        ...messageForm,
-                        message: e.target.value,
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={6}
-                    placeholder="Type your message here..."
-                  />
-                </div>
+                {/* Message Textarea */}
+                <Textarea
+                  label="Message *"
+                  value={messageForm.message}
+                  onChange={(e) =>
+                    setMessageForm({
+                      ...messageForm,
+                      message: e.target.value,
+                    })
+                  }
+                  rows={6}
+                  placeholder="Type your message here..."
+                  fullWidth
+                  required
+                />
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Priority
-                    </label>
-                    <select
-                      value={messageForm.priority}
-                      onChange={(e) =>
-                        setMessageForm({
-                          ...messageForm,
-                          priority: e.target.value as "low" | "normal" | "high",
-                        })
-                      }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                    >
-                      <option value="low">Low</option>
-                      <option value="normal">Normal</option>
-                      <option value="high">High</option>
-                    </select>
-                  </div>
+                  {/* Priority Select */}
+                  <Select
+                    label="Priority"
+                    value={messageForm.priority}
+                    onChange={(e) =>
+                      setMessageForm({
+                        ...messageForm,
+                        priority: e.target.value as "low" | "normal" | "high",
+                      })
+                    }
+                    fullWidth
+                    options={[
+                      { value: "low", label: "Low" },
+                      { value: "normal", label: "Normal" },
+                      { value: "high", label: "High" },
+                    ]}
+                  />
 
                   <div className="flex items-end">
                     <label className="flex items-center gap-2">
