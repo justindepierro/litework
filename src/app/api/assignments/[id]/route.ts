@@ -97,12 +97,22 @@ export async function GET(
       );
     }
 
-    // Check permissions: Athletes can only view their own assignments
+    // Check permissions: Athletes can only view their own assignments or group assignments they're in
     if (!isCoach(user)) {
-      const hasAccess =
-        assignment.assigned_to_user_id === user.id ||
-        // TODO: Check if user is in assigned group
-        false;
+      let hasAccess = assignment.assigned_to_user_id === user.id;
+
+      // If it's a group assignment, check if user is in the group
+      if (!hasAccess && assignment.assigned_to_group_id) {
+        const { data: group } = await supabaseAdmin
+          .from("athlete_groups")
+          .select("athlete_ids")
+          .eq("id", assignment.assigned_to_group_id)
+          .single();
+
+        if (group && group.athlete_ids) {
+          hasAccess = group.athlete_ids.includes(user.id);
+        }
+      }
 
       if (!hasAccess) {
         return NextResponse.json(
@@ -296,9 +306,22 @@ export async function PATCH(
 
     // Check if user is assigned (either individually or through group)
     const isDirectlyAssigned = assignment.assigned_to_user_id === user.id;
-    // TODO: Check group membership for group assignments
+    let isInGroup = false;
 
-    if (!isDirectlyAssigned && !isCoach(user)) {
+    // Check group membership for group assignments
+    if (assignment.assigned_to_group_id) {
+      const { data: group } = await supabaseAdmin
+        .from("athlete_groups")
+        .select("athlete_ids")
+        .eq("id", assignment.assigned_to_group_id)
+        .single();
+
+      if (group && group.athlete_ids) {
+        isInGroup = group.athlete_ids.includes(user.id);
+      }
+    }
+
+    if (!isDirectlyAssigned && !isInGroup && !isCoach(user)) {
       return NextResponse.json(
         { error: "You don't have permission to complete this assignment" },
         { status: 403 }
