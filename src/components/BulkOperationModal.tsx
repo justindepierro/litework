@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Loader2,
 } from "lucide-react";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 
 interface EnhancedAthlete {
   id: string;
@@ -485,77 +486,62 @@ export default function BulkOperationModal({
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Custom Message (Optional)
-              </label>
-              <textarea
-                value={inviteData.message}
-                onChange={(e) =>
-                  setInviteData({ ...inviteData, message: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                rows={4}
-                placeholder="Add a personal message to the invite email..."
-              />
-            </div>
+            <Textarea
+              label="Custom Message (Optional)"
+              value={inviteData.message}
+              onChange={(e) =>
+                setInviteData({ ...inviteData, message: e.target.value })
+              }
+              rows={4}
+              placeholder="Add a personal message to the invite email..."
+              fullWidth
+            />
           </div>
         );
 
       case "bulk_message":
         return (
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Subject
-              </label>
-              <input
-                type="text"
-                value={messageData.subject}
-                onChange={(e) =>
-                  setMessageData({ ...messageData, subject: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                placeholder="Message subject..."
-              />
-            </div>
+            <Input
+              label="Subject"
+              type="text"
+              value={messageData.subject}
+              onChange={(e) =>
+                setMessageData({ ...messageData, subject: e.target.value })
+              }
+              placeholder="Message subject..."
+              fullWidth
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Message *
-              </label>
-              <textarea
-                value={messageData.message}
-                onChange={(e) =>
-                  setMessageData({ ...messageData, message: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                rows={6}
-                placeholder="Type your message here..."
-                required
-              />
-            </div>
+            <Textarea
+              label="Message *"
+              value={messageData.message}
+              onChange={(e) =>
+                setMessageData({ ...messageData, message: e.target.value })
+              }
+              rows={6}
+              placeholder="Type your message here..."
+              required
+              fullWidth
+            />
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Priority
-                </label>
-                <select
-                  value={messageData.priority}
-                  onChange={(e) =>
-                    setMessageData({
-                      ...messageData,
-                      priority: e.target.value as "low" | "normal" | "high",
-                    })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                >
-                  <option value="low">Low</option>
-                  <option value="normal">Normal</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
+              <Select
+                label="Priority"
+                value={messageData.priority}
+                onChange={(e) =>
+                  setMessageData({
+                    ...messageData,
+                    priority: e.target.value as "low" | "normal" | "high",
+                  })
+                }
+                options={[
+                  { value: "low", label: "Low" },
+                  { value: "normal", label: "Normal" },
+                  { value: "high", label: "High" },
+                ]}
+                fullWidth
+              />
 
               <div className="flex items-end">
                 <label className="flex items-center">
@@ -580,101 +566,83 @@ export default function BulkOperationModal({
       case "bulk_update_status":
         return (
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                New Status *
-              </label>
-              <select
-                value={statusData.status}
-                onChange={(e) =>
-                  setStatusData({
-                    ...statusData,
-                    status: e.target.value as
-                      | "active"
-                      | "inactive"
-                      | "suspended",
-                  })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="suspended">Suspended</option>
-              </select>
-            </div>
+            <Select
+              label="New Status *"
+              value={statusData.status}
+              onChange={(e) =>
+                setStatusData({
+                  ...statusData,
+                  status: e.target.value as
+                    | "active"
+                    | "inactive"
+                    | "suspended",
+                })
+              }
+              options={[
+                { value: "active", label: "Active" },
+                { value: "inactive", label: "Inactive" },
+                { value: "suspended", label: "Suspended" },
+              ]}
+              required
+              fullWidth
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reason (Optional)
-              </label>
-              <textarea
-                value={statusData.reason}
-                onChange={(e) =>
-                  setStatusData({ ...statusData, reason: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                rows={3}
-                placeholder="Reason for status change..."
-              />
-            </div>
+            <Textarea
+              label="Reason (Optional)"
+              value={statusData.reason}
+              onChange={(e) =>
+                setStatusData({ ...statusData, reason: e.target.value })
+              }
+              rows={3}
+              placeholder="Reason for status change..."
+              fullWidth
+            />
           </div>
         );
 
       case "bulk_assign_workout":
         return (
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Workout Plan *
-              </label>
-              <select
-                value={workoutData.workoutId}
-                onChange={(e) =>
-                  setWorkoutData({ ...workoutData, workoutId: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              >
-                <option value="">Select a workout plan...</option>
-                <option value="upper-body">Upper Body Strength</option>
-                <option value="lower-body">Lower Body Power</option>
-                <option value="conditioning">Conditioning Circuit</option>
-              </select>
-            </div>
+            <Select
+              label="Workout Plan *"
+              value={workoutData.workoutId}
+              onChange={(e) =>
+                setWorkoutData({ ...workoutData, workoutId: e.target.value })
+              }
+              options={[
+                { value: "", label: "Select a workout plan..." },
+                { value: "upper-body", label: "Upper Body Strength" },
+                { value: "lower-body", label: "Lower Body Power" },
+                { value: "conditioning", label: "Conditioning Circuit" },
+              ]}
+              required
+              fullWidth
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Scheduled Date *
-              </label>
-              <input
-                type="date"
-                value={workoutData.scheduledDate}
-                onChange={(e) =>
-                  setWorkoutData({
-                    ...workoutData,
-                    scheduledDate: e.target.value,
-                  })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
+            <Input
+              label="Scheduled Date *"
+              type="date"
+              value={workoutData.scheduledDate}
+              onChange={(e) =>
+                setWorkoutData({
+                  ...workoutData,
+                  scheduledDate: e.target.value,
+                })
+              }
+              required
+              fullWidth
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Notes (Optional)
-              </label>
-              <textarea
-                value={workoutData.notes}
-                onChange={(e) =>
-                  setWorkoutData({ ...workoutData, notes: e.target.value })
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                rows={3}
-                placeholder="Assignment notes..."
-              />
-            </div>
+            <Textarea
+              label="Notes (Optional)"
+              value={workoutData.notes}
+              onChange={(e) =>
+                setWorkoutData({ ...workoutData, notes: e.target.value })
+              }
+              rows={3}
+              placeholder="Assignment notes..."
+              fullWidth
+            />
           </div>
         );
 
