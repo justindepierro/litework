@@ -318,7 +318,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       Weight (lbs)
                     </label>
                     <div className="flex items-center gap-2">
-                      <input
+                      <Input
                         type="number"
                         value={editedExercise.weight || ""}
                         onChange={(e) => {
@@ -329,13 +329,14 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                         placeholder="Min"
-                        min="0"
-                        step="5"
+                        min={0}
+                        step={5}
+                        inputSize="lg"
+                        className="flex-1"
                       />
                       <span className="text-silver-600 font-medium">-</span>
-                      <input
+                      <Input
                         type="number"
                         value={editedExercise.weightMax || ""}
                         onChange={(e) => {
@@ -346,10 +347,11 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                         placeholder="Max (optional)"
-                        min="0"
-                        step="5"
+                        min={0}
+                        step={5}
+                        inputSize="lg"
+                        className="flex-1"
                       />
                     </div>
                     <p className="text-xs text-silver-500 mt-1">
@@ -365,7 +367,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       Percentage of 1RM
                     </label>
                     <div className="flex items-center gap-2">
-                      <input
+                      <Input
                         type="number"
                         value={editedExercise.percentage || ""}
                         onChange={(e) => {
@@ -376,14 +378,15 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                         placeholder="Min %"
-                        min="0"
-                        max="100"
-                        step="5"
+                        min={0}
+                        max={100}
+                        step={5}
+                        inputSize="lg"
+                        className="flex-1"
                       />
                       <span className="text-silver-600 font-medium">-</span>
-                      <input
+                      <Input
                         type="number"
                         value={editedExercise.percentageMax || ""}
                         onChange={(e) => {
@@ -394,11 +397,12 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        className="flex-1 p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
                         placeholder="Max % (optional)"
-                        min="0"
-                        max="100"
-                        step="5"
+                        min={0}
+                        max={100}
+                        step={5}
+                        inputSize="lg"
+                        className="flex-1"
                       />
                     </div>
                     <p className="text-xs text-silver-500 mt-1">
@@ -410,85 +414,67 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
                 {/* Rest Time and Tempo */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Rest (seconds)
-                    </label>
-                    <input
-                      type="number"
-                      value={editedExercise.restTime || ""}
-                      onChange={(e) =>
-                        setEditedExercise({
-                          ...editedExercise,
-                          restTime: parseInt(e.target.value) || undefined,
-                        })
-                      }
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="Rest (sec)"
-                      min="0"
-                      step="15"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Tempo
-                    </label>
-                    <input
-                      type="text"
-                      value={editedExercise.tempo || ""}
-                      onChange={(e) =>
-                        setEditedExercise({
-                          ...editedExercise,
-                          tempo: e.target.value || undefined,
-                        })
-                      }
-                      className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                      placeholder="e.g. 3-1-1-0"
-                    />
-                  </div>
+                  <Input
+                    label="Rest (seconds)"
+                    type="number"
+                    value={editedExercise.restTime || ""}
+                    onChange={(e) =>
+                      setEditedExercise({
+                        ...editedExercise,
+                        restTime: parseInt(e.target.value) || undefined,
+                      })
+                    }
+                    placeholder="Rest (sec)"
+                    min={0}
+                    step={15}
+                    inputSize="lg"
+                  />
+                  <Input
+                    label="Tempo"
+                    type="text"
+                    value={editedExercise.tempo || ""}
+                    onChange={(e) =>
+                      setEditedExercise({
+                        ...editedExercise,
+                        tempo: e.target.value || undefined,
+                      })
+                    }
+                    placeholder="e.g. 3-1-1-0"
+                    inputSize="lg"
+                  />
                 </div>
 
                 {/* Notes */}
-                <div>
-                  <label className="block text-sm font-medium text-silver-700 mb-1">
-                    Notes
-                  </label>
-                  <textarea
-                    value={editedExercise.notes || ""}
-                    onChange={(e) =>
-                      setEditedExercise({
-                        ...editedExercise,
-                        notes: e.target.value || undefined,
-                      })
-                    }
-                    className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation resize-none"
-                    placeholder="Add notes about this exercise..."
-                    rows={2}
-                  />
-                </div>
+                <Textarea
+                  label="Notes"
+                  value={editedExercise.notes || ""}
+                  onChange={(e) =>
+                    setEditedExercise({
+                      ...editedExercise,
+                      notes: e.target.value || undefined,
+                    })
+                  }
+                  placeholder="Add notes about this exercise..."
+                  rows={2}
+                  fullWidth
+                />
 
                 {/* YouTube Video URL */}
-                <div>
-                  <label className="block text-sm font-medium text-silver-700 mb-1">
-                    Demo Video (YouTube URL)
-                  </label>
-                  <input
-                    type="url"
-                    value={editedExercise.videoUrl || ""}
-                    onChange={(e) =>
-                      setEditedExercise({
-                        ...editedExercise,
-                        videoUrl: e.target.value || undefined,
-                      } as WorkoutExercise)
-                    }
-                    className="w-full p-4 sm:p-3 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation"
-                    placeholder="https://youtu.be/VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Paste a YouTube link to show athletes how to perform this
-                    exercise
-                  </p>
-                </div>
+                <Input
+                  label="Demo Video (YouTube URL)"
+                  type="url"
+                  value={editedExercise.videoUrl || ""}
+                  onChange={(e) =>
+                    setEditedExercise({
+                      ...editedExercise,
+                      videoUrl: e.target.value || undefined,
+                    } as WorkoutExercise)
+                  }
+                  placeholder="https://youtu.be/VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID"
+                  helperText="Paste a YouTube link to show athletes how to perform this exercise"
+                  inputSize="lg"
+                  fullWidth
+                />
 
                 {/* Enhanced mobile action buttons */}
                 <div className="flex gap-3">
@@ -1948,10 +1934,8 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-1 pr-4">
-                <label className="block text-xs text-silver-600 mb-1 font-medium">
-                  Workout Name
-                </label>
-                <input
+                <Input
+                  label="Workout Name"
                   type="text"
                   value={workoutName}
                   onChange={(e) => {
@@ -1961,7 +1945,8 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     onChange({ ...workout, name: newName });
                   }}
                   placeholder="Enter workout name..."
-                  className="w-full text-xl sm:text-lg font-bold border-2 border-silver-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="text-xl sm:text-lg font-bold"
+                  fullWidth
                 />
               </div>
               <button
@@ -2157,11 +2142,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         </div>
 
         {/* Exercise Library Panel - Right Side */}
-        <ExerciseLibraryPanel
-          onDragStart={(exercise) => {
-            // [REMOVED] console.log("Dragging exercise:", exercise.name);
-          }}
-        />
+        <ExerciseLibraryPanel onDragStart={() => {}} />
       </div>
 
       {/* Modals */}
