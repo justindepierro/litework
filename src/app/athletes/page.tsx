@@ -38,6 +38,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import { Input } from "@/components/ui/Input";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -1511,26 +1512,22 @@ export default function AthletesPage() {
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    value={editEmailForm.email}
-                    onChange={(e) =>
-                      setEditEmailForm({ email: e.target.value })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="athlete@email.com"
-                    autoFocus
-                  />
-                  {selectedAthlete.email && (
-                    <p className="mt-1 text-xs text-gray-500">
-                      Current: {selectedAthlete.email}
-                    </p>
-                  )}
-                </div>
+                {/* Email Input */}
+                <Input
+                  label="Email Address *"
+                  type="email"
+                  value={editEmailForm.email}
+                  onChange={(e) => setEditEmailForm({ email: e.target.value })}
+                  placeholder="athlete@email.com"
+                  autoFocus
+                  fullWidth
+                  required
+                  helperText={
+                    selectedAthlete.email
+                      ? `Current: ${selectedAthlete.email}`
+                      : undefined
+                  }
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-start gap-3">

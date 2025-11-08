@@ -30,6 +30,7 @@ import ExerciseLibraryPanel from "./ExerciseLibraryPanel";
 import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
+import { Input, Textarea } from "@/components/ui/Input";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;

@@ -5,6 +5,7 @@ import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import { X } from "lucide-react";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 
 interface GroupFormModalProps {
   isOpen: boolean;
@@ -229,70 +230,56 @@ export default function GroupFormModal({
                   Group Details
                 </h3>
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Group Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
-                    placeholder="e.g., Football Linemen, Volleyball Girls"
-                    disabled={isLoading}
-                  />
-                </div>
+                {/* Group Name */}
+                <Input
+                  label="Group Name *"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  placeholder="e.g., Football Linemen, Volleyball Girls"
+                  disabled={isLoading}
+                  fullWidth
+                  required
+                />
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Sport *
-                  </label>
-                  <select
-                    value={formData.sport}
-                    onChange={(e) => handleInputChange("sport", e.target.value)}
-                    className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
-                    disabled={isLoading}
-                  >
-                    <option value="">Select a sport...</option>
-                    {sportOptions.map((sport) => (
-                      <option key={sport} value={sport}>
-                        {sport}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {/* Sport */}
+                <Select
+                  label="Sport *"
+                  value={formData.sport}
+                  onChange={(e) => handleInputChange("sport", e.target.value)}
+                  disabled={isLoading}
+                  fullWidth
+                  required
+                  options={[
+                    { value: "", label: "Select a sport..." },
+                    ...sportOptions.map((sport) => ({
+                      value: sport,
+                      label: sport,
+                    })),
+                  ]}
+                />
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Category
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) =>
-                      handleInputChange("category", e.target.value)
-                    }
-                    className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
-                    placeholder="e.g., Varsity, JV, Linemen, Receivers"
-                    disabled={isLoading}
-                  />
-                </div>
+                {/* Category */}
+                <Input
+                  label="Category"
+                  type="text"
+                  value={formData.category}
+                  onChange={(e) => handleInputChange("category", e.target.value)}
+                  placeholder="e.g., Varsity, JV, Linemen, Receivers"
+                  disabled={isLoading}
+                  fullWidth
+                />
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
-                    className="w-full p-3 border border-silver-400 rounded-md focus:border-accent-blue focus:outline-none"
-                    rows={3}
-                    placeholder="Brief description of the group..."
-                    disabled={isLoading}
-                  />
-                </div>
+                {/* Description */}
+                <Textarea
+                  label="Description"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  rows={3}
+                  placeholder="Brief description of the group..."
+                  disabled={isLoading}
+                  fullWidth
+                />
 
                 <div>
                   <label className="text-body-primary font-medium block mb-2">
