@@ -29,7 +29,7 @@ const fetcher = async (url: string) => {
 const defaultConfig = {
   revalidateOnFocus: false, // Don't refetch when user returns to tab
   revalidateOnReconnect: true, // Refetch when network reconnects
-  dedupingInterval: 30000, // Dedupe requests within 30 seconds
+  dedupingInterval: 30000, // Default: dedupe requests within 30 seconds
   shouldRetryOnError: true, // Retry on error
   errorRetryCount: 3, // Max retry attempts
   errorRetryInterval: 5000, // Wait 5s between retries
@@ -47,7 +47,7 @@ export function useGroups() {
     mutate: refetch,
   } = useSWR("/api/groups", fetcher, {
     ...defaultConfig,
-    dedupingInterval: 60000, // Groups change infrequently, cache for 1 minute
+    dedupingInterval: 120000, // Groups change infrequently, cache for 2 minutes (matches API cache)
   });
 
   return {
@@ -167,7 +167,7 @@ export function useExercises(params?: {
     mutate: refetch,
   } = useSWR(`/api/exercises${queryString}`, fetcher, {
     ...defaultConfig,
-    dedupingInterval: 120000, // Exercises rarely change, cache for 2 minutes
+    dedupingInterval: 300000, // Exercises rarely change, cache for 5 minutes (matches API cache)
     revalidateOnFocus: false,
   });
 

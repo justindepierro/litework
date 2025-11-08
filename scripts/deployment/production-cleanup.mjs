@@ -231,9 +231,7 @@ console.log("\n" + "=".repeat(50));
 if (issues.length === 0) {
   console.log("🎉 Production cleanup complete! Ready to deploy!");
 } else {
-  console.log(
-    "⚠️  Please review and fix the issues above before deploying."
-  );
+  console.log("⚠️  Please review and fix the issues above before deploying.");
 }
 
 console.log("=".repeat(50) + "\n");

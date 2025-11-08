@@ -16,7 +16,7 @@ import {
 interface DiagnosticResult {
   timestamp: string;
   environment: string;
-  checks: Record<string, any>;
+  checks: Record<string, unknown>;
   summary: {
     status: string;
     recommendation: string;
@@ -105,7 +105,7 @@ export default function DiagnosePage() {
     // Run diagnostics on mount - prevent double execution in strict mode
     if (hasInitialized.current) return;
     hasInitialized.current = true;
-    
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
     runDiagnostics();
   }, []);

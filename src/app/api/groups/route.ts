@@ -6,6 +6,9 @@ import {
 } from "@/lib/auth-server";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
+// Cache groups for 2 minutes (moderate update frequency)
+export const revalidate = 120;
+
 // GET /api/groups - Get all groups (coaches) or user's groups (athletes)
 export async function GET() {
   try {

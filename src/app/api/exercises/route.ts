@@ -6,6 +6,9 @@ import {
 } from "@/lib/auth-server";
 import { cachedResponse } from "@/lib/api-cache-headers";
 
+// Cache exercise data for 5 minutes (exercises rarely change)
+export const revalidate = 300;
+
 export async function GET(request: NextRequest) {
   try {
     const { user, error: authError } = await getAuthenticatedUser();

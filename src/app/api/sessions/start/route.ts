@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth-server";
 import { createClient } from "@/lib/supabase-server";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 /**
  * POST /api/sessions/start

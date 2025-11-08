@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 // PATCH /api/workouts/[id]/archive - Archive or unarchive a workout
 export async function PATCH(

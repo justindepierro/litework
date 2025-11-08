@@ -40,6 +40,35 @@ function getSecurityHeaders() {
   return headers;
 }
 
+/**
+ * Get compression headers for responses
+ * Signals browser that compression is available
+ */
+function getCompressionHeaders() {
+  const headers = new Headers();
+  
+  // Vary header tells caches to store different versions based on Accept-Encoding
+  headers.set("Vary", "Accept-Encoding");
+  
+  return headers;
+}
+
+/**
+ * Check if response should be compressed
+ * Only compress text-based content types
+ */
+function shouldCompress(pathname: string): boolean {
+  // Compress API responses (JSON)
+  if (pathname.startsWith("/api/")) return true;
+  
+  // Compress HTML pages
+  if (!pathname.includes(".")) return true;
+  
+  // Compress CSS, JS, SVG
+  const compressibleExtensions = [".css", ".js", ".json", ".svg", ".xml", ".txt"];
+  return compressibleExtensions.some((ext) => pathname.endsWith(ext));
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -50,6 +79,12 @@ export function middleware(request: NextRequest) {
     // Add security headers
     const securityHeaders = getSecurityHeaders();
     securityHeaders.forEach((value, key) => {
+      response.headers.set(key, value);
+    });
+
+    // Add compression headers for API responses
+    const compressionHeaders = getCompressionHeaders();
+    compressionHeaders.forEach((value, key) => {
       response.headers.set(key, value);
     });
 
@@ -78,6 +113,14 @@ export function middleware(request: NextRequest) {
   securityHeaders.forEach((value, key) => {
     response.headers.set(key, value);
   });
+
+  // Add compression headers to compressible content
+  if (shouldCompress(pathname)) {
+    const compressionHeaders = getCompressionHeaders();
+    compressionHeaders.forEach((value, key) => {
+      response.headers.set(key, value);
+    });
+  }
 
   return response;
 }

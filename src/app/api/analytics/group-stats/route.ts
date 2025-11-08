@@ -6,12 +6,11 @@
  * For coaches/admins only
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
 
   if (!user) {

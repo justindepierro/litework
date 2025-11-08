@@ -1,10 +1,12 @@
 # Production Readiness Plan
+
 **Target: Tester Deployment Next Week**
 **Created: 2025-01-XX**
 
 ## Executive Summary
 
 **Current Status:**
+
 - ✅ Production build: SUCCESS (21.9s compile, 61 pages)
 - ✅ TypeScript: CLEAN (0 errors)
 - ⚠️ ESLint: 68 issues (9 critical errors, 59 warnings)
@@ -23,6 +25,7 @@
 **Priority: HIGHEST**
 
 #### src/app/diagnose/page.tsx (4 errors)
+
 - **Issue**: Function `runDiagnostics` used in useEffect before declaration
 - **Fix**: Move function declaration above useEffect OR use useCallback
 - **Impact**: Code works but violates React best practices
@@ -40,15 +43,18 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 ```
 
 **Type Errors (3):**
+
 - Lines with `Record<string, any>` should use proper types
 - Error handlers need proper typing
 
 #### src/components/WorkoutLive.tsx (3 errors)
+
 - **Issue**: setState calls inside useEffect without proper dependencies
 - **Fix**: Extract logic or add to dependency array
 - **Impact**: May cause unnecessary re-renders or stale state
 
 #### src/components/WorkoutView.tsx (2 errors)
+
 - **Issue**: Error handlers using `any` type
 - **Fix**: Type as `Error` or `unknown`
 
@@ -72,6 +78,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 **Count: 140 statements**
 
 **Strategy:**
+
 1. Use existing `logger.ts` (already production-ready with dev/prod modes)
 2. Run `scripts/dev/remove-console-logs.mjs` to find all instances
 3. Categorize:
@@ -80,12 +87,14 @@ const runDiagnostics = useCallback(async () => { ... }, []);
    - **Keep:** Diagnose page logs (this is diagnostic tool)
 
 **Critical Files (10+ console.logs each):**
+
 - `src/app/api/assignments/[id]/route.ts` (10)
 - `src/app/api/assignments/reschedule/route.ts` (10)
 - `src/app/dashboard/page.tsx`
 - `src/app/schedule/page.tsx`
 
 **Recommendation:**
+
 - Start with API routes (remove verbose logging)
 - Replace client-side logs with logger.debug()
 - Keep error logging but use logger.error()
@@ -98,6 +107,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 
 **Priority: MEDIUM**
 **Types:**
+
 - Unused imports: `transformToCamel`, `transformToSnake` (30+ files)
 - Unused variables: `err`, `isCoach`, `hasRoleOrHigher`
 - Unused React hooks: `isSameDay`, `isToday`
@@ -105,6 +115,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 **Impact:** Build succeeds despite warnings, but clutters codebase
 
 **Strategy:**
+
 1. Run ESLint auto-fix: `npm run lint -- --fix`
 2. Manually review remaining warnings
 3. Remove genuinely unused code
@@ -118,6 +129,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 **Count: 17 comments**
 
 **Categories:**
+
 1. **Implement Now** (blocking testers):
    - "TODO: Send invitation email" → Critical for user onboarding
    - "TODO: Check if user is in assigned group" → Security concern
@@ -131,6 +143,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
    - Remove outdated comments
 
 **Action:**
+
 - Create GitHub issues for "later" items
 - Implement or remove "now" items
 - Update comments with issue numbers if keeping
@@ -140,16 +153,19 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 ## Phase 3: Documentation (SHOULD DO)
 
 ### 3.1 Environment Variables
+
 - ✅ .env.example created
 - ⏳ Verify all required variables documented
 - ⏳ Add production deployment instructions
 
 ### 3.2 Deployment Checklist
+
 - ⏳ Create pre-deployment verification steps
 - ⏳ Document rollback procedure
 - ⏳ List required environment variables for Vercel
 
 ### 3.3 Tester Onboarding
+
 - ⏳ Create tester quick-start guide
 - ⏳ Document known limitations
 - ⏳ Provide test accounts and data
@@ -159,8 +175,9 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 ## Phase 4: Testing (MUST DO)
 
 ### 4.1 Critical User Flows
+
 - [ ] Coach signup/login
-- [ ] Athlete signup/login  
+- [ ] Athlete signup/login
 - [ ] Create workout with exercise groups
 - [ ] Assign workout to group
 - [ ] Athlete views assignment
@@ -169,6 +186,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 - [ ] Calendar drag-and-drop scheduling
 
 ### 4.2 Mobile Testing
+
 - [ ] iOS Safari (primary target)
 - [ ] Android Chrome
 - [ ] PWA installation works
@@ -176,6 +194,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 - [ ] Offline functionality (service worker)
 
 ### 4.3 Performance
+
 - [ ] Lighthouse score > 80 on mobile
 - [ ] First Contentful Paint < 2s
 - [ ] Time to Interactive < 5s
@@ -186,6 +205,7 @@ const runDiagnostics = useCallback(async () => { ... }, []);
 ## Phase 5: Deployment Preparation
 
 ### 5.1 Vercel Configuration
+
 ```bash
 # Required Environment Variables
 NEXT_PUBLIC_SUPABASE_URL
@@ -198,12 +218,14 @@ NEXT_PUBLIC_APP_URL
 ```
 
 ### 5.2 Supabase Production Database
+
 - [ ] Run all migrations on production DB
 - [ ] Verify RLS policies active
 - [ ] Set up database backups
 - [ ] Configure connection pooling
 
 ### 5.3 Error Monitoring
+
 - [ ] Configure Sentry (optional but recommended)
 - [ ] Set up logging aggregation
 - [ ] Create alert rules for critical errors
@@ -213,21 +235,25 @@ NEXT_PUBLIC_APP_URL
 ## Execution Timeline
 
 ### Day 1-2: Critical Fixes
+
 - ✅ Fix 9 ESLint errors
 - ✅ Remove/replace console.logs
 - ✅ Test critical user flows
 
 ### Day 3-4: Code Quality
+
 - ✅ Fix ESLint warnings
 - ✅ Address TODOs (implement or document)
 - ✅ Complete documentation
 
 ### Day 5-6: Testing & Polish
+
 - ✅ Full mobile testing
 - ✅ Performance optimization
 - ✅ Create tester guide
 
 ### Day 7: Deploy
+
 - ✅ Final verification
 - ✅ Deploy to Vercel
 - ✅ Smoke tests in production
@@ -240,14 +266,17 @@ NEXT_PUBLIC_APP_URL
 ### Keep or Remove?
 
 **Console.logs in Diagnose Page:**
+
 - **KEEP** - This is a diagnostic tool, logging is intentional
 - Add comment: `// Intentional - diagnostic logging`
 
 **Unused Utility Functions:**
+
 - **KEEP** - If part of design system or future-proofing
 - **REMOVE** - If truly obsolete or "dead code"
 
 **Type `any` Usage:**
+
 - **REPLACE** - Use proper types or `unknown`
 - Exception: Third-party library types that don't have definitions
 
@@ -256,6 +285,7 @@ NEXT_PUBLIC_APP_URL
 ## Success Criteria
 
 ✅ **Minimum Bar for Tester Release:**
+
 1. Zero TypeScript errors ✅
 2. Zero critical ESLint errors
 3. Production build succeeds ✅
@@ -264,6 +294,7 @@ NEXT_PUBLIC_APP_URL
 6. .env.example complete ✅
 
 ✅ **Nice to Have:**
+
 1. Zero ESLint warnings
 2. Zero console.logs
 3. All TODOs addressed
@@ -308,11 +339,13 @@ node scripts/deployment/production-cleanup.mjs
 ## Current Status: Phase 1 In Progress
 
 **Completed:**
+
 - ✅ Created .env.example
 - ✅ Created production cleanup infrastructure
 - ✅ Identified all issues with specific counts
 
 **Next Steps:**
+
 1. Fix diagnose/page.tsx (move runDiagnostics above useEffect)
 2. Fix WorkoutLive.tsx (refactor useEffect dependencies)
 3. Fix WorkoutView.tsx (type error handlers)

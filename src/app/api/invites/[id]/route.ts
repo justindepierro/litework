@@ -6,7 +6,6 @@ import {
   isAdmin,
 } from "@/lib/auth-server";
 import { sendEmailNotification } from "@/lib/email-service";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 // GET /api/invites/[id] - Fetch invitation details (public endpoint for signup)
 export async function GET(

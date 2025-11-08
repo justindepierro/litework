@@ -64,7 +64,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
   // Pre-fill form fields when exercise changes
   useEffect(() => {
     if (!currentExercise) return;
-    
+
     // Pre-fill weight from last set or target
     if (currentExercise.set_records.length > 0) {
       const lastSet =
@@ -73,7 +73,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
     } else if (currentExercise.weight_target) {
       setWeight(currentExercise.weight_target.toString());
     }
-    
+
     // Pre-fill reps from target
     if (currentExercise.reps_target) {
       const repsNum = parseInt(currentExercise.reps_target);

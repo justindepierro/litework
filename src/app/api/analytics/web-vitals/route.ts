@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
 } from "@/lib/auth-server";
 
 interface WebVitalData {

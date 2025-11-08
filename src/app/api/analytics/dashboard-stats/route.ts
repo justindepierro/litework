@@ -8,16 +8,17 @@
  * - Current workout streak
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import {
   getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
 } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
+import { calculateWorkoutStreak } from "@/lib/analytics-utils";
 
-export async function GET(request: NextRequest) {
+// Cache dashboard stats for 1 minute (frequently changing data)
+export const revalidate = 60;
+
+export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
 
   if (!user) {
@@ -53,48 +54,17 @@ export async function GET(request: NextRequest) {
 
     if (prError) throw prError;
 
-    // Calculate current streak
-    // Fetch all completed workout dates, sorted descending
+    // Calculate current streak using shared utility
     const { data: allWorkouts, error: streakError } = await supabase
       .from("workout_sessions")
       .select("completed_at")
       .eq("user_id", user.id)
-      .not("completed_at", "is", null)
-      .order("completed_at", { ascending: false });
+      .not("completed_at", "is", null);
 
     if (streakError) throw streakError;
 
-    let currentStreak = 0;
-    if (allWorkouts && allWorkouts.length > 0) {
-      const dates = allWorkouts.map((w) => {
-        const date = new Date(w.completed_at!);
-        date.setHours(0, 0, 0, 0);
-        return date.getTime();
-      });
-
-      // Remove duplicates and sort
-      const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
-
-      // Check if today or yesterday has a workout
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayTime = today.getTime();
-      const yesterdayTime = todayTime - 24 * 60 * 60 * 1000;
-
-      if (uniqueDates[0] === todayTime || uniqueDates[0] === yesterdayTime) {
-        currentStreak = 1;
-        let expectedDate = uniqueDates[0] - 24 * 60 * 60 * 1000;
-
-        for (let i = 1; i < uniqueDates.length; i++) {
-          if (uniqueDates[i] === expectedDate) {
-            currentStreak++;
-            expectedDate -= 24 * 60 * 60 * 1000;
-          } else {
-            break;
-          }
-        }
-      }
-    }
+    const completedDates = allWorkouts?.map((w) => w.completed_at!) || [];
+    const currentStreak = calculateWorkoutStreak(completedDates);
 
     return NextResponse.json({
       success: true,

@@ -12,6 +12,26 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Persist session across page reloads
+    persistSession: true,
+    // Auto refresh token before expiry
+    autoRefreshToken: true,
+    // Detect session from URL (for email confirmations, password resets)
+    detectSessionInUrl: true,
+    // Use PKCE flow for enhanced security
+    flowType: "pkce",
+    // Storage key for session
+    storageKey: "litework-auth-token",
+  },
+  global: {
+    headers: {
+      "x-client-info": "litework-web@1.0.0",
+    },
+  },
+  db: {
+    schema: "public",
+  },
   cookies: {
     getAll() {
       if (typeof document === "undefined") return [];
@@ -49,21 +69,6 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
         document.cookie = cookie;
       });
     },
-  },
-  global: {
-    headers: {
-      "X-Client-Info": "litework-web",
-    },
-  },
-  auth: {
-    // Persist session across page reloads
-    persistSession: true,
-    // Auto refresh token before expiry
-    autoRefreshToken: true,
-    // Detect session from URL (for email confirmations, password resets)
-    detectSessionInUrl: true,
-    // Storage key for session
-    storageKey: "litework-auth-token",
   },
 });
 

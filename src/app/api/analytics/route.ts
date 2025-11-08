@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 import {
   getAuthenticatedUser,
   getAdminClient,
   isCoach,
   isAdmin,
 } from "@/lib/auth-server";
+import { calculateDetailedStreaks } from "@/lib/analytics-utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -264,34 +264,18 @@ export async function GET(request: NextRequest) {
         .gte("created_at", startDate.toISOString())
         .order("created_at", { ascending: true });
 
-      // Calculate streaks and consistency patterns
+      // Calculate streaks and consistency patterns using shared utility
       const workoutDates =
-        activityLog?.map((log) => new Date(log.created_at).toDateString()) ||
-        [];
-      const uniqueWorkoutDates = [...new Set(workoutDates)];
-
-      let currentStreak = 0;
-      let longestStreak = 0;
-      let tempStreak = 0;
-
-      const today = new Date();
-      for (let i = 0; i < 30; i++) {
-        const checkDate = new Date(today);
-        checkDate.setDate(today.getDate() - i);
-        const dateString = checkDate.toDateString();
-
-        if (uniqueWorkoutDates.includes(dateString)) {
-          tempStreak++;
-          if (i === 0) currentStreak = tempStreak;
-        } else {
-          longestStreak = Math.max(longestStreak, tempStreak);
-          tempStreak = 0;
-        }
-      }
+        activityLog?.map((log) => new Date(log.created_at)) || [];
+      
+      const { currentStreak, longestStreak } = calculateDetailedStreaks(workoutDates, 30);
+      const uniqueWorkoutDates = [
+        ...new Set(workoutDates.map((date) => date.toDateString())),
+      ];
 
       analyticsData.consistency = {
         currentStreak,
-        longestStreak: Math.max(longestStreak, tempStreak),
+        longestStreak,
         workoutDates: uniqueWorkoutDates,
         avgWorkoutsPerWeek:
           uniqueWorkoutDates.length /

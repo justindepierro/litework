@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
+import { transformToCamel } from "@/lib/case-transform";
 
 interface BulkAssignmentRequest {
   workoutPlanId: string;

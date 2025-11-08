@@ -8,7 +8,6 @@ import { getAuthenticatedUser } from "@/lib/auth-server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { NotificationPreferences } from "@/types";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;

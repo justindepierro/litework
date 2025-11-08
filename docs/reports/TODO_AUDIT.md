@@ -1,25 +1,29 @@
 # TODO Comments Audit
+
 **Date: November 7, 2025**
 **Total TODOs Found: 17**
 
 ## Summary
 
-| Priority | Count | Action |
-|----------|-------|--------|
-| 🔴 **Critical** (Implement Now) | 2 | Security/functionality issues |
-| 🟡 **Medium** (Document) | 10 | Feature enhancements, can defer |
-| 🟢 **Low** (Remove/Keep) | 5 | Already implemented or trivial |
+| Priority                        | Count | Action                          |
+| ------------------------------- | ----- | ------------------------------- |
+| 🔴 **Critical** (Implement Now) | 2     | Security/functionality issues   |
+| 🟡 **Medium** (Document)        | 10    | Feature enhancements, can defer |
+| 🟢 **Low** (Remove/Keep)        | 5     | Already implemented or trivial  |
 
 ---
 
 ## 🔴 CRITICAL - Implement Now (2)
 
 ### 1. Security: Group Membership Checks
+
 **Files:**
+
 - `src/app/api/assignments/[id]/route.ts:104`
 - `src/app/api/assignments/[id]/route.ts:299`
 
 **TODOs:**
+
 ```typescript
 // TODO: Check if user is in assigned group
 // TODO: Check group membership for group assignments
@@ -38,9 +42,11 @@
 ## 🟡 MEDIUM - Document for Later (10)
 
 ### 2. Email Invitation System
+
 **File:** `src/app/api/bulk-operations/route.ts:124`
 
 **TODO:**
+
 ```typescript
 // TODO: Send invitation email
 ```
@@ -52,11 +58,14 @@
 **Action:** Create GitHub issue, implement post-tester launch
 
 ### 3. Message System Implementation
+
 **Files:**
+
 - `src/app/api/messages/route.ts:17`
 - `src/app/api/messages/route.ts:41`
 
 **TODOs:**
+
 ```typescript
 // TODO: Implement actual message fetching from database
 // TODO: Implement actual message sending to database
@@ -69,9 +78,11 @@
 **Action:** Create GitHub issue, implement in v2
 
 ### 4. Group Messaging
+
 **File:** `src/app/api/bulk-operations/route.ts:179`
 
 **TODO:**
+
 ```typescript
 // TODO: Handle group messaging by expanding groups to individual athletes
 ```
@@ -83,12 +94,15 @@
 **Action:** Bundle with message system implementation
 
 ### 5. Edit Modal Integration
+
 **Files:**
+
 - `src/app/athletes/page.tsx:1307`
 - `src/app/athletes/page.tsx:2027`
 - `src/app/dashboard/page.tsx:203`
 
 **TODOs:**
+
 ```typescript
 // TODO: Open edit modal to add email
 // TODO: Open edit modal
@@ -102,11 +116,14 @@
 **Action:** Design modal system first, then implement
 
 ### 6. Athlete Loading from API
+
 **Files:**
+
 - `src/components/GroupFormModal.tsx:92`
 - `src/components/CalendarView.tsx:37`
 
 **TODOs:**
+
 ```typescript
 // TODO: Load athletes from API
 ```
@@ -118,9 +135,11 @@
 **Action:** Review if actually needed or if current approach is better
 
 ### 7. Workout Update Cascade
+
 **File:** `src/app/api/workouts/route.ts:242`
 
 **TODO:**
+
 ```typescript
 // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
 ```
@@ -132,9 +151,11 @@
 **Action:** Test current implementation, implement if issues found
 
 ### 8. Progress Analytics Calculations
+
 **File:** `src/components/ProgressAnalytics.tsx:127`
 
 **TODO:**
+
 ```typescript
 avgImprovement: 8.5, // TODO: Calculate from actual data
 ```
@@ -146,9 +167,11 @@ avgImprovement: 8.5, // TODO: Calculate from actual data
 **Action:** Implement proper calculation based on workout history
 
 ### 9. Workout Session API Implementation
+
 **File:** `src/components/WorkoutView.tsx:35`
 
 **TODO:**
+
 ```typescript
 // TODO: Implement actual API call to fetch workout session
 ```
@@ -160,9 +183,11 @@ avgImprovement: 8.5, // TODO: Calculate from actual data
 **Action:** Audit WorkoutView component, remove if obsolete
 
 ### 10. Auth Context Integration
+
 **File:** `src/components/IndividualAssignmentModal.tsx:112`
 
 **TODO:**
+
 ```typescript
 assignedBy: "coach1", // TODO: Get from auth context
 ```
@@ -178,9 +203,11 @@ assignedBy: "coach1", // TODO: Get from auth context
 ## 🟢 LOW - Review/Remove (5)
 
 ### 11. Error Logging to Sentry
+
 **File:** `src/components/GlobalErrorBoundary.tsx:36`
 
 **TODO:**
+
 ```typescript
 // TODO: Send to Sentry or similar
 ```
@@ -192,9 +219,11 @@ assignedBy: "coach1", // TODO: Get from auth context
 **Action:** Keep comment, implement when adding Sentry
 
 ### 12. Pause Duration Tracking
+
 **File:** `src/lib/session-storage.ts:85`
 
 **TODO:**
+
 ```typescript
 // TODO: Track pause durations and subtract them
 ```
@@ -210,11 +239,13 @@ assignedBy: "coach1", // TODO: Get from auth context
 ## Action Plan
 
 ### Immediate (Today/Tomorrow)
+
 1. ✅ **Implement Group Membership Checks** (30 min)
    - Add validation in assignment routes
    - Test with different user roles
 
 ### Short Term (This Week)
+
 2. **Create GitHub Issues** for Medium priority items:
    - Email invitation system
    - Message system implementation
@@ -224,12 +255,14 @@ assignedBy: "coach1", // TODO: Get from auth context
    - Auth context integration
 
 ### Long Term (Post-Launch)
+
 3. **Review Low Priority TODOs**:
    - Sentry integration
    - Pause duration tracking
    - Athlete loading patterns
 
 ### Clean Up (This Week)
+
 4. **Remove Obsolete TODOs**:
    - Check if "Load athletes from API" is still needed
    - Verify WorkoutView API implementation
@@ -244,6 +277,7 @@ assignedBy: "coach1", // TODO: Get from auth context
 **File:** `src/app/api/assignments/[id]/route.ts`
 
 **Current Code (Line 99-107):**
+
 ```typescript
 // GET /api/assignments/[id] - Get single assignment
 export async function GET(
@@ -257,6 +291,7 @@ export async function GET(
 ```
 
 **Proposed Fix:**
+
 ```typescript
 export async function GET(
   request: NextRequest,
@@ -264,12 +299,12 @@ export async function GET(
 ) {
   return withAuth(request, async (user) => {
     const assignment = await fetchAssignment(params.id);
-    
+
     if (!isCoach(user)) {
       // Verify athlete has access to this assignment
-      const hasAccess = assignment.userId === user.id || 
+      const hasAccess = assignment.userId === user.id ||
                        (assignment.groupId && await isUserInGroup(user.id, assignment.groupId));
-      
+
       if (!hasAccess) {
         return NextResponse.json(
           { error: "Not authorized to view this assignment" },
@@ -280,15 +315,19 @@ export async function GET(
 ```
 
 **Required Helper Function:**
+
 ```typescript
-async function isUserInGroup(userId: string, groupId: string): Promise<boolean> {
+async function isUserInGroup(
+  userId: string,
+  groupId: string
+): Promise<boolean> {
   const { data, error } = await supabaseAdmin
-    .from('athlete_group_members')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('group_id', groupId)
+    .from("athlete_group_members")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("group_id", groupId)
     .single();
-    
+
   return !error && !!data;
 }
 ```
@@ -318,6 +357,7 @@ async function isUserInGroup(userId: string, groupId: string): Promise<boolean> 
 ## GitHub Issue Templates
 
 ### Template 1: Email Invitation System
+
 ```markdown
 **Title:** Implement Email Invitation System
 
@@ -325,6 +365,7 @@ async function isUserInGroup(userId: string, groupId: string): Promise<boolean> 
 Wire up email invitation sending when coaches invite athletes.
 
 **Technical Details:**
+
 - Resend API already configured
 - Email templates need creation
 - Trigger: bulk-operations route (line 124)
@@ -335,6 +376,7 @@ Wire up email invitation sending when coaches invite athletes.
 ```
 
 ### Template 2: Message System
+
 ```markdown
 **Title:** Implement Coach-Athlete Messaging
 
@@ -342,6 +384,7 @@ Wire up email invitation sending when coaches invite athletes.
 Complete the messaging system for coach-athlete communication.
 
 **Technical Details:**
+
 - Database schema exists (communication-schema.sql)
 - API routes are placeholders (messages/route.ts)
 - Need: message CRUD, real-time updates (optional)

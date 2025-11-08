@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
-import { transformToCamel, transformToSnake } from "@/lib/case-transform";
 
 // GET /api/invites/validate/[code] - Validate invitation code
 export async function GET(
