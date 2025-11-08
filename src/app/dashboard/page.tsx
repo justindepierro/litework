@@ -24,6 +24,8 @@ import {
   Users,
   UserPlus,
 } from "lucide-react";
+import { DashboardSkeleton } from "@/components/skeletons";
+import { EmptyAssignments } from "@/components/ui/EmptyState";
 
 interface DashboardStats {
   workoutsThisWeek: number;
@@ -497,26 +499,9 @@ export default function DashboardPage() {
               <ClipboardList className="w-6 h-6" /> Your Assigned Workouts
             </h2>
             {loadingData ? (
-              <div className="text-center py-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-4 text-gray-600">Loading workouts...</p>
-              </div>
+              <DashboardSkeleton />
             ) : assignments.length === 0 ? (
-              <div className="text-center py-16">
-                <ClipboardList className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-xl font-semibold text-gray-500 mb-2">
-                  No Workouts Assigned Yet
-                </h3>
-                <p className="text-gray-400 mb-6">
-                  Your coach will assign workouts that will appear here.
-                </p>
-                <Link
-                  href="/workouts"
-                  className="btn-primary inline-flex items-center gap-2"
-                >
-                  <Eye className="w-4 h-4" /> Browse Workout Library
-                </Link>
-              </div>
+              <EmptyAssignments />
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {assignments.slice(0, 6).map((assignment) => {

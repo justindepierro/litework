@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { EmptyNotifications } from "@/components/ui/EmptyState";
 
 interface InAppNotification {
   id: string;
@@ -221,19 +222,7 @@ export default function NotificationsPage() {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
               </div>
             ) : notifications.length === 0 ? (
-              <div className="text-center py-12">
-                <Bell className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {filter === "unread"
-                    ? "No unread notifications"
-                    : "No notifications"}
-                </h3>
-                <p className="text-gray-600">
-                  {filter === "unread"
-                    ? "You're all caught up!"
-                    : "When you get notifications, they'll appear here."}
-                </p>
-              </div>
+              <EmptyNotifications />
             ) : (
               <div className="divide-y divide-gray-100">
                 {notifications.map((notification) => (

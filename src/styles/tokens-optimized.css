@@ -138,7 +138,7 @@
    OPTIMIZED UTILITIES
    ================= */
 
-/* High-frequency utility classes only */
+/* High-frequency utility classes - Enhanced with micro-interactions */
 .btn-primary {
   background: var(--orange);
   color: var(--text-inverse);
@@ -148,12 +148,24 @@
   font-weight: var(--weight-medium);
   transition: var(--transition-fast);
   box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: #e55a2b;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -164,11 +176,23 @@
   padding: var(--s-3) var(--s-6);
   font-weight: var(--weight-medium);
   transition: var(--transition-fast);
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: var(--bg-2);
   border-color: var(--border-2);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .card {

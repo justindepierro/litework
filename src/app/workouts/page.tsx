@@ -33,6 +33,9 @@ import {
   formatValidationErrors,
 } from "@/lib/workout-validation";
 import { WorkoutEditorErrorBoundary } from "@/components/WorkoutEditorErrorBoundary";
+import { WorkoutListSkeleton } from "@/components/skeletons";
+import { EmptyWorkouts } from "@/components/ui/EmptyState";
+import { Button } from "@/components/ui/Button";
 
 // Dynamic imports for large components
 const ExerciseLibrary = lazy(() => import("@/components/ExerciseLibrary"));
@@ -330,15 +333,8 @@ export default function WorkoutsPage() {
               </div>
             )}
 
-            {/* Enhanced loading state */}
-            {loading && (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="text-gray-600 mt-4 text-lg">
-                  Loading workouts...
-                </p>
-              </div>
-            )}
+            {/* Loading state */}
+            {loading && <WorkoutListSkeleton count={4} />}
 
             {/* Action Buttons */}
             {!loading && (
@@ -379,22 +375,10 @@ export default function WorkoutsPage() {
             {!loading && (
               <div className="grid gap-4 md:grid-cols-2">
                 {workouts.length === 0 ? (
-                  <div className="col-span-full text-center py-12">
-                    <div className="flex justify-center mb-4">
-                      <Dumbbell className="w-16 h-16 text-accent-blue" />
-                    </div>
-                    <h3 className="text-heading-secondary text-lg mb-2">
-                      No workouts yet
-                    </h3>
-                    <p className="text-body-secondary mb-4">
-                      Create your first workout to get started.
-                    </p>
-                    <button
-                      className="btn-primary"
-                      onClick={() => setCreatingWorkout(true)}
-                    >
-                      <Plus className="w-4 h-4" /> Create Your First Workout
-                    </button>
+                  <div className="col-span-full">
+                    <EmptyWorkouts
+                      onCreateWorkout={() => setCreatingWorkout(true)}
+                    />
                   </div>
                 ) : (
                   workouts.map((workout) => {

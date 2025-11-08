@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAthleteGuard } from "@/hooks/use-auth-guard";
 import Navigation from "@/components/Navigation";
 import { Check } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface SetRecord {
   id: string;
@@ -212,12 +213,11 @@ export default function WorkoutHistoryPage() {
 
         {/* Workout Sessions List */}
         {history && history.sessions.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
-            <p className="text-gray-600 text-lg">No workout history yet</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Complete your first workout to see it here!
-            </p>
-          </div>
+          <EmptyState
+            icon={Check}
+            title="No workout history yet"
+            description="Complete your first workout to see it here!"
+          />
         ) : (
           <div className="space-y-4">
             {history?.sessions.map((session) => {

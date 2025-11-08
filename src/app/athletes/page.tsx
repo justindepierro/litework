@@ -37,6 +37,7 @@ import { apiClient } from "@/lib/api-client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -1473,17 +1474,13 @@ export default function AthletesPage() {
 
         {/* Empty State - Only show if no athletes at all */}
         {filteredAthletes.length === 0 && (
-          <div className="text-center py-12">
-            <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No athletes found
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {searchTerm || statusFilter !== "all"
-                ? "Try adjusting your search or filters"
-                : "Click the 'Add Athlete' card above to get started"}
-            </p>
-          </div>
+          <EmptySearch
+            searchTerm={searchTerm || "filtered"}
+            onClearSearch={() => {
+              setSearchTerm("");
+              setStatusFilter("all");
+            }}
+          />
         )}
 
         {/* Edit Email Modal */}
