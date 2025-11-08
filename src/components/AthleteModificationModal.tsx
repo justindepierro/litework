@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { WorkoutModification, AthleteGroup, User, WorkoutPlan } from "@/types";
 import { X, Weight, RotateCcw, Settings } from "lucide-react";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 
 interface AthleteModificationModalProps {
   isOpen: boolean;
@@ -116,18 +117,18 @@ export default function AthleteModificationModal({
               Add Modification
             </h3>
             <div className="flex gap-3">
-              <select
+              <Select
                 value={selectedExercise}
                 onChange={(e) => setSelectedExercise(e.target.value)}
-                className="flex-1 p-3 border border-silver-400 rounded-md"
-              >
-                <option value="">Select exercise to modify...</option>
-                {getUnmodifiedExercises().map((exercise) => (
-                  <option key={exercise.id} value={exercise.id}>
-                    {exercise.exerciseName}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { value: "", label: "Select exercise to modify..." },
+                  ...getUnmodifiedExercises().map((exercise) => ({
+                    value: exercise.id,
+                    label: exercise.exerciseName,
+                  })),
+                ]}
+                className="flex-1"
+              />
               <button
                 onClick={addModification}
                 disabled={!selectedExercise}
@@ -182,115 +183,102 @@ export default function AthleteModificationModal({
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                          <label className="text-body-primary font-medium block mb-2">
-                            Modification Type
-                          </label>
-                          <select
-                            value={modification.modificationType}
-                            onChange={(e) =>
-                              updateModification(
-                                modification.id,
-                                "modificationType",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-silver-400 rounded-md"
-                          >
-                            <option value="sets">Sets</option>
-                            <option value="reps">Reps</option>
-                            <option value="weight">Weight</option>
-                            <option value="exercise">Exercise Variation</option>
-                          </select>
-                        </div>
+                        <Select
+                          label="Modification Type"
+                          value={modification.modificationType}
+                          onChange={(e) =>
+                            updateModification(
+                              modification.id,
+                              "modificationType",
+                              e.target.value
+                            )
+                          }
+                          options={[
+                            { value: "sets", label: "Sets" },
+                            { value: "reps", label: "Reps" },
+                            { value: "weight", label: "Weight" },
+                            { value: "exercise", label: "Exercise Variation" },
+                          ]}
+                          fullWidth
+                        />
 
                         {modification.modificationType !== "exercise" ? (
-                          <div>
-                            <label className="text-body-primary font-medium block mb-2">
-                              New Value
-                            </label>
-                            <input
-                              type="number"
-                              value={modification.modifiedValue}
-                              onChange={(e) =>
-                                updateModification(
-                                  modification.id,
-                                  "modifiedValue",
-                                  Number(e.target.value)
-                                )
-                              }
-                              className="w-full p-3 border border-silver-400 rounded-md"
-                              placeholder="Enter new value"
-                            />
-                          </div>
-                        ) : (
-                          <div>
-                            <label className="text-body-primary font-medium block mb-2">
-                              Alternative Exercise
-                            </label>
-                            <input
-                              type="text"
-                              value={modification.modifiedValue}
-                              onChange={(e) =>
-                                updateModification(
-                                  modification.id,
-                                  "modifiedValue",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full p-3 border border-silver-400 rounded-md"
-                              placeholder="e.g., Goblet Squats"
-                            />
-                          </div>
-                        )}
-
-                        <div>
-                          <label className="text-body-primary font-medium block mb-2">
-                            Reason
-                          </label>
-                          <select
-                            value={modification.reason}
+                          <Input
+                            label="New Value"
+                            type="number"
+                            value={modification.modifiedValue}
                             onChange={(e) =>
                               updateModification(
                                 modification.id,
-                                "reason",
+                                "modifiedValue",
+                                Number(e.target.value)
+                              )
+                            }
+                            placeholder="Enter new value"
+                            fullWidth
+                          />
+                        ) : (
+                          <Input
+                            label="Alternative Exercise"
+                            type="text"
+                            value={modification.modifiedValue}
+                            onChange={(e) =>
+                              updateModification(
+                                modification.id,
+                                "modifiedValue",
                                 e.target.value
                               )
                             }
-                            className="w-full p-3 border border-silver-400 rounded-md"
-                          >
-                            <option value="">Select reason...</option>
-                            <option value="injury">Injury Recovery</option>
-                            <option value="beginner">Beginner Level</option>
-                            <option value="advanced">Advanced Athlete</option>
-                            <option value="equipment">
-                              Equipment Limitation
-                            </option>
-                            <option value="medical">Medical Restriction</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
+                            placeholder="e.g., Goblet Squats"
+                            fullWidth
+                          />
+                        )}
+
+                        <Select
+                          label="Reason"
+                          value={modification.reason}
+                          onChange={(e) =>
+                            updateModification(
+                              modification.id,
+                              "reason",
+                              e.target.value
+                            )
+                          }
+                          options={[
+                            { value: "", label: "Select reason..." },
+                            { value: "injury", label: "Injury Recovery" },
+                            { value: "beginner", label: "Beginner Level" },
+                            { value: "advanced", label: "Advanced Athlete" },
+                            {
+                              value: "equipment",
+                              label: "Equipment Limitation",
+                            },
+                            {
+                              value: "medical",
+                              label: "Medical Restriction",
+                            },
+                            { value: "other", label: "Other" },
+                          ]}
+                          fullWidth
+                        />
                       </div>
 
                       {modification.reason === "other" && (
-                        <div className="mb-4">
-                          <label className="text-body-primary font-medium block mb-2">
-                            Custom Reason
-                          </label>
-                          <input
-                            type="text"
-                            value={modification.customReason || ""}
-                            onChange={(e) =>
-                              updateModification(
-                                modification.id,
-                                "customReason",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-silver-400 rounded-md"
-                            placeholder="Explain the reason for this modification"
-                          />
-                        </div>
+                        <Input
+                          label="Custom Reason"
+                          type="text"
+                          value={modification.customReason || ""}
+                          onChange={(e) =>
+                            updateModification(
+                              modification.id,
+                              "customReason",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Explain the reason for this modification"
+                          fullWidth
+                          className="mb-4"
+                        />
                       )}
 
                       <div className="flex items-center justify-between text-sm">

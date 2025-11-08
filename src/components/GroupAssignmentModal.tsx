@@ -5,6 +5,7 @@ import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
 import { X, Settings, Check } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
 import DateTimePicker from "./DateTimePicker";
+import { Select, Input, Textarea } from "@/components/ui/Input";
 
 import { WorkoutModification } from "@/types";
 
@@ -188,23 +189,19 @@ export default function GroupAssignmentModal({
                   )}
                 </div>
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Select Workout
-                  </label>
-                  <select
-                    value={selectedWorkoutId}
-                    onChange={(e) => setSelectedWorkoutId(e.target.value)}
-                    className="w-full p-3 border border-silver-400 rounded-md"
-                  >
-                    <option value="">Choose a workout...</option>
-                    {workoutPlans.map((workout) => (
-                      <option key={workout.id} value={workout.id}>
-                        {workout.name} ({workout.estimatedDuration} min)
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <Select
+                  label="Select Workout"
+                  value={selectedWorkoutId}
+                  onChange={(e) => setSelectedWorkoutId(e.target.value)}
+                  options={[
+                    { value: "", label: "Choose a workout..." },
+                    ...workoutPlans.map((workout) => ({
+                      value: workout.id,
+                      label: `${workout.name} (${workout.estimatedDuration} min)`,
+                    })),
+                  ]}
+                  fullWidth
+                />
 
                 {/* Date & Time Picker */}
                 <DateTimePicker
@@ -217,31 +214,23 @@ export default function GroupAssignmentModal({
                   showTimePicker={true}
                 />
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Location (optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g., Main Gym, Weight Room"
-                    className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                <Input
+                  label="Location (optional)"
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="e.g., Main Gym, Weight Room"
+                  fullWidth
+                />
 
-                <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Session Notes
-                  </label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full p-3 border border-silver-400 rounded-md"
-                    rows={3}
-                    placeholder="Any special instructions, focus areas, or coaching notes..."
-                  />
-                </div>
+                <Textarea
+                  label="Session Notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                  placeholder="Any special instructions, focus areas, or coaching notes..."
+                  fullWidth
+                />
 
                 {selectedWorkout && (
                   <div className="card-secondary">

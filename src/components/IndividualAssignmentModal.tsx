@@ -4,6 +4,7 @@ import { useState } from "react";
 import { User, WorkoutPlan, WorkoutAssignment } from "@/types";
 import { X, Users, Search, Check } from "lucide-react";
 import DateTimePicker from "./DateTimePicker";
+import { Input, Textarea } from "@/components/ui/Input";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -205,32 +206,24 @@ export default function IndividualAssignmentModal({
               )}
 
               {/* Location */}
-              <div>
-                <label className="text-body-primary font-medium block mb-2">
-                  Location (optional)
-                </label>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Main Gym, Weight Room"
-                  className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
+              <Input
+                label="Location (optional)"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Main Gym, Weight Room"
+                fullWidth
+              />
 
               {/* Notes */}
-              <div>
-                <label className="text-body-primary font-medium block mb-2">
-                  Notes (optional)
-                </label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={4}
-                  placeholder="Any special instructions or coaching notes..."
-                  className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
+              <Textarea
+                label="Notes (optional)"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={4}
+                placeholder="Any special instructions or coaching notes..."
+                fullWidth
+              />
 
               {/* Workout Preview */}
               {selectedWorkout && (
