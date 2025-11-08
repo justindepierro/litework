@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Calendar, Clock } from "lucide-react";
+import { Input } from "@/components/ui/Input";
 
 interface DateTimePickerProps {
   selectedDate?: Date;
@@ -228,24 +229,20 @@ export default function DateTimePicker({
             Training Time
           </label>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-body-small block mb-1">Start Time</label>
-              <input
-                type="time"
-                value={startTime}
-                onChange={(e) => onStartTimeChange(e.target.value)}
-                className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div>
-              <label className="text-body-small block mb-1">End Time</label>
-              <input
-                type="time"
-                value={endTime}
-                onChange={(e) => onEndTimeChange(e.target.value)}
-                className="w-full p-3 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
+            <Input
+              label="Start Time"
+              type="time"
+              value={startTime}
+              onChange={(e) => onStartTimeChange(e.target.value)}
+              fullWidth
+            />
+            <Input
+              label="End Time"
+              type="time"
+              value={endTime}
+              onChange={(e) => onEndTimeChange(e.target.value)}
+              fullWidth
+            />
           </div>
 
           {/* Duration Display */}
