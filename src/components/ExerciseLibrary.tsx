@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 
 interface Exercise {
   id: string;
@@ -564,85 +565,72 @@ function ExerciseLibrary({
 
               <div className="space-y-4">
                 {/* Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Exercise Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={newExercise.name}
-                    onChange={(e) =>
-                      setNewExercise({ ...newExercise, name: e.target.value })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., Barbell Bench Press"
-                  />
-                </div>
+                <Input
+                  label="Exercise Name *"
+                  type="text"
+                  value={newExercise.name}
+                  onChange={(e) =>
+                    setNewExercise({ ...newExercise, name: e.target.value })
+                  }
+                  placeholder="e.g., Barbell Bench Press"
+                  fullWidth
+                  required
+                />
 
                 {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={newExercise.description}
-                    onChange={(e) =>
-                      setNewExercise({
-                        ...newExercise,
-                        description: e.target.value,
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={3}
-                    placeholder="Brief description of the exercise..."
-                  />
-                </div>
+                <Textarea
+                  label="Description"
+                  value={newExercise.description}
+                  onChange={(e) =>
+                    setNewExercise({
+                      ...newExercise,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  placeholder="Brief description of the exercise..."
+                  fullWidth
+                />
 
                 {/* Category */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category *
-                  </label>
-                  <select
-                    value={newExercise.categoryId}
-                    onChange={(e) =>
-                      setNewExercise({
-                        ...newExercise,
-                        categoryId: e.target.value,
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <Select
+                  label="Category *"
+                  value={newExercise.categoryId}
+                  onChange={(e) =>
+                    setNewExercise({
+                      ...newExercise,
+                      categoryId: e.target.value,
+                    })
+                  }
+                  options={[
+                    { value: "", label: "Select a category" },
+                    ...categories.map((cat) => ({
+                      value: cat.id,
+                      label: cat.name,
+                    })),
+                  ]}
+                  fullWidth
+                  required
+                />
 
                 {/* Difficulty Level */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Difficulty Level
-                  </label>
-                  <select
-                    value={newExercise.difficultyLevel}
-                    onChange={(e) =>
-                      setNewExercise({
-                        ...newExercise,
-                        difficultyLevel: parseInt(e.target.value),
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value={1}>Beginner</option>
-                    <option value={2}>Intermediate</option>
-                    <option value={3}>Advanced</option>
-                    <option value={4}>Expert</option>
-                  </select>
-                </div>
+                <Select
+                  label="Difficulty Level"
+                  value={newExercise.difficultyLevel}
+                  onChange={(e) =>
+                    setNewExercise({
+                      ...newExercise,
+                      difficultyLevel: parseInt(e.target.value),
+                    })
+                  }
+                  options={[
+                    { value: "1", label: "Beginner" },
+                    { value: "2", label: "Intermediate" },
+                    { value: "3", label: "Advanced" },
+                    { value: "4", label: "Expert" },
+                  ]}
+                  fullWidth
+                />
 
                 {/* Equipment */}
                 <div>
@@ -777,23 +765,19 @@ function ExerciseLibrary({
                 </div>
 
                 {/* Video URL */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Video URL (optional)
-                  </label>
-                  <input
-                    type="url"
-                    value={newExercise.videoUrl}
-                    onChange={(e) =>
-                      setNewExercise({
-                        ...newExercise,
-                        videoUrl: e.target.value,
-                      })
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://youtube.com/..."
-                  />
-                </div>
+                <Input
+                  label="Video URL (optional)"
+                  type="url"
+                  value={newExercise.videoUrl}
+                  onChange={(e) =>
+                    setNewExercise({
+                      ...newExercise,
+                      videoUrl: e.target.value,
+                    })
+                  }
+                  placeholder="https://youtube.com/..."
+                  fullWidth
+                />
               </div>
 
               <div className="flex gap-3 mt-6">
