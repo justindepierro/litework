@@ -13,6 +13,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
+import { Alert } from "@/components/ui/Alert";
 import {
   User,
   Save,
@@ -339,29 +340,8 @@ export default function ProfilePage() {
         </div>
 
         {/* Success/Error Messages */}
-        {success && (
-          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-green-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span className="text-green-800 font-medium">{success}</span>
-          </div>
-        )}
-
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-red-600" />
-            <span className="text-red-800 font-medium">{error}</span>
-          </div>
-        )}
+        {success && <Alert variant="success">{success}</Alert>}
+        {error && <Alert variant="error">{error}</Alert>}
 
         {/* Profile Picture Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
