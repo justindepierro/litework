@@ -6,7 +6,7 @@
 
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { AlertCircle, Check } from "lucide-react";
 
 export interface TextareaProps
@@ -68,7 +68,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ) => {
     const internalRef = useRef<HTMLTextAreaElement>(null);
     const textareaRef = (ref as React.RefObject<HTMLTextAreaElement>) || internalRef;
-    const [charCount, setCharCount] = useState(0);
+    
+    // Calculate character count directly from value (no need for state)
+    const charCount = showCharCount && value !== undefined ? String(value).length : 0;
 
     // Size styles
     const sizeStyles = {
@@ -104,20 +106,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         const minHeight = lineHeight * minRows;
         textarea.style.height = `${Math.max(minHeight, Math.min(scrollHeight, maxHeight))}px`;
       }
-    }, [value, autoResize, maxRows, minRows]);
-
-    // Character count tracking
-    useEffect(() => {
-      if (showCharCount && value !== undefined) {
-        setCharCount(String(value).length);
-      }
-    }, [value, showCharCount]);
+    }, [value, autoResize, maxRows, minRows, textareaRef]);
 
     // Handle change with character count
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (showCharCount) {
-        setCharCount(e.target.value.length);
-      }
       if (onChange) {
         onChange(e);
       }
