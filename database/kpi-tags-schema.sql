@@ -185,7 +185,7 @@ SELECT
 FROM set_records sr
 JOIN session_exercises se ON sr.session_exercise_id = se.id
 JOIN workout_sessions ws ON se.workout_session_id = ws.id
-JOIN workout_assignments wa ON ws.assignment_id = wa.id
+JOIN workout_assignments wa ON ws.workout_assignment_id = wa.id
 JOIN workout_plans wp ON wa.workout_plan_id = wp.id
 JOIN workout_exercises we ON we.workout_plan_id = wp.id AND we.exercise_id = se.exercise_id
 JOIN exercise_kpi_tags ekt ON ekt.workout_exercise_id = we.id
