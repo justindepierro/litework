@@ -3,9 +3,10 @@
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect } from "react";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
-import { WorkoutAssignment } from "@/types";
+import { WorkoutAssignment, AthleteGroup, WorkoutPlan, User } from "@/types";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
+import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
@@ -18,6 +19,13 @@ export default function SchedulePage() {
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<
     string | null
   >(null);
+  
+  // Assignment modal state
+  const [showGroupAssignment, setShowGroupAssignment] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [groups, setGroups] = useState<AthleteGroup[]>([]);
+  const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
+  const [athletes, setAthletes] = useState<User[]>([]);
 
   // Check if user is a coach or admin (can drag-and-drop)
   const isCoachUser = user
@@ -27,8 +35,11 @@ export default function SchedulePage() {
   useEffect(() => {
     if (user) {
       fetchAssignments();
+      if (isCoachUser) {
+        fetchCoachData();
+      }
     }
-  }, [user]);
+  }, [user, isCoachUser]);
 
   const fetchAssignments = async () => {
     try {
@@ -56,6 +67,28 @@ export default function SchedulePage() {
       console.error("Failed to fetch assignments:", error);
     } finally {
       setLoadingAssignments(false);
+    }
+  };
+
+  const fetchCoachData = async () => {
+    try {
+      const [groupsRes, workoutsRes, athletesRes] = await Promise.all([
+        fetch("/api/groups"),
+        fetch("/api/workouts"),
+        fetch("/api/users?role=athlete"),
+      ]);
+
+      const [groupsData, workoutsData, athletesData] = await Promise.all([
+        groupsRes.json(),
+        workoutsRes.json(),
+        athletesRes.json(),
+      ]);
+
+      if (groupsData.success) setGroups(groupsData.data || []);
+      if (workoutsData.success) setWorkoutPlans(workoutsData.data || []);
+      if (athletesData.success) setAthletes(athletesData.data || []);
+    } catch (error) {
+      console.error("Failed to fetch coach data:", error);
     }
   };
 
@@ -117,10 +150,32 @@ export default function SchedulePage() {
   };
 
   const handleDateClick = (date: Date) => {
-    // Navigate to dashboard to assign workouts for this date
-    // Store date in URL params so dashboard can pre-select it
-    const dateStr = date.toISOString().split("T")[0];
-    window.location.href = `/dashboard?date=${dateStr}&action=assign`;
+    // Open group assignment modal for the selected date
+    setSelectedDate(date);
+    setShowGroupAssignment(true);
+  };
+
+  const handleAssignWorkout = async (
+    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+  ) => {
+    try {
+      const response = await fetch("/api/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(assignment),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await fetchAssignments(); // Refresh the assignments list
+        setShowGroupAssignment(false);
+      } else {
+        alert(data.error || "Failed to create assignment");
+      }
+    } catch (error) {
+      console.error("Failed to create assignment:", error);
+      alert("Failed to create assignment. Please try again.");
+    }
   };
 
   if (isLoading) {
@@ -201,6 +256,19 @@ export default function SchedulePage() {
           assignmentId={selectedAssignmentId}
           onClose={() => setSelectedAssignmentId(null)}
           userRole={user?.role || "athlete"}
+        />
+      )}
+
+      {/* Group Assignment Modal */}
+      {showGroupAssignment && (
+        <GroupAssignmentModal
+          isOpen={showGroupAssignment}
+          onClose={() => setShowGroupAssignment(false)}
+          selectedDate={selectedDate}
+          groups={groups}
+          workoutPlans={workoutPlans}
+          athletes={athletes}
+          onAssignWorkout={handleAssignWorkout}
         />
       )}
     </div>
