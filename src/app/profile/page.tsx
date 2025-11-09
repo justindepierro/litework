@@ -556,7 +556,7 @@ export default function ProfilePage() {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <Calendar className="w-4 h-4" />
                       Date of Birth
                     </label>
@@ -591,7 +591,7 @@ export default function ProfilePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <Ruler className="w-4 h-4" />
                       Height (inches)
                     </label>
@@ -613,7 +613,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <Scale className="w-4 h-4" />
                       Weight (lbs)
                     </label>

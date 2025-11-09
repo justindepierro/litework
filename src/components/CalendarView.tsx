@@ -4,7 +4,7 @@ import { useState, useEffect, lazy, Suspense, memo } from "react";
 import { useRouter } from "next/navigation";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
-import { Calendar, Users, X, Plus, Play } from "lucide-react";
+import { Calendar, Users, Plus, Play } from "lucide-react";
 import {
   ModalBackdrop,
   ModalHeader,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, memo } from "react";
-import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
+import { Search, Filter, Plus, Star, Target, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -57,7 +57,6 @@ interface ExerciseLibraryProps {
   onSelectExercise?: (exercise: Exercise) => void;
   selectedExercises?: string[];
   multiSelect?: boolean;
-  showCreateButton?: boolean;
   mode?: string;
   onAddToWorkout?: (exercise: Exercise) => void;
 }
@@ -68,7 +67,6 @@ function ExerciseLibrary({
   onSelectExercise,
   selectedExercises = [],
   multiSelect = false,
-  showCreateButton = true,
 }: ExerciseLibraryProps) {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [categories, setCategories] = useState<ExerciseCategory[]>([]);

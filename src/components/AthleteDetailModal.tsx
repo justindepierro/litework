@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 import { Badge } from "@/components/ui/Badge";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
 
 interface AthleteDetailModalProps {
   athlete: UserType & {

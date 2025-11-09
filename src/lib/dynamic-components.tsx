@@ -28,19 +28,9 @@ const PanelLoadingFallback = () => (
   </div>
 );
 
-/**
- * Loading fallback for small components (minimal spinner)
- */
-const InlineLoadingFallback = () => (
-  <div className="inline-flex items-center">
-    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
-  </div>
-);
-
 // ============================================================================
 // HEAVY MODAL COMPONENTS
 // ============================================================================
-
 /**
  * WorkoutEditor - 2221 lines, heavy modal
  * Used when: Creating/editing workouts

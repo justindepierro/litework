@@ -6,7 +6,6 @@ import {
   Plus,
   Star,
   Clock,
-  X,
   Flame,
   Dumbbell,
   Wind,
@@ -20,7 +19,7 @@ import { WorkoutBlock } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
-import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
+import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 
 interface BlockLibraryProps {
   isOpen: boolean;

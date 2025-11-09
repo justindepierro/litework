@@ -6,7 +6,6 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import {
-  X,
   Send,
   MessageCircle,
   UserCheck,

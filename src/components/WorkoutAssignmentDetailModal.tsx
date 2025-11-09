@@ -8,7 +8,6 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import {
-  X,
   Clock,
   MapPin,
   User,
@@ -20,13 +19,14 @@ import {
   Trash2,
   FileText,
 } from "lucide-react";
-import { parseDate, isToday, isPast } from "@/lib/date-utils";
+import { parseDate, isPast } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type {
-  WorkoutExercise as WorkoutExerciseType,
+  WorkoutAssignment,
+  WorkoutPlan,
   ExerciseGroup,
 } from "@/types";
 
