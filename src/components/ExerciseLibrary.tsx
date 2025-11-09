@@ -62,6 +62,136 @@ interface ExerciseLibraryProps {
   onAddToWorkout?: (exercise: Exercise) => void;
 }
 
+// ============================================================================
+// MEMOIZED EXERCISE CARD COMPONENT
+// ============================================================================
+
+interface ExerciseCardProps {
+  exercise: Exercise;
+  isSelected: boolean;
+  onSelect: (exercise: Exercise) => void;
+  getDifficultyColor: (level: number) => string;
+  getDifficultyLabel: (level: number) => string;
+}
+
+const ExerciseCard = memo<ExerciseCardProps>(
+  ({ exercise, isSelected, onSelect, getDifficultyColor, getDifficultyLabel }) => {
+    return (
+      <div
+        className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
+          isSelected
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-200 hover:border-gray-300"
+        }`}
+        onClick={() => onSelect(exercise)}
+      >
+        {/* Exercise Header */}
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-900 mb-1">
+              {exercise.name}
+            </h3>
+            <div className="flex items-center gap-2">
+              <span
+                className="px-2 py-1 text-xs font-medium rounded-full text-white"
+                style={{ backgroundColor: exercise.category_color }}
+              >
+                {exercise.category_name}
+              </span>
+              <span
+                className={`text-xs font-medium ${getDifficultyColor(exercise.difficulty_level)}`}
+              >
+                {getDifficultyLabel(exercise.difficulty_level)}
+              </span>
+            </div>
+          </div>
+          {exercise.usage_count > 0 && (
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <Star className="w-3 h-3" />
+              {exercise.usage_count}
+            </div>
+          )}
+        </div>
+
+        {/* Exercise Description */}
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+          {exercise.description}
+        </p>
+
+        {/* Exercise Attributes */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {exercise.is_compound && (
+            <Badge variant="success" size="sm">
+              <Zap className="w-3 h-3" />
+              Compound
+            </Badge>
+          )}
+          {exercise.is_bodyweight && (
+            <Badge variant="info" size="sm">
+              <Target className="w-3 h-3" />
+              Bodyweight
+            </Badge>
+          )}
+        </div>
+
+        {/* Muscle Groups */}
+        {exercise.muscle_groups.length > 0 && (
+          <div className="mb-3">
+            <div className="text-xs font-medium text-gray-700 mb-1">
+              Target Muscles:
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {exercise.muscle_groups
+                .slice(0, 3)
+                .map((muscle, index) => (
+                  <Badge
+                    key={index}
+                    variant={
+                      muscle.involvement === "primary"
+                        ? "error"
+                        : "neutral"
+                    }
+                    size="sm"
+                  >
+                    {muscle.name}
+                  </Badge>
+                ))}
+              {exercise.muscle_groups.length > 3 && (
+                <span className="text-xs text-gray-500">
+                  +{exercise.muscle_groups.length - 3} more
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Equipment */}
+        {exercise.equipment_needed.length > 0 && (
+          <div className="text-xs text-gray-600">
+            <span className="font-medium">Equipment:</span>{" "}
+            {exercise.equipment_needed.slice(0, 2).join(", ")}
+            {exercise.equipment_needed.length > 2 && "..."}
+          </div>
+        )}
+      </div>
+    );
+  },
+  // Custom comparison function - only re-render if these props change
+  (prevProps, nextProps) => {
+    return (
+      prevProps.exercise.id === nextProps.exercise.id &&
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.exercise.usage_count === nextProps.exercise.usage_count
+    );
+  }
+);
+
+ExerciseCard.displayName = "ExerciseCard";
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+
 function ExerciseLibrary({
   isOpen,
   onClose,
@@ -426,104 +556,14 @@ function ExerciseLibrary({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {exercises.map((exercise) => (
-                  <div
+                  <ExerciseCard
                     key={exercise.id}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                      isExerciseSelected(exercise.id)
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                    onClick={() => handleExerciseSelect(exercise)}
-                  >
-                    {/* Exercise Header */}
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">
-                          {exercise.name}
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="px-2 py-1 text-xs font-medium rounded-full text-white"
-                            style={{ backgroundColor: exercise.category_color }}
-                          >
-                            {exercise.category_name}
-                          </span>
-                          <span
-                            className={`text-xs font-medium ${getDifficultyColor(exercise.difficulty_level)}`}
-                          >
-                            {getDifficultyLabel(exercise.difficulty_level)}
-                          </span>
-                        </div>
-                      </div>
-                      {exercise.usage_count > 0 && (
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
-                          <Star className="w-3 h-3" />
-                          {exercise.usage_count}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Exercise Description */}
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {exercise.description}
-                    </p>
-
-                    {/* Exercise Attributes */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {exercise.is_compound && (
-                        <Badge variant="success" size="sm">
-                          <Zap className="w-3 h-3" />
-                          Compound
-                        </Badge>
-                      )}
-                      {exercise.is_bodyweight && (
-                        <Badge variant="info" size="sm">
-                          <Target className="w-3 h-3" />
-                          Bodyweight
-                        </Badge>
-                      )}
-                    </div>
-
-                    {/* Muscle Groups */}
-                    {exercise.muscle_groups.length > 0 && (
-                      <div className="mb-3">
-                        <div className="text-xs font-medium text-gray-700 mb-1">
-                          Target Muscles:
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {exercise.muscle_groups
-                            .slice(0, 3)
-                            .map((muscle, index) => (
-                              <Badge
-                                key={index}
-                                variant={
-                                  muscle.involvement === "primary"
-                                    ? "error"
-                                    : "neutral"
-                                }
-                                size="sm"
-                              >
-                                {muscle.name}
-                              </Badge>
-                            ))}
-                          {exercise.muscle_groups.length > 3 && (
-                            <span className="text-xs text-gray-500">
-                              +{exercise.muscle_groups.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Equipment */}
-                    {exercise.equipment_needed.length > 0 && (
-                      <div className="text-xs text-gray-600">
-                        <span className="font-medium">Equipment:</span>{" "}
-                        {exercise.equipment_needed.slice(0, 2).join(", ")}
-                        {exercise.equipment_needed.length > 2 && "..."}
-                      </div>
-                    )}
-                  </div>
+                    exercise={exercise}
+                    isSelected={isExerciseSelected(exercise.id)}
+                    onSelect={handleExerciseSelect}
+                    getDifficultyColor={getDifficultyColor}
+                    getDifficultyLabel={getDifficultyLabel}
+                  />
                 ))}
               </div>
             )}
