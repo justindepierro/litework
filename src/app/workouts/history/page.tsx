@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { Check } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Alert } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
 
 interface SetRecord {
   id: string;
@@ -239,13 +240,13 @@ export default function WorkoutHistoryPage() {
                             {session.workoutPlanName}
                           </h3>
                           {session.completed ? (
-                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">
+                            <Badge variant="success" size="sm">
                               Completed
-                            </span>
+                            </Badge>
                           ) : (
-                            <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">
+                            <Badge variant="warning" size="sm">
                               In Progress
-                            </span>
+                            </Badge>
                           )}
                         </div>
                         <p className="text-sm text-gray-600 mt-1">

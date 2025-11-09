@@ -28,6 +28,7 @@ import {
 import { apiClient } from "@/lib/api-client";
 import ExerciseAutocomplete from "./ExerciseAutocomplete";
 import ExerciseLibraryPanel from "./ExerciseLibraryPanel";
+import { Badge } from "@/components/ui/Badge";
 import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
@@ -926,9 +927,9 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
             <div className="text-xs text-silver-500">
               Block Template
               {hasCustomizations && (
-                <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <Badge variant="info" size="sm" className="ml-2">
                   Customized
-                </span>
+                </Badge>
               )}
             </div>
           </div>

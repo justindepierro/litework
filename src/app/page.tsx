@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import {
   BarChart3,
   TrendingUp,
@@ -132,9 +133,9 @@ export default function Home() {
                 entire team.
               </p>
               <div className="mt-3 text-center">
-                <span className="inline-block px-2 py-1 bg-purple-100 workout-accent-achievement text-xs rounded-full font-medium">
+                <Badge variant="primary">
                   Coach Tools
-                </span>
+                </Badge>
               </div>
             </Card>
           </div>
