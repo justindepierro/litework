@@ -2,6 +2,7 @@
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, useMemo, Suspense } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 import { Button } from "@/components/ui/Button";
 import {
   User,
@@ -163,6 +164,9 @@ export default function AthletesPage() {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  // Debounce search term to prevent excessive filtering during typing
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const [inviteForm, setInviteForm] = useState<InviteForm>({
     firstName: "",
@@ -814,8 +818,8 @@ export default function AthletesPage() {
   const filteredAthletes = useMemo(() => {
     return athletes.filter((athlete) => {
       const matchesSearch =
-        athlete.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        athlete.email.toLowerCase().includes(searchTerm.toLowerCase());
+        athlete.fullName?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        athlete.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "active" && athlete.status === "active") ||
@@ -823,7 +827,7 @@ export default function AthletesPage() {
         (statusFilter === "injured" && athlete.injuryStatus);
       return matchesSearch && matchesStatus;
     });
-  }, [athletes, searchTerm, statusFilter]);
+  }, [athletes, debouncedSearchTerm, statusFilter]);
 
   // Memoize counts to prevent recalculation
   const athleteCounts = useMemo(
