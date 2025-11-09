@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 interface EnhancedAthlete {
   id: string;
@@ -659,20 +660,10 @@ export default function BulkOperationModal({
 
     return (
       <div className="space-y-6">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-start">
-            <AlertCircle className="w-5 h-5 text-yellow-600 mr-3 mt-0.5" />
-            <div>
-              <h4 className="font-medium text-yellow-800">
-                Confirm Bulk Operation
-              </h4>
-              <p className="text-sm text-yellow-700 mt-1">
-                Please review the details below before proceeding. This action
-                will affect {getTotalSelectedCount()} athletes.
-              </p>
-            </div>
-          </div>
-        </div>
+        <Alert variant="warning" title="Confirm Bulk Operation">
+          Please review the details below before proceeding. This action will
+          affect {getTotalSelectedCount()} athletes.
+        </Alert>
 
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -789,9 +780,7 @@ export default function BulkOperationModal({
               <p className="text-gray-600 mb-4">
                 There was an error processing your request:
               </p>
-              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-                {executionResults.error}
-              </p>
+              <Alert variant="error">{executionResults.error}</Alert>
             </>
           )}
         </div>

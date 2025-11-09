@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Package, RotateCcw, AlertCircle, Save, Info } from "lucide-react";
+import { X, Package, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -246,18 +247,10 @@ export default function BlockInstanceEditor({
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Info Banner */}
           {hasCustomizations && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start space-x-3">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-              <div className="flex-1">
-                <h4 className="font-medium text-blue-900">
-                  This block has been customized
-                </h4>
-                <p className="text-sm text-blue-700 mt-1">
-                  Changes made here only affect this workout. The original
-                  template remains unchanged.
-                </p>
-              </div>
-            </div>
+            <Alert variant="info" title="This block has been customized">
+              Changes made here only affect this workout. The original template
+              remains unchanged.
+            </Alert>
           )}
 
           {/* Instance Name */}
@@ -338,17 +331,11 @@ export default function BlockInstanceEditor({
           </div>
 
           {/* Note about full editing */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-            <div className="flex-1 text-sm">
-              <p className="text-yellow-900">
-                <strong>Note:</strong> To modify individual exercises, sets,
-                reps, or weights, close this dialog and edit the exercises
-                directly in the workout editor. Changes will be tracked
-                automatically.
-              </p>
-            </div>
-          </div>
+          <Alert variant="warning">
+            <strong>Note:</strong> To modify individual exercises, sets, reps,
+            or weights, close this dialog and edit the exercises directly in
+            the workout editor. Changes will be tracked automatically.
+          </Alert>
         </div>
 
         {/* Footer */}

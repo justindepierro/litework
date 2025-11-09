@@ -3,6 +3,7 @@
 import { Component, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
+import { Alert } from "@/components/ui/Alert";
 
 interface Props {
   children: ReactNode;
@@ -71,11 +72,11 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             </p>
 
             {process.env.NODE_ENV === "development" && this.state.error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 overflow-auto">
-                <p className="text-sm font-mono text-red-800 break-all">
+              <Alert variant="error" className="mb-6">
+                <p className="font-mono text-sm break-all">
                   {this.state.error.message}
                 </p>
-              </div>
+              </Alert>
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">
