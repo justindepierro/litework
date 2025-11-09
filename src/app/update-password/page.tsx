@@ -8,6 +8,7 @@ import {
   getSession,
 } from "@/lib/auth-client";
 import { Input } from "@/components/ui/Input";
+import { Alert } from "@/components/ui/Alert";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
@@ -76,18 +77,15 @@ export default function UpdatePasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
         <div className="w-full max-w-md space-y-6">
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-red-800 mb-2">
-              Invalid Reset Link
-            </h3>
-            <p className="text-sm text-red-700 mb-4">{error}</p>
+          <Alert variant="error" title="Invalid Reset Link">
+            <p className="mb-4">{error}</p>
             <Link
               href="/reset-password"
-              className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+              className="inline-block px-4 py-2 bg-error text-white rounded-lg hover:bg-error-dark font-medium"
             >
               Request New Reset Link
             </Link>
-          </div>
+          </Alert>
         </div>
       </div>
     );
@@ -106,32 +104,10 @@ export default function UpdatePasswordPage() {
         </div>
 
         {success ? (
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <svg
-                className="w-8 h-8 text-green-600 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div>
-                <h3 className="text-lg font-semibold text-green-800">
-                  Password Updated!
-                </h3>
-                <p className="text-sm text-green-700 mt-1">
-                  Your password has been successfully updated. Redirecting to
-                  dashboard...
-                </p>
-              </div>
-            </div>
-          </div>
+          <Alert variant="success" title="Password Updated!">
+            Your password has been successfully updated. Redirecting to
+            dashboard...
+          </Alert>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
             <Input
@@ -164,11 +140,7 @@ export default function UpdatePasswordPage() {
               fullWidth
             />
 
-            {error && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-                <p className="text-sm font-medium text-red-700">{error}</p>
-              </div>
-            )}
+            {error && <Alert variant="error">{error}</Alert>}
 
             <button
               type="submit"

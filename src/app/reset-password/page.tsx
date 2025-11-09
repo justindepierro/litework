@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { requestPasswordReset } from "@/lib/auth-client";
 import { Input } from "@/components/ui/Input";
+import { Alert } from "@/components/ui/Alert";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -47,53 +48,33 @@ export default function ResetPasswordPage() {
         </div>
 
         {success ? (
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <svg
-                className="w-8 h-8 text-green-600 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div>
-                <h3 className="text-lg font-semibold text-green-800">
-                  Check your email
-                </h3>
-                <p className="text-sm text-green-700 mt-1">
-                  We&apos;ve sent password reset instructions to your email address.
+          <Alert variant="success" title="Check your email">
+            <div className="space-y-4">
+              <p>We&apos;ve sent password reset instructions to your email address.</p>
+              <div className="pt-4 border-t border-success-light">
+                <p className="mb-3">
+                  <strong>Next steps:</strong>
                 </p>
+                <ol className="space-y-2 list-decimal list-inside">
+                  <li>Check your inbox (and spam folder)</li>
+                  <li>Click the reset link in the email</li>
+                  <li>Create a new password</li>
+                  <li>Sign in with your new password</li>
+                </ol>
+              </div>
+              <div className="pt-4">
+                <button
+                  onClick={() => {
+                    setSuccess(false);
+                    setEmail("");
+                  }}
+                  className="text-success hover:text-success-dark font-medium text-sm"
+                >
+                  Need to try a different email?
+                </button>
               </div>
             </div>
-            <div className="pt-4 border-t border-green-200">
-              <p className="text-sm text-green-700 mb-3">
-                <strong>Next steps:</strong>
-              </p>
-              <ol className="text-sm text-green-700 space-y-2 list-decimal list-inside">
-                <li>Check your inbox (and spam folder)</li>
-                <li>Click the reset link in the email</li>
-                <li>Create a new password</li>
-                <li>Sign in with your new password</li>
-              </ol>
-            </div>
-            <div className="pt-4">
-              <button
-                onClick={() => {
-                  setSuccess(false);
-                  setEmail("");
-                }}
-                className="text-green-700 hover:text-green-800 font-medium text-sm"
-              >
-                Need to try a different email?
-              </button>
-            </div>
-          </div>
+          </Alert>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
             <Input
@@ -111,11 +92,7 @@ export default function ResetPasswordPage() {
               fullWidth
             />
 
-            {error && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-                <p className="text-sm font-medium text-red-700">{error}</p>
-              </div>
-            )}
+            {error && <Alert variant="error">{error}</Alert>}
 
             <button
               type="submit"

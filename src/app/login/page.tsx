@@ -7,6 +7,7 @@ import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail } from "@/lib/security";
 import { RateLimitError } from "@/components/ui/RateLimitError";
 import { Input } from "@/components/ui/Input";
+import { Alert } from "@/components/ui/Alert";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -140,9 +141,7 @@ export default function LoginPage() {
           {isRateLimited && error ? (
             <RateLimitError error={error} />
           ) : error ? (
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-              <p className="text-sm font-medium text-red-700">{error}</p>
-            </div>
+            <Alert variant="error">{error}</Alert>
           ) : null}
 
           <button
