@@ -6,6 +6,7 @@ import { Search, ArrowRight, Target, Info } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface ExerciseSubstitutionProps {
   currentExercise: WorkoutExercise;
@@ -125,21 +126,16 @@ export default function ExerciseSubstitution({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <ModalBackdrop isOpen={true} onClose={onClose}>
       <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Exercise Substitutions
-          </h2>
-          <p className="text-gray-600">
-            Find alternatives for{" "}
-            <span className="font-semibold text-blue-600">
-              {currentExercise.exerciseName}
-            </span>
-          </p>
-        </div>
+        <ModalHeader
+          title="Exercise Substitutions"
+          subtitle={`Find alternatives for ${currentExercise.exerciseName}`}
+          onClose={onClose}
+          icon={<Target className="w-6 h-6 text-primary" />}
+        />
 
-        <div className="p-6">
+        <ModalContent>
           {/* Search Bar */}
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -236,25 +232,23 @@ export default function ExerciseSubstitution({
               </div>
             )}
           </div>
-        </div>
+        </ModalContent>
 
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
-          <div className="flex gap-3">
-            <button
-              onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onClose}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-            >
-              Keep Original
-            </button>
-          </div>
-        </div>
+        <ModalFooter align="between">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onClose}
+            className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+          >
+            Keep Original
+          </button>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
