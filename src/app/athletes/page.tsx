@@ -8,17 +8,11 @@ import {
   User,
   Plus,
   BarChart3,
-  Trash2,
-  MessageCircle,
   AlertCircle,
   CheckCircle,
   Clock,
   Users,
-  Search,
-  MoreVertical,
   History,
-  Edit3,
-  Archive,
 } from "lucide-react";
 import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
@@ -41,6 +35,9 @@ import MessageModal, { MessageForm } from "./components/modals/MessageModal";
 import EditEmailModal from "./components/modals/EditEmailModal";
 import AddToGroupModal from "./components/modals/AddToGroupModal";
 import AthleteCard from "./components/AthleteCard";
+import AthleteStats from "./components/AthleteStats";
+import SearchAndFilters from "./components/SearchAndFilters";
+import GroupsSection from "./components/GroupsSection";
 import { useAthleteData } from "./hooks/useAthleteData";
 import { useAthleteFilters } from "./hooks/useAthleteFilters";
 
@@ -198,6 +195,9 @@ export default function AthletesPage() {
 
   // Load groups when component mounts
   useEffect(() => {
+    loadGroups();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAssignWorkout = async (
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
@@ -646,8 +646,6 @@ export default function AthletesPage() {
     return "Unknown";
   };
 
-  });
-
   // Use filtering hook
   const { filteredAthletes, athleteCounts } = useAthleteFilters(
     athletes,
@@ -728,36 +726,7 @@ export default function AthletesPage() {
           </div>
 
           {/* Mobile-Optimized Communication Stats */}
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-6">
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-info-lighter rounded-xl sm:bg-transparent sm:p-0">
-              <Users className="h-5 w-5 text-accent-blue" />
-              <span className="text-sm font-medium">
-                {athleteCounts.active} Active
-              </span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-orange-50 rounded-xl sm:bg-transparent sm:p-0">
-              <Clock className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium">
-                {athleteCounts.invited} Pending
-              </span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-success-lighter rounded-xl sm:bg-transparent sm:p-0">
-              <MessageCircle className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium">
-                {athletes.reduce(
-                  (acc, a) => acc + (a.communication?.unreadMessages || 0),
-                  0
-                )}{" "}
-                Unread
-              </span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-yellow-50 rounded-xl sm:bg-transparent sm:p-0">
-              <AlertCircle className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm font-medium">
-                {athleteCounts.injured} Injured
-              </span>
-            </div>
-          </div>
+          <AthleteStats athleteCounts={athleteCounts} athletes={athletes} />
 
           {/* Mobile-Optimized Action Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -797,157 +766,29 @@ export default function AthletesPage() {
         </div>
 
         {/* Groups Section */}
-        {activeGroups.length > 0 && (
-          <div className="mb-6 bg-white rounded-xl shadow-sm border border-silver-400 p-4">
-            <h3 className="text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-purple-600" />
-              Groups ({activeGroups.length})
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {activeGroups.map((group) => {
-                // Get athlete count directly from group's athleteIds array
-                const athleteCount = group.athleteIds?.length || 0;
-
-                return (
-                  <div
-                    key={group.id}
-                    className="p-4 bg-silver-200 border-2 border-silver-400 rounded-lg relative"
-                  >
-                    {/* 3-dot menu */}
-                    <div className="absolute top-3 right-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenGroupMenuId(
-                            openGroupMenuId === group.id ? null : group.id
-                          );
-                        }}
-                        className="p-1 hover:bg-silver-300 rounded-full transition-colors"
-                        aria-label="Group menu"
-                      >
-                        <MoreVertical className="w-5 h-5 text-silver-700" />
-                      </button>
-
-                      {/* Dropdown menu */}
-                      {openGroupMenuId === group.id && (
-                        <div className="absolute right-0 top-8 w-48 bg-white border border-silver-400 rounded-lg shadow-lg z-10">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingGroup(group);
-                              setShowGroupFormModal(true);
-                              setOpenGroupMenuId(null);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                            Edit Group
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleArchiveGroup(group);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
-                          >
-                            <Archive className="w-4 h-4" />
-                            Archive Group
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteGroup(group.id);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-error-lighter flex items-center gap-2 text-sm text-error rounded-b-lg"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete Group
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Group content (clickable to manage members) */}
-                    <div className="w-full">
-                      <div className="flex items-center justify-between mb-2 pr-8">
-                        <h4 className="font-semibold text-navy-900">
-                          {group.name}
-                        </h4>
-                        {group.color && (
-                          <div
-                            className="w-4 h-4 rounded-full"
-                            style={{ backgroundColor: group.color }}
-                          />
-                        )}
-                      </div>
-                      {group.description && (
-                        <p className="text-sm text-silver-700 mb-2 line-clamp-2">
-                          {group.description}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between">
-                        <button
-                          onClick={() => {
-                            setSelectedGroup(group);
-                            setShowManageGroupModal(true);
-                          }}
-                          className="flex items-center gap-2 text-sm text-silver-600 hover:text-silver-800 transition-colors"
-                          aria-label={`Manage ${group.name} members`}
-                        >
-                          <Users className="w-4 h-4" />
-                          <span>
-                            {athleteCount} athlete
-                            {athleteCount !== 1 ? "s" : ""}
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedGroup(group);
-                            setShowManageGroupModal(true);
-                          }}
-                          className="flex items-center gap-1 px-3 py-1.5 bg-accent-blue hover:bg-accent-blue/90 text-white text-xs font-medium rounded-full transition-colors"
-                          aria-label="Add athletes to group"
-                        >
-                          <Plus className="w-3 h-3" />
-                          <span>Add</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <GroupsSection
+          groups={activeGroups}
+          openGroupMenuId={openGroupMenuId}
+          onOpenMenu={setOpenGroupMenuId}
+          onEditGroup={(group) => {
+            setEditingGroup(group);
+            setShowGroupFormModal(true);
+          }}
+          onArchiveGroup={handleArchiveGroup}
+          onDeleteGroup={handleDeleteGroup}
+          onManageMembers={(group) => {
+            setSelectedGroup(group);
+            setShowManageGroupModal(true);
+          }}
+        />
 
         {/* Mobile-Optimized Search and Filters */}
-        <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-silver-600 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search athletes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 sm:py-3 text-base border border-silver-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent touch-manipulation"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-2 sm:flex">
-            {["all", "active", "invited"].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-4 py-4 sm:py-3 text-sm font-medium rounded-xl transition-all touch-manipulation ${
-                  statusFilter === status
-                    ? "bg-accent-blue text-white shadow-md"
-                    : "bg-silver-300 text-silver-800 hover:bg-silver-400"
-                }`}
-              >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
+        <SearchAndFilters
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
+          onSearchChange={setSearchTerm}
+          onStatusFilterChange={setStatusFilter}
+        />
 
         {/* Athletes Grid - Mobile Optimized Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
