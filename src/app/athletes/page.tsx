@@ -26,7 +26,6 @@ import {
   User as UserType,
   AthleteKPI,
   AthleteGroup,
-  WorkoutPlan,
   WorkoutAssignment,
 } from "@/types";
 import { apiClient } from "@/lib/api-client";
@@ -89,9 +88,6 @@ interface EnhancedAthlete extends UserType {
   communication?: AthleteCommunication;
 }
 
-// Enhanced athlete data - now empty, will be loaded from API
-const enhancedAthletes: EnhancedAthlete[] = [];
-
 export default function AthletesPage() {
   const { isLoading, user } = useRequireCoach();
   const toast = useToast();
@@ -101,12 +97,10 @@ export default function AthletesPage() {
     athletes,
     groups,
     workoutPlans,
-    loadAthletes,
     loadGroups,
-    loadWorkoutPlans,
     setAthletes,
     setGroups,
-  } = useAthleteData(user, isLoading);
+  } = useAthleteData(user as any, isLoading);
 
   const [error, setError] = useState<string | null>(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -674,7 +668,8 @@ export default function AthletesPage() {
   }, []);
 
   const handleMessageClick = useCallback((athlete: EnhancedAthlete) => {
-    handleMessageAthlete(athlete);
+    setSelectedAthlete(athlete);
+    setShowMessageModal(true);
   }, []);
 
   const handleAssignWorkoutClick = useCallback((athlete: EnhancedAthlete) => {
@@ -683,11 +678,13 @@ export default function AthletesPage() {
   }, []);
 
   const handleManageKPIsClick = useCallback((athlete: EnhancedAthlete) => {
-    handleKPIManagement(athlete);
+    setSelectedAthlete(athlete);
+    setShowKPIModal(true);
   }, []);
 
   const handleViewAnalyticsClick = useCallback((athlete: EnhancedAthlete) => {
-    handleAnalytics(athlete);
+    setSelectedAthlete(athlete);
+    setShowAnalyticsModal(true);
   }, []);
 
   const handleAddToGroupClick = useCallback((athlete: EnhancedAthlete) => {
