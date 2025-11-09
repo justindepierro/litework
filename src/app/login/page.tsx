@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail } from "@/lib/security";
 import { RateLimitError } from "@/components/ui/RateLimitError";
+import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -89,32 +90,20 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="email"
-              className="text-body-primary block text-base sm:text-sm font-medium mb-2"
-            >
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className={`w-full px-4 py-4 sm:px-3 sm:py-3 border-2 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 text-base bg-white touch-manipulation ${
-                emailError
-                  ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-              }`}
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => handleEmailChange(e.target.value)}
-              disabled={isLoading || isRateLimited}
-            />
-            {emailError && (
-              <p className="mt-1 text-sm text-red-600">{emailError}</p>
-            )}
-          </div>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            label="Email address"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            disabled={isLoading || isRateLimited}
+            error={emailError}
+            inputSize="lg"
+            fullWidth
+          />
 
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -131,12 +120,11 @@ export default function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <input
+            <Input
               id="password"
               name="password"
               type="password"
               required
-              className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => {
@@ -144,6 +132,8 @@ export default function LoginPage() {
                 setError("");
               }}
               disabled={isLoading || isRateLimited}
+              inputSize="lg"
+              fullWidth
             />
           </div>
 

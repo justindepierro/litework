@@ -7,6 +7,7 @@ import {
   completePasswordReset,
   getSession,
 } from "@/lib/auth-client";
+import { Input } from "@/components/ui/Input";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
@@ -133,49 +134,35 @@ export default function UpdatePasswordPage() {
           </div>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="password"
-                className="text-body-primary block text-base sm:text-sm font-medium mb-2"
-              >
-                New Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={8}
-                className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
-                placeholder="Enter new password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
-              />
-              <p className="text-sm text-gray-600 mt-1">
-                Must be at least 8 characters long
-              </p>
-            </div>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              label="New Password"
+              placeholder="Enter new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoFocus
+              helperText="Must be at least 8 characters long"
+              inputSize="lg"
+              fullWidth
+            />
 
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="text-body-primary block text-base sm:text-sm font-medium mb-2"
-              >
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                minLength={8}
-                className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              required
+              minLength={8}
+              label="Confirm Password"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              inputSize="lg"
+              fullWidth
+            />
 
             {error && (
               <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">

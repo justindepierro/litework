@@ -10,6 +10,9 @@ import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ToastProvider";
 import ConfirmModal from "@/components/ConfirmModal";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Select } from "@/components/ui/Select";
 import {
   User,
   Save,
@@ -491,96 +494,68 @@ export default function ProfilePage() {
             {activeTab === "profile" && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
-                  </div>
+                  <Input
+                    type="text"
+                    label="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    fullWidth
+                  />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="email"
-                      value={profile?.email || ""}
-                      disabled
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Contact support to change your email
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bio
-                  </label>
-                  <textarea
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    rows={4}
-                    placeholder="Tell us about yourself, your fitness goals, or training background..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  <Input
+                    type="text"
+                    label="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    fullWidth
                   />
                 </div>
 
-                <div className="border-t border-gray-200 pt-6">
+                <Input
+                  type="email"
+                  label="Email"
+                  value={profile?.email || ""}
+                  disabled
+                  leftIcon={<Mail className="w-5 h-5" />}
+                  helperText="Contact support to change your email"
+                  fullWidth
+                />
+
+                <Textarea
+                  label="Bio"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  rows={4}
+                  placeholder="Tell us about yourself, your fitness goals, or training background..."
+                  fullWidth
+                />
+
+                                <div className="border-t border-gray-200 pt-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <Phone className="w-5 h-5" />
                     Emergency Contact
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Contact Name
-                      </label>
-                      <input
-                        type="text"
-                        value={emergencyName}
-                        onChange={(e) => setEmergencyName(e.target.value)}
-                        placeholder="Full name"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
+                    <Input
+                      type="text"
+                      label="Emergency Contact Name"
+                      value={emergencyName}
+                      onChange={(e) => setEmergencyName(e.target.value)}
+                      placeholder="Full name"
+                      fullWidth
+                    />
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        value={emergencyPhone}
-                        onChange={(e) => setEmergencyPhone(e.target.value)}
-                        placeholder="(555) 555-5555"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
+                    <Input
+                      type="tel"
+                      label="Emergency Contact Phone"
+                      value={emergencyPhone}
+                      onChange={(e) => setEmergencyPhone(e.target.value)}
+                      placeholder="(555) 555-5555"
+                      fullWidth
+                    />
                   </div>
                 </div>
 
@@ -600,50 +575,46 @@ export default function ProfilePage() {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
                       Date of Birth
                     </label>
-                    <input
+                    <Input
                       type="date"
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      helperText={
+                        profile?.age ? `Current age: ${profile.age} years` : ""
+                      }
+                      fullWidth
                     />
-                    {profile?.age && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Current age: {profile.age} years
-                      </p>
-                    )}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender
-                    </label>
-                    <select
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                      <option value="prefer_not_to_say">
-                        Prefer not to say
-                      </option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    options={[
+                      { value: "", label: "Select gender" },
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                      { value: "other", label: "Other" },
+                      {
+                        value: "prefer_not_to_say",
+                        label: "Prefer not to say",
+                      },
+                    ]}
+                    fullWidth
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                       <Ruler className="w-4 h-4" />
                       Height (inches)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       step="0.1"
                       min="36"
@@ -651,21 +622,21 @@ export default function ProfilePage() {
                       value={heightInches}
                       onChange={(e) => setHeightInches(e.target.value)}
                       placeholder="e.g., 72 (6 feet)"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      helperText={
+                        heightInches
+                          ? calculateHeightDisplay(parseFloat(heightInches))
+                          : ""
+                      }
+                      fullWidth
                     />
-                    {heightInches && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {calculateHeightDisplay(parseFloat(heightInches))}
-                      </p>
-                    )}
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                       <Scale className="w-4 h-4" />
                       Weight (lbs)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       step="0.1"
                       min="50"
@@ -673,7 +644,7 @@ export default function ProfilePage() {
                       value={weightLbs}
                       onChange={(e) => setWeightLbs(e.target.value)}
                       placeholder="e.g., 185"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      fullWidth
                     />
                   </div>
                 </div>
@@ -722,35 +693,27 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Enter new password"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    minLength={6}
-                    required
-                  />
-                </div>
+                <Input
+                  type="password"
+                  label="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  minLength={6}
+                  required
+                  fullWidth
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm new password"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    minLength={6}
-                    required
-                  />
-                </div>
+                <Input
+                  type="password"
+                  label="Confirm New Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  minLength={6}
+                  required
+                  fullWidth
+                />
 
                 <button
                   type="submit"

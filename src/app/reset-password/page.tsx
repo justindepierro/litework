@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { requestPasswordReset } from "@/lib/auth-client";
+import { Input } from "@/components/ui/Input";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -95,29 +96,20 @@ export default function ResetPasswordPage() {
           </div>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="email"
-                className="text-body-primary block text-base sm:text-sm font-medium mb-2"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="w-full px-4 py-4 sm:px-3 sm:py-3 border-2 border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white touch-manipulation"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoFocus
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                We&apos;ll send reset instructions to this email if it&apos;s associated
-                with an account.
-              </p>
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              label="Email address"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoFocus
+              helperText="We'll send reset instructions to this email if it's associated with an account."
+              inputSize="lg"
+              fullWidth
+            />
 
             {error && (
               <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">

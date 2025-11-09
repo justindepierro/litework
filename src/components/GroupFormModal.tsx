@@ -5,7 +5,9 @@ import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import { X } from "lucide-react";
-import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 
 interface GroupFormModalProps {

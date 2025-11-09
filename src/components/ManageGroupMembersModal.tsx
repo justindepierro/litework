@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { X, UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
+import { Input } from "@/components/ui/Input";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -132,16 +133,14 @@ export default function ManageGroupMembersModal({
           </div>
 
           {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-silver-600 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search athletes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-silver-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue"
-            />
-          </div>
+          <Input
+            type="text"
+            placeholder="Search athletes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            leftIcon={<Search className="w-5 h-5" />}
+            fullWidth
+          />
 
           <div className="mt-3 text-sm text-silver-700">
             {groupMembers.length} of {allAthletes.length} athletes in this group
