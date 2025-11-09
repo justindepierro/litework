@@ -10,6 +10,7 @@ import { X, UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
 import { Input } from "@/components/ui/Input";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -151,7 +152,7 @@ export default function ManageGroupMembersModal({
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-blue" />
+              <LoadingSpinner size="md" />
             </div>
           ) : filteredAthletes.length === 0 ? (
             <div className="text-center py-12">

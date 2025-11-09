@@ -13,6 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import { WorkoutBlock, WorkoutExercise } from "@/types";
+import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
 
 interface BlockEditorProps {
@@ -543,7 +544,7 @@ export default function BlockEditor({
           >
             {isSaving ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                <ButtonLoading className="text-white" />
                 Saving...
               </>
             ) : (

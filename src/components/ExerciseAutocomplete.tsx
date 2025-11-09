@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Plus, Dumbbell } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 
 interface Exercise {
   id: string;
@@ -170,7 +171,7 @@ export default function ExerciseAutocomplete({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
         {loading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
+            <ButtonLoading size="md" />
           </div>
         )}
       </div>

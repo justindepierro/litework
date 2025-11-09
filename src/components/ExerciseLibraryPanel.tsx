@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Search, Dumbbell } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface Exercise {
   id: string;
@@ -74,9 +75,8 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
       {/* Exercise List */}
       <div className="flex-1 overflow-y-auto p-4">
         {loading && (
-          <div className="text-center text-gray-500 py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2" />
-            Searching...
+          <div className="text-center py-8">
+            <LoadingSpinner size="md" message="Searching..." />
           </div>
         )}
 

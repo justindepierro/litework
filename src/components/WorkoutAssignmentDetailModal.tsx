@@ -18,6 +18,7 @@ import { parseDate, isToday, isPast } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type {
   WorkoutExercise as WorkoutExerciseType,
   ExerciseGroup,
@@ -309,8 +310,7 @@ export default function WorkoutAssignmentDetailModal({
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {loading ? (
           <div className="p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading assignment details...</p>
+            <LoadingSpinner size="lg" message="Loading assignment details..." />
           </div>
         ) : error ? (
           <div className="p-8">

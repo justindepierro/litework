@@ -14,11 +14,11 @@ import {
   TrendingUp,
   Edit2,
   Copy,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 import { WorkoutBlock } from "@/types";
 import { Badge } from "@/components/ui/Badge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface BlockLibraryProps {
   isOpen: boolean;
@@ -312,8 +312,7 @@ export default function BlockLibrary({
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-              <span className="ml-3 text-gray-600">Loading blocks...</span>
+              <LoadingSpinner size="md" message="Loading blocks..." />
             </div>
           ) : error ? (
             <div className="text-center py-12">
