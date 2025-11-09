@@ -20,6 +20,7 @@ import { WorkoutBlock } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
+import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
 
 interface BlockLibraryProps {
   isOpen: boolean;
@@ -187,30 +188,18 @@ export default function BlockLibrary({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-primary text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                <TrendingUp className="w-7 h-7" />
-                Workout Block Library
-              </h2>
-              <p className="text-blue-100 text-sm mt-1">
-                Add reusable workout blocks to build your training session
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
-              aria-label="Close block library"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+        <ModalHeader
+          title="Workout Block Library"
+          subtitle="Add reusable workout blocks to build your training session"
+          onClose={onClose}
+          icon={<TrendingUp className="w-7 h-7 text-primary" />}
+          headerClassName="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-b-0"
+        />
 
-          {/* Search and Filters */}
+        {/* Search and Filters */}
+        <div className="p-4 border-b border-gray-200">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -493,6 +482,6 @@ export default function BlockLibrary({
           )}
         </div>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

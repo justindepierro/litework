@@ -6,12 +6,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, UserPlus, Users, Search, Check } from "lucide-react";
+import { UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -111,29 +112,16 @@ export default function ManageGroupMembersModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-silver-400">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-navy-900 flex items-center gap-2">
-                <Users className="w-6 h-6 text-accent-blue" />
-                Manage Group Members
-              </h2>
-              <p className="text-silver-700 mt-1">
-                {group.name}
-                {group.description && ` - ${group.description}`}
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-silver-200 rounded-lg transition-colors"
-            >
-              <X className="w-6 h-6 text-silver-600" />
-            </button>
-          </div>
+        <ModalHeader
+          title="Manage Group Members"
+          subtitle={`${group.name}${group.description ? ` - ${group.description}` : ""}`}
+          onClose={onClose}
+          icon={<Users className="w-6 h-6 text-accent-blue" />}
+        />
 
+        <ModalContent>
           {/* Search */}
           <Input
             type="text"
@@ -147,10 +135,9 @@ export default function ManageGroupMembersModal({
           <div className="mt-3 text-sm text-silver-700">
             {groupMembers.length} of {allAthletes.length} athletes in this group
           </div>
-        </div>
 
-        {/* Athletes List */}
-        <div className="flex-1 overflow-y-auto p-6">
+          {/* Athletes List */}
+          <div className="flex-1 overflow-y-auto mt-4">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <LoadingSpinner size="md" />
@@ -207,17 +194,17 @@ export default function ManageGroupMembersModal({
             </div>
           )}
         </div>
+        </ModalContent>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-silver-400">
+        <ModalFooter align="center">
           <button
             onClick={onClose}
             className="w-full py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 font-semibold transition-colors border-2 border-navy-700"
           >
             Done
           </button>
-        </div>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

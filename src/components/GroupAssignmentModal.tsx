@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
-import { X, Settings, Check, Users as UsersIcon } from "lucide-react";
+import { Settings, Check, Users as UsersIcon, Calendar } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
 import DateTimePicker from "./DateTimePicker";
 import { Select, Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 import { WorkoutModification } from "@/types";
 
@@ -129,26 +130,21 @@ export default function GroupAssignmentModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-heading-primary text-xl">
-                Assign Group Workout -{" "}
-                {selectedDate.toLocaleDateString("en-US", {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </h2>
-              <button
-                onClick={onClose}
-                className="text-silver-600 hover:text-navy-600 p-1"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+      <ModalBackdrop isOpen={isOpen} onClose={onClose}>
+        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+          <ModalHeader
+            title="Assign Group Workout"
+            subtitle={selectedDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+            onClose={onClose}
+            icon={<Calendar className="w-6 h-6 text-primary" />}
+          />
 
+          <ModalContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column - Assignment Details */}
               <div className="space-y-6">
@@ -351,9 +347,26 @@ export default function GroupAssignmentModal({
                   : "Groups"}
               </Button>
             </div>
-          </div>
+          </ModalContent>
+
+          <ModalFooter align="between">
+            <Button onClick={onClose} variant="secondary" className="flex-1">
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAssign}
+              disabled={selectedGroupIds.length === 0 || !selectedWorkoutId}
+              variant="primary"
+              className="flex-1"
+            >
+              Assign to{" "}
+              {selectedGroupIds.length > 0
+                ? `${selectedGroupIds.length} Group${selectedGroupIds.length > 1 ? "s" : ""} (${allAthleteIds.size} athletes)`
+                : "Groups"}
+            </Button>
+          </ModalFooter>
         </div>
-      </div>
+      </ModalBackdrop>
 
       {/* Athlete Modification Modal */}
       {showModificationModal &&
