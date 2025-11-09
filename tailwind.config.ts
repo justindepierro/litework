@@ -68,6 +68,9 @@ const config: Config = {
         "gradient-silver":
           "linear-gradient(135deg, #f9fafb 0%, #fefefe 50%, #f1f5f9 100%)",
       },
+      zIndex: {
+        '60': '60',
+      },
     },
   },
   plugins: [],
