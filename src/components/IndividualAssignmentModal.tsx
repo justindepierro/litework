@@ -7,6 +7,7 @@ import DateTimePicker from "./DateTimePicker";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Alert } from "@/components/ui/Alert";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -347,10 +348,7 @@ export default function IndividualAssignmentModal({
 
               {/* Selected Athletes Summary */}
               {selectedAthletes.length > 0 && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
-                  <div className="text-body-small font-medium text-blue-900 mb-2">
-                    Selected Athletes ({selectedAthletes.length}):
-                  </div>
+                <Alert variant="info" title={`Selected Athletes (${selectedAthletes.length})`}>
                   <div className="flex flex-wrap gap-2">
                     {selectedAthletes.map((athlete) => (
                       <span
@@ -369,7 +367,7 @@ export default function IndividualAssignmentModal({
                       </span>
                     ))}
                   </div>
-                </div>
+                </Alert>
               )}
             </div>
           </div>

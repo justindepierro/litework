@@ -13,6 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import { WorkoutBlock, WorkoutExercise } from "@/types";
+import { Alert } from "@/components/ui/Alert";
 
 interface BlockEditorProps {
   isOpen: boolean;
@@ -193,11 +194,7 @@ export default function BlockEditor({
 
         {/* Form */}
         <div className="flex-1 overflow-y-auto p-6">
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
 
           <div className="space-y-6">
             {/* Basic Info */}

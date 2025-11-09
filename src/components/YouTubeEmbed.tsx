@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Play, ExternalLink } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
 
 interface YouTubeEmbedProps {
   url: string;
@@ -60,12 +61,11 @@ export default function YouTubeEmbed({
 
   if (!videoId) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
-        <p className="font-medium">Invalid YouTube URL</p>
-        <p className="mt-1 text-xs">
+      <Alert variant="error" title="Invalid YouTube URL">
+        <p className="text-xs">
           Please provide a valid YouTube link (e.g., https://youtu.be/VIDEO_ID)
         </p>
-      </div>
+      </Alert>
     );
   }
 

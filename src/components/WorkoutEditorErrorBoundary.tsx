@@ -11,6 +11,7 @@ import React, { Component, ErrorInfo, ReactNode } from "react";
 import { WorkoutPlan } from "@/types";
 import { AlertTriangle, RefreshCw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 interface Props {
   children: ReactNode;
@@ -117,31 +118,23 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
             </h2>
 
             {/* Error Message */}
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-red-800 font-medium mb-2">
-                Error Details:
-              </p>
-              <p className="text-sm text-red-700 font-mono">
+            <Alert variant="error" title="Error Details">
+              <p className="text-sm font-mono">
                 {error?.message || "Unknown error occurred"}
               </p>
-            </div>
+            </Alert>
 
             {/* Recovery Status */}
             {savedWorkout && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <div className="flex items-start">
-                  <Save className="w-5 h-5 text-green-600 mt-0.5 mr-3 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-green-800 mb-1">
-                      Your work has been saved!
-                    </p>
-                    <p className="text-sm text-green-700">
-                      We automatically saved your workout draft. You can recover
-                      it or start fresh.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <Alert variant="success" icon={<Save />} title="Your Work is Safe">
+                <p className="text-sm mb-1">
+                  Your work has been saved!
+                </p>
+                <p className="text-sm">
+                  We automatically saved your workout draft. You can recover
+                  it or start fresh.
+                </p>
+              </Alert>
             )}
 
             {/* Action Buttons */}

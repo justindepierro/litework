@@ -17,6 +17,7 @@ import {
 import { parseDate, isToday, isPast } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 import type {
   WorkoutExercise as WorkoutExerciseType,
   ExerciseGroup,
@@ -426,17 +427,9 @@ export default function WorkoutAssignmentDetailModal({
 
             {/* Notes */}
             {getNotes(assignment) && (
-              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium text-blue-900 mb-1">
-                      Coach Notes
-                    </h3>
-                    <p className="text-blue-800">{getNotes(assignment)}</p>
-                  </div>
-                </div>
-              </div>
+              <Alert variant="info" title="Coach Notes" icon={<FileText />}>
+                {getNotes(assignment)}
+              </Alert>
             )}
 
             {/* Workout Exercises with Groups */}
