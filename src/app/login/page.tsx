@@ -8,6 +8,7 @@ import { validateEmail } from "@/lib/security";
 import { RateLimitError } from "@/components/ui/RateLimitError";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
+import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -71,11 +72,7 @@ export default function LoginPage() {
 
   // Show loading while checking auth status
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoading />;
   }
 
   return (
@@ -151,7 +148,7 @@ export default function LoginPage() {
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                <ButtonLoading className="text-white mr-2" />
                 Signing in...
               </div>
             ) : (

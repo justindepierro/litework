@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { EmptyNotifications } from "@/components/ui/EmptyState";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface InAppNotification {
   id: string;
@@ -219,7 +220,7 @@ export default function NotificationsPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {isLoading ? (
               <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+                <LoadingSpinner size="lg" />
               </div>
             ) : notifications.length === 0 ? (
               <EmptyNotifications />

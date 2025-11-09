@@ -9,6 +9,7 @@ import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailMo
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
@@ -161,8 +162,7 @@ export default function SchedulePage() {
         <div className="bg-white rounded-lg shadow-sm">
           {loadingAssignments ? (
             <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading schedule...</p>
+              <LoadingSpinner size="lg" message="Loading schedule..." />
             </div>
           ) : (
             <DraggableAthleteCalendar

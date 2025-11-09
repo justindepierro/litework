@@ -13,6 +13,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
 import {
   User,
@@ -321,7 +322,7 @@ export default function ProfilePage() {
       <main className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="flex items-center justify-center p-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+            <LoadingSpinner size="lg" />
           </div>
         </div>
       </main>

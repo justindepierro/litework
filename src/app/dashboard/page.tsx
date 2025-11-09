@@ -11,6 +11,7 @@ import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   parseDate,
   isToday as checkIsToday,
@@ -351,8 +352,7 @@ export default function DashboardPage() {
 
               {loadingData ? (
                 <div className="p-12 text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                  <p className="mt-4 text-silver-700">Loading calendar...</p>
+                  <LoadingSpinner size="lg" message="Loading calendar..." />
                 </div>
               ) : (
                 <DraggableAthleteCalendar

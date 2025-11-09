@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail, validatePassword } from "@/lib/security";
 import { Alert } from "@/components/ui/Alert";
+import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
 
 interface InviteData {
   id: string;
@@ -231,11 +232,7 @@ function SignUpForm() {
 
   // Show loading state while checking auth or invite
   if (authLoading || inviteLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <PageLoading />;
   }
 
   return (
@@ -470,7 +467,7 @@ function SignUpForm() {
                     {isLoading ? (
                       <>
                         <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                          <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                          <ButtonLoading className="text-white" />
                         </span>
                         Creating account...
                       </>
@@ -505,13 +502,7 @@ function SignUpForm() {
 
 export default function SignUpPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-      }
-    >
+    <Suspense fallback={<PageLoading />}>
       <SignUpForm />
     </Suspense>
   );

@@ -12,6 +12,7 @@ import {
   Cookie,
   LogOut,
 } from "lucide-react";
+import { PageLoading } from "@/components/ui/LoadingSpinner";
 
 interface DiagnosticResult {
   timestamp: string;
@@ -135,11 +136,7 @@ export default function DiagnosePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoading />;
   }
 
   return (
