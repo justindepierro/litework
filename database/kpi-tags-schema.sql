@@ -172,9 +172,9 @@ SELECT
   we.exercise_id,
   se.exercise_name,
   sr.set_number,
-  sr.reps_completed,
-  sr.weight_used,
-  sr.rpe,
+  sr.actual_reps as reps_completed,
+  sr.actual_weight as weight_used,
+  NULL::numeric as rpe, -- RPE not tracked in set_records yet
   we.sets as prescribed_sets,
   we.reps as prescribed_reps,
   we.weight as prescribed_weight,
@@ -205,7 +205,7 @@ SELECT
   COUNT(DISTINCT exercise_id) as unique_exercises,
   SUM(reps_completed) as total_reps,
   SUM(reps_completed * COALESCE(weight_used, 0)) as total_volume,
-  AVG(rpe) as avg_rpe,
+  AVG(CASE WHEN rpe IS NOT NULL THEN rpe ELSE NULL END) as avg_rpe,
   MAX(weight_used) as max_weight
 FROM athlete_kpi_exercise_history
 GROUP BY athlete_id, kpi_tag_id, kpi_tag_name, kpi_display_name, DATE_TRUNC('week', session_date)
