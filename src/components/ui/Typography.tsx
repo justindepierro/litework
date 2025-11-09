@@ -57,8 +57,8 @@ export const Heading: React.FC<HeadingProps> = ({
       className={`
         ${sizeClasses[level]}
         ${variantClasses[variant]}
-        font-[var(--font-family-heading)]
-        font-[var(--font-weight-semibold)]
+        font-heading
+        font-semibold
         ${className}
       `}
       {...props}
@@ -140,7 +140,7 @@ export const Body: React.FC<BodyProps> = ({
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${weightClasses[weight]}
-        font-[var(--font-family-primary)]
+        font-primary
         ${className}
       `}
       {...props}
@@ -291,8 +291,8 @@ export const Display: React.FC<DisplayProps> = ({
     <Component
       className={`
         ${sizeClasses[size]}
-        font-[var(--font-family-display)]
-        font-[var(--font-weight-bold)]
+        font-display
+        font-bold
         text-[var(--color-text-primary)]
         ${className}
       `}

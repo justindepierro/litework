@@ -15,6 +15,13 @@ const config: Config = {
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
         heading: ["var(--font-poppins)", "Poppins", "system-ui", "sans-serif"],
         display: ["var(--font-poppins)", "Poppins", "system-ui", "sans-serif"],
+        primary: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+      },
+      fontWeight: {
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
       },
       colors: {
         // Navy Scale
