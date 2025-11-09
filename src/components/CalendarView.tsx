@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus, Play } from "lucide-react";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -356,21 +362,17 @@ const CalendarView = memo(function CalendarView() {
 
           {/* Group Management Modal */}
           {showGroupModal && (
-            <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+            <ModalBackdrop
+              isOpen={showGroupModal}
+              onClose={() => setShowGroupModal(false)}
+            >
               <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-heading-primary text-xl">
-                      Manage Athlete Groups
-                    </h2>
-                    <button
-                      onClick={() => setShowGroupModal(false)}
-                      className="text-silver-600 hover:text-navy-600 p-1"
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-
+                <ModalHeader
+                  title="Manage Athlete Groups"
+                  icon={<Users className="w-6 h-6" />}
+                  onClose={() => setShowGroupModal(false)}
+                />
+                <ModalContent>
                   <div className="grid gap-6 md:grid-cols-2">
                     {groups.map((group) => (
                       <Card key={group.id} variant="default" padding="md">
@@ -430,28 +432,29 @@ const CalendarView = memo(function CalendarView() {
                       </Card>
                     ))}
                   </div>
-
-                  <div className="mt-6 pt-6 border-t">
-                    <Button
-                      onClick={handleCreateGroup}
-                      variant="primary"
-                      leftIcon={<Plus className="w-4 h-4" />}
-                    >
-                      Create New Group
-                    </Button>
-                  </div>
-                </div>
+                </ModalContent>
+                <ModalFooter align="center">
+                  <Button
+                    onClick={handleCreateGroup}
+                    variant="primary"
+                    leftIcon={<Plus className="w-4 h-4" />}
+                  >
+                    Create New Group
+                  </Button>
+                </ModalFooter>
               </div>
-            </div>
+            </ModalBackdrop>
           )}
 
           {/* Assignment Modal */}
           {showAssignModal && selectedDate && (
             <Suspense
               fallback={
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <LoadingSpinner size="lg" />
-                </div>
+                <ModalBackdrop isOpen={true} onClose={() => {}}>
+                  <div className="bg-white rounded-lg p-8">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                </ModalBackdrop>
               }
             >
               <GroupAssignmentModal
@@ -470,9 +473,11 @@ const CalendarView = memo(function CalendarView() {
           {showGroupFormModal && (
             <Suspense
               fallback={
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <LoadingSpinner size="lg" />
-                </div>
+                <ModalBackdrop isOpen={true} onClose={() => {}}>
+                  <div className="bg-white rounded-lg p-8">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                </ModalBackdrop>
               }
             >
               <GroupFormModal
@@ -487,72 +492,67 @@ const CalendarView = memo(function CalendarView() {
 
           {/* Assignment Details Modal */}
           {selectedAssignment && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-xl max-w-lg w-full p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">
-                      {selectedAssignment.workoutPlanName}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {getGroupById(selectedAssignment.groupId || "")?.name ||
-                        "Individual"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setSelectedAssignment(null)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <div className="space-y-3 mb-6">
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">
-                      Scheduled:{" "}
-                    </span>
-                    <span className="text-sm text-gray-900">
-                      {new Date(
-                        selectedAssignment.scheduledDate
-                      ).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {selectedAssignment.startTime && (
+            <ModalBackdrop
+              isOpen={!!selectedAssignment}
+              onClose={() => setSelectedAssignment(null)}
+            >
+              <div className="bg-white rounded-xl max-w-lg w-full">
+                <ModalHeader
+                  title={selectedAssignment.workoutPlanName}
+                  subtitle={
+                    getGroupById(selectedAssignment.groupId || "")?.name ||
+                    "Individual"
+                  }
+                  icon={<Calendar className="w-6 h-6" />}
+                  onClose={() => setSelectedAssignment(null)}
+                />
+                <ModalContent>
+                  <div className="space-y-3">
                     <div>
                       <span className="text-sm font-medium text-gray-700">
-                        Time:{" "}
+                        Scheduled:{" "}
                       </span>
                       <span className="text-sm text-gray-900">
-                        {selectedAssignment.startTime}
-                        {selectedAssignment.endTime &&
-                          ` - ${selectedAssignment.endTime}`}
+                        {new Date(
+                          selectedAssignment.scheduledDate
+                        ).toLocaleDateString()}
                       </span>
                     </div>
-                  )}
-                  {selectedAssignment.location && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-700">
-                        Location:{" "}
-                      </span>
-                      <span className="text-sm text-gray-900">
-                        {selectedAssignment.location}
-                      </span>
-                    </div>
-                  )}
-                  {selectedAssignment.notes && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-700 block mb-1">
-                        Notes:
-                      </span>
-                      <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
-                        {selectedAssignment.notes}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-3">
+                    {selectedAssignment.startTime && (
+                      <div>
+                        <span className="text-sm font-medium text-gray-700">
+                          Time:{" "}
+                        </span>
+                        <span className="text-sm text-gray-900">
+                          {selectedAssignment.startTime}
+                          {selectedAssignment.endTime &&
+                            ` - ${selectedAssignment.endTime}`}
+                        </span>
+                      </div>
+                    )}
+                    {selectedAssignment.location && (
+                      <div>
+                        <span className="text-sm font-medium text-gray-700">
+                          Location:{" "}
+                        </span>
+                        <span className="text-sm text-gray-900">
+                          {selectedAssignment.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedAssignment.notes && (
+                      <div>
+                        <span className="text-sm font-medium text-gray-700 block mb-1">
+                          Notes:
+                        </span>
+                        <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                          {selectedAssignment.notes}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </ModalContent>
+                <ModalFooter align="between">
                   <button
                     onClick={() => setSelectedAssignment(null)}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
@@ -568,9 +568,9 @@ const CalendarView = memo(function CalendarView() {
                     <Play className="w-5 h-5" />
                     Start Workout
                   </button>
-                </div>
+                </ModalFooter>
               </div>
-            </div>
+            </ModalBackdrop>
           )}
         </>
       )}
