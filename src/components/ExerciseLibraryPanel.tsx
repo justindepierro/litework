@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Dumbbell } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import { Heading } from "@/components/ui/Typography";
 
 interface Exercise {
   id: string;
@@ -55,10 +56,10 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
     <div className="w-80 bg-gray-50 border-l border-gray-300 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-gray-300 bg-white">
-        <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+        <Heading level="h3" className="mb-3 flex items-center gap-2">
           <Dumbbell className="w-5 h-5" />
           Exercise Library
-        </h3>
+        </Heading>
 
         {/* Search */}
         <div className="relative">

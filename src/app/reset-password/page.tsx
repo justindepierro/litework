@@ -5,6 +5,7 @@ import Link from "next/link";
 import { requestPasswordReset } from "@/lib/auth-client";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
+import { Display } from "@/components/ui/Typography";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -38,9 +39,9 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h2 className="text-heading-primary text-3xl sm:text-2xl font-bold mb-2">
+          <Display size="lg" className="mb-2">
             Reset Password
-          </h2>
+          </Display>
           <p className="mt-2 text-body-secondary text-base sm:text-sm">
             Enter your email address and we&apos;ll send you instructions to
             reset your password

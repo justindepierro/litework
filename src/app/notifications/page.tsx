@@ -11,6 +11,7 @@ import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { EmptyNotifications } from "@/components/ui/EmptyState";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Display } from "@/components/ui/Typography";
 
 interface InAppNotification {
   id: string;
@@ -166,9 +167,9 @@ export default function NotificationsPage() {
               <div className="flex items-center gap-3">
                 <Bell className="w-8 h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <Display size="md">
                     Notifications
-                  </h1>
+                  </Display>
                   <p className="text-sm text-gray-600 mt-1">
                     {unreadCount > 0
                       ? `${unreadCount} unread`

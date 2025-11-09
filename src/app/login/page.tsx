@@ -9,6 +9,7 @@ import { RateLimitError } from "@/components/ui/RateLimitError";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
+import { Display } from "@/components/ui/Typography";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -79,9 +80,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h2 className="text-heading-primary text-3xl sm:text-2xl font-bold mb-2">
+          <Display size="lg" className="mb-2">
             Welcome Back
-          </h2>
+          </Display>
           <p className="mt-2 text-body-secondary text-base sm:text-sm">
             Sign in to track your workouts
           </p>
