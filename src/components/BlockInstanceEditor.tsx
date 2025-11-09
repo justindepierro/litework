@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Package, RotateCcw, Save } from "lucide-react";
+import { Package, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -217,34 +218,19 @@ export default function BlockInstanceEditor({
     blockInstance.customizations.addedGroups.length > 0 ||
     blockInstance.customizations.removedGroups.length > 0;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-silver-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-              <Package className="w-5 h-5 text-primary-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-silver-900">
-                Customize Block Instance
-              </h2>
-              <p className="text-sm text-silver-600">
-                Template: {blockInstance.sourceBlockName}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-silver-100 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-silver-500" />
-          </button>
-        </div>
+  if (!isOpen) return null;
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+  return (
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
+      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <ModalHeader
+          title="Customize Block Instance"
+          subtitle={`Template: ${blockInstance.sourceBlockName}`}
+          onClose={onClose}
+          icon={<Package className="w-5 h-5 text-primary-600" />}
+        />
+
+        <ModalContent>
           {/* Info Banner */}
           {hasCustomizations && (
             <Alert variant="info" title="This block has been customized">
@@ -336,10 +322,9 @@ export default function BlockInstanceEditor({
             or weights, close this dialog and edit the exercises directly in
             the workout editor. Changes will be tracked automatically.
           </Alert>
-        </div>
+        </ModalContent>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-silver-200 bg-silver-50">
+        <ModalFooter align="between">
           <Button onClick={onClose} variant="secondary">
             Cancel
           </Button>
@@ -350,8 +335,8 @@ export default function BlockInstanceEditor({
           >
             Save Changes
           </Button>
-        </div>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
