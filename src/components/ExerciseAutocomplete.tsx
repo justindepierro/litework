@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, Plus, Dumbbell } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 
 interface Exercise {
   id: string;
@@ -203,9 +204,9 @@ export default function ExerciseAutocomplete({
                       )}
                     </div>
                     {exercise.category && (
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded shrink-0">
+                      <Badge variant="neutral" size="sm">
                         {exercise.category}
-                      </span>
+                      </Badge>
                     )}
                   </div>
                 </button>

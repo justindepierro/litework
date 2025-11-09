@@ -11,6 +11,7 @@ import {
   Calendar,
   UserCheck,
 } from "lucide-react";
+import { Badge, BadgeVariant } from "@/components/ui/Badge";
 
 interface BulkOperationHistoryProps {
   isOpen: boolean;
@@ -122,18 +123,18 @@ export default function BulkOperationHistory({
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): BadgeVariant => {
     switch (status) {
       case "completed":
-        return "text-green-800 bg-green-100";
+        return "success";
       case "failed":
-        return "text-red-800 bg-red-100";
+        return "error";
       case "in_progress":
-        return "text-blue-800 bg-blue-100";
+        return "info";
       case "cancelled":
-        return "text-gray-800 bg-gray-100";
+        return "neutral";
       default:
-        return "text-gray-800 bg-gray-100";
+        return "neutral";
     }
   };
 
@@ -215,11 +216,9 @@ export default function BulkOperationHistory({
                           <h3 className="font-medium text-gray-900">
                             {getOperationTitle(operation.type)}
                           </h3>
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(operation.status)}`}
-                          >
+                          <Badge variant={getStatusColor(operation.status)} size="sm">
                             {operation.status.replace("_", " ")}
-                          </span>
+                          </Badge>
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">

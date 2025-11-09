@@ -18,6 +18,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { WorkoutBlock } from "@/types";
+import { Badge } from "@/components/ui/Badge";
 
 interface BlockLibraryProps {
   isOpen: boolean;
@@ -433,12 +434,9 @@ export default function BlockLibrary({
                     {block.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {block.tags.slice(0, 3).map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
-                          >
+                          <Badge key={tag} variant="neutral" size="sm">
                             {tag}
-                          </span>
+                          </Badge>
                         ))}
                         {block.tags.length > 3 && (
                           <span className="px-2 py-1 text-gray-500 text-xs">
@@ -451,10 +449,10 @@ export default function BlockLibrary({
                     {/* Template Badge */}
                     {block.isTemplate && (
                       <div className="mt-3 pt-3 border-t">
-                        <span className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
+                        <Badge variant="info" size="sm">
                           <Star className="w-3 h-3 mr-1" />
                           Template
-                        </span>
+                        </Badge>
                       </div>
                     )}
 

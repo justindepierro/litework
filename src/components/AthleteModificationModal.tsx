@@ -6,6 +6,7 @@ import { X, Weight, RotateCcw, Settings } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 
 interface AthleteModificationModalProps {
   isOpen: boolean;
@@ -304,11 +305,11 @@ export default function AthleteModificationModal({
                         </div>
                         <div className="text-body-small">
                           {modification.reason && (
-                            <span className="px-2 py-1 bg-accent-blue/10 text-accent-blue rounded text-xs">
+                            <Badge variant="primary" size="sm">
                               {modification.reason === "other"
                                 ? modification.customReason
                                 : modification.reason}
-                            </span>
+                            </Badge>
                           )}
                         </div>
                       </div>
