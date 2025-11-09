@@ -27,6 +27,12 @@ import {
   Edit3,
   Archive,
 } from "lucide-react";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
 import {
   User as UserType,
@@ -1495,459 +1501,461 @@ export default function AthletesPage() {
 
         {/* Edit Email Modal */}
         {showEditEmailModal && selectedAthlete && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {selectedAthlete.email ? "Edit" : "Add"} Email Address
-                </h2>
-                <button
+          <ModalBackdrop
+            isOpen={showEditEmailModal}
+            onClose={() => {
+              setShowEditEmailModal(false);
+              setEditEmailForm({ email: "" });
+            }}
+          >
+            <div className="bg-white rounded-xl w-full max-w-md">
+              <ModalHeader
+                title={`${selectedAthlete.email ? "Edit" : "Add"} Email Address`}
+                icon={<Send className="w-6 h-6" />}
+                onClose={() => {
+                  setShowEditEmailModal(false);
+                  setEditEmailForm({ email: "" });
+                }}
+              />
+              <ModalContent>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Athlete
+                    </label>
+                    <p className="text-gray-900 font-medium">
+                      {selectedAthlete.fullName}
+                    </p>
+                  </div>
+
+                  {/* Email Input */}
+                  <Input
+                    label="Email Address *"
+                    type="email"
+                    value={editEmailForm.email}
+                    onChange={(e) => setEditEmailForm({ email: e.target.value })}
+                    placeholder="athlete@email.com"
+                    autoFocus
+                    fullWidth
+                    required
+                    helperText={
+                      selectedAthlete.email
+                        ? `Current: ${selectedAthlete.email}`
+                        : undefined
+                    }
+                  />
+
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-900 mb-1">
+                          Ready to Send Invite
+                        </h4>
+                        <p className="text-sm text-blue-700">
+                          After updating the email, you can use the
+                          &ldquo;Resend&rdquo; button to send the invitation.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ModalContent>
+              <ModalFooter align="between">
+                <Button
                   onClick={() => {
                     setShowEditEmailModal(false);
                     setEditEmailForm({ email: "" });
                   }}
+                  variant="secondary"
+                  className="flex-1"
                 >
-                  <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Athlete
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {selectedAthlete.fullName}
-                  </p>
-                </div>
-
-                {/* Email Input */}
-                <Input
-                  label="Email Address *"
-                  type="email"
-                  value={editEmailForm.email}
-                  onChange={(e) => setEditEmailForm({ email: e.target.value })}
-                  placeholder="athlete@email.com"
-                  autoFocus
-                  fullWidth
-                  required
-                  helperText={
-                    selectedAthlete.email
-                      ? `Current: ${selectedAthlete.email}`
-                      : undefined
-                  }
-                />
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-900 mb-1">
-                        Ready to Send Invite
-                      </h4>
-                      <p className="text-sm text-blue-700">
-                        After updating the email, you can use the
-                        &ldquo;Resend&rdquo; button to send the invitation.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    onClick={() => {
-                      setShowEditEmailModal(false);
-                      setEditEmailForm({ email: "" });
-                    }}
-                    variant="secondary"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleUpdateEmail}
-                    variant="primary"
-                    className="flex-1"
-                    disabled={!editEmailForm.email}
-                  >
-                    {selectedAthlete.email ? "Update" : "Add"} Email
-                  </Button>
-                </div>
-              </div>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleUpdateEmail}
+                  variant="primary"
+                  className="flex-1"
+                  disabled={!editEmailForm.email}
+                >
+                  {selectedAthlete.email ? "Update" : "Add"} Email
+                </Button>
+              </ModalFooter>
             </div>
-          </div>
+          </ModalBackdrop>
         )}
 
         {/* Invite Modal */}
         {showInviteModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Invite New Athlete
-                </h2>
-                <button onClick={() => setShowInviteModal(false)}>
-                  <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
+          <ModalBackdrop
+            isOpen={showInviteModal}
+            onClose={() => setShowInviteModal(false)}
+          >
+            <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <ModalHeader
+                title="Invite New Athlete"
+                icon={<Send className="w-6 h-6" />}
+                onClose={() => setShowInviteModal(false)}
+              />
+              <ModalContent>
+                <div className="space-y-4">
+                  {/* Name Inputs */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      label="First Name *"
+                      type="text"
+                      value={inviteForm.firstName}
+                      onChange={(e) =>
+                        setInviteForm({
+                          ...inviteForm,
+                          firstName: e.target.value,
+                        })
+                      }
+                      placeholder="First name"
+                      fullWidth
+                      required
+                    />
+                    <Input
+                      label="Last Name *"
+                      type="text"
+                      value={inviteForm.lastName}
+                      onChange={(e) =>
+                        setInviteForm({
+                          ...inviteForm,
+                          lastName: e.target.value,
+                        })
+                      }
+                      placeholder="Last name"
+                      fullWidth
+                      required
+                    />
+                  </div>
 
-              <div className="space-y-4">
-                {/* Name Inputs */}
-                <div className="grid grid-cols-2 gap-4">
+                  {/* Email Input */}
                   <Input
-                    label="First Name *"
-                    type="text"
-                    value={inviteForm.firstName}
+                    label="Email Address (Optional)"
+                    type="email"
+                    value={inviteForm.email}
                     onChange={(e) =>
-                      setInviteForm({
-                        ...inviteForm,
-                        firstName: e.target.value,
-                      })
+                      setInviteForm({ ...inviteForm, email: e.target.value })
                     }
-                    placeholder="First name"
+                    placeholder="athlete@email.com (can add later)"
+                    helperText="Leave blank to add athlete profile without sending invite yet"
                     fullWidth
-                    required
                   />
-                  <Input
-                    label="Last Name *"
-                    type="text"
-                    value={inviteForm.lastName}
+
+                  {/* Initial Group Select */}
+                  <Select
+                    label="Initial Group (Optional)"
+                    value={inviteForm.groupId}
+                    onChange={(e) => {
+                      if (e.target.value === "CREATE_NEW") {
+                        setShowGroupFormModal(true);
+                      } else {
+                        setInviteForm({
+                          ...inviteForm,
+                          groupId: e.target.value,
+                        });
+                      }
+                    }}
+                    fullWidth
+                    options={[
+                      { value: "", label: "No group assigned" },
+                      ...groups.map((group) => ({
+                        value: group.id,
+                        label: group.name,
+                      })),
+                      { value: "CREATE_NEW", label: "+ Create New Group" },
+                    ]}
+                  />
+
+                  {/* Notes Textarea */}
+                  <Textarea
+                    label="Notes (Optional)"
+                    value={inviteForm.notes}
                     onChange={(e) =>
-                      setInviteForm({
-                        ...inviteForm,
-                        lastName: e.target.value,
-                      })
+                      setInviteForm({ ...inviteForm, notes: e.target.value })
                     }
-                    placeholder="Last name"
+                    rows={3}
+                    placeholder="Add any notes about this athlete..."
                     fullWidth
-                    required
                   />
-                </div>
 
-                {/* Email Input */}
-                <Input
-                  label="Email Address (Optional)"
-                  type="email"
-                  value={inviteForm.email}
-                  onChange={(e) =>
-                    setInviteForm({ ...inviteForm, email: e.target.value })
-                  }
-                  placeholder="athlete@email.com (can add later)"
-                  helperText="Leave blank to add athlete profile without sending invite yet"
-                  fullWidth
-                />
-
-                {/* Initial Group Select */}
-                <Select
-                  label="Initial Group (Optional)"
-                  value={inviteForm.groupId}
-                  onChange={(e) => {
-                    if (e.target.value === "CREATE_NEW") {
-                      setShowGroupFormModal(true);
-                    } else {
-                      setInviteForm({
-                        ...inviteForm,
-                        groupId: e.target.value,
-                      });
-                    }
-                  }}
-                  fullWidth
-                  options={[
-                    { value: "", label: "No group assigned" },
-                    ...groups.map((group) => ({
-                      value: group.id,
-                      label: group.name,
-                    })),
-                    { value: "CREATE_NEW", label: "+ Create New Group" },
-                  ]}
-                />
-
-                {/* Notes Textarea */}
-                <Textarea
-                  label="Notes (Optional)"
-                  value={inviteForm.notes}
-                  onChange={(e) =>
-                    setInviteForm({ ...inviteForm, notes: e.target.value })
-                  }
-                  rows={3}
-                  placeholder="Add any notes about this athlete..."
-                  fullWidth
-                />
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-900 mb-1">
-                        How It Works
-                      </h4>
-                      <p className="text-sm text-blue-700">
-                        {inviteForm.email
-                          ? "The athlete will receive an email with a secure link to create their account."
-                          : "Add athlete profile now, then add email later to send the invite."}
-                      </p>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-900 mb-1">
+                          How It Works
+                        </h4>
+                        <p className="text-sm text-blue-700">
+                          {inviteForm.email
+                            ? "The athlete will receive an email with a secure link to create their account."
+                            : "Add athlete profile now, then add email later to send the invite."}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    onClick={() => setShowInviteModal(false)}
-                    variant="secondary"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSendInvite}
-                    variant="primary"
-                    className="flex-1"
-                    disabled={!inviteForm.firstName || !inviteForm.lastName}
-                    leftIcon={<Send className="w-4 h-4" />}
-                  >
-                    {inviteForm.email ? "Send Invite" : "Add Athlete"}
-                  </Button>
-                </div>
-              </div>
+              </ModalContent>
+              <ModalFooter align="between">
+                <Button
+                  onClick={() => setShowInviteModal(false)}
+                  variant="secondary"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSendInvite}
+                  variant="primary"
+                  className="flex-1"
+                  disabled={!inviteForm.firstName || !inviteForm.lastName}
+                  leftIcon={<Send className="w-4 h-4" />}
+                >
+                  {inviteForm.email ? "Send Invite" : "Add Athlete"}
+                </Button>
+              </ModalFooter>
             </div>
-          </div>
+          </ModalBackdrop>
         )}
 
         {/* Message Modal */}
         {showMessageModal && selectedAthlete && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Message {selectedAthlete.fullName}
-                </h2>
-                <button onClick={() => setShowMessageModal(false)}>
-                  <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {/* Subject Input */}
-                <Input
-                  label="Subject (Optional)"
-                  type="text"
-                  value={messageForm.subject}
-                  onChange={(e) =>
-                    setMessageForm({
-                      ...messageForm,
-                      subject: e.target.value,
-                    })
-                  }
-                  placeholder="Enter message subject..."
-                  fullWidth
-                />
-
-                {/* Message Textarea */}
-                <Textarea
-                  label="Message *"
-                  value={messageForm.message}
-                  onChange={(e) =>
-                    setMessageForm({
-                      ...messageForm,
-                      message: e.target.value,
-                    })
-                  }
-                  rows={6}
-                  placeholder="Type your message here..."
-                  fullWidth
-                  required
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Priority Select */}
-                  <Select
-                    label="Priority"
-                    value={messageForm.priority}
+          <ModalBackdrop
+            isOpen={showMessageModal}
+            onClose={() => setShowMessageModal(false)}
+          >
+            <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <ModalHeader
+                title={`Message ${selectedAthlete.fullName}`}
+                icon={<MessageCircle className="w-6 h-6" />}
+                onClose={() => setShowMessageModal(false)}
+              />
+              <ModalContent>
+                <div className="space-y-4">
+                  {/* Subject Input */}
+                  <Input
+                    label="Subject (Optional)"
+                    type="text"
+                    value={messageForm.subject}
                     onChange={(e) =>
                       setMessageForm({
                         ...messageForm,
-                        priority: e.target.value as "low" | "normal" | "high",
+                        subject: e.target.value,
                       })
                     }
+                    placeholder="Enter message subject..."
                     fullWidth
-                    options={[
-                      { value: "low", label: "Low" },
-                      { value: "normal", label: "Normal" },
-                      { value: "high", label: "High" },
-                    ]}
                   />
 
-                  <div className="flex items-end">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={messageForm.notifyViaEmail}
-                        onChange={(e) =>
-                          setMessageForm({
-                            ...messageForm,
-                            notifyViaEmail: e.target.checked,
-                          })
-                        }
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-700">
-                        Also send via email
-                      </span>
-                    </label>
-                  </div>
-                </div>
+                  {/* Message Textarea */}
+                  <Textarea
+                    label="Message *"
+                    value={messageForm.message}
+                    onChange={(e) =>
+                      setMessageForm({
+                        ...messageForm,
+                        message: e.target.value,
+                      })
+                    }
+                    rows={6}
+                    placeholder="Type your message here..."
+                    fullWidth
+                    required
+                  />
 
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <MessageCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-medium text-green-900 mb-1">
-                        Communication Tip
-                      </h4>
-                      <p className="text-sm text-green-700">
-                        {selectedAthlete.communication?.preferredContact ===
-                        "email"
-                          ? `${selectedAthlete.fullName} prefers email communication. Consider checking the email option above.`
-                          : `${selectedAthlete.fullName} prefers app notifications. They'll be notified in the app immediately.`}
-                      </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Priority Select */}
+                    <Select
+                      label="Priority"
+                      value={messageForm.priority}
+                      onChange={(e) =>
+                        setMessageForm({
+                          ...messageForm,
+                          priority: e.target.value as "low" | "normal" | "high",
+                        })
+                      }
+                      fullWidth
+                      options={[
+                        { value: "low", label: "Low" },
+                        { value: "normal", label: "Normal" },
+                        { value: "high", label: "High" },
+                      ]}
+                    />
+
+                    <div className="flex items-end">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={messageForm.notifyViaEmail}
+                          onChange={(e) =>
+                            setMessageForm({
+                              ...messageForm,
+                              notifyViaEmail: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">
+                          Also send via email
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <MessageCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-green-900 mb-1">
+                          Communication Tip
+                        </h4>
+                        <p className="text-sm text-green-700">
+                          {selectedAthlete.communication?.preferredContact ===
+                          "email"
+                            ? `${selectedAthlete.fullName} prefers email communication. Consider checking the email option above.`
+                            : `${selectedAthlete.fullName} prefers app notifications. They'll be notified in the app immediately.`}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    onClick={() => setShowMessageModal(false)}
-                    variant="secondary"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSendMessage}
-                    variant="primary"
-                    className="flex-1"
-                    disabled={!messageForm.message}
-                    leftIcon={<Send className="w-4 h-4" />}
-                  >
-                    Send Message
-                  </Button>
-                </div>
-              </div>
+              </ModalContent>
+              <ModalFooter align="between">
+                <Button
+                  onClick={() => setShowMessageModal(false)}
+                  variant="secondary"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSendMessage}
+                  variant="primary"
+                  className="flex-1"
+                  disabled={!messageForm.message}
+                  leftIcon={<Send className="w-4 h-4" />}
+                >
+                  Send Message
+                </Button>
+              </ModalFooter>
             </div>
-          </div>
+          </ModalBackdrop>
         )}
 
         {/* KPI Management Modal */}
         {showKPIModal && selectedAthlete && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Manage Personal Records - {selectedAthlete.fullName}
-                </h2>
-                <button onClick={() => setShowKPIModal(false)}>
-                  <X className="w-6 h-6 text-gray-400 hover:text-gray-600" />
-                </button>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-3">
-                  Add New Personal Record
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Exercise Name
-                    </label>
-                    <input
-                      type="text"
-                      value={kpiForm.kpiName}
-                      onChange={(e) =>
-                        setKPIForm({ ...kpiForm, kpiName: e.target.value })
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., Bench Press"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Weight (lbs)
-                    </label>
-                    <input
-                      type="number"
-                      value={kpiForm.value}
-                      onChange={(e) =>
-                        setKPIForm({ ...kpiForm, value: e.target.value })
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="225"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date Achieved
-                    </label>
-                    <input
-                      type="date"
-                      value={kpiForm.dateSet}
-                      onChange={(e) =>
-                        setKPIForm({ ...kpiForm, dateSet: e.target.value })
-                      }
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button
-                      onClick={handleAddKPI}
-                      variant="primary"
-                      fullWidth
-                      disabled={!kpiForm.kpiName || !kpiForm.value}
-                      leftIcon={<Plus className="w-4 h-4" />}
-                    >
-                      Add PR
-                    </Button>
+          <ModalBackdrop
+            isOpen={showKPIModal}
+            onClose={() => setShowKPIModal(false)}
+          >
+            <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <ModalHeader
+                title={`Manage Personal Records - ${selectedAthlete.fullName}`}
+                icon={<Trophy className="w-6 h-6" />}
+                onClose={() => setShowKPIModal(false)}
+              />
+              <ModalContent>
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Add New Personal Record
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Exercise Name
+                      </label>
+                      <input
+                        type="text"
+                        value={kpiForm.kpiName}
+                        onChange={(e) =>
+                          setKPIForm({ ...kpiForm, kpiName: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g., Bench Press"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Weight (lbs)
+                      </label>
+                      <input
+                        type="number"
+                        value={kpiForm.value}
+                        onChange={(e) =>
+                          setKPIForm({ ...kpiForm, value: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="225"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Date Achieved
+                      </label>
+                      <input
+                        type="date"
+                        value={kpiForm.dateSet}
+                        onChange={(e) =>
+                          setKPIForm({ ...kpiForm, dateSet: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={handleAddKPI}
+                        variant="primary"
+                        fullWidth
+                        disabled={!kpiForm.kpiName || !kpiForm.value}
+                        leftIcon={<Plus className="w-4 h-4" />}
+                      >
+                        Add PR
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3">
-                  Current Personal Records (
-                  {selectedAthlete.personalRecords?.length || 0})
-                </h3>
-                {selectedAthlete.personalRecords?.length ? (
-                  <div className="space-y-3">
-                    {selectedAthlete.personalRecords.map((kpi: AthleteKPI) => (
-                      <div
-                        key={kpi.id}
-                        className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Target className="w-5 h-5 text-blue-600" />
-                          <div>
-                            <div className="font-medium text-gray-900">
-                              {kpi.exerciseName}
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              {kpi.currentPR} lbs •{" "}
-                              {kpi.dateAchieved.toLocaleDateString()}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Current Personal Records (
+                    {selectedAthlete.personalRecords?.length || 0})
+                  </h3>
+                  {selectedAthlete.personalRecords?.length ? (
+                    <div className="space-y-3">
+                      {selectedAthlete.personalRecords.map((kpi: AthleteKPI) => (
+                        <div
+                          key={kpi.id}
+                          className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Target className="w-5 h-5 text-blue-600" />
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                {kpi.exerciseName}
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                {kpi.currentPR} lbs •{" "}
+                                {kpi.dateAchieved.toLocaleDateString()}
+                              </div>
                             </div>
                           </div>
+                          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
-                        <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No personal records yet. Add some PRs to get started!
-                  </div>
-                )}
-              </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No personal records yet. Add some PRs to get started!
+                    </div>
+                  )}
+                </div>
+              </ModalContent>
             </div>
-          </div>
+          </ModalBackdrop>
         )}
       </div>
 
@@ -1968,30 +1976,22 @@ export default function AthletesPage() {
 
       {/* Progress Analytics Modal */}
       {showAnalyticsModal && selectedAthlete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <ModalBackdrop
+          isOpen={showAnalyticsModal}
+          onClose={() => setShowAnalyticsModal(false)}
+        >
           <div className="bg-white rounded-xl w-full max-w-6xl h-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex justify-between items-center p-6 border-b">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                  <BarChart3 className="h-6 w-6 text-blue-600" />
-                  {selectedAthlete.fullName} - Progress Analytics
-                </h2>
-                <p className="text-gray-600 mt-1">
-                  Comprehensive performance tracking and insights
-                </p>
-              </div>
-              <button
-                onClick={() => setShowAnalyticsModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <X className="w-6 h-6 text-gray-500" />
-              </button>
-            </div>
+            <ModalHeader
+              title={`${selectedAthlete.fullName} - Progress Analytics`}
+              subtitle="Comprehensive performance tracking and insights"
+              icon={<BarChart3 className="h-6 w-6" />}
+              onClose={() => setShowAnalyticsModal(false)}
+            />
             <div className="flex-1 overflow-y-auto p-6">
               <ProgressAnalytics athleteId={selectedAthlete.id} />
             </div>
           </div>
-        </div>
+        </ModalBackdrop>
       )}
 
       {/* Athlete Detail Modal */}
@@ -2186,9 +2186,11 @@ export default function AthletesPage() {
       {showIndividualAssignment && selectedAthlete && (
         <Suspense
           fallback={
-            <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
-              <div className="text-white">Loading...</div>
-            </div>
+            <ModalBackdrop isOpen={true} onClose={() => {}}>
+              <div className="bg-white rounded-lg p-8">
+                <div className="text-lg text-gray-700">Loading...</div>
+              </div>
+            </ModalBackdrop>
           }
         >
           <IndividualAssignmentModal
