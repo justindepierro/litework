@@ -17,6 +17,7 @@ import {
   Check,
   Rocket,
 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface WorkoutViewProps {
   sessionId: string;
@@ -91,10 +92,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-gray-600 text-lg">Loading workout...</div>
-        </div>
+        <LoadingSpinner size="md" message="Loading workout..." />
       </div>
     );
   }

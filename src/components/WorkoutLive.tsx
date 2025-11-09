@@ -21,6 +21,7 @@ import {
   TrendingUp,
   AlertCircle,
 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface WorkoutLiveProps {
   assignmentId: string;
@@ -188,10 +189,7 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading workout...</p>
-        </div>
+        <LoadingSpinner size="lg" message="Loading workout..." />
       </div>
     );
   }

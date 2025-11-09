@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import type { NotificationPreferences, NotificationTiming } from "@/types";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 export default function NotificationPreferencesSettings() {
   const { user } = useAuth();
@@ -128,7 +129,7 @@ export default function NotificationPreferencesSettings() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <LoadingSpinner size="md" />
       </div>
     );
   }

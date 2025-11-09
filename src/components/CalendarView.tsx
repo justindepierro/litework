@@ -7,6 +7,7 @@ import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus, Play } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Dynamic imports for heavy modals
 const GroupFormModal = lazy(() => import("./GroupFormModal"));
@@ -152,10 +153,7 @@ const CalendarView = memo(function CalendarView() {
     <div className="bg-white">
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="w-8 h-8 border-4 border-navy-300 border-t-navy-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-body-secondary">Loading calendar...</p>
-          </div>
+          <LoadingSpinner size="md" message="Loading calendar..." />
         </div>
       ) : (
         <>
@@ -452,7 +450,7 @@ const CalendarView = memo(function CalendarView() {
             <Suspense
               fallback={
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                  <LoadingSpinner size="lg" />
                 </div>
               }
             >
@@ -473,7 +471,7 @@ const CalendarView = memo(function CalendarView() {
             <Suspense
               fallback={
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+                  <LoadingSpinner size="lg" />
                 </div>
               }
             >

@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Bell, X, Check, CheckCheck } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface InAppNotification {
   id: string;
@@ -240,7 +241,7 @@ export default function NotificationBell() {
           <div className="overflow-y-auto max-h-[500px]">
             {isLoading ? (
               <div className="flex items-center justify-center p-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+                <LoadingSpinner size="md" />
               </div>
             ) : notifications.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
