@@ -258,7 +258,8 @@ const CalendarView = memo(function CalendarView() {
                 return (
                   <div
                     key={index}
-                    className={`min-h-[120px] p-2 border-b border-r border-silver-200 ${
+                    onClick={() => openAssignModal(day)}
+                    className={`min-h-[120px] p-2 border-b border-r border-silver-200 cursor-pointer hover:bg-silver-50 transition-colors ${
                       !isCurrentMonthDay ? "bg-silver-100 text-silver-600" : ""
                     } ${isTodayDay ? "bg-accent-blue/10" : ""}`}
                   >
@@ -276,18 +277,16 @@ const CalendarView = memo(function CalendarView() {
                             {assignments.length}
                           </span>
                         )}
-                        {assignments.length > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openAssignModal(day);
-                            }}
-                            className="text-xs text-accent-blue hover:text-accent-blue/80 p-1"
-                            title="Assign workout"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openAssignModal(day);
+                          }}
+                          className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                          title="Assign workout"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
                       </div>
                     </div>
 
