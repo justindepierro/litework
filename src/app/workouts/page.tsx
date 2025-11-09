@@ -28,6 +28,12 @@ import {
   Layers,
   Repeat,
 } from "lucide-react";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import { ExerciseGroupDisplay } from "@/components/ExerciseGroupDisplay";
@@ -612,17 +618,24 @@ export default function WorkoutsPage() {
 
         {/* Assign Workout Modal - Choice between Group and Individual */}
         {showAssignForm && selectedWorkout && (
-          <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+          <ModalBackdrop
+            isOpen={showAssignForm}
+            onClose={() => {
+              setShowAssignForm(false);
+              setSelectedWorkout(null);
+            }}
+          >
             <div className="bg-white rounded-lg max-w-md w-full">
-              <div className="p-6">
-                <h2 className="text-heading-primary text-xl mb-4">
-                  Assign Workout: {selectedWorkout.name}
-                </h2>
-
-                <p className="text-body-secondary mb-6">
-                  Choose how you&apos;d like to assign this workout:
-                </p>
-
+              <ModalHeader
+                title={`Assign Workout: ${selectedWorkout.name}`}
+                subtitle="Choose how you'd like to assign this workout:"
+                icon={<Users className="w-6 h-6" />}
+                onClose={() => {
+                  setShowAssignForm(false);
+                  setSelectedWorkout(null);
+                }}
+              />
+              <ModalContent>
                 <div className="space-y-3">
                   <Button
                     onClick={() => {
@@ -663,31 +676,31 @@ export default function WorkoutsPage() {
                     </div>
                   </Button>
                 </div>
-
-                <div className="flex gap-3 mt-6">
-                  <Button
-                    onClick={() => {
-                      setShowAssignForm(false);
-                      setSelectedWorkout(null);
-                    }}
-                    variant="secondary"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
+              </ModalContent>
+              <ModalFooter align="right">
+                <Button
+                  onClick={() => {
+                    setShowAssignForm(false);
+                    setSelectedWorkout(null);
+                  }}
+                  variant="secondary"
+                >
+                  Cancel
+                </Button>
+              </ModalFooter>
             </div>
-          </div>
+          </ModalBackdrop>
         )}
 
         {/* Group Assignment Modal */}
         {showGroupAssignModal && selectedWorkout && (
           <Suspense
             fallback={
-              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
-                <div className="text-white">Loading...</div>
-              </div>
+              <ModalBackdrop isOpen={true} onClose={() => {}}>
+                <div className="bg-white rounded-lg p-8">
+                  <div className="text-lg text-gray-700">Loading...</div>
+                </div>
+              </ModalBackdrop>
             }
           >
             <GroupAssignmentModal
@@ -709,9 +722,11 @@ export default function WorkoutsPage() {
         {showIndividualAssignModal && selectedWorkout && (
           <Suspense
             fallback={
-              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
-                <div className="text-white">Loading...</div>
-              </div>
+              <ModalBackdrop isOpen={true} onClose={() => {}}>
+                <div className="bg-white rounded-lg p-8">
+                  <div className="text-lg text-gray-700">Loading...</div>
+                </div>
+              </ModalBackdrop>
             }
           >
             <IndividualAssignmentModal
@@ -754,13 +769,13 @@ export default function WorkoutsPage() {
         >
           <Suspense
             fallback={
-              <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
+              <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-silver-700">
+                  <div className="text-lg text-gray-700">
                     Loading workout editor...
                   </div>
                 </div>
-              </div>
+              </ModalBackdrop>
             }
           >
             <WorkoutEditor
