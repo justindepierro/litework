@@ -411,3 +411,76 @@ export interface WorkoutFeedbackFormData {
   whatWasDifficult?: string;
   suggestions?: string;
 }
+
+// ============================================================================
+// KPI Tags System
+// ============================================================================
+
+// KPI Tag - Used to categorize exercises for tracking training leading to PRs
+// Example: Tag all bench variations with "BENCH" to analyze volume before testing day
+export interface KPITag {
+  id: string;
+  name: string; // Uppercase identifier: "BENCH", "SQUAT", "DEADLIFT"
+  displayName: string; // Human-readable: "Bench Press", "Squat", "Deadlift"
+  color: string; // Hex color for badge display (e.g., "#EF4444")
+  description?: string; // What this KPI tracks
+  kpiType: "one_rm" | "max_reps" | "max_distance" | "best_time";
+  primaryExerciseId?: string; // Main exercise for this KPI (FK to exercises)
+  createdBy?: string; // User ID of creator
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Link between workout exercise and KPI tag
+export interface ExerciseKPITag {
+  id: string;
+  workoutExerciseId: string; // FK to workout_exercises
+  kpiTagId: string; // FK to kpi_tags
+  relevanceNotes?: string; // Why this exercise relates to this KPI
+  createdAt: Date;
+}
+
+// Extended workout exercise with KPI tags included
+export interface WorkoutExerciseWithTags extends WorkoutExercise {
+  kpiTags?: KPITag[]; // Associated KPI tags
+}
+
+// KPI Exercise History - For analyzing training leading to PRs
+export interface KPIExerciseHistory {
+  athleteId: string;
+  workoutSessionId: string;
+  sessionDate: Date;
+  workoutPlanId: string;
+  workoutName: string;
+  kpiTagId: string;
+  kpiTagName: string;
+  kpiDisplayName: string;
+  exerciseId: string;
+  exerciseName: string;
+  setNumber: number;
+  repsCompleted: number;
+  weightUsed: number;
+  rpe?: number;
+  prescribedSets: number;
+  prescribedReps: number;
+  prescribedWeight?: number;
+  weightType: "fixed" | "percentage" | "bodyweight";
+  percentage?: number;
+  percentageBaseKpi?: string;
+  relevanceNotes?: string;
+}
+
+// KPI Volume Summary - Aggregated data for analysis
+export interface KPIVolumeSummary {
+  athleteId: string;
+  kpiTagId: string;
+  kpiTagName: string;
+  kpiDisplayName: string;
+  weekStart: Date;
+  workoutsCompleted: number;
+  uniqueExercises: number;
+  totalReps: number;
+  totalVolume: number; // reps * weight
+  avgRpe: number;
+  maxWeight: number;
+}
