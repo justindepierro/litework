@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Play, Pause, SkipForward, Volume2, Clock } from "lucide-react";
+import { ModalBackdrop } from "@/components/ui/Modal";
 
 interface RestTimerProps {
   duration: number; // seconds
@@ -70,8 +71,11 @@ export default function RestTimer({
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
 
+  // Prevent closing by ESC or backdrop click - user must skip
+  const handleNoClose = () => {};
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+    <ModalBackdrop isOpen={true} onClose={handleNoClose}>
       <div className="bg-white rounded-3xl p-8 w-full max-w-md mx-4 text-center">
         {/* Header */}
         <div className="flex items-center justify-center gap-2 mb-6">
@@ -158,6 +162,6 @@ export default function RestTimer({
           </div>
         )}
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
