@@ -7,6 +7,7 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -82,6 +83,9 @@ function ExerciseLibrary({
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+
+  // Debounce search term to reduce API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [newExercise, setNewExercise] = useState({
     name: "",
     description: "",
@@ -99,7 +103,7 @@ function ExerciseLibrary({
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (searchTerm) params.append("search", searchTerm);
+      if (debouncedSearchTerm) params.append("search", debouncedSearchTerm);
       if (selectedCategory) params.append("category", selectedCategory);
       if (selectedMuscleGroup)
         params.append("muscleGroup", selectedMuscleGroup);
@@ -146,7 +150,7 @@ function ExerciseLibrary({
       setLoading(false);
     }
   }, [
-    searchTerm,
+    debouncedSearchTerm,
     selectedCategory,
     selectedMuscleGroup,
     selectedEquipment,
