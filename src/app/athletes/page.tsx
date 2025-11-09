@@ -54,6 +54,7 @@ import InviteAthleteModal, {
 import KPIModal, { KPIForm } from "./components/modals/KPIModal";
 import MessageModal, { MessageForm } from "./components/modals/MessageModal";
 import EditEmailModal from "./components/modals/EditEmailModal";
+import AddToGroupModal from "./components/modals/AddToGroupModal";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -599,6 +600,35 @@ export default function AthletesPage() {
       toast.error(
         err instanceof Error ? err.message : "Failed to update email"
       );
+    }
+  };
+
+  const handleAddAthleteToGroup = async (groupId: string, athleteId: string) => {
+    try {
+      const response = await fetch("/api/groups/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          groupId,
+          athleteIds: [athleteId],
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const group = groups.find((g) => g.id === groupId);
+        const athlete = athletes.find((a) => a.id === athleteId);
+        toast.success(
+          `Added ${athlete?.firstName || "athlete"} to ${group?.name || "group"}`
+        );
+        loadGroups(); // Refresh groups
+      } else {
+        toast.error(data.error || "Failed to add to group");
+      }
+    } catch (error) {
+      console.error("Error adding to group:", error);
+      toast.error("Failed to add to group");
     }
   };
 
@@ -1592,127 +1622,16 @@ export default function AthletesPage() {
       )}
 
       {/* Add Athlete to Group Modal */}
-      {showAddToGroupModal && selectedAthlete && (
-        <ModalBackdrop
+      {/* Add to Group Modal */}
+      {selectedAthlete && (
+        <AddToGroupModal
           isOpen={showAddToGroupModal}
-          onClose={() => {
-            setShowAddToGroupModal(false);
-            setSelectedAthlete(null);
-          }}
-        >
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <ModalHeader
-              title={`Add ${selectedAthlete.firstName} to Group`}
-              icon={<Users className="w-6 h-6" />}
-              onClose={() => {
-                setShowAddToGroupModal(false);
-                setSelectedAthlete(null);
-              }}
-            />
-            <ModalContent>
-              {groups.length === 0 ? (
-                <EmptyState
-                  icon={Users}
-                  title="No groups available"
-                  description="Create a group first to organize your athletes."
-                  action={{
-                    label: "Create First Group",
-                    onClick: () => {
-                      setShowAddToGroupModal(false);
-                      setShowGroupFormModal(true);
-                    },
-                    icon: <Plus className="w-4 h-4" />,
-                  }}
-                  size="sm"
-                />
-              ) : (
-                <div className="space-y-2">
-                  {groups.map((group) => {
-                    const isInGroup = group.athleteIds?.includes(
-                      selectedAthlete.id
-                    );
-                    return (
-                      <button
-                        key={group.id}
-                        onClick={async () => {
-                          if (isInGroup) {
-                            toast.info(
-                              `${selectedAthlete.firstName} is already in ${group.name}`
-                            );
-                            return;
-                          }
-
-                          try {
-                            const response = await fetch(
-                              "/api/groups/members",
-                              {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                  groupId: group.id,
-                                  athleteIds: [selectedAthlete.id],
-                                }),
-                              }
-                            );
-
-                            const data = await response.json();
-
-                            if (data.success) {
-                              toast.success(
-                                `Added ${selectedAthlete.firstName} to ${group.name}`
-                              );
-                              loadGroups(); // Refresh groups
-                              setShowAddToGroupModal(false);
-                              setSelectedAthlete(null);
-                            } else {
-                              toast.error(
-                                data.error || "Failed to add to group"
-                              );
-                            }
-                          } catch (error) {
-                            console.error("Error adding to group:", error);
-                            toast.error("Failed to add to group");
-                          }
-                        }}
-                        disabled={isInGroup}
-                        className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                          isInGroup
-                            ? "border-green-200 bg-green-50 cursor-default"
-                            : "border-gray-200 hover:border-blue-500 hover:bg-blue-50"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-semibold text-gray-900 flex items-center gap-2">
-                              {group.name}
-                              {isInGroup && (
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                              )}
-                            </div>
-                            {group.description && (
-                              <p className="text-sm text-gray-600 mt-1">
-                                {group.description}
-                              </p>
-                            )}
-                            <p className="text-xs text-gray-500 mt-1">
-                              {group.athleteIds?.length || 0} athletes
-                            </p>
-                          </div>
-                          {group.color && (
-                            <div
-                              className="w-4 h-4 rounded-full"
-                              style={{ backgroundColor: group.color }}
-                            />
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </ModalContent>
-          </div>
-        </ModalBackdrop>
+          onClose={() => setShowAddToGroupModal(false)}
+          athlete={selectedAthlete}
+          groups={groups}
+          onAddToGroup={handleAddAthleteToGroup}
+          onCreateGroup={() => setShowGroupFormModal(true)}
+        />
       )}
 
       {/* Individual Assignment Modal */}
