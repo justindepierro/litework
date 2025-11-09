@@ -48,6 +48,9 @@ import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
 import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
 import { Input, Select, Textarea } from "@/components/ui/Input";
+import InviteAthleteModal, {
+  InviteForm,
+} from "./components/modals/InviteAthleteModal";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -67,14 +70,6 @@ const AthleteDetailModal = lazy(
 const IndividualAssignmentModal = lazy(
   () => import("@/components/IndividualAssignmentModal")
 );
-
-interface InviteForm {
-  firstName: string;
-  lastName: string;
-  email: string;
-  groupId?: string;
-  notes?: string;
-}
 
 interface KPIForm {
   kpiName: string;
@@ -167,14 +162,6 @@ export default function AthletesPage() {
 
   // Debounce search term to prevent excessive filtering during typing
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
-  const [inviteForm, setInviteForm] = useState<InviteForm>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    groupId: "",
-    notes: "",
-  });
 
   const [kpiForm, setKPIForm] = useState<KPIForm>({
     kpiName: "",
@@ -418,7 +405,7 @@ export default function AthletesPage() {
     };
   }, [openGroupMenuId]);
 
-  const handleSendInvite = async () => {
+  const handleSendInvite = async (inviteForm: InviteForm) => {
     // Only require first name and last name (email is optional)
     if (!inviteForm.firstName || !inviteForm.lastName) return;
 
@@ -509,13 +496,6 @@ export default function AthletesPage() {
           ? `Invite sent successfully to ${inviteForm.email}!`
           : `Athlete ${inviteForm.firstName} ${inviteForm.lastName} added successfully!`;
         toast.success(successMsg);
-        setInviteForm({
-          firstName: "",
-          lastName: "",
-          email: "",
-          groupId: "",
-          notes: "",
-        });
         setShowInviteModal(false);
         setError("");
       } else {
@@ -1594,139 +1574,14 @@ export default function AthletesPage() {
         )}
 
         {/* Invite Modal */}
-        {showInviteModal && (
-          <ModalBackdrop
-            isOpen={showInviteModal}
-            onClose={() => setShowInviteModal(false)}
-          >
-            <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <ModalHeader
-                title="Invite New Athlete"
-                icon={<Send className="w-6 h-6" />}
-                onClose={() => setShowInviteModal(false)}
-              />
-              <ModalContent>
-                <div className="space-y-4">
-                  {/* Name Inputs */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input
-                      label="First Name *"
-                      type="text"
-                      value={inviteForm.firstName}
-                      onChange={(e) =>
-                        setInviteForm({
-                          ...inviteForm,
-                          firstName: e.target.value,
-                        })
-                      }
-                      placeholder="First name"
-                      fullWidth
-                      required
-                    />
-                    <Input
-                      label="Last Name *"
-                      type="text"
-                      value={inviteForm.lastName}
-                      onChange={(e) =>
-                        setInviteForm({
-                          ...inviteForm,
-                          lastName: e.target.value,
-                        })
-                      }
-                      placeholder="Last name"
-                      fullWidth
-                      required
-                    />
-                  </div>
-
-                  {/* Email Input */}
-                  <Input
-                    label="Email Address (Optional)"
-                    type="email"
-                    value={inviteForm.email}
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, email: e.target.value })
-                    }
-                    placeholder="athlete@email.com (can add later)"
-                    helperText="Leave blank to add athlete profile without sending invite yet"
-                    fullWidth
-                  />
-
-                  {/* Initial Group Select */}
-                  <Select
-                    label="Initial Group (Optional)"
-                    value={inviteForm.groupId}
-                    onChange={(e) => {
-                      if (e.target.value === "CREATE_NEW") {
-                        setShowGroupFormModal(true);
-                      } else {
-                        setInviteForm({
-                          ...inviteForm,
-                          groupId: e.target.value,
-                        });
-                      }
-                    }}
-                    fullWidth
-                    options={[
-                      { value: "", label: "No group assigned" },
-                      ...groups.map((group) => ({
-                        value: group.id,
-                        label: group.name,
-                      })),
-                      { value: "CREATE_NEW", label: "+ Create New Group" },
-                    ]}
-                  />
-
-                  {/* Notes Textarea */}
-                  <Textarea
-                    label="Notes (Optional)"
-                    value={inviteForm.notes}
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, notes: e.target.value })
-                    }
-                    rows={3}
-                    placeholder="Add any notes about this athlete..."
-                    fullWidth
-                  />
-
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="text-sm font-medium text-blue-900 mb-1">
-                          How It Works
-                        </h4>
-                        <p className="text-sm text-blue-700">
-                          {inviteForm.email
-                            ? "The athlete will receive an email with a secure link to create their account."
-                            : "Add athlete profile now, then add email later to send the invite."}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ModalContent>
-              <ModalFooter align="between">
-                <Button
-                  onClick={() => setShowInviteModal(false)}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSendInvite}
-                  variant="primary"
-                  className="flex-1"
-                  disabled={!inviteForm.firstName || !inviteForm.lastName}
-                  leftIcon={<Send className="w-4 h-4" />}
-                >
-                  {inviteForm.email ? "Send Invite" : "Add Athlete"}
-                </Button>
-              </ModalFooter>
-            </div>
-          </ModalBackdrop>
-        )}
+        {/* Invite Athlete Modal */}
+        <InviteAthleteModal
+          isOpen={showInviteModal}
+          onClose={() => setShowInviteModal(false)}
+          onInvite={handleSendInvite}
+          groups={groups}
+          onCreateNewGroup={() => setShowGroupFormModal(true)}
+        />
 
         {/* Message Modal */}
         {showMessageModal && selectedAthlete && (
@@ -2035,11 +1890,9 @@ export default function AthletesPage() {
           setShowGroupFormModal(false);
           setEditingGroup(null);
         }}
-        onSave={(group) => {
-          // Refresh groups list
+        onSave={() => {
+          // Refresh groups list so new group appears in invite modal
           loadGroups();
-          // After creating the group, select it in the invite form
-          setInviteForm({ ...inviteForm, groupId: group.id });
           setShowGroupFormModal(false);
           setEditingGroup(null);
         }}

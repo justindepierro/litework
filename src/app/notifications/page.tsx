@@ -167,9 +167,7 @@ export default function NotificationsPage() {
               <div className="flex items-center gap-3">
                 <Bell className="w-8 h-8 text-blue-600" />
                 <div>
-                  <Display size="md">
-                    Notifications
-                  </Display>
+                  <Display size="md">Notifications</Display>
                   <p className="text-sm text-gray-600 mt-1">
                     {unreadCount > 0
                       ? `${unreadCount} unread`

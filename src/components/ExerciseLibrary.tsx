@@ -76,7 +76,13 @@ interface ExerciseCardProps {
 }
 
 const ExerciseCard = memo<ExerciseCardProps>(
-  ({ exercise, isSelected, onSelect, getDifficultyColor, getDifficultyLabel }) => {
+  ({
+    exercise,
+    isSelected,
+    onSelect,
+    getDifficultyColor,
+    getDifficultyLabel,
+  }) => {
     return (
       <div
         className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
@@ -142,21 +148,17 @@ const ExerciseCard = memo<ExerciseCardProps>(
               Target Muscles:
             </div>
             <div className="flex flex-wrap gap-1">
-              {exercise.muscle_groups
-                .slice(0, 3)
-                .map((muscle, index) => (
-                  <Badge
-                    key={index}
-                    variant={
-                      muscle.involvement === "primary"
-                        ? "error"
-                        : "neutral"
-                    }
-                    size="sm"
-                  >
-                    {muscle.name}
-                  </Badge>
-                ))}
+              {exercise.muscle_groups.slice(0, 3).map((muscle, index) => (
+                <Badge
+                  key={index}
+                  variant={
+                    muscle.involvement === "primary" ? "error" : "neutral"
+                  }
+                  size="sm"
+                >
+                  {muscle.name}
+                </Badge>
+              ))}
               {exercise.muscle_groups.length > 3 && (
                 <span className="text-xs text-gray-500">
                   +{exercise.muscle_groups.length - 3} more

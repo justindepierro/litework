@@ -5,6 +5,7 @@
 ### 1. **NEVER Hardcode Design Values**
 
 **❌ FORBIDDEN**:
+
 ```tsx
 // NEVER do this
 <div className="text-blue-500 bg-gray-100 p-4 rounded-lg">
@@ -14,6 +15,7 @@
 ```
 
 **✅ REQUIRED**:
+
 ```tsx
 // ALWAYS use our Typography components
 import { Display, Body } from "@/components/ui/Typography";
@@ -21,7 +23,7 @@ import { Display, Body } from "@/components/ui/Typography";
 <div className="bg-silver-200 p-4 rounded-lg">
   <Display size="lg">Title</Display>
   <Body variant="secondary">Description</Body>
-</div>
+</div>;
 ```
 
 ---
@@ -33,6 +35,7 @@ import { Display, Body } from "@/components/ui/Typography";
 **ALL text must use Typography components. NO exceptions.**
 
 #### Display - Large Headlines
+
 ```tsx
 import { Display } from "@/components/ui/Typography";
 
@@ -47,6 +50,7 @@ import { Display } from "@/components/ui/Typography";
 ---
 
 #### Heading - Section Headers
+
 ```tsx
 import { Heading } from "@/components/ui/Typography";
 
@@ -62,6 +66,7 @@ import { Heading } from "@/components/ui/Typography";
 ---
 
 #### Body - Primary Text Content
+
 ```tsx
 import { Body } from "@/components/ui/Typography";
 
@@ -79,6 +84,7 @@ import { Body } from "@/components/ui/Typography";
 ---
 
 #### Label - Form Labels & UI Labels
+
 ```tsx
 import { Label } from "@/components/ui/Typography";
 
@@ -95,6 +101,7 @@ import { Label } from "@/components/ui/Typography";
 ---
 
 #### Caption - Small Supporting Text
+
 ```tsx
 import { Caption } from "@/components/ui/Typography";
 
@@ -109,6 +116,7 @@ import { Caption } from "@/components/ui/Typography";
 ---
 
 #### Link - Clickable Text Links
+
 ```tsx
 import { Link } from "@/components/ui/Typography";
 
@@ -126,6 +134,7 @@ import { Link } from "@/components/ui/Typography";
 ### Form Components
 
 #### Input (`src/components/ui/Input.tsx`)
+
 ```tsx
 import { Input } from "@/components/ui/Input";
 
@@ -137,7 +146,7 @@ import { Input } from "@/components/ui/Input";
   placeholder="you@example.com"
   error={errors.email}
   required
-/>
+/>;
 ```
 
 **NEVER use raw `<input>` tags. ALWAYS use our Input component.**
@@ -145,6 +154,7 @@ import { Input } from "@/components/ui/Input";
 ---
 
 #### Textarea (`src/components/ui/Textarea.tsx`)
+
 ```tsx
 import { Textarea } from "@/components/ui/Textarea";
 
@@ -155,7 +165,7 @@ import { Textarea } from "@/components/ui/Textarea";
   placeholder="Enter description..."
   rows={4}
   error={errors.description}
-/>
+/>;
 ```
 
 **NEVER use raw `<textarea>` tags. ALWAYS use our Textarea component.**
@@ -163,6 +173,7 @@ import { Textarea } from "@/components/ui/Textarea";
 ---
 
 #### Select (`src/components/ui/Select.tsx`)
+
 ```tsx
 import { Select } from "@/components/ui/Select";
 
@@ -173,11 +184,11 @@ import { Select } from "@/components/ui/Select";
   options={[
     { value: "1", label: "Beginner" },
     { value: "2", label: "Intermediate" },
-    { value: "3", label: "Advanced" }
+    { value: "3", label: "Advanced" },
   ]}
   error={errors.difficulty}
   required
-/>
+/>;
 ```
 
 **NEVER use raw `<select>` tags. ALWAYS use our Select component.**
@@ -205,8 +216,8 @@ import { Button } from "@/components/ui/Button";
 </Button>
 
 // With icon
-<Button 
-  variant="primary" 
+<Button
+  variant="primary"
   leftIcon={<Plus className="w-4 h-4" />}
   onClick={handleCreate}
 >
@@ -255,7 +266,12 @@ import { Badge } from "@/components/ui/Badge";
 ### Modal Components (`src/components/ui/Modal.tsx`)
 
 ```tsx
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 <ModalBackdrop isOpen={isOpen} onClose={onClose}>
   <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
@@ -264,17 +280,19 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
       icon={<Edit className="w-6 h-6" />}
       onClose={onClose}
     />
-    
-    <ModalContent>
-      {/* Your content here */}
-    </ModalContent>
-    
+
+    <ModalContent>{/* Your content here */}</ModalContent>
+
     <ModalFooter>
-      <Button variant="secondary" onClick={onClose}>Cancel</Button>
-      <Button variant="primary" onClick={handleSave}>Save</Button>
+      <Button variant="secondary" onClick={onClose}>
+        Cancel
+      </Button>
+      <Button variant="primary" onClick={handleSave}>
+        Save
+      </Button>
     </ModalFooter>
   </div>
-</ModalBackdrop>
+</ModalBackdrop>;
 ```
 
 **NEVER create custom modals. ALWAYS use Modal component structure.**
@@ -288,6 +306,7 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
 **NEVER hardcode colors. ALWAYS use design tokens.**
 
 #### Background Colors
+
 ```tsx
 // ❌ WRONG
 <div className="bg-gray-100">
@@ -299,6 +318,7 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
 ```
 
 #### Text Colors
+
 ```tsx
 // ❌ WRONG
 <span className="text-gray-600">
@@ -309,6 +329,7 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
 ```
 
 #### Border Colors
+
 ```tsx
 // ❌ WRONG
 <div className="border border-gray-300">
@@ -326,17 +347,19 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
 
 ```tsx
 // Padding
-p-2    // 0.5rem (8px)
-p-4    // 1rem (16px)
-p-6    // 1.5rem (24px)
-p-8    // 2rem (32px)
+p - 2; // 0.5rem (8px)
+p - 4; // 1rem (16px)
+p - 6; // 1.5rem (24px)
+p - 8; // 2rem (32px)
 
 // Margin
-m-2, m-4, m-6, m-8
-mb-4, mt-6, etc.
-
-// Gap
-gap-2, gap-4, gap-6
+(m - 2, m - 4, m - 6, m - 8);
+(mb - 4,
+  mt - 6,
+  // Gap
+  etc.gap - 2,
+  gap - 4,
+  gap - 6);
 ```
 
 **NEVER use arbitrary values like `p-[13px]` unless absolutely necessary.**
@@ -406,19 +429,18 @@ import { Badge } from "@/components/ui/Badge";
 ### Converting Existing Code
 
 #### Example 1: Text Content
+
 **Before**:
+
 ```tsx
 <div>
-  <h1 className="text-3xl font-bold text-gray-900 mb-4">
-    Athletes Dashboard
-  </h1>
-  <p className="text-gray-600">
-    Manage your team and track progress.
-  </p>
+  <h1 className="text-3xl font-bold text-gray-900 mb-4">Athletes Dashboard</h1>
+  <p className="text-gray-600">Manage your team and track progress.</p>
 </div>
 ```
 
 **After**:
+
 ```tsx
 import { Display, Body } from "@/components/ui/Typography";
 
@@ -426,16 +448,16 @@ import { Display, Body } from "@/components/ui/Typography";
   <Display size="lg" className="mb-4">
     Athletes Dashboard
   </Display>
-  <Body variant="secondary">
-    Manage your team and track progress.
-  </Body>
-</div>
+  <Body variant="secondary">Manage your team and track progress.</Body>
+</div>;
 ```
 
 ---
 
 #### Example 2: Form Fields
+
 **Before**:
+
 ```tsx
 <div>
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -452,6 +474,7 @@ import { Display, Body } from "@/components/ui/Typography";
 ```
 
 **After**:
+
 ```tsx
 import { Input } from "@/components/ui/Input";
 
@@ -462,13 +485,15 @@ import { Input } from "@/components/ui/Input";
   onChange={(e) => setEmail(e.target.value)}
   error={error}
   required
-/>
+/>;
 ```
 
 ---
 
 #### Example 3: Buttons
+
 **Before**:
+
 ```tsx
 <button
   onClick={handleSave}
@@ -479,12 +504,13 @@ import { Input } from "@/components/ui/Input";
 ```
 
 **After**:
+
 ```tsx
 import { Button } from "@/components/ui/Button";
 
 <Button variant="primary" onClick={handleSave}>
   Save Changes
-</Button>
+</Button>;
 ```
 
 ---
@@ -492,26 +518,31 @@ import { Button } from "@/components/ui/Button";
 ## 🎯 Why These Rules?
 
 ### 1. **Consistency**
+
 - All text looks the same across the app
 - All buttons behave identically
 - Predictable user experience
 
 ### 2. **Maintainability**
+
 - Change design in one place (component)
 - Affects entire application instantly
 - No hunting for hardcoded values
 
 ### 3. **Accessibility**
+
 - Components built with a11y in mind
 - Semantic HTML automatically
 - Keyboard navigation built-in
 
 ### 4. **Performance**
+
 - Components optimized for performance
 - Proper React patterns (memo, hooks)
 - Consistent bundle size
 
 ### 5. **Type Safety**
+
 - Full TypeScript support
 - Catch errors at compile time
 - Better IDE autocomplete
@@ -521,15 +552,16 @@ import { Button } from "@/components/ui/Button";
 ## 🚀 Quick Reference
 
 ### Import Cheatsheet
+
 ```tsx
 // Typography - ALWAYS use for text
-import { 
-  Display,    // Hero text, page titles
-  Heading,    // Section headers
-  Body,       // Main content
-  Label,      // Form labels, UI labels
-  Caption,    // Helper text, metadata
-  Link        // Clickable links
+import {
+  Display, // Hero text, page titles
+  Heading, // Section headers
+  Body, // Main content
+  Label, // Form labels, UI labels
+  Caption, // Helper text, metadata
+  Link, // Clickable links
 } from "@/components/ui/Typography";
 
 // Forms - ALWAYS use for inputs
@@ -540,11 +572,11 @@ import { Select } from "@/components/ui/Select";
 // UI Components
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { 
-  ModalBackdrop, 
-  ModalHeader, 
-  ModalContent, 
-  ModalFooter 
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
 } from "@/components/ui/Modal";
 ```
 
@@ -564,6 +596,7 @@ If you're unsure which component to use:
 ## ✅ Examples of Correct Usage
 
 ### Dashboard Card
+
 ```tsx
 import { Heading, Body, Caption } from "@/components/ui/Typography";
 import { Badge } from "@/components/ui/Badge";
@@ -582,10 +615,11 @@ import { Badge } from "@/components/ui/Badge";
   <Caption variant="muted" className="mt-4">
     Last updated 5 minutes ago
   </Caption>
-</div>
+</div>;
 ```
 
 ### Form Example
+
 ```tsx
 import { Heading, Body } from "@/components/ui/Typography";
 import { Input, Textarea, Select } from "@/components/ui/Input";
@@ -595,7 +629,7 @@ import { Button } from "@/components/ui/Button";
   <Heading level={2} className="mb-4">
     Create Workout
   </Heading>
-  
+
   <Input
     label="Workout Name"
     value={name}
@@ -603,7 +637,7 @@ import { Button } from "@/components/ui/Button";
     placeholder="e.g., Upper Body Strength"
     required
   />
-  
+
   <Textarea
     label="Description"
     value={description}
@@ -611,7 +645,7 @@ import { Button } from "@/components/ui/Button";
     placeholder="Workout description..."
     rows={4}
   />
-  
+
   <Select
     label="Difficulty"
     value={difficulty}
@@ -619,7 +653,7 @@ import { Button } from "@/components/ui/Button";
     options={difficultyOptions}
     required
   />
-  
+
   <div className="flex gap-3 mt-6">
     <Button type="submit" variant="primary">
       Create Workout
@@ -628,7 +662,7 @@ import { Button } from "@/components/ui/Button";
       Cancel
     </Button>
   </div>
-</form>
+</form>;
 ```
 
 ---

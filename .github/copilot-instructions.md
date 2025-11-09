@@ -196,6 +196,7 @@ See complete guide: `docs/guides/COMPONENT_USAGE_STANDARDS.md`
 #### Required Components - NO EXCEPTIONS
 
 **Typography** - ALL text must use Typography components:
+
 ```tsx
 import { Display, Heading, Body, Label, Caption, Link } from "@/components/ui/Typography";
 
@@ -209,6 +210,7 @@ import { Display, Heading, Body, Label, Caption, Link } from "@/components/ui/Ty
 ```
 
 **Forms** - ALL inputs must use form components:
+
 ```tsx
 import { Input, Textarea, Select } from "@/components/ui/Input";
 
@@ -224,6 +226,7 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 ```
 
 **Buttons** - ALL buttons must use Button component:
+
 ```tsx
 import { Button } from "@/components/ui/Button";
 
@@ -235,8 +238,14 @@ import { Button } from "@/components/ui/Button";
 ```
 
 **Modals** - ALL modals must use Modal components:
+
 ```tsx
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 // ✅ REQUIRED structure
 <ModalBackdrop isOpen={isOpen} onClose={onClose}>
@@ -245,10 +254,11 @@ import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/compone
     <ModalContent>{/* content */}</ModalContent>
     <ModalFooter>{/* buttons */}</ModalFooter>
   </div>
-</ModalBackdrop>
+</ModalBackdrop>;
 ```
 
 **Badges** - ALL status indicators must use Badge:
+
 ```tsx
 import { Badge } from "@/components/ui/Badge";
 
@@ -262,15 +272,17 @@ import { Badge } from "@/components/ui/Badge";
 #### Design Token Rules
 
 **NEVER hardcode colors:**
+
 ```tsx
 // ❌ FORBIDDEN
-className="text-blue-500 bg-gray-100 border-gray-300"
+className = "text-blue-500 bg-gray-100 border-gray-300";
 
 // ✅ REQUIRED
-className="text-primary bg-silver-200 border-silver-300"
+className = "text-primary bg-silver-200 border-silver-300";
 ```
 
 **Use Typography components for text colors:**
+
 ```tsx
 // ❌ FORBIDDEN
 <span className="text-gray-600">Secondary text</span>
@@ -283,6 +295,7 @@ className="text-primary bg-silver-200 border-silver-300"
 #### Code Review Requirements
 
 Before ANY code is merged, verify:
+
 - [ ] NO hardcoded colors (no `text-blue-500`, `bg-gray-100`)
 - [ ] NO raw HTML text elements (no `<h1>`, `<p>`, `<span>` with text)
 - [ ] ALL text uses Typography components
