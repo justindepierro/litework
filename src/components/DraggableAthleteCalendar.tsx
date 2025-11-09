@@ -161,12 +161,14 @@ function DroppableDay({
   date,
   children,
   onDrop,
+  onClick,
   className,
   isCoach,
 }: {
   date: Date;
   children: React.ReactNode;
   onDrop: (item: DragItem, date: Date) => void;
+  onClick?: () => void;
   className: string;
   isCoach: boolean;
 }) {
@@ -194,6 +196,7 @@ function DroppableDay({
   return (
     <div
       ref={isCoach ? (drop as unknown as React.Ref<HTMLDivElement>) : undefined}
+      onClick={onClick}
       className={`${className} ${dropClassName}`}
     >
       {children}
@@ -419,6 +422,7 @@ export default function DraggableAthleteCalendar({
               date={date}
               onDrop={handleDrop}
               isCoach={isCoach}
+              onClick={() => isCoach && onDateClick?.(date)}
               className={`min-h-24 p-2 rounded-xl transition-all duration-200 ${
                 isCurrentMonth
                   ? "bg-white shadow-sm hover:shadow-md hover:scale-[1.02] border border-gray-100"
@@ -427,17 +431,30 @@ export default function DraggableAthleteCalendar({
                 isCoach ? "cursor-pointer" : ""
               }`}
             >
-              <div
-                onClick={() => onDateClick?.(date)}
-                className={`text-sm font-semibold mb-2 ${
-                  isTodayDate
-                    ? "text-blue-600 text-lg"
-                    : isCurrentMonth
-                      ? "text-gray-700"
-                      : "text-gray-400"
-                }`}
-              >
-                {date.getDate()}
+              <div className="flex justify-between items-start mb-2">
+                <div
+                  className={`text-sm font-semibold ${
+                    isTodayDate
+                      ? "text-blue-600 text-lg"
+                      : isCurrentMonth
+                        ? "text-gray-700"
+                        : "text-gray-400"
+                  }`}
+                >
+                  {date.getDate()}
+                </div>
+                {isCoach && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDateClick?.(date);
+                    }}
+                    className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                    title="Assign workout"
+                  >
+                    <span className="text-lg leading-none">+</span>
+                  </button>
+                )}
               </div>
               <div className="space-y-1.5">
                 {dayAssignments.slice(0, 2).map((assignment) => (
@@ -476,18 +493,30 @@ export default function DraggableAthleteCalendar({
               date={date}
               onDrop={handleDrop}
               isCoach={isCoach}
+              onClick={() => isCoach && onDateClick?.(date)}
               className={`rounded-xl p-3 transition-all duration-200 ${
                 isTodayDate
                   ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg"
                   : "bg-white shadow-sm hover:shadow-md border border-gray-100"
               } ${isCoach ? "cursor-pointer" : ""}`}
             >
-              <div
-                onClick={() => onDateClick?.(date)}
-                className="text-center mb-3"
-              >
-                <div className="text-sm font-medium text-silver-700">
-                  {date.toLocaleDateString("en-US", { weekday: "short" })}
+              <div className="text-center mb-3">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="text-sm font-medium text-silver-700">
+                    {date.toLocaleDateString("en-US", { weekday: "short" })}
+                  </div>
+                  {isCoach && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDateClick?.(date);
+                      }}
+                      className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                      title="Assign workout"
+                    >
+                      <span className="text-lg leading-none">+</span>
+                    </button>
+                  )}
                 </div>
                 <div
                   className={`text-2xl font-bold ${
