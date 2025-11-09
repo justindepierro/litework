@@ -21,6 +21,11 @@ import {
   TrendingUp,
   AlertCircle,
 } from "lucide-react";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+} from "@/components/ui/Modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface WorkoutLiveProps {
@@ -550,57 +555,58 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
         />
       )}
       {showExitConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Exit Workout?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Choose how you&apos;d like to handle this workout session.
-            </p>
-
-            <div className="space-y-3">
-              <button
-                onClick={async () => {
-                  await pauseSession();
-                  router.push("/dashboard");
-                }}
-                className="w-full p-4 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl font-medium text-left border-2 border-blue-200 transition-colors"
-              >
-                <div className="font-semibold mb-1">💾 Save & Exit</div>
-                <div className="text-sm text-blue-700">
-                  Your progress will be saved. Resume anytime.
-                </div>
-              </button>
-
-              <button
-                onClick={async () => {
-                  if (
-                    confirm(
-                      "Are you sure? This workout will be marked as abandoned and cannot be resumed."
-                    )
-                  ) {
-                    await abandonSession();
+        <ModalBackdrop isOpen={showExitConfirm} onClose={() => setShowExitConfirm(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full">
+            <ModalHeader
+              title="Exit Workout?"
+              subtitle="Choose how you'd like to handle this workout session."
+              icon={<AlertCircle className="w-6 h-6" />}
+              onClose={() => setShowExitConfirm(false)}
+            />
+            <ModalContent>
+              <div className="space-y-3">
+                <button
+                  onClick={async () => {
+                    await pauseSession();
                     router.push("/dashboard");
-                  }
-                }}
-                className="w-full p-4 bg-red-50 hover:bg-red-100 text-red-900 rounded-xl font-medium text-left border-2 border-red-200 transition-colors"
-              >
-                <div className="font-semibold mb-1">🗑️ Abandon Workout</div>
-                <div className="text-sm text-red-700">
-                  Discard this session completely.
-                </div>
-              </button>
+                  }}
+                  className="w-full p-4 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl font-medium text-left border-2 border-blue-200 transition-colors"
+                >
+                  <div className="font-semibold mb-1">💾 Save & Exit</div>
+                  <div className="text-sm text-blue-700">
+                    Your progress will be saved. Resume anytime.
+                  </div>
+                </button>
 
-              <button
-                onClick={() => setShowExitConfirm(false)}
-                className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium"
-              >
-                Cancel
-              </button>
-            </div>
+                <button
+                  onClick={async () => {
+                    if (
+                      confirm(
+                        "Are you sure? This workout will be marked as abandoned and cannot be resumed."
+                      )
+                    ) {
+                      await abandonSession();
+                      router.push("/dashboard");
+                    }
+                  }}
+                  className="w-full p-4 bg-red-50 hover:bg-red-100 text-red-900 rounded-xl font-medium text-left border-2 border-red-200 transition-colors"
+                >
+                  <div className="font-semibold mb-1">🗑️ Abandon Workout</div>
+                  <div className="text-sm text-red-700">
+                    Discard this session completely.
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setShowExitConfirm(false)}
+                  className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </ModalContent>
           </div>
-        </div>
+        </ModalBackdrop>
       )}
     </div>
   );

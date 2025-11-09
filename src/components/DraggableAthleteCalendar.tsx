@@ -14,6 +14,12 @@ import {
   Dumbbell,
   CheckCircle,
 } from "lucide-react";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 import { WorkoutAssignment } from "@/types";
 import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
@@ -661,33 +667,39 @@ export default function DraggableAthleteCalendar({
 
       {/* Group Move Confirmation Modal */}
       {showMoveConfirmation && pendingMove && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Users className="w-6 h-6 text-blue-600" />
-              Move Group Assignment?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              This is a <strong>group assignment</strong>. Moving it will
-              reschedule the workout for{" "}
-              <strong>all athletes in the group</strong>.
-            </p>
-            <div className="bg-gray-50 p-4 rounded-lg mb-6 space-y-2 text-sm">
-              <div>
-                <span className="font-medium">Workout:</span>{" "}
-                {pendingMove.assignment.workoutPlanName}
+        <ModalBackdrop
+          isOpen={showMoveConfirmation}
+          onClose={handleCancelMove}
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <ModalHeader
+              title="Move Group Assignment?"
+              icon={<Users className="w-6 h-6" />}
+              onClose={handleCancelMove}
+            />
+            <ModalContent>
+              <p className="text-gray-600 mb-6">
+                This is a <strong>group assignment</strong>. Moving it will
+                reschedule the workout for{" "}
+                <strong>all athletes in the group</strong>.
+              </p>
+              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                <div>
+                  <span className="font-medium">Workout:</span>{" "}
+                  {pendingMove.assignment.workoutPlanName}
+                </div>
+                <div>
+                  <span className="font-medium">New Date:</span>{" "}
+                  {pendingMove.newDate.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </div>
               </div>
-              <div>
-                <span className="font-medium">New Date:</span>{" "}
-                {pendingMove.newDate.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </div>
-            </div>
-            <div className="flex gap-3 justify-end">
+            </ModalContent>
+            <ModalFooter align="right">
               <Button
                 onClick={handleCancelMove}
                 variant="secondary"
@@ -702,9 +714,9 @@ export default function DraggableAthleteCalendar({
               >
                 Move All
               </Button>
-            </div>
+            </ModalFooter>
           </div>
-        </div>
+        </ModalBackdrop>
       )}
     </DndProvider>
   );
