@@ -52,6 +52,7 @@ import InviteAthleteModal, {
   InviteForm,
 } from "./components/modals/InviteAthleteModal";
 import KPIModal, { KPIForm } from "./components/modals/KPIModal";
+import MessageModal, { MessageForm } from "./components/modals/MessageModal";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -71,14 +72,6 @@ const AthleteDetailModal = lazy(
 const IndividualAssignmentModal = lazy(
   () => import("@/components/IndividualAssignmentModal")
 );
-
-interface MessageForm {
-  recipientId: string;
-  subject: string;
-  message: string;
-  priority: "low" | "normal" | "high";
-  notifyViaEmail: boolean;
-}
 
 interface AthleteCommunication {
   unreadMessages: number;
@@ -661,7 +654,7 @@ export default function AthletesPage() {
     setShowMessageModal(true);
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (messageForm: MessageForm) => {
     if (!messageForm.message || !selectedAthlete) return;
 
     try {
@@ -684,13 +677,6 @@ export default function AthletesPage() {
 
       setAthletes(updatedAthletes);
       toast.success(`Message sent to ${selectedAthlete.fullName}!`);
-      setMessageForm({
-        recipientId: "",
-        subject: "",
-        message: "",
-        priority: "normal",
-        notifyViaEmail: false,
-      });
       setShowMessageModal(false);
     } catch (err) {
       setError("Failed to send message");
@@ -1568,127 +1554,14 @@ export default function AthletesPage() {
         />
 
         {/* Message Modal */}
-        {showMessageModal && selectedAthlete && (
-          <ModalBackdrop
+        {selectedAthlete && (
+          <MessageModal
             isOpen={showMessageModal}
             onClose={() => setShowMessageModal(false)}
-          >
-            <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <ModalHeader
-                title={`Message ${selectedAthlete.fullName}`}
-                icon={<MessageCircle className="w-6 h-6" />}
-                onClose={() => setShowMessageModal(false)}
-              />
-              <ModalContent>
-                <div className="space-y-4">
-                  {/* Subject Input */}
-                  <Input
-                    label="Subject (Optional)"
-                    type="text"
-                    value={messageForm.subject}
-                    onChange={(e) =>
-                      setMessageForm({
-                        ...messageForm,
-                        subject: e.target.value,
-                      })
-                    }
-                    placeholder="Enter message subject..."
-                    fullWidth
-                  />
-
-                  {/* Message Textarea */}
-                  <Textarea
-                    label="Message *"
-                    value={messageForm.message}
-                    onChange={(e) =>
-                      setMessageForm({
-                        ...messageForm,
-                        message: e.target.value,
-                      })
-                    }
-                    rows={6}
-                    placeholder="Type your message here..."
-                    fullWidth
-                    required
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Priority Select */}
-                    <Select
-                      label="Priority"
-                      value={messageForm.priority}
-                      onChange={(e) =>
-                        setMessageForm({
-                          ...messageForm,
-                          priority: e.target.value as "low" | "normal" | "high",
-                        })
-                      }
-                      fullWidth
-                      options={[
-                        { value: "low", label: "Low" },
-                        { value: "normal", label: "Normal" },
-                        { value: "high", label: "High" },
-                      ]}
-                    />
-
-                    <div className="flex items-end">
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={messageForm.notifyViaEmail}
-                          onChange={(e) =>
-                            setMessageForm({
-                              ...messageForm,
-                              notifyViaEmail: e.target.checked,
-                            })
-                          }
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700">
-                          Also send via email
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <MessageCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="text-sm font-medium text-green-900 mb-1">
-                          Communication Tip
-                        </h4>
-                        <p className="text-sm text-green-700">
-                          {selectedAthlete.communication?.preferredContact ===
-                          "email"
-                            ? `${selectedAthlete.fullName} prefers email communication. Consider checking the email option above.`
-                            : `${selectedAthlete.fullName} prefers app notifications. They'll be notified in the app immediately.`}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ModalContent>
-              <ModalFooter align="between">
-                <Button
-                  onClick={() => setShowMessageModal(false)}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSendMessage}
-                  variant="primary"
-                  className="flex-1"
-                  disabled={!messageForm.message}
-                  leftIcon={<Send className="w-4 h-4" />}
-                >
-                  Send Message
-                </Button>
-              </ModalFooter>
-            </div>
-          </ModalBackdrop>
+            athlete={selectedAthlete}
+            initialForm={messageForm}
+            onSendMessage={handleSendMessage}
+          />
         )}
 
         {/* KPI Management Modal */}
