@@ -47,7 +47,8 @@ Modal migration successfully completed (42/42 modals). Now addressing leftover c
 
 ### 2.1 Design Token Usage (50+ instances)
 
-**Pattern**: `text-[var(--color-*)]` can use Tailwind utilities
+**Pattern**: `text-[var(--color-variable)]` can use Tailwind utilities  
+*(Note: Using CSS variables with wildcard patterns like `--color-*` is intentional for design tokens)*
 
 **Files Affected**:
 
