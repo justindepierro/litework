@@ -53,6 +53,7 @@ import InviteAthleteModal, {
 } from "./components/modals/InviteAthleteModal";
 import KPIModal, { KPIForm } from "./components/modals/KPIModal";
 import MessageModal, { MessageForm } from "./components/modals/MessageModal";
+import EditEmailModal from "./components/modals/EditEmailModal";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -126,9 +127,6 @@ export default function AthletesPage() {
     useState<EnhancedAthlete | null>(null);
   const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
-  const [editEmailForm, setEditEmailForm] = useState({
-    email: "",
-  });
 
   // Assignment data
   const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
@@ -558,15 +556,15 @@ export default function AthletesPage() {
     setShowKPIModal(true);
   };
 
-  const handleUpdateEmail = async () => {
-    if (!selectedAthlete || !editEmailForm.email) {
+  const handleUpdateEmail = async (email: string) => {
+    if (!selectedAthlete || !email) {
       toast.error("Email is required");
       return;
     }
 
     try {
       const response = (await apiClient.updateInvite(selectedAthlete.id, {
-        email: editEmailForm.email,
+        email: email,
       })) as {
         success: boolean;
         invite?: {
@@ -583,14 +581,13 @@ export default function AthletesPage() {
             a.id === selectedAthlete.id
               ? {
                   ...a,
-                  email: response.invite?.email || editEmailForm.email,
+                  email: response.invite?.email || email,
                   status: "invited" as const, // Update status to invited
                 }
               : a
           )
         );
         setShowEditEmailModal(false);
-        setEditEmailForm({ email: "" });
         toast.success(
           "Email updated successfully! You can now send the invite."
         );
@@ -1396,7 +1393,6 @@ export default function AthletesPage() {
                             e.preventDefault();
                             e.stopPropagation();
                             setSelectedAthlete(athlete);
-                            setEditEmailForm({ email: athlete.email || "" });
                             setShowEditEmailModal(true);
                           }}
                           variant="primary"
@@ -1456,91 +1452,15 @@ export default function AthletesPage() {
         )}
 
         {/* Edit Email Modal */}
-        {showEditEmailModal && selectedAthlete && (
-          <ModalBackdrop
+        {/* Edit Email Modal */}
+        {selectedAthlete && (
+          <EditEmailModal
             isOpen={showEditEmailModal}
-            onClose={() => {
-              setShowEditEmailModal(false);
-              setEditEmailForm({ email: "" });
-            }}
-          >
-            <div className="bg-white rounded-xl w-full max-w-md">
-              <ModalHeader
-                title={`${selectedAthlete.email ? "Edit" : "Add"} Email Address`}
-                icon={<Send className="w-6 h-6" />}
-                onClose={() => {
-                  setShowEditEmailModal(false);
-                  setEditEmailForm({ email: "" });
-                }}
-              />
-              <ModalContent>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Athlete
-                    </label>
-                    <p className="text-gray-900 font-medium">
-                      {selectedAthlete.fullName}
-                    </p>
-                  </div>
-
-                  {/* Email Input */}
-                  <Input
-                    label="Email Address *"
-                    type="email"
-                    value={editEmailForm.email}
-                    onChange={(e) =>
-                      setEditEmailForm({ email: e.target.value })
-                    }
-                    placeholder="athlete@email.com"
-                    autoFocus
-                    fullWidth
-                    required
-                    helperText={
-                      selectedAthlete.email
-                        ? `Current: ${selectedAthlete.email}`
-                        : undefined
-                    }
-                  />
-
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="text-sm font-medium text-blue-900 mb-1">
-                          Ready to Send Invite
-                        </h4>
-                        <p className="text-sm text-blue-700">
-                          After updating the email, you can use the
-                          &ldquo;Resend&rdquo; button to send the invitation.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ModalContent>
-              <ModalFooter align="between">
-                <Button
-                  onClick={() => {
-                    setShowEditEmailModal(false);
-                    setEditEmailForm({ email: "" });
-                  }}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleUpdateEmail}
-                  variant="primary"
-                  className="flex-1"
-                  disabled={!editEmailForm.email}
-                >
-                  {selectedAthlete.email ? "Update" : "Add"} Email
-                </Button>
-              </ModalFooter>
-            </div>
-          </ModalBackdrop>
+            onClose={() => setShowEditEmailModal(false)}
+            athlete={selectedAthlete}
+            initialEmail={selectedAthlete.email || ""}
+            onUpdateEmail={handleUpdateEmail}
+          />
         )}
 
         {/* Invite Modal */}
