@@ -97,6 +97,7 @@ export default function AthletesPage() {
     loadGroups,
     setAthletes,
     setGroups,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useAthleteData(user as any, isLoading);
 
   const [error, setError] = useState<string | null>(null);
