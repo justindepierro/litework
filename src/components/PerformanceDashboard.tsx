@@ -17,6 +17,7 @@ import {
   RefreshCw,
   BarChart3,
 } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 
 interface WebVitalDisplayProps {
   name: string;
@@ -422,9 +423,9 @@ const PerformanceDashboard: React.FC = () => {
                             {resource.name.split("/").pop()}
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-600">
-                            <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                            <Badge variant="info" size="sm">
                               {resource.type}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-900">
                             {Math.round(resource.duration)}ms

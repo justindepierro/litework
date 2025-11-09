@@ -5,6 +5,7 @@ import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 interface Exercise {
   id: string;
@@ -470,16 +471,16 @@ function ExerciseLibrary({
                   {/* Exercise Attributes */}
                   <div className="flex flex-wrap gap-2 mb-3">
                     {exercise.is_compound && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                      <Badge variant="success" size="sm">
                         <Zap className="w-3 h-3" />
                         Compound
-                      </span>
+                      </Badge>
                     )}
                     {exercise.is_bodyweight && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      <Badge variant="info" size="sm">
                         <Target className="w-3 h-3" />
                         Bodyweight
-                      </span>
+                      </Badge>
                     )}
                   </div>
 
@@ -493,16 +494,13 @@ function ExerciseLibrary({
                         {exercise.muscle_groups
                           .slice(0, 3)
                           .map((muscle, index) => (
-                            <span
+                            <Badge
                               key={index}
-                              className={`text-xs px-2 py-1 rounded-full ${
-                                muscle.involvement === "primary"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-gray-100 text-gray-700"
-                              }`}
+                              variant={muscle.involvement === "primary" ? "error" : "neutral"}
+                              size="sm"
                             >
                               {muscle.name}
-                            </span>
+                            </Badge>
                           ))}
                         {exercise.muscle_groups.length > 3 && (
                           <span className="text-xs text-gray-500">

@@ -15,6 +15,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
+import { Badge } from "@/components/ui/Badge";
 
 interface AthleteDetailModalProps {
   athlete: UserType & {
@@ -96,20 +97,20 @@ export default function AthleteDetailModal({
                   {athlete.firstName} {athlete.lastName}
                 </h2>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                  <Badge size="md" className="bg-white/20">
                     {athlete.role}
-                  </span>
+                  </Badge>
                   {athlete.status === "active" && (
-                    <span className="px-3 py-1 bg-green-500/30 rounded-full text-sm flex items-center gap-1">
+                    <Badge variant="success" size="md">
                       <Activity className="w-3 h-3" />
                       Active
-                    </span>
+                    </Badge>
                   )}
                   {athlete.injuryStatus && (
-                    <span className="px-3 py-1 bg-yellow-500/30 rounded-full text-sm flex items-center gap-1">
+                    <Badge variant="warning" size="md">
                       <AlertCircle className="w-3 h-3" />
                       {athlete.injuryStatus}
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>
@@ -332,9 +333,9 @@ export default function AthleteDetailModal({
                     {athlete.groupIds.map((groupId) => {
                       const group = groups.find((g) => g.id === groupId);
                       return (
-                        <span
+                        <Badge
                           key={groupId}
-                          className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                          size="md"
                           style={{
                             backgroundColor: group?.color
                               ? `${group.color}20`
@@ -343,7 +344,7 @@ export default function AthleteDetailModal({
                           }}
                         >
                           {group?.name || groupId}
-                        </span>
+                        </Badge>
                       );
                     })}
                   </div>

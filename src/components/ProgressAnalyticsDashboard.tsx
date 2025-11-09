@@ -13,6 +13,7 @@ import {
   Filter,
   ChevronDown,
 } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 
 // Progress data - will be loaded from API
 const mockProgressData: Array<{
@@ -355,9 +356,9 @@ export default function ProgressAnalyticsDashboard() {
                     </span>
                   </td>
                   <td className="py-4 px-4">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <Badge variant="success" size="sm">
                       Improving
-                    </span>
+                    </Badge>
                   </td>
                 </tr>
               ))}
