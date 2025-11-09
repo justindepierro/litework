@@ -3,6 +3,12 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
+import {
   Plus,
   GripVertical,
   Trash2,
@@ -1311,20 +1317,14 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-900">
-            Create Group from {selectedCount} Exercises
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100"
-          >
-            ×
-          </button>
-        </div>
-
+    <ModalBackdrop isOpen={true} onClose={onClose}>
+      <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl">
+        <ModalHeader
+          title={`Create Group from ${selectedCount} Exercises`}
+          icon={<Users className="w-6 h-6" />}
+          onClose={onClose}
+        />
+        <ModalContent>
         <div className="space-y-6">
           {/* Group Type Selection */}
           <div>
@@ -1427,24 +1427,24 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
             </>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <button
-              onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-navy-400 text-navy-800 bg-white rounded-lg font-semibold hover:bg-navy-50 hover:border-navy-600 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors border-2 border-blue-700"
-            >
-              Create Group
-            </button>
           </div>
-        </div>
+        </ModalContent>
+        <ModalFooter align="between">
+          <button
+            onClick={onClose}
+            className="flex-1 px-6 py-3 border-2 border-navy-400 text-navy-800 bg-white rounded-lg font-semibold hover:bg-navy-50 hover:border-navy-600 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors border-2 border-blue-700"
+          >
+            Create Group
+          </button>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 };
 
@@ -1934,7 +1934,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-2 sm:p-4">
+    <ModalBackdrop isOpen={true} onClose={onClose}>
       <div className="bg-white rounded-2xl sm:rounded-lg w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex shadow-2xl">
         {/* Main workout editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -2204,7 +2204,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           onCreateGroup={groupSelectedExercises}
         />
       )}
-    </div>
+    </ModalBackdrop>
   );
 };
 
