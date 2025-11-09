@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Heading } from "@/components/ui/Typography";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
@@ -88,9 +89,9 @@ const ExerciseCard = memo<ExerciseCardProps>(
         {/* Exercise Header */}
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-1">
+            <Heading level="h3" className="mb-1">
               {exercise.name}
-            </h3>
+            </Heading>
             <div className="flex items-center gap-2">
               <span
                 className="px-2 py-1 text-xs font-medium rounded-full text-white"
