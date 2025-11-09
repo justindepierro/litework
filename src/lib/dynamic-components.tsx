@@ -5,17 +5,18 @@
 
 import dynamic from "next/dynamic";
 import React from "react";
+import { ModalBackdrop } from "@/components/ui/Modal";
 
 /**
  * Loading fallback for modals (centered spinner)
  */
 const ModalLoadingFallback = () => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <ModalBackdrop isOpen={true} onClose={() => {}}>
     <div className="bg-white rounded-lg p-8">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
       <p className="mt-4 text-sm text-gray-600">Loading...</p>
     </div>
-  </div>
+  </ModalBackdrop>
 );
 
 /**

@@ -12,6 +12,12 @@ import { WorkoutPlan } from "@/types";
 import { AlertTriangle, RefreshCw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface Props {
   children: ReactNode;
@@ -103,42 +109,49 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
       const { error, savedWorkout } = this.state;
 
       return (
-        <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full p-8 shadow-2xl">
-            {/* Error Icon */}
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-red-100 rounded-full p-4">
-                <AlertTriangle className="w-12 h-12 text-red-600" />
-              </div>
-            </div>
-
-            {/* Error Title */}
-            <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">
-              Something Went Wrong
-            </h2>
-
-            {/* Error Message */}
-            <Alert variant="error" title="Error Details">
-              <p className="text-sm font-mono">
-                {error?.message || "Unknown error occurred"}
-              </p>
-            </Alert>
-
-            {/* Recovery Status */}
-            {savedWorkout && (
-              <Alert variant="success" icon={<Save />} title="Your Work is Safe">
-                <p className="text-sm mb-1">
-                  Your work has been saved!
-                </p>
-                <p className="text-sm">
-                  We automatically saved your workout draft. You can recover
-                  it or start fresh.
+        <ModalBackdrop isOpen={this.state.hasError} onClose={() => {}}>
+          <div className="bg-white rounded-xl max-w-2xl w-full shadow-2xl">
+            <ModalHeader
+              title="Something Went Wrong"
+              icon={<AlertTriangle className="w-12 h-12" />}
+              onClose={this.handleReset}
+            />
+            <ModalContent>
+              {/* Error Message */}
+              <Alert variant="error" title="Error Details">
+                <p className="text-sm font-mono">
+                  {error?.message || "Unknown error occurred"}
                 </p>
               </Alert>
-            )}
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Recovery Status */}
+              {savedWorkout && (
+                <Alert variant="success" icon={<Save />} title="Your Work is Safe">
+                  <p className="text-sm mb-1">
+                    Your work has been saved!
+                  </p>
+                  <p className="text-sm">
+                    We automatically saved your workout draft. You can recover
+                    it or start fresh.
+                  </p>
+                </Alert>
+              )}
+
+              {/* Technical Details (collapsed by default in production) */}
+              {process.env.NODE_ENV === "development" && this.state.errorInfo && (
+                <details className="mt-6">
+                  <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
+                    Technical Details (Development Only)
+                  </summary>
+                  <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-4">
+                    <pre className="text-xs text-gray-700 overflow-auto max-h-48">
+                      {this.state.errorInfo.componentStack}
+                    </pre>
+                  </div>
+                </details>
+              )}
+            </ModalContent>
+            <ModalFooter align="between">
               {savedWorkout && this.props.onRecover && (
                 <Button
                   onClick={this.handleRecover}
@@ -165,29 +178,9 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
               >
                 Start Fresh
               </button>
-            </div>
-
-            {/* Technical Details (collapsed by default in production) */}
-            {process.env.NODE_ENV === "development" && this.state.errorInfo && (
-              <details className="mt-6">
-                <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
-                  Technical Details (Development Only)
-                </summary>
-                <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-4">
-                  <pre className="text-xs text-gray-700 overflow-auto max-h-48">
-                    {this.state.errorInfo.componentStack}
-                  </pre>
-                </div>
-              </details>
-            )}
-
-            {/* Help Text */}
-            <p className="text-center text-sm text-gray-500 mt-6">
-              If this problem persists, please contact support or try refreshing
-              the page.
-            </p>
+            </ModalFooter>
           </div>
-        </div>
+        </ModalBackdrop>
       );
     }
 
