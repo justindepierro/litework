@@ -7,7 +7,12 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface AthleteModificationModalProps {
   isOpen: boolean;
@@ -102,7 +107,6 @@ export default function AthleteModificationModal({
         />
 
         <ModalContent>
-
           {/* Add New Modification */}
           <Card variant="default" padding="md" className="mb-6">
             <h3 className="text-heading-secondary text-lg mb-4">
@@ -310,15 +314,15 @@ export default function AthleteModificationModal({
           </div>
         </ModalContent>
 
-          <ModalFooter align="between">
-            <Button onClick={onClose} variant="secondary" className="flex-1">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} variant="primary" className="flex-1">
-              Save Modifications ({modifications.length})
-            </Button>
-          </ModalFooter>
-        </div>
-      </ModalBackdrop>
-    );
-  }
+        <ModalFooter align="between">
+          <Button onClick={onClose} variant="secondary" className="flex-1">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} variant="primary" className="flex-1">
+            Save Modifications ({modifications.length})
+          </Button>
+        </ModalFooter>
+      </div>
+    </ModalBackdrop>
+  );
+}

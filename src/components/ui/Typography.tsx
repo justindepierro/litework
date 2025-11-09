@@ -75,7 +75,12 @@ Heading.displayName = "Heading";
 // ============================================================================
 
 export type BodySize = "xs" | "sm" | "base" | "lg" | "xl";
-export type BodyVariant = "primary" | "secondary" | "tertiary" | "error" | "success";
+export type BodyVariant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "error"
+  | "success";
 
 export interface BodyProps extends React.HTMLAttributes<HTMLElement> {
   /** Text size */
@@ -153,7 +158,8 @@ Body.displayName = "Body";
 
 export type LabelVariant = "default" | "required" | "disabled" | "error";
 
-export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface LabelProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /** Label variant */
   variant?: LabelVariant;
   /** Content */
@@ -174,7 +180,8 @@ export const Label: React.FC<LabelProps> = ({
   // Variant classes
   const variantClasses = {
     default: "text-[var(--color-text-primary)]",
-    required: "text-[var(--color-text-primary)] after:content-['*'] after:ml-0.5 after:text-[var(--color-error)]",
+    required:
+      "text-[var(--color-text-primary)] after:content-['*'] after:ml-0.5 after:text-[var(--color-error)]",
     disabled: "text-[var(--color-text-tertiary)] opacity-60",
     error: "text-[var(--color-error)]",
   };
@@ -330,10 +337,14 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   // Variant classes
   const variantClasses = {
-    primary: "text-[var(--color-accent-blue)] hover:text-[var(--color-accent-blue)]/80",
-    secondary: "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
-    accent: "text-[var(--color-accent-orange)] hover:text-[var(--color-accent-orange)]/80",
-    muted: "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",
+    primary:
+      "text-[var(--color-accent-blue)] hover:text-[var(--color-accent-blue)]/80",
+    secondary:
+      "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
+    accent:
+      "text-[var(--color-accent-orange)] hover:text-[var(--color-accent-orange)]/80",
+    muted:
+      "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",
   };
 
   const baseClasses = `

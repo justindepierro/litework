@@ -849,52 +849,54 @@ export default function BulkOperationModal({
           onClose={onClose}
         />
         <ModalContent>
-
-        {/* Progress Indicator */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <div className="flex items-center space-x-4">
-            {["select", "configure", "confirm", "executing"].map(
-              (step, index) => (
-                <div key={step} className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      currentStep === step
-                        ? "bg-blue-600 text-white"
-                        : index <
-                            [
-                              "select",
-                              "configure",
-                              "confirm",
-                              "executing",
-                            ].indexOf(currentStep)
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-300 text-gray-600"
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                  {index < 3 && (
+          {/* Progress Indicator */}
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center space-x-4">
+              {["select", "configure", "confirm", "executing"].map(
+                (step, index) => (
+                  <div key={step} className="flex items-center">
                     <div
-                      className={`w-16 h-1 mx-2 ${
-                        index <
-                        ["select", "configure", "confirm", "executing"].indexOf(
-                          currentStep
-                        )
-                          ? "bg-green-600"
-                          : "bg-gray-300"
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                        currentStep === step
+                          ? "bg-blue-600 text-white"
+                          : index <
+                              [
+                                "select",
+                                "configure",
+                                "confirm",
+                                "executing",
+                              ].indexOf(currentStep)
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-300 text-gray-600"
                       }`}
-                    />
-                  )}
-                </div>
-              )
-            )}
+                    >
+                      {index + 1}
+                    </div>
+                    {index < 3 && (
+                      <div
+                        className={`w-16 h-1 mx-2 ${
+                          index <
+                          [
+                            "select",
+                            "configure",
+                            "confirm",
+                            "executing",
+                          ].indexOf(currentStep)
+                            ? "bg-green-600"
+                            : "bg-gray-300"
+                        }`}
+                      />
+                    )}
+                  </div>
+                )
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
-          {renderStepContent()}
-        </div>
+          {/* Content */}
+          <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
+            {renderStepContent()}
+          </div>
         </ModalContent>
 
         {/* Footer */}

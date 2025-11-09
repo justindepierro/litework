@@ -4,7 +4,12 @@ import React, { useState, useEffect } from "react";
 import { Package, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -319,8 +324,8 @@ export default function BlockInstanceEditor({
           {/* Note about full editing */}
           <Alert variant="warning">
             <strong>Note:</strong> To modify individual exercises, sets, reps,
-            or weights, close this dialog and edit the exercises directly in
-            the workout editor. Changes will be tracked automatically.
+            or weights, close this dialog and edit the exercises directly in the
+            workout editor. Changes will be tracked automatically.
           </Alert>
         </ModalContent>
 

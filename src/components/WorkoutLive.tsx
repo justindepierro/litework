@@ -555,7 +555,10 @@ export default function WorkoutLive({ assignmentId }: WorkoutLiveProps) {
         />
       )}
       {showExitConfirm && (
-        <ModalBackdrop isOpen={showExitConfirm} onClose={() => setShowExitConfirm(false)}>
+        <ModalBackdrop
+          isOpen={showExitConfirm}
+          onClose={() => setShowExitConfirm(false)}
+        >
           <div className="bg-white rounded-2xl max-w-md w-full">
             <ModalHeader
               title="Exit Workout?"

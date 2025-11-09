@@ -667,10 +667,7 @@ export default function DraggableAthleteCalendar({
 
       {/* Group Move Confirmation Modal */}
       {showMoveConfirmation && pendingMove && (
-        <ModalBackdrop
-          isOpen={showMoveConfirmation}
-          onClose={handleCancelMove}
-        >
+        <ModalBackdrop isOpen={showMoveConfirmation} onClose={handleCancelMove}>
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
             <ModalHeader
               title="Move Group Assignment?"

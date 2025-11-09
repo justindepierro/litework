@@ -225,7 +225,11 @@ const EnhancedPWAInstall: React.FC = () => {
   // Don't show anything if already installed
   if (isInstalled) {
     return (
-      <Alert variant="success" icon={<CheckCircle />} title="LiteWork is installed!">
+      <Alert
+        variant="success"
+        icon={<CheckCircle />}
+        title="LiteWork is installed!"
+      >
         <p className="text-sm">
           Enjoy the full offline experience in your gym.
         </p>

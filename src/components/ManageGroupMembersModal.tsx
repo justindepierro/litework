@@ -12,7 +12,12 @@ import { useToast } from "@/components/ToastProvider";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -138,62 +143,62 @@ export default function ManageGroupMembersModal({
 
           {/* Athletes List */}
           <div className="flex-1 overflow-y-auto mt-4">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <LoadingSpinner size="md" />
-            </div>
-          ) : filteredAthletes.length === 0 ? (
-            <EmptySearch
-              searchTerm={searchTerm}
-              onClearSearch={() => setSearchTerm("")}
-            />
-          ) : (
-            <div className="space-y-2">
-              {filteredAthletes.map((athlete) => {
-                const isInGroup = groupMembers.includes(athlete.id);
-                return (
-                  <button
-                    key={athlete.id}
-                    onClick={() => toggleAthlete(athlete.id)}
-                    disabled={isSaving}
-                    className={`w-full p-4 rounded-lg border-2 transition-all flex items-center justify-between ${
-                      isInGroup
-                        ? "border-info-light bg-info-lighter"
-                        : "border-silver-400 hover:border-silver-500 hover:bg-silver-200"
-                    } ${isSaving ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-accent-blue rounded-full flex items-center justify-center text-white font-semibold">
-                        {athlete.firstName[0]}
-                        {athlete.lastName[0]}
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-navy-900">
-                          {athlete.firstName} {athlete.lastName}
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <LoadingSpinner size="md" />
+              </div>
+            ) : filteredAthletes.length === 0 ? (
+              <EmptySearch
+                searchTerm={searchTerm}
+                onClearSearch={() => setSearchTerm("")}
+              />
+            ) : (
+              <div className="space-y-2">
+                {filteredAthletes.map((athlete) => {
+                  const isInGroup = groupMembers.includes(athlete.id);
+                  return (
+                    <button
+                      key={athlete.id}
+                      onClick={() => toggleAthlete(athlete.id)}
+                      disabled={isSaving}
+                      className={`w-full p-4 rounded-lg border-2 transition-all flex items-center justify-between ${
+                        isInGroup
+                          ? "border-info-light bg-info-lighter"
+                          : "border-silver-400 hover:border-silver-500 hover:bg-silver-200"
+                      } ${isSaving ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-accent-blue rounded-full flex items-center justify-center text-white font-semibold">
+                          {athlete.firstName[0]}
+                          {athlete.lastName[0]}
                         </div>
-                        <div className="text-sm text-silver-600">
-                          {athlete.email}
+                        <div className="text-left">
+                          <div className="font-semibold text-navy-900">
+                            {athlete.firstName} {athlete.lastName}
+                          </div>
+                          <div className="text-sm text-silver-600">
+                            {athlete.email}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {isInGroup && (
-                      <div className="flex items-center gap-2 text-accent-blue">
-                        <Check className="w-5 h-5" />
-                        <span className="text-sm font-medium">In Group</span>
-                      </div>
-                    )}
-                    {!isInGroup && (
-                      <div className="text-silver-600">
-                        <UserPlus className="w-5 h-5" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                      {isInGroup && (
+                        <div className="flex items-center gap-2 text-accent-blue">
+                          <Check className="w-5 h-5" />
+                          <span className="text-sm font-medium">In Group</span>
+                        </div>
+                      )}
+                      {!isInGroup && (
+                        <div className="text-silver-600">
+                          <UserPlus className="w-5 h-5" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </ModalContent>
 
         <ModalFooter align="center">

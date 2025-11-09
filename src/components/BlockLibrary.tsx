@@ -320,11 +320,15 @@ export default function BlockLibrary({
                 icon={TrendingUp}
                 title="No workout blocks yet"
                 description="Create your first workout block to build reusable training templates!"
-                action={onCreateBlock ? {
-                  label: "Create Your First Block",
-                  onClick: onCreateBlock,
-                  icon: <Plus className="w-4 h-4" />,
-                } : undefined}
+                action={
+                  onCreateBlock
+                    ? {
+                        label: "Create Your First Block",
+                        onClick: onCreateBlock,
+                        icon: <Plus className="w-4 h-4" />,
+                      }
+                    : undefined
+                }
               />
             ) : (
               <EmptySearch

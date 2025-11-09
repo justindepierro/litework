@@ -178,11 +178,16 @@ export default function SchedulePage() {
 
         {/* Quick Actions for Coaches */}
         {isCoachUser && (
-          <Alert variant="info" icon={<CalendarIcon />} title="Drag and Drop to Reschedule" className="mt-6">
+          <Alert
+            variant="info"
+            icon={<CalendarIcon />}
+            title="Drag and Drop to Reschedule"
+            className="mt-6"
+          >
             <p className="text-sm">
               Click and drag workouts to different dates to reschedule them.
-              Group assignments will prompt for confirmation before moving
-              all athletes.
+              Group assignments will prompt for confirmation before moving all
+              athletes.
             </p>
           </Alert>
         )}

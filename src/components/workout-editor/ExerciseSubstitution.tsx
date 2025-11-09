@@ -6,7 +6,12 @@ import { Search, ArrowRight, Target, Info } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface ExerciseSubstitutionProps {
   currentExercise: WorkoutExercise;
@@ -197,11 +202,7 @@ export default function ExerciseSubstitution({
                   <div className="mb-3">
                     <div className="flex flex-wrap gap-1">
                       {suggestion.muscleGroups.map((muscle, i) => (
-                        <Badge
-                          key={i}
-                          variant="primary"
-                          size="sm"
-                        >
+                        <Badge key={i} variant="primary" size="sm">
                           {muscle}
                         </Badge>
                       ))}

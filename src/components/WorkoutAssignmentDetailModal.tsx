@@ -24,11 +24,7 @@ import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import type {
-  WorkoutAssignment,
-  WorkoutPlan,
-  ExerciseGroup,
-} from "@/types";
+import type { WorkoutAssignment, WorkoutPlan, ExerciseGroup } from "@/types";
 
 interface WorkoutExercise {
   id: string;
@@ -320,33 +316,27 @@ export default function WorkoutAssignmentDetailModal({
           </div>
         ) : error ? (
           <div className="p-8">
-            <ModalHeader
-              title="Error"
-              onClose={onClose}
-            />
+            <ModalHeader title="Error" onClose={onClose} />
             <ModalContent>
               <p className="text-gray-600">{error}</p>
             </ModalContent>
           </div>
         ) : assignment ? (
           <>
-            <ModalHeader
-              title={getWorkoutName(assignment)}
-              onClose={onClose}
-            />
+            <ModalHeader title={getWorkoutName(assignment)} onClose={onClose} />
             <ModalContent>
-            <div className="mb-6">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      statusColor === "green"
-                        ? "bg-green-100 text-green-800"
-                        : statusColor === "red"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {statusText}
-                  </span>
+              <div className="mb-6">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    statusColor === "green"
+                      ? "bg-green-100 text-green-800"
+                      : statusColor === "red"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {statusText}
+                </span>
                 {getWorkoutDescription(assignment) && (
                   <p className="text-gray-600 mt-2">
                     {getWorkoutDescription(assignment)}
@@ -362,196 +352,200 @@ export default function WorkoutAssignmentDetailModal({
                 )}
               </div>
 
-            {/* Assignment Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 text-gray-700">
-                <Calendar className="w-5 h-5 text-gray-500" />
-                <span className="font-medium">Date:</span>
-                <span>
-                  {(() => {
-                    const dateValue = getScheduledDate(assignment);
-                    if (!dateValue) return "No date set";
-                    const date =
-                      typeof dateValue === "string"
-                        ? parseDate(dateValue)
-                        : dateValue;
-                    return date.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    });
-                  })()}
-                </span>
-              </div>
-
-              {getStartTime(assignment) && (
+              {/* Assignment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2 text-gray-700">
-                  <Clock className="w-5 h-5 text-gray-500" />
-                  <span className="font-medium">Time:</span>
+                  <Calendar className="w-5 h-5 text-gray-500" />
+                  <span className="font-medium">Date:</span>
                   <span>
-                    {getStartTime(assignment)}
-                    {getEndTime(assignment) && ` - ${getEndTime(assignment)}`}
+                    {(() => {
+                      const dateValue = getScheduledDate(assignment);
+                      if (!dateValue) return "No date set";
+                      const date =
+                        typeof dateValue === "string"
+                          ? parseDate(dateValue)
+                          : dateValue;
+                      return date.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      });
+                    })()}
                   </span>
                 </div>
+
+                {getStartTime(assignment) && (
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Clock className="w-5 h-5 text-gray-500" />
+                    <span className="font-medium">Time:</span>
+                    <span>
+                      {getStartTime(assignment)}
+                      {getEndTime(assignment) && ` - ${getEndTime(assignment)}`}
+                    </span>
+                  </div>
+                )}
+
+                {getLocation(assignment) && (
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <MapPin className="w-5 h-5 text-gray-500" />
+                    <span className="font-medium">Location:</span>
+                    <span>{getLocation(assignment)}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 text-gray-700">
+                  <User className="w-5 h-5 text-gray-500" />
+                  <span className="font-medium">Assigned by:</span>
+                  <span>{getAssignedBy(assignment)}</span>
+                </div>
+
+                {getWorkoutDuration(assignment) && (
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Clock className="w-5 h-5 text-gray-500" />
+                    <span className="font-medium">Duration:</span>
+                    <span>{getWorkoutDuration(assignment)} min</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Notes */}
+              {getNotes(assignment) && (
+                <Alert variant="info" title="Coach Notes" icon={<FileText />}>
+                  {getNotes(assignment)}
+                </Alert>
               )}
 
-              {getLocation(assignment) && (
-                <div className="flex items-center gap-2 text-gray-700">
-                  <MapPin className="w-5 h-5 text-gray-500" />
-                  <span className="font-medium">Location:</span>
-                  <span>{getLocation(assignment)}</span>
+              {/* Workout Exercises with Groups */}
+              {getExercises(assignment).length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Workout ({getExercises(assignment).length} exercises)
+                  </h3>
+                  <ExerciseGroupDisplay
+                    exercises={getExercises(assignment).map((ex) => ({
+                      id: ex.id,
+                      exerciseId: ex.exercise_id || ex.exerciseId || ex.id,
+                      exerciseName:
+                        ex.exercise_name || ex.exerciseName || "Exercise",
+                      sets: ex.sets,
+                      reps:
+                        typeof ex.reps === "string"
+                          ? parseInt(ex.reps)
+                          : ex.reps,
+                      tempo: ex.tempo || undefined,
+                      weightType: "fixed" as const,
+                      weight: ex.weight || undefined,
+                      percentage:
+                        ex.weight_percentage ||
+                        ex.weightPercentage ||
+                        undefined,
+                      restTime: ex.rest_seconds || ex.restTime || undefined,
+                      notes: ex.notes || undefined,
+                      order: ex.order_index || ex.orderIndex || 0,
+                      groupId: ex.group_id || ex.groupId || undefined,
+                    }))}
+                    groups={getGroups(assignment).map(
+                      (g: {
+                        id: string;
+                        name: string;
+                        type: string;
+                        description?: string | null;
+                        order_index?: number;
+                        orderIndex?: number;
+                        rest_between_rounds?: number | null;
+                        restBetweenRounds?: number | null;
+                        rest_between_exercises?: number | null;
+                        restBetweenExercises?: number | null;
+                        rounds?: number | null;
+                        notes?: string | null;
+                      }) => ({
+                        id: g.id,
+                        name: g.name,
+                        type: g.type as "superset" | "circuit" | "section",
+                        description: g.description || undefined,
+                        order: g.order_index || g.orderIndex || 0,
+                        restBetweenRounds:
+                          g.rest_between_rounds ||
+                          g.restBetweenRounds ||
+                          undefined,
+                        restBetweenExercises:
+                          g.rest_between_exercises ||
+                          g.restBetweenExercises ||
+                          undefined,
+                        rounds: g.rounds || undefined,
+                        notes: g.notes || undefined,
+                      })
+                    )}
+                    showProgress={false}
+                  />
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-gray-700">
-                <User className="w-5 h-5 text-gray-500" />
-                <span className="font-medium">Assigned by:</span>
-                <span>{getAssignedBy(assignment)}</span>
-              </div>
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-6 border-t">
+                {/* Athlete Actions */}
+                {!isCoach && (
+                  <>
+                    {statusText === "Assigned" && (
+                      <Button
+                        onClick={() => {
+                          onStartWorkout?.(assignmentId);
+                          onClose();
+                        }}
+                        variant="primary"
+                        leftIcon={<Play className="w-5 h-5" />}
+                        className="flex-1"
+                      >
+                        Start Workout
+                      </Button>
+                    )}
+                    {statusText === "Assigned" && (
+                      <Button
+                        onClick={handleMarkComplete}
+                        variant="secondary"
+                        leftIcon={<CheckCircle className="w-5 h-5" />}
+                        className="flex-1"
+                      >
+                        Mark Complete
+                      </Button>
+                    )}
+                    {statusText === "Completed" && (
+                      <div className="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                        <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
+                        <p className="text-green-800 font-medium">
+                          Workout Completed!
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
 
-              {getWorkoutDuration(assignment) && (
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Clock className="w-5 h-5 text-gray-500" />
-                  <span className="font-medium">Duration:</span>
-                  <span>{getWorkoutDuration(assignment)} min</span>
-                </div>
-              )}
-            </div>
-
-            {/* Notes */}
-            {getNotes(assignment) && (
-              <Alert variant="info" title="Coach Notes" icon={<FileText />}>
-                {getNotes(assignment)}
-              </Alert>
-            )}
-
-            {/* Workout Exercises with Groups */}
-            {getExercises(assignment).length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  Workout ({getExercises(assignment).length} exercises)
-                </h3>
-                <ExerciseGroupDisplay
-                  exercises={getExercises(assignment).map((ex) => ({
-                    id: ex.id,
-                    exerciseId: ex.exercise_id || ex.exerciseId || ex.id,
-                    exerciseName:
-                      ex.exercise_name || ex.exerciseName || "Exercise",
-                    sets: ex.sets,
-                    reps:
-                      typeof ex.reps === "string" ? parseInt(ex.reps) : ex.reps,
-                    tempo: ex.tempo || undefined,
-                    weightType: "fixed" as const,
-                    weight: ex.weight || undefined,
-                    percentage:
-                      ex.weight_percentage || ex.weightPercentage || undefined,
-                    restTime: ex.rest_seconds || ex.restTime || undefined,
-                    notes: ex.notes || undefined,
-                    order: ex.order_index || ex.orderIndex || 0,
-                    groupId: ex.group_id || ex.groupId || undefined,
-                  }))}
-                  groups={getGroups(assignment).map(
-                    (g: {
-                      id: string;
-                      name: string;
-                      type: string;
-                      description?: string | null;
-                      order_index?: number;
-                      orderIndex?: number;
-                      rest_between_rounds?: number | null;
-                      restBetweenRounds?: number | null;
-                      rest_between_exercises?: number | null;
-                      restBetweenExercises?: number | null;
-                      rounds?: number | null;
-                      notes?: string | null;
-                    }) => ({
-                      id: g.id,
-                      name: g.name,
-                      type: g.type as "superset" | "circuit" | "section",
-                      description: g.description || undefined,
-                      order: g.order_index || g.orderIndex || 0,
-                      restBetweenRounds:
-                        g.rest_between_rounds ||
-                        g.restBetweenRounds ||
-                        undefined,
-                      restBetweenExercises:
-                        g.rest_between_exercises ||
-                        g.restBetweenExercises ||
-                        undefined,
-                      rounds: g.rounds || undefined,
-                      notes: g.notes || undefined,
-                    })
-                  )}
-                  showProgress={false}
-                />
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-6 border-t">
-              {/* Athlete Actions */}
-              {!isCoach && (
-                <>
-                  {statusText === "Assigned" && (
+                {/* Coach Actions */}
+                {isCoach && (
+                  <>
                     <Button
                       onClick={() => {
-                        onStartWorkout?.(assignmentId);
+                        onEdit?.(assignmentId);
                         onClose();
                       }}
-                      variant="primary"
-                      leftIcon={<Play className="w-5 h-5" />}
-                      className="flex-1"
-                    >
-                      Start Workout
-                    </Button>
-                  )}
-                  {statusText === "Assigned" && (
-                    <Button
-                      onClick={handleMarkComplete}
                       variant="secondary"
-                      leftIcon={<CheckCircle className="w-5 h-5" />}
-                      className="flex-1"
+                      leftIcon={<Edit className="w-4 h-4" />}
                     >
-                      Mark Complete
+                      Edit Assignment
                     </Button>
-                  )}
-                  {statusText === "Completed" && (
-                    <div className="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
-                      <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
-                      <p className="text-green-800 font-medium">
-                        Workout Completed!
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {/* Coach Actions */}
-              {isCoach && (
-                <>
-                  <Button
-                    onClick={() => {
-                      onEdit?.(assignmentId);
-                      onClose();
-                    }}
-                    variant="secondary"
-                    leftIcon={<Edit className="w-4 h-4" />}
-                  >
-                    Edit Assignment
-                  </Button>
-                  <Button
-                    onClick={handleDelete}
-                    variant="secondary"
-                    leftIcon={<Trash2 className="w-4 h-4" />}
-                    className="text-red-600 hover:bg-red-50 border-red-300"
-                  >
-                    Delete
-                  </Button>
-                </>
-              )}
-            </div>
+                    <Button
+                      onClick={handleDelete}
+                      variant="secondary"
+                      leftIcon={<Trash2 className="w-4 h-4" />}
+                      className="text-red-600 hover:bg-red-50 border-red-300"
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
+              </div>
             </ModalContent>
             <ModalFooter align="between">
               <Button onClick={onClose} variant="secondary">

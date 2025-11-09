@@ -155,10 +155,10 @@ export class AuthTimer {
 
   error(message: string, error: unknown) {
     const duration = Date.now() - this.startTime;
-    
+
     // Serialize error for logging (handle non-serializable objects)
     let errorData = error;
-    if (error && typeof error === 'object') {
+    if (error && typeof error === "object") {
       try {
         // Test if object is serializable
         JSON.stringify(error);
@@ -167,11 +167,11 @@ export class AuthTimer {
         errorData = {
           message: (error as Error).message || String(error),
           name: (error as Error).name,
-          stack: (error as Error).stack?.split('\n').slice(0, 3).join('\n'), // First 3 lines only
+          stack: (error as Error).stack?.split("\n").slice(0, 3).join("\n"), // First 3 lines only
         };
       }
     }
-    
+
     logAuthEvent(
       this.correlationId,
       "error",

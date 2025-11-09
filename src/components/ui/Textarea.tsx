@@ -67,10 +67,12 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     ref
   ) => {
     const internalRef = useRef<HTMLTextAreaElement>(null);
-    const textareaRef = (ref as React.RefObject<HTMLTextAreaElement>) || internalRef;
-    
+    const textareaRef =
+      (ref as React.RefObject<HTMLTextAreaElement>) || internalRef;
+
     // Calculate character count directly from value (no need for state)
-    const charCount = showCharCount && value !== undefined ? String(value).length : 0;
+    const charCount =
+      showCharCount && value !== undefined ? String(value).length : 0;
 
     // Size styles
     const sizeStyles = {
@@ -169,7 +171,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {(error || success) && (
             <div
               className={`absolute right-3 top-3 ${
-                error ? "text-[var(--color-error)]" : "text-[var(--color-success)]"
+                error
+                  ? "text-[var(--color-error)]"
+                  : "text-[var(--color-success)]"
               }`}
             >
               {error ? (

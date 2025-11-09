@@ -263,10 +263,14 @@ function SignUpForm() {
               <p className="text-gray-600 mb-6">
                 We&apos;ve sent a confirmation link to <strong>{email}</strong>
               </p>
-              <Alert variant="info" title="Please confirm your email address" className="mb-6">
+              <Alert
+                variant="info"
+                title="Please confirm your email address"
+                className="mb-6"
+              >
                 <p className="text-sm">
-                  Click the link we sent you. Once confirmed, you&apos;ll be able to
-                  log in and start using LiteWork.
+                  Click the link we sent you. Once confirmed, you&apos;ll be
+                  able to log in and start using LiteWork.
                 </p>
               </Alert>
               <div className="space-y-2 text-sm text-gray-600">

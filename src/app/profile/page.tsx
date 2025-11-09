@@ -513,7 +513,7 @@ export default function ProfilePage() {
                   fullWidth
                 />
 
-                                <div className="border-t border-gray-200 pt-6">
+                <div className="border-t border-gray-200 pt-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <Phone className="w-5 h-5" />
                     Emergency Contact

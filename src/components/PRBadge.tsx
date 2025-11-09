@@ -14,7 +14,12 @@ import {
   getPRBadgeColor,
   formatPRMessage,
 } from "@/lib/pr-detection";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface PRBadgeProps {
   comparison: PRComparison;
@@ -119,8 +124,8 @@ export function PRCelebrationModal({
 
               {previousBest && (
                 <div className="text-xs text-gray-500 pt-4 border-t border-gray-200">
-                  Previous Best: {previousBest.weight}lbs × {previousBest.reps} (
-                  Est. 1RM: {previousBest.estimatedOneRM}lbs)
+                  Previous Best: {previousBest.weight}lbs × {previousBest.reps}{" "}
+                  ( Est. 1RM: {previousBest.estimatedOneRM}lbs)
                 </div>
               )}
             </div>

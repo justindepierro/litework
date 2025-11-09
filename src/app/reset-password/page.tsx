@@ -42,15 +42,18 @@ export default function ResetPasswordPage() {
             Reset Password
           </h2>
           <p className="mt-2 text-body-secondary text-base sm:text-sm">
-            Enter your email address and we&apos;ll send you instructions to reset
-            your password
+            Enter your email address and we&apos;ll send you instructions to
+            reset your password
           </p>
         </div>
 
         {success ? (
           <Alert variant="success" title="Check your email">
             <div className="space-y-4">
-              <p>We&apos;ve sent password reset instructions to your email address.</p>
+              <p>
+                We&apos;ve sent password reset instructions to your email
+                address.
+              </p>
               <div className="pt-4 border-t border-success-light">
                 <p className="mb-3">
                   <strong>Next steps:</strong>

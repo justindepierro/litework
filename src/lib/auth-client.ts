@@ -661,7 +661,11 @@ export function onAuthChange(callback: (user: User | null) => void) {
         // 15 second timeout to account for potential cold starts and network delays
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
-            reject(new Error("Profile fetch timeout - database query exceeded 15 seconds. This may indicate network issues or database cold start."));
+            reject(
+              new Error(
+                "Profile fetch timeout - database query exceeded 15 seconds. This may indicate network issues or database cold start."
+              )
+            );
           }, 15000)
         );
 

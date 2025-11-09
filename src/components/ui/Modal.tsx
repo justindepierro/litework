@@ -292,7 +292,9 @@ export const Modal: React.FC<ModalProps> = ({
         headerClassName={headerClassName}
       />
       <ModalContent className={contentClassName}>{children}</ModalContent>
-      {footer && <ModalFooter className={footerClassName}>{footer}</ModalFooter>}
+      {footer && (
+        <ModalFooter className={footerClassName}>{footer}</ModalFooter>
+      )}
     </ModalBackdrop>
   );
 };

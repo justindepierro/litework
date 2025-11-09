@@ -12,7 +12,11 @@ import {
   X,
 } from "lucide-react";
 import { Badge, BadgeVariant } from "@/components/ui/Badge";
-import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+} from "@/components/ui/Modal";
 
 interface BulkOperationHistoryProps {
   isOpen: boolean;
@@ -210,7 +214,10 @@ export default function BulkOperationHistory({
                           <h3 className="font-medium text-gray-900">
                             {getOperationTitle(operation.type)}
                           </h3>
-                          <Badge variant={getStatusColor(operation.status)} size="sm">
+                          <Badge
+                            variant={getStatusColor(operation.status)}
+                            size="sm"
+                          >
                             {operation.status.replace("_", " ")}
                           </Badge>
                         </div>

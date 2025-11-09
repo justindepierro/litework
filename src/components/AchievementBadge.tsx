@@ -22,7 +22,12 @@ import {
   Dumbbell,
   BarChart3,
 } from "lucide-react";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 // Map icon names to Lucide components
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {

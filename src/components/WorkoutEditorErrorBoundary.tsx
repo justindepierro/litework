@@ -126,10 +126,12 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
 
               {/* Recovery Status */}
               {savedWorkout && (
-                <Alert variant="success" icon={<Save />} title="Your Work is Safe">
-                  <p className="text-sm mb-1">
-                    Your work has been saved!
-                  </p>
+                <Alert
+                  variant="success"
+                  icon={<Save />}
+                  title="Your Work is Safe"
+                >
+                  <p className="text-sm mb-1">Your work has been saved!</p>
                   <p className="text-sm">
                     We automatically saved your workout draft. You can recover
                     it or start fresh.
@@ -138,18 +140,19 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
               )}
 
               {/* Technical Details (collapsed by default in production) */}
-              {process.env.NODE_ENV === "development" && this.state.errorInfo && (
-                <details className="mt-6">
-                  <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
-                    Technical Details (Development Only)
-                  </summary>
-                  <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-4">
-                    <pre className="text-xs text-gray-700 overflow-auto max-h-48">
-                      {this.state.errorInfo.componentStack}
-                    </pre>
-                  </div>
-                </details>
-              )}
+              {process.env.NODE_ENV === "development" &&
+                this.state.errorInfo && (
+                  <details className="mt-6">
+                    <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
+                      Technical Details (Development Only)
+                    </summary>
+                    <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-4">
+                      <pre className="text-xs text-gray-700 overflow-auto max-h-48">
+                        {this.state.errorInfo.componentStack}
+                      </pre>
+                    </div>
+                  </details>
+                )}
             </ModalContent>
             <ModalFooter align="between">
               {savedWorkout && this.props.onRecover && (

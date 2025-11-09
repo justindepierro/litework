@@ -14,7 +14,12 @@ import {
 import { WorkoutBlock, WorkoutExercise } from "@/types";
 import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface BlockEditorProps {
   isOpen: boolean;
@@ -179,7 +184,11 @@ export default function BlockEditor({
         />
 
         <ModalContent>
-          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+          {error && (
+            <Alert variant="error" className="mb-4">
+              {error}
+            </Alert>
+          )}
 
           <div className="space-y-6">
             {/* Basic Info */}

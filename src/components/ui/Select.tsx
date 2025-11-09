@@ -132,7 +132,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           {(error || success) && (
             <div
               className={`absolute right-10 top-1/2 -translate-y-1/2 ${
-                error ? "text-[var(--color-error)]" : "text-[var(--color-success)]"
+                error
+                  ? "text-[var(--color-error)]"
+                  : "text-[var(--color-success)]"
               }`}
             >
               {error ? (

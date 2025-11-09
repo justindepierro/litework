@@ -133,9 +133,7 @@ export default function Home() {
                 entire team.
               </p>
               <div className="mt-3 text-center">
-                <Badge variant="primary">
-                  Coach Tools
-                </Badge>
+                <Badge variant="primary">Coach Tools</Badge>
               </div>
             </Card>
           </div>

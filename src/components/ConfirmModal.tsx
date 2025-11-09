@@ -1,7 +1,12 @@
 "use client";
 
 import { AlertTriangle, Info } from "lucide-react";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -28,16 +33,12 @@ export default function ConfirmModal({
     switch (confirmVariant) {
       case "danger":
         return {
-          icon: (
-            <AlertTriangle className="w-6 h-6 text-red-600" />
-          ),
+          icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
           buttonColor: "bg-red-600 hover:bg-red-700",
         };
       case "warning":
         return {
-          icon: (
-            <AlertTriangle className="w-6 h-6 text-yellow-600" />
-          ),
+          icon: <AlertTriangle className="w-6 h-6 text-yellow-600" />,
           buttonColor: "bg-yellow-600 hover:bg-yellow-700",
         };
       case "primary":
@@ -53,17 +54,10 @@ export default function ConfirmModal({
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onCancel}>
       <div className="bg-white w-full sm:max-w-lg sm:rounded-2xl shadow-2xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden">
-        <ModalHeader
-          title={title}
-          subtitle=""
-          onClose={onCancel}
-          icon={icon}
-        />
+        <ModalHeader title={title} subtitle="" onClose={onCancel} icon={icon} />
 
         <ModalContent>
-          <p className="text-gray-700 leading-relaxed text-base">
-            {message}
-          </p>
+          <p className="text-gray-700 leading-relaxed text-base">{message}</p>
         </ModalContent>
 
         <ModalFooter align="between">

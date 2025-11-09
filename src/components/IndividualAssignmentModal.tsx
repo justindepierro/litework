@@ -9,7 +9,12 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Alert } from "@/components/ui/Alert";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -347,7 +352,10 @@ export default function IndividualAssignmentModal({
 
               {/* Selected Athletes Summary */}
               {selectedAthletes.length > 0 && (
-                <Alert variant="info" title={`Selected Athletes (${selectedAthletes.length})`}>
+                <Alert
+                  variant="info"
+                  title={`Selected Athletes (${selectedAthletes.length})`}
+                >
                   <div className="flex flex-wrap gap-2">
                     {selectedAthletes.map((athlete) => (
                       <span

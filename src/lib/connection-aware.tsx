@@ -72,7 +72,8 @@ export function getNetworkInformation(): NetworkInformation {
   }
 
   const nav = navigator as NavigatorWithConnection;
-  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+  const connection =
+    nav.connection || nav.mozConnection || nav.webkitConnection;
 
   if (!connection) {
     return { type: "unknown", quality: "high" };
@@ -118,7 +119,8 @@ export function useNetworkQuality() {
 
   useEffect(() => {
     const nav = navigator as NavigatorWithConnection;
-    const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+    const connection =
+      nav.connection || nav.mozConnection || nav.webkitConnection;
 
     if (!connection) return;
 

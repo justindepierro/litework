@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  completePasswordReset,
-  getSession,
-} from "@/lib/auth-client";
+import { completePasswordReset, getSession } from "@/lib/auth-client";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 

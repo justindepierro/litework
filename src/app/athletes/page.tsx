@@ -818,7 +818,9 @@ export default function AthletesPage() {
   const filteredAthletes = useMemo(() => {
     return athletes.filter((athlete) => {
       const matchesSearch =
-        athlete.fullName?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        athlete.fullName
+          ?.toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase()) ||
         athlete.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" ||
@@ -1537,7 +1539,9 @@ export default function AthletesPage() {
                     label="Email Address *"
                     type="email"
                     value={editEmailForm.email}
-                    onChange={(e) => setEditEmailForm({ email: e.target.value })}
+                    onChange={(e) =>
+                      setEditEmailForm({ email: e.target.value })
+                    }
                     placeholder="athlete@email.com"
                     autoFocus
                     fullWidth
@@ -1928,28 +1932,30 @@ export default function AthletesPage() {
                   </h3>
                   {selectedAthlete.personalRecords?.length ? (
                     <div className="space-y-3">
-                      {selectedAthlete.personalRecords.map((kpi: AthleteKPI) => (
-                        <div
-                          key={kpi.id}
-                          className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                        >
-                          <div className="flex items-center gap-3">
-                            <Target className="w-5 h-5 text-blue-600" />
-                            <div>
-                              <div className="font-medium text-gray-900">
-                                {kpi.exerciseName}
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {kpi.currentPR} lbs •{" "}
-                                {kpi.dateAchieved.toLocaleDateString()}
+                      {selectedAthlete.personalRecords.map(
+                        (kpi: AthleteKPI) => (
+                          <div
+                            key={kpi.id}
+                            className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                          >
+                            <div className="flex items-center gap-3">
+                              <Target className="w-5 h-5 text-blue-600" />
+                              <div>
+                                <div className="font-medium text-gray-900">
+                                  {kpi.exerciseName}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {kpi.currentPR} lbs •{" "}
+                                  {kpi.dateAchieved.toLocaleDateString()}
+                                </div>
                               </div>
                             </div>
+                            <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
-                          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
@@ -2063,10 +2069,13 @@ export default function AthletesPage() {
 
       {/* Add Athlete to Group Modal */}
       {showAddToGroupModal && selectedAthlete && (
-        <ModalBackdrop isOpen={showAddToGroupModal} onClose={() => {
-          setShowAddToGroupModal(false);
-          setSelectedAthlete(null);
-        }}>
+        <ModalBackdrop
+          isOpen={showAddToGroupModal}
+          onClose={() => {
+            setShowAddToGroupModal(false);
+            setSelectedAthlete(null);
+          }}
+        >
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
             <ModalHeader
               title={`Add ${selectedAthlete.firstName} to Group`}

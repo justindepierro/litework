@@ -119,9 +119,7 @@ export default function NotificationPreferences() {
 
   if (!preferences) {
     return (
-      <Alert variant="error">
-        Failed to load notification preferences
-      </Alert>
+      <Alert variant="error">Failed to load notification preferences</Alert>
     );
   }
 
@@ -138,13 +136,9 @@ export default function NotificationPreferences() {
       </div>
 
       {/* Success/Error Messages */}
-      {successMessage && (
-        <Alert variant="success">{successMessage}</Alert>
-      )}
+      {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
-      {error && (
-        <Alert variant="error">{error}</Alert>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
 
       {/* Channel Preferences */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">

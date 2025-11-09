@@ -1325,108 +1325,111 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
           onClose={onClose}
         />
         <ModalContent>
-        <div className="space-y-6">
-          {/* Group Type Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Group Type
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                onClick={() => setGroupType("superset")}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  groupType === "superset"
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <Zap className="w-6 h-6 mx-auto mb-2" />
-                <div className="text-sm font-medium">Superset</div>
-                <div className="text-xs text-gray-500 mt-1">2-4 exercises</div>
-              </button>
+          <div className="space-y-6">
+            {/* Group Type Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Group Type
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => setGroupType("superset")}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    groupType === "superset"
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                >
+                  <Zap className="w-6 h-6 mx-auto mb-2" />
+                  <div className="text-sm font-medium">Superset</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    2-4 exercises
+                  </div>
+                </button>
 
-              <button
-                onClick={() => setGroupType("circuit")}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  groupType === "circuit"
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <RotateCcw className="w-6 h-6 mx-auto mb-2" />
-                <div className="text-sm font-medium">Circuit</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Multiple rounds
-                </div>
-              </button>
+                <button
+                  onClick={() => setGroupType("circuit")}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    groupType === "circuit"
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                >
+                  <RotateCcw className="w-6 h-6 mx-auto mb-2" />
+                  <div className="text-sm font-medium">Circuit</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Multiple rounds
+                  </div>
+                </button>
 
-              <button
-                onClick={() => setGroupType("section")}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  groupType === "section"
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <Target className="w-6 h-6 mx-auto mb-2" />
-                <div className="text-sm font-medium">Section</div>
-                <div className="text-xs text-gray-500 mt-1">Workout phase</div>
-              </button>
+                <button
+                  onClick={() => setGroupType("section")}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    groupType === "section"
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                >
+                  <Target className="w-6 h-6 mx-auto mb-2" />
+                  <div className="text-sm font-medium">Section</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Workout phase
+                  </div>
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Rest Between Exercises */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Rest Between Exercises (seconds)
-            </label>
-            <input
-              type="number"
-              value={restBetweenExercises}
-              onChange={(e) =>
-                setRestBetweenExercises(parseInt(e.target.value) || 0)
-              }
-              min="0"
-              step="15"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+            {/* Rest Between Exercises */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rest Between Exercises (seconds)
+              </label>
+              <input
+                type="number"
+                value={restBetweenExercises}
+                onChange={(e) =>
+                  setRestBetweenExercises(parseInt(e.target.value) || 0)
+                }
+                min="0"
+                step="15"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
 
-          {/* Circuit-specific settings */}
-          {groupType === "circuit" && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Number of Rounds
-                </label>
-                <input
-                  type="number"
-                  value={rounds}
-                  onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
-                  min="1"
-                  max="10"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
+            {/* Circuit-specific settings */}
+            {groupType === "circuit" && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Number of Rounds
+                  </label>
+                  <input
+                    type="number"
+                    value={rounds}
+                    onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
+                    min="1"
+                    max="10"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rest Between Rounds (seconds)
-                </label>
-                <input
-                  type="number"
-                  value={restBetweenRounds}
-                  onChange={(e) =>
-                    setRestBetweenRounds(parseInt(e.target.value) || 0)
-                  }
-                  min="0"
-                  step="15"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </>
-          )}
-
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Rest Between Rounds (seconds)
+                  </label>
+                  <input
+                    type="number"
+                    value={restBetweenRounds}
+                    onChange={(e) =>
+                      setRestBetweenRounds(parseInt(e.target.value) || 0)
+                    }
+                    min="0"
+                    step="15"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </>
+            )}
           </div>
         </ModalContent>
         <ModalFooter align="between">

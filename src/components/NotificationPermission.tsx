@@ -225,7 +225,8 @@ export default function NotificationPermission({
       {permission === "default" && (
         <Alert variant="info" icon={<Bell />} title="Enable Push Notifications">
           <p className="text-sm mb-4">
-            Get notified when you have new workouts, messages from your coach, and more.
+            Get notified when you have new workouts, messages from your coach,
+            and more.
           </p>
           <button
             onClick={requestPermission}
@@ -263,7 +264,11 @@ export default function NotificationPermission({
       )}
 
       {permission === "granted" && isSubscribed && (
-        <Alert variant="success" icon={<CheckCircle />} title="Notifications Enabled">
+        <Alert
+          variant="success"
+          icon={<CheckCircle />}
+          title="Notifications Enabled"
+        >
           <p className="text-sm mb-4">
             You&apos;ll receive push notifications for workouts and messages.
           </p>
@@ -280,7 +285,8 @@ export default function NotificationPermission({
       {permission === "denied" && (
         <Alert variant="error" icon={<XCircle />} title="Notifications Blocked">
           <p className="text-sm">
-            You&apos;ve blocked notifications. To enable them, go to your browser settings and allow notifications for this site.
+            You&apos;ve blocked notifications. To enable them, go to your
+            browser settings and allow notifications for this site.
           </p>
         </Alert>
       )}
