@@ -42,6 +42,8 @@ import MessageModal, { MessageForm } from "./components/modals/MessageModal";
 import EditEmailModal from "./components/modals/EditEmailModal";
 import AddToGroupModal from "./components/modals/AddToGroupModal";
 import AthleteCard from "./components/AthleteCard";
+import { useAthleteData } from "./hooks/useAthleteData";
+import { useAthleteFilters } from "./hooks/useAthleteFilters";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -94,8 +96,18 @@ export default function AthletesPage() {
   const { isLoading, user } = useRequireCoach();
   const toast = useToast();
 
-  const [athletes, setAthletes] = useState<EnhancedAthlete[]>(enhancedAthletes);
-  const [groups, setGroups] = useState<AthleteGroup[]>([]);
+  // Use custom hooks for data management
+  const {
+    athletes,
+    groups,
+    workoutPlans,
+    loadAthletes,
+    loadGroups,
+    loadWorkoutPlans,
+    setAthletes,
+    setGroups,
+  } = useAthleteData(user, isLoading);
+
   const [error, setError] = useState<string | null>(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showKPIModal, setShowKPIModal] = useState(false);
@@ -115,9 +127,6 @@ export default function AthletesPage() {
     useState<EnhancedAthlete | null>(null);
   const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
   const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
-
-  // Assignment data
-  const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
 
   // Confirmation modal state
   const [confirmModal, setConfirmModal] = useState<{
@@ -145,121 +154,6 @@ export default function AthletesPage() {
     notifyViaEmail: false,
   });
 
-  // Load groups on mount
-  const loadGroups = async () => {
-    try {
-      const response = (await apiClient.getGroups()) as {
-        groups: AthleteGroup[];
-      };
-      setGroups(response.groups || []);
-    } catch (err) {
-      console.error("Failed to load groups:", err);
-    }
-  };
-
-  // Load athletes and invites
-  const loadAthletes = async () => {
-    try {
-      const response = (await apiClient.getAthletes()) as {
-        success: boolean;
-        data: {
-          athletes: Array<{
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            role: string;
-            createdAt: string;
-          }>;
-          invites: Array<{
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string | null;
-            status: string;
-            createdAt: string;
-            groupIds?: string[];
-          }>;
-        };
-      };
-
-      if (response.success) {
-        // Convert API athletes to EnhancedAthlete format
-        const loadedAthletes: EnhancedAthlete[] = [
-          // Map registered athletes
-          ...response.data.athletes.map((athlete) => ({
-            id: athlete.id,
-            firstName: athlete.firstName,
-            lastName: athlete.lastName,
-            fullName: `${athlete.firstName} ${athlete.lastName}`,
-            email: athlete.email,
-            role: "athlete" as const,
-            groupIds: [],
-            status: "active" as const,
-            profileImage: null,
-            bio: null,
-            injuryStatus: undefined,
-            stats: {
-              totalWorkouts: 0,
-              completedWorkouts: 0,
-              thisMonthWorkouts: 0,
-              totalPRs: 0,
-              recentPRs: 0,
-              lastWorkout: null,
-            },
-            communication: {
-              unreadMessages: 0,
-              lastMessage: null,
-              lastMessageTime: null,
-              notificationsEnabled: true,
-              preferredContact: "app" as const,
-            },
-            personalRecords: [],
-            createdAt: new Date(athlete.createdAt),
-            updatedAt: new Date(athlete.createdAt),
-          })),
-          // Map pending invites (including drafts)
-          ...response.data.invites.map((invite) => ({
-            id: invite.id,
-            firstName: invite.firstName,
-            lastName: invite.lastName,
-            fullName: `${invite.firstName} ${invite.lastName}`,
-            email: invite.email || "",
-            role: "athlete" as const,
-            groupIds: invite.groupIds || [],
-            status: "invited" as const,
-            profileImage: null,
-            bio: null,
-            injuryStatus: undefined,
-            stats: {
-              totalWorkouts: 0,
-              completedWorkouts: 0,
-              thisMonthWorkouts: 0,
-              totalPRs: 0,
-              recentPRs: 0,
-              lastWorkout: null,
-            },
-            communication: {
-              unreadMessages: 0,
-              lastMessage: null,
-              lastMessageTime: null,
-              notificationsEnabled: true,
-              preferredContact: "app" as const,
-            },
-            personalRecords: [],
-            createdAt: new Date(invite.createdAt),
-            updatedAt: new Date(invite.createdAt),
-          })),
-        ];
-
-        setAthletes(loadedAthletes);
-      }
-    } catch (err) {
-      console.error("Failed to load athletes:", err);
-      // Fall back to mock data if API fails
-      setAthletes(enhancedAthletes);
-    }
-  };
 
   // Handle group deletion
   const handleDeleteGroup = async (groupId: string) => {
@@ -310,26 +204,6 @@ export default function AthletesPage() {
 
   // Load groups when component mounts
   useEffect(() => {
-    // Only load data after auth is verified
-    if (!isLoading && user) {
-      loadGroups();
-      loadAthletes();
-      loadWorkoutPlans();
-    }
-  }, [isLoading, user]);
-
-  const loadWorkoutPlans = async () => {
-    try {
-      const response = await fetch("/api/workouts");
-      const data = await response.json();
-
-      if (data.success && data.data) {
-        setWorkoutPlans(data.data.workouts || data.data || []);
-      }
-    } catch (err) {
-      console.error("Failed to load workout plans:", err);
-    }
-  };
 
   const handleAssignWorkout = async (
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
@@ -778,31 +652,13 @@ export default function AthletesPage() {
     return "Unknown";
   };
 
-  // Memoize filtered athletes to prevent recalculation on every render
-  const filteredAthletes = useMemo(() => {
-    return athletes.filter((athlete) => {
-      const matchesSearch =
-        athlete.fullName
-          ?.toLowerCase()
-          .includes(debouncedSearchTerm.toLowerCase()) ||
-        athlete.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" && athlete.status === "active") ||
-        (statusFilter === "invited" && athlete.status === "invited") ||
-        (statusFilter === "injured" && athlete.injuryStatus);
-      return matchesSearch && matchesStatus;
-    });
-  }, [athletes, debouncedSearchTerm, statusFilter]);
+  });
 
-  // Memoize counts to prevent recalculation
-  const athleteCounts = useMemo(
-    () => ({
-      active: athletes.filter((a) => a.status === "active").length,
-      invited: athletes.filter((a) => a.status === "invited").length,
-      injured: athletes.filter((a) => a.injuryStatus).length,
-    }),
-    [athletes]
+  // Use filtering hook
+  const { filteredAthletes, athleteCounts } = useAthleteFilters(
+    athletes,
+    debouncedSearchTerm,
+    statusFilter
   );
 
   // Memoize active groups
