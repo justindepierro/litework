@@ -14,6 +14,7 @@ import {
   getPRBadgeColor,
   formatPRMessage,
 } from "@/lib/pr-detection";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface PRBadgeProps {
   comparison: PRComparison;
@@ -98,67 +99,59 @@ export function PRCelebrationModal({
   const { currentPerformance, previousBest } = comparison;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
-        {/* Confetti effect (CSS animation) */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="confetti" />
-        </div>
+    <ModalBackdrop isOpen={true} onClose={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full animate-scale-in">
+        <ModalHeader
+          title="Personal Record!"
+          subtitle={exerciseName}
+          onClose={onClose}
+          icon={<Trophy className="w-6 h-6 text-yellow-500" />}
+        />
 
-        {/* Trophy icon */}
-        <div className="flex justify-center mb-4">
-          <Trophy className="w-20 h-20 text-yellow-500 animate-bounce" />
-        </div>
-
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">
-          Personal Record!
-        </h2>
-
-        {/* Exercise name */}
-        <p className="text-lg text-center text-gray-600 mb-6">{exerciseName}</p>
-
-        {/* PR details */}
-        <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-gray-900 mb-2">
-              {currentPerformance.weight}lbs × {currentPerformance.reps}
-            </div>
-            <div className="text-sm text-gray-600 mb-4">{message}</div>
-
-            {previousBest && (
-              <div className="text-xs text-gray-500 pt-4 border-t border-gray-200">
-                Previous Best: {previousBest.weight}lbs × {previousBest.reps} (
-                Est. 1RM: {previousBest.estimatedOneRM}lbs)
+        <ModalContent>
+          {/* PR details */}
+          <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-gray-900 mb-2">
+                {currentPerformance.weight}lbs × {currentPerformance.reps}
               </div>
-            )}
-          </div>
-        </div>
+              <div className="text-sm text-gray-600 mb-4">{message}</div>
 
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <div className="text-xs text-gray-600 mb-1">Est. 1RM</div>
-            <div className="text-xl font-bold text-gray-900">
-              {currentPerformance.estimatedOneRM}lbs
+              {previousBest && (
+                <div className="text-xs text-gray-500 pt-4 border-t border-gray-200">
+                  Previous Best: {previousBest.weight}lbs × {previousBest.reps} (
+                  Est. 1RM: {previousBest.estimatedOneRM}lbs)
+                </div>
+              )}
             </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <div className="text-xs text-gray-600 mb-1">Volume</div>
-            <div className="text-xl font-bold text-gray-900">
-              {currentPerformance.volume}lbs
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 rounded-lg p-3 text-center">
+              <div className="text-xs text-gray-600 mb-1">Est. 1RM</div>
+              <div className="text-xl font-bold text-gray-900">
+                {currentPerformance.estimatedOneRM}lbs
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3 text-center">
+              <div className="text-xs text-gray-600 mb-1">Volume</div>
+              <div className="text-xl font-bold text-gray-900">
+                {currentPerformance.volume}lbs
+              </div>
             </div>
           </div>
-        </div>
+        </ModalContent>
 
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Continue Workout
-        </button>
+        <ModalFooter align="center">
+          <button
+            onClick={onClose}
+            className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Continue Workout
+          </button>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

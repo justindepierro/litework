@@ -22,6 +22,7 @@ import {
   Dumbbell,
   BarChart3,
 } from "lucide-react";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 // Map icon names to Lucide components
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -172,39 +173,44 @@ export function AchievementNotification({
   const IconComponent = ICON_MAP[achievement.icon] || Trophy;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center animate-scale-in">
-        {/* Badge */}
-        <div className="flex justify-center mb-6">
-          <div
-            className={`w-32 h-32 ${achievement.color} rounded-full flex items-center justify-center shadow-xl animate-bounce text-white`}
-          >
-            <IconComponent className="w-16 h-16" />
+    <ModalBackdrop isOpen={true} onClose={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full text-center animate-scale-in">
+        <ModalHeader
+          title="Achievement Unlocked!"
+          subtitle=""
+          onClose={onClose}
+          icon={<Trophy className="w-6 h-6 text-yellow-500" />}
+        />
+
+        <ModalContent>
+          {/* Badge */}
+          <div className="flex justify-center mb-6">
+            <div
+              className={`w-32 h-32 ${achievement.color} rounded-full flex items-center justify-center shadow-xl animate-bounce text-white`}
+            >
+              <IconComponent className="w-16 h-16" />
+            </div>
           </div>
-        </div>
 
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-navy-900 mb-2">
-          Achievement Unlocked!
-        </h2>
+          {/* Achievement name and description */}
+          <div>
+            <h3 className="text-xl font-semibold text-navy-800 mb-2">
+              {achievement.name}
+            </h3>
+            <p className="text-silver-700">{achievement.description}</p>
+          </div>
+        </ModalContent>
 
-        {/* Achievement name and description */}
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold text-navy-800 mb-2">
-            {achievement.name}
-          </h3>
-          <p className="text-silver-700">{achievement.description}</p>
-        </div>
-
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="w-full py-3 bg-accent-blue text-white rounded-xl font-semibold hover:bg-accent-blue/90 transition-colors"
-        >
-          Continue
-        </button>
+        <ModalFooter align="center">
+          <button
+            onClick={onClose}
+            className="w-full py-3 bg-accent-blue text-white rounded-xl font-semibold hover:bg-accent-blue/90 transition-colors"
+          >
+            Continue
+          </button>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
 

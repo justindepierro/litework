@@ -3,15 +3,16 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  X,
   RefreshCw,
   Users,
   MessageCircle,
   Send,
   Calendar,
   UserCheck,
+  X,
 } from "lucide-react";
 import { Badge, BadgeVariant } from "@/components/ui/Badge";
+import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
 
 interface BulkOperationHistoryProps {
   isOpen: boolean;
@@ -150,40 +151,33 @@ export default function BulkOperationHistory({
     return `${seconds}s`;
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Bulk Operations History
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Recent bulk operations and their status
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+        <ModalHeader
+          title="Bulk Operations History"
+          subtitle="Recent bulk operations and their status"
+          onClose={onClose}
+          icon={<Users className="w-6 h-6 text-primary" />}
+        />
+
+        <ModalContent>
+          {/* Refresh button */}
+          <div className="flex justify-end mb-4">
             <button
               onClick={fetchOperationHistory}
               disabled={loading}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
             >
               <RefreshCw
                 className={`w-5 h-5 text-gray-500 ${loading ? "animate-spin" : ""}`}
               />
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-500" />
+              <span className="text-sm text-gray-600">Refresh</span>
             </button>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           {loading ? (
             <div className="text-center py-8">
               <RefreshCw className="w-8 h-8 text-gray-400 mx-auto mb-4 animate-spin" />
@@ -291,8 +285,8 @@ export default function BulkOperationHistory({
               ))}
             </div>
           )}
-        </div>
+        </ModalContent>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
