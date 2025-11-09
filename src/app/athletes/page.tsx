@@ -51,6 +51,7 @@ import { Input, Select, Textarea } from "@/components/ui/Input";
 import InviteAthleteModal, {
   InviteForm,
 } from "./components/modals/InviteAthleteModal";
+import KPIModal, { KPIForm } from "./components/modals/KPIModal";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -70,12 +71,6 @@ const AthleteDetailModal = lazy(
 const IndividualAssignmentModal = lazy(
   () => import("@/components/IndividualAssignmentModal")
 );
-
-interface KPIForm {
-  kpiName: string;
-  value: string;
-  dateSet: string;
-}
 
 interface MessageForm {
   recipientId: string;
@@ -162,12 +157,6 @@ export default function AthletesPage() {
 
   // Debounce search term to prevent excessive filtering during typing
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
-  const [kpiForm, setKPIForm] = useState<KPIForm>({
-    kpiName: "",
-    value: "",
-    dateSet: new Date().toISOString().split("T")[0],
-  });
 
   const [messageForm, setMessageForm] = useState<MessageForm>({
     recipientId: "",
@@ -628,7 +617,7 @@ export default function AthletesPage() {
     setShowAnalyticsModal(true);
   };
 
-  const handleAddKPI = async () => {
+  const handleAddKPI = async (kpiForm: KPIForm) => {
     if (!selectedAthlete || !kpiForm.kpiName || !kpiForm.value) return;
 
     const newKPI: AthleteKPI = {
@@ -657,11 +646,6 @@ export default function AthletesPage() {
     setSelectedAthlete({
       ...selectedAthlete,
       personalRecords: [...(selectedAthlete.personalRecords || []), newKPI],
-    });
-    setKPIForm({
-      kpiName: "",
-      value: "",
-      dateSet: new Date().toISOString().split("T")[0],
     });
   };
 
@@ -1708,119 +1692,13 @@ export default function AthletesPage() {
         )}
 
         {/* KPI Management Modal */}
-        {showKPIModal && selectedAthlete && (
-          <ModalBackdrop
+        {selectedAthlete && (
+          <KPIModal
             isOpen={showKPIModal}
             onClose={() => setShowKPIModal(false)}
-          >
-            <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <ModalHeader
-                title={`Manage Personal Records - ${selectedAthlete.fullName}`}
-                icon={<Trophy className="w-6 h-6" />}
-                onClose={() => setShowKPIModal(false)}
-              />
-              <ModalContent>
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">
-                    Add New Personal Record
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Exercise Name
-                      </label>
-                      <input
-                        type="text"
-                        value={kpiForm.kpiName}
-                        onChange={(e) =>
-                          setKPIForm({ ...kpiForm, kpiName: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="e.g., Bench Press"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Weight (lbs)
-                      </label>
-                      <input
-                        type="number"
-                        value={kpiForm.value}
-                        onChange={(e) =>
-                          setKPIForm({ ...kpiForm, value: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="225"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Date Achieved
-                      </label>
-                      <input
-                        type="date"
-                        value={kpiForm.dateSet}
-                        onChange={(e) =>
-                          setKPIForm({ ...kpiForm, dateSet: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <Button
-                        onClick={handleAddKPI}
-                        variant="primary"
-                        fullWidth
-                        disabled={!kpiForm.kpiName || !kpiForm.value}
-                        leftIcon={<Plus className="w-4 h-4" />}
-                      >
-                        Add PR
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">
-                    Current Personal Records (
-                    {selectedAthlete.personalRecords?.length || 0})
-                  </h3>
-                  {selectedAthlete.personalRecords?.length ? (
-                    <div className="space-y-3">
-                      {selectedAthlete.personalRecords.map(
-                        (kpi: AthleteKPI) => (
-                          <div
-                            key={kpi.id}
-                            className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                          >
-                            <div className="flex items-center gap-3">
-                              <Target className="w-5 h-5 text-blue-600" />
-                              <div>
-                                <div className="font-medium text-gray-900">
-                                  {kpi.exerciseName}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  {kpi.currentPR} lbs •{" "}
-                                  {kpi.dateAchieved.toLocaleDateString()}
-                                </div>
-                              </div>
-                            </div>
-                            <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No personal records yet. Add some PRs to get started!
-                    </div>
-                  )}
-                </div>
-              </ModalContent>
-            </div>
-          </ModalBackdrop>
+            athlete={selectedAthlete}
+            onAddKPI={handleAddKPI}
+          />
         )}
       </div>
 
