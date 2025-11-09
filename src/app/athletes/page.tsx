@@ -1,39 +1,26 @@
 "use client";
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
-import { useState, useEffect, lazy, useMemo, Suspense } from "react";
+import { useState, useEffect, lazy, useMemo, useCallback, Suspense } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Button } from "@/components/ui/Button";
 import {
   User,
-  Trophy,
   Plus,
   BarChart3,
-  Zap,
-  X,
-  Target,
   Trash2,
   MessageCircle,
-  Send,
   AlertCircle,
   CheckCircle,
   Clock,
-  RefreshCw,
   Users,
   Search,
   MoreVertical,
-  MessageSquare,
-  Dumbbell,
   History,
   Edit3,
   Archive,
 } from "lucide-react";
-import {
-  ModalBackdrop,
-  ModalHeader,
-  ModalContent,
-  ModalFooter,
-} from "@/components/ui/Modal";
+import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
 import {
   User as UserType,
@@ -46,8 +33,7 @@ import { apiClient } from "@/lib/api-client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
-import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
-import { Input, Select, Textarea } from "@/components/ui/Input";
+import { EmptySearch } from "@/components/ui/EmptyState";
 import InviteAthleteModal, {
   InviteForm,
 } from "./components/modals/InviteAthleteModal";
@@ -55,6 +41,7 @@ import KPIModal, { KPIForm } from "./components/modals/KPIModal";
 import MessageModal, { MessageForm } from "./components/modals/MessageModal";
 import EditEmailModal from "./components/modals/EditEmailModal";
 import AddToGroupModal from "./components/modals/AddToGroupModal";
+import AthleteCard from "./components/AthleteCard";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -824,6 +811,39 @@ export default function AthletesPage() {
     [groups]
   );
 
+  // Memoize athlete card callbacks for performance
+  const handleCardClick = useCallback((athlete: EnhancedAthlete) => {
+    setSelectedAthlete(athlete);
+    setShowDetailModal(true);
+  }, []);
+
+  const handleMessageClick = useCallback((athlete: EnhancedAthlete) => {
+    handleMessageAthlete(athlete);
+  }, []);
+
+  const handleAssignWorkoutClick = useCallback((athlete: EnhancedAthlete) => {
+    setSelectedAthlete(athlete);
+    setShowIndividualAssignment(true);
+  }, []);
+
+  const handleManageKPIsClick = useCallback((athlete: EnhancedAthlete) => {
+    handleKPIManagement(athlete);
+  }, []);
+
+  const handleViewAnalyticsClick = useCallback((athlete: EnhancedAthlete) => {
+    handleAnalytics(athlete);
+  }, []);
+
+  const handleAddToGroupClick = useCallback((athlete: EnhancedAthlete) => {
+    setSelectedAthlete(athlete);
+    setShowAddToGroupModal(true);
+  }, []);
+
+  const handleEditEmailClick = useCallback((athlete: EnhancedAthlete) => {
+    setSelectedAthlete(athlete);
+    setShowEditEmailModal(true);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
@@ -1098,375 +1118,22 @@ export default function AthletesPage() {
 
           {filteredAthletes.length > 0 &&
             filteredAthletes.map((athlete) => (
-              <div
+              <AthleteCard
                 key={athlete.id}
-                onClick={() => {
-                  setSelectedAthlete(athlete);
-                  setShowDetailModal(true);
-                }}
-                className="bg-white rounded-xl shadow-sm border border-silver-300 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer"
-              >
-                {/* Mobile-Optimized Card Header */}
-                <div className="p-4 sm:p-6 pb-3 sm:pb-4">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="relative shrink-0">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg">
-                          {(athlete.fullName || "")
-                            .split(" ")
-                            .map((n: string) => n[0])
-                            .join("")
-                            .toUpperCase()}
-                        </div>
-                        {/* Communication indicator */}
-                        {athlete.communication?.unreadMessages &&
-                          athlete.communication.unreadMessages > 0 && (
-                            <div className="absolute -top-1 -right-1 bg-accent-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                              {athlete.communication.unreadMessages}
-                            </div>
-                          )}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-navy-900 text-lg">
-                          {athlete.fullName}
-                        </h3>
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          {getStatusIcon(athlete.status, athlete.injuryStatus)}
-                          <span className="text-sm text-silver-700">
-                            {getStatusText(
-                              athlete.status,
-                              athlete.injuryStatus
-                            )}
-                          </span>
-
-                          {/* Group badges - show groups this athlete belongs to */}
-                          {athlete.groupIds &&
-                            athlete.groupIds.length > 0 &&
-                            athlete.groupIds.map((groupId) => {
-                              const group = groups.find(
-                                (g) => g.id === groupId
-                              );
-                              if (!group) return null;
-                              return (
-                                <span
-                                  key={group.id}
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                                  style={{ backgroundColor: group.color }}
-                                  title={group.name}
-                                >
-                                  <Users className="w-3 h-3" />
-                                  {group.name}
-                                </span>
-                              );
-                            })}
-                        </div>
-
-                        {/* Email Address Display */}
-                        {athlete.email && (
-                          <div className="flex items-center gap-1 text-sm text-silver-700 mt-1">
-                            <MessageCircle className="w-3.5 h-3.5" />
-                            <span className="truncate">{athlete.email}</span>
-                          </div>
-                        )}
-                        {!athlete.email && athlete.status === "invited" && (
-                          <div className="flex items-center gap-1 text-sm text-orange-600 mt-1">
-                            <AlertCircle className="w-3.5 h-3.5" />
-                            <span className="text-xs">
-                              No email - Add to send invite
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="relative">
-                      <button className="p-2 hover:bg-silver-200 rounded-lg transition-colors">
-                        <MoreVertical className="h-4 w-4 text-silver-600" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Last Communication */}
-                  {athlete.communication?.lastMessage && (
-                    <div className="mb-4 p-3 bg-info-lighter rounded-lg border border-info-light">
-                      <div className="flex items-start gap-2">
-                        <MessageSquare className="h-4 w-4 text-accent-blue shrink-0 mt-0.5" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-navy-900 line-clamp-2">
-                            {athlete.communication.lastMessage}
-                          </p>
-                          <p className="text-xs text-accent-blue mt-1">
-                            {athlete.communication.lastMessageTime?.toLocaleDateString()}{" "}
-                            at{" "}
-                            {athlete.communication.lastMessageTime?.toLocaleTimeString(
-                              [],
-                              { hour: "2-digit", minute: "2-digit" }
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Bio/Notes */}
-                  {athlete.bio && (
-                    <p className="text-sm text-silver-700 mb-4 line-clamp-2">
-                      {athlete.bio}
-                    </p>
-                  )}
-
-                  {/* Performance Stats - Only for active athletes */}
-                  {athlete.status === "active" && athlete.stats && (
-                    <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-silver-200 rounded-lg">
-                      <div className="text-center">
-                        <div className="flex items-center justify-center gap-1 mb-1">
-                          <Dumbbell className="h-4 w-4 text-accent-blue" />
-                          <span className="font-semibold text-navy-900">
-                            {athlete.stats.thisMonthWorkouts}
-                          </span>
-                        </div>
-                        <p className="text-xs text-silver-700">This Month</p>
-                      </div>
-                      <div className="text-center">
-                        <div className="flex items-center justify-center gap-1 mb-1">
-                          <Trophy className="h-4 w-4 text-yellow-600" />
-                          <span className="font-semibold text-navy-900">
-                            {athlete.stats.recentPRs}
-                          </span>
-                        </div>
-                        <p className="text-xs text-silver-700">Recent PRs</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Personal Records Preview */}
-                  {athlete.personalRecords &&
-                    athlete.personalRecords.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Target className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium text-silver-800">
-                            Top PRs
-                          </span>
-                        </div>
-                        <div className="space-y-1">
-                          {athlete.personalRecords
-                            .slice(0, 2)
-                            .map((pr: AthleteKPI) => (
-                              <div
-                                key={pr.id}
-                                className="flex justify-between items-center text-sm"
-                              >
-                                <span className="text-silver-700">
-                                  {pr.exerciseName}:
-                                </span>
-                                <span className="font-medium text-navy-900">
-                                  {pr.currentPR} lbs
-                                </span>
-                              </div>
-                            ))}
-                          {athlete.personalRecords.length > 2 && (
-                            <p className="text-xs text-silver-600">
-                              +{athlete.personalRecords.length - 2} more
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Email Missing Reminder */}
-                  {!athlete.email && athlete.status === "invited" && (
-                    <div
-                      className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <AlertCircle className="h-4 w-4 text-amber-600" />
-                        <span className="text-sm font-medium text-amber-900">
-                          Email Required to Send Invite
-                        </span>
-                      </div>
-                      <p className="text-xs text-amber-700 mb-2">
-                        Add an email address to send the invitation
-                      </p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          // TODO: Open edit modal to add email
-                          alert(
-                            "Edit athlete feature coming soon - add email via detail modal"
-                          );
-                        }}
-                        className="text-xs text-amber-600 hover:text-amber-800 font-medium hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <Edit3 className="h-3 w-3" />
-                        Add Email Address
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Invite Status for Pending */}
-                  {athlete.status === "invited" && athlete.email && (
-                    <div
-                      className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <Send className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-900">
-                          Invite Pending
-                        </span>
-                      </div>
-                      <p className="text-xs text-blue-700">
-                        Sent {athlete.createdAt.toLocaleDateString()}
-                      </p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log(
-                              "BUTTON CLICKED - Resending invite:",
-                              athlete.id
-                            );
-                            handleResendInvite(athlete.id);
-                          }}
-                          className="text-xs text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <RefreshCw className="h-3 w-3" />
-                          Resend Invite
-                        </button>
-                        <span className="text-xs text-gray-400">•</span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log(
-                              "❌ BUTTON CLICKED - Canceling invite:",
-                              athlete.id
-                            );
-                            handleCancelInvite(athlete.id);
-                          }}
-                          className="text-xs text-red-600 hover:text-red-800 hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <X className="h-3 w-3" />
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Card Actions with Communication Features */}
-                <div className="px-6 pb-6">
-                  {athlete.status === "active" ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        onClick={() => {
-                          setSelectedAthlete(athlete);
-                          setShowIndividualAssignment(true);
-                        }}
-                        variant="primary"
-                        size="sm"
-                        className="col-span-2"
-                        leftIcon={<Dumbbell className="w-4 h-4" />}
-                        title="Assign a workout to this athlete"
-                      >
-                        Assign Workout
-                      </Button>
-                      <Button
-                        onClick={() => handleMessageAthlete(athlete)}
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={<MessageCircle className="w-4 h-4" />}
-                      >
-                        Message
-                      </Button>
-                      <Button
-                        onClick={() => handleKPIManagement(athlete)}
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={<Zap className="w-4 h-4" />}
-                      >
-                        Manage PRs
-                      </Button>
-                      <Button
-                        onClick={() => handleAnalytics(athlete)}
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={<BarChart3 className="w-4 h-4" />}
-                      >
-                        Progress
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedAthlete(athlete);
-                          setShowAddToGroupModal(true);
-                        }}
-                        variant="secondary"
-                        size="sm"
-                        leftIcon={<Users className="w-4 h-4" />}
-                      >
-                        Add to Group
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setSelectedAthlete(athlete);
-                            setShowEditEmailModal(true);
-                          }}
-                          variant="primary"
-                          size="sm"
-                          leftIcon={<Edit3 className="w-4 h-4" />}
-                        >
-                          {athlete.email ? "Edit Email" : "Add Email"}
-                        </Button>
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleResendInvite(athlete.id);
-                          }}
-                          variant="secondary"
-                          size="sm"
-                          disabled={!athlete.email}
-                          leftIcon={<RefreshCw className="w-4 h-4" />}
-                          title={
-                            !athlete.email
-                              ? "Add email first to send invite"
-                              : "Resend invitation email"
-                          }
-                        >
-                          Resend
-                        </Button>
-                      </div>
-                      <Button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleCancelInvite(athlete.id);
-                        }}
-                        variant="secondary"
-                        size="sm"
-                        fullWidth
-                        leftIcon={<X className="w-4 h-4" />}
-                      >
-                        Cancel Invite
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
+                athlete={athlete}
+                groups={groups}
+                onCardClick={handleCardClick}
+                onMessageClick={handleMessageClick}
+                onAssignWorkout={handleAssignWorkoutClick}
+                onManageKPIs={handleManageKPIsClick}
+                onViewAnalytics={handleViewAnalyticsClick}
+                onAddToGroup={handleAddToGroupClick}
+                onEditEmail={handleEditEmailClick}
+                onResendInvite={handleResendInvite}
+                onCancelInvite={handleCancelInvite}
+                getStatusIcon={getStatusIcon}
+                getStatusText={getStatusText}
+              />
             ))}
         </div>
 
