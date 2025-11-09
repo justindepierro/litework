@@ -672,7 +672,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
           // Log timeout or error with details
           const errorMessage = err?.message || String(err);
           timer.error("Profile fetch failed", {
-            error: errorMessage,
+            message: errorMessage,
             userId: session.user.id,
             isTimeout: errorMessage.includes("timeout"),
           });
@@ -683,7 +683,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
 
         if (error || !profile) {
           timer.error("Profile fetch failed", {
-            error,
+            errorDetails: error,
             userId: session.user.id,
           });
           callback(null);
