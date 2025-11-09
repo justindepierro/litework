@@ -34,6 +34,36 @@ interface NetworkInformation {
 }
 
 /**
+ * Extended Navigator interface for Network Information API
+ */
+interface NavigatorWithConnection extends Navigator {
+  connection?: {
+    effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
+    downlink?: number;
+    rtt?: number;
+    saveData?: boolean;
+    addEventListener: (type: string, listener: () => void) => void;
+    removeEventListener: (type: string, listener: () => void) => void;
+  };
+  mozConnection?: {
+    effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
+    downlink?: number;
+    rtt?: number;
+    saveData?: boolean;
+    addEventListener: (type: string, listener: () => void) => void;
+    removeEventListener: (type: string, listener: () => void) => void;
+  };
+  webkitConnection?: {
+    effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
+    downlink?: number;
+    rtt?: number;
+    saveData?: boolean;
+    addEventListener: (type: string, listener: () => void) => void;
+    removeEventListener: (type: string, listener: () => void) => void;
+  };
+}
+
+/**
  * Detect current network connection
  */
 export function getNetworkInformation(): NetworkInformation {
@@ -41,11 +71,8 @@ export function getNetworkInformation(): NetworkInformation {
     return { type: "unknown", quality: "high" };
   }
 
-  // @ts-expect-error - NetworkInformation is not in TypeScript types yet
-  const connection =
-    navigator.connection ||
-    navigator.mozConnection ||
-    navigator.webkitConnection;
+  const nav = navigator as NavigatorWithConnection;
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
 
   if (!connection) {
     return { type: "unknown", quality: "high" };
@@ -90,11 +117,8 @@ export function useNetworkQuality() {
   );
 
   useEffect(() => {
-    // @ts-expect-error - NetworkInformation is not in TypeScript types yet
-    const connection =
-      navigator.connection ||
-      navigator.mozConnection ||
-      navigator.webkitConnection;
+    const nav = navigator as NavigatorWithConnection;
+    const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
 
     if (!connection) return;
 
