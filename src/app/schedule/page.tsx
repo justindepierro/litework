@@ -117,9 +117,10 @@ export default function SchedulePage() {
   };
 
   const handleDateClick = (date: Date) => {
-    // Store selected date for future functionality (e.g., creating assignments)
-    // [REMOVED] console.log("Date clicked:", date);
-    // You can open a modal to create new assignments on this date
+    // Navigate to dashboard to assign workouts for this date
+    // Store date in URL params so dashboard can pre-select it
+    const dateStr = date.toISOString().split("T")[0];
+    window.location.href = `/dashboard?date=${dateStr}&action=assign`;
   };
 
   if (isLoading) {
