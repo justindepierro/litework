@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
-import { X } from "lucide-react";
+import { Users } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface GroupFormModalProps {
   isOpen: boolean;
@@ -210,23 +211,17 @@ export default function GroupFormModal({
   );
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-heading-primary text-xl">
-              {editingGroup ? "Edit Group" : "Create New Group"}
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-silver-600 hover:text-navy-600 p-1"
-              disabled={isLoading}
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+        <ModalHeader
+          title={editingGroup ? "Edit Group" : "Create New Group"}
+          subtitle="Configure group details and member settings"
+          onClose={onClose}
+          icon={<Users className="w-6 h-6 text-primary" />}
+        />
 
-          <form onSubmit={handleSubmit}>
+        <ModalContent>
+          <form onSubmit={handleSubmit} id="group-form">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">
@@ -405,33 +400,34 @@ export default function GroupFormModal({
                 <p className="text-red-700 text-sm">{error}</p>
               </div>
             )}
-
-            <div className="flex gap-3 mt-6 pt-6 border-t">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="secondary"
-                className="flex-1"
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="primary"
-                className="flex-1"
-                disabled={isLoading}
-              >
-                {isLoading
-                  ? "Saving..."
-                  : editingGroup
-                    ? "Update Group"
-                    : "Create Group"}
-              </Button>
-            </div>
           </form>
-        </div>
+        </ModalContent>
+
+        <ModalFooter align="between">
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="secondary"
+            className="flex-1"
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="group-form"
+            variant="primary"
+            className="flex-1"
+            disabled={isLoading}
+          >
+            {isLoading
+              ? "Saving..."
+              : editingGroup
+                ? "Update Group"
+                : "Create Group"}
+          </Button>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

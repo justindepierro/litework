@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { WorkoutModification, AthleteGroup, User, WorkoutPlan } from "@/types";
-import { X, Weight, RotateCcw, Settings } from "lucide-react";
+import { Weight, RotateCcw, Settings, X } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface AthleteModificationModalProps {
   isOpen: boolean;
@@ -91,28 +92,16 @@ export default function AthleteModificationModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-heading-primary text-xl">
-                Individual Modifications
-              </h2>
-              <p className="text-body-secondary text-sm mt-1">
-                Customize{" "}
-                <span className="font-medium">{workoutPlan.name}</span> for{" "}
-                <span className="font-medium">{athlete.fullName}</span> (
-                {group.name})
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-silver-600 hover:text-navy-600 p-1"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+        <ModalHeader
+          title="Individual Modifications"
+          subtitle={`Customize ${workoutPlan.name} for ${athlete.fullName} (${group.name})`}
+          onClose={onClose}
+          icon={<Settings className="w-6 h-6 text-primary" />}
+        />
+
+        <ModalContent>
 
           {/* Add New Modification */}
           <Card variant="default" padding="md" className="mb-6">
@@ -319,18 +308,17 @@ export default function AthleteModificationModal({
               </div>
             )}
           </div>
+        </ModalContent>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 mt-6 pt-6 border-t">
+          <ModalFooter align="between">
             <Button onClick={onClose} variant="secondary" className="flex-1">
               Cancel
             </Button>
             <Button onClick={handleSave} variant="primary" className="flex-1">
               Save Modifications ({modifications.length})
             </Button>
-          </div>
+          </ModalFooter>
         </div>
-      </div>
-    </div>
-  );
-}
+      </ModalBackdrop>
+    );
+  }
