@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { WorkoutExercise } from "@/types";
 import { Clock, Zap, Target, Pause } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
 
 interface CustomRestTimeProps {
   exercise: WorkoutExercise;
@@ -298,11 +299,8 @@ export default function CustomRestTime({
       </div>
 
       {/* Rest Time Tips */}
-      <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-        <h5 className="text-sm font-semibold text-yellow-800 mb-2">
-          💡 Rest Time Guidelines
-        </h5>
-        <ul className="text-xs text-yellow-700 space-y-1">
+      <Alert variant="warning" title="💡 Rest Time Guidelines" className="mt-6">
+        <ul className="text-xs space-y-1">
           <li>
             • <strong>Strength (1-5 reps):</strong> 2-5 minutes
           </li>
@@ -316,7 +314,7 @@ export default function CustomRestTime({
             • <strong>Compound movements:</strong> Longer rest needed
           </li>
         </ul>
-      </div>
+      </Alert>
     </div>
   );
 }

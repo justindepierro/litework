@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Alert } from "@/components/ui/Alert";
 
 interface NotificationPreferencesData {
   user_id: string;
@@ -117,9 +118,9 @@ export default function NotificationPreferences() {
 
   if (!preferences) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-800">Failed to load notification preferences</p>
-      </div>
+      <Alert variant="error">
+        Failed to load notification preferences
+      </Alert>
     );
   }
 
@@ -137,15 +138,11 @@ export default function NotificationPreferences() {
 
       {/* Success/Error Messages */}
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800">{successMessage}</p>
-        </div>
+        <Alert variant="success">{successMessage}</Alert>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">{error}</p>
-        </div>
+        <Alert variant="error">{error}</Alert>
       )}
 
       {/* Channel Preferences */}

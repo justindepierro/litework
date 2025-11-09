@@ -9,6 +9,7 @@ import {
   Clock,
   Database,
 } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -224,15 +225,11 @@ const EnhancedPWAInstall: React.FC = () => {
   // Don't show anything if already installed
   if (isInstalled) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-        <div className="flex items-center gap-2 text-green-800">
-          <CheckCircle className="w-5 h-5" />
-          <span className="font-medium">LiteWork is installed!</span>
-        </div>
-        <p className="text-sm text-green-700 mt-1">
+      <Alert variant="success" icon={<CheckCircle />} title="LiteWork is installed!">
+        <p className="text-sm">
           Enjoy the full offline experience in your gym.
         </p>
-      </div>
+      </Alert>
     );
   }
 
@@ -240,33 +237,25 @@ const EnhancedPWAInstall: React.FC = () => {
     <div className="space-y-4">
       {/* Installation Banner */}
       {showInstallBanner && deferredPrompt && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Download className="w-6 h-6 text-blue-600" />
-              <div>
-                <h3 className="font-medium text-blue-900">Install LiteWork</h3>
-                <p className="text-sm text-blue-700">
-                  Get the full offline experience for your gym workouts
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowInstallBanner(false)}
-                className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
-              >
-                Later
-              </button>
-              <button
-                onClick={handleInstallClick}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Install
-              </button>
-            </div>
+        <Alert variant="info" icon={<Download />} title="Install LiteWork">
+          <p className="text-sm mb-4">
+            Get the full offline experience for your gym workouts
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowInstallBanner(false)}
+              className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
+            >
+              Later
+            </button>
+            <button
+              onClick={handleInstallClick}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Install
+            </button>
           </div>
-        </div>
+        </Alert>
       )}
 
       {/* Connection Status */}

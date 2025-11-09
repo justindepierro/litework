@@ -8,6 +8,7 @@ import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
@@ -177,21 +178,13 @@ export default function SchedulePage() {
 
         {/* Quick Actions for Coaches */}
         {isCoachUser && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-start gap-3">
-              <CalendarIcon className="w-5 h-5 text-blue-600 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-blue-900 mb-1">
-                  Drag and Drop to Reschedule
-                </h3>
-                <p className="text-sm text-blue-800">
-                  Click and drag workouts to different dates to reschedule them.
-                  Group assignments will prompt for confirmation before moving
-                  all athletes.
-                </p>
-              </div>
-            </div>
-          </div>
+          <Alert variant="info" icon={<CalendarIcon />} title="Drag and Drop to Reschedule" className="mt-6">
+            <p className="text-sm">
+              Click and drag workouts to different dates to reschedule them.
+              Group assignments will prompt for confirmation before moving
+              all athletes.
+            </p>
+          </Alert>
         )}
       </div>
 

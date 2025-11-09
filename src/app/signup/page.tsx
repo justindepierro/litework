@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail, validatePassword } from "@/lib/security";
+import { Alert } from "@/components/ui/Alert";
 
 interface InviteData {
   id: string;
@@ -265,13 +266,12 @@ function SignUpForm() {
               <p className="text-gray-600 mb-6">
                 We&apos;ve sent a confirmation link to <strong>{email}</strong>
               </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <p className="text-sm text-blue-800">
-                  <strong>Please confirm your email address</strong> by clicking
-                  the link we sent you. Once confirmed, you&apos;ll be able to
+              <Alert variant="info" title="Please confirm your email address" className="mb-6">
+                <p className="text-sm">
+                  Click the link we sent you. Once confirmed, you&apos;ll be able to
                   log in and start using LiteWork.
                 </p>
-              </div>
+              </Alert>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>• Check your spam folder if you don&apos;t see the email</p>
                 <p>• The link will expire in 24 hours</p>

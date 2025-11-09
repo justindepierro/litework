@@ -5,6 +5,7 @@ import { useAthleteGuard } from "@/hooks/use-auth-guard";
 import Navigation from "@/components/Navigation";
 import { Check } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Alert } from "@/components/ui/Alert";
 
 interface SetRecord {
   id: string;
@@ -145,16 +146,15 @@ export default function WorkoutHistoryPage() {
       <div className="min-h-screen bg-gray-50">
         <Navigation />
         <div className="max-w-4xl mx-auto p-6">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-800 font-medium">Error loading history</p>
-            <p className="text-red-600 text-sm mt-1">{error}</p>
+          <Alert variant="error" title="Error loading history">
+            <p className="text-sm mb-3">{error}</p>
             <button
               onClick={fetchHistory}
               className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
               Try Again
             </button>
-          </div>
+          </Alert>
         </div>
       </div>
     );

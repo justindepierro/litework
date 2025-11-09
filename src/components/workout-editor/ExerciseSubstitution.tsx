@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { WorkoutExercise } from "@/types";
 import { Search, ArrowRight, Target, Info } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
 
 interface ExerciseSubstitutionProps {
   currentExercise: WorkoutExercise;
@@ -150,25 +151,22 @@ export default function ExerciseSubstitution({
           </div>
 
           {/* Current Exercise Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-blue-900 mb-2">
-              Current Exercise
-            </h3>
+          <Alert variant="info" title="Current Exercise" className="mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
               <div>
-                <span className="text-blue-700 font-medium">Sets:</span>{" "}
+                <span className="font-medium">Sets:</span>{" "}
                 {currentExercise.sets}
               </div>
               <div>
-                <span className="text-blue-700 font-medium">Reps:</span>{" "}
+                <span className="font-medium">Reps:</span>{" "}
                 {currentExercise.reps}
               </div>
               <div>
-                <span className="text-blue-700 font-medium">Weight:</span>{" "}
+                <span className="font-medium">Weight:</span>{" "}
                 {currentExercise.weight}lbs
               </div>
             </div>
-          </div>
+          </Alert>
 
           {/* Substitution Options */}
           <div className="space-y-4 max-h-96 overflow-y-auto">

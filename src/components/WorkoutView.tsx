@@ -7,6 +7,7 @@ import { WorkoutSession, WorkoutPlan } from "@/types";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Alert } from "@/components/ui/Alert";
 import {
   Dumbbell,
   Calendar,
@@ -355,16 +356,9 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
 
                   {/* Exercise notes with better mobile formatting */}
                   {exercise.notes && (
-                    <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                      <div className="text-body-small">
-                        <strong className="text-blue-800">
-                          Exercise Notes:
-                        </strong>
-                        <span className="ml-2 text-blue-700">
-                          {exercise.notes}
-                        </span>
-                      </div>
-                    </div>
+                    <Alert variant="info" title="Exercise Notes">
+                      {exercise.notes}
+                    </Alert>
                   )}
 
                   {/* YouTube Demo Video */}
