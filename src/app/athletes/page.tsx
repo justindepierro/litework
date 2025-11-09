@@ -39,7 +39,7 @@ import { apiClient } from "@/lib/api-client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/ToastProvider";
 import { log } from "@/lib/dev-logger";
-import { EmptySearch } from "@/components/ui/EmptyState";
+import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
 import { Input, Select, Textarea } from "@/components/ui/Input";
 
 // Dynamic imports for large components
@@ -2078,20 +2078,20 @@ export default function AthletesPage() {
 
             <div className="p-6">
               {groups.length === 0 ? (
-                <div className="text-center py-8">
-                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-600 mb-4">No groups available</p>
-                  <Button
-                    onClick={() => {
+                <EmptyState
+                  icon={Users}
+                  title="No groups available"
+                  description="Create a group first to organize your athletes."
+                  action={{
+                    label: "Create First Group",
+                    onClick: () => {
                       setShowAddToGroupModal(false);
                       setShowGroupFormModal(true);
-                    }}
-                    variant="primary"
-                    leftIcon={<Plus className="w-4 h-4" />}
-                  >
-                    Create First Group
-                  </Button>
-                </div>
+                    },
+                    icon: <Plus className="w-4 h-4" />,
+                  }}
+                  size="sm"
+                />
               ) : (
                 <div className="space-y-2">
                   {groups.map((group) => {

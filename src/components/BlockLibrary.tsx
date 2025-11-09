@@ -19,6 +19,7 @@ import {
 import { WorkoutBlock } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
 
 interface BlockLibraryProps {
   isOpen: boolean;
@@ -326,23 +327,26 @@ export default function BlockLibrary({
               </button>
             </div>
           ) : filteredBlocks.length === 0 ? (
-            <div className="text-center py-12">
-              <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">No blocks found</p>
-              <p className="text-gray-500 text-sm mt-1">
-                {blocks.length === 0
-                  ? "Create your first workout block to get started!"
-                  : "Try adjusting your search or filters"}
-              </p>
-              {onCreateBlock && blocks.length === 0 && (
-                <button
-                  onClick={onCreateBlock}
-                  className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Create Your First Block
-                </button>
-              )}
-            </div>
+            blocks.length === 0 ? (
+              <EmptyState
+                icon={TrendingUp}
+                title="No workout blocks yet"
+                description="Create your first workout block to build reusable training templates!"
+                action={onCreateBlock ? {
+                  label: "Create Your First Block",
+                  onClick: onCreateBlock,
+                  icon: <Plus className="w-4 h-4" />,
+                } : undefined}
+              />
+            ) : (
+              <EmptySearch
+                searchTerm={searchQuery || selectedCategory || "your filters"}
+                onClearSearch={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("all");
+                }}
+              />
+            )
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredBlocks.map((block) => {

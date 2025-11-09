@@ -11,6 +11,7 @@ import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 interface ManageGroupMembersModalProps {
   isOpen: boolean;
@@ -155,10 +156,10 @@ export default function ManageGroupMembersModal({
               <LoadingSpinner size="md" />
             </div>
           ) : filteredAthletes.length === 0 ? (
-            <div className="text-center py-12">
-              <Users className="w-12 h-12 text-silver-500 mx-auto mb-3" />
-              <p className="text-silver-600">No athletes found</p>
-            </div>
+            <EmptySearch
+              searchTerm={searchTerm}
+              onClearSearch={() => setSearchTerm("")}
+            />
           ) : (
             <div className="space-y-2">
               {filteredAthletes.map((athlete) => {

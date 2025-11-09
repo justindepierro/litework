@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 interface Exercise {
   id: string;
@@ -414,14 +415,10 @@ function ExerciseLibrary({
             </div>
           ) : exercises.length === 0 ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <div className="text-lg text-gray-600 mb-2">
-                  No exercises found
-                </div>
-                <div className="text-gray-500">
-                  Try adjusting your search or filters
-                </div>
-              </div>
+              <EmptySearch
+                searchTerm={searchTerm || selectedCategory || selectedMuscleGroup || "your filters"}
+                onClearSearch={clearFilters}
+              />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

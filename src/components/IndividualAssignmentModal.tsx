@@ -8,6 +8,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Alert } from "@/components/ui/Alert";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -337,11 +338,14 @@ export default function IndividualAssignmentModal({
                       </button>
                     );
                   })
+                ) : searchQuery ? (
+                  <EmptySearch
+                    searchTerm={searchQuery}
+                    onClearSearch={() => setSearchQuery("")}
+                  />
                 ) : (
                   <div className="text-center py-8 text-body-secondary">
-                    {searchQuery
-                      ? `No athletes found matching "${searchQuery}"`
-                      : "No athletes available"}
+                    No athletes available
                   </div>
                 )}
               </div>

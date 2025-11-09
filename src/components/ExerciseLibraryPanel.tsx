@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Dumbbell } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 interface Exercise {
   id: string;
@@ -88,9 +89,10 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
         )}
 
         {!loading && searchQuery.length >= 2 && exercises.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
-            <p className="text-sm">No exercises found</p>
-          </div>
+          <EmptySearch
+            searchTerm={searchQuery}
+            onClearSearch={() => setSearchQuery("")}
+          />
         )}
 
         <div className="space-y-2">

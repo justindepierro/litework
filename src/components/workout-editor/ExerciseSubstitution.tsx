@@ -5,6 +5,7 @@ import { WorkoutExercise } from "@/types";
 import { Search, ArrowRight, Target, Info } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
+import { EmptySearch } from "@/components/ui/EmptyState";
 
 interface ExerciseSubstitutionProps {
   currentExercise: WorkoutExercise;
@@ -221,13 +222,16 @@ export default function ExerciseSubstitution({
                   </div>
                 </div>
               ))
+            ) : searchTerm ? (
+              <EmptySearch
+                searchTerm={searchTerm}
+                onClearSearch={() => setSearchTerm("")}
+              />
             ) : (
               <div className="text-center py-8">
                 <Target className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                 <p className="text-gray-500">
-                  {searchTerm
-                    ? "No exercises found matching your search."
-                    : "No substitutions available for this exercise."}
+                  No substitutions available for this exercise.
                 </p>
               </div>
             )}

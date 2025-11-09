@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
-import { X, Settings, Check } from "lucide-react";
+import { X, Settings, Check, Users as UsersIcon } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
 import DateTimePicker from "./DateTimePicker";
 import { Select, Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { WorkoutModification } from "@/types";
 
@@ -157,9 +158,12 @@ export default function GroupAssignmentModal({
                   </label>
                   <div className="space-y-2 max-h-48 overflow-y-auto border border-silver-400 rounded-md p-3">
                     {groups.length === 0 ? (
-                      <p className="text-silver-600 text-sm">
-                        No groups available
-                      </p>
+                      <EmptyState
+                        icon={UsersIcon}
+                        title="No groups available"
+                        description="Create a group to organize your athletes."
+                        size="sm"
+                      />
                     ) : (
                       groups.map((group) => (
                         <label
@@ -313,13 +317,19 @@ export default function GroupAssignmentModal({
                     })}
                   </div>
                 ) : selectedGroupIds.length > 0 ? (
-                  <div className="text-center py-8 text-body-secondary">
-                    No athletes found in selected groups.
-                  </div>
+                  <EmptyState
+                    icon={UsersIcon}
+                    title="No athletes in selected groups"
+                    description="The selected groups don't have any athletes yet."
+                    size="sm"
+                  />
                 ) : (
-                  <div className="text-center py-8 text-body-secondary">
-                    Select one or more groups to see athletes.
-                  </div>
+                  <EmptyState
+                    icon={UsersIcon}
+                    title="Select groups to continue"
+                    description="Choose one or more groups above to see their athletes."
+                    size="sm"
+                  />
                 )}
               </div>
             </div>
