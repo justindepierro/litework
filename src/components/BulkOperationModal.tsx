@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
+import {
   X,
   Send,
   MessageCircle,
@@ -836,23 +842,14 @@ export default function BulkOperationModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Bulk Operations
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">{getStepTitle()}</p>
-          </div>
-          <button
-            onClick={handleClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
+        <ModalHeader
+          title="Bulk Operations"
+          subtitle={getStepTitle()}
+          onClose={onClose}
+        />
+        <ModalContent>
 
         {/* Progress Indicator */}
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -896,13 +893,14 @@ export default function BulkOperationModal({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
           {renderStepContent()}
         </div>
+        </ModalContent>
 
         {/* Footer */}
         {currentStep !== "executing" && (
-          <div className="flex justify-between items-center p-6 border-t border-gray-200">
+          <ModalFooter align="between">
             <Button
               onClick={
                 currentStep === "select"
@@ -930,9 +928,9 @@ export default function BulkOperationModal({
                 Close
               </Button>
             )}
-          </div>
+          </ModalFooter>
         )}
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
+import {
   X,
   Clock,
   MapPin,
@@ -306,7 +312,7 @@ export default function WorkoutAssignmentDetailModal({
   const statusText = getStatusText();
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+    <ModalBackdrop isOpen={true} onClose={onClose}>
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {loading ? (
           <div className="p-12 text-center">
@@ -314,26 +320,22 @@ export default function WorkoutAssignmentDetailModal({
           </div>
         ) : error ? (
           <div className="p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-red-600">Error</h2>
-              <button
-                onClick={onClose}
-                className="text-gray-600 hover:text-gray-900 p-1"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <p className="text-gray-600">{error}</p>
+            <ModalHeader
+              title="Error"
+              onClose={onClose}
+            />
+            <ModalContent>
+              <p className="text-gray-600">{error}</p>
+            </ModalContent>
           </div>
         ) : assignment ? (
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex justify-between items-start mb-6">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {getWorkoutName(assignment)}
-                  </h2>
+          <>
+            <ModalHeader
+              title={getWorkoutName(assignment)}
+              onClose={onClose}
+            />
+            <ModalContent>
+            <div className="mb-6">
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
                       statusColor === "green"
@@ -345,9 +347,8 @@ export default function WorkoutAssignmentDetailModal({
                   >
                     {statusText}
                   </span>
-                </div>
                 {getWorkoutDescription(assignment) && (
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 mt-2">
                     {getWorkoutDescription(assignment)}
                   </p>
                 )}
@@ -360,13 +361,6 @@ export default function WorkoutAssignmentDetailModal({
                   </div>
                 )}
               </div>
-              <button
-                onClick={onClose}
-                className="text-gray-600 hover:text-gray-900 p-1 ml-4"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
 
             {/* Assignment Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
@@ -557,14 +551,16 @@ export default function WorkoutAssignmentDetailModal({
                   </Button>
                 </>
               )}
-
+            </div>
+            </ModalContent>
+            <ModalFooter align="between">
               <Button onClick={onClose} variant="secondary">
                 Close
               </Button>
-            </div>
-          </div>
+            </ModalFooter>
+          </>
         ) : null}
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
