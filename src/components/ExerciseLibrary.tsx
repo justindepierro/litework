@@ -7,6 +7,12 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptySearch } from "@/components/ui/EmptyState";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
 
 interface Exercise {
   id: string;
@@ -257,36 +263,16 @@ function ExerciseLibrary({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-6xl h-[90vh] flex flex-col">
-        {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Exercise Library
-            </h2>
-            <p className="text-gray-600 mt-1">
-              {exercises.length} exercises available
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {showCreateButton && (
-              <Button
-                onClick={() => setShowCreateForm(true)}
-                variant="secondary"
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Add Exercise
-              </Button>
-            )}
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-500" />
-            </button>
-          </div>
-        </div>
+    <>
+      <ModalBackdrop isOpen={isOpen} onClose={onClose}>
+        <div className="bg-white rounded-lg w-full max-w-6xl h-[90vh] flex flex-col">
+          <ModalHeader
+            title="Exercise Library"
+            subtitle="Select an exercise or create a new one"
+            icon={<Target className="w-6 h-6" />}
+            onClose={onClose}
+          />
+
         {error && (
           <div className="mx-6 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
@@ -297,6 +283,14 @@ function ExerciseLibrary({
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-4 mb-4">
             <div className="flex-1 relative">
+              <Button
+                onClick={() => setShowCreateForm(true)}
+                variant="primary"
+                className="h-9 mb-4"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Exercise
+              </Button>
               <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
@@ -540,25 +534,19 @@ function ExerciseLibrary({
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </ModalBackdrop>
 
       {/* Create Exercise Modal */}
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-60">
+        <ModalBackdrop isOpen={showCreateForm} onClose={() => setShowCreateForm(false)}>
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Create New Exercise
-                </h2>
-                <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
-                >
-                  <X className="w-6 h-6 text-gray-500" />
-                </button>
-              </div>
-
+            <ModalHeader
+              title="Create New Exercise"
+              icon={<Plus className="w-6 h-6" />}
+              onClose={() => setShowCreateForm(false)}
+            />
+            <ModalContent>
               <div className="space-y-4">
                 {/* Name */}
                 <Input
@@ -775,30 +763,29 @@ function ExerciseLibrary({
                   fullWidth
                 />
               </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
-                  disabled={creating}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreateExercise}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={
-                    creating || !newExercise.name || !newExercise.categoryId
-                  }
-                >
-                  {creating ? "Creating..." : "Create Exercise"}
-                </button>
-              </div>
-            </div>
+            </ModalContent>
+            <ModalFooter align="between">
+              <button
+                onClick={() => setShowCreateForm(false)}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                disabled={creating}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateExercise}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  creating || !newExercise.name || !newExercise.categoryId
+                }
+              >
+                {creating ? "Creating..." : "Create Exercise"}
+              </button>
+            </ModalFooter>
           </div>
-        </div>
+        </ModalBackdrop>
       )}
-    </div>
+    </>
   );
 }
 
