@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  X,
   Plus,
   Trash2,
   Save,
@@ -15,6 +14,7 @@ import {
 import { WorkoutBlock, WorkoutExercise } from "@/types";
 import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface BlockEditorProps {
   isOpen: boolean;
@@ -169,32 +169,16 @@ export default function BlockEditor({
   const CategoryIcon = selectedCategory?.icon || Star;
 
   return (
-    <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center p-4">
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200 bg-linear-to-r from-purple-600 to-purple-700 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                <CategoryIcon className="w-7 h-7" />
-                {initialBlock ? "Edit Block" : "Create Workout Block"}
-              </h2>
-              <p className="text-purple-100 text-sm mt-1">
-                Build a reusable block of exercises
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
+        <ModalHeader
+          title={initialBlock ? "Edit Block" : "Create Workout Block"}
+          subtitle="Build a reusable block of exercises"
+          onClose={onClose}
+          icon={<CategoryIcon className="w-7 h-7 text-primary" />}
+        />
 
-        {/* Form */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <ModalContent>
           {error && <Alert variant="error" className="mb-4">{error}</Alert>}
 
           <div className="space-y-6">
@@ -526,10 +510,9 @@ export default function BlockEditor({
               )}
             </div>
           </div>
-        </div>
+        </ModalContent>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+        <ModalFooter align="between">
           <button
             onClick={onClose}
             className="px-6 py-3 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors font-medium"
@@ -554,8 +537,8 @@ export default function BlockEditor({
               </>
             )}
           </button>
-        </div>
+        </ModalFooter>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }

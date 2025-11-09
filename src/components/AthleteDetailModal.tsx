@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  X,
   Mail,
   Phone,
   Calendar,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import { User as UserType, AthleteKPI, AthleteGroup } from "@/types";
 import { Badge } from "@/components/ui/Badge";
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
 
 interface AthleteDetailModalProps {
   athlete: UserType & {
@@ -82,81 +82,73 @@ export default function AthleteDetailModal({
       : 0;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <ModalBackdrop isOpen={true} onClose={onClose}>
       <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="bg-linear-to-r from-blue-600 to-blue-700 p-6 text-white">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
-                {athlete.firstName?.[0]}
-                {athlete.lastName?.[0]}
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold">
-                  {athlete.firstName} {athlete.lastName}
-                </h2>
-                <div className="flex items-center gap-3 mt-2">
-                  <Badge size="md" className="bg-white/20">
-                    {athlete.role}
+        <ModalHeader
+          title={`${athlete.firstName} ${athlete.lastName}`}
+          subtitle={`${athlete.role} - ${athlete.status || "Active"}${athlete.injuryStatus ? ` (${athlete.injuryStatus})` : ""}`}
+          onClose={onClose}
+          icon={<User className="w-6 h-6 text-primary" />}
+        />
+
+        <ModalContent>
+          {/* Profile Avatar & Status Badges */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold text-white">
+              {athlete.firstName?.[0]}
+              {athlete.lastName?.[0]}
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <Badge size="md">{athlete.role}</Badge>
+                {athlete.status === "active" && (
+                  <Badge variant="success" size="md">
+                    <Activity className="w-3 h-3" />
+                    Active
                   </Badge>
-                  {athlete.status === "active" && (
-                    <Badge variant="success" size="md">
-                      <Activity className="w-3 h-3" />
-                      Active
-                    </Badge>
-                  )}
-                  {athlete.injuryStatus && (
-                    <Badge variant="warning" size="md">
-                      <AlertCircle className="w-3 h-3" />
-                      {athlete.injuryStatus}
-                    </Badge>
-                  )}
-                </div>
+                )}
+                {athlete.injuryStatus && (
+                  <Badge variant="warning" size="md">
+                    <AlertCircle className="w-3 h-3" />
+                    {athlete.injuryStatus}
+                  </Badge>
+                )}
+              </div>
+              {/* Quick Actions */}
+              <div className="flex gap-2">
+              {onMessage && (
+                <button
+                  onClick={onMessage}
+                  className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Message
+                </button>
+              )}
+              {onViewProgress && (
+                <button
+                  onClick={onViewProgress}
+                  className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Progress
+                </button>
+              )}
+              {onEdit && (
+                <button
+                  onClick={onEdit}
+                  className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <Edit className="w-4 h-4" />
+                  Edit
+                </button>
+              )}
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
           </div>
 
-          {/* Quick Actions */}
-          <div className="flex gap-2">
-            {onMessage && (
-              <button
-                onClick={onMessage}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Message
-              </button>
-            )}
-            {onViewProgress && (
-              <button
-                onClick={onViewProgress}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <BarChart3 className="w-4 h-4" />
-                Progress
-              </button>
-            )}
-            {onEdit && (
-              <button
-                onClick={onEdit}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <Edit className="w-4 h-4" />
-                Edit
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="border-b">
+          {/* Tabs */}
+          <div className="border-b">
           <div className="flex">
             <button
               onClick={() => setActiveTab("overview")}
@@ -403,7 +395,8 @@ export default function AthleteDetailModal({
             </div>
           )}
         </div>
+        </ModalContent>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
