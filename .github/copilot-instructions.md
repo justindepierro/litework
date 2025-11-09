@@ -187,6 +187,113 @@ canViewAllAthletes(user); // coach or admin
 - **Permission Checks**: Always use permission helpers, never direct role comparisons
 - **Professional Organization**: Maintain clean directory structure (see PROJECT_STRUCTURE.md)
 
+### 🚨 CRITICAL: Component Usage Standards (MANDATORY)
+
+**NEVER HARDCODE DESIGN VALUES. ALWAYS USE OUR COMPONENTS.**
+
+See complete guide: `docs/guides/COMPONENT_USAGE_STANDARDS.md`
+
+#### Required Components - NO EXCEPTIONS
+
+**Typography** - ALL text must use Typography components:
+```tsx
+import { Display, Heading, Body, Label, Caption, Link } from "@/components/ui/Typography";
+
+// ❌ FORBIDDEN
+<h1 className="text-3xl font-bold">Title</h1>
+<p className="text-gray-600">Description</p>
+
+// ✅ REQUIRED
+<Display size="lg">Title</Display>
+<Body variant="secondary">Description</Body>
+```
+
+**Forms** - ALL inputs must use form components:
+```tsx
+import { Input, Textarea, Select } from "@/components/ui/Input";
+
+// ❌ FORBIDDEN
+<input type="text" className="..." />
+<textarea className="..." />
+<select className="..." />
+
+// ✅ REQUIRED
+<Input label="Name" value={name} onChange={...} />
+<Textarea label="Description" value={desc} onChange={...} />
+<Select label="Type" options={options} value={type} onChange={...} />
+```
+
+**Buttons** - ALL buttons must use Button component:
+```tsx
+import { Button } from "@/components/ui/Button";
+
+// ❌ FORBIDDEN
+<button className="bg-blue-500 text-white px-4 py-2 rounded">Click</button>
+
+// ✅ REQUIRED
+<Button variant="primary" onClick={handleClick}>Click</Button>
+```
+
+**Modals** - ALL modals must use Modal components:
+```tsx
+import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
+
+// ✅ REQUIRED structure
+<ModalBackdrop isOpen={isOpen} onClose={onClose}>
+  <div className="bg-white rounded-lg w-full max-w-2xl">
+    <ModalHeader title="Edit" icon={<Icon />} onClose={onClose} />
+    <ModalContent>{/* content */}</ModalContent>
+    <ModalFooter>{/* buttons */}</ModalFooter>
+  </div>
+</ModalBackdrop>
+```
+
+**Badges** - ALL status indicators must use Badge:
+```tsx
+import { Badge } from "@/components/ui/Badge";
+
+// ❌ FORBIDDEN
+<span className="bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+
+// ✅ REQUIRED
+<Badge variant="success">Active</Badge>
+```
+
+#### Design Token Rules
+
+**NEVER hardcode colors:**
+```tsx
+// ❌ FORBIDDEN
+className="text-blue-500 bg-gray-100 border-gray-300"
+
+// ✅ REQUIRED
+className="text-primary bg-silver-200 border-silver-300"
+```
+
+**Use Typography components for text colors:**
+```tsx
+// ❌ FORBIDDEN
+<span className="text-gray-600">Secondary text</span>
+
+// ✅ REQUIRED
+<Body variant="secondary">Secondary text</Body>
+<Caption variant="muted">Muted text</Caption>
+```
+
+#### Code Review Requirements
+
+Before ANY code is merged, verify:
+- [ ] NO hardcoded colors (no `text-blue-500`, `bg-gray-100`)
+- [ ] NO raw HTML text elements (no `<h1>`, `<p>`, `<span>` with text)
+- [ ] ALL text uses Typography components
+- [ ] NO raw form inputs (no `<input>`, `<textarea>`, `<select>`)
+- [ ] ALL forms use Input/Textarea/Select components
+- [ ] NO custom buttons (must use Button component)
+- [ ] NO custom modals (must use Modal components)
+- [ ] NO custom badges (must use Badge component)
+
+**Reference**: `docs/guides/COMPONENT_USAGE_STANDARDS.md` for complete examples and migration guide.
+
 ### Code Quality Standards
 
 - **Zero TypeScript Errors**: Run `npm run typecheck` before committing

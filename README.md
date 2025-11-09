@@ -83,6 +83,38 @@ We're building a comprehensive workout execution and offline-first system. **Pro
 - **Progressive Web App**: PWA capabilities for mobile installation
 - **Deployment**: Vercel (production-ready)
 
+## 🎨 Design System & Component Library
+
+**CRITICAL**: This project uses a comprehensive component library. **NEVER hardcode design values.**
+
+### Component Usage Standards
+
+All UI elements MUST use our standardized components:
+
+- **Typography**: `Display`, `Heading`, `Body`, `Label`, `Caption`, `Link` from `@/components/ui/Typography`
+- **Forms**: `Input`, `Textarea`, `Select` from `@/components/ui/Input`
+- **Buttons**: `Button` component from `@/components/ui/Button`
+- **Modals**: `ModalBackdrop`, `ModalHeader`, `ModalContent`, `ModalFooter` from `@/components/ui/Modal`
+- **Badges**: `Badge` component from `@/components/ui/Badge`
+
+### Why This Matters
+
+✅ **Consistency** - Same look/feel across entire app  
+✅ **Maintainability** - Change design in one place  
+✅ **Accessibility** - Components built with a11y in mind  
+✅ **Performance** - Optimized and memoized  
+✅ **Type Safety** - Full TypeScript support
+
+### Forbidden Patterns
+
+❌ Raw HTML text elements (`<h1>`, `<p>`, `<span>` with text)  
+❌ Raw form inputs (`<input>`, `<textarea>`, `<select>`)  
+❌ Custom styled buttons  
+❌ Hardcoded colors (`text-blue-500`, `bg-gray-100`)  
+❌ Custom modals or badges
+
+**Complete Guide**: See `docs/guides/COMPONENT_USAGE_STANDARDS.md` for detailed examples and migration guide.
+
 ## 🤖 GitHub Copilot Integration
 
 This project is optimized for GitHub Copilot development with comprehensive instructions and context. The codebase follows consistent patterns and includes detailed type definitions to help Copilot provide accurate suggestions.
@@ -96,6 +128,7 @@ The project includes detailed Copilot instructions in `.github/copilot-instructi
 - Development guidelines and best practices
 - Component structure and patterns
 - TypeScript integration standards
+- **Component usage standards** (CRITICAL - enforced)
 
 ### Development with Copilot Tips
 
