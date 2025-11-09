@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { WorkoutExercise } from "@/types";
 import { Search, ArrowRight, Target, Info } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
 
 interface ExerciseSubstitutionProps {
   currentExercise: WorkoutExercise;
@@ -199,12 +200,13 @@ export default function ExerciseSubstitution({
                   <div className="mb-3">
                     <div className="flex flex-wrap gap-1">
                       {suggestion.muscleGroups.map((muscle, i) => (
-                        <span
+                        <Badge
                           key={i}
-                          className="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs"
+                          variant="primary"
+                          size="sm"
                         >
                           {muscle}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </div>

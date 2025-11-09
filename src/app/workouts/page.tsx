@@ -6,6 +6,7 @@ import { useToast } from "@/components/ToastProvider";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -427,9 +428,9 @@ export default function WorkoutsPage() {
                               </p>
                             )}
                           </div>
-                          <span className="text-body-small bg-gray-100 px-2 py-1 rounded ml-4">
+                          <Badge variant="neutral" size="sm" className="ml-4">
                             {workout.estimatedDuration}min
-                          </span>
+                          </Badge>
                         </div>
 
                         {/* Exercise Preview or Full List */}
