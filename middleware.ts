@@ -46,10 +46,10 @@ function getSecurityHeaders() {
  */
 function getCompressionHeaders() {
   const headers = new Headers();
-  
+
   // Vary header tells caches to store different versions based on Accept-Encoding
   headers.set("Vary", "Accept-Encoding");
-  
+
   return headers;
 }
 
@@ -60,12 +60,19 @@ function getCompressionHeaders() {
 function shouldCompress(pathname: string): boolean {
   // Compress API responses (JSON)
   if (pathname.startsWith("/api/")) return true;
-  
+
   // Compress HTML pages
   if (!pathname.includes(".")) return true;
-  
+
   // Compress CSS, JS, SVG
-  const compressibleExtensions = [".css", ".js", ".json", ".svg", ".xml", ".txt"];
+  const compressibleExtensions = [
+    ".css",
+    ".js",
+    ".json",
+    ".svg",
+    ".xml",
+    ".txt",
+  ];
   return compressibleExtensions.some((ext) => pathname.endsWith(ext));
 }
 

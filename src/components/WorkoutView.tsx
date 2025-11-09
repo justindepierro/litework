@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { WorkoutSession, WorkoutPlan } from "@/types";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import {
   Dumbbell,
   Calendar,
@@ -109,11 +111,10 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
           <p className="text-gray-600 mb-6">
             {error || "The requested workout session could not be found."}
           </p>
-          <Link
-            href="/dashboard"
-            className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl"
-          >
-            Return to Dashboard
+          <Link href="/dashboard">
+            <Button variant="primary" className="px-6 py-3 rounded-xl">
+              Return to Dashboard
+            </Button>
           </Link>
         </div>
       </div>
@@ -159,17 +160,24 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
             </div>
 
             {/* Large mobile-friendly start button */}
-            <Link
-              href={`/workouts/live/${sessionId}`}
-              className="btn-primary w-full sm:w-auto sm:self-center text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation flex items-center justify-center gap-3"
-            >
-              <Rocket className="w-6 h-6" />
-              Start Live Workout
+            <Link href={`/workouts/live/${sessionId}`}>
+              <Button
+                variant="primary"
+                fullWidth
+                leftIcon={<Rocket className="w-6 h-6" />}
+                className="sm:w-auto text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl"
+              >
+                Start Live Workout
+              </Button>
             </Link>
           </div>
 
           {/* Enhanced mobile progress overview */}
-          <div className="card-primary mb-8 rounded-2xl border-2 border-gray-200">
+          <Card
+            variant="hero"
+            padding="lg"
+            className="mb-8 rounded-2xl border-2 border-gray-200"
+          >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h2 className="text-heading-secondary text-xl font-bold">
                 Progress Overview
@@ -225,7 +233,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Mobile-optimized exercise list */}
           <div className="space-y-6">
@@ -240,9 +248,11 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               const isCompleted = sessionExercise?.completed || false;
 
               return (
-                <div
+                <Card
                   key={exercise.id}
-                  className={`card-primary rounded-2xl border-2 transition-all touch-manipulation ${
+                  variant="interactive"
+                  padding="md"
+                  className={`rounded-2xl border-2 transition-all touch-manipulation ${
                     isCompleted
                       ? "border-accent-green bg-green-50 shadow-lg"
                       : "border-gray-200 hover:border-gray-300"
@@ -360,32 +370,32 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   {/* YouTube Demo Video */}
                   {"videoUrl" in exercise && exercise.videoUrl && (
                     <div className="mt-6">
-                      <YouTubeEmbed
-                        url={exercise.videoUrl as string}
-                        title={`${exercise.exerciseName} demonstration`}
-                        className="max-w-2xl mx-auto"
-                      />
+                      <YouTubeEmbed url={exercise.videoUrl as string} />
                     </div>
                   )}
-                </div>
+                </Card>
               );
             })}
           </div>
 
           {/* Enhanced mobile action buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center">
-            <Link
-              href="/dashboard"
-              className="btn-secondary py-4 px-6 rounded-xl font-medium touch-manipulation order-2 sm:order-1"
-            >
-              ← Back to Dashboard
+            <Link href="/dashboard">
+              <Button
+                variant="secondary"
+                className="py-4 px-6 rounded-xl font-medium order-2 sm:order-1"
+              >
+                ← Back to Dashboard
+              </Button>
             </Link>
-            <Link
-              href={`/workouts/live/${sessionId}`}
-              className="btn-primary text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all touch-manipulation order-1 sm:order-2 flex items-center justify-center gap-3"
-            >
-              <Rocket className="w-6 h-6" />
-              Start Live Workout
+            <Link href={`/workouts/live/${sessionId}`}>
+              <Button
+                variant="primary"
+                leftIcon={<Rocket className="w-6 h-6" />}
+                className="text-xl px-8 py-5 rounded-2xl font-bold shadow-lg hover:shadow-xl order-1 sm:order-2"
+              >
+                Start Live Workout
+              </Button>
             </Link>
           </div>
         </div>

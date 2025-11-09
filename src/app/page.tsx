@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import {
   BarChart3,
   TrendingUp,
@@ -34,20 +36,31 @@ export default function Home() {
             {/* CTA Button - Mobile Optimized */}
             <div className="mt-8 w-full max-w-sm mx-auto">
               {user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-primary flex items-center gap-3 text-lg"
-                >
-                  <BarChart3 className="w-5 h-5" />
-                  Go to Dashboard
+                <Link href="/dashboard">
+                  <Button
+                    variant="primary"
+                    leftIcon={<BarChart3 className="w-5 h-5" />}
+                    className="text-lg"
+                    fullWidth
+                  >
+                    Go to Dashboard
+                  </Button>
                 </Link>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Link href="/signup" className="btn-primary flex-1">
-                    <Rocket className="w-5 h-5" /> Sign Up
+                  <Link href="/signup" className="flex-1">
+                    <Button
+                      variant="primary"
+                      leftIcon={<Rocket className="w-5 h-5" />}
+                      fullWidth
+                    >
+                      Sign Up
+                    </Button>
                   </Link>
-                  <Link href="/login" className="btn-secondary flex-1">
-                    Login
+                  <Link href="/login" className="flex-1">
+                    <Button variant="secondary" fullWidth>
+                      Login
+                    </Button>
                   </Link>
                 </div>
               )}
@@ -65,7 +78,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Feature 1 - Progress Tracking */}
-            <div className="card-primary">
+            <Card variant="default" padding="md">
               <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 mx-auto">
                 <TrendingUp className="w-6 h-6 text-accent-green" />
               </div>
@@ -81,10 +94,10 @@ export default function Home() {
                   Analytics
                 </span>
               </div>
-            </div>
+            </Card>
 
             {/* Feature 2 - Smart Scheduling */}
-            <div className="card-primary">
+            <Card variant="default" padding="md">
               <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 mx-auto">
                 <Calendar className="w-6 h-6 text-accent-blue" />
               </div>
@@ -100,10 +113,14 @@ export default function Home() {
                   Never Miss
                 </span>
               </div>
-            </div>
+            </Card>
 
             {/* Feature 3 - Team Management */}
-            <div className="card-primary sm:col-span-2 lg:col-span-1">
+            <Card
+              variant="default"
+              padding="md"
+              className="sm:col-span-2 lg:col-span-1"
+            >
               <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 mx-auto">
                 <Users className="w-6 h-6 text-accent-purple" />
               </div>
@@ -119,7 +136,7 @@ export default function Home() {
                   Coach Tools
                 </span>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import { X } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 interface GroupFormModalProps {
   isOpen: boolean;
@@ -264,7 +265,9 @@ export default function GroupFormModal({
                   label="Category"
                   type="text"
                   value={formData.category}
-                  onChange={(e) => handleInputChange("category", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("category", e.target.value)
+                  }
                   placeholder="e.g., Varsity, JV, Linemen, Receivers"
                   disabled={isLoading}
                   fullWidth
@@ -274,7 +277,9 @@ export default function GroupFormModal({
                 <Textarea
                   label="Description"
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   rows={3}
                   placeholder="Brief description of the group..."
                   disabled={isLoading}
@@ -366,16 +371,18 @@ export default function GroupFormModal({
                               {athlete.email}
                             </div>
                           </div>
-                          <button
+                          <Button
                             type="button"
                             onClick={() =>
                               handleAthleteSelection(athlete.id, true)
                             }
-                            className="btn-secondary text-sm px-3 py-1"
+                            variant="secondary"
+                            size="sm"
+                            className="px-3 py-1"
                             disabled={isLoading}
                           >
                             Add
-                          </button>
+                          </Button>
                         </div>
                       ))}
                     </div>
@@ -398,17 +405,19 @@ export default function GroupFormModal({
             )}
 
             <div className="flex gap-3 mt-6 pt-6 border-t">
-              <button
+              <Button
                 type="button"
                 onClick={onClose}
-                className="btn-secondary flex-1"
+                variant="secondary"
+                className="flex-1"
                 disabled={isLoading}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="primary"
+                className="flex-1"
                 disabled={isLoading}
               >
                 {isLoading
@@ -416,7 +425,7 @@ export default function GroupFormModal({
                   : editingGroup
                     ? "Update Group"
                     : "Create Group"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

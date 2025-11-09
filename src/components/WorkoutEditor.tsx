@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/Button";
 import {
   Plus,
   GripVertical,
@@ -478,18 +479,20 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
                 {/* Enhanced mobile action buttons */}
                 <div className="flex gap-3">
-                  <button
+                  <Button
                     onClick={saveExercise}
-                    className="btn-primary flex-1 py-4 sm:py-3 text-lg sm:text-base font-bold rounded-xl sm:rounded-lg touch-manipulation"
+                    variant="primary"
+                    className="flex-1 py-4 sm:py-3 text-lg sm:text-base font-bold rounded-xl sm:rounded-lg"
                   >
                     Save Changes
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={cancelEdit}
-                    className="btn-secondary flex-1 py-4 sm:py-3 text-lg sm:text-base font-medium rounded-xl sm:rounded-lg touch-manipulation"
+                    variant="secondary"
+                    className="flex-1 py-4 sm:py-3 text-lg sm:text-base font-medium rounded-xl sm:rounded-lg"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -1177,18 +1180,22 @@ const GroupItem: React.FC<GroupItemProps> = ({
               </div>
 
               <div className="flex items-center space-x-2">
-                <button
+                <Button
                   onClick={saveGroup}
-                  className="btn-primary text-xs px-2 py-1"
+                  variant="primary"
+                  size="sm"
+                  className="text-xs px-2 py-1"
                 >
                   Save
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setIsEditing(false)}
-                  className="btn-secondary text-xs px-2 py-1"
+                  variant="secondary"
+                  size="sm"
+                  className="text-xs px-2 py-1"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -1962,55 +1969,61 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
                 {!selectionMode ? (
                   <>
-                    <button
+                    <Button
                       onClick={() => setShowBlockLibrary(true)}
-                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      variant="primary"
+                      leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                     >
-                      <Package className="w-5 h-5 sm:w-4 sm:h-4" />
-                      <span>Add Block</span>
-                    </button>
+                      Add Block
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={addExercise}
-                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                      variant="primary"
+                      leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-                      <span>Add Exercise</span>
-                    </button>
+                      Add Exercise
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => addGroup("superset")}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                      variant="secondary"
+                      leftIcon={<Zap className="w-5 h-5 sm:w-4 sm:h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                      <span>Add Superset</span>
-                    </button>
+                      Add Superset
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => addGroup("circuit")}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                      variant="secondary"
+                      leftIcon={<RotateCcw className="w-4 h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <RotateCcw className="w-4 h-4" />
-                      <span>Add Circuit</span>
-                    </button>
+                      Add Circuit
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => addGroup("section")}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                      variant="secondary"
+                      leftIcon={<Target className="w-4 h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <Target className="w-4 h-4" />
-                      <span>Add Section</span>
-                    </button>
+                      Add Section
+                    </Button>
 
                     {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
                       .length > 0 && (
-                      <button
+                      <Button
                         onClick={() => setSelectionMode(true)}
-                        className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-green-600 hover:bg-green-700 text-white border-green-700"
+                        variant="success"
+                        leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
+                        className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-green-600 hover:bg-green-700 text-white border-green-700"
                       >
-                        <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-                        <span>Group Exercises</span>
-                      </button>
+                        Group Exercises
+                      </Button>
                     )}
                   </>
                 ) : (
@@ -2021,41 +2034,46 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                         : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
                     </div>
 
-                    <button
+                    <Button
                       onClick={selectAllExercises}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation"
+                      variant="secondary"
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <span>Select All</span>
-                    </button>
+                      Select All
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => setShowGroupModal(true)}
                       disabled={selectedExerciseIds.size < 2}
-                      className="btn-primary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                      variant="primary"
+                      leftIcon={<Zap className="w-5 h-5 sm:w-4 sm:h-4" />}
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
-                      <Zap className="w-5 h-5 sm:w-4 sm:h-4" />
-                      <span>Create Group</span>
-                    </button>
+                      Create Group
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={clearSelection}
-                      className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation bg-red-600 hover:bg-red-700 text-white border-red-700"
+                      variant="danger"
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-red-600 hover:bg-red-700 text-white border-red-700"
                     >
-                      <span>Cancel</span>
-                    </button>
+                      Cancel
+                    </Button>
                   </>
                 )}
               </div>
 
               {/* Save Workout Button - Separate Row */}
               {!selectionMode && (
-                <button
+                <Button
                   onClick={saveWorkout}
                   disabled={isSaving || !workoutName.trim()}
-                  className="w-full btn-primary flex items-center justify-center gap-2 py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold touch-manipulation bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-green-700"
+                  variant="primary"
+                  fullWidth
+                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-2 border-green-700"
                 >
-                  <span>{isSaving ? "Saving..." : "Save Workout"}</span>
-                </button>
+                  {isSaving ? "Saving..." : "Save Workout"}
+                </Button>
               )}
             </div>
           </div>

@@ -8,7 +8,13 @@ import { useState, useEffect } from "react";
 /**
  * Network connection types
  */
-export type ConnectionType = "4g" | "3g" | "2g" | "slow-2g" | "wifi" | "unknown";
+export type ConnectionType =
+  | "4g"
+  | "3g"
+  | "2g"
+  | "slow-2g"
+  | "wifi"
+  | "unknown";
 
 /**
  * Connection quality levels
@@ -36,7 +42,10 @@ export function getNetworkInformation(): NetworkInformation {
   }
 
   // @ts-expect-error - NetworkInformation is not in TypeScript types yet
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const connection =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
 
   if (!connection) {
     return { type: "unknown", quality: "high" };
@@ -82,7 +91,10 @@ export function useNetworkQuality() {
 
   useEffect(() => {
     // @ts-expect-error - NetworkInformation is not in TypeScript types yet
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const connection =
+      navigator.connection ||
+      navigator.mozConnection ||
+      navigator.webkitConnection;
 
     if (!connection) return;
 
@@ -206,7 +218,7 @@ export function getAdaptiveConfig(quality: ConnectionQuality): AdaptiveConfig {
  */
 export function useAdaptiveConfig() {
   const networkInfo = useNetworkQuality();
-  
+
   // Memoize config based on network quality
   const config = getAdaptiveConfig(networkInfo.quality);
 
@@ -342,7 +354,9 @@ export function NetworkQualityBadge() {
   const label = labels[quality] || labels.medium;
 
   return (
-    <div className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg text-sm font-medium shadow-lg ${colorClass}`}>
+    <div
+      className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg text-sm font-medium shadow-lg ${colorClass}`}
+    >
       {label}
     </div>
   );

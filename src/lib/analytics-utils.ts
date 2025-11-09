@@ -6,10 +6,10 @@
 /**
  * Calculate the current workout streak for a user
  * A streak is the number of consecutive days with at least one workout
- * 
+ *
  * @param completedDates - Array of Date objects or ISO date strings when workouts were completed
  * @returns Current streak count (number of consecutive days)
- * 
+ *
  * @example
  * const dates = ["2025-11-08", "2025-11-07", "2025-11-06"];
  * const streak = calculateWorkoutStreak(dates); // Returns 3
@@ -23,7 +23,8 @@ export function calculateWorkoutStreak(
 
   // Convert all dates to midnight timestamps for consistent comparison
   const timestamps = completedDates.map((dateInput) => {
-    const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    const date =
+      typeof dateInput === "string" ? new Date(dateInput) : dateInput;
     date.setHours(0, 0, 0, 0);
     return date.getTime();
   });
@@ -38,10 +39,7 @@ export function calculateWorkoutStreak(
   const yesterdayTime = todayTime - 24 * 60 * 60 * 1000;
 
   // Streak must start with today or yesterday
-  if (
-    uniqueDates[0] !== todayTime &&
-    uniqueDates[0] !== yesterdayTime
-  ) {
+  if (uniqueDates[0] !== todayTime && uniqueDates[0] !== yesterdayTime) {
     return 0;
   }
 
@@ -64,14 +62,14 @@ export function calculateWorkoutStreak(
 /**
  * Calculate both current and longest workout streaks
  * Used for more detailed analytics
- * 
+ *
  * @param completedDates - Array of Date objects or ISO date strings
  * @param lookbackDays - How many days to analyze (default: 30)
  * @returns Object with currentStreak and longestStreak
- * 
+ *
  * @example
  * const dates = ["2025-11-08", "2025-11-07", "2025-11-05", "2025-11-04"];
- * const streaks = calculateDetailedStreaks(dates); 
+ * const streaks = calculateDetailedStreaks(dates);
  * // Returns { currentStreak: 2, longestStreak: 2 }
  */
 export function calculateDetailedStreaks(
@@ -84,10 +82,11 @@ export function calculateDetailedStreaks(
 
   // Convert to date strings for comparison
   const workoutDates = completedDates.map((dateInput) => {
-    const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    const date =
+      typeof dateInput === "string" ? new Date(dateInput) : dateInput;
     return date.toDateString();
   });
-  
+
   const uniqueWorkoutDates = [...new Set(workoutDates)];
 
   let currentStreak = 0;
@@ -95,7 +94,7 @@ export function calculateDetailedStreaks(
   let tempStreak = 0;
 
   const today = new Date();
-  
+
   for (let i = 0; i < lookbackDays; i++) {
     const checkDate = new Date(today);
     checkDate.setDate(today.getDate() - i);
@@ -121,7 +120,7 @@ export function calculateDetailedStreaks(
 
 /**
  * Calculate average workouts per week from completed dates
- * 
+ *
  * @param completedDates - Array of Date objects or ISO date strings
  * @param periodDays - Period to analyze in days (default: 30)
  * @returns Average workouts per week
@@ -138,7 +137,8 @@ export function calculateAvgWorkoutsPerWeek(
   cutoffDate.setDate(cutoffDate.getDate() - periodDays);
 
   const recentWorkouts = completedDates.filter((dateInput) => {
-    const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    const date =
+      typeof dateInput === "string" ? new Date(dateInput) : dateInput;
     return date >= cutoffDate;
   });
 

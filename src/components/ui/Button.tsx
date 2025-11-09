@@ -9,7 +9,12 @@
 import React, { useRef, useState } from "react";
 import { Loader2, Check } from "lucide-react";
 
-export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "success";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "ghost"
+  | "success";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps
@@ -70,7 +75,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       // Remove ripple after animation
       setTimeout(() => {
-        setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id));
+        setRipples((prev) =>
+          prev.filter((ripple) => ripple.id !== newRipple.id)
+        );
       }, 600);
     };
 

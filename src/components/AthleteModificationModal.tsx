@@ -4,6 +4,8 @@ import { useState } from "react";
 import { WorkoutModification, AthleteGroup, User, WorkoutPlan } from "@/types";
 import { X, Weight, RotateCcw, Settings } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 
 interface AthleteModificationModalProps {
   isOpen: boolean;
@@ -112,7 +114,7 @@ export default function AthleteModificationModal({
           </div>
 
           {/* Add New Modification */}
-          <div className="card-secondary mb-6">
+          <Card variant="default" padding="md" className="mb-6">
             <h3 className="text-heading-secondary text-lg mb-4">
               Add Modification
             </h3>
@@ -129,15 +131,16 @@ export default function AthleteModificationModal({
                 ]}
                 className="flex-1"
               />
-              <button
+              <Button
                 onClick={addModification}
                 disabled={!selectedExercise}
-                className="btn-primary px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="primary"
+                className="px-6"
               >
                 Add
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
 
           {/* Current Modifications */}
           <div className="space-y-4">
@@ -159,9 +162,11 @@ export default function AthleteModificationModal({
                   if (!exercise) return null;
 
                   return (
-                    <div
+                    <Card
                       key={modification.id}
-                      className="card-primary border-l-4 border-accent-orange"
+                      variant="default"
+                      padding="md"
+                      className="border-l-4 border-accent-orange"
                     >
                       <div className="flex justify-between items-start mb-4">
                         <div>
@@ -307,7 +312,7 @@ export default function AthleteModificationModal({
                           )}
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   );
                 })}
               </div>
@@ -316,12 +321,12 @@ export default function AthleteModificationModal({
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6 pt-6 border-t">
-            <button onClick={onClose} className="btn-secondary flex-1">
+            <Button onClick={onClose} variant="secondary" className="flex-1">
               Cancel
-            </button>
-            <button onClick={handleSave} className="btn-primary flex-1">
+            </Button>
+            <Button onClick={handleSave} variant="primary" className="flex-1">
               Save Modifications ({modifications.length})
-            </button>
+            </Button>
           </div>
         </div>
       </div>

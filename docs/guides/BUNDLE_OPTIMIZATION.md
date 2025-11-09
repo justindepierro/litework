@@ -7,6 +7,7 @@
 Based on common Next.js bundle issues, here are the main optimization targets:
 
 #### 1. **Lucide React** (Icon Library)
+
 **Current**: Importing entire library
 **Impact**: ~500KB
 **Solution**: Tree-shakeable imports
@@ -26,6 +27,7 @@ experimental: {
 ```
 
 #### 2. **Recharts** (Charts Library)
+
 **Current**: Full library imported
 **Impact**: ~300KB
 **Solution**: Lazy load + selective imports
@@ -42,6 +44,7 @@ const ProgressAnalytics = dynamic(
 ```
 
 #### 3. **React DnD** (Drag and Drop)
+
 **Current**: Full library loaded
 **Impact**: ~200KB
 **Solution**: Lazy load only where needed
@@ -68,6 +71,7 @@ ANALYZE=true npm run build
 ### Step 2: Identify Large Modules
 
 Look for:
+
 - Modules > 100KB
 - Duplicate dependencies
 - Unused exports
@@ -75,6 +79,7 @@ Look for:
 ### Step 3: Apply Optimizations
 
 #### A. Dynamic Imports (Already Implemented ✅)
+
 ```typescript
 // Heavy components lazy-loaded
 import { WorkoutEditor, BlockLibrary } from "@/lib/dynamic-components";
@@ -83,6 +88,7 @@ import { WorkoutEditor, BlockLibrary } from "@/lib/dynamic-components";
 #### B. Tree Shaking Configuration
 
 Already configured in `next.config.ts`:
+
 ```typescript
 experimental: {
   optimizePackageImports: [
@@ -119,7 +125,7 @@ webpack: (config) => {
       },
     },
   };
-}
+};
 ```
 
 ---
@@ -127,6 +133,7 @@ webpack: (config) => {
 ## Current Bundle Optimizations (Already Applied ✅)
 
 ### 1. **Next.js 16 Built-in Optimizations**
+
 - ✅ Turbopack (dev mode)
 - ✅ Automatic code splitting
 - ✅ Tree shaking enabled
@@ -134,6 +141,7 @@ webpack: (config) => {
 - ✅ Font optimization
 
 ### 2. **Custom Optimizations**
+
 - ✅ Dynamic imports for heavy components
 - ✅ Vendor chunk splitting
 - ✅ CSS optimization with Critters
@@ -141,6 +149,7 @@ webpack: (config) => {
 - ✅ Package-specific optimization hints
 
 ### 3. **Runtime Optimizations**
+
 - ✅ React.memo() for components
 - ✅ SWR for data caching
 - ✅ Optimistic UI updates
@@ -155,18 +164,18 @@ webpack: (config) => {
 Create `/scripts/analysis/analyze-imports.mjs`:
 
 ```javascript
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 // Find large imports
-const srcDir = './src';
+const srcDir = "./src";
 const largeImports = new Map();
 
 function analyzeFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fs.readFileSync(filePath, "utf-8");
   const imports = content.match(/import .* from ['"].*['"]/g) || [];
-  
-  imports.forEach(imp => {
+
+  imports.forEach((imp) => {
     const match = imp.match(/from ['"]([^'"]+)['"]/);
     if (match) {
       const pkg = match[1];
@@ -178,13 +187,13 @@ function analyzeFile(filePath) {
 // Scan all files
 function scanDir(dir) {
   const files = fs.readdirSync(dir);
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-    
+
     if (stat.isDirectory()) {
       scanDir(filePath);
-    } else if (file.endsWith('.ts') || file.endsWith('.tsx')) {
+    } else if (file.endsWith(".ts") || file.endsWith(".tsx")) {
       analyzeFile(filePath);
     }
   });
@@ -197,7 +206,7 @@ const sorted = Array.from(largeImports.entries())
   .sort((a, b) => b[1] - a[1])
   .slice(0, 20);
 
-console.log('\nTop 20 Most Imported Packages:\n');
+console.log("\nTop 20 Most Imported Packages:\n");
 sorted.forEach(([pkg, count]) => {
   console.log(`${count.toString().padStart(3)} imports: ${pkg}`);
 });
@@ -210,16 +219,19 @@ Run: `node scripts/analysis/analyze-imports.mjs`
 ## Expected Results
 
 ### Before Full Optimization
+
 - Initial JS: ~800KB
 - Initial CSS: ~50KB
 - Total: ~850KB (gzipped)
 
 ### After Optimization
+
 - Initial JS: ~400KB (-50%)
 - Initial CSS: ~30KB (-40%)
 - Total: ~430KB (gzipped)
 
 ### Per-Route Bundles
+
 - Dashboard: ~150KB
 - Workouts: ~180KB (includes editor)
 - Athletes: ~120KB
@@ -232,6 +244,7 @@ Run: `node scripts/analysis/analyze-imports.mjs`
 ### 1. Build-time Check
 
 Add to `package.json`:
+
 ```json
 {
   "scripts": {
@@ -244,6 +257,7 @@ Add to `package.json`:
 ### 2. CI/CD Integration
 
 Add bundle size check to GitHub Actions:
+
 ```yaml
 - name: Check bundle size
   run: npm run build:analyze
@@ -252,6 +266,7 @@ Add bundle size check to GitHub Actions:
 ### 3. Bundle Size Limits
 
 Create `.bundlewatchrc.json`:
+
 ```json
 {
   "files": [
@@ -272,16 +287,19 @@ Create `.bundlewatchrc.json`:
 ## Next Steps
 
 ### Immediate
+
 1. ✅ Dynamic imports implemented
 2. ✅ Tree shaking configured
 3. ✅ Code splitting enabled
 
 ### Short-term
+
 4. Run bundle analyzer to identify heavy modules
 5. Lazy load charts/analytics components
 6. Remove unused dependencies
 
 ### Long-term
+
 7. Implement route-based code splitting
 8. Set up bundle size monitoring in CI
 9. Regular bundle audits (monthly)

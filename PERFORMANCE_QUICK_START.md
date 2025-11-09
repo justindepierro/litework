@@ -11,7 +11,7 @@
 Edit `src/app/layout.tsx`:
 
 ```typescript
-import { initializePrefetch } from '@/lib/prefetch';
+import { initializePrefetch } from "@/lib/prefetch";
 
 // Add inside root component
 useEffect(() => {
@@ -57,10 +57,10 @@ Edit `src/app/workouts/page.tsx`:
 
 ```typescript
 // Before
-import WorkoutEditor from '@/components/WorkoutEditor';
+import WorkoutEditor from "@/components/WorkoutEditor";
 
 // After
-import { WorkoutEditor } from '@/lib/dynamic-components';
+import { WorkoutEditor } from "@/lib/dynamic-components";
 // That's it! Component now lazy loads
 ```
 
@@ -80,6 +80,7 @@ import { NetworkQualityBadge } from '@/lib/connection-aware';
 ## 🎯 Where to Start
 
 ### High-Traffic Pages (Do First)
+
 1. **Dashboard** (`src/app/dashboard/page.tsx`)
    - Add `DashboardSkeleton`
    - Use `StatCard` from optimized components
@@ -96,6 +97,7 @@ import { NetworkQualityBadge } from '@/lib/connection-aware';
    - Consider `SmartList` for 50+ athletes
 
 ### High-Impact Mutations (Do Second)
+
 4. **Workout Save** (WorkoutEditor.tsx)
    - Add `optimisticWorkoutSave`
    - Instant feedback when saving
@@ -113,18 +115,21 @@ import { NetworkQualityBadge } from '@/lib/connection-aware';
 ## 📚 Documentation
 
 ### For Usage Examples
+
 - **Main Guide**: `/docs/UX_PERFORMANCE_OPTIMIZATION_GUIDE.md`
   - Complete API reference
   - Usage examples for every utility
   - Performance metrics
 
 ### For Implementation Steps
+
 - **Checklist**: `/docs/checklists/performance-optimization-checklist.md`
   - 20 steps organized by phase
   - Time estimates for each
   - Success criteria
 
 ### For Overview
+
 - **Summary**: `/PERFORMANCE_UX_OPTIMIZATION_COMPLETE.md`
   - What was built
   - Expected improvements
@@ -135,6 +140,7 @@ import { NetworkQualityBadge } from '@/lib/connection-aware';
 ## 🧪 Testing
 
 ### Local Testing
+
 ```bash
 # Verify TypeScript (should show 0 errors)
 npm run typecheck
@@ -147,6 +153,7 @@ npm run dev
 ```
 
 ### Performance Testing
+
 1. Open Chrome DevTools
 2. Go to Performance tab
 3. Record page load
@@ -156,6 +163,7 @@ npm run dev
    - CLS < 0.05 ✅
 
 ### Network Testing
+
 1. Open Chrome DevTools
 2. Go to Network tab
 3. Throttle to "Slow 3G"
@@ -167,20 +175,24 @@ npm run dev
 ## 🆘 Troubleshooting
 
 ### TypeScript Errors?
+
 - Run `npm run typecheck` to see details
 - Check imports are correct
 - Verify all required props are passed
 
 ### Component Not Lazy Loading?
+
 - Check you're importing from `/lib/dynamic-components`
 - Not from `/components/ComponentName` directly
 
 ### Optimistic Update Not Working?
+
 - Check SWR key matches API route
 - Verify mutation function returns Promise
 - Look for console errors
 
 ### Skeleton Not Showing?
+
 - Verify you're checking `isLoading` state
 - Try `useMinimumSkeletonTime` hook
 - Check component is imported correctly
@@ -190,17 +202,20 @@ npm run dev
 ## 💡 Pro Tips
 
 ### For Maximum Impact
+
 1. **Start with skeletons** - Biggest perceived improvement
 2. **Then lazy loading** - Biggest bundle reduction
 3. **Then optimistic updates** - Best UX improvement
 
 ### For Best Results
+
 - Test on real mobile devices
 - Use Chrome DevTools Network throttling
 - Monitor with Lighthouse
 - Get user feedback
 
 ### For Gradual Adoption
+
 - These are **opt-in** optimizations
 - Adopt one page at a time
 - Measure impact as you go
@@ -217,7 +232,7 @@ npm run dev
 - [ ] Add NetworkQualityBadge to layout (1 line of code)
 
 **Total Time**: 15 minutes  
-**Expected Impact**: 40-50% better performance  
+**Expected Impact**: 40-50% better performance
 
 ---
 

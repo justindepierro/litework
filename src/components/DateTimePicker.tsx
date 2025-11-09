@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 interface DateTimePickerProps {
   selectedDate?: Date;
@@ -133,23 +134,27 @@ export default function DateTimePicker({
       <div className="border border-silver-400 rounded-lg p-4 bg-white">
         {/* Month Navigation */}
         <div className="flex justify-between items-center mb-4">
-          <button
+          <Button
             type="button"
             onClick={() => navigateMonth(-1)}
-            className="btn-secondary text-sm px-3 py-1"
+            variant="secondary"
+            size="sm"
+            className="px-3 py-1"
           >
             ←
-          </button>
+          </Button>
           <div className="text-heading-secondary font-semibold">
             {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
           </div>
-          <button
+          <Button
             type="button"
             onClick={() => navigateMonth(1)}
-            className="btn-secondary text-sm px-3 py-1"
+            variant="secondary"
+            size="sm"
+            className="px-3 py-1"
           >
             →
-          </button>
+          </Button>
         </div>
 
         {/* Day Names */}

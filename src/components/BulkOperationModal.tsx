@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 interface EnhancedAthlete {
   id: string;
@@ -572,10 +573,7 @@ export default function BulkOperationModal({
               onChange={(e) =>
                 setStatusData({
                   ...statusData,
-                  status: e.target.value as
-                    | "active"
-                    | "inactive"
-                    | "suspended",
+                  status: e.target.value as "active" | "inactive" | "suspended",
                 })
               }
               options={[
@@ -916,7 +914,7 @@ export default function BulkOperationModal({
         {/* Footer */}
         {currentStep !== "executing" && (
           <div className="flex justify-between items-center p-6 border-t border-gray-200">
-            <button
+            <Button
               onClick={
                 currentStep === "select"
                   ? handleClose
@@ -925,23 +923,23 @@ export default function BulkOperationModal({
                         currentStep === "configure" ? "select" : "configure"
                       )
               }
-              className="btn-secondary"
+              variant="secondary"
             >
               {currentStep === "select" ? "Cancel" : "Back"}
-            </button>
+            </Button>
 
             {currentStep !== "confirm" || !executionResults ? (
-              <button
+              <Button
                 onClick={handleNextStep}
                 disabled={!canProceed()}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="primary"
               >
                 {getActionButtonText()}
-              </button>
+              </Button>
             ) : (
-              <button onClick={handleClose} className="btn-primary">
+              <Button onClick={handleClose} variant="primary">
                 Close
-              </button>
+              </Button>
             )}
           </div>
         )}

@@ -25,16 +25,19 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
       if (!newWorker) return;
 
       newWorker.addEventListener("statechange", () => {
-        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+        if (
+          newWorker.state === "installed" &&
+          navigator.serviceWorker.controller
+        ) {
           // New service worker available
           console.log("New service worker available");
-          
+
           // Notify user about update
           if (typeof window !== "undefined" && "confirm" in window) {
             const shouldUpdate = confirm(
               "A new version of the app is available. Reload to update?"
             );
-            
+
             if (shouldUpdate) {
               newWorker.postMessage({ type: "SKIP_WAITING" });
               window.location.reload();
@@ -130,7 +133,8 @@ export async function getServiceWorkerRegistration(): Promise<ServiceWorkerRegis
 export function useServiceWorker() {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [registration, setRegistration] = React.useState<ServiceWorkerRegistration | null>(null);
+  const [registration, setRegistration] =
+    React.useState<ServiceWorkerRegistration | null>(null);
 
   React.useEffect(() => {
     const register = async () => {

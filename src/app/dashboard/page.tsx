@@ -11,10 +11,14 @@ import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
-import { parseDate, isToday as checkIsToday, isPast as checkIsPast, isFuture as checkIsFuture } from "@/lib/date-utils";
 import {
-  TrendingUp,
-  ClipboardList,
+  parseDate,
+  isToday as checkIsToday,
+  isFuture as checkIsFuture,
+} from "@/lib/date-utils";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import {
   Trophy,
   Calendar,
   Eye,
@@ -23,9 +27,9 @@ import {
   Flame,
   Users,
   UserPlus,
+  Clock,
+  MapPin,
 } from "lucide-react";
-import { DashboardSkeleton } from "@/components/skeletons";
-import { EmptyAssignments } from "@/components/ui/EmptyState";
 
 interface DashboardStats {
   workoutsThisWeek: number;
@@ -201,12 +205,6 @@ export default function DashboardPage() {
     window.location.href = `/workout/live/${assignmentId}`;
   };
 
-  const handleEditAssignment = (assignmentId: string) => {
-    // TODO: Open edit modal or navigate to edit page
-    // [REMOVED] console.log("Edit assignment:", assignmentId);
-    handleCloseDetailModal();
-  };
-
   const handleDeleteAssignment = async (assignmentId: string) => {
     try {
       const response = await fetch(`/api/assignments/${assignmentId}`, {
@@ -290,17 +288,19 @@ export default function DashboardPage() {
             <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
               {user.fullName}! <Hand className="w-6 h-6" />
             </p>
-            <p className="text-gray-600 mt-2">
+            <p className="text-silver-700 mt-2">
               {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
             </p>
           </div>
 
+          {/* Quick Actions Bar - Full Width */}
+          <QuickActions />
+
           {/* Two-column layout for coaches */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            {/* Left column - Today & Actions */}
-            <div className="lg:col-span-2 space-y-6">
+            {/* Left column - Today */}
+            <div className="lg:col-span-2">
               <TodayOverview />
-              <QuickActions />
             </div>
 
             {/* Right column - Stats */}
@@ -309,38 +309,50 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Full-width calendar with assignment buttons */}
-          <div className="space-y-4">
-            {/* Action buttons */}
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => {
-                  setSelectedDate(new Date());
-                  setShowIndividualAssignment(true);
-                }}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <UserPlus className="w-4 h-4" />
-                Assign to Athlete
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedDate(new Date());
-                  setShowGroupAssignment(true);
-                }}
-                className="btn-primary flex items-center gap-2"
-              >
-                <Users className="w-4 h-4" />
-                Assign to Group
-              </button>
-            </div>
+          {/* Full-width calendar */}
+          <div>
+            {/* Calendar with integrated header */}
+            <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+              {/* Calendar Header */}
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Team Schedule
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    Manage workout assignments
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      setSelectedDate(new Date());
+                      setShowIndividualAssignment(true);
+                    }}
+                    variant="secondary"
+                    size="sm"
+                    leftIcon={<UserPlus className="w-4 h-4" />}
+                  >
+                    Athlete
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedDate(new Date());
+                      setShowGroupAssignment(true);
+                    }}
+                    variant="primary"
+                    size="sm"
+                    leftIcon={<Users className="w-4 h-4" />}
+                  >
+                    Group
+                  </Button>
+                </div>
+              </div>
 
-            {/* Calendar */}
-            <div className="bg-white rounded-lg shadow-sm">
               {loadingData ? (
                 <div className="p-12 text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                  <p className="mt-4 text-gray-600">Loading calendar...</p>
+                  <p className="mt-4 text-silver-700">Loading calendar...</p>
                 </div>
               ) : (
                 <DraggableAthleteCalendar
@@ -386,7 +398,7 @@ export default function DashboardPage() {
               assignmentId={selectedAssignmentId}
               userRole={user?.role || "athlete"}
               onStartWorkout={handleStartWorkout}
-              onEdit={handleEditAssignment}
+              onEdit={() => {}}
               onDelete={handleDeleteAssignment}
             />
           )}
@@ -395,254 +407,279 @@ export default function DashboardPage() {
     );
   }
 
-  // Athlete Dashboard (existing code)
-
+  // Athlete Dashboard - Mobile-Forward, Industry-Leading Design
   return (
-    <div className="container-responsive min-h-screen bg-gradient-primary px-4 py-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Enhanced mobile-first welcome header */}
-        <div className="text-center sm:text-left mb-8">
-          <h1 className="text-heading-primary text-3xl sm:text-2xl mb-2 font-bold">
-            Welcome back,
-          </h1>
-          <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
-            {user.fullName}! <Hand className="w-6 h-6" />
-          </p>
-        </div>
-
-        {/* Enhanced mobile-first stats grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <div className="card-stat rounded-2xl border-2 border-orange-200 bg-orange-50 touch-manipulation hover:shadow-lg transition-all">
-            <div className="flex items-center">
-              <div className="shrink-0">
-                <div className="w-14 h-14 sm:w-12 sm:h-12 bg-accent-orange bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <Dumbbell className="w-7 h-7 sm:w-6 sm:h-6 text-accent-orange" />
-                </div>
-              </div>
-              <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-orange-700">
-                  This Week
-                </dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-orange-800">
-                  {loadingStats ? (
-                    <div className="animate-pulse h-8 w-16 bg-orange-200 rounded"></div>
-                  ) : (
-                    `${stats.workoutsThisWeek} workout${stats.workoutsThisWeek !== 1 ? "s" : ""}`
-                  )}
-                </dd>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-stat rounded-2xl border-2 border-green-200 bg-green-50 touch-manipulation hover:shadow-lg transition-all">
-            <div className="flex items-center">
-              <div className="shrink-0">
-                <div className="w-14 h-14 sm:w-12 sm:h-12 bg-accent-green bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <Trophy className="w-7 h-7 sm:w-6 sm:h-6 text-accent-green" />
-                </div>
-              </div>
-              <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-green-700">
-                  Personal Records
-                </dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-green-800">
-                  {loadingStats ? (
-                    <div className="animate-pulse h-8 w-12 bg-green-200 rounded"></div>
-                  ) : (
-                    stats.personalRecords
-                  )}
-                </dd>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-stat sm:col-span-2 lg:col-span-1 rounded-2xl border-2 border-red-200 bg-red-50 touch-manipulation hover:shadow-lg transition-all">
-            <div className="flex items-center">
-              <div className="shrink-0">
-                <div className="w-14 h-14 sm:w-12 sm:h-12 bg-accent-red bg-opacity-20 rounded-2xl flex items-center justify-center">
-                  <Flame className="w-7 h-7 sm:w-6 sm:h-6 text-accent-red" />
-                </div>
-              </div>
-              <div className="ml-4 flex-1">
-                <dt className="text-body-small font-medium text-red-700">
-                  Streak Days
-                </dt>
-                <dd className="text-heading-primary text-3xl sm:text-2xl font-bold text-red-800">
-                  {loadingStats ? (
-                    <div className="animate-pulse h-8 w-12 bg-red-200 rounded"></div>
-                  ) : (
-                    stats.currentStreak
-                  )}
-                </dd>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Athlete Calendar View - Shows only their assignments */}
-        <div className="mb-8">
-          <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
-            <Calendar className="w-6 h-6" /> Your Schedule
-          </h2>
-          <DraggableAthleteCalendar
-            assignments={assignments}
-            onAssignmentClick={handleAssignmentClick}
-            viewMode="week"
-            isCoach={false}
-          />
-        </div>
-
-        {/* Enhanced assigned workouts for athletes */}
-        {user.role === "athlete" && (
-          <div className="mb-8">
-            <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
-              <ClipboardList className="w-6 h-6" /> Your Assigned Workouts
-            </h2>
-            {loadingData ? (
-              <DashboardSkeleton />
-            ) : assignments.length === 0 ? (
-              <EmptyAssignments />
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {assignments.slice(0, 6).map((assignment) => {
-                  const scheduledDate = parseDate(assignment.scheduledDate);
-                  const isToday = checkIsToday(scheduledDate);
-                  const isPast = checkIsPast(scheduledDate);
-                  const isFuture = checkIsFuture(scheduledDate);
-
-                  return (
-                    <div
-                      key={assignment.id}
-                      className={`card-primary rounded-lg border-2 p-4 ${
-                        isToday
-                          ? "border-accent-blue bg-blue-50"
-                          : isPast
-                            ? "border-gray-200 bg-gray-50"
-                            : "border-gray-200"
-                      }`}
-                    >
-                      <div className="mb-3">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-lg font-bold text-gray-900">
-                            {assignment.workoutPlanName}
-                          </h3>
-                          {isToday && (
-                            <span className="text-xs bg-accent-blue text-white px-2 py-1 rounded">
-                              Today
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          {scheduledDate.toLocaleDateString("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </p>
-                        {assignment.startTime && (
-                          <p className="text-sm text-gray-600">
-                            {assignment.startTime}
-                            {assignment.endTime && ` - ${assignment.endTime}`}
-                          </p>
-                        )}
-                        {assignment.location && (
-                          <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                            <span>📍</span> {assignment.location}
-                          </p>
-                        )}
-                      </div>
-
-                      {(isToday || isPast) && (
-                        <Link
-                          href={`/workouts/live/${assignment.id}`}
-                          className="w-full btn-primary flex items-center justify-center gap-2 py-2"
-                        >
-                          <Dumbbell className="w-4 h-4" />
-                          {isPast ? "Start Workout" : "Start Now"}
-                        </Link>
-                      )}
-
-                      {isFuture && (
-                        <button
-                          onClick={() => handleAssignmentClick(assignment)}
-                          className="w-full btn-secondary flex items-center justify-center gap-2 py-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          View Details
-                        </button>
-                      )}
-                    </div>
-                  );
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
+      {/* Sticky Action Bar - Thumb Zone Optimized */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="container-responsive px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">
+                Hi, {user.firstName}! 👋
+              </h1>
+              <p className="text-xs text-gray-500">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
                 })}
+              </p>
+            </div>
+            <Link href="/workouts/live/new">
+              <Button
+                variant="primary"
+                leftIcon={<Dumbbell className="w-4 h-4" />}
+                className="rounded-full px-6 shadow-lg"
+              >
+                Start
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="container-responsive px-4 py-4 pb-24 max-w-2xl mx-auto space-y-4">
+        {/* Quick Stats - Compact & Visual */}
+        <div className="grid grid-cols-3 gap-3">
+          <Card variant="default" padding="sm" className="text-center">
+            <div className="inline-flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full mb-2">
+              <Dumbbell className="w-5 h-5 text-orange-600" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {loadingStats ? (
+                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
+              ) : (
+                stats.workoutsThisWeek
+              )}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">This Week</div>
+          </Card>
+
+          <Card variant="default" padding="sm" className="text-center">
+            <div className="inline-flex items-center justify-center w-10 h-10 bg-green-100 rounded-full mb-2">
+              <Trophy className="w-5 h-5 text-green-600" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {loadingStats ? (
+                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
+              ) : (
+                stats.personalRecords
+              )}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">PRs</div>
+          </Card>
+
+          <Card variant="default" padding="sm" className="text-center">
+            <div className="inline-flex items-center justify-center w-10 h-10 bg-red-100 rounded-full mb-2">
+              <Flame className="w-5 h-5 text-red-600" />
+            </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {loadingStats ? (
+                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
+              ) : (
+                stats.currentStreak
+              )}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">Day Streak</div>
+          </Card>
+        </div>
+
+        {/* Today's Workouts - Hero Section */}
+        {user.role === "athlete" && (
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+              <div className="w-1 h-4 bg-orange-500 rounded-full" />
+              Today&apos;s Workouts
+            </h2>
+
+            {assignments.filter((a) => {
+              const assignmentDate = parseDate(a.scheduledDate);
+              return checkIsToday(assignmentDate);
+            }).length === 0 ? (
+              <Card variant="default" padding="lg" className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                  <Calendar className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No Workouts Today
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Enjoy your rest day or check tomorrow&apos;s schedule
+                </p>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {assignments
+                  .filter((a) => {
+                    const assignmentDate = parseDate(a.scheduledDate);
+                    return checkIsToday(assignmentDate);
+                  })
+                  .map((assignment) => {
+                    const assignmentId =
+                      assignment.id ||
+                      `${assignment.workoutPlanId}-${assignment.athleteId}`;
+
+                    return (
+                      <Card
+                        key={assignmentId}
+                        variant="interactive"
+                        padding="md"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">
+                              {assignment.workoutPlanName || "Workout"}
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                              {assignment.startTime && (
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  {assignment.startTime}
+                                </span>
+                              )}
+                              {assignment.location && (
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  {assignment.location}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="shrink-0 ml-4">
+                            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                              <Dumbbell className="w-6 h-6 text-orange-600" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <Link
+                          href={`/workouts/live/${assignmentId}`}
+                          className="block"
+                        >
+                          <Button
+                            variant="primary"
+                            fullWidth
+                            leftIcon={<Dumbbell className="w-5 h-5" />}
+                            className="h-12 text-base font-semibold rounded-xl"
+                          >
+                            Start Workout
+                          </Button>
+                        </Link>
+                      </Card>
+                    );
+                  })}
               </div>
             )}
           </div>
         )}
 
-        {/* Enhanced recent activity - mobile optimized */}
-        <div className="mb-8">
-          <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
-            <TrendingUp className="w-6 h-6" /> Recent Activity
+        {/* This Week's Schedule - Compact List */}
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+            <div className="w-1 h-4 bg-blue-500 rounded-full" />
+            This Week
           </h2>
-          <div className="card-primary rounded-2xl border-2 border-gray-200 overflow-hidden shadow-md">
-            {/* No recent activity yet - will be loaded from API */}
-            <div className="text-center py-16">
-              <TrendingUp className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-xl font-semibold text-gray-500 mb-2">
-                No Recent Activity
-              </h3>
-              <p className="text-gray-400">
-                Your workout progress and achievements will appear here.
-              </p>
-            </div>
-          </div>
+
+          <Card variant="default" padding="none" className="overflow-hidden">
+            <DraggableAthleteCalendar
+              assignments={assignments}
+              onAssignmentClick={handleAssignmentClick}
+              viewMode="week"
+              isCoach={false}
+            />
+          </Card>
         </div>
 
-        {/* Enhanced upcoming workouts - mobile optimized */}
+        {/* Upcoming Workouts - Minimalist Cards */}
         {user.role === "athlete" && (
-          <div className="mb-8">
-            <h2 className="text-heading-secondary text-2xl sm:text-xl mb-6 font-bold text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
-              <Calendar className="h-6 w-6 text-blue-600" />
-              Upcoming Workouts
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+              <div className="w-1 h-4 bg-purple-500 rounded-full" />
+              Coming Up
             </h2>
-            <div className="card-primary rounded-2xl border-2 border-gray-200 overflow-hidden shadow-md">
-              {/* No upcoming workouts - will be loaded from API */}
-              <div className="text-center py-16">
-                <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-xl font-semibold text-gray-500 mb-2">
-                  No Upcoming Workouts
-                </h3>
-                <p className="text-gray-400">
-                  Future workout assignments will appear here.
+
+            {assignments.filter((a) => {
+              const assignmentDate = parseDate(a.scheduledDate);
+              return (
+                checkIsFuture(assignmentDate) && !checkIsToday(assignmentDate)
+              );
+            }).length === 0 ? (
+              <Card variant="default" padding="md" className="text-center">
+                <p className="text-sm text-gray-500">
+                  No upcoming workouts scheduled
                 </p>
-              </div>
-            </div>
+              </Card>
+            ) : (
+              <Card
+                variant="default"
+                padding="none"
+                className="divide-y divide-gray-100"
+              >
+                {assignments
+                  .filter((a) => {
+                    const assignmentDate = parseDate(a.scheduledDate);
+                    return (
+                      checkIsFuture(assignmentDate) &&
+                      !checkIsToday(assignmentDate)
+                    );
+                  })
+                  .slice(0, 5)
+                  .map((assignment) => {
+                    const assignmentDate = parseDate(assignment.scheduledDate);
+                    const assignmentId =
+                      assignment.id ||
+                      `${assignment.workoutPlanId}-${assignment.athleteId}`;
+
+                    return (
+                      <button
+                        key={assignmentId}
+                        onClick={() => handleAssignmentClick(assignment)}
+                        className="w-full p-4 flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="shrink-0">
+                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                              <Calendar className="w-5 h-5 text-gray-600" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-sm font-semibold text-gray-900 truncate">
+                              {assignment.workoutPlanName || "Workout"}
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                              {assignmentDate.toLocaleDateString("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                              {assignment.startTime &&
+                                ` • ${assignment.startTime}`}
+                            </p>
+                          </div>
+                        </div>
+                        <Eye className="w-5 h-5 text-gray-400 shrink-0" />
+                      </button>
+                    );
+                  })}
+              </Card>
+            )}
           </div>
-        )}
-
-        {/* Enhanced mobile floating action button */}
-        <div className="fixed bottom-6 right-6 z-40">
-          <Link
-            href="/workout/new"
-            className="flex items-center justify-center w-16 h-16 sm:w-14 sm:h-14 bg-linear-to-br from-accent-orange to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
-          >
-            <span className="text-2xl sm:text-xl font-bold">+</span>
-          </Link>
-        </div>
-
-        {/* Assignment Detail Modal */}
-        {selectedAssignmentId && (
-          <WorkoutAssignmentDetailModal
-            isOpen={showDetailModal}
-            onClose={handleCloseDetailModal}
-            assignmentId={selectedAssignmentId}
-            userRole={user?.role || "athlete"}
-            onStartWorkout={handleStartWorkout}
-            onEdit={handleEditAssignment}
-            onDelete={handleDeleteAssignment}
-          />
         )}
       </div>
+
+      {/* Assignment Detail Modal */}
+      {selectedAssignmentId && (
+        <WorkoutAssignmentDetailModal
+          isOpen={showDetailModal}
+          onClose={handleCloseDetailModal}
+          assignmentId={selectedAssignmentId}
+          userRole={user?.role || "athlete"}
+          onStartWorkout={handleStartWorkout}
+          onEdit={() => {}}
+          onDelete={handleDeleteAssignment}
+        />
+      )}
     </div>
   );
 }

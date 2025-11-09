@@ -10,6 +10,7 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { WorkoutPlan } from "@/types";
 import { AlertTriangle, RefreshCw, Save } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   children: ReactNode;
@@ -146,22 +147,24 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               {savedWorkout && this.props.onRecover && (
-                <button
+                <Button
                   onClick={this.handleRecover}
-                  className="flex-1 btn-primary flex items-center justify-center gap-2"
+                  variant="primary"
+                  leftIcon={<Save className="w-5 h-5" />}
+                  className="flex-1"
                 >
-                  <Save className="w-5 h-5" />
                   Recover Workout
-                </button>
+                </Button>
               )}
 
-              <button
+              <Button
                 onClick={this.handleReset}
-                className="flex-1 btn-secondary flex items-center justify-center gap-2"
+                variant="secondary"
+                leftIcon={<RefreshCw className="w-5 h-5" />}
+                className="flex-1"
               >
-                <RefreshCw className="w-5 h-5" />
                 Try Again
-              </button>
+              </Button>
 
               <button
                 onClick={this.handleClearRecovery}

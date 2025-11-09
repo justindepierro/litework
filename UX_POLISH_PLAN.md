@@ -9,9 +9,11 @@
 ## 🎯 High-Impact Quick Wins (1-2 days)
 
 ### 1. **Smooth Micro-Interactions** (4 hours)
+
 **Impact**: Feels 10x more polished and professional
 
 **What to Add**:
+
 - ✨ Button hover states with subtle lift (`transform: translateY(-1px)`)
 - 🎭 Card hover effects with shadow expansion
 - 💫 Ripple effects on button clicks (Material Design pattern)
@@ -21,6 +23,7 @@
 - 🔄 Loading state morphs (spinner → checkmark on success)
 
 **Files to Enhance**:
+
 ```
 src/app/globals.css          # Add animation utilities
 src/components/ui/Button.tsx # Create polished button component
@@ -28,6 +31,7 @@ src/lib/animations.ts         # Animation utility functions
 ```
 
 **Expected Result**:
+
 - App feels "expensive" and professional
 - Every interaction has feedback
 - Delightful, not distracting
@@ -35,15 +39,18 @@ src/lib/animations.ts         # Animation utility functions
 ---
 
 ### 2. **Consistent Empty States** (2 hours)
+
 **Impact**: Professional, guides users, reduces confusion
 
 **What to Add**:
+
 - 🎨 Beautiful illustrations/icons for empty states
 - 📝 Helpful text: "No workouts yet. Create your first one!"
 - 🔘 Clear CTAs in empty states
 - 🎭 Consistent empty state component across app
 
 **Pattern**:
+
 ```tsx
 <EmptyState
   icon={<Dumbbell />}
@@ -51,7 +58,7 @@ src/lib/animations.ts         # Animation utility functions
   description="Create your first workout to get started"
   action={{
     label: "Create Workout",
-    onClick: handleCreate
+    onClick: handleCreate,
   }}
 />
 ```
@@ -59,11 +66,13 @@ src/lib/animations.ts         # Animation utility functions
 ---
 
 ### 3. **Toast Notification System** (2 hours)
+
 **Impact**: Better feedback, less jarring than alerts
 
 **Replace**: All `alert()` and basic success/error messages
 
 **Features**:
+
 - ✅ Success toasts (green, checkmark icon)
 - ❌ Error toasts (red, X icon)
 - ℹ️ Info toasts (blue, info icon)
@@ -77,32 +86,42 @@ src/lib/animations.ts         # Animation utility functions
 ---
 
 ### 4. **Loading State Consistency** (3 hours)
+
 **Impact**: Perceived performance boost, professional feel
 
 **Current Issue**: Mix of spinners, skeleton screens, and blank states
 
 **Solution**:
+
 - Use skeleton screens for content-heavy pages (dashboard, workouts list)
 - Use spinner for quick actions (< 1 second)
 - Use progress bars for file uploads
 - Use inline spinners for buttons during save
 
 **Replace all instances of**:
+
 ```tsx
-{loading && <div>Loading...</div>}
+{
+  loading && <div>Loading...</div>;
+}
 ```
 
 **With**:
+
 ```tsx
-{loading ? <WorkoutListSkeleton /> : <WorkoutList />}
+{
+  loading ? <WorkoutListSkeleton /> : <WorkoutList />;
+}
 ```
 
 ---
 
 ### 5. **Focus States & Keyboard Navigation** (2 hours)
+
 **Impact**: Accessibility, professional, power users love it
 
 **Add**:
+
 - 🎯 Visible focus rings (blue glow, not default outline)
 - ⌨️ Keyboard shortcuts (? to show shortcuts modal)
 - ↹ Logical tab order throughout app
@@ -114,6 +133,7 @@ src/lib/animations.ts         # Animation utility functions
 ## 🚀 Medium-Impact Improvements (2-3 days)
 
 ### 6. **Professional Color Transitions** (3 hours)
+
 **Impact**: Smooth, not jarring
 
 **Current**: Instant color changes on hover/active
@@ -125,6 +145,7 @@ transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 ```
 
 **Enhance**:
+
 - Button states (hover, active, disabled)
 - Form inputs (focus, error, success)
 - Card hover effects
@@ -133,9 +154,11 @@ transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 ---
 
 ### 7. **Smart Loading States** (4 hours)
+
 **Impact**: Feels faster, less jarring
 
 **Implement**:
+
 - Minimum skeleton display time (300ms) to prevent flashing
 - Staggered loading (cards animate in one by one)
 - Progressive image loading (blur → sharp)
@@ -146,9 +169,11 @@ transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 ---
 
 ### 8. **Contextual Feedback** (3 hours)
+
 **Impact**: Users know exactly what's happening
 
 **Add**:
+
 - ✅ Inline validation messages (real-time)
 - 💬 Helpful tooltips on complex features
 - 🎯 Success states that morph (saving... → saved! ✓)
@@ -158,9 +183,11 @@ transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 ---
 
 ### 9. **Consistent Spacing & Typography** (4 hours)
+
 **Impact**: Professional, cohesive, polished
 
 **Audit & Fix**:
+
 - Use 8px grid system throughout (8, 16, 24, 32, 40, 48, 64)
 - Consistent font sizes (14px, 16px, 18px, 24px, 32px, 48px)
 - Consistent font weights (400, 500, 600, 700)
@@ -168,24 +195,27 @@ transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 - Remove one-off spacing values
 
 **Create utility**:
+
 ```typescript
 // src/lib/spacing.ts
 export const spacing = {
-  xs: '8px',
-  sm: '16px',
-  md: '24px',
-  lg: '32px',
-  xl: '48px',
-  '2xl': '64px'
-}
+  xs: "8px",
+  sm: "16px",
+  md: "24px",
+  lg: "32px",
+  xl: "48px",
+  "2xl": "64px",
+};
 ```
 
 ---
 
 ### 10. **Mobile Touch Enhancements** (4 hours)
+
 **Impact**: Native app feel on mobile
 
 **Add**:
+
 - 👆 Active states on touch (scale down 0.97)
 - 📱 Pull-to-refresh on lists
 - ↔️ Swipe actions on list items (delete, edit)
@@ -198,9 +228,11 @@ export const spacing = {
 ## 🎨 Advanced Polish (3-4 days)
 
 ### 11. **Fluid Animations** (5 hours)
+
 **Impact**: Premium, delightful
 
 **Implement**:
+
 - 🌊 Spring physics for modals (react-spring or Framer Motion)
 - 📜 Smooth scroll animations (intersection observer)
 - 🎭 Parallax effects (subtle background movement)
@@ -210,9 +242,11 @@ export const spacing = {
 ---
 
 ### 12. **Smart Defaults & Predictions** (4 hours)
+
 **Impact**: Feels intelligent
 
 **Add**:
+
 - 🎯 Pre-fill forms with last used values
 - 🧠 Suggest weights based on last workout
 - 📅 Smart date picker (highlights workout days)
@@ -222,22 +256,24 @@ export const spacing = {
 ---
 
 ### 13. **Professional Error States** (3 hours)
+
 **Impact**: Users don't panic
 
 **Replace**: All error messages
 
 **With**:
+
 ```tsx
 <ErrorState
   title="Couldn't load workouts"
   description="Don't worry, your data is safe."
   action={{
     label: "Try Again",
-    onClick: retry
+    onClick: retry,
   }}
   secondaryAction={{
     label: "Contact Support",
-    onClick: contactSupport
+    onClick: contactSupport,
   }}
 />
 ```
@@ -245,9 +281,11 @@ export const spacing = {
 ---
 
 ### 14. **Onboarding Hints** (4 hours)
+
 **Impact**: New users succeed immediately
 
 **Add**:
+
 - 🎓 First-time user tooltips
 - 🎯 Progressive disclosure (show advanced features after basics)
 - ✨ Celebration on first workout created
@@ -257,15 +295,18 @@ export const spacing = {
 ---
 
 ### 15. **Glassmorphism & Modern Design** (6 hours)
+
 **Impact**: Trendy, modern, Apple-like
 
 **Apply to**:
+
 - Modal backgrounds (frosted glass effect)
 - Navigation bar (translucent with blur)
 - Card overlays (subtle transparency)
 - Hover states (glass lift effect)
 
 **CSS Example**:
+
 ```css
 .glass-card {
   background: rgba(255, 255, 255, 0.8);
@@ -280,6 +321,7 @@ export const spacing = {
 ## 📊 Performance-Optimized UX Patterns
 
 ### ✅ Already Implemented:
+
 - Skeleton loading screens
 - Dynamic component imports
 - Optimistic UI updates
@@ -287,6 +329,7 @@ export const spacing = {
 - Image optimization
 
 ### 🎯 Use More Aggressively:
+
 1. **Skeleton screens** - Every list/grid view
 2. **Optimistic updates** - All save/delete operations
 3. **Prefetching** - Hover to preload modal content
@@ -298,12 +341,14 @@ export const spacing = {
 ## 🎨 Color & Theme Enhancements
 
 ### Current Colors:
+
 ```
 Navy (primary): #334155
 Accent colors: Orange, Green, Purple, Pink
 ```
 
 ### Enhancements:
+
 1. **Semantic colors** - Add success, warning, error, info variants
 2. **State colors** - Add hover, active, disabled states
 3. **Gradients** - Use subtly on hero sections, cards
@@ -345,6 +390,7 @@ Accent colors: Orange, Green, Purple, Pink
 ## 🎯 Implementation Priority
 
 ### Week 1: Quick Wins (High Impact, Low Effort)
+
 1. Micro-interactions (4h)
 2. Empty states (2h)
 3. Toast consistency (2h)
@@ -355,6 +401,7 @@ Accent colors: Orange, Green, Purple, Pink
 **Impact**: App feels 5x more polished
 
 ### Week 2: Core Polish (High Impact, Medium Effort)
+
 6. Color transitions (3h)
 7. Smart loading (4h)
 8. Contextual feedback (3h)
@@ -365,6 +412,7 @@ Accent colors: Orange, Green, Purple, Pink
 **Impact**: Professional, cohesive experience
 
 ### Week 3: Advanced (Nice-to-Have)
+
 11. Fluid animations (5h)
 12. Smart defaults (4h)
 13. Error states (3h)
@@ -379,17 +427,20 @@ Accent colors: Orange, Green, Purple, Pink
 ## 📱 Mobile-First UX Principles
 
 ### Touch Targets:
+
 - Minimum 44x44px for all taps
 - 16px spacing between targets
 - Larger buttons in workout live mode (64px+)
 
 ### Gestures:
+
 - Swipe left: Delete
 - Swipe right: Edit
 - Pull down: Refresh
 - Long press: Context menu
 
 ### Visual Feedback:
+
 - Active state on touch (scale 0.97)
 - Haptic feedback on actions
 - Loading states with progress
@@ -400,12 +451,14 @@ Accent colors: Orange, Green, Purple, Pink
 ## 🎨 Design Token System
 
 ### Already Have:
+
 ```
 src/styles/design-tokens.css
 src/styles/tokens.ts
 ```
 
 ### Need to Add:
+
 ```css
 /* Motion tokens */
 --motion-duration-instant: 100ms;
@@ -419,10 +472,10 @@ src/styles/tokens.ts
 --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
 /* Elevation tokens */
---elevation-1: 0 1px 3px rgba(0,0,0,0.12);
---elevation-2: 0 4px 6px rgba(0,0,0,0.12);
---elevation-3: 0 10px 20px rgba(0,0,0,0.15);
---elevation-4: 0 20px 40px rgba(0,0,0,0.2);
+--elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+--elevation-2: 0 4px 6px rgba(0, 0, 0, 0.12);
+--elevation-3: 0 10px 20px rgba(0, 0, 0, 0.15);
+--elevation-4: 0 20px 40px rgba(0, 0, 0, 0.2);
 
 /* Radius tokens */
 --radius-sm: 6px;
@@ -437,12 +490,14 @@ src/styles/tokens.ts
 ## 🏁 Success Metrics
 
 ### Before:
+
 - Basic functionality
 - Mix of loading states
 - Standard interactions
 - Some animations
 
 ### After:
+
 - ✨ Delightful interactions
 - 🎯 Consistent patterns
 - 🚀 Feels fast (skeleton + optimistic UI)
@@ -452,6 +507,7 @@ src/styles/tokens.ts
 - 🎨 Modern design
 
 ### User Feedback:
+
 - "This feels like a $1M app"
 - "So smooth and responsive"
 - "Love the attention to detail"
@@ -485,16 +541,19 @@ If you only have time for the absolute essentials:
 ## 🛠️ Tools & Libraries (Optional)
 
 ### Animation:
+
 - `framer-motion` - Best React animation library
 - `react-spring` - Physics-based animations
 - CSS transitions - For simple stuff (use this first)
 
 ### UI Components:
+
 - `@headlessui/react` - Accessible primitives
 - `@radix-ui/react-*` - Unstyled components
 - DIY with Tailwind - Best for performance
 
 ### Utilities:
+
 - `clsx` / `classnames` - Conditional classes
 - `react-hot-toast` - Already have Toast system
 - Native CSS - For most things

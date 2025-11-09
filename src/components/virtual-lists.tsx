@@ -1,7 +1,7 @@
 /**
  * Virtual Scrolling Utilities
  * Efficient rendering of large lists using react-window
- * 
+ *
  * Note: Virtual scrolling is powerful but adds complexity.
  * Only use for lists with 100+ items. For smaller lists, use standard rendering.
  */

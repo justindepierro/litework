@@ -267,8 +267,11 @@ export async function GET(request: NextRequest) {
       // Calculate streaks and consistency patterns using shared utility
       const workoutDates =
         activityLog?.map((log) => new Date(log.created_at)) || [];
-      
-      const { currentStreak, longestStreak } = calculateDetailedStreaks(workoutDates, 30);
+
+      const { currentStreak, longestStreak } = calculateDetailedStreaks(
+        workoutDates,
+        30
+      );
       const uniqueWorkoutDates = [
         ...new Set(workoutDates.map((date) => date.toDateString())),
       ];

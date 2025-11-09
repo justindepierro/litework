@@ -111,39 +111,39 @@ export default function ManageGroupMembersModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-silver-400">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <Users className="w-6 h-6 text-blue-600" />
+              <h2 className="text-2xl font-bold text-navy-900 flex items-center gap-2">
+                <Users className="w-6 h-6 text-accent-blue" />
                 Manage Group Members
               </h2>
-              <p className="text-gray-600 mt-1">
+              <p className="text-silver-700 mt-1">
                 {group.name}
                 {group.description && ` - ${group.description}`}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-silver-200 rounded-lg transition-colors"
             >
-              <X className="w-6 h-6 text-gray-400" />
+              <X className="w-6 h-6 text-silver-600" />
             </button>
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-silver-600 w-5 h-5" />
             <input
               type="text"
               placeholder="Search athletes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-3 border border-silver-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue"
             />
           </div>
 
-          <div className="mt-3 text-sm text-gray-600">
+          <div className="mt-3 text-sm text-silver-700">
             {groupMembers.length} of {allAthletes.length} athletes in this group
           </div>
         </div>
@@ -152,12 +152,12 @@ export default function ManageGroupMembersModal({
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-blue" />
             </div>
           ) : filteredAthletes.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No athletes found</p>
+              <Users className="w-12 h-12 text-silver-500 mx-auto mb-3" />
+              <p className="text-silver-600">No athletes found</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -170,33 +170,33 @@ export default function ManageGroupMembersModal({
                     disabled={isSaving}
                     className={`w-full p-4 rounded-lg border-2 transition-all flex items-center justify-between ${
                       isInGroup
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        ? "border-info-light bg-info-lighter"
+                        : "border-silver-400 hover:border-silver-500 hover:bg-silver-200"
                     } ${isSaving ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 bg-accent-blue rounded-full flex items-center justify-center text-white font-semibold">
                         {athlete.firstName[0]}
                         {athlete.lastName[0]}
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-gray-900">
+                        <div className="font-semibold text-navy-900">
                           {athlete.firstName} {athlete.lastName}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-silver-600">
                           {athlete.email}
                         </div>
                       </div>
                     </div>
 
                     {isInGroup && (
-                      <div className="flex items-center gap-2 text-blue-600">
+                      <div className="flex items-center gap-2 text-accent-blue">
                         <Check className="w-5 h-5" />
                         <span className="text-sm font-medium">In Group</span>
                       </div>
                     )}
                     {!isInGroup && (
-                      <div className="text-gray-400">
+                      <div className="text-silver-600">
                         <UserPlus className="w-5 h-5" />
                       </div>
                     )}
@@ -208,7 +208,7 @@ export default function ManageGroupMembersModal({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 border-t border-silver-400">
           <button
             onClick={onClose}
             className="w-full py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 font-semibold transition-colors border-2 border-navy-700"

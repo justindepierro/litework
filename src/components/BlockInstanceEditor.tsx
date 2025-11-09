@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, Package, RotateCcw, AlertCircle, Save, Info } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -326,14 +327,14 @@ export default function BlockInstanceEditor({
 
           {/* Quick Actions */}
           <div className="flex flex-wrap gap-2">
-            <button
+            <Button
               onClick={resetToTemplate}
               disabled={isLoadingTemplate || !sourceBlock}
-              className="btn-secondary flex items-center space-x-2"
+              variant="secondary"
+              leftIcon={<RotateCcw className="w-4 h-4" />}
             >
-              <RotateCcw className="w-4 h-4" />
-              <span>Reset to Template</span>
-            </button>
+              Reset to Template
+            </Button>
           </div>
 
           {/* Note about full editing */}
@@ -352,16 +353,16 @@ export default function BlockInstanceEditor({
 
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t border-silver-200 bg-silver-50">
-          <button onClick={onClose} className="btn-secondary">
+          <Button onClick={onClose} variant="secondary">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
-            className="btn-primary flex items-center space-x-2"
+            variant="primary"
+            leftIcon={<Save className="w-4 h-4" />}
           >
-            <Save className="w-4 h-4" />
-            <span>Save Changes</span>
-          </button>
+            Save Changes
+          </Button>
         </div>
       </div>
     </div>

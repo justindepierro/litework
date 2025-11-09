@@ -124,9 +124,7 @@ export function BackgroundImage({
         placeholder="blur"
         blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
       />
-      {overlay && (
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
-      )}
+      {overlay && <div className="absolute inset-0 bg-black bg-opacity-40" />}
     </div>
   );
 }

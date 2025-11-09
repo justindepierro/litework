@@ -19,6 +19,7 @@ This is our polished, professional UI component library using **design tokens** 
 **Location**: `src/components/ui/Button.tsx`
 
 **Features**:
+
 - Ripple effect on click
 - Hover lift animation
 - Loading states with spinner
@@ -27,6 +28,7 @@ This is our polished, professional UI component library using **design tokens** 
 - 3 sizes: sm, md, lg
 
 **Usage**:
+
 ```tsx
 import { Button, IconButton, ButtonGroup } from '@/components/ui';
 import { Plus, Save } from 'lucide-react';
@@ -37,8 +39,8 @@ import { Plus, Save } from 'lucide-react';
 </Button>
 
 // With loading state
-<Button 
-  variant="primary" 
+<Button
+  variant="primary"
   isLoading={isSaving}
   loadingText="Saving..."
 >
@@ -51,7 +53,7 @@ import { Plus, Save } from 'lucide-react';
 </Button>
 
 // With icons
-<Button 
+<Button
   variant="secondary"
   leftIcon={<Plus className="w-4 h-4" />}
   onClick={handleCreate}
@@ -81,6 +83,7 @@ import { Plus, Save } from 'lucide-react';
 **Location**: `src/components/ui/Card.tsx`
 
 **Features**:
+
 - 4 variants: default, elevated, flat, bordered
 - Hover lift animation
 - Interactive mode (cursor pointer)
@@ -88,6 +91,7 @@ import { Plus, Save } from 'lucide-react';
 - Header, Footer sub-components
 
 **Usage**:
+
 ```tsx
 import { Card, CardHeader, CardFooter, StatCard, InteractiveCard } from '@/components/ui';
 
@@ -98,9 +102,9 @@ import { Card, CardHeader, CardFooter, StatCard, InteractiveCard } from '@/compo
 </Card>
 
 // Interactive card with hover
-<Card 
-  variant="default" 
-  hoverable 
+<Card
+  variant="default"
+  hoverable
   interactive
   onClick={handleClick}
 >
@@ -148,6 +152,7 @@ import { Card, CardHeader, CardFooter, StatCard, InteractiveCard } from '@/compo
 **Location**: `src/components/ui/Input.tsx`
 
 **Features**:
+
 - Focus ring with blue glow
 - Error states with icon
 - Success states with checkmark
@@ -157,6 +162,7 @@ import { Card, CardHeader, CardFooter, StatCard, InteractiveCard } from '@/compo
 - 3 sizes: sm, md, lg
 
 **Usage**:
+
 ```tsx
 import { Input, Textarea, Select } from '@/components/ui';
 import { Search, Mail } from 'lucide-react';
@@ -238,19 +244,21 @@ import { Search, Mail } from 'lucide-react';
 **Location**: `src/components/ui/EmptyState.tsx`
 
 **Features**:
+
 - Icon + illustration support
 - Primary & secondary actions
 - 3 sizes: sm, md, lg
 - Pre-built templates for common scenarios
 
 **Usage**:
+
 ```tsx
-import { 
-  EmptyState, 
-  EmptyWorkouts, 
+import {
+  EmptyState,
+  EmptyWorkouts,
   EmptyAthletes,
   EmptySearch,
-  EmptyError 
+  EmptyError
 } from '@/components/ui';
 import { Dumbbell } from 'lucide-react';
 
@@ -275,7 +283,7 @@ import { Dumbbell } from 'lucide-react';
 
 <EmptyAthletes onInviteAthlete={handleInvite} />
 
-<EmptySearch 
+<EmptySearch
   searchTerm={searchQuery}
   onClearSearch={() => setSearchQuery('')}
 />
@@ -293,12 +301,13 @@ import { Dumbbell } from 'lucide-react';
 **Location**: `src/components/ui/LoadingSpinner.tsx`
 
 **Usage**:
+
 ```tsx
-import { 
-  LoadingSpinner, 
-  PageLoading, 
+import {
+  LoadingSpinner,
+  PageLoading,
   SectionLoading,
-  ButtonLoading 
+  ButtonLoading
 } from '@/components/ui';
 
 // Inline spinner
@@ -327,61 +336,51 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 
 ```tsx
 // Text colors
---color-text-primary      // #334155 (navy-700)
---color-text-secondary    // #475569 (navy-600)
---color-text-tertiary     // #64748b (navy-500)
---color-text-inverse      // #ffffff
+--color - text - primary; // #334155 (navy-700)
+--color - text - secondary; // #475569 (navy-600)
+--color - text - tertiary; // #64748b (navy-500)
+--color - text - inverse; // #ffffff
 
 // Background colors
---color-bg-primary        // #ffffff
---color-bg-secondary      // #f9fafb
---color-bg-surface        // #f9fafb
---color-bg-overlay        // rgba(15, 23, 42, 0.75)
+--color - bg - primary; // #ffffff
+--color - bg - secondary; // #f9fafb
+--color - bg - surface; // #f9fafb
+--color - bg - overlay; // rgba(15, 23, 42, 0.75)
 
 // Border colors
---color-border-primary    // #e5e7eb
---color-border-secondary  // #d1d5db
---color-border-focus      // #3b82f6
+--color - border - primary; // #e5e7eb
+--color - border - secondary; // #d1d5db
+--color - border - focus; // #3b82f6
 
 // Semantic colors
---color-success           // #00d4aa
---color-error             // #ef4444
---color-warning           // #fbbf24
---color-info              // #3b82f6
+--color - success; // #00d4aa
+--color - error; // #ef4444
+--color - warning; // #fbbf24
+--color - info; // #3b82f6
 
 // Accent colors
---color-accent-orange     // #ff6b35
---color-accent-green      // #00d4aa
---color-accent-purple     // #8b5cf6
---color-accent-blue       // #3b82f6
+--color - accent - orange; // #ff6b35
+--color - accent - green; // #00d4aa
+--color - accent - purple; // #8b5cf6
+--color - accent - blue; // #3b82f6
 ```
 
 ### Animation Tokens
 
 ```css
 /* Durations */
---duration-instant: 100ms
---duration-fast: 150ms
---duration-normal: 200ms
---duration-moderate: 300ms
---duration-slow: 400ms
-
-/* Easing */
---easing-ease-out: cubic-bezier(0, 0, 0.2, 1)
---easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1)
---easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1)
---easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55)
-
-/* Transitions */
---transition-fast: all 150ms var(--easing-ease-out)
---transition-normal: all 200ms var(--easing-ease-out)
---transition-spring: all 300ms var(--easing-spring)
-
-/* Elevation (shadows) */
---elevation-1: 0 1px 3px rgba(0,0,0,0.1)
---elevation-2: 0 4px 6px rgba(0,0,0,0.1)
---elevation-3: 0 10px 15px rgba(0,0,0,0.1)
---elevation-4: 0 20px 25px rgba(0,0,0,0.1)
+--duration-instant: 100ms --duration-fast: 150ms --duration-normal: 200ms
+  --duration-moderate: 300ms --duration-slow: 400ms /* Easing */
+  --easing-ease-out: cubic-bezier(0, 0, 0.2, 1)
+  --easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1)
+  --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1)
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55) /* Transitions */
+  --transition-fast: all 150ms var(--easing-ease-out) --transition-normal: all
+  200ms var(--easing-ease-out) --transition-spring: all 300ms
+  var(--easing-spring) /* Elevation (shadows) */ --elevation-1: 0 1px 3px
+  rgba(0, 0, 0, 0.1) --elevation-2: 0 4px 6px rgba(0, 0, 0, 0.1)
+  --elevation-3: 0 10px 15px rgba(0, 0, 0, 0.1) --elevation-4: 0 20px 25px
+  rgba(0, 0, 0, 0.1);
 ```
 
 ---
@@ -437,6 +436,7 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ### Replace Old Patterns
 
 **Old** (hardcoded):
+
 ```tsx
 <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
   Save
@@ -444,6 +444,7 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ```
 
 **New** (design tokens):
+
 ```tsx
 <Button variant="primary" onClick={handleSave}>
   Save
@@ -453,13 +454,21 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ---
 
 **Old** (inline styles):
+
 ```tsx
-<div style={{ padding: '24px', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+<div
+  style={{
+    padding: "24px",
+    borderRadius: "12px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  }}
+>
   Content
 </div>
 ```
 
 **New** (component):
+
 ```tsx
 <Card variant="default" padding="md">
   Content
@@ -469,32 +478,42 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ---
 
 **Old** (custom empty state):
+
 ```tsx
-{workouts.length === 0 && (
-  <div className="text-center py-12">
-    <p>No workouts found</p>
-    <button onClick={handleCreate}>Create One</button>
-  </div>
-)}
+{
+  workouts.length === 0 && (
+    <div className="text-center py-12">
+      <p>No workouts found</p>
+      <button onClick={handleCreate}>Create One</button>
+    </div>
+  );
+}
 ```
 
 **New** (component):
+
 ```tsx
-{workouts.length === 0 && (
-  <EmptyWorkouts onCreateWorkout={handleCreate} />
-)}
+{
+  workouts.length === 0 && <EmptyWorkouts onCreateWorkout={handleCreate} />;
+}
 ```
 
 ---
 
 **Old** (basic loading):
+
 ```tsx
-{loading && <div>Loading...</div>}
+{
+  loading && <div>Loading...</div>;
+}
 ```
 
 **New** (skeleton):
+
 ```tsx
-{loading ? <WorkoutListSkeleton /> : <WorkoutList />}
+{
+  loading ? <WorkoutListSkeleton /> : <WorkoutList />;
+}
 ```
 
 ---
@@ -504,11 +523,13 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ### 1. Always Use Design Tokens
 
 ❌ **Don't**:
+
 ```tsx
 <div className="text-gray-700 bg-white border-gray-300">
 ```
 
 ✅ **Do**:
+
 ```tsx
 <div className="text-[var(--color-text-primary)] bg-[var(--color-bg-surface)] border-[var(--color-border-primary)]">
 ```
@@ -516,11 +537,13 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ### 2. Use Semantic Variants
 
 ❌ **Don't**:
+
 ```tsx
 <button className="bg-red-600">Delete</button>
 ```
 
 ✅ **Do**:
+
 ```tsx
 <Button variant="danger">Delete</Button>
 ```
@@ -528,6 +551,7 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ### 3. Provide Accessibility
 
 ❌ **Don't**:
+
 ```tsx
 <button onClick={handleDelete}>
   <Trash />
@@ -535,6 +559,7 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ```
 
 ✅ **Do**:
+
 ```tsx
 <IconButton
   icon={<Trash />}
@@ -547,33 +572,47 @@ All colors use CSS variables from `src/styles/design-tokens.css`:
 ### 4. Use Empty States
 
 ❌ **Don't**:
+
 ```tsx
-{items.length === 0 && <p>No items</p>}
+{
+  items.length === 0 && <p>No items</p>;
+}
 ```
 
 ✅ **Do**:
+
 ```tsx
-{items.length === 0 && (
-  <EmptyState
-    icon={Icon}
-    title="No items yet"
-    description="Get started by creating one"
-    action={{ label: "Create", onClick: handleCreate }}
-  />
-)}
+{
+  items.length === 0 && (
+    <EmptyState
+      icon={Icon}
+      title="No items yet"
+      description="Get started by creating one"
+      action={{ label: "Create", onClick: handleCreate }}
+    />
+  );
+}
 ```
 
 ### 5. Show Loading States
 
 ❌ **Don't**:
+
 ```tsx
-{isLoading && <div>Loading...</div>}
-{!isLoading && <DataList />}
+{
+  isLoading && <div>Loading...</div>;
+}
+{
+  !isLoading && <DataList />;
+}
 ```
 
 ✅ **Do**:
+
 ```tsx
-{isLoading ? <DataListSkeleton /> : <DataList />}
+{
+  isLoading ? <DataListSkeleton /> : <DataList />;
+}
 ```
 
 ---
@@ -625,6 +664,7 @@ All components are optimized:
 ## 📚 Examples
 
 See live examples in:
+
 - `/docs/component-examples.tsx` (coming soon)
 - Individual component files have usage examples in comments
 - Check existing pages for real-world usage

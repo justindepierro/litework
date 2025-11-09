@@ -5,6 +5,8 @@ import { User, WorkoutPlan, WorkoutAssignment } from "@/types";
 import { X, Users, Search, Check } from "lucide-react";
 import DateTimePicker from "./DateTimePicker";
 import { Input, Textarea } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -227,7 +229,7 @@ export default function IndividualAssignmentModal({
 
               {/* Workout Preview */}
               {selectedWorkout && (
-                <div className="card-secondary">
+                <Card variant="default" padding="md">
                   <h3 className="text-heading-secondary text-lg mb-3">
                     Workout Preview
                   </h3>
@@ -256,7 +258,7 @@ export default function IndividualAssignmentModal({
                       </div>
                     )}
                   </div>
-                </div>
+                </Card>
               )}
             </div>
 
@@ -374,17 +376,18 @@ export default function IndividualAssignmentModal({
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6 pt-6 border-t">
-            <button onClick={onClose} className="btn-secondary flex-1">
+            <Button onClick={onClose} variant="secondary" className="flex-1">
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleAssign}
               disabled={selectedAthleteIds.length === 0 || !selectedWorkoutId}
-              className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="primary"
+              className="flex-1"
             >
               Assign to {selectedAthleteIds.length || "0"} Athlete
               {selectedAthleteIds.length !== 1 ? "s" : ""}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

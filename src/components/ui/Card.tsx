@@ -8,8 +8,14 @@
 
 import React from "react";
 
-export type CardVariant = "default" | "elevated" | "flat" | "bordered";
-export type CardPadding = "none" | "sm" | "md" | "lg";
+export type CardVariant =
+  | "default"
+  | "elevated"
+  | "flat"
+  | "bordered"
+  | "interactive"
+  | "hero";
+export type CardPadding = "none" | "sm" | "md" | "lg" | "xl";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Visual variant */
@@ -66,14 +72,30 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         bg-[var(--color-bg-surface)]
         border-2 border-[var(--color-border-secondary)]
       `,
+      interactive: `
+        bg-[var(--color-bg-surface)]
+        border border-[var(--color-border-primary)]
+        shadow-[var(--elevation-1)]
+        hover:border-gray-200
+        hover:shadow-[var(--elevation-2)]
+        active:scale-[0.98]
+        transition-all
+        cursor-pointer
+      `,
+      hero: `
+        bg-[var(--color-bg-surface)]
+        border border-[var(--color-border-primary)]
+        shadow-[var(--elevation-2)]
+      `,
     };
 
     // Padding styles
     const paddingStyles: Record<CardPadding, string> = {
       none: "",
-      sm: "p-4",
-      md: "p-6",
-      lg: "p-8",
+      sm: "p-3 sm:p-4",
+      md: "p-4 sm:p-5",
+      lg: "p-5 sm:p-6",
+      xl: "p-6 sm:p-8",
     };
 
     // Hover effects
@@ -263,17 +285,8 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
   ...props
 }) => {
   return (
-    <Card
-      hoverable
-      interactive
-      className={`relative ${className}`}
-      {...props}
-    >
-      {badge && (
-        <div className="absolute top-4 right-4">
-          {badge}
-        </div>
-      )}
+    <Card hoverable interactive className={`relative ${className}`} {...props}>
+      {badge && <div className="absolute top-4 right-4">{badge}</div>}
       <div className="flex items-center justify-between">
         <div className="flex-1">{children}</div>
         {showArrow && (

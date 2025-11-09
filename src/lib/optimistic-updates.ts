@@ -251,7 +251,9 @@ export async function batchOptimisticUpdates(
 ): Promise<void> {
   // Save all previous data for rollback
   const previousData = await Promise.all(
-    updates.map((update) => mutate(update.key, undefined, { revalidate: false }))
+    updates.map((update) =>
+      mutate(update.key, undefined, { revalidate: false })
+    )
   );
 
   try {

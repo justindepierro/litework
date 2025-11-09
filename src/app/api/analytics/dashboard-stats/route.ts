@@ -9,9 +9,7 @@
  */
 
 import { NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-} from "@/lib/auth-server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 import { supabase } from "@/lib/supabase";
 import { calculateWorkoutStreak } from "@/lib/analytics-utils";
 

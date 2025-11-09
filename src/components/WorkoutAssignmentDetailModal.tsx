@@ -16,7 +16,11 @@ import {
 } from "lucide-react";
 import { parseDate, isToday, isPast } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
-import type { WorkoutExercise as WorkoutExerciseType, ExerciseGroup } from "@/types";
+import { Button } from "@/components/ui/Button";
+import type {
+  WorkoutExercise as WorkoutExerciseType,
+  ExerciseGroup,
+} from "@/types";
 
 interface WorkoutExercise {
   id: string;
@@ -135,45 +139,51 @@ export default function WorkoutAssignmentDetailModal({
   const isCoach = userRole === "coach" || userRole === "admin";
 
   // Helper functions to access fields regardless of naming convention
-  const getScheduledDate = (a: AssignmentDetail | null) => 
+  const getScheduledDate = (a: AssignmentDetail | null) =>
     a?.scheduled_date || a?.scheduledDate;
-  
-  const getWorkoutName = (a: AssignmentDetail | null) => 
-    a?.workoutPlanName || a?.workout_plan?.name || a?.workoutPlan?.name || 'Untitled Workout';
-  
+
+  const getWorkoutName = (a: AssignmentDetail | null) =>
+    a?.workoutPlanName ||
+    a?.workout_plan?.name ||
+    a?.workoutPlan?.name ||
+    "Untitled Workout";
+
   const getWorkoutDescription = (a: AssignmentDetail | null) =>
     a?.workout_plan?.description || a?.workoutPlan?.description;
-  
+
   const getWorkoutDuration = (a: AssignmentDetail | null) =>
-    a?.workout_plan?.estimated_duration || a?.workoutPlan?.estimatedDuration || 
-    a?.workout_plan?.duration_minutes || a?.workoutPlan?.duration_minutes;
-  
+    a?.workout_plan?.estimated_duration ||
+    a?.workoutPlan?.estimatedDuration ||
+    a?.workout_plan?.duration_minutes ||
+    a?.workoutPlan?.duration_minutes;
+
   const getExercises = (a: AssignmentDetail | null) =>
     a?.workout_plan?.exercises || a?.workoutPlan?.exercises || [];
-  
+
   const getGroups = (a: AssignmentDetail | null) =>
     a?.workout_plan?.groups || a?.workoutPlan?.groups || [];
-  
+
   const getStartTime = (a: AssignmentDetail | null) =>
     a?.start_time || a?.startTime;
-  
-  const getEndTime = (a: AssignmentDetail | null) =>
-    a?.end_time || a?.endTime;
-  
-  const getLocation = (a: AssignmentDetail | null) =>
-    a?.location;
-  
+
+  const getEndTime = (a: AssignmentDetail | null) => a?.end_time || a?.endTime;
+
+  const getLocation = (a: AssignmentDetail | null) => a?.location;
+
   const getNotes = (a: AssignmentDetail | null) =>
     a?.coach_notes || a?.coachNotes || a?.notes;
-  
+
   const getAssignedBy = (a: AssignmentDetail | null) => {
     const user = a?.assigned_by_user || a?.assignedByUser;
-    if (!user) return 'Unknown Coach';
-    return user.full_name || user.fullName || 
-           `${user.first_name || user.firstName || ''} ${user.last_name || user.lastName || ''}`.trim() ||
-           'Unknown Coach';
+    if (!user) return "Unknown Coach";
+    return (
+      user.full_name ||
+      user.fullName ||
+      `${user.first_name || user.firstName || ""} ${user.last_name || user.lastName || ""}`.trim() ||
+      "Unknown Coach"
+    );
   };
-  
+
   const getGroupName = (a: AssignmentDetail | null) =>
     a?.assigned_group?.name || a?.assignedGroup?.name;
 
@@ -258,11 +268,10 @@ export default function WorkoutAssignmentDetailModal({
     // Handle both string and Date types for scheduled_date
     const dateValue = getScheduledDate(assignment);
     if (!dateValue) return "blue";
-    
-    const scheduledDate = typeof dateValue === 'string' 
-      ? parseDate(dateValue)
-      : dateValue;
-    
+
+    const scheduledDate =
+      typeof dateValue === "string" ? parseDate(dateValue) : dateValue;
+
     if (isPast(scheduledDate)) {
       return "red"; // Overdue
     }
@@ -280,10 +289,9 @@ export default function WorkoutAssignmentDetailModal({
     // Handle both string and Date types for scheduled_date
     const dateValue = getScheduledDate(assignment);
     if (!dateValue) return "Assigned";
-    
-    const scheduledDate = typeof dateValue === 'string'
-      ? parseDate(dateValue)
-      : dateValue;
+
+    const scheduledDate =
+      typeof dateValue === "string" ? parseDate(dateValue) : dateValue;
 
     if (isPast(scheduledDate)) {
       return "Overdue";
@@ -367,10 +375,11 @@ export default function WorkoutAssignmentDetailModal({
                 <span>
                   {(() => {
                     const dateValue = getScheduledDate(assignment);
-                    if (!dateValue) return 'No date set';
-                    const date = typeof dateValue === 'string'
-                      ? parseDate(dateValue)
-                      : dateValue;
+                    if (!dateValue) return "No date set";
+                    const date =
+                      typeof dateValue === "string"
+                        ? parseDate(dateValue)
+                        : dateValue;
                     return date.toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
@@ -438,45 +447,56 @@ export default function WorkoutAssignmentDetailModal({
                   Workout ({getExercises(assignment).length} exercises)
                 </h3>
                 <ExerciseGroupDisplay
-                  exercises={getExercises(assignment).map(ex => ({
+                  exercises={getExercises(assignment).map((ex) => ({
                     id: ex.id,
                     exerciseId: ex.exercise_id || ex.exerciseId || ex.id,
-                    exerciseName: ex.exercise_name || ex.exerciseName || 'Exercise',
+                    exerciseName:
+                      ex.exercise_name || ex.exerciseName || "Exercise",
                     sets: ex.sets,
-                    reps: typeof ex.reps === 'string' ? parseInt(ex.reps) : ex.reps,
+                    reps:
+                      typeof ex.reps === "string" ? parseInt(ex.reps) : ex.reps,
                     tempo: ex.tempo || undefined,
                     weightType: "fixed" as const,
                     weight: ex.weight || undefined,
-                    percentage: ex.weight_percentage || ex.weightPercentage || undefined,
+                    percentage:
+                      ex.weight_percentage || ex.weightPercentage || undefined,
                     restTime: ex.rest_seconds || ex.restTime || undefined,
                     notes: ex.notes || undefined,
                     order: ex.order_index || ex.orderIndex || 0,
                     groupId: ex.group_id || ex.groupId || undefined,
                   }))}
-                  groups={getGroups(assignment).map((g: {
-                    id: string;
-                    name: string;
-                    type: string;
-                    description?: string | null;
-                    order_index?: number;
-                    orderIndex?: number;
-                    rest_between_rounds?: number | null;
-                    restBetweenRounds?: number | null;
-                    rest_between_exercises?: number | null;
-                    restBetweenExercises?: number | null;
-                    rounds?: number | null;
-                    notes?: string | null;
-                  }) => ({
-                    id: g.id,
-                    name: g.name,
-                    type: g.type as "superset" | "circuit" | "section",
-                    description: g.description || undefined,
-                    order: g.order_index || g.orderIndex || 0,
-                    restBetweenRounds: g.rest_between_rounds || g.restBetweenRounds || undefined,
-                    restBetweenExercises: g.rest_between_exercises || g.restBetweenExercises || undefined,
-                    rounds: g.rounds || undefined,
-                    notes: g.notes || undefined,
-                  }))}
+                  groups={getGroups(assignment).map(
+                    (g: {
+                      id: string;
+                      name: string;
+                      type: string;
+                      description?: string | null;
+                      order_index?: number;
+                      orderIndex?: number;
+                      rest_between_rounds?: number | null;
+                      restBetweenRounds?: number | null;
+                      rest_between_exercises?: number | null;
+                      restBetweenExercises?: number | null;
+                      rounds?: number | null;
+                      notes?: string | null;
+                    }) => ({
+                      id: g.id,
+                      name: g.name,
+                      type: g.type as "superset" | "circuit" | "section",
+                      description: g.description || undefined,
+                      order: g.order_index || g.orderIndex || 0,
+                      restBetweenRounds:
+                        g.rest_between_rounds ||
+                        g.restBetweenRounds ||
+                        undefined,
+                      restBetweenExercises:
+                        g.rest_between_exercises ||
+                        g.restBetweenExercises ||
+                        undefined,
+                      rounds: g.rounds || undefined,
+                      notes: g.notes || undefined,
+                    })
+                  )}
                   showProgress={false}
                 />
               </div>
@@ -488,25 +508,27 @@ export default function WorkoutAssignmentDetailModal({
               {!isCoach && (
                 <>
                   {statusText === "Assigned" && (
-                    <button
+                    <Button
                       onClick={() => {
                         onStartWorkout?.(assignmentId);
                         onClose();
                       }}
-                      className="btn-primary flex-1 flex items-center justify-center gap-2"
+                      variant="primary"
+                      leftIcon={<Play className="w-5 h-5" />}
+                      className="flex-1"
                     >
-                      <Play className="w-5 h-5" />
                       Start Workout
-                    </button>
+                    </Button>
                   )}
                   {statusText === "Assigned" && (
-                    <button
+                    <Button
                       onClick={handleMarkComplete}
-                      className="btn-secondary flex-1 flex items-center justify-center gap-2"
+                      variant="secondary"
+                      leftIcon={<CheckCircle className="w-5 h-5" />}
+                      className="flex-1"
                     >
-                      <CheckCircle className="w-5 h-5" />
                       Mark Complete
-                    </button>
+                    </Button>
                   )}
                   {statusText === "Completed" && (
                     <div className="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
@@ -522,29 +544,30 @@ export default function WorkoutAssignmentDetailModal({
               {/* Coach Actions */}
               {isCoach && (
                 <>
-                  <button
+                  <Button
                     onClick={() => {
                       onEdit?.(assignmentId);
                       onClose();
                     }}
-                    className="btn-secondary flex items-center gap-2"
+                    variant="secondary"
+                    leftIcon={<Edit className="w-4 h-4" />}
                   >
-                    <Edit className="w-4 h-4" />
                     Edit Assignment
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleDelete}
-                    className="btn-secondary text-red-600 hover:bg-red-50 border-red-300 flex items-center gap-2"
+                    variant="secondary"
+                    leftIcon={<Trash2 className="w-4 h-4" />}
+                    className="text-red-600 hover:bg-red-50 border-red-300"
                   >
-                    <Trash2 className="w-4 h-4" />
                     Delete
-                  </button>
+                  </Button>
                 </>
               )}
 
-              <button onClick={onClose} className="btn-secondary">
+              <Button onClick={onClose} variant="secondary">
                 Close
-              </button>
+              </Button>
             </div>
           </div>
         ) : null}

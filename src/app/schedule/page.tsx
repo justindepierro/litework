@@ -7,12 +7,15 @@ import { WorkoutAssignment } from "@/types";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { parseDate } from "@/lib/date-utils";
+import { Button } from "@/components/ui/Button";
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
+    string | null
+  >(null);
 
   // Check if user is a coach or admin (can drag-and-drop)
   const isCoachUser = user
@@ -142,13 +145,14 @@ export default function SchedulePage() {
             </p>
           </div>
           {isCoachUser && (
-            <button
+            <Button
               onClick={() => (window.location.href = "/dashboard")}
-              className="btn-primary flex items-center gap-2 py-3 px-4 rounded-xl font-medium touch-manipulation"
+              variant="primary"
+              leftIcon={<Plus className="w-5 h-5" />}
+              className="py-3 px-4 rounded-xl font-medium"
             >
-              <Plus className="w-5 h-5" />
               Assign Workout
-            </button>
+            </Button>
           )}
         </div>
 

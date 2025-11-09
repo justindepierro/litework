@@ -27,7 +27,16 @@ interface WorkoutCardProps {
 }
 
 export const WorkoutCard = React.memo<WorkoutCardProps>(
-  ({ id, name, description, exerciseCount, lastUsed, onClick, onEdit, onDelete }) => {
+  ({
+    id,
+    name,
+    description,
+    exerciseCount,
+    lastUsed,
+    onClick,
+    onEdit,
+    onDelete,
+  }) => {
     const prefetchProps = usePrefetch(`/api/workouts/${id}`, "workout-editor");
 
     return (
@@ -45,7 +54,7 @@ export const WorkoutCard = React.memo<WorkoutCardProps>(
                   e.stopPropagation();
                   onEdit();
                 }}
-                className="p-1 hover:bg-gray-100 rounded"
+                className="p-1 hover:bg-silver-200 rounded"
                 aria-label="Edit workout"
               >
                 ✏️
@@ -57,7 +66,7 @@ export const WorkoutCard = React.memo<WorkoutCardProps>(
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="p-1 hover:bg-gray-100 rounded"
+                className="p-1 hover:bg-silver-200 rounded"
                 aria-label="Delete workout"
               >
                 🗑️
@@ -67,10 +76,12 @@ export const WorkoutCard = React.memo<WorkoutCardProps>(
         </div>
 
         {description && (
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{description}</p>
+          <p className="text-sm text-silver-700 mb-3 line-clamp-2">
+            {description}
+          </p>
         )}
 
-        <div className="flex items-center gap-4 text-sm text-gray-500">
+        <div className="flex items-center gap-4 text-sm text-silver-600">
           <span>{exerciseCount} exercises</span>
           {lastUsed && <span>Last used: {lastUsed}</span>}
         </div>
@@ -109,25 +120,17 @@ export const ExerciseDisplay = React.memo<ExerciseDisplayProps>(
     return (
       <div
         className={`p-3 rounded-lg ${
-          isSuperset
-            ? "bg-blue-50 border-l-4"
-            : "bg-gray-50"
+          isSuperset ? "bg-info-lighter border-l-4" : "bg-silver-200"
         }`}
-        style={
-          groupColor
-            ? { borderLeftColor: groupColor }
-            : undefined
-        }
+        style={groupColor ? { borderLeftColor: groupColor } : undefined}
       >
         <div className="font-medium">{name}</div>
-        <div className="text-sm text-gray-600 mt-1 flex gap-3">
+        <div className="text-sm text-silver-700 mt-1 flex gap-3">
           {sets && <span>{sets} sets</span>}
           {reps && <span>{reps} reps</span>}
           {weight && <span>{weight}</span>}
         </div>
-        {notes && (
-          <p className="text-xs text-gray-500 mt-2">{notes}</p>
-        )}
+        {notes && <p className="text-xs text-silver-600 mt-2">{notes}</p>}
       </div>
     );
   }
@@ -161,21 +164,25 @@ export const AthleteCard = React.memo<AthleteCardProps>(
         onClick={onClick}
         {...prefetchProps}
       >
-        <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+        <div className="h-12 w-12 rounded-full bg-silver-300 flex items-center justify-center overflow-hidden">
           {avatar ? (
-            <Image src={avatar} alt={name} width={48} height={48} className="object-cover" />
+            <Image
+              src={avatar}
+              alt={name}
+              width={48}
+              height={48}
+              className="object-cover"
+            />
           ) : (
-            <span className="text-lg font-semibold text-gray-600">
+            <span className="text-lg font-semibold text-silver-700">
               {name.charAt(0).toUpperCase()}
             </span>
           )}
         </div>
         <div className="flex-1">
           <div className="font-medium">{name}</div>
-          <div className="text-sm text-gray-600">{email}</div>
-          {sport && (
-            <div className="text-xs text-gray-500 mt-1">{sport}</div>
-          )}
+          <div className="text-sm text-silver-700">{email}</div>
+          {sport && <div className="text-xs text-silver-600 mt-1">{sport}</div>}
         </div>
       </div>
     );
@@ -208,14 +215,16 @@ export const GroupCard = React.memo<GroupCardProps>(
       >
         <h3 className="font-semibold text-lg mb-1">{name}</h3>
         {sport && (
-          <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded mb-2">
+          <span className="inline-block px-2 py-1 bg-info-lighter text-accent-blue text-xs rounded mb-2">
             {sport}
           </span>
         )}
         {description && (
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{description}</p>
+          <p className="text-sm text-silver-700 mb-3 line-clamp-2">
+            {description}
+          </p>
         )}
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-silver-600">
           {memberCount} {memberCount === 1 ? "member" : "members"}
         </div>
       </div>
@@ -242,7 +251,14 @@ interface NavLinkProps {
 }
 
 export const NavLink = React.memo<NavLinkProps>(
-  ({ href, children, prefetchKeys, className = "", activeClassName = "", isActive = false }) => {
+  ({
+    href,
+    children,
+    prefetchKeys,
+    className = "",
+    activeClassName = "",
+    isActive = false,
+  }) => {
     const prefetchProps = usePrefetch(prefetchKeys);
 
     return (
@@ -278,21 +294,19 @@ export const StatCard = React.memo<StatCardProps>(
   ({ title, value, change, changeType = "neutral", icon }) => {
     const changeColor =
       changeType === "increase"
-        ? "text-green-600"
+        ? "text-success"
         : changeType === "decrease"
-        ? "text-red-600"
-        : "text-gray-600";
+          ? "text-error"
+          : "text-silver-700";
 
     return (
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium text-gray-600">{title}</h3>
+          <h3 className="text-sm font-medium text-silver-700">{title}</h3>
           {icon && <div className="text-2xl">{icon}</div>}
         </div>
         <div className="text-3xl font-bold mb-1">{value}</div>
-        {change && (
-          <div className={`text-sm ${changeColor}`}>{change}</div>
-        )}
+        {change && <div className={`text-sm ${changeColor}`}>{change}</div>}
       </div>
     );
   }
@@ -324,13 +338,14 @@ export const Button = React.memo<ButtonProps>(
     disabled,
     ...props
   }) => {
-    const baseClasses = "rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseClasses =
+      "rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variantClasses = {
-      primary: "bg-blue-600 text-white hover:bg-blue-700",
-      secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
-      danger: "bg-red-600 text-white hover:bg-red-700",
-      ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
+      primary: "bg-accent-blue text-white hover:bg-accent-blue/90",
+      secondary: "bg-silver-300 text-navy-900 hover:bg-silver-400",
+      danger: "bg-accent-red text-white hover:bg-accent-red/90",
+      ghost: "bg-transparent text-silver-800 hover:bg-silver-200",
     };
 
     const sizeClasses = {
@@ -384,9 +399,7 @@ export const Input = React.memo<InputProps>(
           } ${className}`}
           {...props}
         />
-        {error && (
-          <p className="text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-600">{error}</p>}
         {helperText && !error && (
           <p className="text-sm text-gray-500">{helperText}</p>
         )}

@@ -63,11 +63,7 @@ export async function GET() {
         .not("completed_at", "is", null),
 
       // 2. Personal records (placeholder - update if you have a workout_sets table)
-      supabase
-        .from("set_records")
-        .select("id")
-        .eq("user_id", user.id)
-        .limit(0), // Adjust when PR tracking is implemented
+      supabase.from("set_records").select("id").eq("user_id", user.id).limit(0), // Adjust when PR tracking is implemented
 
       // 3. All completed workouts for streak calculation
       supabase

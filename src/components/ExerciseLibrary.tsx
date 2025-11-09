@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { Search, Filter, Plus, Star, Target, Zap, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 interface Exercise {
   id: string;
@@ -268,13 +269,13 @@ function ExerciseLibrary({
           </div>
           <div className="flex items-center gap-3">
             {showCreateButton && (
-              <button
+              <Button
                 onClick={() => setShowCreateForm(true)}
-                className="btn-secondary flex items-center gap-2"
+                variant="secondary"
+                leftIcon={<Plus className="w-4 h-4" />}
               >
-                <Plus className="w-4 h-4" />
                 Add Exercise
-              </button>
+              </Button>
             )}
             <button
               onClick={onClose}

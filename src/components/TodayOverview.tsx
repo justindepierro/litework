@@ -42,7 +42,7 @@ const TodayOverview = memo(function TodayOverview() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
           <div className="h-20 bg-gray-200 rounded"></div>
@@ -53,7 +53,7 @@ const TodayOverview = memo(function TodayOverview() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 h-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6 text-blue-600" />
         <h2 className="text-xl font-bold text-gray-900">
@@ -62,7 +62,7 @@ const TodayOverview = memo(function TodayOverview() {
       </div>
 
       {todayWorkouts.length === 0 ? (
-        <div className="text-center py-8">
+        <div className="text-center py-8 flex-1 flex flex-col items-center justify-center">
           <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-600">No workouts scheduled for today</p>
           <p className="text-sm text-gray-500 mt-1">
@@ -70,7 +70,7 @@ const TodayOverview = memo(function TodayOverview() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1 overflow-y-auto">
           {todayWorkouts.map((workout) => {
             const rate = completionRate(
               workout.completedCount,

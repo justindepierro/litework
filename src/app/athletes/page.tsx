@@ -2,6 +2,7 @@
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, useMemo, Suspense } from "react";
+import { Button } from "@/components/ui/Button";
 import {
   User,
   Trophy,
@@ -26,6 +27,7 @@ import {
   Edit3,
   Archive,
 } from "lucide-react";
+import { Alert } from "@/components/ui/Alert";
 import {
   User as UserType,
   AthleteKPI,
@@ -791,8 +793,8 @@ export default function AthletesPage() {
     if (status === "active")
       return <CheckCircle className="h-4 w-4 text-green-500" />;
     if (status === "invited")
-      return <Clock className="h-4 w-4 text-blue-500" />;
-    return <User className="h-4 w-4 text-gray-400" />;
+      return <Clock className="h-4 w-4 text-accent-blue" />;
+    return <User className="h-4 w-4 text-silver-600" />;
   };
 
   const getStatusText = (status: string, injuryStatus?: string | null) => {
@@ -846,16 +848,9 @@ export default function AthletesPage() {
       <div className="max-w-7xl mx-auto">
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
-            <p className="text-red-700">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-600 hover:text-red-800"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <Alert variant="error" onDismiss={() => setError(null)}>
+            {error}
+          </Alert>
         )}
 
         {/* Enhanced Mobile-Optimized Header */}
@@ -872,8 +867,8 @@ export default function AthletesPage() {
 
           {/* Mobile-Optimized Communication Stats */}
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-6">
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-blue-50 rounded-xl sm:bg-transparent sm:p-0">
-              <Users className="h-5 w-5 text-blue-600" />
+            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-info-lighter rounded-xl sm:bg-transparent sm:p-0">
+              <Users className="h-5 w-5 text-accent-blue" />
               <span className="text-sm font-medium">
                 {athleteCounts.active} Active
               </span>
@@ -884,7 +879,7 @@ export default function AthletesPage() {
                 {athleteCounts.invited} Pending
               </span>
             </div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-green-50 rounded-xl sm:bg-transparent sm:p-0">
+            <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-success-lighter rounded-xl sm:bg-transparent sm:p-0">
               <MessageCircle className="h-5 w-5 text-green-600" />
               <span className="text-sm font-medium">
                 {athletes.reduce(
@@ -904,41 +899,45 @@ export default function AthletesPage() {
 
           {/* Mobile-Optimized Action Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <button
+            <Button
               onClick={() => setShowHistoryModal(true)}
-              className="btn-secondary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
+              variant="secondary"
+              className="shadow-md hover:shadow-lg"
+              leftIcon={<History className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
-              <History className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>History</span>
-            </button>
-            <button
+              History
+            </Button>
+            <Button
               onClick={() => setShowBulkModal(true)}
-              className="btn-secondary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
+              variant="secondary"
+              className="shadow-md hover:shadow-lg"
+              leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
-              <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Bulk Actions</span>
-            </button>
-            <button
+              Bulk Actions
+            </Button>
+            <Button
               onClick={() => setShowGroupFormModal(true)}
-              className="btn-secondary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
+              variant="secondary"
+              className="shadow-md hover:shadow-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
+              leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
-              <Users className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Add Group</span>
-            </button>
-            <button
+              Add Group
+            </Button>
+            <Button
               onClick={() => setShowInviteModal(true)}
-              className="btn-primary flex items-center justify-center gap-3 px-6 py-4 sm:py-3 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition-all touch-manipulation"
+              variant="primary"
+              className="shadow-md hover:shadow-lg"
+              leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
-              <Plus className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span>Add Athlete</span>
-            </button>
+              Add Athlete
+            </Button>
           </div>
         </div>
 
         {/* Groups Section */}
         {activeGroups.length > 0 && (
-          <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="mb-6 bg-white rounded-xl shadow-sm border border-silver-400 p-4">
+            <h3 className="text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-purple-600" />
               Groups ({activeGroups.length})
             </h3>
@@ -950,7 +949,7 @@ export default function AthletesPage() {
                 return (
                   <div
                     key={group.id}
-                    className="p-4 bg-gray-50 border-2 border-gray-200 rounded-lg relative"
+                    className="p-4 bg-silver-200 border-2 border-silver-400 rounded-lg relative"
                   >
                     {/* 3-dot menu */}
                     <div className="absolute top-3 right-3">
@@ -961,15 +960,15 @@ export default function AthletesPage() {
                             openGroupMenuId === group.id ? null : group.id
                           );
                         }}
-                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                        className="p-1 hover:bg-silver-300 rounded-full transition-colors"
                         aria-label="Group menu"
                       >
-                        <MoreVertical className="w-5 h-5 text-gray-600" />
+                        <MoreVertical className="w-5 h-5 text-silver-700" />
                       </button>
 
                       {/* Dropdown menu */}
                       {openGroupMenuId === group.id && (
-                        <div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                        <div className="absolute right-0 top-8 w-48 bg-white border border-silver-400 rounded-lg shadow-lg z-10">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -977,7 +976,7 @@ export default function AthletesPage() {
                               setShowGroupFormModal(true);
                               setOpenGroupMenuId(null);
                             }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                            className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
                           >
                             <Edit3 className="w-4 h-4" />
                             Edit Group
@@ -987,7 +986,7 @@ export default function AthletesPage() {
                               e.stopPropagation();
                               handleArchiveGroup(group);
                             }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-700"
+                            className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
                           >
                             <Archive className="w-4 h-4" />
                             Archive Group
@@ -997,7 +996,7 @@ export default function AthletesPage() {
                               e.stopPropagation();
                               handleDeleteGroup(group.id);
                             }}
-                            className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-sm text-red-600 rounded-b-lg"
+                            className="w-full px-4 py-2 text-left hover:bg-error-lighter flex items-center gap-2 text-sm text-error rounded-b-lg"
                           >
                             <Trash2 className="w-4 h-4" />
                             Delete Group
@@ -1009,7 +1008,7 @@ export default function AthletesPage() {
                     {/* Group content (clickable to manage members) */}
                     <div className="w-full">
                       <div className="flex items-center justify-between mb-2 pr-8">
-                        <h4 className="font-semibold text-gray-900">
+                        <h4 className="font-semibold text-navy-900">
                           {group.name}
                         </h4>
                         {group.color && (
@@ -1020,7 +1019,7 @@ export default function AthletesPage() {
                         )}
                       </div>
                       {group.description && (
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                        <p className="text-sm text-silver-700 mb-2 line-clamp-2">
                           {group.description}
                         </p>
                       )}
@@ -1030,7 +1029,7 @@ export default function AthletesPage() {
                             setSelectedGroup(group);
                             setShowManageGroupModal(true);
                           }}
-                          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                          className="flex items-center gap-2 text-sm text-silver-600 hover:text-silver-800 transition-colors"
                           aria-label={`Manage ${group.name} members`}
                         >
                           <Users className="w-4 h-4" />
@@ -1044,7 +1043,7 @@ export default function AthletesPage() {
                             setSelectedGroup(group);
                             setShowManageGroupModal(true);
                           }}
-                          className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-full transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 bg-accent-blue hover:bg-accent-blue/90 text-white text-xs font-medium rounded-full transition-colors"
                           aria-label="Add athletes to group"
                         >
                           <Plus className="w-3 h-3" />
@@ -1062,13 +1061,13 @@ export default function AthletesPage() {
         {/* Mobile-Optimized Search and Filters */}
         <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-silver-600 w-5 h-5" />
             <input
               type="text"
               placeholder="Search athletes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 sm:py-3 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent touch-manipulation"
+              className="w-full pl-12 pr-4 py-4 sm:py-3 text-base border border-silver-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent touch-manipulation"
             />
           </div>
           <div className="grid grid-cols-3 gap-2 sm:flex">
@@ -1078,8 +1077,8 @@ export default function AthletesPage() {
                 onClick={() => setStatusFilter(status)}
                 className={`px-4 py-4 sm:py-3 text-sm font-medium rounded-xl transition-all touch-manipulation ${
                   statusFilter === status
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-accent-blue text-white shadow-md"
+                    : "bg-silver-300 text-silver-800 hover:bg-silver-400"
                 }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -1095,14 +1094,14 @@ export default function AthletesPage() {
             onClick={() => setShowInviteModal(true)}
             className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-dashed border-blue-300 hover:border-blue-500 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-blue-100 hover:to-blue-200"
           >
-            <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-16 h-16 bg-accent-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
               <Plus className="w-8 h-8 text-white" />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-blue-900 mb-1">
+              <h3 className="text-lg font-semibold text-navy-900 mb-1">
                 Add New Athlete
               </h3>
-              <p className="text-sm text-blue-600">
+              <p className="text-sm text-accent-blue">
                 Click to add athlete profile
               </p>
             </div>
@@ -1116,7 +1115,7 @@ export default function AthletesPage() {
                   setSelectedAthlete(athlete);
                   setShowDetailModal(true);
                 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer"
+                className="bg-white rounded-xl shadow-sm border border-silver-300 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer"
               >
                 {/* Mobile-Optimized Card Header */}
                 <div className="p-4 sm:p-6 pb-3 sm:pb-4">
@@ -1133,18 +1132,18 @@ export default function AthletesPage() {
                         {/* Communication indicator */}
                         {athlete.communication?.unreadMessages &&
                           athlete.communication.unreadMessages > 0 && (
-                            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                            <div className="absolute -top-1 -right-1 bg-accent-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                               {athlete.communication.unreadMessages}
                             </div>
                           )}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-lg">
+                        <h3 className="font-semibold text-navy-900 text-lg">
                           {athlete.fullName}
                         </h3>
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           {getStatusIcon(athlete.status, athlete.injuryStatus)}
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-silver-700">
                             {getStatusText(
                               athlete.status,
                               athlete.injuryStatus
@@ -1175,7 +1174,7 @@ export default function AthletesPage() {
 
                         {/* Email Address Display */}
                         {athlete.email && (
-                          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                          <div className="flex items-center gap-1 text-sm text-silver-700 mt-1">
                             <MessageCircle className="w-3.5 h-3.5" />
                             <span className="truncate">{athlete.email}</span>
                           </div>
@@ -1192,22 +1191,22 @@ export default function AthletesPage() {
                     </div>
 
                     <div className="relative">
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                      <button className="p-2 hover:bg-silver-200 rounded-lg transition-colors">
+                        <MoreVertical className="h-4 w-4 text-silver-600" />
                       </button>
                     </div>
                   </div>
 
                   {/* Last Communication */}
                   {athlete.communication?.lastMessage && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="mb-4 p-3 bg-info-lighter rounded-lg border border-info-light">
                       <div className="flex items-start gap-2">
-                        <MessageSquare className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+                        <MessageSquare className="h-4 w-4 text-accent-blue shrink-0 mt-0.5" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-blue-900 line-clamp-2">
+                          <p className="text-sm text-navy-900 line-clamp-2">
                             {athlete.communication.lastMessage}
                           </p>
-                          <p className="text-xs text-blue-600 mt-1">
+                          <p className="text-xs text-accent-blue mt-1">
                             {athlete.communication.lastMessageTime?.toLocaleDateString()}{" "}
                             at{" "}
                             {athlete.communication.lastMessageTime?.toLocaleTimeString(
@@ -1222,31 +1221,31 @@ export default function AthletesPage() {
 
                   {/* Bio/Notes */}
                   {athlete.bio && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    <p className="text-sm text-silver-700 mb-4 line-clamp-2">
                       {athlete.bio}
                     </p>
                   )}
 
                   {/* Performance Stats - Only for active athletes */}
                   {athlete.status === "active" && athlete.stats && (
-                    <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-silver-200 rounded-lg">
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
-                          <Dumbbell className="h-4 w-4 text-blue-600" />
-                          <span className="font-semibold text-gray-900">
+                          <Dumbbell className="h-4 w-4 text-accent-blue" />
+                          <span className="font-semibold text-navy-900">
                             {athlete.stats.thisMonthWorkouts}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600">This Month</p>
+                        <p className="text-xs text-silver-700">This Month</p>
                       </div>
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 mb-1">
                           <Trophy className="h-4 w-4 text-yellow-600" />
-                          <span className="font-semibold text-gray-900">
+                          <span className="font-semibold text-navy-900">
                             {athlete.stats.recentPRs}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600">Recent PRs</p>
+                        <p className="text-xs text-silver-700">Recent PRs</p>
                       </div>
                     </div>
                   )}
@@ -1257,7 +1256,7 @@ export default function AthletesPage() {
                       <div className="mb-4">
                         <div className="flex items-center gap-2 mb-2">
                           <Target className="h-4 w-4 text-green-600" />
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-silver-800">
                             Top PRs
                           </span>
                         </div>
@@ -1269,16 +1268,16 @@ export default function AthletesPage() {
                                 key={pr.id}
                                 className="flex justify-between items-center text-sm"
                               >
-                                <span className="text-gray-600">
+                                <span className="text-silver-700">
                                   {pr.exerciseName}:
                                 </span>
-                                <span className="font-medium text-gray-900">
+                                <span className="font-medium text-navy-900">
                                   {pr.currentPR} lbs
                                 </span>
                               </div>
                             ))}
                           {athlete.personalRecords.length > 2 && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-silver-600">
                               +{athlete.personalRecords.length - 2} more
                             </p>
                           )}
@@ -1377,54 +1376,60 @@ export default function AthletesPage() {
                 <div className="px-6 pb-6">
                   {athlete.status === "active" ? (
                     <div className="grid grid-cols-2 gap-2">
-                      <button
+                      <Button
                         onClick={() => {
                           setSelectedAthlete(athlete);
                           setShowIndividualAssignment(true);
                         }}
-                        className="btn-primary flex items-center justify-center gap-2 text-sm py-2 col-span-2"
+                        variant="primary"
+                        size="sm"
+                        className="col-span-2"
+                        leftIcon={<Dumbbell className="w-4 h-4" />}
                         title="Assign a workout to this athlete"
                       >
-                        <Dumbbell className="w-4 h-4" />
                         Assign Workout
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleMessageAthlete(athlete)}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<MessageCircle className="w-4 h-4" />}
                       >
-                        <MessageCircle className="w-4 h-4" />
                         Message
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleKPIManagement(athlete)}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<Zap className="w-4 h-4" />}
                       >
-                        <Zap className="w-4 h-4" />
                         Manage PRs
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleAnalytics(athlete)}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<BarChart3 className="w-4 h-4" />}
                       >
-                        <BarChart3 className="w-4 h-4" />
                         Progress
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedAthlete(athlete);
                           setShowAddToGroupModal(true);
                         }}
-                        className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<Users className="w-4 h-4" />}
                       >
-                        <Users className="w-4 h-4" />
                         Add to Group
-                      </button>
+                      </Button>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-2">
-                        <button
+                        <Button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -1432,40 +1437,44 @@ export default function AthletesPage() {
                             setEditEmailForm({ email: athlete.email || "" });
                             setShowEditEmailModal(true);
                           }}
-                          className="btn-primary flex items-center justify-center gap-2 text-sm py-2"
+                          variant="primary"
+                          size="sm"
+                          leftIcon={<Edit3 className="w-4 h-4" />}
                         >
-                          <Edit3 className="w-4 h-4" />
                           {athlete.email ? "Edit Email" : "Add Email"}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleResendInvite(athlete.id);
                           }}
-                          className="btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                          variant="secondary"
+                          size="sm"
                           disabled={!athlete.email}
+                          leftIcon={<RefreshCw className="w-4 h-4" />}
                           title={
                             !athlete.email
                               ? "Add email first to send invite"
                               : "Resend invitation email"
                           }
                         >
-                          <RefreshCw className="w-4 h-4" />
                           Resend
-                        </button>
+                        </Button>
                       </div>
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           handleCancelInvite(athlete.id);
                         }}
-                        className="w-full btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        variant="secondary"
+                        size="sm"
+                        fullWidth
+                        leftIcon={<X className="w-4 h-4" />}
                       >
-                        <X className="w-4 h-4" />
                         Cancel Invite
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -1545,22 +1554,24 @@ export default function AthletesPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button
+                  <Button
                     onClick={() => {
                       setShowEditEmailModal(false);
                       setEditEmailForm({ email: "" });
                     }}
-                    className="flex-1 btn-secondary"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleUpdateEmail}
-                    className="flex-1 btn-primary"
+                    variant="primary"
+                    className="flex-1"
                     disabled={!editEmailForm.email}
                   >
                     {selectedAthlete.email ? "Update" : "Add"} Email
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -1680,20 +1691,22 @@ export default function AthletesPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button
+                  <Button
                     onClick={() => setShowInviteModal(false)}
-                    className="flex-1 btn-secondary"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleSendInvite}
-                    className="flex-1 btn-primary flex items-center justify-center gap-2"
+                    variant="primary"
+                    className="flex-1"
                     disabled={!inviteForm.firstName || !inviteForm.lastName}
+                    leftIcon={<Send className="w-4 h-4" />}
                   >
-                    <Send className="w-4 h-4" />
                     {inviteForm.email ? "Send Invite" : "Add Athlete"}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -1802,20 +1815,22 @@ export default function AthletesPage() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button
+                  <Button
                     onClick={() => setShowMessageModal(false)}
-                    className="flex-1 btn-secondary"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleSendMessage}
-                    className="flex-1 btn-primary flex items-center justify-center gap-2"
+                    variant="primary"
+                    className="flex-1"
                     disabled={!messageForm.message}
+                    leftIcon={<Send className="w-4 h-4" />}
                   >
-                    <Send className="w-4 h-4" />
                     Send Message
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -1882,14 +1897,15 @@ export default function AthletesPage() {
                     />
                   </div>
                   <div className="flex items-end">
-                    <button
+                    <Button
                       onClick={handleAddKPI}
-                      className="w-full btn-primary flex items-center justify-center gap-2"
+                      variant="primary"
+                      fullWidth
                       disabled={!kpiForm.kpiName || !kpiForm.value}
+                      leftIcon={<Plus className="w-4 h-4" />}
                     >
-                      <Plus className="w-4 h-4" />
                       Add PR
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -2065,16 +2081,16 @@ export default function AthletesPage() {
                 <div className="text-center py-8">
                   <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                   <p className="text-gray-600 mb-4">No groups available</p>
-                  <button
+                  <Button
                     onClick={() => {
                       setShowAddToGroupModal(false);
                       setShowGroupFormModal(true);
                     }}
-                    className="btn-primary inline-flex items-center gap-2"
+                    variant="primary"
+                    leftIcon={<Plus className="w-4 h-4" />}
                   >
-                    <Plus className="w-4 h-4" />
                     Create First Group
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-2">

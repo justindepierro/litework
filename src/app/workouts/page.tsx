@@ -3,6 +3,9 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useToast } from "@/components/ToastProvider";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -35,7 +38,6 @@ import {
 import { WorkoutEditorErrorBoundary } from "@/components/WorkoutEditorErrorBoundary";
 import { WorkoutListSkeleton } from "@/components/skeletons";
 import { EmptyWorkouts } from "@/components/ui/EmptyState";
-import { Button } from "@/components/ui/Button";
 
 // Dynamic imports for large components
 const ExerciseLibrary = lazy(() => import("@/components/ExerciseLibrary"));
@@ -226,13 +228,13 @@ export default function WorkoutsPage() {
     return (
       <div className="min-h-screen bg-white p-4">
         <div className="max-w-md mx-auto mt-20">
-          <div className="card-primary text-center">
-            <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
+          <Card variant="default" padding="lg" className="text-center">
+            <XCircle className="w-16 h-16 mx-auto mb-4 text-accent-red" />
             <h2 className="text-heading-primary text-xl mb-2">Access Denied</h2>
             <p className="text-body-secondary mb-4">
               Only coaches and admins can manage workouts.
             </p>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -292,8 +294,8 @@ export default function WorkoutsPage() {
               <button
                 className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
                   currentView === "workouts"
-                    ? "bg-white text-blue-700 shadow-md"
-                    : "bg-blue-600 text-white hover:bg-blue-500"
+                    ? "bg-white text-accent-blue shadow-md"
+                    : "bg-accent-blue text-white hover:bg-accent-blue/90"
                 }`}
                 onClick={() => setCurrentView("workouts")}
               >
@@ -303,8 +305,8 @@ export default function WorkoutsPage() {
               <button
                 className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
                   currentView === "library"
-                    ? "bg-white text-blue-700 shadow-md"
-                    : "bg-blue-600 text-white hover:bg-blue-500"
+                    ? "bg-white text-accent-blue shadow-md"
+                    : "bg-accent-blue text-white hover:bg-accent-blue/90"
                 }`}
                 onClick={() => setCurrentView("library")}
               >
@@ -322,15 +324,15 @@ export default function WorkoutsPage() {
           <>
             {/* Enhanced error state */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
-                <p className="text-red-700 font-medium">{error}</p>
+              <Alert variant="error">
+                <p className="font-medium">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors touch-manipulation"
+                  className="mt-3 px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-accent-red/90 transition-colors touch-manipulation"
                 >
                   Try again
                 </button>
-              </div>
+              </Alert>
             )}
 
             {/* Loading state */}
@@ -343,31 +345,32 @@ export default function WorkoutsPage() {
                   <h2 className="text-heading-secondary text-xl">
                     {showArchived ? "Archived Workouts" : "Your Workouts"}
                   </h2>
-                  <button
-                    className="btn-primary"
+                  <Button
+                    variant="primary"
                     onClick={() => {
                       setCreatingWorkout(true);
                     }}
+                    leftIcon={<Plus className="w-4 h-4" />}
                   >
-                    <Plus className="w-4 h-4" /> Create Workout
-                  </button>
+                    Create Workout
+                  </Button>
                 </div>
-                <button
+                <Button
                   onClick={() => setShowArchived(!showArchived)}
-                  className="btn-secondary w-full sm:w-auto self-start flex items-center justify-center gap-2"
-                >
-                  {showArchived ? (
-                    <>
+                  variant="secondary"
+                  className="w-full sm:w-auto self-start"
+                  leftIcon={
+                    showArchived ? (
                       <Dumbbell className="w-4 h-4" />
-                      View Active Workouts
-                    </>
-                  ) : (
-                    <>
+                    ) : (
                       <Archive className="w-4 h-4" />
-                      View Archived Workouts
-                    </>
-                  )}
-                </button>
+                    )
+                  }
+                >
+                  {showArchived
+                    ? "View Active Workouts"
+                    : "View Archived Workouts"}
+                </Button>
               </div>
             )}
 
@@ -387,11 +390,13 @@ export default function WorkoutsPage() {
                     const isExpanded = expandedWorkout === workout.id;
 
                     return (
-                      <div
+                      <Card
                         key={workout.id}
-                        className={`card-primary ${
+                        variant="default"
+                        padding="md"
+                        className={
                           isOptimistic ? "opacity-70 animate-pulse" : ""
-                        }`}
+                        }
                       >
                         {/* Header - Always visible, clickable to expand */}
                         <div
@@ -405,19 +410,19 @@ export default function WorkoutsPage() {
                               <h3 className="text-body-primary font-semibold">
                                 {workout.name}
                                 {isOptimistic && (
-                                  <span className="ml-2 text-xs text-blue-600 font-normal">
+                                  <span className="ml-2 text-xs text-accent-blue font-normal">
                                     (Saving...)
                                   </span>
                                 )}
                               </h3>
                               {isExpanded ? (
-                                <ChevronUp className="w-5 h-5 text-gray-500" />
+                                <ChevronUp className="w-5 h-5 text-silver-600" />
                               ) : (
-                                <ChevronDown className="w-5 h-5 text-gray-500" />
+                                <ChevronDown className="w-5 h-5 text-silver-600" />
                               )}
                             </div>
                             {workout.description && (
-                              <p className="text-body-small text-gray-600 mt-1">
+                              <p className="text-body-small text-silver-700 mt-1">
                                 {workout.description}
                               </p>
                             )}
@@ -432,13 +437,15 @@ export default function WorkoutsPage() {
                           {isExpanded ? (
                             // Expanded view - show all exercises with grouping
                             <>
-                              <div className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                              <div className="text-xs font-semibold text-silver-600 uppercase mb-3">
                                 Exercises ({workout.exercises.length})
-                                {workout.groups && workout.groups.length > 0 && (
-                                  <span className="ml-2 text-blue-600">
-                                    • {workout.groups.length} group{workout.groups.length !== 1 ? 's' : ''}
-                                  </span>
-                                )}
+                                {workout.groups &&
+                                  workout.groups.length > 0 && (
+                                    <span className="ml-2 text-accent-blue">
+                                      • {workout.groups.length} group
+                                      {workout.groups.length !== 1 ? "s" : ""}
+                                    </span>
+                                  )}
                               </div>
                               <ExerciseGroupDisplay
                                 exercises={workout.exercises}
@@ -452,7 +459,9 @@ export default function WorkoutsPage() {
                               {workout.exercises
                                 .slice(0, 3)
                                 .map((exercise, index) => {
-                                  const group = workout.groups?.find(g => g.id === exercise.groupId);
+                                  const group = workout.groups?.find(
+                                    (g) => g.id === exercise.groupId
+                                  );
                                   return (
                                     <div
                                       key={exercise.id}
@@ -464,14 +473,24 @@ export default function WorkoutsPage() {
                                         {formatWeight(exercise)}
                                       </span>
                                       {group && (
-                                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                                          group.type === 'superset' ? 'bg-purple-100 text-purple-700' :
-                                          group.type === 'circuit' ? 'bg-blue-100 text-blue-700' :
-                                          'bg-amber-100 text-amber-700'
-                                        }`}>
-                                          {group.type === 'superset' && <Layers className="w-3 h-3 inline mr-1" />}
-                                          {group.type === 'circuit' && <Repeat className="w-3 h-3 inline mr-1" />}
-                                          {group.type === 'section' && <Dumbbell className="w-3 h-3 inline mr-1" />}
+                                        <span
+                                          className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                                            group.type === "superset"
+                                              ? "bg-purple-100 text-purple-700"
+                                              : group.type === "circuit"
+                                                ? "bg-info-lighter text-accent-blue"
+                                                : "bg-amber-100 text-amber-700"
+                                          }`}
+                                        >
+                                          {group.type === "superset" && (
+                                            <Layers className="w-3 h-3 inline mr-1" />
+                                          )}
+                                          {group.type === "circuit" && (
+                                            <Repeat className="w-3 h-3 inline mr-1" />
+                                          )}
+                                          {group.type === "section" && (
+                                            <Dumbbell className="w-3 h-3 inline mr-1" />
+                                          )}
                                           {group.type}
                                         </span>
                                       )}
@@ -479,7 +498,7 @@ export default function WorkoutsPage() {
                                   );
                                 })}
                               {workout.exercises.length > 3 && (
-                                <div className="text-body-small text-gray-500">
+                                <div className="text-body-small text-silver-600">
                                   +{workout.exercises.length - 3} more exercises
                                 </div>
                               )}
@@ -490,28 +509,30 @@ export default function WorkoutsPage() {
                         <div className="flex gap-2">
                           {!showArchived && (
                             <>
-                              <button
+                              <Button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setEditingWorkout(workout);
                                 }}
-                                className="btn-secondary flex-1"
+                                variant="secondary"
+                                className="flex-1"
                                 disabled={isOptimistic}
                               >
                                 Edit
-                              </button>
-                              <button
+                              </Button>
+                              <Button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedWorkout(workout);
                                   setShowAssignForm(true);
                                 }}
-                                className="btn-primary flex-1 flex items-center justify-center gap-1"
+                                variant="primary"
+                                className="flex-1"
                                 disabled={isOptimistic}
+                                leftIcon={<Users className="w-4 h-4" />}
                               >
-                                <Users className="w-4 h-4" />
                                 Assign
-                              </button>
+                              </Button>
                             </>
                           )}
                           <button
@@ -542,7 +563,7 @@ export default function WorkoutsPage() {
                             )}
                           </button>
                         </div>
-                      </div>
+                      </Card>
                     );
                   })
                 )}
@@ -554,7 +575,7 @@ export default function WorkoutsPage() {
           <Suspense
             fallback={
               <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-lg text-gray-600">
+                <div className="text-lg text-silver-700">
                   Loading exercise library...
                 </div>
               </div>
@@ -602,14 +623,16 @@ export default function WorkoutsPage() {
                 </p>
 
                 <div className="space-y-3">
-                  <button
+                  <Button
                     onClick={() => {
                       setShowAssignForm(false);
                       handleOpenAssignModal(selectedWorkout, "group");
                     }}
-                    className="w-full btn-primary flex items-center justify-center gap-2 py-4"
+                    variant="primary"
+                    fullWidth
+                    className="py-4"
+                    leftIcon={<Users className="w-5 h-5" />}
                   >
-                    <Users className="w-5 h-5" />
                     <div className="text-left">
                       <div className="font-semibold">Assign to Group(s)</div>
                       <div className="text-sm opacity-90">
@@ -617,16 +640,18 @@ export default function WorkoutsPage() {
                         modifications
                       </div>
                     </div>
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() => {
                       setShowAssignForm(false);
                       handleOpenAssignModal(selectedWorkout, "individual");
                     }}
-                    className="w-full btn-secondary flex items-center justify-center gap-2 py-4"
+                    variant="secondary"
+                    fullWidth
+                    className="py-4"
+                    leftIcon={<User className="w-5 h-5" />}
                   >
-                    <User className="w-5 h-5" />
                     <div className="text-left">
                       <div className="font-semibold">
                         Assign to Individual Athletes
@@ -635,19 +660,20 @@ export default function WorkoutsPage() {
                         Select specific athletes to assign this workout to
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="flex gap-3 mt-6">
-                  <button
+                  <Button
                     onClick={() => {
                       setShowAssignForm(false);
                       setSelectedWorkout(null);
                     }}
-                    className="btn-secondary flex-1"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -729,7 +755,7 @@ export default function WorkoutsPage() {
             fallback={
               <div className="fixed inset-0 bg-overlay z-50 flex items-center justify-center">
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-gray-600">
+                  <div className="text-lg text-silver-700">
                     Loading workout editor...
                   </div>
                 </div>

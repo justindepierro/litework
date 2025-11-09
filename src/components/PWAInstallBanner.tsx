@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Download } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -121,13 +122,14 @@ export default function PWAInstallBanner() {
           >
             Later
           </button>
-          <button
+          <Button
             onClick={handleInstallClick}
-            className="btn-primary flex items-center space-x-1 text-sm"
+            variant="primary"
+            leftIcon={<Download className="w-4 h-4" />}
+            size="sm"
           >
-            <Download className="w-4 h-4" />
-            <span>Install</span>
-          </button>
+            Install
+          </Button>
         </div>
       </div>
     </div>

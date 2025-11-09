@@ -5,6 +5,7 @@
 
 import React from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -58,21 +59,21 @@ function DefaultErrorFallback({
         )}
 
         <div className="flex gap-3 justify-center">
-          <button
+          <Button
             onClick={resetError}
-            className="btn-secondary flex items-center gap-2"
+            variant="secondary"
+            leftIcon={<RefreshCw className="w-4 h-4" />}
           >
-            <RefreshCw className="w-4 h-4" />
             Try Again
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={goHome}
-            className="btn-primary flex items-center gap-2"
+            variant="primary"
+            leftIcon={<Home className="w-4 h-4" />}
           >
-            <Home className="w-4 h-4" />
             Go Home
-          </button>
+          </Button>
         </div>
       </div>
     </div>

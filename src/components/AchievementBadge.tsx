@@ -73,11 +73,11 @@ export function AchievementBadge({
         <IconComponent className={iconSizeClasses[size]} />
       </div>
       <div className="text-center max-w-[120px]">
-        <div className={`font-semibold text-gray-900 ${textSizeClasses[size]}`}>
+        <div className={`font-semibold text-navy-900 ${textSizeClasses[size]}`}>
           {achievement.name}
         </div>
         {showDate && achievement.earned_at && (
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-silver-600 mt-1">
             {new Date(achievement.earned_at).toLocaleDateString()}
           </div>
         )}
@@ -109,15 +109,17 @@ export function LockedBadge({ type, size = "medium" }: LockedBadgeProps) {
   return (
     <div className="flex flex-col items-center gap-2 opacity-50">
       <div
-        className={`${sizeClasses[size]} bg-gray-300 rounded-full flex items-center justify-center relative`}
+        className={`${sizeClasses[size]} bg-silver-400 rounded-full flex items-center justify-center relative`}
       >
-        <Lock className="w-8 h-8 text-gray-500" />
+        <Lock className="w-8 h-8 text-silver-600" />
       </div>
       <div className="text-center max-w-[120px]">
-        <div className={`font-semibold text-gray-600 ${textSizeClasses[size]}`}>
+        <div
+          className={`font-semibold text-silver-700 ${textSizeClasses[size]}`}
+        >
           {achievement.name}
         </div>
-        <div className="text-xs text-gray-500 mt-1">
+        <div className="text-xs text-silver-600 mt-1">
           {achievement.description}
         </div>
       </div>
@@ -182,22 +184,22 @@ export function AchievementNotification({
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-3xl font-bold text-navy-900 mb-2">
           Achievement Unlocked!
         </h2>
 
         {/* Achievement name and description */}
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          <h3 className="text-xl font-semibold text-navy-800 mb-2">
             {achievement.name}
           </h3>
-          <p className="text-gray-600">{achievement.description}</p>
+          <p className="text-silver-700">{achievement.description}</p>
         </div>
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+          className="w-full py-3 bg-accent-blue text-white rounded-xl font-semibold hover:bg-accent-blue/90 transition-colors"
         >
           Continue
         </button>

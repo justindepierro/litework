@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, memo } from "react";
+import { Card } from "@/components/ui/Card";
 import {
   LineChart,
   Line,
@@ -22,6 +23,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import { Button } from "@/components/ui/Button";
 import {
   Calendar,
   TrendingUp,
@@ -287,10 +289,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
             ))}
           </div>
 
-          <button className="btn-secondary flex items-center justify-center gap-2 py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium touch-manipulation">
-            <Download className="w-5 h-5 sm:w-4 sm:h-4" />
+          <Button
+            variant="secondary"
+            leftIcon={<Download className="w-5 h-5 sm:w-4 sm:h-4" />}
+            className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
+          >
             Export Data
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -537,7 +542,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {viewMode === "comparison" && (
         <div className="space-y-6">
           {/* Exercise Distribution */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <h3 className="text-heading-primary text-lg font-semibold mb-4">
               Workout Distribution
             </h3>
@@ -559,13 +564,12 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                   fill="#8884d8"
                   dataKey="value"
                 />
-                <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </div>
+          </Card>
 
           {/* Performance Radar */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <h3 className="text-heading-primary text-lg font-semibold mb-4">
               Performance Profile
             </h3>
@@ -590,13 +594,12 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                   fill="#3b82f6"
                   fillOpacity={0.3}
                 />
-                <Tooltip />
               </RadarChart>
             </ResponsiveContainer>
-          </div>
+          </Card>
 
           {/* Training Volume Trend */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <h3 className="text-heading-primary text-lg font-semibold mb-4">
               Training Volume Trend
             </h3>
@@ -616,7 +619,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -624,7 +627,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {viewMode === "goals" && (
         <div className="space-y-6">
           {/* Current Goals */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <Target className="w-6 h-6 text-primary-600" />
               <h3 className="text-heading-primary text-lg font-semibold">
@@ -664,10 +667,10 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Achievement Badges */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <Medal className="w-6 h-6 text-accent-orange" />
               <h3 className="text-heading-primary text-lg font-semibold">
@@ -696,10 +699,10 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 <p className="text-xs text-heading-secondary">Last week</p>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Performance Insights */}
-          <div className="card-primary">
+          <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <TrendingDown className="w-6 h-6 text-primary-600" />
               <h3 className="text-heading-primary text-lg font-semibold">
@@ -729,7 +732,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 </p>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

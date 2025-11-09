@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-} from "@/lib/auth-server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 
 interface WebVitalData {
   name: string;

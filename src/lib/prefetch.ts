@@ -11,9 +11,13 @@ import { mutate } from "swr";
 export async function prefetchData(key: string): Promise<void> {
   try {
     // Trigger SWR to fetch and cache the data
-    await mutate(key, fetch(key).then((res) => res.json()), {
-      revalidate: false,
-    });
+    await mutate(
+      key,
+      fetch(key).then((res) => res.json()),
+      {
+        revalidate: false,
+      }
+    );
   } catch (error) {
     // Silently fail - prefetch is best-effort
     console.debug(`Prefetch failed for ${key}:`, error);
@@ -246,7 +250,8 @@ class SmartPrefetch {
 
     // Update patterns
     if (this.navigationHistory.length >= 2) {
-      const previous = this.navigationHistory[this.navigationHistory.length - 2];
+      const previous =
+        this.navigationHistory[this.navigationHistory.length - 2];
       const patterns = this.commonPatterns.get(previous) || [];
       patterns.push(route);
       this.commonPatterns.set(previous, patterns);

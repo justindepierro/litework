@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { AthleteGroup, WorkoutAssignment, User } from "@/types";
 import { useGroups, useAssignments } from "@/hooks/api-hooks";
 import { Calendar, Users, X, Plus, Play } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 
 // Dynamic imports for heavy modals
 const GroupFormModal = lazy(() => import("./GroupFormModal"));
@@ -165,22 +167,26 @@ const CalendarView = memo(function CalendarView() {
                 Training Calendar
               </h2>
               <div className="flex items-center gap-2">
-                <button
+                <Button
                   onClick={() => navigateMonth(-1)}
-                  className="btn-secondary text-sm px-3 py-1"
+                  variant="secondary"
+                  size="sm"
+                  className="px-3 py-1"
                 >
                   ←
-                </button>
+                </Button>
                 <span className="text-heading-secondary text-lg min-w-[150px] text-center">
                   {monthNames[currentDate.getMonth()]}{" "}
                   {currentDate.getFullYear()}
                 </span>
-                <button
+                <Button
                   onClick={() => navigateMonth(1)}
-                  className="btn-secondary text-sm px-3 py-1"
+                  variant="secondary"
+                  size="sm"
+                  className="px-3 py-1"
                 >
                   →
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -199,13 +205,15 @@ const CalendarView = memo(function CalendarView() {
                 ))}
               </select>
 
-              <button
+              <Button
                 onClick={() => setShowGroupModal(true)}
-                className="btn-secondary text-sm px-4 py-2 flex items-center gap-2"
+                variant="secondary"
+                leftIcon={<Users className="w-4 h-4" />}
+                size="sm"
+                className="px-4 py-2"
               >
-                <Users className="w-4 h-4" />
                 Manage Groups
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -223,7 +231,7 @@ const CalendarView = memo(function CalendarView() {
           </div>
 
           {/* Calendar Grid */}
-          <div className="card-primary overflow-hidden">
+          <Card variant="default" padding="none" className="overflow-hidden">
             {/* Day Headers */}
             <div className="grid grid-cols-7 bg-silver-100">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
@@ -346,7 +354,7 @@ const CalendarView = memo(function CalendarView() {
                 );
               })}
             </div>
-          </div>
+          </Card>
 
           {/* Group Management Modal */}
           {showGroupModal && (
@@ -367,7 +375,7 @@ const CalendarView = memo(function CalendarView() {
 
                   <div className="grid gap-6 md:grid-cols-2">
                     {groups.map((group) => (
-                      <div key={group.id} className="card-primary">
+                      <Card key={group.id} variant="default" padding="md">
                         <div className="flex items-center gap-3 mb-4">
                           <div
                             className="w-4 h-4 rounded-full shrink-0"
@@ -405,27 +413,34 @@ const CalendarView = memo(function CalendarView() {
                         </div>
 
                         <div className="flex gap-2">
-                          <button
-                            className="btn-secondary flex-1 text-sm"
+                          <Button
+                            className="flex-1"
                             onClick={() => handleEditGroup(group)}
+                            variant="secondary"
+                            size="sm"
                           >
                             Edit Group
-                          </button>
-                          <button className="btn-primary flex-1 text-sm">
+                          </Button>
+                          <Button
+                            className="flex-1"
+                            variant="primary"
+                            size="sm"
+                          >
                             Assign Workout
-                          </button>
+                          </Button>
                         </div>
-                      </div>
+                      </Card>
                     ))}
                   </div>
 
                   <div className="mt-6 pt-6 border-t">
-                    <button
-                      className="btn-primary flex items-center gap-2"
+                    <Button
                       onClick={handleCreateGroup}
+                      variant="primary"
+                      leftIcon={<Plus className="w-4 h-4" />}
                     >
-                      <Plus className="w-4 h-4" /> Create New Group
-                    </button>
+                      Create New Group
+                    </Button>
                   </div>
                 </div>
               </div>

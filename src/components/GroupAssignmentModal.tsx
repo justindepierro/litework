@@ -6,6 +6,8 @@ import { X, Settings, Check } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
 import DateTimePicker from "./DateTimePicker";
 import { Select, Input, Textarea } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 
 import { WorkoutModification } from "@/types";
 
@@ -233,7 +235,7 @@ export default function GroupAssignmentModal({
                 />
 
                 {selectedWorkout && (
-                  <div className="card-secondary">
+                  <Card variant="default" padding="md">
                     <h3 className="text-heading-secondary text-lg mb-3">
                       Workout Preview
                     </h3>
@@ -257,7 +259,7 @@ export default function GroupAssignmentModal({
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </Card>
                 )}
               </div>
 
@@ -275,7 +277,7 @@ export default function GroupAssignmentModal({
                       const hasModifications =
                         groupModifications[athlete.id]?.length > 0;
                       return (
-                        <div key={athlete.id} className="card-primary">
+                        <Card key={athlete.id} variant="default" padding="sm">
                           <div className="flex justify-between items-center">
                             <div>
                               <div className="text-body-primary font-medium">
@@ -292,19 +294,21 @@ export default function GroupAssignmentModal({
                                 </div>
                               )}
                             </div>
-                            <button
+                            <Button
                               onClick={() => openModificationModal(athlete)}
                               disabled={!selectedWorkout}
-                              className={`btn-secondary text-sm px-3 py-1 ${
+                              variant="secondary"
+                              size="sm"
+                              className={`px-3 py-1 ${
                                 hasModifications
                                   ? "border-accent-orange text-accent-orange"
                                   : ""
-                              } disabled:opacity-50 disabled:cursor-not-allowed`}
+                              }`}
                             >
                               {hasModifications ? "Edit Mods" : "Modify"}
-                            </button>
+                            </Button>
                           </div>
-                        </div>
+                        </Card>
                       );
                     })}
                   </div>
@@ -322,19 +326,20 @@ export default function GroupAssignmentModal({
 
             {/* Action Buttons */}
             <div className="flex gap-3 mt-6 pt-6 border-t">
-              <button onClick={onClose} className="btn-secondary flex-1">
+              <Button onClick={onClose} variant="secondary" className="flex-1">
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleAssign}
                 disabled={selectedGroupIds.length === 0 || !selectedWorkoutId}
-                className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="primary"
+                className="flex-1"
               >
                 Assign to{" "}
                 {selectedGroupIds.length > 0
                   ? `${selectedGroupIds.length} Group${selectedGroupIds.length > 1 ? "s" : ""} (${allAthleteIds.size} athletes)`
                   : "Groups"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
