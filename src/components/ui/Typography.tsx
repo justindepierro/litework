@@ -15,7 +15,7 @@ import React from "react";
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 export type HeadingVariant = "primary" | "secondary" | "accent";
 
-export interface HeadingProps {
+export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Heading level (h1-h6) */
   level?: HeadingLevel;
   /** Visual variant */
@@ -24,8 +24,6 @@ export interface HeadingProps {
   children: React.ReactNode;
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Heading: React.FC<HeadingProps> = ({
@@ -79,7 +77,7 @@ Heading.displayName = "Heading";
 export type BodySize = "xs" | "sm" | "base" | "lg" | "xl";
 export type BodyVariant = "primary" | "secondary" | "tertiary" | "error" | "success";
 
-export interface BodyProps {
+export interface BodyProps extends React.HTMLAttributes<HTMLElement> {
   /** Text size */
   size?: BodySize;
   /** Visual variant (color) */
@@ -92,8 +90,6 @@ export interface BodyProps {
   as?: "p" | "span" | "div";
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Body: React.FC<BodyProps> = ({
@@ -157,7 +153,7 @@ Body.displayName = "Body";
 
 export type LabelVariant = "default" | "required" | "disabled" | "error";
 
-export interface LabelProps {
+export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /** Label variant */
   variant?: LabelVariant;
   /** Content */
@@ -166,8 +162,6 @@ export interface LabelProps {
   htmlFor?: string;
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Label: React.FC<LabelProps> = ({
@@ -208,7 +202,7 @@ Label.displayName = "Label";
 
 export type CaptionVariant = "default" | "muted" | "error" | "success";
 
-export interface CaptionProps {
+export interface CaptionProps extends React.HTMLAttributes<HTMLElement> {
   /** Caption variant */
   variant?: CaptionVariant;
   /** Content */
@@ -217,8 +211,6 @@ export interface CaptionProps {
   as?: "p" | "span" | "div";
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Caption: React.FC<CaptionProps> = ({
@@ -260,7 +252,7 @@ Caption.displayName = "Caption";
 
 export type DisplaySize = "sm" | "md" | "lg" | "xl";
 
-export interface DisplayProps {
+export interface DisplayProps extends React.HTMLAttributes<HTMLElement> {
   /** Display size */
   size?: DisplaySize;
   /** Content */
@@ -269,8 +261,6 @@ export interface DisplayProps {
   as?: "h1" | "h2" | "div" | "span";
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Display: React.FC<DisplayProps> = ({
@@ -327,8 +317,6 @@ export interface LinkProps {
   external?: boolean;
   /** Custom className */
   className?: string;
-  /** Additional HTML attributes */
-  [key: string]: any;
 }
 
 export const Link: React.FC<LinkProps> = ({
@@ -348,26 +336,39 @@ export const Link: React.FC<LinkProps> = ({
     muted: "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",
   };
 
-  const Component = href ? "a" : "button";
+  const baseClasses = `
+    ${variantClasses[variant]}
+    font-medium
+    transition-colors
+    underline-offset-4
+    hover:underline
+    ${className}
+  `;
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        onClick={onClick}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        className={baseClasses}
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <Component
-      href={href}
+    <button
+      type="button"
       onClick={onClick}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      className={`
-        ${variantClasses[variant]}
-        font-medium
-        transition-colors
-        underline-offset-4
-        hover:underline
-        ${className}
-      `}
-      {...props}
+      className={baseClasses}
+      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >
       {children}
-    </Component>
+    </button>
   );
 };
 
