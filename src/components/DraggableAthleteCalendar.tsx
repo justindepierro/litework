@@ -73,10 +73,6 @@ function DraggableAssignment({
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      end: (item, monitor) => {
-        const didDrop = monitor.didDrop();
-        // [REMOVED] console.log("[DRAG] Drag ended:", { workoutName: assignment.workoutPlanName, didDrop, dropResult: monitor.getDropResult() });
-      },
     }),
     [assignment, isCoach]
   );
@@ -102,10 +98,10 @@ function DraggableAssignment({
         compact ? "p-1.5" : "p-2.5"
       } ${
         isCompleted
-          ? "bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
+          ? "bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
           : isOverdue
-            ? "bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
-            : "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
+            ? "bg-linear-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
+            : "bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
       } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
@@ -173,6 +169,35 @@ function DraggableAssignment({
               </div>
             </div>
           )}
+          {/* Show athlete badges for individual assignments */}
+          {!assignment.groupId &&
+            assignment.athleteNames &&
+            assignment.athleteNames.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {assignment.athleteNames.slice(0, 3).map((name, idx) => {
+                  const nameParts = name.trim().split(" ");
+                  const firstName = nameParts[0] || "";
+                  const lastName = nameParts[nameParts.length - 1] || "";
+                  const initial = firstName.charAt(0).toUpperCase();
+                  const displayName = `${initial}. ${lastName}`;
+
+                  return (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-white bg-opacity-70 border border-current"
+                      title={name}
+                    >
+                      {displayName}
+                    </span>
+                  );
+                })}
+                {assignment.athleteNames.length > 3 && (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-white bg-opacity-70 border border-current">
+                    +{assignment.athleteNames.length - 3}
+                  </span>
+                )}
+              </div>
+            )}
         </>
       )}
     </div>
@@ -461,7 +486,7 @@ export default function DraggableAthleteCalendar({
               }`}
             >
               {/* Date header - always visible */}
-              <div className="flex justify-between items-center mb-2 flex-shrink-0">
+              <div className="flex justify-between items-center mb-2 shrink-0">
                 <span
                   className={`text-sm font-bold ${
                     isTodayDate
@@ -477,7 +502,7 @@ export default function DraggableAthleteCalendar({
 
               {/* Workouts - scrollable if needed */}
               <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-1.5 custom-scrollbar">
-                {dayAssignments.map((assignment, idx) => (
+                {dayAssignments.map((assignment) => (
                   <HoverCard
                     key={assignment.id}
                     trigger={
@@ -495,6 +520,7 @@ export default function DraggableAthleteCalendar({
                         duration={assignment.startTime}
                         notes={assignment.notes}
                         assignedGroups={getAssignmentGroups(assignment)}
+                        athleteNames={assignment.athleteNames}
                       />
                     }
                     openDelay={150}
@@ -506,7 +532,7 @@ export default function DraggableAthleteCalendar({
 
               {/* Show count if more than visible */}
               {dayAssignments.length > 3 && (
-                <div className="text-xs text-silver-600 text-center mt-1 flex-shrink-0 font-medium">
+                <div className="text-xs text-silver-600 text-center mt-1 shrink-0 font-medium">
                   {dayAssignments.length} workouts
                 </div>
               )}
@@ -520,28 +546,128 @@ export default function DraggableAthleteCalendar({
   // Week View
   const renderWeekView = () => {
     return (
-      <div className="grid grid-cols-7 gap-3 p-2">
-        {weekDays.map((date) => {
-          const dayAssignments = getAssignmentsForDate(date);
-          const isTodayDate = isToday(date);
+      <>
+        {/* Desktop: 7-column grid */}
+        <div className="hidden sm:grid sm:grid-cols-7 gap-3 p-2">
+          {weekDays.map((date) => {
+            const dayAssignments = getAssignmentsForDate(date);
+            const isTodayDate = isToday(date);
 
-          return (
-            <DroppableDay
-              key={date.toISOString()}
-              date={date}
-              onDrop={handleDrop}
-              isCoach={isCoach}
-              onClick={() => isCoach && onDateClick?.(date)}
-              className={`rounded-xl p-3 transition-all duration-200 ${
-                isTodayDate
-                  ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg"
-                  : "bg-white shadow-sm hover:shadow-md border border-gray-100"
-              } ${isCoach ? "cursor-pointer" : ""}`}
-            >
-              <div className="text-center mb-3">
-                <div className="flex justify-between items-center mb-1">
-                  <div className="text-sm font-medium text-silver-700">
-                    {date.toLocaleDateString("en-US", { weekday: "short" })}
+            return (
+              <DroppableDay
+                key={date.toISOString()}
+                date={date}
+                onDrop={handleDrop}
+                isCoach={isCoach}
+                onClick={() => isCoach && onDateClick?.(date)}
+                className={`rounded-xl p-3 transition-all duration-200 ${
+                  isTodayDate
+                    ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg"
+                    : "bg-white shadow-sm hover:shadow-md border border-gray-100"
+                } ${isCoach ? "cursor-pointer" : ""}`}
+              >
+                <div className="text-center mb-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="text-sm font-medium text-silver-700">
+                      {date.toLocaleDateString("en-US", { weekday: "short" })}
+                    </div>
+                    {isCoach && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDateClick?.(date);
+                        }}
+                        className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                        title="Assign workout"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                      </button>
+                    )}
+                  </div>
+                  <div
+                    className={`text-2xl font-bold ${
+                      isTodayDate ? "text-accent-blue" : "text-navy-900"
+                    }`}
+                  >
+                    {date.getDate()}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {dayAssignments.map((assignment) => (
+                    <HoverCard
+                      key={assignment.id}
+                      trigger={
+                        <DraggableAssignment
+                          assignment={assignment}
+                          onClick={() => onAssignmentClick?.(assignment)}
+                          compact={false}
+                          isCoach={isCoach}
+                        />
+                      }
+                      content={
+                        <WorkoutPreviewCard
+                          workoutName={assignment.workoutPlanName || "Workout"}
+                          workoutPlanId={assignment.workoutPlanId}
+                          duration={assignment.startTime}
+                          notes={assignment.notes}
+                          assignedGroups={getAssignmentGroups(assignment)}
+                          athleteNames={assignment.athleteNames}
+                        />
+                      }
+                      openDelay={300}
+                    />
+                  ))}
+                  {dayAssignments.length === 0 && (
+                    <div className="text-center text-silver-600 text-sm py-4">
+                      No workouts
+                    </div>
+                  )}
+                </div>
+              </DroppableDay>
+            );
+          })}
+        </div>
+
+        {/* Mobile: Vertical list with expanded day cards */}
+        <div className="sm:hidden space-y-3 p-3">
+          {weekDays.map((date) => {
+            const dayAssignments = getAssignmentsForDate(date);
+            const isTodayDate = isToday(date);
+
+            return (
+              <DroppableDay
+                key={date.toISOString()}
+                date={date}
+                onDrop={handleDrop}
+                isCoach={isCoach}
+                onClick={() => isCoach && onDateClick?.(date)}
+                className={`rounded-xl p-4 transition-all duration-200 ${
+                  isTodayDate
+                    ? "ring-2 ring-blue-500 bg-blue-50 shadow-lg"
+                    : "bg-white shadow-sm border border-gray-100"
+                } ${isCoach ? "cursor-pointer" : ""}`}
+              >
+                {/* Mobile day header */}
+                <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`text-3xl font-bold ${
+                        isTodayDate ? "text-accent-blue" : "text-navy-900"
+                      }`}
+                    >
+                      {date.getDate()}
+                    </div>
+                    <div>
+                      <div className="text-base font-semibold text-gray-900">
+                        {date.toLocaleDateString("en-US", { weekday: "long" })}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {date.toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </div>
+                    </div>
                   </div>
                   {isCoach && (
                     <button
@@ -549,55 +675,83 @@ export default function DraggableAthleteCalendar({
                         e.stopPropagation();
                         onDateClick?.(date);
                       }}
-                      className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-blue text-white hover:bg-accent-blue/90 transition-colors touch-manipulation"
                       title="Assign workout"
                     >
-                      <span className="text-lg leading-none">+</span>
+                      <span className="text-xl font-bold">+</span>
                     </button>
                   )}
                 </div>
-                <div
-                  className={`text-2xl font-bold ${
-                    isTodayDate ? "text-accent-blue" : "text-navy-900"
-                  }`}
-                >
-                  {date.getDate()}
-                </div>
-              </div>
-              <div className="space-y-2">
-                {dayAssignments.map((assignment) => (
-                  <HoverCard
-                    key={assignment.id}
-                    trigger={
-                      <DraggableAssignment
-                        assignment={assignment}
+
+                {/* Workout list */}
+                {dayAssignments.length > 0 ? (
+                  <div className="space-y-2">
+                    {dayAssignments.map((assignment) => (
+                      <div
+                        key={assignment.id}
                         onClick={() => onAssignmentClick?.(assignment)}
-                        compact={false}
-                        isCoach={isCoach}
-                      />
-                    }
-                    content={
-                      <WorkoutPreviewCard
-                        workoutName={assignment.workoutPlanName || "Workout"}
-                        workoutPlanId={assignment.workoutPlanId}
-                        duration={assignment.startTime}
-                        notes={assignment.notes}
-                        assignedGroups={getAssignmentGroups(assignment)}
-                      />
-                    }
-                    openDelay={300}
-                  />
-                ))}
-                {dayAssignments.length === 0 && (
-                  <div className="text-center text-silver-600 text-sm py-4">
-                    No workouts
+                        className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all touch-manipulation"
+                      >
+                        <div className="font-semibold text-gray-900 mb-1">
+                          {assignment.workoutPlanName || "Workout"}
+                        </div>
+                        {assignment.startTime && (
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>
+                              {formatTime12Hour(assignment.startTime)}
+                            </span>
+                          </div>
+                        )}
+                        {assignment.location && (
+                          <div className="flex items-center gap-1.5 text-xs text-gray-600 mt-1">
+                            <MapPin className="w-3.5 h-3.5" />
+                            <span>{assignment.location}</span>
+                          </div>
+                        )}
+                        {/* Show athlete badges for individual assignments */}
+                        {!assignment.groupId &&
+                          assignment.athleteNames &&
+                          assignment.athleteNames.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {assignment.athleteNames.map((name, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                                  style={{
+                                    backgroundColor: "#dbeafe",
+                                    color: "#1e40af",
+                                    border: "1.5px solid #3b82f6",
+                                  }}
+                                  title={name}
+                                >
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        {assignment.groupId && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <Users className="w-3 h-3 text-gray-500" />
+                            <span className="text-xs text-gray-600 font-medium">
+                              Group
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-400 py-6">
+                    <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No workouts scheduled</p>
                   </div>
                 )}
-              </div>
-            </DroppableDay>
-          );
-        })}
-      </div>
+              </DroppableDay>
+            );
+          })}
+        </div>
+      </>
     );
   };
 
@@ -631,6 +785,7 @@ export default function DraggableAthleteCalendar({
                     duration={assignment.startTime}
                     notes={assignment.notes}
                     assignedGroups={getAssignmentGroups(assignment)}
+                    athleteNames={assignment.athleteNames}
                   />
                 }
                 openDelay={300}

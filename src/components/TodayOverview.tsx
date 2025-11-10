@@ -8,6 +8,8 @@ interface TodayWorkout {
   id: string;
   workoutName: string;
   groupName: string;
+  athleteNames?: string[];
+  isIndividual?: boolean;
   athleteCount: number;
   completedCount: number;
   startTime: string;
@@ -28,6 +30,8 @@ const TodayOverview = memo(function TodayOverview() {
       const data = await response.json();
 
       if (data.success) {
+        console.log("[TodayOverview] Received workouts:", data.workouts);
+        console.log("[TodayOverview] First workout detail:", JSON.stringify(data.workouts[0], null, 2));
         setTodayWorkouts(data.workouts || []);
       }
     } catch (error) {
@@ -87,10 +91,60 @@ const TodayOverview = memo(function TodayOverview() {
                     <h3 className="font-semibold text-gray-900 mb-1">
                       {workout.workoutName}
                     </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Users className="w-4 h-4" />
-                      <span>{workout.groupName}</span>
-                    </div>
+                    {/* Show athlete badges for individual assignments OR group name for group assignments */}
+                    {workout.isIndividual &&
+                    workout.athleteNames &&
+                    workout.athleteNames.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {workout.athleteNames.map((name, idx) => {
+                          const nameParts = name.trim().split(" ");
+                          const firstName = nameParts[0] || "";
+                          const lastName =
+                            nameParts[nameParts.length - 1] || "";
+                          const initial = firstName.charAt(0).toUpperCase();
+                          const displayName = `${initial}. ${lastName}`;
+
+                          return (
+                            <span
+                              key={idx}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                padding: "0.25rem 0.625rem",
+                                borderRadius: "9999px",
+                                fontSize: "0.75rem",
+                                fontWeight: "600",
+                                backgroundColor: "#dbeafe",
+                                color: "#1e40af",
+                                border: "1.5px solid #3b82f6",
+                              }}
+                            >
+                              {displayName}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.375rem",
+                            padding: "0.25rem 0.625rem",
+                            borderRadius: "9999px",
+                            fontSize: "0.75rem",
+                            fontWeight: "600",
+                            backgroundColor: "#3b82f620",
+                            color: "#3b82f6",
+                            border: "1.5px solid #3b82f6",
+                          }}
+                        >
+                          <Users style={{ width: "0.75rem", height: "0.75rem" }} />
+                          {workout.groupName}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock className="w-4 h-4" />

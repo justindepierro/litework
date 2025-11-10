@@ -1017,35 +1017,71 @@ export const getAllAssignments = async (): Promise<WorkoutAssignment[]> => {
   }
 
   // Transform snake_case to camelCase with joined data
-  const assignments = (data || []).map((assignment: Record<string, any>) => ({
-    id: assignment.id as string,
-    workoutPlanId: assignment.workout_plan_id as string,
-    workoutPlanName:
-      (assignment.workout_plans?.name as string) ||
-      assignment.workout_plan_name ||
-      undefined,
-    assignedBy: assignment.assigned_by as string,
-    athleteId: (assignment.assigned_to_user_id as string) || undefined,
-    groupId: (assignment.assigned_to_group_id as string) || undefined,
-    athleteIds: (assignment.athlete_ids as string[]) || [],
-    scheduledDate: parseDate(assignment.scheduled_date as string),
-    assignedDate: parseDate(
-      (assignment.assigned_date || assignment.created_at) as string
-    ),
-    assignmentType: ((assignment.assignment_type as string) || "individual") as
-      | "individual"
-      | "group",
-    status:
-      (assignment.status as string) ||
-      (assignment.completed ? "completed" : "assigned"),
-    modifications: (assignment.modifications as unknown[]) || [],
-    startTime: (assignment.start_time as string) || undefined,
-    endTime: (assignment.end_time as string) || undefined,
-    location: (assignment.location as string) || undefined,
-    notes: (assignment.notes as string) || undefined,
-    createdAt: new Date(assignment.created_at as string),
-    updatedAt: new Date(assignment.updated_at as string),
-  })) as WorkoutAssignment[];
+  const assignments = (await Promise.all(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (data || []).map(async (assignment: Record<string, any>) => {
+      // Fetch athlete names for individual assignments (not group assignments)
+      let athleteNames: string[] = [];
+
+      // Only fetch names if this is NOT a group assignment (assigned_to_group_id is null)
+      if (
+        !assignment.assigned_to_group_id &&
+        assignment.athlete_ids &&
+        Array.isArray(assignment.athlete_ids) &&
+        assignment.athlete_ids.length > 0
+      ) {
+        const { data: athletes } = await supabase
+          .from("users")
+          .select("first_name, last_name")
+          .in("id", assignment.athlete_ids);
+
+        if (athletes && athletes.length > 0) {
+          athleteNames = athletes.map(
+            (a: { first_name: string; last_name: string }) =>
+              `${a.first_name.charAt(0)}. ${a.last_name}`
+          );
+
+          // Log to debug
+          if (process.env.NODE_ENV === "development") {
+            console.log(
+              `Fetched ${athleteNames.length} athlete names:`,
+              athleteNames
+            );
+          }
+        }
+      }
+
+      return {
+        id: assignment.id as string,
+        workoutPlanId: assignment.workout_plan_id as string,
+        workoutPlanName:
+          (assignment.workout_plans?.name as string) ||
+          assignment.workout_plan_name ||
+          undefined,
+        assignedBy: assignment.assigned_by as string,
+        athleteId: (assignment.assigned_to_user_id as string) || undefined,
+        athleteNames: athleteNames.length > 0 ? athleteNames : undefined,
+        groupId: (assignment.assigned_to_group_id as string) || undefined,
+        athleteIds: (assignment.athlete_ids as string[]) || [],
+        scheduledDate: parseDate(assignment.scheduled_date as string),
+        assignedDate: parseDate(
+          (assignment.assigned_date || assignment.created_at) as string
+        ),
+        assignmentType: ((assignment.assignment_type as string) ||
+          "individual") as "individual" | "group",
+        status:
+          (assignment.status as string) ||
+          (assignment.completed ? "completed" : "assigned"),
+        modifications: (assignment.modifications as unknown[]) || [],
+        startTime: (assignment.start_time as string) || undefined,
+        endTime: (assignment.end_time as string) || undefined,
+        location: (assignment.location as string) || undefined,
+        notes: (assignment.notes as string) || undefined,
+        createdAt: new Date(assignment.created_at as string),
+        updatedAt: new Date(assignment.updated_at as string),
+      };
+    })
+  )) as WorkoutAssignment[];
 
   // Validate first assignment in development
   if (process.env.NODE_ENV === "development" && assignments.length > 0) {

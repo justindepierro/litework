@@ -31,6 +31,7 @@ interface WorkoutPreviewCardProps {
   notes?: string;
   workoutPlanId: string;
   assignedGroups?: AssignedGroup[]; // Now accepts full group objects with colors
+  athleteNames?: string[]; // For individual assignments
 }
 
 interface KPITag {
@@ -288,11 +289,21 @@ export function WorkoutPreviewCard({
   notes,
   workoutPlanId,
   assignedGroups = [],
+  athleteNames = [],
 }: WorkoutPreviewCardProps) {
   const [loading, setLoading] = useState(true);
   const [workoutDetails, setWorkoutDetails] = useState<WorkoutDetails | null>(
     null
   );
+
+  // Debug log
+  useEffect(() => {
+    console.log("[HoverCard] Received props:", {
+      workoutName,
+      athleteNames,
+      assignedGroups,
+    });
+  }, [workoutName, athleteNames, assignedGroups]);
 
   useEffect(() => {
     if (!workoutPlanId) return;
@@ -435,7 +446,8 @@ export function WorkoutPreviewCard({
           gap: "1rem",
         }}
       >
-        {assignedGroups.length > 0 && (
+        {(assignedGroups.length > 0 ||
+          (athleteNames && athleteNames.length > 0)) && (
           <div>
             <div
               style={{
@@ -450,26 +462,45 @@ export function WorkoutPreviewCard({
               Assigned To
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
-              {assignedGroups.map((group) => (
-                <div
-                  key={group.id}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.375rem",
-                    padding: "0.25rem 0.625rem",
-                    borderRadius: "9999px",
-                    fontSize: "0.75rem",
-                    fontWeight: "600",
-                    backgroundColor: group.color + "20", // 20 = 12.5% opacity
-                    color: group.color,
-                    border: `1.5px solid ${group.color}`,
-                  }}
-                >
-                  <Users style={{ width: "0.75rem", height: "0.75rem" }} />
-                  {group.name}
-                </div>
-              ))}
+              {athleteNames && athleteNames.length > 0
+                ? athleteNames.map((name, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0.25rem 0.625rem",
+                        borderRadius: "9999px",
+                        fontSize: "0.75rem",
+                        fontWeight: "600",
+                        backgroundColor: "#dbeafe",
+                        color: "#1e40af",
+                        border: "1.5px solid #3b82f6",
+                      }}
+                    >
+                      {name}
+                    </div>
+                  ))
+                : assignedGroups.map((group) => (
+                    <div
+                      key={group.id}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.375rem",
+                        padding: "0.25rem 0.625rem",
+                        borderRadius: "9999px",
+                        fontSize: "0.75rem",
+                        fontWeight: "600",
+                        backgroundColor: group.color + "20",
+                        color: group.color,
+                        border: `1.5px solid ${group.color}`,
+                      }}
+                    >
+                      <Users style={{ width: "0.75rem", height: "0.75rem" }} />
+                      {group.name}
+                    </div>
+                  ))}
             </div>
           </div>
         )}

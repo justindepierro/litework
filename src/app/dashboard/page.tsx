@@ -43,6 +43,7 @@ import {
   UserPlus,
   Clock,
   MapPin,
+  Settings,
 } from "lucide-react";
 
 interface DashboardStats {
@@ -59,6 +60,9 @@ export default function DashboardPage() {
     currentStreak: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  const [coachWelcomeMessage, setCoachWelcomeMessage] = useState<string | null>(
+    null
+  );
 
   // Assignment state
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
@@ -84,6 +88,7 @@ export default function DashboardPage() {
     if (user && user.role === "athlete") {
       fetchDashboardStats();
       fetchAthleteAssignments();
+      fetchCoachWelcomeMessage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -131,6 +136,24 @@ export default function DashboardPage() {
     }
   };
 
+  const fetchCoachWelcomeMessage = async () => {
+    try {
+      // Get the athlete's coach ID from their first assignment
+      if (assignments.length > 0 && assignments[0].assignedBy) {
+        const response = await fetch(
+          `/api/coach/settings/public?coachId=${assignments[0].assignedBy}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.settings?.welcome_message) {
+          setCoachWelcomeMessage(data.settings.welcome_message);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch coach welcome message:", error);
+    }
+  };
+
   const fetchCoachData = async () => {
     try {
       setLoadingData(true);
@@ -153,9 +176,10 @@ export default function DashboardPage() {
         ]);
 
       if (assignmentsData.success && assignmentsData.data) {
-        setAssignments(
-          assignmentsData.data.assignments || assignmentsData.data || []
-        );
+        const assignments =
+          assignmentsData.data.assignments || assignmentsData.data || [];
+        console.log("[Dashboard] Loaded assignments:", assignments.slice(0, 2));
+        setAssignments(assignments);
       }
 
       if (workoutsData.success && workoutsData.data) {
@@ -296,19 +320,35 @@ export default function DashboardPage() {
       <div className="container-responsive min-h-screen bg-gradient-primary px-4 py-6">
         <div className="max-w-7xl mx-auto">
           {/* Welcome Header */}
-          <div className="text-center sm:text-left mb-8">
-            <Display size="lg" className="mb-2">
-              Welcome back,
-            </Display>
-            <Display
-              size="md"
-              className="flex items-center gap-2 justify-center sm:justify-start"
-            >
-              {user.fullName}! <Hand className="w-6 h-6" />
-            </Display>
-            <Body variant="secondary" className="mt-2">
-              {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
-            </Body>
+          <div className="mb-8">
+            <div className="flex items-start justify-between gap-4">
+              <div className="text-center sm:text-left">
+                <Display size="lg" className="mb-2">
+                  Welcome back,
+                </Display>
+                <Display
+                  size="md"
+                  className="flex items-center gap-2 justify-center sm:justify-start"
+                >
+                  {user.fullName}! <Hand className="w-6 h-6" />
+                </Display>
+                <Body variant="secondary" className="mt-2">
+                  {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
+                </Body>
+              </div>
+
+              {/* Settings Button */}
+              <Link href="/coach-settings">
+                <Button
+                  variant="secondary"
+                  leftIcon={<Settings className="w-5 h-5" />}
+                  className="shrink-0"
+                >
+                  <span className="hidden sm:inline">Program Settings</span>
+                  <span className="sm:hidden">Settings</span>
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Quick Actions Bar - Full Width */}
@@ -523,41 +563,65 @@ export default function DashboardPage() {
                     : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
                 </p>
                 {assignments.length === 0 && (
-                  <div className="bg-gray-50 rounded-lg p-4 text-left space-y-3">
-                    <h4 className="text-sm font-semibold text-gray-700">
-                      Getting Started:
-                    </h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      <li className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-blue-600">
-                            1
-                          </span>
+                  <div className="space-y-4">
+                    {/* Coach's Welcome Message */}
+                    {coachWelcomeMessage && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shrink-0">
+                            <Users className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-semibold text-blue-900 mb-1">
+                              Message from Your Coach
+                            </h4>
+                            <p className="text-sm text-blue-800 whitespace-pre-wrap">
+                              {coachWelcomeMessage}
+                            </p>
+                          </div>
                         </div>
-                        <span>
-                          Wait for your coach to assign your first workout
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-blue-600">
-                            2
+                      </div>
+                    )}
+
+                    {/* Getting Started Guide */}
+                    <div className="bg-gray-50 rounded-lg p-4 text-left space-y-3">
+                      <h4 className="text-sm font-semibold text-gray-700">
+                        Getting Started:
+                      </h4>
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        <li className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-blue-600">
+                              1
+                            </span>
+                          </div>
+                          <span>
+                            Wait for your coach to assign your first workout
                           </span>
-                        </div>
-                        <span>Workouts will appear in your calendar below</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-xs font-bold text-blue-600">
-                            3
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-blue-600">
+                              2
+                            </span>
+                          </div>
+                          <span>
+                            Workouts will appear in your calendar below
                           </span>
-                        </div>
-                        <span>
-                          Tap &ldquo;Start Workout&rdquo; when ready to log
-                          your sets
-                        </span>
-                      </li>
-                    </ul>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-blue-600">
+                              3
+                            </span>
+                          </div>
+                          <span>
+                            Tap &ldquo;Start Workout&rdquo; when ready to log
+                            your sets
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 )}
               </Card>

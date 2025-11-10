@@ -231,6 +231,7 @@ export interface WorkoutAssignment {
 
   // Individual assignment
   athleteId?: string;
+  athleteNames?: string[]; // Names of athletes for individual assignments (formatted: "F. LastName")
 
   // Group assignment
   groupId?: string;

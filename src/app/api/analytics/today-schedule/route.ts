@@ -68,8 +68,10 @@ export async function GET() {
           workoutName = workout?.name || "Unknown Workout";
         }
 
-        // Get group name
+        // Get group name or athlete name for individual assignments
         let groupName = "Individual Assignment";
+        let athleteNames: string[] = [];
+
         if (assignment.assigned_to_group_id) {
           const { data: group } = await supabase
             .from("athlete_groups")
@@ -77,6 +79,23 @@ export async function GET() {
             .eq("id", assignment.assigned_to_group_id)
             .single();
           groupName = group?.name || "Unknown Group";
+        } else if (
+          assignment.athlete_ids &&
+          assignment.athlete_ids.length > 0
+        ) {
+          // Individual assignment - fetch athlete names
+          const { data: athletes } = await supabase
+            .from("users")
+            .select("first_name, last_name")
+            .in("id", assignment.athlete_ids);
+
+          if (athletes && athletes.length > 0) {
+            athleteNames = athletes.map(
+              (a) => `${a.first_name} ${a.last_name}`
+            );
+            // Keep groupName as "Individual Assignment" to show badges
+            groupName = "Individual Assignment";
+          }
         }
 
         // Get athlete count from athlete_ids array
@@ -99,6 +118,8 @@ export async function GET() {
           id: assignment.id,
           workoutName,
           groupName,
+          athleteNames,
+          isIndividual: !assignment.assigned_to_group_id,
           athleteCount,
           completedCount,
           startTime,
@@ -106,6 +127,8 @@ export async function GET() {
         };
       })
     );
+
+    console.log("[Today Schedule] Sample workout:", workoutsWithStats[0]);
 
     return NextResponse.json({
       success: true,

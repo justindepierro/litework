@@ -66,7 +66,8 @@ const Navigation = memo(function Navigation() {
       items.push(
         { href: "/workouts", label: "Workouts" },
         { href: "/athletes", label: "Athletes" },
-        { href: "/schedule", label: "Schedule" }
+        { href: "/schedule", label: "Schedule" },
+        { href: "/coach-settings", label: "Settings" }
       );
     } else {
       items.push(
@@ -247,13 +248,21 @@ const Navigation = memo(function Navigation() {
         </div>
       </div>
 
-      {/* Enhanced Mobile menu with better UX */}
+      {/* Enhanced Mobile menu with better UX - Explicit background for iOS */}
       <div
         className={`${
           isMobileMenuOpen ? "block" : "hidden"
-        } md:hidden bg-navy-800 border-t border-navy-600 shadow-lg`}
+        } md:hidden border-t border-navy-600 shadow-lg`}
+        style={{
+          backgroundColor: "#1e293b", // Explicit navy-800 color for iOS
+          position: "relative",
+          zIndex: 999,
+        }}
       >
-        <div className="px-4 pt-4 pb-6 space-y-2">
+        <div
+          className="px-4 pt-4 pb-6 space-y-2"
+          style={{ backgroundColor: "#1e293b" }}
+        >
           {user ? (
             <>
               <div className="px-4 py-3 text-sm text-silver-200 border-b border-navy-600 mb-4 bg-navy-900 rounded-lg">
