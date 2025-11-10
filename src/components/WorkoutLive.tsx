@@ -736,40 +736,75 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         Delete
                       </button>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 text-sm">
-                      {set.weight && (
+                    <div className="grid grid-cols-3 gap-4 text-sm mt-2">
+                      {set.weight !== undefined && set.weight !== null && (
                         <div>
-                          <div className="text-gray-600">Weight</div>
-                          <div className="font-semibold text-gray-900">
-                            {set.weight} lbs
-                          </div>
+                          <label className="text-gray-600 text-xs block mb-1">Weight (lbs)</label>
+                          <input
+                            type="number"
+                            defaultValue={set.weight}
+                            onBlur={async (e) => {
+                              const newWeight = parseFloat(e.target.value);
+                              if (!isNaN(newWeight) && newWeight !== set.weight && set.id) {
+                                try {
+                                  const response = await fetch(`/api/sets/${set.id}`, {
+                                    method: "PATCH",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ weight: newWeight }),
+                                  });
+                                  if (!response.ok) throw new Error("Failed to update");
+                                  // Update local state
+                                  const updatedSession = { ...session };
+                                  const setRecord = updatedSession.exercises[editingExerciseIndex].set_records.find(s => s.id === set.id);
+                                  if (setRecord) setRecord.weight = newWeight;
+                                } catch (err) {
+                                  console.error("Error updating weight:", err);
+                                  e.target.value = set.weight?.toString() || "";
+                                }
+                              }
+                            }}
+                            className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
+                          />
                         </div>
                       )}
                       <div>
-                        <div className="text-gray-600">Reps</div>
-                        <div className="font-semibold text-gray-900">
-                          {set.reps}
-                        </div>
+                        <label className="text-gray-600 text-xs block mb-1">Reps</label>
+                        <input
+                          type="number"
+                          defaultValue={set.reps}
+                          onBlur={async (e) => {
+                            const newReps = parseInt(e.target.value);
+                            if (!isNaN(newReps) && newReps !== set.reps && set.id) {
+                              try {
+                                const response = await fetch(`/api/sets/${set.id}`, {
+                                  method: "PATCH",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ reps: newReps }),
+                                });
+                                if (!response.ok) throw new Error("Failed to update");
+                                // Update local state
+                                const updatedSession = { ...session };
+                                const setRecord = updatedSession.exercises[editingExerciseIndex].set_records.find(s => s.id === set.id);
+                                if (setRecord) setRecord.reps = newReps;
+                              } catch (err) {
+                                console.error("Error updating reps:", err);
+                                e.target.value = set.reps.toString();
+                              }
+                            }
+                          }}
+                          className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
+                        />
                       </div>
-                      {set.rpe && (
+                      {set.rpe !== undefined && set.rpe !== null && (
                         <div>
-                          <div className="text-gray-600">RPE</div>
-                          <div className="font-semibold text-gray-900">
+                          <label className="text-gray-600 text-xs block mb-1">RPE</label>
+                          <div className="px-2 py-1.5 bg-gray-100 rounded-lg font-semibold text-gray-900">
                             {set.rpe}
                           </div>
+                          <span className="text-[10px] text-gray-500">Not editable yet</span>
                         </div>
                       )}
                     </div>
-                    {/* Edit button - TODO: Make fields editable */}
-                    <button
-                      onClick={() => {
-                        // TODO: Implement inline editing
-                        console.log("Edit set:", set.set_number);
-                      }}
-                      className="mt-2 w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium text-sm transition-colors"
-                    >
-                      Edit This Set
-                    </button>
                   </div>
                 ))}
               </div>
