@@ -441,12 +441,12 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         return next;
                       });
                     }}
-                    className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all`}
+                    className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all duration-200 hover:shadow-md active:scale-[0.99]`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <ChevronDown
-                          className={`w-4 h-4 ${colorClasses.text} transition-transform ${
+                          className={`w-4 h-4 ${colorClasses.text} transition-transform duration-200 ${
                             collapsedGroups.has(group.id) ? "-rotate-90" : ""
                           }`}
                         />
@@ -481,7 +481,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       }
                     }}
                     className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
-                      isActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'
+                      isActive ? 'scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50' : 'hover:scale-[1.01] hover:shadow-md active:scale-[0.99]'
                     } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''}`}
                     style={{ minHeight: '48px' }}
                   >
@@ -550,15 +550,16 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       
                       {/* Active Exercise: Show set records */}
                       {isActive && exercise.set_records.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-blue-200">
+                        <div className="mt-3 pt-3 border-t border-blue-200 animate-in fade-in duration-300">
                           <div className="space-y-1">
                             {exercise.set_records.slice(-2).map((set, setIndex) => (
                               <div
                                 key={setIndex}
-                                className="flex items-center justify-between text-sm bg-white/50 rounded px-2 py-1"
+                                className="flex items-center justify-between text-sm bg-white/50 rounded px-2 py-1 animate-in slide-in-from-right-2 duration-200"
+                                style={{ animationDelay: `${setIndex * 50}ms` }}
                               >
                                 <span className="text-gray-600 font-medium">Set {set.set_number}</span>
-                                <span className="text-gray-900">
+                                <span className="text-gray-900 font-semibold">
                                   {set.weight && `${set.weight} lbs × `}
                                   {set.reps} reps
                                   {set.rpe && ` @ RPE ${set.rpe}`}
@@ -624,7 +625,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             {/* Complete Set Button */}
             <button
               onClick={handleCompleteSet}
-              className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
               style={{ minHeight: '56px' }}
             >
               <CheckCircle className="w-6 h-6" />
@@ -641,7 +642,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             {isLastExercise ? (
               <button
                 onClick={handleCompleteWorkout}
-                className="w-full py-4 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                 style={{ minHeight: '56px' }}
               >
                 <Trophy className="w-6 h-6" />
@@ -650,7 +651,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             ) : (
               <button
                 onClick={handleNext}
-                className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                 style={{ minHeight: '56px' }}
               >
                 Next Exercise
@@ -719,7 +720,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                             }
                           }
                         }}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium active:scale-95 transition-all duration-150"
                       >
                         Delete
                       </button>
@@ -801,7 +802,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               <div className="mt-4">
                 <button
                   onClick={() => setEditingExerciseIndex(null)}
-                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium"
+                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-900 rounded-xl font-medium active:scale-95 transition-all duration-150"
                 >
                   Done
                 </button>
@@ -830,7 +831,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                     await pauseSession();
                     router.push("/dashboard");
                   }}
-                  className="w-full p-4 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl font-medium text-left border-2 border-blue-200 transition-colors"
+                  className="w-full p-4 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-900 rounded-xl font-medium text-left border-2 border-blue-200 transition-all duration-150 active:scale-[0.99]"
                 >
                   <div className="font-semibold mb-1">💾 Save & Exit</div>
                   <div className="text-sm text-blue-700">
@@ -849,7 +850,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       router.push("/dashboard");
                     }
                   }}
-                  className="w-full p-4 bg-red-50 hover:bg-red-100 text-red-900 rounded-xl font-medium text-left border-2 border-red-200 transition-colors"
+                  className="w-full p-4 bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-900 rounded-xl font-medium text-left border-2 border-red-200 transition-all duration-150 active:scale-[0.99]"
                 >
                   <div className="font-semibold mb-1">🗑️ Abandon Workout</div>
                   <div className="text-sm text-red-700">
@@ -859,7 +860,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                 <button
                   onClick={() => setShowExitConfirm(false)}
-                  className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium"
+                  className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-900 rounded-xl font-medium active:scale-95 transition-all duration-150"
                 >
                   Cancel
                 </button>
