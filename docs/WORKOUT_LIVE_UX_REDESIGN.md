@@ -66,18 +66,33 @@
 - ✅ Tap completed exercise → View all sets with edit/delete options
 - ✅ Tap pending/active exercise → Activate for recording
 - ✅ Large touch-friendly set cards
-- ✅ Per-set delete/edit buttons (UI ready)
+- ✅ Set deletion implementation (Nov 10 - commit 876f8c0)
+  - DELETE /api/sets/[id] endpoint
+  - Confirmation dialog
+  - Updates database and local state
+  - Auto-closes modal if no sets remain
+- ✅ Inline set editing (Nov 10 - commit 7f9fc8c)
+  - PATCH /api/sets/[id] endpoint
+  - Editable weight/reps fields in quick edit modal
+  - Updates on blur (no save button needed)
+  - RPE shown but read-only (needs schema update)
+- ✅ +/- stepper controls (Nov 10 - commit 5d830ab)
+  - Reusable StepperInput component
+  - Weight steppers: ±5 lbs with gradient green/red buttons
+  - Reps steppers: ±1 rep
+  - RPE steppers: ±1 (1-10 range)
+  - Large 48px touch-friendly buttons
+  - Applied to main recording area (bottom input section)
 
 **In Progress**:
-- [ ] Set deletion implementation (delete set from database)
-- [ ] Inline set editing (modify weight/reps/RPE)
-- [ ] +/- stepper controls for easier input
+- [ ] Add workout header with timer and progress
+- [ ] Circuit round tracking and auto-advance
 
 **Next Steps**:
-1. Implement set deletion functionality
-2. Implement inline set editing
-3. Add +/- steppers to input controls
-4. Add workout header with timer and progress
+1. Add WorkoutHeader component (timer, progress, menu)
+2. Implement circuit round tracking
+3. Test on mobile device
+4. Polish animations and transitions
 
 ## 🎯 Design Principles
 
@@ -490,19 +505,20 @@ interface Set {
 
 ## 🚀 Implementation Phases
 
-### Phase 1: Core Redesign (Current)
-- [x] New exercise card layout
-- [x] Collapsible circuits/groups
-- [ ] Quick input controls
-- [ ] Active exercise state
-- [ ] Basic navigation
+### Phase 1: Core Redesign ✅ COMPLETE
+- [x] New exercise card layout (Nov 10 - commit 6b30412)
+- [x] Collapsible circuits/groups (Nov 10 - commit ca7cbfb, 33fdf55, 3b0202c)
+- [x] Active exercise state (Nov 10)
+- [x] Basic navigation (Nov 10)
 
-### Phase 2: Enhanced Controls
+### Phase 2: Enhanced Controls 🚧 IN PROGRESS
+- [x] Edit completed sets - Delete functionality (Nov 10 - commit 876f8c0)
+- [x] Edit completed sets - Inline editing (Nov 10 - commit 7f9fc8c)
+- [x] Quick input controls - Stepper buttons (Nov 10 - commit 5d830ab)
 - [ ] Menu with all actions
 - [ ] Pause/resume functionality
 - [ ] Undo last set
 - [ ] Reset exercise
-- [ ] Edit completed sets
 
 ### Phase 3: Circuit Intelligence
 - [ ] Auto-advance in circuits
