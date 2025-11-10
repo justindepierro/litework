@@ -39,6 +39,9 @@ function SignUpForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<
+    "weak" | "fair" | "good" | "strong" | null
+  >(null);
 
   const { signUp } = useAuth();
 
@@ -131,6 +134,19 @@ function SignUpForm() {
       if (!validation.valid) {
         setPasswordError(validation.error || "Invalid password");
       }
+
+      // Calculate password strength
+      let strength: "weak" | "fair" | "good" | "strong" = "weak";
+      if (value.length >= 12 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) {
+        strength = "strong";
+      } else if (value.length >= 10 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value)) {
+        strength = "good";
+      } else if (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value)) {
+        strength = "fair";
+      }
+      setPasswordStrength(strength);
+    } else {
+      setPasswordStrength(null);
     }
   };
 
@@ -236,8 +252,8 @@ function SignUpForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6">
         {/* Show email confirmation message instead of form */}
         {showEmailConfirmation ? (
           <div>
@@ -292,11 +308,11 @@ function SignUpForm() {
           <>
             {/* Header */}
             <div>
-              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              <h2 className="mt-4 text-center text-3xl sm:text-4xl font-extrabold text-gray-900">
                 {inviteData ? "Accept Your Invitation" : "Create Your Account"}
               </h2>
               {inviteData && (
-                <p className="mt-2 text-center text-sm text-gray-600">
+                <p className="mt-3 text-center text-base sm:text-lg text-gray-600">
                   Welcome to LiteWork! Your coach has invited you to join.
                 </p>
               )}
@@ -328,13 +344,13 @@ function SignUpForm() {
 
             {/* Sign Up Form */}
             {!inviteError && (
-              <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                <div className="rounded-md shadow-sm space-y-4">
+              <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+                <div className="rounded-md space-y-5">
                   {/* First Name */}
                   <div>
                     <label
                       htmlFor="first-name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
                     >
                       First Name
                     </label>
@@ -347,7 +363,7 @@ function SignUpForm() {
                       disabled={!!inviteData}
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="First Name"
                     />
                   </div>
@@ -356,7 +372,7 @@ function SignUpForm() {
                   <div>
                     <label
                       htmlFor="last-name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
                     >
                       Last Name
                     </label>
@@ -369,7 +385,7 @@ function SignUpForm() {
                       disabled={!!inviteData}
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Last Name"
                     />
                   </div>
@@ -378,7 +394,7 @@ function SignUpForm() {
                   <div>
                     <label
                       htmlFor="email-address"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
                     >
                       Email Address
                     </label>
@@ -391,11 +407,11 @@ function SignUpForm() {
                       disabled={!!inviteData}
                       value={email}
                       onChange={(e) => handleEmailChange(e.target.value)}
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Email address"
                     />
                     {emailError && (
-                      <p className="mt-1 text-sm text-red-600">{emailError}</p>
+                      <p className="mt-2 text-base text-red-600">{emailError}</p>
                     )}
                   </div>
 
@@ -403,7 +419,7 @@ function SignUpForm() {
                   <div>
                     <label
                       htmlFor="password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
                     >
                       Password
                     </label>
@@ -415,11 +431,42 @@ function SignUpForm() {
                       required
                       value={password}
                       onChange={(e) => handlePasswordChange(e.target.value)}
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
                       placeholder="Password (min 8 characters)"
                     />
+                    {passwordStrength && !passwordError && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-300 ${
+                              passwordStrength === "weak"
+                                ? "w-1/4 bg-red-500"
+                                : passwordStrength === "fair"
+                                ? "w-2/4 bg-yellow-500"
+                                : passwordStrength === "good"
+                                ? "w-3/4 bg-blue-500"
+                                : "w-full bg-green-500"
+                            }`}
+                          />
+                        </div>
+                        <span
+                          className={`text-sm font-medium ${
+                            passwordStrength === "weak"
+                              ? "text-red-600"
+                              : passwordStrength === "fair"
+                              ? "text-yellow-600"
+                              : passwordStrength === "good"
+                              ? "text-blue-600"
+                              : "text-green-600"
+                          }`}
+                        >
+                          {passwordStrength.charAt(0).toUpperCase() +
+                            passwordStrength.slice(1)}
+                        </span>
+                      </div>
+                    )}
                     {passwordError && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-2 text-base text-red-600">
                         {passwordError}
                       </p>
                     )}
@@ -429,7 +476,7 @@ function SignUpForm() {
                   <div>
                     <label
                       htmlFor="confirm-password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
                     >
                       Confirm Password
                     </label>
@@ -443,11 +490,11 @@ function SignUpForm() {
                       onChange={(e) =>
                         handleConfirmPasswordChange(e.target.value)
                       }
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
                       placeholder="Confirm password"
                     />
                     {confirmPasswordError && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-2 text-base text-red-600">
                         {confirmPasswordError}
                       </p>
                     )}
@@ -466,7 +513,7 @@ function SignUpForm() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isLoading ? (
                       <>
@@ -485,7 +532,7 @@ function SignUpForm() {
 
                 {/* Login Link */}
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-base text-gray-600">
                     Already have an account?{" "}
                     <Link
                       href="/login"
