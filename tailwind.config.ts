@@ -78,6 +78,21 @@ const config: Config = {
       zIndex: {
         "60": "60",
       },
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "zoom-in": {
+          "0%": { transform: "scale(0.95)" },
+          "100%": { transform: "scale(1)" },
+        },
+      },
+      animation: {
+        "in": "fade-in 150ms ease-out",
+        "fade-in-0": "fade-in 150ms ease-out",
+        "zoom-in-95": "zoom-in 150ms ease-out",
+      },
     },
   },
   plugins: [],
