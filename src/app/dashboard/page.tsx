@@ -126,6 +126,12 @@ export default function DashboardPage() {
       const response = await fetch(`/api/assignments?athleteId=${user?.id}`);
       const data = await response.json();
 
+      console.log("[Dashboard] Fetched assignments:", {
+        success: data.success,
+        count: data.data?.length || 0,
+        rawData: data.data,
+      });
+
       if (data.success && data.data) {
         setAssignments(data.data.assignments || data.data || []);
       }
@@ -636,6 +642,14 @@ export default function DashboardPage() {
                     const assignmentId =
                       assignment.id ||
                       `${assignment.workoutPlanId}-${assignment.athleteId}`;
+                    
+                    console.log("[Dashboard] Assignment data:", {
+                      assignmentId,
+                      hasId: !!assignment.id,
+                      workoutPlanId: assignment.workoutPlanId,
+                      athleteId: assignment.athleteId,
+                      fullAssignment: assignment
+                    });
 
                     return (
                       <Card

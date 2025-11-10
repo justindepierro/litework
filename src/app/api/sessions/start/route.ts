@@ -22,6 +22,12 @@ export async function POST(request: NextRequest) {
 
       const supabase = createClient();
 
+      console.log("[SessionStart] Looking for assignment:", {
+        assignment_id,
+        user_id: user.id,
+        user_email: user.email,
+      });
+
       // 1. Get assignment details with workout and exercises
       const { data: assignment, error: assignmentError } = await supabase
         .from("workout_assignments")
@@ -29,7 +35,8 @@ export async function POST(request: NextRequest) {
           `
           id,
           workout_plan_id,
-          athlete_id,
+          assigned_to_user_id,
+          assigned_to_group_id,
           workout_plans (
             id,
             name,
@@ -38,40 +45,95 @@ export async function POST(request: NextRequest) {
         `
         )
         .eq("id", assignment_id)
-        .eq("athlete_id", user.id)
         .single();
 
+      console.log("[SessionStart] Assignment query result:", {
+        found: !!assignment,
+        error: assignmentError?.message,
+        assigned_to_user_id: assignment?.assigned_to_user_id,
+        assigned_to_group_id: assignment?.assigned_to_group_id,
+        current_user_id: user.id,
+      });
+
       if (assignmentError || !assignment) {
+        console.error("[SessionStart] Assignment not found:", {
+          assignmentError: assignmentError?.message,
+        });
         return NextResponse.json(
           { error: "Assignment not found or access denied" },
           { status: 404 }
         );
       }
 
+      // Check if this assignment belongs to the current user
+      // For individual assignments: assigned_to_user_id must match
+      // For group assignments: we need to check if user is in the group
+      let isAssignedToUser = assignment.assigned_to_user_id === user.id;
+
+      if (!isAssignedToUser && assignment.assigned_to_group_id) {
+        // Check if user is in the assigned group
+        const { data: groupMember } = await supabase
+          .from("group_members")
+          .select("id")
+          .eq("group_id", assignment.assigned_to_group_id)
+          .eq("user_id", user.id)
+          .single();
+
+        isAssignedToUser = !!groupMember;
+        console.log("[SessionStart] Group assignment check:", {
+          group_id: assignment.assigned_to_group_id,
+          is_member: isAssignedToUser,
+        });
+      }
+
+      if (!isAssignedToUser) {
+        console.error("[SessionStart] Access denied:", {
+          reason: "User not assigned to this workout",
+          assigned_to_user_id: assignment.assigned_to_user_id,
+          assigned_to_group_id: assignment.assigned_to_group_id,
+          current_user_id: user.id,
+        });
+        return NextResponse.json(
+          { error: "Assignment not found or access denied" },
+          { status: 404 }
+        );
+      }
+
+      console.log("[SessionStart] Auth passed, fetching workout exercises...");
+
       // 2. Get workout exercises with all details
+      // Note: exercise data is denormalized in workout_exercises table
       const { data: workoutExercises, error: exercisesError } = await supabase
         .from("workout_exercises")
         .select(
           `
           id,
           exercise_id,
+          exercise_name,
           sets,
           reps,
           weight,
-          rest_seconds,
+          weight_type,
+          percentage,
+          percentage_base_kpi,
+          rest_time,
+          tempo,
           notes,
           order_index,
-          exercises (
-            id,
-            name,
-            description
-          )
+          group_id,
+          each_side
         `
         )
         .eq("workout_plan_id", assignment.workout_plan_id)
         .order("order_index", { ascending: true });
 
+      console.log("[SessionStart] Exercises query result:", {
+        count: workoutExercises?.length || 0,
+        error: exercisesError?.message,
+      });
+
       if (exercisesError) {
+        console.error("[SessionStart] Failed to load exercises:", exercisesError);
         return NextResponse.json(
           { error: "Failed to load workout exercises" },
           { status: 500 }
@@ -79,43 +141,60 @@ export async function POST(request: NextRequest) {
       }
 
       if (!workoutExercises || workoutExercises.length === 0) {
+        console.error("[SessionStart] No exercises found in workout");
         return NextResponse.json(
           { error: "No exercises found in this workout" },
           { status: 400 }
         );
       }
 
+      console.log("[SessionStart] Creating workout session...");
+
+      // Get workout plan name from the assignment
+      const workoutPlan = Array.isArray(assignment.workout_plans)
+        ? assignment.workout_plans[0]
+        : assignment.workout_plans;
+
       // 3. Create workout session
       const { data: session, error: sessionError } = await supabase
         .from("workout_sessions")
         .insert({
-          athlete_id: user.id,
+          user_id: user.id,
           workout_plan_id: assignment.workout_plan_id,
-          assignment_id: assignment.id,
+          workout_plan_name: workoutPlan?.name || "Untitled Workout",
+          workout_assignment_id: assignment.id,
           started_at: new Date().toISOString(),
-          status: "in_progress",
+          started: true,
+          mode: "live",
         })
         .select()
         .single();
 
+      console.log("[SessionStart] Session creation result:", {
+        success: !!session,
+        session_id: session?.id,
+        error: sessionError?.message,
+      });
+
       if (sessionError || !session) {
-        console.error("Session creation error:", sessionError);
+        console.error("[SessionStart] Failed to create session:", sessionError);
         return NextResponse.json(
           { error: "Failed to create workout session" },
           { status: 500 }
         );
       }
 
+      console.log("[SessionStart] Creating session exercises...");
+
       // 4. Create session exercises
-      const sessionExercises = workoutExercises.map((we, index) => ({
-        session_id: session.id,
-        exercise_id: we.exercise_id,
-        sets_target: we.sets || 3,
-        reps_target: we.reps || "10",
-        weight_target: we.weight,
-        rest_seconds: we.rest_seconds || 60,
-        notes: we.notes,
-        order_index: index,
+      const sessionExercises = workoutExercises.map((we) => ({
+        workout_session_id: session.id,
+        workout_exercise_id: we.id,
+        exercise_name: we.exercise_name,
+        target_sets: we.sets || 3,
+        completed_sets: 0,
+        started: false,
+        completed: false,
       }));
 
       const { data: createdExercises, error: sessExError } = await supabase
@@ -123,8 +202,13 @@ export async function POST(request: NextRequest) {
         .insert(sessionExercises)
         .select();
 
+      console.log("[SessionStart] Session exercises result:", {
+        count: createdExercises?.length || 0,
+        error: sessExError?.message,
+      });
+
       if (sessExError || !createdExercises) {
-        console.error("Session exercises creation error:", sessExError);
+        console.error("[SessionStart] Session exercises creation error:", sessExError);
         // Rollback: delete the session
         await supabase.from("workout_sessions").delete().eq("id", session.id);
         return NextResponse.json(
@@ -134,9 +218,7 @@ export async function POST(request: NextRequest) {
       }
 
       // 5. Build response with full session data
-      const workoutPlan = Array.isArray(assignment.workout_plans)
-        ? assignment.workout_plans[0]
-        : assignment.workout_plans;
+      // workoutPlan already extracted above
 
       const sessionData = {
         id: session.id,
@@ -150,25 +232,28 @@ export async function POST(request: NextRequest) {
         total_duration_seconds: 0,
         paused_at: null,
         exercises: createdExercises.map((se, index) => {
-          const exercise = Array.isArray(workoutExercises[index].exercises)
-            ? workoutExercises[index].exercises[0]
-            : workoutExercises[index].exercises;
+          const workoutExercise = workoutExercises[index];
 
           return {
             session_exercise_id: se.id,
-            exercise_id: se.exercise_id,
-            exercise_name: exercise?.name || "Unknown Exercise",
-            sets_target: se.sets_target,
-            sets_completed: 0,
-            reps_target: se.reps_target,
-            weight_target: se.weight_target,
-            rest_seconds: se.rest_seconds,
-            notes: se.notes,
-            completed: false,
+            workout_exercise_id: se.workout_exercise_id,
+            exercise_name: se.exercise_name,
+            sets_target: se.target_sets,
+            sets_completed: se.completed_sets,
+            reps_target: workoutExercise?.reps?.toString() || "10",
+            weight_target: workoutExercise?.weight,
+            rest_seconds: workoutExercise?.rest_time || 60,
+            notes: workoutExercise?.notes,
+            completed: se.completed,
             set_records: [],
           };
         }),
       };
+
+      console.log("[SessionStart] Session created successfully:", {
+        session_id: sessionData.id,
+        exercise_count: sessionData.exercises.length,
+      });
 
       return NextResponse.json({
         success: true,
