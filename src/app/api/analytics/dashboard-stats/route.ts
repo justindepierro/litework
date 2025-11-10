@@ -42,24 +42,19 @@ export async function GET() {
 
     if (weekError) throw weekError;
 
-    // Get personal records count
-    // A PR is when an athlete lifts more weight than their previous best for an exercise
-    const { data: prData, error: prError } = await supabase
-      .from("workout_sets")
-      .select("exercise_id")
-      .eq("user_id", user.id)
-      .eq("is_pr", true);
-
-    if (prError) throw prError;
-
     // Calculate current streak using shared utility
     const { data: allWorkouts, error: streakError } = await supabase
       .from("workout_sessions")
-      .select("completed_at")
+      .select("id, completed_at")
       .eq("user_id", user.id)
       .not("completed_at", "is", null);
 
     if (streakError) throw streakError;
+
+    // Get personal records count
+    // TODO: Implement PR tracking system with athlete_kpis table
+    // For now, return 0 as PRs aren't being tracked yet
+    const personalRecords = 0;
 
     const completedDates = allWorkouts?.map((w) => w.completed_at!) || [];
     const currentStreak = calculateWorkoutStreak(completedDates);
@@ -68,7 +63,7 @@ export async function GET() {
       success: true,
       stats: {
         workoutsThisWeek: weekWorkouts?.length || 0,
-        personalRecords: prData?.length || 0,
+        personalRecords: 0, // TODO: Implement PR tracking
         currentStreak: currentStreak,
       },
     });
