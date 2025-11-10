@@ -6,9 +6,11 @@
  * - Total reps at a given weight
  * - Estimated 1RM improvements
  * - Volume PRs (sets x reps x weight)
+ * 
+ * NOTE: PR detection temporarily disabled to avoid client-side database calls
  */
 
-import { createClient } from "@/lib/supabase-server";
+// import { createClient } from "@/lib/supabase-server";
 
 export interface PRData {
   exerciseId: string;
@@ -50,6 +52,7 @@ export function calculateVolume(weight: number, reps: number): number {
 
 /**
  * Check if current set is a PR compared to athlete's history
+ * TEMPORARILY DISABLED - Returns false to avoid client-side database calls
  */
 export async function checkForPR(
   athleteId: string,
@@ -57,6 +60,21 @@ export async function checkForPR(
   weight: number,
   reps: number
 ): Promise<PRComparison> {
+  // Temporarily disabled - return no PR
+  return {
+    isPR: false,
+    type: null,
+    improvement: 0,
+    previousBest: null,
+    currentPerformance: {
+      weight,
+      reps,
+      estimatedOneRM: calculateOneRM(weight, reps),
+      volume: calculateVolume(weight, reps),
+    },
+  };
+  
+  /* Database PR detection logic - disabled for now
   const supabase = await createClient();
 
   try {
@@ -231,6 +249,7 @@ export async function checkForPR(
       },
     };
   }
+  */
 }
 
 /**
