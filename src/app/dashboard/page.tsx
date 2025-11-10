@@ -241,7 +241,7 @@ export default function DashboardPage() {
 
   const handleStartWorkout = (assignmentId: string) => {
     // Navigate to workout live mode
-    window.location.href = `/workout/live/${assignmentId}`;
+    window.location.href = `/workouts/live/${assignmentId}`;
   };
 
   const handleDeleteAssignment = async (assignmentId: string) => {
