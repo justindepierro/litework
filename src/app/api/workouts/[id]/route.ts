@@ -17,10 +17,7 @@ export async function GET(
     const workout = await getWorkoutPlanById(workoutId);
 
     if (!workout) {
-      return NextResponse.json(
-        { error: "Workout not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Workout not found" }, { status: 404 });
     }
 
     return NextResponse.json({ workout });

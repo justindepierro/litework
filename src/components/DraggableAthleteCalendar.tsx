@@ -109,7 +109,9 @@ function DraggableAssignment({
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
-      <div className={`flex items-center ${compact ? "gap-1" : "gap-2"} ${compact ? "" : "mb-1.5"}`}>
+      <div
+        className={`flex items-center ${compact ? "gap-1" : "gap-2"} ${compact ? "" : "mb-1.5"}`}
+      >
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <div
             className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-sm ${
@@ -121,19 +123,32 @@ function DraggableAssignment({
             }`}
           >
             {isCompleted ? (
-              <CheckCircle className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`} />
+              <CheckCircle
+                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`}
+              />
             ) : (
-              <Dumbbell className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`} />
+              <Dumbbell
+                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`}
+              />
             )}
           </div>
-          <span 
-            className={`font-semibold ${compact ? "text-xs" : "text-xs"} overflow-hidden text-ellipsis whitespace-nowrap`}
+          <span
+            className={`font-semibold ${compact ? "text-xs" : "text-xs"} flex-1 min-w-0`}
+            style={{
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: compact ? 2 : 3, // 2 lines in compact, 3 in full
+              WebkitBoxOrient: "vertical",
+              lineHeight: compact ? "1.2" : "1.3",
+            }}
             title={assignment.workoutPlanName || "Workout"}
           >
             {assignment.workoutPlanName || "Workout"}
           </span>
         </div>
-        {isCoach && !compact && <MoveIcon className="w-3 h-3 opacity-50 shrink-0" />}
+        {isCoach && !compact && (
+          <MoveIcon className="w-3 h-3 opacity-50 shrink-0" />
+        )}
       </div>
       {!compact && (
         <>
@@ -231,11 +246,13 @@ export default function DraggableAthleteCalendar({
     newDate: Date;
   } | null>(null);
 
-  // Helper to get group names for an assignment
-  const getAssignmentGroups = (assignment: WorkoutAssignment): string[] => {
+  // Helper to get full group objects for an assignment (with colors)
+  const getAssignmentGroups = (
+    assignment: WorkoutAssignment
+  ): Array<{ id: string; name: string; color: string }> => {
     if (!assignment.groupId) return [];
     const group = groups.find((g) => g.id === assignment.groupId);
-    return group ? [group.name] : [];
+    return group ? [{ id: group.id, name: group.name, color: group.color }] : [];
   };
 
   // Helper functions for date calculations

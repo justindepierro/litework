@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Dumbbell, Users } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 import { KPITagBadge } from "@/components/ui/KPITagBadge";
 
 interface HoverCardProps {
@@ -18,13 +17,19 @@ interface HoverCardProps {
   className?: string;
 }
 
+interface AssignedGroup {
+  id: string;
+  name: string;
+  color: string;
+}
+
 interface WorkoutPreviewCardProps {
   workoutName: string;
   exerciseCount?: number;
   duration?: string;
   notes?: string;
   workoutPlanId: string;
-  assignedGroups?: string[];
+  assignedGroups?: AssignedGroup[]; // Now accepts full group objects with colors
 }
 
 interface KPITag {
@@ -43,13 +48,18 @@ interface WorkoutExercise {
   weightUnit?: string;
   tempo?: string;
   groupId?: string | null;
+  kpiTagIds?: string[]; // Array of KPI tag IDs this exercise contributes to
 }
 
 interface ExerciseGroup {
   id: string;
-  groupType: "superset" | "circuit" | "section";
-  sets?: number;
-  orderIndex: number;
+  type: string; // "superset" | "circuit" | "section"
+  rounds?: number; // Number of rounds/sets
+  restBetweenRounds?: number; // Rest time in seconds
+  restBetweenExercises?: number; // Rest between exercises
+  order: number;
+  name?: string;
+  description?: string;
 }
 
 interface WorkoutDetails {
@@ -87,7 +97,7 @@ export function HoverCard({
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const cardRect = cardRef.current.getBoundingClientRect();
     const cardWidth = cardRect.width || maxWidth;
-    const cardHeight = cardRect.height || 400;
+    const cardHeight = cardRect.height || 500; // Increased default estimate
 
     let top = 0;
     let left = 0;
@@ -115,13 +125,28 @@ export function HoverCard({
     const viewportHeight = window.innerHeight;
     const padding = 16;
 
+    // Adjust horizontal position if card goes off-screen
     if (left < padding) left = padding;
     if (left + cardWidth > viewportWidth - padding) {
       left = viewportWidth - cardWidth - padding;
     }
-    if (top < padding) top = padding;
+
+    // Adjust vertical position if card goes off-screen
+    if (top < padding) {
+      top = padding;
+    }
     if (top + cardHeight > viewportHeight - padding) {
-      top = Math.max(padding, viewportHeight - cardHeight - padding);
+      // Try to fit above the trigger if there's more space
+      const spaceAbove = triggerRect.top;
+      const spaceBelow = viewportHeight - triggerRect.bottom;
+      
+      if (spaceAbove > spaceBelow && spaceAbove > cardHeight) {
+        // Position above
+        top = triggerRect.top - cardHeight - offset;
+      } else {
+        // Keep below but adjust to fit
+        top = Math.max(padding, viewportHeight - cardHeight - padding);
+      }
     }
 
     setPosition({ top, left });
@@ -167,38 +192,78 @@ export function HoverCard({
     window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", handleResize);
 
+    // Recalculate position after short delay (for content loading)
     const timer = setTimeout(() => calculatePosition(), 50);
+    const timer2 = setTimeout(() => calculatePosition(), 150);
+    const timer3 = setTimeout(() => calculatePosition(), 300);
+
+    // Watch for card size changes (when content loads)
+    let resizeObserver: ResizeObserver | null = null;
+    if (cardRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        calculatePosition();
+      });
+      resizeObserver.observe(cardRef.current);
+    }
 
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
       window.removeEventListener("resize", handleResize);
       clearTimeout(timer);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
     };
   }, [isOpen, calculatePosition]);
 
-  const card = isOpen && mounted ? (
-    <div
-      ref={cardRef}
-      style={{
-        position: "fixed",
-        top: position.top + "px",
-        left: position.left + "px",
-        maxWidth: maxWidth + "px",
-        zIndex: 99999,
-        backgroundColor: "white",
-        borderRadius: "0.75rem",
-        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-        border: "1px solid #e5e7eb",
-        overflow: "hidden",
-        pointerEvents: "auto",
-      }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={className}
-    >
-      {content}
-    </div>
-  ) : null;
+  const card =
+    isOpen && mounted ? (
+      <div
+        ref={cardRef}
+        style={{
+          position: "fixed",
+          top: position.top + "px",
+          left: position.left + "px",
+          maxWidth: maxWidth + "px",
+          zIndex: 99999,
+          backgroundColor: "white",
+          borderRadius: "0.75rem",
+          boxShadow:
+            "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+          border: "1px solid #e5e7eb",
+          overflow: "hidden",
+          pointerEvents: "auto",
+          animation: "fadeIn 0.15s ease-out",
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={className}
+      >
+        {content}
+        <style>{`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 0.4;
+            }
+            50% {
+              opacity: 0.6;
+            }
+          }
+        `}</style>
+      </div>
+    ) : null;
 
   return (
     <>
@@ -224,7 +289,9 @@ export function WorkoutPreviewCard({
   assignedGroups = [],
 }: WorkoutPreviewCardProps) {
   const [loading, setLoading] = useState(true);
-  const [workoutDetails, setWorkoutDetails] = useState<WorkoutDetails | null>(null);
+  const [workoutDetails, setWorkoutDetails] = useState<WorkoutDetails | null>(
+    null
+  );
 
   useEffect(() => {
     if (!workoutPlanId) return;
@@ -236,10 +303,11 @@ export function WorkoutPreviewCard({
       fetch("/api/kpi-tags").then((r) => r.json()),
     ])
       .then(([workoutData, kpiData]) => {
-        if (workoutData.success) {
+        // FIX: API returns { workout: {...} } not { success: true, data: {...} }
+        if (workoutData.workout) {
           setWorkoutDetails({
-            exercises: workoutData.data.exercises || [],
-            groups: workoutData.data.groups || [],
+            exercises: workoutData.workout.exercises || [],
+            groups: workoutData.workout.groups || [],
             kpiTags: kpiData.success ? kpiData.data : [],
           });
         }
@@ -253,32 +321,47 @@ export function WorkoutPreviewCard({
   const kpiTags = workoutDetails?.kpiTags || [];
   const displayCount = exercises.length || exerciseCount || 0;
 
-  const getKpiForExercise = (exerciseName: string): KPITag | null => {
-    const nameLower = exerciseName.toLowerCase();
-    for (const tag of kpiTags) {
-      const tagNameLower = tag.name.toLowerCase();
-      const tagDisplayLower = tag.displayName.toLowerCase();
-      if (nameLower.includes(tagDisplayLower) || nameLower.includes(tagNameLower)) {
-        return tag;
-      }
-    }
-    return null;
+  // FIX: Use kpiTagIds array from database instead of string matching
+  const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
+    if (!exercise.kpiTagIds || exercise.kpiTagIds.length === 0) return [];
+    return kpiTags.filter((tag) => exercise.kpiTagIds?.includes(tag.id));
   };
 
-  const kpiExercises = exercises.filter((ex) => getKpiForExercise(ex.exerciseName));
+  // Get all exercises that have KPI tags
+  const kpiExercises = exercises.filter(
+    (ex) => ex.kpiTagIds && ex.kpiTagIds.length > 0
+  );
 
-  const groupedExercises = exercises.reduce((acc, ex) => {
-    const groupId = ex.groupId || "ungrouped";
-    if (!acc[groupId]) acc[groupId] = [];
-    acc[groupId].push(ex);
-    return acc;
-  }, {} as Record<string, WorkoutExercise[]>);
+  const groupedExercises = exercises.reduce(
+    (acc, ex) => {
+      const groupId = ex.groupId || "ungrouped";
+      if (!acc[groupId]) acc[groupId] = [];
+      acc[groupId].push(ex);
+      return acc;
+    },
+    {} as Record<string, WorkoutExercise[]>
+  );
 
   const getGroupConfig = (groupType: string) => {
     const configs = {
-      superset: { label: "Superset", bg: "#faf5ff", border: "#e9d5ff", badge: "#9333ea" },
-      circuit: { label: "Circuit", bg: "#fff7ed", border: "#fed7aa", badge: "#ea580c" },
-      section: { label: "Section", bg: "#eff6ff", border: "#bfdbfe", badge: "#2563eb" },
+      superset: {
+        label: "Superset",
+        bg: "#faf5ff",
+        border: "#e9d5ff",
+        badge: "#9333ea",
+      },
+      circuit: {
+        label: "Circuit",
+        bg: "#fff7ed",
+        border: "#fed7aa",
+        badge: "#ea580c",
+      },
+      section: {
+        label: "Section",
+        bg: "#eff6ff",
+        border: "#bfdbfe",
+        badge: "#2563eb",
+      },
     };
     return configs[groupType as keyof typeof configs] || configs.section;
   };
@@ -287,7 +370,8 @@ export function WorkoutPreviewCard({
     <div style={{ width: "400px" }}>
       <div
         style={{
-          background: "linear-gradient(to bottom right, #2563eb, #1e40af, #4338ca)",
+          background:
+            "linear-gradient(to bottom right, #2563eb, #1e40af, #4338ca)",
           padding: "1.25rem",
           color: "white",
         }}
@@ -303,22 +387,53 @@ export function WorkoutPreviewCard({
           {workoutName}
         </h3>
         {loading ? (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.875rem" }}>
-            <span>Loading...</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              fontSize: "0.875rem",
+            }}
+          >
+            <div
+              style={{
+                height: "0.875rem",
+                width: "6rem",
+                backgroundColor: "rgba(255,255,255,0.2)",
+                borderRadius: "0.25rem",
+                animation: "pulse 1.5s ease-in-out infinite",
+              }}
+            />
           </div>
         ) : (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", fontSize: "0.875rem" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.625rem",
+              fontSize: "0.875rem",
+            }}
+          >
             <span style={{ fontWeight: "600" }}>{displayCount} exercises</span>
             {duration && (
               <>
                 <span style={{ color: "rgba(255,255,255,0.6)" }}>•</span>
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>{duration}</span>
+                <span style={{ color: "rgba(255,255,255,0.9)" }}>
+                  {duration}
+                </span>
               </>
             )}
           </div>
         )}
       </div>
-      <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div
+        style={{
+          padding: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
+      >
         {assignedGroups.length > 0 && (
           <div>
             <div
@@ -334,11 +449,25 @@ export function WorkoutPreviewCard({
               Assigned To
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
-              {assignedGroups.map((groupName, idx) => (
-                <Badge key={idx} variant="primary" size="sm">
-                  <Users className="w-3 h-3" />
-                  {groupName}
-                </Badge>
+              {assignedGroups.map((group) => (
+                <div
+                  key={group.id}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                    padding: "0.25rem 0.625rem",
+                    borderRadius: "9999px",
+                    fontSize: "0.75rem",
+                    fontWeight: "600",
+                    backgroundColor: group.color + "20", // 20 = 12.5% opacity
+                    color: group.color,
+                    border: `1.5px solid ${group.color}`,
+                  }}
+                >
+                  <Users style={{ width: "0.75rem", height: "0.75rem" }} />
+                  {group.name}
+                </div>
               ))}
             </div>
           </div>
@@ -357,9 +486,15 @@ export function WorkoutPreviewCard({
             >
               Key Lifts
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+              }}
+            >
               {kpiExercises.map((ex, idx) => {
-                const kpiTag = getKpiForExercise(ex.exerciseName);
+                const tags = getKpisForExercise(ex);
                 return (
                   <div
                     key={idx}
@@ -372,19 +507,36 @@ export function WorkoutPreviewCard({
                       padding: "0.5rem 0.75rem",
                     }}
                   >
-                    <Dumbbell style={{ width: "1rem", height: "1rem", color: "#9ca3af" }} />
-                    <span style={{ fontSize: "0.875rem", fontWeight: "500", color: "#111827", flex: "1" }}>
+                    <Dumbbell
+                      style={{
+                        width: "1rem",
+                        height: "1rem",
+                        color: "#9ca3af",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: "0.875rem",
+                        fontWeight: "500",
+                        color: "#111827",
+                        flex: "1",
+                      }}
+                    >
                       {ex.exerciseName}
                     </span>
-                    {kpiTag && (
-                      <KPITagBadge
-                        name={kpiTag.name}
-                        displayName={kpiTag.displayName}
-                        color={kpiTag.color}
-                        size="sm"
-                        showTooltip={false}
-                      />
-                    )}
+                    {/* Display all KPI tags for this exercise */}
+                    <div style={{ display: "flex", gap: "0.25rem" }}>
+                      {tags.map((tag) => (
+                        <KPITagBadge
+                          key={tag.id}
+                          name={tag.name}
+                          displayName={tag.displayName}
+                          color={tag.color}
+                          size="sm"
+                          showTooltip={false}
+                        />
+                      ))}
+                    </div>
                   </div>
                 );
               })}
@@ -392,7 +544,7 @@ export function WorkoutPreviewCard({
           </div>
         )}
         {!loading && groups.length > 0 && (
-          <div>
+          <div style={{ position: "relative" }}>
             <div
               style={{
                 fontSize: "0.75rem",
@@ -405,11 +557,22 @@ export function WorkoutPreviewCard({
             >
               Structure
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+                maxHeight: "320px", // Limit height for large workouts
+                overflowY: "auto", // Add scroll when needed
+                overflowX: "hidden",
+                paddingRight: "0.25rem", // Space for scrollbar
+              }}
+              className="custom-scrollbar" // Use app's custom scrollbar styling
+            >
               {groups.map((group) => {
                 const groupExercises = groupedExercises[group.id] || [];
                 if (groupExercises.length === 0) return null;
-                const cfg = getGroupConfig(group.groupType);
+                const cfg = getGroupConfig(group.type);
                 return (
                   <div
                     key={group.id}
@@ -428,7 +591,13 @@ export function WorkoutPreviewCard({
                         marginBottom: "0.5rem",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
                         <span
                           style={{
                             padding: "0.125rem 0.5rem",
@@ -441,17 +610,48 @@ export function WorkoutPreviewCard({
                         >
                           {cfg.label}
                         </span>
-                        {group.sets && group.sets > 1 && (
-                          <span style={{ fontSize: "0.75rem", fontWeight: "600", color: "#4b5563" }}>
-                            {group.sets} {group.groupType === "circuit" ? "rounds" : "sets"}
+                        {group.rounds && (
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              fontWeight: "600",
+                              color: "#4b5563",
+                            }}
+                          >
+                            {group.rounds}{" "}
+                            {group.type === "circuit" ? "rounds" : "sets"}
+                          </span>
+                        )}
+                        {group.restBetweenRounds && (
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              fontWeight: "500",
+                              color: "#6b7280",
+                            }}
+                          >
+                            • {Math.floor(group.restBetweenRounds / 60)}m rest
                           </span>
                         )}
                       </div>
-                      <span style={{ fontSize: "0.75rem", fontWeight: "500", color: "#6b7280" }}>
-                        {groupExercises.length} {groupExercises.length === 1 ? "exercise" : "exercises"}
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          fontWeight: "500",
+                          color: "#6b7280",
+                        }}
+                      >
+                        {groupExercises.length}{" "}
+                        {groupExercises.length === 1 ? "exercise" : "exercises"}
                       </span>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0.5rem",
+                      }}
+                    >
                       {groupExercises.map((ex, idx) => (
                         <div
                           key={idx}
@@ -465,7 +665,13 @@ export function WorkoutPreviewCard({
                             padding: "0.375rem 0.5rem",
                           }}
                         >
-                          <span style={{ marginTop: "0.125rem", fontWeight: "bold", color: "#9ca3af" }}>
+                          <span
+                            style={{
+                              marginTop: "0.125rem",
+                              fontWeight: "bold",
+                              color: "#9ca3af",
+                            }}
+                          >
                             {idx + 1}.
                           </span>
                           <div style={{ flex: "1", minWidth: "0" }}>
@@ -502,12 +708,25 @@ export function WorkoutPreviewCard({
                               )}
                             </div>
                             {ex.weight && (
-                              <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.125rem" }}>
+                              <div
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  marginTop: "0.125rem",
+                                }}
+                              >
                                 {ex.weight} {ex.weightUnit || "lbs"}
                               </div>
                             )}
                             {ex.tempo && (
-                              <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>Tempo: {ex.tempo}</div>
+                              <div
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                }}
+                              >
+                                Tempo: {ex.tempo}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -517,6 +736,19 @@ export function WorkoutPreviewCard({
                 );
               })}
             </div>
+            {/* Scroll fade indicator - shows when content is scrollable */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "2rem",
+                background:
+                  "linear-gradient(to bottom, transparent, rgba(249, 250, 251, 0.9))",
+                pointerEvents: "none",
+              }}
+            />
           </div>
         )}
         {notes && (

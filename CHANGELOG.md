@@ -12,11 +12,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Group name display with color styling in athlete detail modal
 - Dynamic group loading in invite form dropdown
 - Comprehensive codebase cleanup report
+- Calendar component cleanup documentation (docs/CALENDAR_COMPONENT_CLEANUP.md)
+- Hover preview system audit and fixes (docs/HOVER_PREVIEW_AUDIT.md, docs/HOVER_PREVIEW_FIXES.md)
+- Loading skeleton animation for workout hover previews
+- Smooth fade-in animations for hover cards
+- Support for multiple KPI tags per exercise in hover display
+- Scrollable structure section in hover preview (320px max height)
+- Fade gradient indicator for scrollable content
+- ResizeObserver for dynamic card positioning
 
 ### Changed
 
 - Exercise Library now uses Supabase session tokens instead of localStorage
 - Auth system completely unified under auth-client.ts and auth-server.ts
+- Workout hover preview now uses `kpiTagIds` array from database (exact matching)
+- Group badges in hover now display actual group colors from database
+- Calendar workout text now shows 2 lines before truncating (month view)
+- Hover preview group interface now matches database schema (`type`, `rounds`, `restBetweenRounds`)
+- Rest time display converts seconds to minutes (240s → 4m)
+
+### Removed
+
+- ❌ **CalendarView.tsx** (594 lines) - Legacy unused calendar component
+- ❌ **AthleteCalendar.tsx** (455 lines) - Legacy unused calendar component
+- Consolidated to single `DraggableAthleteCalendar` component (see docs/CALENDAR_COMPONENT_CLEANUP.md)
 
 ### Fixed
 
@@ -24,6 +43,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exercise Library authentication (localStorage → Supabase session)
 - Admin role not inheriting coach permissions in dashboard calendar view
 - Groups displaying UUIDs instead of names in athlete detail modal
+- **Workout hover preview not showing any data** (API response structure mismatch)
+- **KPI tags not matching between hover and workout editor** (string matching → ID-based)
+- **Only one KPI tag showing per exercise** (now supports multiple)
+- **Group badge colors not matching dashboard** (now uses actual colors)
+- **Calendar workout names cut off** (now shows 2 lines in month view)
+- **Group sets/rounds not displaying in hover** (field name mismatch: `groupType` → `type`, `sets` → `rounds`)
+- **Rest time not showing in hover** (field name mismatch: `restTime` → `restBetweenRounds`)
+- **Hover card cutting off at screen bottom** (added ResizeObserver for dynamic positioning)
 
 ## [0.8.0] - 2025-11-01 - Sprint 7: Auth System Overhaul
 

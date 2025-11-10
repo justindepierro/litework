@@ -89,7 +89,7 @@ const config: Config = {
         },
       },
       animation: {
-        "in": "fade-in 150ms ease-out",
+        in: "fade-in 150ms ease-out",
         "fade-in-0": "fade-in 150ms ease-out",
         "zoom-in-95": "zoom-in 150ms ease-out",
       },

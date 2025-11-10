@@ -1,9 +1,11 @@
 # HoverCard Component - Usage Examples
 
 ## Overview
+
 Fast, reusable hover card component with Discord-style animations. Perfect for quick previews throughout LiteWork.
 
 ## Features
+
 - ⚡ **Super fast**: 200ms delay for instant feel
 - 🎨 **Smooth animations**: Fade + zoom entrance like Discord
 - 📍 **Smart positioning**: Auto-adjusts near viewport edges
@@ -16,12 +18,13 @@ Fast, reusable hover card component with Discord-style animations. Perfect for q
 ## Basic Usage
 
 ### 1. Import the Component
+
 ```typescript
-import { 
-  HoverCard, 
-  WorkoutPreviewCard, 
+import {
+  HoverCard,
+  WorkoutPreviewCard,
   AthletePreviewCard,
-  ExercisePreviewCard 
+  ExercisePreviewCard,
 } from "@/components/ui/HoverCard";
 ```
 
@@ -138,7 +141,8 @@ You can put any content in the hover card:
     <div className="space-y-2">
       <h4 className="font-semibold">Progressive Overload</h4>
       <p className="text-sm text-gray-600">
-        Gradually increasing weight, reps, or intensity over time to build strength.
+        Gradually increasing weight, reps, or intensity over time to build
+        strength.
       </p>
       <ul className="text-sm space-y-1">
         <li>• Increase weight by 2.5-5%</li>
@@ -157,52 +161,53 @@ You can put any content in the hover card:
 
 ### HoverCard
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `trigger` | ReactNode | required | Element that triggers the hover card |
-| `content` | ReactNode | required | Content to display in the card |
-| `openDelay` | number | 200 | Delay before showing (ms) |
-| `closeDelay` | number | 100 | Delay before hiding (ms) |
-| `side` | "top" \| "bottom" \| "left" \| "right" | "top" | Preferred side to display |
-| `offset` | number | 8 | Distance from trigger (px) |
-| `maxWidth` | number | 320 | Maximum width of card (px) |
-| `disabled` | boolean | false | Disable hover functionality |
-| `className` | string | "" | Custom classes for card |
+| Prop         | Type                                   | Default  | Description                          |
+| ------------ | -------------------------------------- | -------- | ------------------------------------ |
+| `trigger`    | ReactNode                              | required | Element that triggers the hover card |
+| `content`    | ReactNode                              | required | Content to display in the card       |
+| `openDelay`  | number                                 | 200      | Delay before showing (ms)            |
+| `closeDelay` | number                                 | 100      | Delay before hiding (ms)             |
+| `side`       | "top" \| "bottom" \| "left" \| "right" | "top"    | Preferred side to display            |
+| `offset`     | number                                 | 8        | Distance from trigger (px)           |
+| `maxWidth`   | number                                 | 320      | Maximum width of card (px)           |
+| `disabled`   | boolean                                | false    | Disable hover functionality          |
+| `className`  | string                                 | ""       | Custom classes for card              |
 
 ### WorkoutPreviewCard
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `workoutName` | string | ✅ | Name of workout |
-| `exerciseCount` | number | ✅ | Number of exercises |
-| `duration` | string | ❌ | Estimated duration |
-| `notes` | string | ❌ | Workout notes (truncated) |
+| Prop            | Type   | Required | Description               |
+| --------------- | ------ | -------- | ------------------------- |
+| `workoutName`   | string | ✅       | Name of workout           |
+| `exerciseCount` | number | ✅       | Number of exercises       |
+| `duration`      | string | ❌       | Estimated duration        |
+| `notes`         | string | ❌       | Workout notes (truncated) |
 
 ### AthletePreviewCard
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | string | ✅ | Athlete name |
-| `group` | string | ❌ | Group/team name |
-| `lastWorkout` | string | ❌ | When last workout was |
-| `workoutsThisWeek` | number | ❌ | Count this week |
-| `avatarUrl` | string | ❌ | Profile picture URL |
+| Prop               | Type   | Required | Description           |
+| ------------------ | ------ | -------- | --------------------- |
+| `name`             | string | ✅       | Athlete name          |
+| `group`            | string | ❌       | Group/team name       |
+| `lastWorkout`      | string | ❌       | When last workout was |
+| `workoutsThisWeek` | number | ❌       | Count this week       |
+| `avatarUrl`        | string | ❌       | Profile picture URL   |
 
 ### ExercisePreviewCard
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | string | ✅ | Exercise name |
-| `category` | string | ❌ | Exercise category |
-| `description` | string | ❌ | Brief description |
-| `muscleGroups` | string[] | ❌ | Target muscles |
-| `videoUrl` | string | ❌ | Instructional video |
+| Prop           | Type     | Required | Description         |
+| -------------- | -------- | -------- | ------------------- |
+| `name`         | string   | ✅       | Exercise name       |
+| `category`     | string   | ❌       | Exercise category   |
+| `description`  | string   | ❌       | Brief description   |
+| `muscleGroups` | string[] | ❌       | Target muscles      |
+| `videoUrl`     | string   | ❌       | Instructional video |
 
 ---
 
 ## Performance Tips
 
 ### 1. Use Appropriate Delays
+
 ```tsx
 // Quick tooltips - use shorter delay
 <HoverCard openDelay={100} />
@@ -215,19 +220,17 @@ You can put any content in the hover card:
 ```
 
 ### 2. Lazy Load Heavy Content
+
 ```tsx
-<HoverCard
-  content={
-    isOpen ? <HeavyPreview data={data} /> : null
-  }
-/>
+<HoverCard content={isOpen ? <HeavyPreview data={data} /> : null} />
 ```
 
 ### 3. Disable on Mobile
+
 ```tsx
 const isMobile = window.innerWidth < 768;
 
-<HoverCard disabled={isMobile} />
+<HoverCard disabled={isMobile} />;
 ```
 
 ---
@@ -235,12 +238,14 @@ const isMobile = window.innerWidth < 768;
 ## Positioning
 
 The hover card automatically:
+
 - Centers relative to trigger
 - Adjusts if near viewport edges
 - Maintains 8px padding from screen edge
 - Updates position on scroll/resize
 
 ### Manual Side Selection
+
 ```tsx
 // Calendar events - show above
 <HoverCard side="top" />
@@ -257,6 +262,7 @@ The hover card automatically:
 ## Styling
 
 ### Custom Card Styling
+
 ```tsx
 <HoverCard
   className="shadow-xl border-primary"
@@ -265,6 +271,7 @@ The hover card automatically:
 ```
 
 ### Custom Width
+
 ```tsx
 // Narrow card for simple info
 <HoverCard maxWidth={240} />
@@ -278,6 +285,7 @@ The hover card automatically:
 ## Accessibility
 
 The component includes:
+
 - ✅ Mouse enter/leave detection
 - ✅ Portal rendering (no z-index issues)
 - ✅ Smooth animations
@@ -289,6 +297,7 @@ The component includes:
 ## Common Patterns
 
 ### 1. Dashboard Stats
+
 ```tsx
 <HoverCard
   trigger={<StatCard value="87%" label="Completion" />}
@@ -297,6 +306,7 @@ The component includes:
 ```
 
 ### 2. Assignment Preview
+
 ```tsx
 <HoverCard
   trigger={<AssignmentBadge count={5} />}
@@ -305,6 +315,7 @@ The component includes:
 ```
 
 ### 3. User Mentions
+
 ```tsx
 <HoverCard
   trigger={<span className="text-blue-600">@coach_mike</span>}
@@ -317,30 +328,36 @@ The component includes:
 ## Integration Examples
 
 ### With Calendar Component
+
 ```tsx
 // In your calendar day cell
-{events.map(event => (
-  <HoverCard
-    key={event.id}
-    trigger={<CalendarEvent event={event} />}
-    content={<WorkoutPreviewCard {...event} />}
-  />
-))}
+{
+  events.map((event) => (
+    <HoverCard
+      key={event.id}
+      trigger={<CalendarEvent event={event} />}
+      content={<WorkoutPreviewCard {...event} />}
+    />
+  ));
+}
 ```
 
 ### With Groups Table
+
 ```tsx
 // In your athlete table row
-{athletes.map(athlete => (
-  <tr key={athlete.id}>
-    <td>
-      <HoverCard
-        trigger={<AthleteCell athlete={athlete} />}
-        content={<AthletePreviewCard {...athlete} />}
-      />
-    </td>
-  </tr>
-))}
+{
+  athletes.map((athlete) => (
+    <tr key={athlete.id}>
+      <td>
+        <HoverCard
+          trigger={<AthleteCell athlete={athlete} />}
+          content={<AthletePreviewCard {...athlete} />}
+        />
+      </td>
+    </tr>
+  ));
+}
 ```
 
 ---
