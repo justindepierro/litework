@@ -68,6 +68,51 @@ a:not(.no-underline):hover {
 }
 
 /* ============================================ */
+/* PRODUCTION POLISH - Mobile Touch Targets */
+/* ============================================ */
+
+/* Ensure minimum touch target size on mobile */
+@media (max-width: 768px) {
+  button, a.button, [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 16px;
+  }
+  
+  /* Interactive cards need adequate spacing */
+  .card-interactive {
+    min-height: 56px;
+  }
+  
+  /* Calendar dates - easier tapping */
+  .calendar-day {
+    min-height: 80px;
+  }
+  
+  /* Input fields - comfortable for fat fingers */
+  input, textarea, select {
+    min-height: 48px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Modal close buttons */
+  button[aria-label*="close"],
+  button[aria-label*="Close"] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Touch-friendly utility class */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================ */
 /* PRODUCTION POLISH - Loading States */
 /* ============================================ */
 
