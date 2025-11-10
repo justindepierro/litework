@@ -393,6 +393,7 @@ _Maximum value for minimum effort_
 - ❌ Social features
 - ❌ Nutrition tracking
 - ❌ Custom exercise creation
+- 📋 **Coach Admin Panel** - Comprehensive settings interface (marked for future)
 
 ### **WON'T HAVE** (Future versions)
 
@@ -496,6 +497,48 @@ _Maximum value for minimum effort_
 - Video exercise library
 - Wearable device integration
 - Nutrition tracking
+
+### **Version 2.1: Coach Admin Panel** (Month 13+)
+
+**Comprehensive coaching settings interface**
+
+_Priority: MEDIUM | Estimated Effort: 20-24 hours_
+
+**Features:**
+- **Program Defaults**
+  - Default rest times per exercise category
+  - Standard workout templates
+  - Training cycle presets
+  - Exercise preference library
+- **Bulk Operations**
+  - Mass athlete onboarding
+  - Group-wide modifications
+  - Bulk workout assignments with scheduling
+  - Multi-group management tools
+- **Analytics Settings**
+  - Custom KPI tracking configuration
+  - Report generation preferences
+  - Performance metric thresholds
+  - Progress tracking defaults
+- **Integration Settings**
+  - Email notification preferences for coaches
+  - Calendar sync options (future)
+  - Export format preferences
+  - API access management (future)
+- **Organization Settings**
+  - Program/club name and branding
+  - Season dates and scheduling
+  - Location management
+  - Coach bio and contact info
+
+**Why Deferred:**
+- Coaches can currently use `/profile` for personal settings
+- Athletes already have `/settings` for notifications
+- Core workflow functions without dedicated coach settings
+- Higher priority features provide more immediate value
+- Can be built incrementally as coach needs emerge
+
+**Route:** `/coach-settings` (currently redirects to `/profile`)
 
 ---
 

@@ -11,6 +11,7 @@
 This audit reveals **critical naming inconsistencies** between database schema (snake_case) and frontend code (camelCase) that are causing potential bugs and maintenance issues.
 
 ### Key Findings:
+
 - ✅ Most tables properly transform snake_case → camelCase
 - ❌ **workout_assignments** table has critical mapping gaps
 - ❌ `groupId` vs `assigned_to_group_id` - NO API MAPPING
@@ -23,19 +24,19 @@ This audit reveals **critical naming inconsistencies** between database schema (
 
 ### 1. ✅ athlete_groups (CONSISTENT)
 
-| Database Column (snake_case) | Frontend Property (camelCase) | Status |
-|------------------------------|-------------------------------|--------|
-| `id` | `id` | ✅ Mapped |
-| `name` | `name` | ✅ Mapped |
-| `description` | `description` | ✅ Mapped |
-| `sport` | `sport` | ✅ Mapped |
-| `category` | `category` | ✅ Mapped |
-| `coach_id` | `coachId` | ✅ Mapped |
-| `athlete_ids` | `athleteIds` | ✅ Mapped |
-| `color` | `color` | ✅ Mapped |
-| `archived` | `archived` | ✅ Mapped |
-| `created_at` | `createdAt` | ✅ Mapped |
-| `updated_at` | `updatedAt` | ✅ Mapped |
+| Database Column (snake_case) | Frontend Property (camelCase) | Status    |
+| ---------------------------- | ----------------------------- | --------- |
+| `id`                         | `id`                          | ✅ Mapped |
+| `name`                       | `name`                        | ✅ Mapped |
+| `description`                | `description`                 | ✅ Mapped |
+| `sport`                      | `sport`                       | ✅ Mapped |
+| `category`                   | `category`                    | ✅ Mapped |
+| `coach_id`                   | `coachId`                     | ✅ Mapped |
+| `athlete_ids`                | `athleteIds`                  | ✅ Mapped |
+| `color`                      | `color`                       | ✅ Mapped |
+| `archived`                   | `archived`                    | ✅ Mapped |
+| `created_at`                 | `createdAt`                   | ✅ Mapped |
+| `updated_at`                 | `updatedAt`                   | ✅ Mapped |
 
 **Mapping Location**: `/src/lib/database-service.ts` lines 120-130  
 **Status**: ✅ Properly transforms all fields
@@ -44,30 +45,31 @@ This audit reveals **critical naming inconsistencies** between database schema (
 
 ### 2. 🔴 workout_assignments (CRITICAL ISSUES)
 
-| Database Column | Frontend Property | Status |
-|----------------|-------------------|--------|
-| `id` | `id` | ✅ Mapped |
-| `workout_plan_id` | `workoutPlanId` | ✅ Mapped |
-| `workout_plan_name` | `workoutPlanName` | ✅ Mapped |
-| `assigned_to_user_id` | `athleteId` | ⚠️ Mapped but deprecated? |
-| `assigned_to_group_id` | `groupId` | ✅ Mapped (line 1063) |
-| `athlete_ids` | `athleteIds` | ✅ Mapped |
-| `assigned_by` | `assignedBy` | ✅ Mapped |
-| `assigned_date` | `assignedDate` | ✅ Mapped |
-| `scheduled_date` | `scheduledDate` | ✅ Mapped |
-| `start_time` | `startTime` | ✅ Mapped |
-| `end_time` | `endTime` | ✅ Mapped |
-| `location` | `location` | ✅ Mapped |
-| `due_date` | `dueDate` | ✅ Mapped |
-| `status` | `status` | ✅ Mapped |
-| `notes` | `notes` | ✅ Mapped |
-| `created_at` | `createdAt` | ✅ Mapped |
-| `updated_at` | `updatedAt` | ✅ Mapped |
-| N/A | `athleteNames` | ✅ Computed field |
-| N/A | `modifications` | ✅ Separate table |
+| Database Column        | Frontend Property | Status                    |
+| ---------------------- | ----------------- | ------------------------- |
+| `id`                   | `id`              | ✅ Mapped                 |
+| `workout_plan_id`      | `workoutPlanId`   | ✅ Mapped                 |
+| `workout_plan_name`    | `workoutPlanName` | ✅ Mapped                 |
+| `assigned_to_user_id`  | `athleteId`       | ⚠️ Mapped but deprecated? |
+| `assigned_to_group_id` | `groupId`         | ✅ Mapped (line 1063)     |
+| `athlete_ids`          | `athleteIds`      | ✅ Mapped                 |
+| `assigned_by`          | `assignedBy`      | ✅ Mapped                 |
+| `assigned_date`        | `assignedDate`    | ✅ Mapped                 |
+| `scheduled_date`       | `scheduledDate`   | ✅ Mapped                 |
+| `start_time`           | `startTime`       | ✅ Mapped                 |
+| `end_time`             | `endTime`         | ✅ Mapped                 |
+| `location`             | `location`        | ✅ Mapped                 |
+| `due_date`             | `dueDate`         | ✅ Mapped                 |
+| `status`               | `status`          | ✅ Mapped                 |
+| `notes`                | `notes`           | ✅ Mapped                 |
+| `created_at`           | `createdAt`       | ✅ Mapped                 |
+| `updated_at`           | `updatedAt`       | ✅ Mapped                 |
+| N/A                    | `athleteNames`    | ✅ Computed field         |
+| N/A                    | `modifications`   | ✅ Separate table         |
 
 **Mapping Location**: `/src/lib/database-service.ts` lines 1020-1080  
 **Critical Code** (lines 1061-1063):
+
 ```typescript
 athleteId: (assignment.assigned_to_user_id as string) || undefined,
 athleteNames: athleteNames.length > 0 ? athleteNames : undefined,
@@ -80,22 +82,22 @@ groupId: (assignment.assigned_to_group_id as string) || undefined,
 
 ### 3. ✅ users (CONSISTENT)
 
-| Database Column | Frontend Property | Status |
-|----------------|-------------------|--------|
-| `id` | `id` | ✅ Mapped |
-| `email` | `email` | ✅ Mapped |
-| `full_name` | `fullName` | ✅ Mapped |
-| `first_name` | `firstName` | ✅ Mapped |
-| `last_name` | `lastName` | ✅ Mapped |
-| `role` | `role` | ✅ Mapped |
-| `status` | `status` | ✅ Mapped |
-| `avatar_url` | `avatarUrl` | ✅ Mapped |
-| `date_of_birth` | `dateOfBirth` | ✅ Mapped |
-| `phone` | `phone` | ✅ Mapped |
+| Database Column     | Frontend Property  | Status    |
+| ------------------- | ------------------ | --------- |
+| `id`                | `id`               | ✅ Mapped |
+| `email`             | `email`            | ✅ Mapped |
+| `full_name`         | `fullName`         | ✅ Mapped |
+| `first_name`        | `firstName`        | ✅ Mapped |
+| `last_name`         | `lastName`         | ✅ Mapped |
+| `role`              | `role`             | ✅ Mapped |
+| `status`            | `status`           | ✅ Mapped |
+| `avatar_url`        | `avatarUrl`        | ✅ Mapped |
+| `date_of_birth`     | `dateOfBirth`      | ✅ Mapped |
+| `phone`             | `phone`            | ✅ Mapped |
 | `emergency_contact` | `emergencyContact` | ✅ Mapped |
-| `injury_status` | `injuryStatus` | ✅ Mapped |
-| `created_at` | `createdAt` | ✅ Mapped |
-| `updated_at` | `updatedAt` | ✅ Mapped |
+| `injury_status`     | `injuryStatus`     | ✅ Mapped |
+| `created_at`        | `createdAt`        | ✅ Mapped |
+| `updated_at`        | `updatedAt`        | ✅ Mapped |
 
 **Status**: ✅ All fields properly mapped
 
@@ -103,15 +105,15 @@ groupId: (assignment.assigned_to_group_id as string) || undefined,
 
 ### 4. ✅ workout_plans (CONSISTENT)
 
-| Database Column | Frontend Property | Status |
-|----------------|-------------------|--------|
-| `id` | `id` | ✅ Mapped |
-| `name` | `name` | ✅ Mapped |
-| `description` | `description` | ✅ Mapped |
-| `coach_id` | `coachId` | ✅ Mapped |
-| `is_template` | `isTemplate` | ✅ Mapped |
-| `created_at` | `createdAt` | ✅ Mapped |
-| `updated_at` | `updatedAt` | ✅ Mapped |
+| Database Column | Frontend Property | Status    |
+| --------------- | ----------------- | --------- |
+| `id`            | `id`              | ✅ Mapped |
+| `name`          | `name`            | ✅ Mapped |
+| `description`   | `description`     | ✅ Mapped |
+| `coach_id`      | `coachId`         | ✅ Mapped |
+| `is_template`   | `isTemplate`      | ✅ Mapped |
+| `created_at`    | `createdAt`       | ✅ Mapped |
+| `updated_at`    | `updatedAt`       | ✅ Mapped |
 
 **Status**: ✅ All fields properly mapped
 
@@ -133,6 +135,7 @@ groupId: (assignment.assigned_to_group_id as string) || undefined,
 ### ✅ Frontend Usage (CORRECT)
 
 `DraggableAthleteCalendar.tsx` uses the correct field names:
+
 - Line 164: `assignment.groupId` ✅
 - Line 173: `!assignment.groupId` ✅
 - Line 279: `assignment.groupId` ✅
@@ -141,6 +144,7 @@ groupId: (assignment.assigned_to_group_id as string) || undefined,
 ### ✅ API Routes (CORRECT)
 
 `/api/assignments/route.ts` uses correct field names:
+
 - Line 51: `assignment.groupId === groupId` ✅
 
 ---
@@ -150,11 +154,13 @@ groupId: (assignment.assigned_to_group_id as string) || undefined,
 ### ⚠️ Medium Priority: Deprecated Field
 
 **assigned_to_user_id** in `workout_assignments` table:
+
 - **Status**: Appears deprecated in favor of `athlete_ids` array
 - **Usage**: Still mapped to `athleteId` in frontend
 - **Question**: Is this field still needed?
 
 **Recommendation**:
+
 - [ ] Clarify if `assigned_to_user_id` is deprecated
 - [ ] If yes, remove from database schema
 - [ ] If no, document when to use `athleteId` vs `athleteIds` array
@@ -182,6 +188,7 @@ return {
 ### ✅ Good Pattern - Consistent Transformation
 
 All API routes follow this pattern:
+
 1. Query Supabase with snake_case column names
 2. Transform to camelCase in service layer
 3. Frontend uses camelCase exclusively
@@ -203,6 +210,7 @@ The naming system is **actually working correctly**. All critical mappings are i
 ### 3. 🔄 Future Optimization
 
 Consider using a type-safe ORM or code generator:
+
 - **Prisma** - Auto-generates TypeScript types from schema
 - **Kysely** - Type-safe SQL query builder
 - **Supabase CLI** - Can generate TypeScript types from database
@@ -222,6 +230,7 @@ Consider using a type-safe ORM or code generator:
 ### Audit Result: ✅ **System is properly designed**
 
 After thorough code inspection, the naming system works correctly:
+
 - ✅ Database uses snake_case (PostgreSQL convention)
 - ✅ Frontend uses camelCase (JavaScript convention)
 - ✅ Service layer properly transforms between them

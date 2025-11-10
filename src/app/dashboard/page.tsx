@@ -337,15 +337,15 @@ export default function DashboardPage() {
                 </Body>
               </div>
 
-              {/* Settings Button */}
-              <Link href="/coach-settings">
+              {/* Profile Button */}
+              <Link href="/profile">
                 <Button
                   variant="secondary"
                   leftIcon={<Settings className="w-5 h-5" />}
                   className="shrink-0"
                 >
-                  <span className="hidden sm:inline">Program Settings</span>
-                  <span className="sm:hidden">Settings</span>
+                  <span className="hidden sm:inline">Profile & Settings</span>
+                  <span className="sm:hidden">Profile</span>
                 </Button>
               </Link>
             </div>

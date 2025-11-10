@@ -12,6 +12,7 @@ snake_case            → camelCase
 ## Core Tables
 
 ### athlete_groups
+
 ```typescript
 // Database → Frontend
 id                → id
@@ -28,6 +29,7 @@ updated_at        → updatedAt
 ```
 
 ### workout_assignments
+
 ```typescript
 // Database → Frontend
 id                      → id
@@ -54,6 +56,7 @@ N/A                     → modifications (separate table)
 ```
 
 ### users
+
 ```typescript
 // Database → Frontend
 id                  → id
@@ -73,6 +76,7 @@ updated_at          → updatedAt
 ```
 
 ### workout_plans
+
 ```typescript
 // Database → Frontend
 id              → id
@@ -96,6 +100,7 @@ All transformations occur in `/src/lib/database-service.ts`:
 ## Usage Examples
 
 ### ❌ WRONG - Using database names in frontend
+
 ```typescript
 // DON'T DO THIS
 const coachId = group.coach_id; // ❌
@@ -103,6 +108,7 @@ const athleteIds = assignment.athlete_ids; // ❌
 ```
 
 ### ✅ CORRECT - Using frontend names
+
 ```typescript
 // DO THIS
 const coachId = group.coachId; // ✅
@@ -110,6 +116,7 @@ const athleteIds = assignment.athleteIds; // ✅
 ```
 
 ### ✅ CORRECT - Querying database
+
 ```typescript
 // In API routes or database-service.ts
 const { data } = await supabase
@@ -127,35 +134,39 @@ return {
 ## Common Gotchas
 
 ### 1. Group Assignments
+
 ```typescript
 // ❌ WRONG
-assignment.assigned_to_group_id
+assignment.assigned_to_group_id;
 
 // ✅ CORRECT
-assignment.groupId
+assignment.groupId;
 ```
 
 ### 2. Individual Assignments
+
 ```typescript
 // ❌ WRONG
-assignment.assigned_to_user_id
+assignment.assigned_to_user_id;
 
 // ✅ CORRECT
-assignment.athleteId
+assignment.athleteId;
 ```
 
 ### 3. Scheduled Dates
+
 ```typescript
 // ❌ WRONG
-assignment.scheduled_date
+assignment.scheduled_date;
 
 // ✅ CORRECT
-assignment.scheduledDate
+assignment.scheduledDate;
 ```
 
 ## TypeScript Interfaces
 
 All frontend types use camelCase:
+
 - `AthleteGroup` - `/src/types/index.ts` line 34
 - `WorkoutAssignment` - `/src/types/index.ts` line 220
 - `User` - `/src/types/index.ts` line 8

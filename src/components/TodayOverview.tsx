@@ -33,7 +33,10 @@ const TodayOverview = memo(function TodayOverview() {
 
       if (data.success) {
         console.log("[TodayOverview] Received workouts:", data.workouts);
-        console.log("[TodayOverview] First workout detail:", JSON.stringify(data.workouts[0], null, 2));
+        console.log(
+          "[TodayOverview] First workout detail:",
+          JSON.stringify(data.workouts[0], null, 2)
+        );
         setTodayWorkouts(data.workouts || []);
       }
     } catch (error) {
@@ -137,12 +140,15 @@ const TodayOverview = memo(function TodayOverview() {
                             borderRadius: "9999px",
                             fontSize: "0.75rem",
                             fontWeight: "600",
-                            backgroundColor: (workout.groupColor || "#3b82f6") + "20",
+                            backgroundColor:
+                              (workout.groupColor || "#3b82f6") + "20",
                             color: workout.groupColor || "#3b82f6",
                             border: `1.5px solid ${workout.groupColor || "#3b82f6"}`,
                           }}
                         >
-                          <Users style={{ width: "0.75rem", height: "0.75rem" }} />
+                          <Users
+                            style={{ width: "0.75rem", height: "0.75rem" }}
+                          />
                           {workout.groupName}
                         </span>
                       </div>

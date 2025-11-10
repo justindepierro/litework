@@ -67,7 +67,7 @@ const Navigation = memo(function Navigation() {
         { href: "/workouts", label: "Workouts" },
         { href: "/athletes", label: "Athletes" },
         { href: "/schedule", label: "Schedule" },
-        { href: "/coach-settings", label: "Settings" }
+        { href: "/profile", label: "Profile" }
       );
     } else {
       items.push(
