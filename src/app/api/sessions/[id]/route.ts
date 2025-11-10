@@ -337,7 +337,7 @@ export async function DELETE(
       // Fetch existing session to verify ownership
       const { data: session, error: fetchError } = await supabase
         .from("workout_sessions")
-        .select("athlete_id, status")
+        .select("user_id, completed")
         .eq("id", sessionId)
         .single();
 
@@ -349,7 +349,7 @@ export async function DELETE(
       }
 
       // Security check: User must own the session
-      if (session.athlete_id !== user.id) {
+      if (session.user_id !== user.id) {
         return NextResponse.json(
           { success: false, error: "Unauthorized to delete this session" },
           { status: 403 }
@@ -357,20 +357,19 @@ export async function DELETE(
       }
 
       // Prevent abandoning completed sessions
-      if (session.status === "completed") {
+      if (session.completed) {
         return NextResponse.json(
           { success: false, error: "Cannot abandon a completed session" },
           { status: 400 }
         );
       }
 
-      // Mark as abandoned (don't actually delete)
+      // Mark as abandoned (set completed_at but not completed flag)
       const { error: updateError } = await supabase
         .from("workout_sessions")
         .update({
-          status: "abandoned",
-          end_time: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          completed_at: new Date().toISOString(),
+          // Don't set completed=true, so it's marked as abandoned
         })
         .eq("id", sessionId);
 
