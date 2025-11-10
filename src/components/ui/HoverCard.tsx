@@ -47,8 +47,8 @@ export function HoverCard({
   content,
   openDelay = 200,
   closeDelay = 100,
-  side = "top",
-  offset = 8,
+  side = "right",
+  offset = 12,
   maxWidth = 320,
   disabled = false,
   className = "",
@@ -72,12 +72,12 @@ export function HoverCard({
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const cardWidth = maxWidth;
-    const cardHeight = cardRef.current?.offsetHeight || 200; // Estimate if not rendered yet
+    const cardHeight = cardRef.current?.offsetHeight || 200;
 
     let top = 0;
     let left = 0;
 
-    // Calculate base position
+    // Calculate base position relative to trigger
     switch (side) {
       case "top":
         top = triggerRect.top - cardHeight - offset;
@@ -210,21 +210,52 @@ export function WorkoutPreviewCard({
   exerciseCount,
   duration,
   notes,
+  workoutPlanId,
 }: {
   workoutName: string;
-  exerciseCount: number;
+  exerciseCount?: number;
   duration?: string;
   notes?: string;
+  workoutPlanId?: string;
 }) {
+  const [actualExerciseCount, setActualExerciseCount] = useState(exerciseCount);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch actual exercise count if workoutPlanId provided
+  useEffect(() => {
+    if (!workoutPlanId || exerciseCount) return;
+
+    setLoading(true);
+    fetch(`/api/workouts/${workoutPlanId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.workout?.exercises) {
+          setActualExerciseCount(data.workout.exercises.length);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch workout details:", err))
+      .finally(() => setLoading(false));
+  }, [workoutPlanId, exerciseCount]);
+
+  const displayCount = actualExerciseCount ?? exerciseCount ?? 0;
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 min-w-[200px]">
       <h3 className="font-semibold text-navy-700 text-base">{workoutName}</h3>
       <div className="flex items-center gap-4 text-sm text-silver-600">
-        <span>{exerciseCount} exercises</span>
-        {duration && <span>{duration}</span>}
+        {loading ? (
+          <span className="animate-pulse">Loading...</span>
+        ) : (
+          <span className="font-medium">
+            {displayCount} exercise{displayCount !== 1 ? "s" : ""}
+          </span>
+        )}
+        {duration && <span className="text-silver-500">{duration}</span>}
       </div>
       {notes && (
-        <p className="text-sm text-silver-600 line-clamp-3 mt-2">{notes}</p>
+        <p className="text-sm text-silver-600 line-clamp-3 mt-2 border-t border-silver-200 pt-2">
+          {notes}
+        </p>
       )}
     </div>
   );

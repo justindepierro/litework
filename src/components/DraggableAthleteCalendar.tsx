@@ -98,10 +98,10 @@ function DraggableAssignment({
       }}
       className={`w-full text-left p-2.5 rounded-lg text-xs transition-all ${
         isCompleted
-          ? "bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
+          ? "bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
           : isOverdue
-            ? "bg-linear-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
-            : "bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
+            ? "bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
+            : "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
       } hover:scale-[1.02] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
@@ -424,41 +424,40 @@ export default function DraggableAthleteCalendar({
               onDrop={handleDrop}
               isCoach={isCoach}
               onClick={() => isCoach && onDateClick?.(date)}
-              className={`min-h-24 p-2 rounded-xl transition-all duration-200 ${
+              className={`min-h-28 p-2 rounded-xl transition-all duration-200 flex flex-col ${
                 isCurrentMonth
-                  ? "bg-white shadow-sm hover:shadow-md hover:scale-[1.02] border border-gray-100"
+                  ? "bg-white shadow-sm hover:shadow-md border border-gray-100"
                   : "bg-gray-50 text-gray-400 border border-gray-100"
               } ${isTodayDate ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg" : ""} ${
                 isCoach ? "cursor-pointer" : ""
               }`}
             >
-              <div className="flex justify-between items-start mb-2">
-                <div
-                  className={`text-sm font-semibold ${
+              <div className="flex justify-between items-center mb-1.5 flex-shrink-0">
+                <span
+                  className={`text-sm font-bold ${
                     isTodayDate
-                      ? "text-blue-600 text-lg"
+                      ? "text-blue-600"
                       : isCurrentMonth
-                        ? "text-gray-700"
+                        ? "text-gray-800"
                         : "text-gray-400"
                   }`}
                 >
                   {date.getDate()}
-                </div>
+                </span>
                 {isCoach && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onDateClick?.(date);
                     }}
-                    className="text-xs text-accent-blue hover:text-accent-blue/80 p-1 hover:bg-accent-blue/10 rounded transition-colors"
+                    className="text-accent-blue hover:text-accent-blue/80 w-5 h-5 flex items-center justify-center hover:bg-accent-blue/10 rounded transition-colors flex-shrink-0"
                     title="Assign workout"
                   >
-                    <span className="text-lg leading-none">+</span>
+                    <span className="text-base font-bold leading-none">+</span>
                   </button>
                 )}
               </div>
-              <div className="space-y-1.5">
-                {dayAssignments.slice(0, 2).map((assignment) => (
+              <div className="space-y-1 flex-1 overflow-hidden">{dayAssignments.slice(0, 2).map((assignment) => (
                   <HoverCard
                     key={assignment.id}
                     trigger={
@@ -472,7 +471,7 @@ export default function DraggableAthleteCalendar({
                     content={
                       <WorkoutPreviewCard
                         workoutName={assignment.workoutPlanName || "Workout"}
-                        exerciseCount={0}
+                        workoutPlanId={assignment.workoutPlanId}
                         duration={assignment.startTime}
                         notes={assignment.notes}
                       />
@@ -555,7 +554,7 @@ export default function DraggableAthleteCalendar({
                     content={
                       <WorkoutPreviewCard
                         workoutName={assignment.workoutPlanName || "Workout"}
-                        exerciseCount={0}
+                        workoutPlanId={assignment.workoutPlanId}
                         duration={assignment.startTime}
                         notes={assignment.notes}
                       />
@@ -602,7 +601,7 @@ export default function DraggableAthleteCalendar({
                 content={
                   <WorkoutPreviewCard
                     workoutName={assignment.workoutPlanName || "Workout"}
-                    exerciseCount={0}
+                    workoutPlanId={assignment.workoutPlanId}
                     duration={assignment.startTime}
                     notes={assignment.notes}
                   />
