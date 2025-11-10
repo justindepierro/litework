@@ -34,23 +34,6 @@ export const WorkoutLiveLazy = dynamic(
   }
 );
 
-// Calendar - heavy component with lots of logic
-export const CalendarViewLazy = dynamic(
-  () => import("@/components/CalendarView"),
-  {
-    loading: () => (
-      <div className="animate-pulse space-y-4 p-6">
-        <div className="h-12 bg-gray-200 rounded"></div>
-        <div className="grid grid-cols-7 gap-2">
-          {Array.from({ length: 35 }).map((_, i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded"></div>
-          ))}
-        </div>
-      </div>
-    ),
-  }
-);
-
 // Analytics components - lazy load (not needed immediately)
 export const ProgressAnalyticsLazy = dynamic(
   () => import("@/components/ProgressAnalytics"),

@@ -24,6 +24,7 @@ import { WorkoutAssignment } from "@/types";
 import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 
 interface DraggableAthleteCalendarProps {
   assignments: WorkoutAssignment[];
@@ -458,12 +459,25 @@ export default function DraggableAthleteCalendar({
               </div>
               <div className="space-y-1.5">
                 {dayAssignments.slice(0, 2).map((assignment) => (
-                  <DraggableAssignment
+                  <HoverCard
                     key={assignment.id}
-                    assignment={assignment}
-                    onClick={() => onAssignmentClick?.(assignment)}
-                    compact={true}
-                    isCoach={isCoach}
+                    trigger={
+                      <DraggableAssignment
+                        assignment={assignment}
+                        onClick={() => onAssignmentClick?.(assignment)}
+                        compact={true}
+                        isCoach={isCoach}
+                      />
+                    }
+                    content={
+                      <WorkoutPreviewCard
+                        workoutName={assignment.workoutPlanName || "Workout"}
+                        exerciseCount={0}
+                        duration={assignment.startTime}
+                        notes={assignment.notes}
+                      />
+                    }
+                    openDelay={300}
                   />
                 ))}
                 {dayAssignments.length > 2 && (
@@ -528,12 +542,25 @@ export default function DraggableAthleteCalendar({
               </div>
               <div className="space-y-2">
                 {dayAssignments.map((assignment) => (
-                  <DraggableAssignment
+                  <HoverCard
                     key={assignment.id}
-                    assignment={assignment}
-                    onClick={() => onAssignmentClick?.(assignment)}
-                    compact={false}
-                    isCoach={isCoach}
+                    trigger={
+                      <DraggableAssignment
+                        assignment={assignment}
+                        onClick={() => onAssignmentClick?.(assignment)}
+                        compact={false}
+                        isCoach={isCoach}
+                      />
+                    }
+                    content={
+                      <WorkoutPreviewCard
+                        workoutName={assignment.workoutPlanName || "Workout"}
+                        exerciseCount={0}
+                        duration={assignment.startTime}
+                        notes={assignment.notes}
+                      />
+                    }
+                    openDelay={300}
                   />
                 ))}
                 {dayAssignments.length === 0 && (
@@ -563,11 +590,24 @@ export default function DraggableAthleteCalendar({
         {dayAssignments.length > 0 ? (
           dayAssignments.map((assignment) => (
             <Card key={assignment.id} variant="default" padding="md">
-              <DraggableAssignment
-                assignment={assignment}
-                onClick={() => onAssignmentClick?.(assignment)}
-                compact={false}
-                isCoach={isCoach}
+              <HoverCard
+                trigger={
+                  <DraggableAssignment
+                    assignment={assignment}
+                    onClick={() => onAssignmentClick?.(assignment)}
+                    compact={false}
+                    isCoach={isCoach}
+                  />
+                }
+                content={
+                  <WorkoutPreviewCard
+                    workoutName={assignment.workoutPlanName || "Workout"}
+                    exerciseCount={0}
+                    duration={assignment.startTime}
+                    notes={assignment.notes}
+                  />
+                }
+                openDelay={300}
               />
               {assignment.notes && (
                 <div className="mt-3 p-2 bg-silver-200 rounded text-sm">
