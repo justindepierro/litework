@@ -504,10 +504,10 @@ export async function getSession() {
       "Fetching session from Supabase"
     );
 
-    // Add a timeout to prevent infinite hanging (15 seconds for network variability and cold starts)
+    // Add a timeout to prevent infinite hanging (3 seconds is plenty for session check)
     const sessionPromise = supabase.auth.getSession();
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Session fetch timeout")), 15000)
+      setTimeout(() => reject(new Error("Session fetch timeout")), 3000)
     );
 
     const {
@@ -527,9 +527,22 @@ export async function getSession() {
     return session;
   } catch (error) {
     const classified = classifyAuthError(error);
-    logAuthEvent(correlationId, "error", "error", classified.technicalMessage, {
-      error,
-    });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    // Log timeout as warning (expected on slow connections), other errors as error
+    if (errorMessage.includes("timeout")) {
+      console.warn(`[AUTH] Session fetch timeout - check network connection`);
+    } else {
+      logAuthEvent(
+        correlationId,
+        "error",
+        "error",
+        classified.technicalMessage,
+        {
+          error,
+        }
+      );
+    }
     return null;
   }
 }
@@ -658,15 +671,15 @@ export function onAuthChange(callback: (user: User | null) => void) {
           .eq("id", session.user.id)
           .single();
 
-        // 15 second timeout to account for potential cold starts and network delays
+        // 5 second timeout - if profile fetch takes longer, something is wrong
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
             reject(
               new Error(
-                "Profile fetch timeout - database query exceeded 15 seconds. This may indicate network issues or database cold start."
+                "Profile fetch timeout - database query exceeded 5 seconds. Check network connection."
               )
             );
-          }, 15000)
+          }, 5000)
         );
 
         const result = await Promise.race([
@@ -675,11 +688,19 @@ export function onAuthChange(callback: (user: User | null) => void) {
         ]).catch((err) => {
           // Log timeout or error with details
           const errorMessage = err?.message || String(err);
-          timer.error("Profile fetch failed", {
-            message: errorMessage,
-            userId: session.user.id,
-            isTimeout: errorMessage.includes("timeout"),
-          });
+
+          // Use warn instead of error for timeout (expected on slow connections)
+          if (errorMessage.includes("timeout")) {
+            console.warn(
+              `[AUTH] Profile fetch timeout - check network connection`
+            );
+          } else {
+            timer.error("Profile fetch failed", {
+              message: errorMessage,
+              userId: session.user.id,
+              isTimeout: errorMessage.includes("timeout"),
+            });
+          }
           throw err;
         });
 

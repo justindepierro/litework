@@ -180,12 +180,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (previousUser && !newUser) {
           console.warn("[AUTH] User session ended - possible logout or expiry");
         } else if (!previousUser && newUser) {
-          // [REMOVED] console.log("[AUTH] User session started:", newUser.email);
+          // User session started
         } else if (newUser && previousUser && newUser.id !== previousUser.id) {
-          console.log(
-            "[AUTH] User session changed from",
+          console.warn(
+            "[AUTH] User session changed - security alert",
             previousUser.email,
-            "to",
+            "->",
             newUser.email
           );
         }

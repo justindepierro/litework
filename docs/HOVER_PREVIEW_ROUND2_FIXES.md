@@ -1,4 +1,5 @@
 # Hover Preview - Additional Fixes (Round 2)
+
 **Date:** November 10, 2025  
 **Status:** Critical data mapping fixes applied
 
@@ -7,10 +8,12 @@
 ## 🐛 Issues Found in Testing
 
 ### 1. **Group Data Not Displaying** ⚠️ CRITICAL
+
 **Problem:** "3 Rounds" and "4m rest" showing in workout editor but not in hover preview  
 **Root Cause:** Field name mismatch between database and HoverCard interface
 
 **Database Returns:**
+
 ```typescript
 {
   type: "circuit",           // not groupType
@@ -21,6 +24,7 @@
 ```
 
 **HoverCard Expected:**
+
 ```typescript
 {
   groupType: "circuit",
@@ -31,6 +35,7 @@
 ```
 
 **Fix Applied:**
+
 ```typescript
 interface ExerciseGroup {
   id: string;
@@ -49,6 +54,7 @@ interface ExerciseGroup {
 ### 2. **Display Logic Updated**
 
 **Sets/Rounds Display:**
+
 ```typescript
 // Before (WRONG):
 {group.sets && <span>{group.sets} sets</span>}
@@ -62,6 +68,7 @@ interface ExerciseGroup {
 ```
 
 **Rest Time Display:**
+
 ```typescript
 // Before (WRONG):
 {group.restTime && <span>• {group.restTime}s rest</span>}
@@ -75,6 +82,7 @@ interface ExerciseGroup {
 ```
 
 **Type Reference:**
+
 ```typescript
 // Before (WRONG):
 const cfg = getGroupConfig(group.groupType);
@@ -86,7 +94,9 @@ const cfg = getGroupConfig(group.type);
 ---
 
 ### 3. **Scrollable Structure Section** ✅
+
 **Added:**
+
 - Max height: 320px
 - Auto scroll when content exceeds
 - Fade gradient at bottom to indicate scrollable content
@@ -109,7 +119,9 @@ const cfg = getGroupConfig(group.type);
 ---
 
 ### 4. **Improved Position Calculation** ✅
+
 **Added:**
+
 - ResizeObserver to detect card size changes
 - Multiple position recalculations (50ms, 150ms, 300ms)
 - Better viewport edge detection
@@ -126,7 +138,7 @@ resizeObserver.observe(cardRef.current);
 if (top + cardHeight > viewportHeight - padding) {
   const spaceAbove = triggerRect.top;
   const spaceBelow = viewportHeight - triggerRect.bottom;
-  
+
   if (spaceAbove > spaceBelow && spaceAbove > cardHeight) {
     top = triggerRect.top - cardHeight - offset; // Flip to top
   }
@@ -136,6 +148,7 @@ if (top + cardHeight > viewportHeight - padding) {
 ---
 
 ### 5. **Always Show Sets** ✅
+
 **Changed:** Display sets even if `rounds === 1`
 
 ```typescript
@@ -221,6 +234,7 @@ Display: "Circuit • 3 rounds • 4m rest"
 All field mapping issues resolved. The hover should now display the exact same data that appears in the workout editor.
 
 **Test by:**
+
 1. Hover over "Monday 11/10 Football Workout" in calendar
 2. Verify "Circuit • 3 rounds • 4m rest" appears
 3. Verify all 4 exercises show in structure

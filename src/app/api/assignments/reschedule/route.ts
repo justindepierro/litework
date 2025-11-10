@@ -31,12 +31,6 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    console.log("[RESCHEDULE] Request received:", {
-      assignmentId,
-      newDate,
-      moveGroup,
-    });
-
     const supabase = await createClient();
 
     // Get the assignment to check if it's a group assignment
@@ -98,14 +92,17 @@ export async function PATCH(request: NextRequest) {
 
       if (assignmentIds.length > 0) {
         // Format date as YYYY-MM-DD for DATE column
-        const dateOnly = targetDate.toISOString().split('T')[0];
-        
-        console.log(`[RESCHEDULE] About to update ${assignmentIds.length} assignments`, {
-          assignmentIds,
-          dateOnly,
-          oldDate: assignment.scheduled_date,
-        });
-        
+        const dateOnly = targetDate.toISOString().split("T")[0];
+
+        console.log(
+          `[RESCHEDULE] About to update ${assignmentIds.length} assignments`,
+          {
+            assignmentIds,
+            dateOnly,
+            oldDate: assignment.scheduled_date,
+          }
+        );
+
         const { error: updateError } = await supabase
           .from("workout_assignments")
           .update({
@@ -115,7 +112,10 @@ export async function PATCH(request: NextRequest) {
           .in("id", assignmentIds);
 
         if (updateError) {
-          console.error("[RESCHEDULE] Error updating group assignments:", updateError);
+          console.error(
+            "[RESCHEDULE] Error updating group assignments:",
+            updateError
+          );
           return NextResponse.json(
             { success: false, error: "Failed to update group assignments" },
             { status: 500 }
@@ -149,10 +149,10 @@ export async function PATCH(request: NextRequest) {
 
     // Individual assignment update
     // [REMOVED] console.log("[RESCHEDULE] Processing individual assignment move");
-    
+
     // Format date as YYYY-MM-DD for DATE column
-    const dateOnly = targetDate.toISOString().split('T')[0];
-    
+    const dateOnly = targetDate.toISOString().split("T")[0];
+
     const { error: updateError } = await supabase
       .from("workout_assignments")
       .update({

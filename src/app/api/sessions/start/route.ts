@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth-server";
 import { createClient } from "@/lib/supabase-server";
+import { errorResponse, handleSupabaseError } from "@/lib/api-errors";
 
 /**
  * POST /api/sessions/start
@@ -16,10 +17,7 @@ export async function POST(request: NextRequest) {
       const { assignment_id } = body;
 
       if (!assignment_id) {
-        return NextResponse.json(
-          { error: "assignment_id is required" },
-          { status: 400 }
-        );
+        return errorResponse("VALIDATION_ERROR", "assignment_id is required");
       }
 
       const supabase = createClient();

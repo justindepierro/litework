@@ -1,11 +1,11 @@
 /**
  * useCountUp Hook - Animate numbers counting up
- * 
+ *
  * Usage:
  * const count = useCountUp(endValue, { duration: 1000, delay: 0 });
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export interface UseCountUpOptions {
   /** Animation duration in ms */

@@ -32,7 +32,11 @@ body {
 /* ============================================ */
 
 /* Smooth transitions for interactive elements only */
-button, a, input, textarea, select {
+button,
+a,
+input,
+textarea,
+select {
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -57,7 +61,9 @@ button.card:hover {
 }
 
 /* Input focus effect - very subtle */
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -73,28 +79,32 @@ a:not(.no-underline):hover {
 
 /* Ensure minimum touch target size on mobile */
 @media (max-width: 768px) {
-  button, a.button, [role="button"] {
+  button,
+  a.button,
+  [role="button"] {
     min-height: 48px;
     min-width: 48px;
     padding: 12px 16px;
   }
-  
+
   /* Interactive cards need adequate spacing */
   .card-interactive {
     min-height: 56px;
   }
-  
+
   /* Calendar dates - easier tapping */
   .calendar-day {
     min-height: 80px;
   }
-  
+
   /* Input fields - comfortable for fat fingers */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     min-height: 48px;
     font-size: 16px; /* Prevents zoom on iOS */
   }
-  
+
   /* Modal close buttons */
   button[aria-label*="close"],
   button[aria-label*="Close"] {
@@ -128,18 +138,14 @@ a:not(.no-underline):hover {
 
 .skeleton {
   animation: shimmer 2s infinite linear;
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 0%,
-    #f8f8f8 50%,
-    #f0f0f0 100%
-  );
+  background: linear-gradient(90deg, #f0f0f0 0%, #f8f8f8 50%, #f0f0f0 100%);
   background-size: 1000px 100%;
 }
 
 /* Pulse animation for loading indicators */
 @keyframes pulse-soft {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -171,12 +177,24 @@ a:not(.no-underline):hover {
   animation: fadeInUp 0.3s ease-out backwards;
 }
 
-.animate-list-item:nth-child(1) { animation-delay: 0ms; }
-.animate-list-item:nth-child(2) { animation-delay: 50ms; }
-.animate-list-item:nth-child(3) { animation-delay: 100ms; }
-.animate-list-item:nth-child(4) { animation-delay: 150ms; }
-.animate-list-item:nth-child(5) { animation-delay: 200ms; }
-.animate-list-item:nth-child(6) { animation-delay: 250ms; }
+.animate-list-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.animate-list-item:nth-child(2) {
+  animation-delay: 50ms;
+}
+.animate-list-item:nth-child(3) {
+  animation-delay: 100ms;
+}
+.animate-list-item:nth-child(4) {
+  animation-delay: 150ms;
+}
+.animate-list-item:nth-child(5) {
+  animation-delay: 200ms;
+}
+.animate-list-item:nth-child(6) {
+  animation-delay: 250ms;
+}
 
 /* Force text visibility */
 h1,

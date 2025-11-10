@@ -80,11 +80,6 @@ export async function GET(
       .eq("id", id)
       .single();
 
-    console.log(`[API] Assignment query result:`, {
-      hasData: !!assignment,
-      error: error?.message,
-    });
-
     if (error || !assignment) {
       console.error("Assignment fetch error:", {
         id,

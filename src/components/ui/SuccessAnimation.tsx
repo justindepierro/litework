@@ -1,15 +1,15 @@
 /**
  * Success Animation Component
  * Shows animated checkmark for successful actions
- * 
+ *
  * Usage:
  * <SuccessAnimation show={showSuccess} onComplete={() => setShowSuccess(false)} />
  */
 
 "use client";
 
-import React, { useEffect } from 'react';
-import { Check } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Check } from "lucide-react";
 
 interface SuccessAnimationProps {
   /** Whether to show the animation */
@@ -19,9 +19,9 @@ interface SuccessAnimationProps {
   /** Animation duration in ms */
   duration?: number;
   /** Size of the checkmark */
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   /** Position */
-  position?: 'fixed' | 'absolute' | 'relative';
+  position?: "fixed" | "absolute" | "relative";
   /** Custom message */
   message?: string;
 }
@@ -30,8 +30,8 @@ export function SuccessAnimation({
   show,
   onComplete,
   duration = 2000,
-  size = 'md',
-  position = 'fixed',
+  size = "md",
+  position = "fixed",
   message,
 }: SuccessAnimationProps) {
   useEffect(() => {
@@ -46,32 +46,34 @@ export function SuccessAnimation({
   if (!show) return null;
 
   const sizeClasses = {
-    sm: 'w-12 h-12',
-    md: 'w-16 h-16',
-    lg: 'w-24 h-24',
+    sm: "w-12 h-12",
+    md: "w-16 h-16",
+    lg: "w-24 h-24",
   };
 
   const iconSizes = {
-    sm: 'w-6 h-6',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
+    sm: "w-6 h-6",
+    md: "w-8 h-8",
+    lg: "w-12 h-12",
   };
 
   const positionClasses = {
-    fixed: 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50',
-    absolute: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-    relative: 'relative',
+    fixed: "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50",
+    absolute: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+    relative: "relative",
   };
 
   return (
     <>
       {/* Backdrop */}
-      {position === 'fixed' && (
+      {position === "fixed" && (
         <div className="fixed inset-0 bg-black/20 z-40 animate-in fade-in duration-200" />
       )}
-      
+
       {/* Success Icon */}
-      <div className={`${positionClasses[position]} flex flex-col items-center gap-3`}>
+      <div
+        className={`${positionClasses[position]} flex flex-col items-center gap-3`}
+      >
         <div
           className={`
             ${sizeClasses[size]}
@@ -81,12 +83,12 @@ export function SuccessAnimation({
             animate-in zoom-in duration-300
           `}
           style={{
-            animation: 'successPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+            animation: "successPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
           }}
         >
           <Check className={`${iconSizes[size]} text-white stroke-3`} />
         </div>
-        
+
         {message && (
           <p className="text-sm font-medium text-gray-900 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
             {message}
@@ -122,7 +124,11 @@ interface SuccessBadgeProps {
   onComplete?: () => void;
 }
 
-export function SuccessBadge({ show, message = 'Success!', onComplete }: SuccessBadgeProps) {
+export function SuccessBadge({
+  show,
+  message = "Success!",
+  onComplete,
+}: SuccessBadgeProps) {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {

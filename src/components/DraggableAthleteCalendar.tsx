@@ -21,7 +21,12 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { WorkoutAssignment, AthleteGroup } from "@/types";
-import { parseDate, isSameDay, isPast, formatTime12Hour } from "@/lib/date-utils";
+import {
+  parseDate,
+  isSameDay,
+  isPast,
+  formatTime12Hour,
+} from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
@@ -252,7 +257,9 @@ export default function DraggableAthleteCalendar({
   ): Array<{ id: string; name: string; color: string }> => {
     if (!assignment.groupId) return [];
     const group = groups.find((g) => g.id === assignment.groupId);
-    return group ? [{ id: group.id, name: group.name, color: group.color }] : [];
+    return group
+      ? [{ id: group.id, name: group.name, color: group.color }]
+      : [];
   };
 
   // Helper functions for date calculations
@@ -476,18 +483,6 @@ export default function DraggableAthleteCalendar({
                 >
                   {date.getDate()}
                 </span>
-                {isCoach && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDateClick?.(date);
-                    }}
-                    className="text-accent-blue hover:text-accent-blue/80 w-5 h-5 flex items-center justify-center hover:bg-accent-blue/10 rounded transition-colors flex-shrink-0"
-                    title="Assign workout"
-                  >
-                    <span className="text-base font-bold leading-none">+</span>
-                  </button>
-                )}
               </div>
 
               {/* Workouts - scrollable if needed */}

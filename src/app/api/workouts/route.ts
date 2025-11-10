@@ -7,6 +7,12 @@ import {
 } from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import {
+  authenticationError,
+  successResponse,
+  errorResponse,
+  handleSupabaseError,
+} from "@/lib/api-errors";
 
 // GET /api/workouts - Get workout plans
 export async function GET(request: NextRequest) {
@@ -14,10 +20,7 @@ export async function GET(request: NextRequest) {
     const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json(
-        { error: authError || "Authentication required" },
-        { status: 401 }
-      );
+      return authenticationError(authError || undefined);
     }
 
     // Get query parameters

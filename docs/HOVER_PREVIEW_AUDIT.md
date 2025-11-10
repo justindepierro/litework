@@ -1,4 +1,5 @@
 # Hover Preview System Audit & Enhancement Plan
+
 **Date:** November 10, 2025  
 **Goal:** Create industry-leading hover previews (Discord-level quality) with proper data loading, animations, and reusability
 
@@ -7,13 +8,16 @@
 ## 🔍 Current Issues Identified
 
 ### 1. **Calendar Text Cut-Off** ⚠️ CRITICAL
+
 **Problem:** Workout assignment names are truncated in month view calendar cells  
 **Root Cause:**
+
 - Month view uses `compact={true}` mode which applies `whitespace-nowrap` and `overflow-hidden`
 - Container width is limited by calendar cell size
 - No ellipsis or multi-line support
 
 **Evidence:**
+
 ```tsx
 // DraggableAssignment component (line 143)
 <span className="font-semibold text-xs overflow-hidden text-ellipsis whitespace-nowrap">
@@ -24,10 +28,12 @@
 ---
 
 ### 2. **No Hover Info Showing** ⚠️ CRITICAL
+
 **Problem:** Hover preview is not displaying any workout information  
 **Root Causes:**
 
 #### A. API Response Structure Mismatch
+
 - HoverCard expects: `{ success: true, data: { exercises, groups } }`
 - API returns: `{ workout: { exercises, groups } }`
 
@@ -50,16 +56,19 @@ if (workoutData.workout) {
 ```
 
 #### B. KPI Tags Not Being Fetched
+
 - `kpiTags` are fetched separately but never connected to exercises
 - `getKpiForExercise()` uses string matching instead of the `kpiTagIds` array from database
 
 ---
 
 ### 3. **KPI Badge Display Mismatch** ⚠️ HIGH PRIORITY
+
 **Problem:** KPI tags not showing correctly - want "Key Lifts (Front Squat) (Squat)"  
 **Root Causes:**
 
 #### A. KPI Tag IDs Not Being Used
+
 - Exercises have `kpiTagIds: string[]` from database
 - HoverCard uses fuzzy string matching instead of these IDs
 - Workout editor properly uses `kpiTagIds` array
@@ -79,23 +88,27 @@ const getKpiForExercise = (exerciseName: string): KPITag | null => {
 // SHOULD BE:
 const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
   if (!exercise.kpiTagIds || exercise.kpiTagIds.length === 0) return [];
-  return kpiTags.filter(tag => exercise.kpiTagIds.includes(tag.id));
+  return kpiTags.filter((tag) => exercise.kpiTagIds.includes(tag.id));
 };
 ```
 
 #### B. Multiple KPI Tags Not Supported
+
 - Current code returns single `KPITag | null`
 - Should support multiple tags per exercise (e.g., Front Squat → Squat + Leg Strength)
 
 #### C. Display Format Issues
+
 - Want: "Front Squat (Squat) (Leg Strength)"
 - Current: Just shows "Front Squat" with one badge
 
 ---
 
 ### 4. **Group Color Mismatch** ⚠️ MEDIUM PRIORITY
+
 **Problem:** Group badge colors in hover don't match dashboard/athlete pages  
 **Root Cause:**
+
 - Groups have a `color` field in database (hex code)
 - HoverCard is not using this field
 - Currently shows generic blue Badge with `variant="primary"`
@@ -113,8 +126,10 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ---
 
 ### 5. **Sets Not Displaying Properly** ⚠️ MEDIUM PRIORITY
+
 **Problem:** Set information is incomplete or confusing  
 **Issues:**
+
 - Shows `3×5` for individual exercises in groups, but group also shows "3 sets"
 - Doesn't clarify if group sets multiply individual exercise sets
 - No support for percentage-based weights or progressive schemes
@@ -122,7 +137,9 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ---
 
 ### 6. **Performance & Loading Issues** ⚠️ MEDIUM PRIORITY
+
 **Problems:**
+
 - Fetches workout data on EVERY hover (no caching)
 - Separate API call for KPI tags each time
 - 150ms-300ms delay feels sluggish
@@ -131,7 +148,9 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ---
 
 ### 7. **Reusability Limitations** ⚠️ LOW PRIORITY
+
 **Problems:**
+
 - `WorkoutPreviewCard` is tightly coupled to calendar use case
 - Hard-coded 400px width
 - Can't easily reuse in other contexts (workout list, search results, etc.)
@@ -141,6 +160,7 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ## 🎯 Discord-Level Hover Quality Standards
 
 ### What Makes Discord Hovers Great:
+
 1. **Instant Data** - Pre-loaded, no loading states visible
 2. **Rich Content** - Images, badges, status indicators, relationships
 3. **Smooth Animations** - Fade in/out, smooth positioning
@@ -156,23 +176,26 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ### Phase 1: Fix Critical Data Issues
 
 #### 1.1 Fix API Response Handling
+
 ```typescript
 // Update HoverCard.tsx WorkoutPreviewCard useEffect
 Promise.all([
-  fetch(`/api/workouts/${workoutPlanId}`).then(r => r.json()),
-  fetch('/api/kpi-tags').then(r => r.json())
+  fetch(`/api/workouts/${workoutPlanId}`).then((r) => r.json()),
+  fetch("/api/kpi-tags").then((r) => r.json()),
 ]).then(([workoutData, kpiData]) => {
-  if (workoutData.workout) {  // FIX: Use .workout not .data
+  if (workoutData.workout) {
+    // FIX: Use .workout not .data
     setWorkoutDetails({
       exercises: workoutData.workout.exercises || [],
       groups: workoutData.workout.groups || [],
-      kpiTags: kpiData.success ? kpiData.data : []
+      kpiTags: kpiData.success ? kpiData.data : [],
     });
   }
-})
+});
 ```
 
 #### 1.2 Use Proper KPI Tag IDs
+
 ```typescript
 // Replace string matching with ID-based lookup
 const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
@@ -195,6 +218,7 @@ const getKpisForExercise = (exercise: WorkoutExercise): KPITag[] => {
 ```
 
 #### 1.3 Fix Group Colors
+
 ```typescript
 // Pass full group objects, not just names
 interface WorkoutPreviewCardProps {
@@ -207,7 +231,7 @@ interface WorkoutPreviewCardProps {
 
 // Calendar passes full group objects
 <WorkoutPreviewCard
-  assignedGroups={assignment.groupId 
+  assignedGroups={assignment.groupId
     ? groups.filter(g => g.id === assignment.groupId)
     : []}
 />
@@ -218,6 +242,7 @@ interface WorkoutPreviewCardProps {
 ### Phase 2: Performance Optimizations
 
 #### 2.1 Data Pre-loading Strategy
+
 ```typescript
 // Cache workout data at calendar level
 const [workoutCache, setWorkoutCache] = useState<Map<string, WorkoutDetails>>(new Map());
@@ -240,17 +265,19 @@ useEffect(() => {
 ```
 
 #### 2.2 Lazy Loading & Code Splitting
+
 ```typescript
 // Only load hover system when needed
-const WorkoutPreviewCard = lazy(() => 
-  import('@/components/ui/WorkoutPreviewCard')
+const WorkoutPreviewCard = lazy(
+  () => import("@/components/ui/WorkoutPreviewCard")
 );
 ```
 
 #### 2.3 Memoization
+
 ```typescript
-const groupedExercises = useMemo(() => 
-  groupExercisesByGroup(exercises, groups),
+const groupedExercises = useMemo(
+  () => groupExercisesByGroup(exercises, groups),
   [exercises, groups]
 );
 ```
@@ -260,6 +287,7 @@ const groupedExercises = useMemo(() =>
 ### Phase 3: Visual & UX Enhancements
 
 #### 3.1 Smooth Animations
+
 ```tsx
 // Add framer-motion or CSS transitions
 <motion.div
@@ -273,6 +301,7 @@ const groupedExercises = useMemo(() =>
 ```
 
 #### 3.2 Loading Skeleton
+
 ```tsx
 // Replace "Loading..." with proper skeleton
 {loading ? (
@@ -286,6 +315,7 @@ const groupedExercises = useMemo(() =>
 ```
 
 #### 3.3 Rich Content Display
+
 - Exercise thumbnails/icons
 - Progress indicators (if athlete has completed before)
 - Difficulty badges
@@ -293,10 +323,13 @@ const groupedExercises = useMemo(() =>
 - Equipment requirements
 
 #### 3.4 Context Actions
+
 ```tsx
 // Quick actions in hover footer
 <div className="border-t pt-2 flex gap-2">
-  <Button size="sm" variant="ghost">View Full</Button>
+  <Button size="sm" variant="ghost">
+    View Full
+  </Button>
   {isCoach && <Button size="sm">Edit</Button>}
 </div>
 ```
@@ -306,6 +339,7 @@ const groupedExercises = useMemo(() =>
 ### Phase 4: Reusability & Component Design
 
 #### 4.1 Separate Concerns
+
 ```typescript
 // Core hover mechanism (reusable)
 <HoverCard trigger={...} content={...} />
@@ -318,6 +352,7 @@ const groupedExercises = useMemo(() =>
 ```
 
 #### 4.2 Configuration Props
+
 ```typescript
 interface WorkoutPreviewContentProps {
   workout: WorkoutDetails;
@@ -336,6 +371,7 @@ interface WorkoutPreviewContentProps {
 ## 📋 Implementation Checklist
 
 ### Immediate Fixes (1-2 hours)
+
 - [ ] Fix API response structure handling (`.workout` vs `.data`)
 - [ ] Use `kpiTagIds` array instead of string matching
 - [ ] Support multiple KPI tags per exercise
@@ -343,6 +379,7 @@ interface WorkoutPreviewContentProps {
 - [ ] Add proper null/empty state handling
 
 ### Short Term (2-4 hours)
+
 - [ ] Implement workout data caching
 - [ ] Add loading skeleton UI
 - [ ] Improve set display clarity (group sets vs exercise sets)
@@ -350,6 +387,7 @@ interface WorkoutPreviewContentProps {
 - [ ] Fix calendar text truncation with better overflow handling
 
 ### Medium Term (4-8 hours)
+
 - [ ] Pre-load visible workout data
 - [ ] Add rich content (thumbnails, badges, indicators)
 - [ ] Implement quick actions in hover
@@ -358,6 +396,7 @@ interface WorkoutPreviewContentProps {
 - [ ] Write component documentation
 
 ### Long Term (Nice to Have)
+
 - [ ] Add exercise preview images
 - [ ] Show athlete-specific data (previous attempts, PRs)
 - [ ] Implement hover-to-edit for coaches
@@ -370,6 +409,7 @@ interface WorkoutPreviewContentProps {
 ## 🎨 Proposed Visual Design
 
 ### Layout Structure
+
 ```
 ┌─────────────────────────────────────┐
 │ 🎨 GRADIENT HEADER                   │
@@ -402,10 +442,11 @@ interface WorkoutPreviewContentProps {
 ```
 
 ### Color System
+
 - **Header Gradient**: Blue → Indigo → Purple (energy, professional)
 - **Group Badges**: Use actual group colors from database
 - **KPI Tags**: Use tag colors from database
-- **Structure Badges**: 
+- **Structure Badges**:
   - Superset: Purple (#9333ea)
   - Circuit: Orange (#ea580c)
   - Section: Blue (#2563eb)
@@ -415,6 +456,7 @@ interface WorkoutPreviewContentProps {
 ## 🔧 Technical Implementation Details
 
 ### Data Flow
+
 ```
 Calendar Component
   ↓ (assignments with workoutPlanId)
@@ -430,6 +472,7 @@ User sees beautiful hover!
 ```
 
 ### Type Safety
+
 ```typescript
 interface WorkoutPreviewData {
   workout: WorkoutPlan;
@@ -453,12 +496,14 @@ interface HoverCardCache {
 ## 🚀 Success Metrics
 
 ### Performance Targets
+
 - [ ] Hover appears in < 50ms (from cached data)
 - [ ] Smooth 60 FPS animations
 - [ ] Zero layout shift
 - [ ] < 200KB additional bundle size
 
 ### UX Targets
+
 - [ ] All workout info visible without clicking
 - [ ] Group colors match dashboard 100%
 - [ ] KPI tags show correctly with exercise names
@@ -467,6 +512,7 @@ interface HoverCardCache {
 - [ ] Hover never goes off-screen
 
 ### Code Quality Targets
+
 - [ ] Zero TypeScript errors
 - [ ] 100% component reusability
 - [ ] Full JSDoc documentation
@@ -478,12 +524,14 @@ interface HoverCardCache {
 ## 📚 References
 
 ### Similar Implementations
+
 - Discord user hovers
 - GitHub PR hovers
 - Linear issue hovers
 - Notion page hovers
 
 ### Design Resources
+
 - Radix UI HoverCard
 - Floating UI positioning
 - Framer Motion animations

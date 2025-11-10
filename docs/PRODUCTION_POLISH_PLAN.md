@@ -10,10 +10,12 @@
 ## 🎯 Focus Areas
 
 ### 1. Visual Hierarchy & Typography ⭐ HIGH IMPACT
+
 **Current State**: Inconsistent heading sizes, some hardcoded text styles  
 **Target**: Crystal-clear information hierarchy, perfect readability
 
 **Improvements**:
+
 - [ ] **Dashboard Stats Cards** - Make numbers more prominent (48px → 56px), add subtle animation on load
 - [ ] **Calendar Headers** - Increase month/year size, add weight differentiation
 - [ ] **Workout Cards** - Strengthen title hierarchy, improve metadata display
@@ -23,6 +25,7 @@
 - [ ] **Empty State Messages** - Larger, more encouraging text with better spacing
 
 **Priority Actions**:
+
 ```tsx
 // Dashboard stat cards - make numbers hero elements
 <Display size="2xl" className="font-bold">{stat}</Display>
@@ -39,10 +42,12 @@
 ---
 
 ### 2. Micro-Interactions & Animations ⭐ HIGH IMPACT
+
 **Current State**: Basic hover states, minimal feedback  
 **Target**: Delightful, responsive UI that feels alive
 
 **Improvements**:
+
 - [ ] **Button Hover Effects** - Add lift (transform: translateY(-1px)) + shadow increase
 - [ ] **Card Hover States** - Subtle scale (1.01) + border color change + shadow
 - [ ] **Input Focus** - Smooth border color transition + scale (1.01)
@@ -55,6 +60,7 @@
 - [ ] **Page Transitions** - Fade in content on route change
 
 **Code Examples**:
+
 ```css
 /* Card hover - add to all Card components */
 .card {
@@ -86,18 +92,26 @@
 .list-item {
   animation: fadeInUp 0.3s ease-out backwards;
 }
-.list-item:nth-child(1) { animation-delay: 0ms; }
-.list-item:nth-child(2) { animation-delay: 50ms; }
-.list-item:nth-child(3) { animation-delay: 100ms; }
+.list-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.list-item:nth-child(2) {
+  animation-delay: 50ms;
+}
+.list-item:nth-child(3) {
+  animation-delay: 100ms;
+}
 ```
 
 ---
 
 ### 3. Empty States & Zero Data Experience ⭐ HIGH IMPACT
+
 **Current State**: Basic "No data" messages  
 **Target**: Encouraging, actionable empty states with clear next steps
 
 **Improvements**:
+
 - [ ] **No Workouts** - Large icon, motivating message, prominent "Create First Workout" button
 - [ ] **No Athletes** - Clear invitation flow with "Invite Athletes" CTA
 - [ ] **No Assignments** - Calendar with helpful hints, "Assign Workout" button
@@ -107,6 +121,7 @@
 - [ ] **No Progress Data** - "Start tracking to see results" with example chart
 
 **Template**:
+
 ```tsx
 <EmptyState
   icon={<Dumbbell className="w-16 h-16 text-gray-300" />}
@@ -125,10 +140,12 @@
 ---
 
 ### 4. Loading States & Skeleton Loaders ⭐ MEDIUM IMPACT
+
 **Current State**: Spinner-only loading, some flash of content  
 **Target**: Smooth skeleton loaders that match content layout
 
 **Improvements**:
+
 - [ ] **Dashboard Stats** - 3 card skeletons with pulsing numbers
 - [ ] **Workout List** - Card skeletons matching real card layout
 - [ ] **Calendar Loading** - Date grid skeleton with shimmer
@@ -138,6 +155,7 @@
 - [ ] **HoverCard** - Instant skeleton while fetching workout details
 
 **Implementation**:
+
 ```tsx
 // Reusable Skeleton Component
 export function Skeleton({ className = "", ...props }) {
@@ -150,27 +168,31 @@ export function Skeleton({ className = "", ...props }) {
 }
 
 // Usage in Dashboard
-{loadingStats ? (
-  <div className="grid grid-cols-3 gap-4">
-    {[1, 2, 3].map(i => (
-      <Card key={i} className="p-6">
-        <Skeleton className="h-14 w-24 mb-2" />
-        <Skeleton className="h-4 w-32" />
-      </Card>
-    ))}
-  </div>
-) : (
-  <StatsDisplay />
-)}
+{
+  loadingStats ? (
+    <div className="grid grid-cols-3 gap-4">
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="p-6">
+          <Skeleton className="h-14 w-24 mb-2" />
+          <Skeleton className="h-4 w-32" />
+        </Card>
+      ))}
+    </div>
+  ) : (
+    <StatsDisplay />
+  );
+}
 ```
 
 ---
 
 ### 5. Error States & Recovery ⭐ HIGH PRIORITY
+
 **Current State**: Generic error messages, no recovery actions  
 **Target**: Clear error messages with actionable recovery steps
 
 **Improvements**:
+
 - [ ] **API Errors** - Specific messages ("Failed to save workout" vs "Error occurred")
 - [ ] **Network Errors** - "Check your connection" with retry button
 - [ ] **Validation Errors** - Inline field errors with red border + message
@@ -180,6 +202,7 @@ export function Skeleton({ className = "", ...props }) {
 - [ ] **Conflict Errors** - "Another user modified this" with refresh
 
 **Error Component**:
+
 ```tsx
 <Alert variant="error" className="mb-4">
   <AlertCircle className="w-5 h-5" />
@@ -198,10 +221,12 @@ export function Skeleton({ className = "", ...props }) {
 ---
 
 ### 6. Mobile & Touch Optimization ⭐ CRITICAL
+
 **Current State**: Desktop-first design with basic mobile support  
 **Target**: Exceptional mobile experience for gym use
 
 **Improvements**:
+
 - [ ] **Touch Targets** - Minimum 48x48px for all buttons (increase workout live buttons to 56px)
 - [ ] **Spacing on Mobile** - Increase padding (16px → 20px) for easier tapping
 - [ ] **Bottom Sheet Modals** - Full-screen modals on mobile instead of center
@@ -212,6 +237,7 @@ export function Skeleton({ className = "", ...props }) {
 - [ ] **Landscape Mode** - Optimize workout live mode for landscape viewing
 
 **Mobile Utilities**:
+
 ```css
 /* Touch-friendly buttons */
 @media (max-width: 768px) {
@@ -219,13 +245,13 @@ export function Skeleton({ className = "", ...props }) {
     min-height: 48px;
     padding: 12px 20px;
   }
-  
+
   .modal {
     position: fixed;
     inset: 0;
     border-radius: 0;
   }
-  
+
   .calendar-day {
     min-height: 80px; /* Easier to tap */
   }
@@ -235,10 +261,12 @@ export function Skeleton({ className = "", ...props }) {
 ---
 
 ### 7. WorkoutEditor Polish ⭐ HIGH IMPACT
+
 **Current State**: Functional but could be more intuitive  
 **Target**: Industry-best workout building experience
 
 **Improvements**:
+
 - [ ] **Exercise Preview** - Show animated GIF preview on hover
 - [ ] **Quick Actions** - Right-click context menu (copy, paste, duplicate exercise)
 - [ ] **Keyboard Shortcuts** - Cmd+D duplicate, Delete to remove, Tab between fields
@@ -251,23 +279,24 @@ export function Skeleton({ className = "", ...props }) {
 - [ ] **Notes Field** - Expandable textarea with markdown preview
 
 **Features**:
+
 ```tsx
 // Keyboard shortcuts
 useEffect(() => {
   const handleKeyboard = (e: KeyboardEvent) => {
     if (e.metaKey || e.ctrlKey) {
-      if (e.key === 'd') {
+      if (e.key === "d") {
         e.preventDefault();
         duplicateSelectedExercise();
       }
-      if (e.key === 'z') {
+      if (e.key === "z") {
         e.preventDefault();
         undo();
       }
     }
   };
-  window.addEventListener('keydown', handleKeyboard);
-  return () => window.removeEventListener('keydown', handleKeyboard);
+  window.addEventListener("keydown", handleKeyboard);
+  return () => window.removeEventListener("keydown", handleKeyboard);
 }, []);
 
 // Auto-save indicator
@@ -283,16 +312,18 @@ useEffect(() => {
       <span>Saved</span>
     </>
   )}
-</div>
+</div>;
 ```
 
 ---
 
 ### 8. Calendar Experience ⭐ HIGH IMPACT
+
 **Current State**: Basic calendar with drag-and-drop  
 **Target**: Intuitive, powerful scheduling interface
 
 **Improvements**:
+
 - [ ] **Today Indicator** - Pulsing dot or ring around today's date
 - [ ] **Week Numbers** - Show week of year on left side
 - [ ] **Multi-Select** - Hold shift to select multiple days, assign to all
@@ -305,6 +336,7 @@ useEffect(() => {
 - [ ] **Past Events** - Fade out past assignments (50% opacity)
 
 **Visual Enhancements**:
+
 ```tsx
 // Today indicator
 {isToday && (
@@ -312,7 +344,7 @@ useEffect(() => {
 )}
 
 // Drag preview
-<div 
+<div
   className="fixed pointer-events-none opacity-70 rotate-3 transition-transform"
   style={{ transform: 'translate(-50%, -50%)' }}
 >
@@ -330,14 +362,16 @@ useEffect(() => {
 ---
 
 ### 9. Form Experience & Validation ⭐ MEDIUM IMPACT
+
 **Current State**: Basic form validation  
 **Target**: Inline validation with helpful guidance
 
 **Improvements**:
+
 - [ ] **Real-time Validation** - Show errors as user types (debounced)
 - [ ] **Success Indicators** - Green checkmark on valid fields
 - [ ] **Character Counters** - Show remaining characters on textareas
-- [ ] **Required Field Indicators** - Clear asterisk (*) on labels
+- [ ] **Required Field Indicators** - Clear asterisk (\*) on labels
 - [ ] **Field Hints** - Helper text below inputs ("e.g., 3x10 Back Squat")
 - [ ] **Auto-focus** - Focus first field when modal opens
 - [ ] **Enter to Submit** - Allow form submission with Enter key
@@ -345,6 +379,7 @@ useEffect(() => {
 - [ ] **Smart Defaults** - Pre-fill common values (e.g., 15:30 for workout time)
 
 **Enhanced Input**:
+
 ```tsx
 <div className="space-y-1">
   <Label required>Workout Name</Label>
@@ -373,10 +408,12 @@ useEffect(() => {
 ---
 
 ### 10. Performance Optimizations ⭐ MEDIUM PRIORITY
+
 **Current State**: Good performance, room for optimization  
 **Target**: Buttery smooth 60fps everywhere
 
 **Improvements**:
+
 - [ ] **Virtual Scrolling** - For long workout lists and exercise libraries
 - [ ] **Image Lazy Loading** - Defer loading off-screen images
 - [ ] **Code Splitting** - Lazy load heavy components (WorkoutEditor, charts)
@@ -390,10 +427,12 @@ useEffect(() => {
 ---
 
 ### 11. Accessibility (A11y) ⭐ CRITICAL
+
 **Current State**: Basic keyboard navigation  
 **Target**: WCAG 2.1 AA compliance
 
 **Improvements**:
+
 - [ ] **Focus Indicators** - Visible focus rings on all interactive elements
 - [ ] **Keyboard Navigation** - Tab through all elements in logical order
 - [ ] **ARIA Labels** - Descriptive labels on icon-only buttons
@@ -405,29 +444,33 @@ useEffect(() => {
 - [ ] **Landmark Regions** - Proper header, nav, main, footer tags
 
 **A11y Checklist**:
+
 ```tsx
 // Icon button with label
 <button aria-label="Delete workout" onClick={handleDelete}>
   <Trash2 className="w-5 h-5" />
-</button>
+</button>;
 
 // Focus ring (already in design tokens)
-className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+className =
+  "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
 
 // Announce to screen reader
-const [announcement, setAnnouncement] = useState('');
+const [announcement, setAnnouncement] = useState("");
 <div role="status" aria-live="polite" className="sr-only">
   {announcement}
-</div>
+</div>;
 ```
 
 ---
 
 ### 12. Professional Details ⭐ HIGH IMPACT
+
 **Current State**: Good design, missing polish  
 **Target**: Perfect attention to detail
 
 **Improvements**:
+
 - [ ] **Consistent Spacing** - Use 4px grid (spacing-1, spacing-2, spacing-4, etc.)
 - [ ] **Icon Alignment** - All icons perfectly aligned with text
 - [ ] **Border Radius** - Consistent rounding (sm: 6px, md: 8px, lg: 12px)
@@ -444,18 +487,21 @@ const [announcement, setAnnouncement] = useState('');
 ## 🚀 Implementation Priority
 
 ### Phase 1: High-Impact Visual (Week 1)
+
 1. Typography hierarchy overhaul
 2. Micro-interactions (hover, focus, animations)
 3. Empty states across all pages
 4. Mobile touch targets and spacing
 
 ### Phase 2: Core Experience (Week 2)
+
 5. WorkoutEditor polish (shortcuts, auto-save, drag feedback)
 6. Calendar enhancements (today indicator, drag preview, colors)
 7. Loading skeletons everywhere
 8. Error state improvements
 
 ### Phase 3: Professional Details (Week 3)
+
 9. Form experience polish
 10. Performance optimizations
 11. Accessibility compliance
@@ -481,4 +527,3 @@ const [announcement, setAnnouncement] = useState('');
 - Get feedback from **real coaches** on workout editor
 - Measure performance with Lighthouse before/after
 - Document all new patterns in `COMPONENT_USAGE_STANDARDS.md`
-

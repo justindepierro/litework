@@ -2,17 +2,26 @@
 
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useCountUp } from "@/hooks/use-count-up";
-import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
-import GroupAssignmentModal from "@/components/GroupAssignmentModal";
-import IndividualAssignmentModal from "@/components/IndividualAssignmentModal";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+
+// Lazy load heavy components
+const DraggableAthleteCalendar = lazy(
+  () => import("@/components/DraggableAthleteCalendar")
+);
+const GroupAssignmentModal = lazy(
+  () => import("@/components/GroupAssignmentModal")
+);
+const IndividualAssignmentModal = lazy(
+  () => import("@/components/IndividualAssignmentModal")
+);
+
 import {
   parseDate,
   isToday as checkIsToday,
@@ -22,6 +31,7 @@ import {
 } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Display, Heading, Body } from "@/components/ui/Typography";
 import {
   Trophy,
   Calendar,
@@ -141,10 +151,6 @@ export default function DashboardPage() {
           groupsRes.json(),
           athletesRes.json(),
         ]);
-
-      console.log("[Dashboard] Groups data:", groupsData);
-      console.log("[Dashboard] Workouts data:", workoutsData);
-      console.log("[Dashboard] Athletes data:", athletesData);
 
       if (assignmentsData.success && assignmentsData.data) {
         setAssignments(
@@ -291,15 +297,18 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto">
           {/* Welcome Header */}
           <div className="text-center sm:text-left mb-8">
-            <h1 className="text-heading-primary text-3xl sm:text-2xl mb-2 font-bold">
+            <Display size="lg" className="mb-2">
               Welcome back,
-            </h1>
-            <p className="text-heading-accent text-2xl sm:text-xl font-bold flex items-center gap-2">
+            </Display>
+            <Display
+              size="md"
+              className="flex items-center gap-2 justify-center sm:justify-start"
+            >
               {user.fullName}! <Hand className="w-6 h-6" />
-            </p>
-            <p className="text-silver-700 mt-2">
+            </Display>
+            <Body variant="secondary" className="mt-2">
               {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
-            </p>
+            </Body>
           </div>
 
           {/* Quick Actions Bar - Full Width */}
@@ -363,41 +372,53 @@ export default function DashboardPage() {
                   <LoadingSpinner size="lg" message="Loading calendar..." />
                 </div>
               ) : (
-                <DraggableAthleteCalendar
-                  assignments={assignments}
-                  onAssignmentClick={handleAssignmentClick}
-                  onDateClick={handleDateClick}
-                  onAssignmentMove={handleAssignmentMove}
-                  viewMode="month"
-                  isCoach={true}
-                  groups={groups}
-                />
+                <Suspense
+                  fallback={
+                    <div className="p-12 text-center">
+                      <LoadingSpinner size="lg" message="Loading calendar..." />
+                    </div>
+                  }
+                >
+                  <DraggableAthleteCalendar
+                    assignments={assignments}
+                    onAssignmentClick={handleAssignmentClick}
+                    onDateClick={handleDateClick}
+                    onAssignmentMove={handleAssignmentMove}
+                    viewMode="month"
+                    isCoach={true}
+                    groups={groups}
+                  />
+                </Suspense>
               )}
             </div>
           </div>
 
           {/* Assignment Modals */}
           {showGroupAssignment && (
-            <GroupAssignmentModal
-              isOpen={showGroupAssignment}
-              onClose={() => setShowGroupAssignment(false)}
-              selectedDate={selectedDate}
-              groups={groups}
-              workoutPlans={workoutPlans}
-              athletes={athletes}
-              onAssignWorkout={handleAssignWorkout}
-            />
+            <Suspense fallback={<LoadingSpinner />}>
+              <GroupAssignmentModal
+                isOpen={showGroupAssignment}
+                onClose={() => setShowGroupAssignment(false)}
+                selectedDate={selectedDate}
+                groups={groups}
+                workoutPlans={workoutPlans}
+                athletes={athletes}
+                onAssignWorkout={handleAssignWorkout}
+              />
+            </Suspense>
           )}
 
           {showIndividualAssignment && (
-            <IndividualAssignmentModal
-              isOpen={showIndividualAssignment}
-              onClose={() => setShowIndividualAssignment(false)}
-              athletes={athletes}
-              workoutPlans={workoutPlans}
-              currentUserId={user?.id}
-              onAssignWorkout={handleAssignWorkout}
-            />
+            <Suspense fallback={<LoadingSpinner />}>
+              <IndividualAssignmentModal
+                isOpen={showIndividualAssignment}
+                onClose={() => setShowIndividualAssignment(false)}
+                athletes={athletes}
+                workoutPlans={workoutPlans}
+                currentUserId={user?.id}
+                onAssignWorkout={handleAssignWorkout}
+              />
+            </Suspense>
           )}
 
           {/* Assignment Detail Modal */}
@@ -527,8 +548,11 @@ export default function DashboardPage() {
                               {assignment.startTime && (
                                 <span className="flex items-center gap-1">
                                   <Clock className="w-4 h-4" />
-                                  {assignment.endTime 
-                                    ? formatTimeRange(assignment.startTime, assignment.endTime)
+                                  {assignment.endTime
+                                    ? formatTimeRange(
+                                        assignment.startTime,
+                                        assignment.endTime
+                                      )
                                     : formatTime12Hour(assignment.startTime)}
                                 </span>
                               )}
@@ -684,21 +708,27 @@ interface StatCardProps {
   value: number;
   label: string;
   loading: boolean;
-  color: 'orange' | 'green' | 'red';
+  color: "orange" | "green" | "red";
 }
 
 function StatCard({ icon, value, label, loading, color }: StatCardProps) {
-  const count = useCountUp(value, { duration: 1200, delay: 100, start: !loading });
-  
+  const count = useCountUp(value, {
+    duration: 1200,
+    delay: 100,
+    start: !loading,
+  });
+
   const colorClasses = {
-    orange: 'bg-orange-100',
-    green: 'bg-green-100',
-    red: 'bg-red-100',
+    orange: "bg-orange-100",
+    green: "bg-green-100",
+    red: "bg-red-100",
   };
 
   return (
     <Card variant="default" padding="sm" className="text-center">
-      <div className={`inline-flex items-center justify-center w-10 h-10 ${colorClasses[color]} rounded-full mb-2`}>
+      <div
+        className={`inline-flex items-center justify-center w-10 h-10 ${colorClasses[color]} rounded-full mb-2`}
+      >
         {icon}
       </div>
       <div className="text-3xl font-bold text-gray-900 tabular-nums">

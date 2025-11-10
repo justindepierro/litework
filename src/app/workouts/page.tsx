@@ -795,12 +795,6 @@ export default function WorkoutsPage() {
                 }
               }
               onChange={async (updatedWorkout) => {
-                console.log("[page.tsx] onChange ENTRY:", {
-                  creatingWorkout,
-                  editingWorkout: !!editingWorkout,
-                  updatedWorkoutName: updatedWorkout.name,
-                });
-
                 // For creating new workouts
                 if (creatingWorkout) {
                   // Check if this is an explicit save request (user clicked "Save Workout" button)
@@ -809,21 +803,11 @@ export default function WorkoutsPage() {
                   };
                   const shouldSave = workoutWithFlag._shouldSave;
 
-                  console.log("[page.tsx] onChange called:", {
-                    shouldSave,
-                    name: updatedWorkout.name,
-                    exerciseCount: updatedWorkout.exercises?.length,
-                    firstExercise: updatedWorkout.exercises?.[0]?.exerciseName,
-                  });
-
                   // ALWAYS update local state first (for UI reactivity)
                   setNewWorkout(updatedWorkout);
 
                   if (!shouldSave) {
                     // Just editing - update state only, don't save to API yet
-                    console.log(
-                      "[page.tsx] State updated, not saving to API yet"
-                    );
                     return;
                   }
 
@@ -948,26 +932,11 @@ export default function WorkoutsPage() {
                   setWorkouts(updatedWorkouts);
 
                   if (!shouldSave) {
-                    console.log(
-                      "[page.tsx] Editing - state updated, not saving yet"
-                    );
                     return;
                   }
 
                   // Remove the flag
                   delete workoutWithFlag._shouldSave;
-
-                  // [REMOVED] console.log("[page.tsx] Saving edited workout to API");
-                  // [REMOVED] console.log("[page.tsx] Workout ID:", updatedWorkout.id);
-                  // [REMOVED] console.log("[page.tsx] Workout name:", updatedWorkout.name);
-                  console.log(
-                    "[page.tsx] Is temp ID?",
-                    updatedWorkout.id?.startsWith("temp-")
-                  );
-                  console.log(
-                    "[page.tsx] Full workout object:",
-                    updatedWorkout
-                  );
 
                   // Safety check: Don't try to save temp workouts
                   if (updatedWorkout.id?.startsWith("temp-")) {

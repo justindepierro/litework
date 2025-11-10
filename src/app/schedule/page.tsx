@@ -84,10 +84,6 @@ export default function SchedulePage() {
         athletesRes.json(),
       ]);
 
-      console.log("[Schedule] Groups data:", groupsData);
-      console.log("[Schedule] Workouts data:", workoutsData);
-      console.log("[Schedule] Athletes data:", athletesData);
-
       // Groups API returns { success: true, groups: [...] }
       if (groupsData.success) setGroups(groupsData.groups || []);
       // Workouts API returns { success: true, data: { workouts: [...] } }
@@ -95,13 +91,6 @@ export default function SchedulePage() {
         setWorkoutPlans(workoutsData.data?.workouts || []);
       // Users API returns { success: true, data: [...] }
       if (athletesData.success) setAthletes(athletesData.data || []);
-
-      console.log("[Schedule] Set groups:", groupsData.groups?.length || 0);
-      console.log(
-        "[Schedule] Set workouts:",
-        workoutsData.data?.workouts?.length || 0
-      );
-      console.log("[Schedule] Set athletes:", athletesData.data?.length || 0);
     } catch (error) {
       console.error("Failed to fetch coach data:", error);
     }
@@ -112,12 +101,6 @@ export default function SchedulePage() {
     newDate: Date,
     isGroupAssignment: boolean
   ) => {
-    console.log("[SCHEDULE] Moving assignment:", {
-      assignmentId,
-      newDate: newDate.toDateString(),
-      isGroupAssignment,
-    });
-
     // Optimistic update - update UI immediately before API call
     const updatedAssignments = assignments.map((assignment) => {
       if (assignment.id === assignmentId) {

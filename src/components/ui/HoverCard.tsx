@@ -140,7 +140,7 @@ export function HoverCard({
       // Try to fit above the trigger if there's more space
       const spaceAbove = triggerRect.top;
       const spaceBelow = viewportHeight - triggerRect.bottom;
-      
+
       if (spaceAbove > spaceBelow && spaceAbove > cardHeight) {
         // Position above
         top = triggerRect.top - cardHeight - offset;

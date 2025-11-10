@@ -23,6 +23,7 @@ Removed legacy calendar components to eliminate confusion and reduce code duplic
 ### Active Component (Retained)
 
 **`DraggableAthleteCalendar.tsx`** (822 lines) - ✅ ACTIVE
+
 - Used in `/app/dashboard/page.tsx`
 - Used in `/app/schedule/page.tsx`
 - Features:
@@ -63,7 +64,7 @@ import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
   onDateClick={handleDateClick}
   onAssignmentMove={handleAssignmentMove}
   viewMode="month"
-/>
+/>;
 ```
 
 ## Recommendation

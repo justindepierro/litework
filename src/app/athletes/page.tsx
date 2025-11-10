@@ -365,13 +365,6 @@ export default function AthletesPage() {
 
           // Reload groups to show updated athlete count and membership
           await loadGroups();
-
-          console.log(
-            "✅ New athlete added:",
-            newAthlete.id,
-            "Groups:",
-            newAthlete.groupIds
-          );
         }
 
         const successMsg = inviteForm.email

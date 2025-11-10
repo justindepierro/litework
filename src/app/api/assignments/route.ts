@@ -9,6 +9,7 @@ import {
 import { notifyWorkoutAssignment } from "@/lib/unified-notification-service";
 import { createClient } from "@supabase/supabase-js";
 import { cachedResponse } from "@/lib/api-cache-headers";
+import { authenticationError, errorResponse } from "@/lib/api-errors";
 
 // GET /api/assignments - Get assignments
 export async function GET(request: NextRequest) {
@@ -16,10 +17,7 @@ export async function GET(request: NextRequest) {
     const { user, error: authError } = await getAuthenticatedUser();
 
     if (!user) {
-      return NextResponse.json(
-        { error: authError || "Authentication required" },
-        { status: 401 }
-      );
+      return authenticationError(authError || undefined);
     }
 
     const url = new URL(request.url);
@@ -223,12 +221,11 @@ async function sendAssignmentNotifications(
 
     const results = await Promise.allSettled(notificationPromises);
 
-    // Log results
-    const successful = results.filter((r) => r.status === "fulfilled").length;
-    const failed = results.filter((r) => r.status === "rejected").length;
-    console.log(
-      `✅ Sent ${successful} assignment notifications, ${failed} failed`
-    );
+    // Log results for monitoring (errors only)
+    const failed = results.filter((r) => r.status === "rejected");
+    if (failed.length > 0) {
+      console.error(`Failed to send ${failed.length} assignment notifications`);
+    }
   } catch (error) {
     console.error("Error in sendAssignmentNotifications:", error);
     throw error;
