@@ -155,12 +155,13 @@ export function HoverCard({
   const card = isOpen && mounted ? (
     <div
       ref={cardRef}
-      className={`fixed z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-auto
+      className={`fixed bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-auto
         animate-in fade-in-0 zoom-in-95 duration-150 ${className}`}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
         maxWidth: `${maxWidth}px`,
+        zIndex: 99999, // Very high z-index to appear above all calendar elements
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -275,36 +276,47 @@ export function WorkoutPreviewCard({
   return (
     <div className="w-[400px]">
       {/* Header - Clean gradient with white text */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 px-5 py-4">
-        <h3 className="font-bold text-white text-lg leading-tight mb-1.5">{workoutName}</h3>
+      <div 
+        className="px-5 py-4" 
+        style={{ 
+          background: 'linear-gradient(to bottom right, #2563eb, #1e40af, #4338ca)',
+          color: 'white'
+        }}
+      >
+        <h3 
+          className="font-bold text-lg leading-tight mb-1.5" 
+          style={{ color: 'white', fontWeight: 'bold' }}
+        >
+          {workoutName}
+        </h3>
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-white">
+          <div className="flex items-center gap-2 text-sm" style={{ color: 'white' }}>
             <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent" />
-            <span className="text-white">Loading...</span>
+            <span style={{ color: 'white' }}>Loading...</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 text-sm text-white/95">
-            <span className="font-semibold text-white">{displayCount} exercises</span>
+          <div className="flex items-center gap-2.5 text-sm" style={{ color: 'white' }}>
+            <span className="font-semibold" style={{ color: 'white', fontWeight: '600' }}>{displayCount} exercises</span>
             {duration && (
               <>
-                <span className="text-white/60">•</span>
-                <span className="text-white/90">{duration}</span>
+                <span style={{ color: 'rgba(255,255,255,0.6)' }}>•</span>
+                <span style={{ color: 'rgba(255,255,255,0.9)' }}>{duration}</span>
               </>
             )}
           </div>
         )}
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* Assigned Groups */}
         {assignedGroups && assignedGroups.length > 0 && (
           <div>
-            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+            <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
               Assigned To
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
               {assignedGroups.map((groupName, idx) => (
-                <Badge key={idx} variant="success" size="sm">
+                <Badge key={idx} variant="primary" size="sm">
                   <Users className="w-3 h-3" />
                   {groupName}
                 </Badge>
@@ -316,16 +328,16 @@ export function WorkoutPreviewCard({
         {/* KPIs - Key Lifts with color badges (NO REPS) */}
         {!loading && kpiExercises.length > 0 && (
           <div>
-            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+            <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
               Key Lifts
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {kpiExercises.map((ex: any, idx: number) => {
                 const kpiTag = getKpiForExercise(ex.exerciseName || '');
                 return (
-                  <div key={idx} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
-                    <Dumbbell className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm font-medium text-gray-900 flex-1">
+                  <div key={idx} className="flex items-center gap-2 rounded-lg px-3 py-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', padding: '0.5rem 0.75rem' }}>
+                    <Dumbbell className="w-4 h-4" style={{ width: '1rem', height: '1rem', color: '#9ca3af' }} />
+                    <span className="text-sm font-medium flex-1" style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', flex: '1' }}>
                       {ex.exerciseName}
                     </span>
                     {kpiTag && (
@@ -347,59 +359,59 @@ export function WorkoutPreviewCard({
         {/* Exercise Groups - Full details */}
         {!loading && groups.length > 0 && (
           <div>
-            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+            <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
               Structure
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {groups.map((group: any) => {
                 const groupExercises = groupedExercises[group.id] || [];
                 if (groupExercises.length === 0) return null;
                 
                 const configs = {
-                  superset: { label: 'Superset', color: 'purple', bg: 'bg-purple-50', border: 'border-purple-200', badge: 'bg-purple-600' },
-                  circuit: { label: 'Circuit', color: 'orange', bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-600' },
-                  section: { label: 'Section', color: 'blue', bg: 'bg-blue-50', border: 'border-blue-200', badge: 'bg-blue-600' },
+                  superset: { label: 'Superset', color: 'purple', bg: '#faf5ff', border: '#e9d5ff', badge: '#9333ea' },
+                  circuit: { label: 'Circuit', color: 'orange', bg: '#fff7ed', border: '#fed7aa', badge: '#ea580c' },
+                  section: { label: 'Section', color: 'blue', bg: '#eff6ff', border: '#bfdbfe', badge: '#2563eb' },
                 };
                 
                 const cfg = configs[group.groupType as keyof typeof configs] || configs.section;
                 
                 return (
-                  <div key={group.id} className={`${cfg.bg} border ${cfg.border} rounded-lg p-3`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 ${cfg.badge} text-white rounded text-xs font-bold`}>
+                  <div key={group.id} className="rounded-lg p-3" style={{ backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`, borderRadius: '0.5rem', padding: '0.75rem' }}>
+                    <div className="flex items-center justify-between mb-2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <div className="flex items-center gap-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span className="px-2 py-0.5 rounded text-xs font-bold" style={{ padding: '0.125rem 0.5rem', backgroundColor: cfg.badge, color: 'white', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: 'bold' }}>
                           {cfg.label}
                         </span>
                         {group.sets && group.sets > 1 && (
-                          <span className="text-xs font-semibold text-gray-600">
+                          <span className="text-xs font-semibold" style={{ fontSize: '0.75rem', fontWeight: '600', color: '#4b5563' }}>
                             {group.sets} {group.groupType === 'circuit' ? 'rounds' : 'sets'}
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-gray-500 font-medium">
+                      <span className="text-xs font-medium" style={{ fontSize: '0.75rem', fontWeight: '500', color: '#6b7280' }}>
                         {groupExercises.length} {groupExercises.length === 1 ? 'exercise' : 'exercises'}
                       </span>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       {groupExercises.map((ex: any, idx: number) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm bg-white rounded px-2 py-1.5">
-                          <span className="text-gray-400 mt-0.5 font-bold">{idx + 1}.</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-gray-900 font-medium truncate">{ex.exerciseName}</span>
+                        <div key={idx} className="flex items-start gap-2 text-sm rounded px-2 py-1.5" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.875rem', backgroundColor: 'white', borderRadius: '0.25rem', padding: '0.375rem 0.5rem' }}>
+                          <span className="mt-0.5 font-bold" style={{ marginTop: '0.125rem', fontWeight: 'bold', color: '#9ca3af' }}>{idx + 1}.</span>
+                          <div className="flex-1 min-w-0" style={{ flex: '1', minWidth: '0' }}>
+                            <div className="flex items-center justify-between gap-2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                              <span className="font-medium truncate" style={{ fontWeight: '500', color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ex.exerciseName}</span>
                               {ex.sets && ex.reps && (
-                                <span className="text-gray-600 text-xs font-semibold whitespace-nowrap">
+                                <span className="text-xs font-semibold whitespace-nowrap" style={{ fontSize: '0.75rem', fontWeight: '600', color: '#4b5563', whiteSpace: 'nowrap' }}>
                                   {ex.sets}×{ex.reps}
                                 </span>
                               )}
                             </div>
                             {ex.weight && (
-                              <div className="text-xs text-gray-500 mt-0.5">
+                              <div className="text-xs mt-0.5" style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.125rem' }}>
                                 {ex.weight} {ex.weightUnit || 'lbs'}
                               </div>
                             )}
                             {ex.tempo && (
-                              <div className="text-xs text-gray-500">
+                              <div className="text-xs" style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                                 Tempo: {ex.tempo}
                               </div>
                             )}
