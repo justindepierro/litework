@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 
 // Dynamic imports for heavy modals
 const GroupFormModal = lazy(() => import("./GroupFormModal"));
@@ -299,46 +300,58 @@ const CalendarView = memo(function CalendarView() {
                           const isPastOrToday = day <= new Date();
 
                           return (
-                            <div
+                            <HoverCard
                               key={assignment.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedAssignment(assignment);
-                              }}
-                              className="text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
-                              style={{
-                                backgroundColor: group
-                                  ? `${group.color}20`
-                                  : "#f3f4f6",
-                                borderLeft: `3px solid ${group?.color || "#9ca3af"}`,
-                              }}
-                              title={`${assignment.workoutPlanName} - ${group?.name}`}
-                            >
-                              <div className="flex items-center justify-between gap-1">
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-medium truncate">
-                                    {assignment.workoutPlanName}
-                                  </div>
-                                  <div className="text-xs opacity-75 truncate">
-                                    {group?.name}
+                              trigger={
+                                <div
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedAssignment(assignment);
+                                  }}
+                                  className="text-xs p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
+                                  style={{
+                                    backgroundColor: group
+                                      ? `${group.color}20`
+                                      : "#f3f4f6",
+                                    borderLeft: `3px solid ${group?.color || "#9ca3af"}`,
+                                  }}
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-medium truncate">
+                                        {assignment.workoutPlanName}
+                                      </div>
+                                      <div className="text-xs opacity-75 truncate">
+                                        {group?.name}
+                                      </div>
+                                    </div>
+                                    {isPastOrToday && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          router.push(
+                                            `/workouts/live/${assignment.id}`
+                                          );
+                                        }}
+                                        className="shrink-0 p-1 bg-accent-blue text-white rounded hover:bg-accent-blue/90"
+                                        title="Start workout"
+                                      >
+                                        <Play className="w-3 h-3" />
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
-                                {isPastOrToday && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      router.push(
-                                        `/workouts/live/${assignment.id}`
-                                      );
-                                    }}
-                                    className="shrink-0 p-1 bg-accent-blue text-white rounded hover:bg-accent-blue/90"
-                                    title="Start workout"
-                                  >
-                                    <Play className="w-3 h-3" />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
+                              }
+                              content={
+                                <WorkoutPreviewCard
+                                  workoutName={assignment.workoutPlanName}
+                                  exerciseCount={0}
+                                  notes={assignment.notes}
+                                />
+                              }
+                              side="top"
+                              openDelay={300}
+                            />
                           );
                         })}
                       {assignments.length > 3 && (
