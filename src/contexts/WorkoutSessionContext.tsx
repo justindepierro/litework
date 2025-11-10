@@ -251,6 +251,7 @@ interface WorkoutSessionContextType extends SessionState {
   deleteSet: (exerciseIndex: number, setId: string) => Promise<void>;
   completeExercise: (exerciseIndex: number) => void;
   updateGroupRound: (groupId: string, round: number) => void;
+  resetCircuitExercises: (groupId: string) => void;
   clearCurrentSession: () => void;
   saveCurrentSession: () => void;
 }
@@ -670,6 +671,24 @@ export function WorkoutSessionProvider({
     dispatch({ type: "UPDATE_SESSION", payload: { group_rounds: updatedSession.group_rounds } });
   }, [state.session]);
 
+  // Reset exercises in a circuit/superset for a new round
+  const resetCircuitExercises = useCallback((groupId: string) => {
+    if (!state.session) return;
+    
+    const updatedExercises = state.session.exercises.map(ex => {
+      if (ex.group_id === groupId) {
+        return {
+          ...ex,
+          completed: false, // Reset completed state for new round
+          // Keep set_records - those are the history
+        };
+      }
+      return ex;
+    });
+    
+    dispatch({ type: "UPDATE_SESSION", payload: { exercises: updatedExercises } });
+  }, [state.session]);
+
   const value: WorkoutSessionContextType = {
     ...state,
     startSession,
@@ -683,6 +702,7 @@ export function WorkoutSessionProvider({
     deleteSet,
     completeExercise,
     updateGroupRound,
+    resetCircuitExercises,
     clearCurrentSession,
     saveCurrentSession,
   };

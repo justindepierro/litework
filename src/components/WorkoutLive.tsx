@@ -46,6 +46,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     deleteSet,
     completeExercise,
     updateGroupRound,
+    resetCircuitExercises,
   } = useWorkoutSession();
 
   const [weight, setWeight] = useState<number>(0);
@@ -177,7 +178,9 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             const firstExerciseIndex = groupExercises[0].index;
             // Increment round counter
             updateGroupRound(currentGroup.id, currentRound + 1);
-            // Update session state and move to first exercise
+            // Reset completed state for all exercises in this circuit
+            resetCircuitExercises(currentGroup.id);
+            // Move to first exercise in circuit for next round
             setTimeout(() => {
               updateExerciseIndex(firstExerciseIndex);
             }, 500);
@@ -222,6 +225,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     isLastExercise,
     updateExerciseIndex,
     updateGroupRound,
+    resetCircuitExercises,
     groups,
   ]);
 
