@@ -82,10 +82,10 @@ export function WorkoutHeader({
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+        {/* Progress Bar - Enhanced */}
+        <div className="mt-3 w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
           <div
-            className="h-2 rounded-full bg-linear-to-r from-blue-500 to-purple-500 transition-all duration-300"
+            className="h-2.5 rounded-full bg-linear-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out shadow-sm"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

@@ -563,6 +563,23 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                               </span>
                             )}
                           </div>
+                          
+                          {/* Coach's Notes - Show for active exercise */}
+                          {isActive && exercise.notes && (
+                            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300">
+                              <div className="flex items-start gap-2">
+                                <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                <div className="flex-1">
+                                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wide mb-1">
+                                    Coach&apos;s Tips
+                                  </h4>
+                                  <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">
+                                    {exercise.notes}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                         
                         {/* Progress Indicator */}
@@ -669,20 +686,44 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 )}
               </div>
               
-              {/* Quick Copy Last Set Button */}
+              {/* Last Set Display + Quick Copy */}
               {currentExercise.set_records.length > 0 && (
-                <button
-                  onClick={() => {
-                    const lastSet = currentExercise.set_records[currentExercise.set_records.length - 1];
-                    if (lastSet.weight) setWeight(lastSet.weight);
-                    setReps(lastSet.reps);
-                    if (lastSet.rpe) setRpe(lastSet.rpe);
-                  }}
-                  className="mt-2 w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
-                >
-                  <span>↻</span>
-                  Copy Last Set ({currentExercise.set_records[currentExercise.set_records.length - 1].weight || 0} lbs × {currentExercise.set_records[currentExercise.set_records.length - 1].reps})
-                </button>
+                <div className="mt-3">
+                  {/* Last Set Info */}
+                  <div className="flex items-center justify-between mb-2 px-1">
+                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      Last Set
+                    </span>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-bold text-blue-600">
+                        {currentExercise.set_records[currentExercise.set_records.length - 1].weight || 0} lbs
+                      </span>
+                      <span className="text-gray-400">×</span>
+                      <span className="font-bold text-gray-900">
+                        {currentExercise.set_records[currentExercise.set_records.length - 1].reps} reps
+                      </span>
+                      {currentExercise.set_records[currentExercise.set_records.length - 1].rpe && (
+                        <span className="text-xs font-medium text-purple-600 px-1.5 py-0.5 bg-purple-50 rounded">
+                          RPE {currentExercise.set_records[currentExercise.set_records.length - 1].rpe}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Copy Button */}
+                  <button
+                    onClick={() => {
+                      const lastSet = currentExercise.set_records[currentExercise.set_records.length - 1];
+                      if (lastSet.weight) setWeight(lastSet.weight);
+                      setReps(lastSet.reps);
+                      if (lastSet.rpe) setRpe(lastSet.rpe);
+                    }}
+                    className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                  >
+                    <span className="text-base">↻</span>
+                    <span>Copy to Inputs</span>
+                  </button>
+                </div>
               )}
             </div>
             
