@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect } from "react";
+import { useCountUp } from "@/hooks/use-count-up";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
@@ -451,47 +452,29 @@ export default function DashboardPage() {
       <div className="container-responsive px-4 py-4 pb-24 max-w-2xl mx-auto space-y-4">
         {/* Quick Stats - Compact & Visual */}
         <div className="grid grid-cols-3 gap-3">
-          <Card variant="default" padding="sm" className="text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full mb-2">
-              <Dumbbell className="w-5 h-5 text-orange-600" />
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {loadingStats ? (
-                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
-              ) : (
-                stats.workoutsThisWeek
-              )}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">This Week</div>
-          </Card>
+          <StatCard
+            icon={<Dumbbell className="w-5 h-5 text-orange-600" />}
+            value={stats.workoutsThisWeek}
+            label="This Week"
+            loading={loadingStats}
+            color="orange"
+          />
 
-          <Card variant="default" padding="sm" className="text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 bg-green-100 rounded-full mb-2">
-              <Trophy className="w-5 h-5 text-green-600" />
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {loadingStats ? (
-                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
-              ) : (
-                stats.personalRecords
-              )}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">PRs</div>
-          </Card>
+          <StatCard
+            icon={<Trophy className="w-5 h-5 text-green-600" />}
+            value={stats.personalRecords}
+            label="PRs"
+            loading={loadingStats}
+            color="green"
+          />
 
-          <Card variant="default" padding="sm" className="text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 bg-red-100 rounded-full mb-2">
-              <Flame className="w-5 h-5 text-red-600" />
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {loadingStats ? (
-                <div className="h-7 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
-              ) : (
-                stats.currentStreak
-              )}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Day Streak</div>
-          </Card>
+          <StatCard
+            icon={<Flame className="w-5 h-5 text-red-600" />}
+            value={stats.currentStreak}
+            label="Day Streak"
+            loading={loadingStats}
+            color="red"
+          />
         </div>
 
         {/* Today's Workouts - Hero Section */}
@@ -692,5 +675,40 @@ export default function DashboardPage() {
         />
       )}
     </div>
+  );
+}
+
+// StatCard Component with count-up animation
+interface StatCardProps {
+  icon: React.ReactNode;
+  value: number;
+  label: string;
+  loading: boolean;
+  color: 'orange' | 'green' | 'red';
+}
+
+function StatCard({ icon, value, label, loading, color }: StatCardProps) {
+  const count = useCountUp(value, { duration: 1200, delay: 100, start: !loading });
+  
+  const colorClasses = {
+    orange: 'bg-orange-100',
+    green: 'bg-green-100',
+    red: 'bg-red-100',
+  };
+
+  return (
+    <Card variant="default" padding="sm" className="text-center">
+      <div className={`inline-flex items-center justify-center w-10 h-10 ${colorClasses[color]} rounded-full mb-2`}>
+        {icon}
+      </div>
+      <div className="text-3xl font-bold text-gray-900 tabular-nums">
+        {loading ? (
+          <div className="h-9 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
+        ) : (
+          count
+        )}
+      </div>
+      <div className="text-xs text-gray-500 mt-1">{label}</div>
+    </Card>
   );
 }

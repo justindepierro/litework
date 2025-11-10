@@ -31,38 +31,40 @@ body {
 /* PRODUCTION POLISH - Micro-Interactions */
 /* ============================================ */
 
-/* Smooth transitions for all interactive elements */
-button, a, .card, input, textarea, select {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Smooth transitions for interactive elements only */
+button, a, input, textarea, select {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Button hover lift effect */
+/* Button hover lift effect - subtle */
 button:not(:disabled):hover {
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 button:not(:disabled):active {
   transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Card hover effect - subtle elevation */
-.card:hover,
-[class*="rounded-"]:hover:has(button),
-[class*="border"]:hover:not(button):not(input) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+/* Interactive card hover - only for clickable cards */
+.card-interactive:hover,
+button.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
 }
 
-/* Input focus effect - subtle scale */
+/* Input focus effect - very subtle */
 input:focus, textarea:focus, select:focus {
-  transform: scale(1.01);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Link hover underline animation */
+/* Link hover - minimal underline */
 a:not(.no-underline):hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 /* ============================================ */
