@@ -82,13 +82,7 @@ export default function BulkKPIAssignmentModal({
 
     // Debug logging
     if (selectedGroupIds.length > 0) {
-      console.log("[KPI Assignment Debug]", {
-        selectedGroupIds,
-        athleteIdsFromGroups,
-        availableAthletesCount: availableAthletes.length,
-        allIdsCount: allIds.length,
-        validIdsCount: validIds.length,
-      });
+      // [REMOVED] console.log("[KPI Assignment Debug]", { selectedGroupIds, athleteIdsFromGroups, availableAthletesCount: availableAthletes.length, allIdsCount: allIds.length, validIdsCount: validIds.length });
     }
 
     return validIds;

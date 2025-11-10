@@ -114,7 +114,7 @@ export async function GET() {
       }
 
       // Count completed sessions for this group's assignments
-      const assignmentIdsForGroup = assignments.map((a: any) => a.id);
+      const assignmentIdsForGroup = assignments.map((a: { id: string }) => a.id);
       let completedWorkouts = 0;
       assignmentIdsForGroup.forEach((aid: string) => {
         const sessions = sessionsByAssignment.get(aid) || [];

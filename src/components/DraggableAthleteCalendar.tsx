@@ -75,11 +75,7 @@ function DraggableAssignment({
       }),
       end: (item, monitor) => {
         const didDrop = monitor.didDrop();
-        console.log("[DRAG] Drag ended:", {
-          workoutName: assignment.workoutPlanName,
-          didDrop,
-          dropResult: monitor.getDropResult(),
-        });
+        // [REMOVED] console.log("[DRAG] Drag ended:", { workoutName: assignment.workoutPlanName, didDrop, dropResult: monitor.getDropResult() });
       },
     }),
     [assignment, isCoach]
@@ -334,13 +330,7 @@ export default function DraggableAthleteCalendar({
       const assignment = item.assignment;
       const oldDate = parseDate(assignment.scheduledDate);
 
-      console.log("[DROP] Drop detected:", {
-        assignmentId: assignment.id,
-        workoutName: assignment.workoutPlanName,
-        oldDate: oldDate.toDateString(),
-        newDate: newDate.toDateString(),
-        isGroupAssignment: !!assignment.groupId,
-      });
+      // [REMOVED] console.log("[DROP] Drop detected:", { assignmentId: assignment.id, workoutName: assignment.workoutPlanName, oldDate: oldDate.toDateString(), newDate: newDate.toDateString(), isGroupAssignment: !!assignment.groupId });
 
       // Don't do anything if dropped on same date
       if (isSameDay(oldDate, newDate)) {

@@ -8,7 +8,7 @@
  */
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
-    console.log("Service workers not supported");
+    // [REMOVED] console.log("Service workers not supported");
     return null;
   }
 
@@ -17,7 +17,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
       scope: "/",
     });
 
-    console.log("Service Worker registered:", registration);
+    // [REMOVED] console.log("Service Worker registered:", registration);
 
     // Check for updates
     registration.addEventListener("updatefound", () => {
@@ -30,7 +30,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
           navigator.serviceWorker.controller
         ) {
           // New service worker available
-          console.log("New service worker available");
+          // [REMOVED] console.log("New service worker available");
 
           // Notify user about update
           if (typeof window !== "undefined" && "confirm" in window) {
@@ -49,7 +49,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 
     // Handle controller change
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      console.log("Service Worker controller changed");
+      // [REMOVED] console.log("Service Worker controller changed");
     });
 
     return registration;
@@ -70,7 +70,7 @@ export async function unregisterServiceWorker(): Promise<boolean> {
   try {
     const registration = await navigator.serviceWorker.ready;
     const success = await registration.unregister();
-    console.log("Service Worker unregistered:", success);
+    // [REMOVED] console.log("Service Worker unregistered:", success);
     return success;
   } catch (error) {
     console.error("Service Worker unregistration failed:", error);
@@ -89,7 +89,7 @@ export async function clearAllCaches(): Promise<void> {
   try {
     const cacheNames = await caches.keys();
     await Promise.all(cacheNames.map((name) => caches.delete(name)));
-    console.log("All caches cleared");
+    // [REMOVED] console.log("All caches cleared");
 
     // Also notify service worker
     if (navigator.serviceWorker.controller) {

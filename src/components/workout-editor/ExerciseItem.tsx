@@ -56,11 +56,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
     setSaving();
 
-    console.log("[ExerciseItem] saveExercise called:", {
-      original: exercise.exerciseName,
-      edited: editedExercise.exerciseName,
-      exerciseId: exercise.id,
-    });
+    // [REMOVED] console.log("[ExerciseItem] saveExercise called:", { original: exercise.exerciseName, edited: editedExercise.exerciseName, exerciseId: exercise.id });
 
     try {
       // If exercise name changed and we have the callback, add to library

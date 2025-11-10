@@ -385,13 +385,7 @@ export interface AuditLog {
 export function logSecurityEvent(log: AuditLog) {
   // In development, just console log
   if (process.env.NODE_ENV === "development") {
-    console.log("[SECURITY]", {
-      timestamp: log.timestamp.toISOString(),
-      action: log.action,
-      success: log.success,
-      userId: log.userId,
-      details: log.details,
-    });
+    // [REMOVED] console.log("[SECURITY]", { timestamp: log.timestamp.toISOString(), action: log.action, success: log.success, userId: log.userId, details: log.details });
   }
 
   // In production, send to logging service (Sentry, LogRocket, etc.)

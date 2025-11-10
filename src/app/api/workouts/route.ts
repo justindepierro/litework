@@ -243,15 +243,7 @@ export async function PUT(request: NextRequest) {
     // Update workout plan in database
     // Note: This currently only updates the workout_plans table
     // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
-    console.log("[PUT /api/workouts] Updating workout:", {
-      id,
-      name,
-      description,
-      estimatedDuration,
-      hasExercises: exercises?.length > 0,
-      hasGroups: groups?.length > 0,
-      hasBlockInstances: blockInstances?.length > 0,
-    });
+    // [REMOVED] console.log("[PUT /api/workouts] Updating workout:", { id, name, description, estimatedDuration, hasExercises: exercises?.length > 0, hasGroups: groups?.length > 0, hasBlockInstances: blockInstances?.length > 0 });
 
     // First check if the workout exists
     const { data: existingWorkout, error: checkError } = await supabaseAdmin

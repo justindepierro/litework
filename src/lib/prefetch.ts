@@ -20,7 +20,7 @@ export async function prefetchData(key: string): Promise<void> {
     );
   } catch (error) {
     // Silently fail - prefetch is best-effort
-    console.debug(`Prefetch failed for ${key}:`, error);
+    // [REMOVED] console.debug(`Prefetch failed for ${key}:`, error);
   }
 }
 
@@ -122,7 +122,7 @@ export async function prefetchComponent(
     try {
       await importFn();
     } catch (error) {
-      console.debug(`Component prefetch failed for ${componentName}:`, error);
+      // [REMOVED] console.debug(`Component prefetch failed for ${componentName}:`, error);
     }
   }
 }
