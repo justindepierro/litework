@@ -544,8 +544,8 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   >
                     Cancel
                   </Button>
-                  <SaveStatus 
-                    status={saveStatus} 
+                  <SaveStatus
+                    status={saveStatus}
                     onHidden={setIdle}
                     size="md"
                   />
@@ -855,14 +855,17 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 </div>
 
                 {/* KPI Tags Display */}
-                {((isEditing ? editedExercise : exercise).kpiTagIds) &&
-                  ((isEditing ? editedExercise : exercise).kpiTagIds?.length ?? 0) > 0 &&
+                {(isEditing ? editedExercise : exercise).kpiTagIds &&
+                  ((isEditing ? editedExercise : exercise).kpiTagIds?.length ??
+                    0) > 0 &&
                   availableKPIs.length > 0 && (
-                    <div 
-                      key={`kpi-tags-${((isEditing ? editedExercise : exercise).kpiTagIds ?? []).join('-')}`}
+                    <div
+                      key={`kpi-tags-${((isEditing ? editedExercise : exercise).kpiTagIds ?? []).join("-")}`}
                       className="flex flex-wrap gap-1.5 mt-2"
                     >
-                      {((isEditing ? editedExercise : exercise).kpiTagIds ?? []).map((tagId) => {
+                      {(
+                        (isEditing ? editedExercise : exercise).kpiTagIds ?? []
+                      ).map((tagId) => {
                         const kpi = availableKPIs.find((k) => k.id === tagId);
                         if (!kpi) return null;
                         return (

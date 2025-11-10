@@ -10,6 +10,7 @@ After analyzing our current implementation and researching industry best practic
 ### Current State Analysis
 
 ✅ **What We're Doing Right**:
+
 1. **Debounced search** (300ms) - Industry standard
 2. **Keyboard navigation** (↑↓ Enter Escape) - Essential
 3. **Loading states** - Good UX feedback
@@ -17,6 +18,7 @@ After analyzing our current implementation and researching industry best practic
 5. **KPI persistence** - Data IS being saved correctly (verified in database-service.ts lines 690-710)
 
 ❌ **What Needs Improvement**:
+
 1. **Raw input elements** - Not using our Input component in autocomplete
 2. **No fuzzy search** - Exact match only (missing Bench → Bench Press)
 3. **Limited visual feedback** - No "Saved ✓" confirmation
@@ -30,32 +32,36 @@ After analyzing our current implementation and researching industry best practic
 ### 1. **Search & Autocomplete** (Linear, Notion, GitHub)
 
 #### **Instant Feedback** ✅ We have this
+
 ```tsx
 // Current implementation is good
-<input value={value} onChange={onChange} /> // Instant
+<input value={value} onChange={onChange} />; // Instant
 const debouncedValue = useDebounce(value, 300); // API calls
 ```
 
 #### **Fuzzy Matching** ❌ Missing
+
 ```typescript
 // Industry standard: Fuse.js or similar
-import Fuse from 'fuse.js';
+import Fuse from "fuse.js";
 
 const fuse = new Fuse(exercises, {
-  keys: ['name', 'description', 'category'],
+  keys: ["name", "description", "category"],
   threshold: 0.3, // 0-1 scale (0 = exact, 1 = match anything)
   includeScore: true,
 });
 
-const results = fuse.search('Bench'); // Matches "Bench Press", "Dumbbell Bench", etc.
+const results = fuse.search("Bench"); // Matches "Bench Press", "Dumbbell Bench", etc.
 ```
 
 **Benefits**:
+
 - Typo tolerance: "squat" finds "Squats"
 - Partial matches: "Bench" finds "Bench Press", "Incline Bench"
 - Better UX: Users don't need exact names
 
 **Examples**:
+
 - **Linear**: Search "issuse" → finds "Issues"
 - **Notion**: Type "tabl" → suggests "Table", "Database"
 - **VS Code**: Fuzzy file search is THE standard
@@ -65,26 +71,29 @@ const results = fuse.search('Bench'); // Matches "Bench Press", "Dumbbell Bench"
 ### 2. **Inline Editing** (Notion, Linear, Airtable)
 
 #### **Click-to-Edit** ✅ We have this
+
 ```tsx
 // Current: Click any value to edit (good!)
-<span onClick={() => setInlineEditField("sets")}>
-  {exercise.sets} sets
-</span>
+<span onClick={() => setInlineEditField("sets")}>{exercise.sets} sets</span>
 ```
 
 #### **Visual Confirmation** ❌ Missing
+
 ```tsx
 // Industry pattern: Optimistic update with confirmation
-const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+  "idle"
+);
 
 // On save:
-setSaveStatus('saving'); // Show "Saving..."
+setSaveStatus("saving"); // Show "Saving..."
 await api.update();
-setSaveStatus('saved'); // Show "Saved ✓"
-setTimeout(() => setSaveStatus('idle'), 2000); // Fade out
+setSaveStatus("saved"); // Show "Saved ✓"
+setTimeout(() => setSaveStatus("idle"), 2000); // Fade out
 ```
 
 **Visual Pattern**:
+
 ```
 [Editing] → [Saving...] → [Saved ✓] → [Auto-fade]
    ↓            ↓             ↓          (2s later)
@@ -92,6 +101,7 @@ setTimeout(() => setSaveStatus('idle'), 2000); // Fade out
 ```
 
 **Examples**:
+
 - **Notion**: Every edit shows "Saving..." then checkmark
 - **Linear**: "Saved locally" appears briefly
 - **Airtable**: Cell shows green checkmark after save
@@ -101,22 +111,27 @@ setTimeout(() => setSaveStatus('idle'), 2000); // Fade out
 ### 3. **Keyboard Shortcuts** (VS Code, Linear, GitHub)
 
 #### **Command Palette** ❌ Missing entirely
+
 ```tsx
 // Industry standard: Cmd/Ctrl+K opens command palette
-<CommandPalette shortcuts={[
-  { key: '/', name: 'Search exercises', action: focusSearch },
-  { key: 'n', name: 'New exercise', action: createExercise },
-  { key: 'e', name: 'Edit selected', action: editExercise },
-  { key: 'Escape', name: 'Cancel', action: cancel },
-]} />
+<CommandPalette
+  shortcuts={[
+    { key: "/", name: "Search exercises", action: focusSearch },
+    { key: "n", name: "New exercise", action: createExercise },
+    { key: "e", name: "Edit selected", action: editExercise },
+    { key: "Escape", name: "Cancel", action: cancel },
+  ]}
+/>
 ```
 
 **Benefits**:
+
 - Power users work 5x faster
 - Discoverability: Shows what's possible
 - Accessibility: Keyboard-only navigation
 
 **Examples**:
+
 - **Linear**: Cmd+K opens everything
 - **GitHub**: `/` to focus search
 - **Notion**: `/` for slash commands
@@ -128,8 +143,9 @@ setTimeout(() => setSaveStatus('idle'), 2000); // Fade out
 #### **Industry Solutions**:
 
 **Headless UI Combobox** (Recommended)
+
 ```tsx
-import { Combobox } from '@headlessui/react';
+import { Combobox } from "@headlessui/react";
 
 <Combobox value={selected} onChange={setSelected}>
   <Combobox.Input onChange={(e) => setQuery(e.target.value)} />
@@ -140,24 +156,27 @@ import { Combobox } from '@headlessui/react';
       </Combobox.Option>
     ))}
   </Combobox.Options>
-</Combobox>
+</Combobox>;
 ```
 
 **Features**:
+
 - ✅ Accessibility (ARIA labels, screen readers)
 - ✅ Keyboard navigation (built-in)
 - ✅ Focus management (auto-handled)
 - ✅ Mobile-friendly (touch support)
 
 **Radix UI Combobox** (Alternative)
+
 ```tsx
-import * as Select from '@radix-ui/react-select';
+import * as Select from "@radix-ui/react-select";
 // Similar benefits, different API
 ```
 
 **cmdk (Command Menu)** (For Command Palette)
+
 ```tsx
-import { Command } from 'cmdk';
+import { Command } from "cmdk";
 
 <Command>
   <Command.Input placeholder="Search..." />
@@ -166,7 +185,7 @@ import { Command } from 'cmdk';
       <Command.Item onSelect={handleSelect}>Bench Press</Command.Item>
     </Command.Group>
   </Command.List>
-</Command>
+</Command>;
 ```
 
 ---
@@ -174,6 +193,7 @@ import { Command } from 'cmdk';
 ### 5. **Form Input Standards** (Material UI, Chakra, Radix)
 
 #### **Our Current Issue**: Not using our Input component
+
 ```tsx
 // ❌ Current in ExerciseAutocomplete.tsx (line 156)
 <input
@@ -182,10 +202,10 @@ import { Command } from 'cmdk';
   value={value}
   onChange={onChange}
   className="w-full p-4 sm:p-3 pl-10 border-2..."
-/>
+/>;
 
 // ✅ Should be using our Input component
-import { Input } from '@/components/ui/Input';
+import { Input } from "@/components/ui/Input";
 
 <Input
   ref={inputRef}
@@ -196,10 +216,11 @@ import { Input } from '@/components/ui/Input';
   placeholder="Search exercises..."
   icon={<Search />}
   loading={isLoading}
-/>
+/>;
 ```
 
 **Benefits**:
+
 - Consistent styling across app
 - Built-in features (selectOnFocus, error states)
 - Easier maintenance
@@ -210,38 +231,47 @@ import { Input } from '@/components/ui/Input';
 ### 6. **Search Result Display** (Best Practices)
 
 #### **Highlighting Matches** ❌ Missing
+
 ```tsx
 // Industry standard: Highlight search terms
 function highlightMatch(text: string, query: string) {
-  const regex = new RegExp(`(${query})`, 'gi');
-  return text.replace(regex, '<mark>$1</mark>');
+  const regex = new RegExp(`(${query})`, "gi");
+  return text.replace(regex, "<mark>$1</mark>");
 }
 
 // In render:
-<span dangerouslySetInnerHTML={{ 
-  __html: highlightMatch(exercise.name, searchQuery) 
-}} />
+<span
+  dangerouslySetInnerHTML={{
+    __html: highlightMatch(exercise.name, searchQuery),
+  }}
+/>;
 ```
 
 **Visual**: "**Bench** Press" when searching "Bench"
 
 #### **Recent Selections** ❌ Missing
+
 ```tsx
 // Store recent exercises in localStorage
 const recentExercises = JSON.parse(
-  localStorage.getItem('recentExercises') || '[]'
+  localStorage.getItem("recentExercises") || "[]"
 );
 
 // Show when input is focused but empty
-{!query && recentExercises.length > 0 && (
-  <div>
-    <h4>Recent</h4>
-    {recentExercises.map(ex => <ExerciseOption key={ex.id} exercise={ex} />)}
-  </div>
-)}
+{
+  !query && recentExercises.length > 0 && (
+    <div>
+      <h4>Recent</h4>
+      {recentExercises.map((ex) => (
+        <ExerciseOption key={ex.id} exercise={ex} />
+      ))}
+    </div>
+  );
+}
 ```
 
 **Examples**:
+
 - **Notion**: Shows recent pages when search is empty
 - **Linear**: "Recent issues" in search dropdown
 - **Slack**: "Recent channels" at top
@@ -255,6 +285,7 @@ const recentExercises = JSON.parse(
 **Evidence from code review**:
 
 1. **Saving KPIs** (`database-service.ts` lines 690-710):
+
 ```typescript
 // KPI tags ARE being inserted
 const kpiTagsToInsert: Array<{
@@ -277,6 +308,7 @@ await supabase.from("exercise_kpi_tags").insert(kpiTagsToInsert);
 ```
 
 2. **Loading KPIs** (`database-service.ts` lines 478-496):
+
 ```typescript
 // KPI tags ARE being loaded
 const { data: kpiTags } = await supabase
@@ -285,10 +317,11 @@ const { data: kpiTags } = await supabase
   .in("workout_exercise_id", exerciseIds);
 
 // Mapped to exercises
-kpiTagIds: exerciseKpiTags[ex.id] || []
+kpiTagIds: exerciseKpiTags[ex.id] || [];
 ```
 
 3. **UI Display** (`ExerciseItem.tsx` lines 833-847):
+
 ```typescript
 // KPI tags ARE being displayed
 {exercise.kpiTagIds && exercise.kpiTagIds.length > 0 && (
@@ -321,6 +354,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ### 🔴 **High Priority** (Immediate Impact)
 
 #### 1. **Use Our Input Component Everywhere**
+
 ```tsx
 // Replace raw inputs with our Input component
 // Estimated time: 30 minutes
@@ -328,6 +362,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ```
 
 #### 2. **Add Visual Save Confirmation**
+
 ```tsx
 // Show "Saving..." → "Saved ✓" feedback
 // Estimated time: 1 hour
@@ -335,6 +370,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ```
 
 #### 3. **Fix KPI UI Update**
+
 ```tsx
 // Ensure KPIs show immediately after selection
 // Might be React key issue or missing state update
@@ -344,6 +380,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ### 🟡 **Medium Priority** (UX Polish)
 
 #### 4. **Add Fuzzy Search**
+
 ```tsx
 // Use Fuse.js for fuzzy matching
 // Estimated time: 2 hours
@@ -351,6 +388,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ```
 
 #### 5. **Highlight Search Matches**
+
 ```tsx
 // Bold matching text in results
 // Estimated time: 1 hour
@@ -358,6 +396,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ```
 
 #### 6. **Recent Exercises**
+
 ```tsx
 // Show recently used exercises
 // Estimated time: 1 hour
@@ -367,6 +406,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ### 🟢 **Low Priority** (Power User Features)
 
 #### 7. **Command Palette (Cmd+K)**
+
 ```tsx
 // Full keyboard-driven interface
 // Estimated time: 4-6 hours
@@ -374,6 +414,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 ```
 
 #### 8. **Keyboard Shortcuts**
+
 ```tsx
 // Slash commands, quick actions
 // Estimated time: 2-3 hours
@@ -439,18 +480,18 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 
 ## Comparison Matrix
 
-| Feature | Linear | Notion | GitHub | **LiteWork** | Gap |
-|---------|--------|--------|--------|--------------|-----|
-| Debounced search | ✅ | ✅ | ✅ | ✅ | ✅ None |
-| Keyboard nav | ✅ | ✅ | ✅ | ✅ | ✅ None |
-| Fuzzy search | ✅ | ✅ | ✅ | ❌ | 🔴 High |
-| Save feedback | ✅ | ✅ | ✅ | ❌ | 🔴 High |
-| Cmd+K palette | ✅ | ✅ | ✅ | ❌ | 🟡 Medium |
-| Match highlighting | ✅ | ✅ | ✅ | ❌ | 🟡 Medium |
-| Recent items | ✅ | ✅ | ✅ | ❌ | 🟡 Medium |
-| Component lib | ✅ | ✅ | ✅ | ⚠️ Partial | 🟡 Medium |
-| Click-to-edit | ✅ | ✅ | ✅ | ✅ | ✅ None |
-| Mobile optimized | ✅ | ✅ | ❌ | ✅ | ✅ None |
+| Feature            | Linear | Notion | GitHub | **LiteWork** | Gap       |
+| ------------------ | ------ | ------ | ------ | ------------ | --------- |
+| Debounced search   | ✅     | ✅     | ✅     | ✅           | ✅ None   |
+| Keyboard nav       | ✅     | ✅     | ✅     | ✅           | ✅ None   |
+| Fuzzy search       | ✅     | ✅     | ✅     | ❌           | 🔴 High   |
+| Save feedback      | ✅     | ✅     | ✅     | ❌           | 🔴 High   |
+| Cmd+K palette      | ✅     | ✅     | ✅     | ❌           | 🟡 Medium |
+| Match highlighting | ✅     | ✅     | ✅     | ❌           | 🟡 Medium |
+| Recent items       | ✅     | ✅     | ✅     | ❌           | 🟡 Medium |
+| Component lib      | ✅     | ✅     | ✅     | ⚠️ Partial   | 🟡 Medium |
+| Click-to-edit      | ✅     | ✅     | ✅     | ✅           | ✅ None   |
+| Mobile optimized   | ✅     | ✅     | ❌     | ✅           | ✅ None   |
 
 ---
 
@@ -459,12 +500,14 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 **Current State**: Solid foundation with debouncing, keyboard nav, and inline editing.
 
 **Main Gaps**:
+
 1. Not using our component library consistently
 2. No visual save confirmation
 3. Missing fuzzy search
 4. KPIs might have UI state issue (not data issue)
 
 **Recommended Approach**:
+
 1. **Start with Phase 1** (quick wins, 2-3 hours)
 2. Test KPI saves and verify UI updates
 3. Gather user feedback
@@ -472,6 +515,7 @@ kpiTagIds: exerciseKpiTags[ex.id] || []
 5. **Phase 3** only if users request power features
 
 **ROI**:
+
 - Phase 1: 🔴 **High** - Fixes core UX issues
 - Phase 2: 🟡 **Medium** - Nice to have, not critical
 - Phase 3: 🟢 **Low** - Only for power users

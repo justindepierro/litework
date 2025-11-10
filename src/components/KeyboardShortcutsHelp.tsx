@@ -37,7 +37,8 @@ export function KeyboardShortcutsHelp() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const isMac = typeof navigator !== 'undefined' && navigator.platform.includes('Mac');
+  const isMac =
+    typeof navigator !== "undefined" && navigator.platform.includes("Mac");
   const modKey = isMac ? "⌘" : "Ctrl";
 
   const shortcutGroups: ShortcutGroup[] = [

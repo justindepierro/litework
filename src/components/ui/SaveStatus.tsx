@@ -74,7 +74,9 @@ export const SaveStatus: React.FC<SaveStatusProps> = ({
     >
       {status === "saving" && (
         <>
-          <Loader2 className={`${iconSizes[size]} animate-spin text-silver-600`} />
+          <Loader2
+            className={`${iconSizes[size]} animate-spin text-silver-600`}
+          />
           <span className="text-silver-600">{savingMessage}</span>
         </>
       )}
@@ -105,7 +107,7 @@ export function useSaveStatus(): [
   () => void,
   () => void,
   (error?: string) => void,
-  () => void
+  () => void,
 ] {
   const [status, setStatus] = React.useState<SaveState>("idle");
 
@@ -147,9 +149,7 @@ export const InlineSaveStatus: React.FC<{
         </>
       )}
 
-      {status === "error" && (
-        <span className="text-error text-xs">Error</span>
-      )}
+      {status === "error" && <span className="text-error text-xs">Error</span>}
     </span>
   );
 };

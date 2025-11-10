@@ -211,7 +211,11 @@ export default function ExerciseAutocomplete({
         fullWidth
         inputSize="lg"
         leftIcon={<Search className="w-5 h-5" />}
-        rightIcon={loading ? <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" /> : undefined}
+        rightIcon={
+          loading ? (
+            <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+          ) : undefined
+        }
       />
 
       {/* Suggestions Dropdown */}
@@ -252,10 +256,7 @@ export default function ExerciseAutocomplete({
                         <div
                           className="text-xs text-gray-500 truncate mt-0.5"
                           dangerouslySetInnerHTML={{
-                            __html: highlightMatch(
-                              exercise.description,
-                              value
-                            ),
+                            __html: highlightMatch(exercise.description, value),
                           }}
                         />
                       )}

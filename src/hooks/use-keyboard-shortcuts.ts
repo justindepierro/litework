@@ -80,10 +80,10 @@ export function useKeyboardShortcuts({
         const hasModifiers = event.ctrlKey || event.metaKey || event.altKey;
         const shortcutHasModifiers =
           shortcut.ctrlKey || shortcut.metaKey || shortcut.altKey;
-        
+
         // Skip if in input field and no modifiers (allow Ctrl+S etc.)
         if (isInputField && !shortcutHasModifiers) continue;
-        
+
         // Skip if modifiers don't match
         if (hasModifiers && !shortcutHasModifiers) continue;
 
@@ -185,26 +185,29 @@ export function useGlobalKeyboardShortcuts({
  * getShortcutDisplay({ key: 's', ctrlKey: true })
  * // Returns: "Ctrl+S" (on Windows/Linux) or "⌘S" (on Mac)
  */
-export function getShortcutDisplay(shortcut: Omit<KeyboardShortcut, 'action' | 'description'>): string {
+export function getShortcutDisplay(
+  shortcut: Omit<KeyboardShortcut, "action" | "description">
+): string {
   const parts: string[] = [];
-  const isMac = typeof navigator !== 'undefined' && navigator.platform.includes('Mac');
+  const isMac =
+    typeof navigator !== "undefined" && navigator.platform.includes("Mac");
 
   if (shortcut.ctrlKey) {
-    parts.push(isMac ? '⌃' : 'Ctrl');
+    parts.push(isMac ? "⌃" : "Ctrl");
   }
   if (shortcut.metaKey) {
-    parts.push(isMac ? '⌘' : 'Win');
+    parts.push(isMac ? "⌘" : "Win");
   }
   if (shortcut.altKey) {
-    parts.push(isMac ? '⌥' : 'Alt');
+    parts.push(isMac ? "⌥" : "Alt");
   }
   if (shortcut.shiftKey) {
-    parts.push(isMac ? '⇧' : 'Shift');
+    parts.push(isMac ? "⇧" : "Shift");
   }
 
   // Add the key itself
   const keyDisplay = shortcut.key.toUpperCase();
   parts.push(keyDisplay);
 
-  return parts.join(isMac ? '' : '+');
+  return parts.join(isMac ? "" : "+");
 }
