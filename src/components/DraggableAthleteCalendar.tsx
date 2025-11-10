@@ -424,7 +424,7 @@ export default function DraggableAthleteCalendar({
               onDrop={handleDrop}
               isCoach={isCoach}
               onClick={() => isCoach && onDateClick?.(date)}
-              className={`min-h-28 p-2 rounded-xl transition-all duration-200 flex flex-col ${
+              className={`min-h-32 p-2 rounded-xl transition-all duration-200 flex flex-col ${
                 isCurrentMonth
                   ? "bg-white shadow-sm hover:shadow-md border border-gray-100"
                   : "bg-gray-50 text-gray-400 border border-gray-100"
@@ -432,7 +432,8 @@ export default function DraggableAthleteCalendar({
                 isCoach ? "cursor-pointer" : ""
               }`}
             >
-              <div className="flex justify-between items-center mb-1.5 flex-shrink-0">
+              {/* Date header - always visible */}
+              <div className="flex justify-between items-center mb-2 flex-shrink-0">
                 <span
                   className={`text-sm font-bold ${
                     isTodayDate
@@ -457,7 +458,10 @@ export default function DraggableAthleteCalendar({
                   </button>
                 )}
               </div>
-              <div className="space-y-1 flex-1 overflow-hidden">{dayAssignments.slice(0, 2).map((assignment) => (
+
+              {/* Workouts - scrollable if needed */}
+              <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-1.5 custom-scrollbar">
+                {dayAssignments.map((assignment, idx) => (
                   <HoverCard
                     key={assignment.id}
                     trigger={
@@ -479,12 +483,14 @@ export default function DraggableAthleteCalendar({
                     openDelay={300}
                   />
                 ))}
-                {dayAssignments.length > 2 && (
-                  <div className="text-xs text-silver-700 text-center">
-                    +{dayAssignments.length - 2} more
-                  </div>
-                )}
               </div>
+
+              {/* Show count if more than visible */}
+              {dayAssignments.length > 3 && (
+                <div className="text-xs text-silver-600 text-center mt-1 flex-shrink-0 font-medium">
+                  {dayAssignments.length} workouts
+                </div>
+              )}
             </DroppableDay>
           );
         })}

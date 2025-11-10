@@ -202,8 +202,8 @@ export function HoverCard({
 }
 
 /**
- * Quick preview card for workouts
- * Shows workout name, exercise count, and duration
+ * Enhanced workout preview card with full details
+ * Shows exercise count, groups, KPIs, and notes
  */
 export function WorkoutPreviewCard({
   workoutName,
@@ -218,44 +218,143 @@ export function WorkoutPreviewCard({
   notes?: string;
   workoutPlanId?: string;
 }) {
-  const [actualExerciseCount, setActualExerciseCount] = useState(exerciseCount);
+  const [workoutDetails, setWorkoutDetails] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch actual exercise count if workoutPlanId provided
+  // Fetch full workout details if workoutPlanId provided
   useEffect(() => {
-    if (!workoutPlanId || exerciseCount) return;
+    if (!workoutPlanId) return;
 
     setLoading(true);
     fetch(`/api/workouts/${workoutPlanId}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.workout?.exercises) {
-          setActualExerciseCount(data.workout.exercises.length);
+        if (data.workout) {
+          setWorkoutDetails(data.workout);
         }
       })
       .catch((err) => console.error("Failed to fetch workout details:", err))
       .finally(() => setLoading(false));
-  }, [workoutPlanId, exerciseCount]);
+  }, [workoutPlanId]);
 
-  const displayCount = actualExerciseCount ?? exerciseCount ?? 0;
+  const exercises = workoutDetails?.exercises || [];
+  const groups = workoutDetails?.groups || [];
+  const displayCount = exercises.length || exerciseCount || 0;
+
+  // Group exercises by their group
+  const groupedExercises = exercises.reduce((acc: any, ex: any) => {
+    const groupId = ex.groupId || 'ungrouped';
+    if (!acc[groupId]) acc[groupId] = [];
+    acc[groupId].push(ex);
+    return acc;
+  }, {});
 
   return (
-    <div className="space-y-2 min-w-[200px]">
-      <h3 className="font-semibold text-navy-700 text-base">{workoutName}</h3>
-      <div className="flex items-center gap-4 text-sm text-silver-600">
+    <div className="space-y-3 min-w-[280px] max-w-[400px]">
+      <div>
+        <h3 className="font-bold text-navy-900 text-base mb-1">{workoutName}</h3>
         {loading ? (
-          <span className="animate-pulse">Loading...</span>
+          <div className="flex items-center gap-2 text-sm text-silver-600">
+            <div className="animate-spin rounded-full h-3 w-3 border-2 border-blue-600 border-t-transparent" />
+            <span>Loading details...</span>
+          </div>
         ) : (
-          <span className="font-medium">
-            {displayCount} exercise{displayCount !== 1 ? "s" : ""}
-          </span>
+          <div className="flex items-center gap-3 text-sm text-silver-600">
+            <span className="font-semibold text-blue-600">
+              {displayCount} exercise{displayCount !== 1 ? "s" : ""}
+            </span>
+            {duration && <span className="text-silver-500">• {duration}</span>}
+          </div>
         )}
-        {duration && <span className="text-silver-500">{duration}</span>}
       </div>
+
+      {/* Exercise Groups */}
+      {!loading && groups.length > 0 && (
+        <div className="space-y-2 border-t border-silver-200 pt-2">
+          <div className="text-xs font-semibold text-silver-700 uppercase tracking-wide">
+            Exercise Groups
+          </div>
+          {groups.map((group: any) => {
+            const groupExercises = groupedExercises[group.id] || [];
+            if (groupExercises.length === 0) return null;
+            
+            const groupTypeLabel = group.groupType === 'superset' 
+              ? 'Superset' 
+              : group.groupType === 'circuit' 
+              ? 'Circuit' 
+              : 'Section';
+            
+            return (
+              <div key={group.id} className="bg-silver-50 rounded-lg p-2 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-navy-700">
+                    {groupTypeLabel}
+                  </span>
+                  <span className="text-xs text-silver-600">
+                    {groupExercises.length} exercises
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  {groupExercises.slice(0, 3).map((ex: any, idx: number) => (
+                    <div key={idx} className="text-xs text-silver-700 flex items-start gap-1">
+                      <span className="text-silver-500">•</span>
+                      <span className="flex-1">
+                        {ex.exerciseName}
+                        {ex.sets && ex.reps && (
+                          <span className="text-silver-500 ml-1">
+                            ({ex.sets}×{ex.reps})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                  {groupExercises.length > 3 && (
+                    <div className="text-xs text-silver-500 italic">
+                      +{groupExercises.length - 3} more...
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Ungrouped Exercises */}
+      {!loading && groupedExercises.ungrouped && groupedExercises.ungrouped.length > 0 && (
+        <div className="space-y-1 border-t border-silver-200 pt-2">
+          <div className="text-xs font-semibold text-silver-700 uppercase tracking-wide">
+            Exercises
+          </div>
+          {groupedExercises.ungrouped.slice(0, 4).map((ex: any, idx: number) => (
+            <div key={idx} className="text-xs text-silver-700 flex items-start gap-1">
+              <span className="text-silver-500">•</span>
+              <span className="flex-1">
+                {ex.exerciseName}
+                {ex.sets && ex.reps && (
+                  <span className="text-silver-500 ml-1">
+                    ({ex.sets}×{ex.reps})
+                  </span>
+                )}
+              </span>
+            </div>
+          ))}
+          {groupedExercises.ungrouped.length > 4 && (
+            <div className="text-xs text-silver-500 italic">
+              +{groupedExercises.ungrouped.length - 4} more exercises...
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Notes */}
       {notes && (
-        <p className="text-sm text-silver-600 line-clamp-3 mt-2 border-t border-silver-200 pt-2">
-          {notes}
-        </p>
+        <div className="border-t border-silver-200 pt-2">
+          <div className="text-xs font-semibold text-silver-700 uppercase tracking-wide mb-1">
+            Notes
+          </div>
+          <p className="text-xs text-silver-600 line-clamp-2">{notes}</p>
+        </div>
       )}
     </div>
   );
