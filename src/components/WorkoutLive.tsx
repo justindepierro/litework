@@ -24,6 +24,7 @@ import {
   ModalContent,
 } from "@/components/ui/Modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { StepperInput } from "@/components/ui/StepperInput";
 import type { ExerciseGroupInfo } from "@/types/session";
 
 interface WorkoutLiveProps {
@@ -46,8 +47,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     completeExercise,
   } = useWorkoutSession();
 
-  const [weight, setWeight] = useState<string>("");
-  const [reps, setReps] = useState<string>("");
+  const [weight, setWeight] = useState<number>(0);
+  const [reps, setReps] = useState<number>(0);
   const [rpe, setRpe] = useState<number>(7);
   const [showRestTimer, setShowRestTimer] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -90,23 +91,23 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     if (currentExercise.set_records.length > 0) {
       const lastSet =
         currentExercise.set_records[currentExercise.set_records.length - 1];
-      if (lastSet.weight) setWeight(lastSet.weight.toString());
+      if (lastSet.weight) setWeight(lastSet.weight);
     } else if (currentExercise.weight_target) {
-      setWeight(currentExercise.weight_target.toString());
+      setWeight(currentExercise.weight_target);
     }
 
     // Pre-fill reps from target
     if (currentExercise.reps_target) {
       const repsNum = parseInt(currentExercise.reps_target);
-      if (!isNaN(repsNum)) setReps(repsNum.toString());
+      if (!isNaN(repsNum)) setReps(repsNum);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExercise?.session_exercise_id]);
 
   const handleCompleteSet = useCallback(async () => {
     if (!session || !currentExercise || !user) return;
-    const weightNum = weight ? parseFloat(weight) : null;
-    const repsNum = reps ? parseInt(reps) : 0;
+    const weightNum = weight || null;
+    const repsNum = reps || 0;
     if (repsNum === 0) {
       alert("Please enter the number of reps completed");
       return;
@@ -159,7 +160,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     } else {
       setShowRestTimer(true);
     }
-    setReps(currentExercise.reps_target || "");
+    const repsTarget = currentExercise.reps_target ? parseInt(currentExercise.reps_target) : 0;
+    setReps(repsTarget);
     setRpe(7);
   }, [
     session,
@@ -581,55 +583,35 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               </div>
               
               {/* Quick Input Controls */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-3">
                 {/* Weight Input */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1 text-center">
-                    Weight (lbs)
-                  </label>
-                  <input
-                    type="number"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    className="w-full px-3 py-3 text-xl font-bold text-center border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                    placeholder="0"
-                    inputMode="decimal"
-                    style={{ minHeight: '48px' }}
-                  />
-                </div>
+                <StepperInput
+                  label="Weight"
+                  value={weight}
+                  onChange={setWeight}
+                  step={5}
+                  min={0}
+                  unit="lbs"
+                />
                 
                 {/* Reps Input */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1 text-center">
-                    Reps
-                  </label>
-                  <input
-                    type="number"
-                    value={reps}
-                    onChange={(e) => setReps(e.target.value)}
-                    className="w-full px-3 py-3 text-xl font-bold text-center border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                    placeholder="0"
-                    inputMode="numeric"
-                    style={{ minHeight: '48px' }}
-                  />
-                </div>
+                <StepperInput
+                  label="Reps"
+                  value={reps}
+                  onChange={setReps}
+                  step={1}
+                  min={0}
+                />
                 
                 {/* RPE Input */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1 text-center">
-                    RPE
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={rpe}
-                    onChange={(e) => setRpe(parseInt(e.target.value) || 7)}
-                    className="w-full px-3 py-3 text-xl font-bold text-center border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                    inputMode="numeric"
-                    style={{ minHeight: '48px' }}
-                  />
-                </div>
+                <StepperInput
+                  label="RPE"
+                  value={rpe}
+                  onChange={setRpe}
+                  step={1}
+                  min={1}
+                  max={10}
+                />
               </div>
             </div>
             
