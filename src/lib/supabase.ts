@@ -23,6 +23,8 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
     flowType: "pkce",
     // Storage key for session
     storageKey: "litework-auth-token",
+    // Use localStorage for better mobile PWA persistence
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
   },
   global: {
     headers: {
@@ -51,13 +53,13 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
 
-        // Set max age - default to 7 days if not specified
-        const maxAge = options?.maxAge || 604800; // 7 days in seconds
+        // Set max age - 30 days for mobile app persistence
+        const maxAge = options?.maxAge || 2592000; // 30 days in seconds
         cookie += `; max-age=${maxAge}`;
 
         if (options?.domain) cookie += `; domain=${options.domain}`;
 
-        // Use Lax for better compatibility, falls back to Strict if specified
+        // Use Lax for better compatibility with mobile PWAs
         const sameSite = options?.sameSite || "Lax";
         cookie += `; samesite=${sameSite}`;
 

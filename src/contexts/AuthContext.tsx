@@ -219,10 +219,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       4 * 60 * 60 * 1000
     ); // 4 hours
 
+    // Refresh session when app becomes visible (mobile PWA support)
+    const handleVisibilityChange = async () => {
+      if (
+        document.visibilityState === "visible" &&
+        mountedRef.current &&
+        userRef.current &&
+        !authOperationInProgress.current
+      ) {
+        try {
+          console.log("[AUTH] App became visible, refreshing session...");
+          await authClient.refreshSession();
+          // Refresh user data to ensure we have latest info
+          const currentUser = await authClient.getCurrentUser();
+          if (mountedRef.current && currentUser) {
+            setUser(currentUser);
+          }
+        } catch (error) {
+          console.error("[AUTH] Failed to refresh session on visibility change:", error);
+        }
+      }
+    };
+
+    // Listen for visibility changes (app switching, screen lock, etc.)
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       mountedRef.current = false;
       subscription.unsubscribe();
       clearInterval(refreshInterval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]); // Run once on mount, user tracked via userRef
