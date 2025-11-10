@@ -59,45 +59,50 @@
 - ✅ Fixed DELETE endpoint schema mismatch (athlete_id → user_id)
 - ✅ Session abandon now works correctly
 
-### 🚧 Phase 2: Enhanced Controls (IN PROGRESS)
+### ✅ Phase 2: Enhanced Controls (COMPLETE - Nov 10, 2025)
 
 **Completed Features**:
 - ✅ Quick edit modal for completed exercises
 - ✅ Tap completed exercise → View all sets with edit/delete options
 - ✅ Tap pending/active exercise → Activate for recording
 - ✅ Large touch-friendly set cards
-- ✅ Set deletion implementation (Nov 10 - commit 876f8c0)
+- ✅ Set deletion implementation (commit 876f8c0)
   - DELETE /api/sets/[id] endpoint
   - Confirmation dialog
   - Updates database and local state
   - Auto-closes modal if no sets remain
-- ✅ Inline set editing (Nov 10 - commit 7f9fc8c)
+- ✅ Inline set editing (commit 7f9fc8c)
   - PATCH /api/sets/[id] endpoint
   - Editable weight/reps fields in quick edit modal
   - Updates on blur (no save button needed)
   - RPE shown but read-only (needs schema update)
-- ✅ +/- stepper controls (Nov 10 - commit 5d830ab)
+- ✅ +/- stepper controls (commit 5d830ab)
   - Reusable StepperInput component
   - Weight steppers: ±5 lbs with gradient green/red buttons
   - Reps steppers: ±1 rep
   - RPE steppers: ±1 (1-10 range)
   - Large 48px touch-friendly buttons
   - Applied to main recording area (bottom input section)
-- ✅ WorkoutHeader with timer (Nov 10 - commit 2be935e)
+- ✅ WorkoutHeader with timer (commit 2be935e)
   - Sticky header component stays visible while scrolling
   - Live elapsed timer (MM:SS format, updates every second)
   - Progress bar with gradient (blue→purple)
   - Exercise completion counter (X/Y exercises)
   - Progress percentage display
   - Menu button opens exit confirmation dialog
-
-**In Progress**:
-- [ ] Circuit round tracking and auto-advance
+- ✅ Circuit round tracking (commit 326feaa)
+  - Added group_rounds to session state
+  - Circuit headers display "Round X of Y"
+  - Auto-advance after completing last exercise in circuit:
+    - If more rounds remain: increment round and loop to first exercise
+    - If all rounds complete: move to next section
+  - Round progress persists across saves/loads
+  - updateGroupRound function in context
 
 **Next Steps**:
-1. Implement circuit round tracking
-2. Test on mobile device
-3. Polish animations and transitions
+- Test on mobile device
+- Polish animations and transitions
+- Optimize touch interactions
 
 ## 🎯 Design Principles
 
