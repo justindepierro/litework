@@ -535,6 +535,21 @@ function generateAthleteInviteEmail(
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       ${styles}
+      <style>
+        .benefits { margin: 24px 0; }
+        .benefit-item { display: flex; align-items: flex-start; margin-bottom: 16px; }
+        .benefit-icon { width: 32px; height: 32px; background-color: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
+        .benefit-icon svg { width: 18px; height: 18px; fill: #3b82f6; }
+        .benefit-text { flex: 1; }
+        .benefit-title { font-weight: 600; color: #111827; margin-bottom: 4px; }
+        .benefit-description { color: #6b7280; font-size: 14px; line-height: 1.5; }
+        .cta-section { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 8px; padding: 24px; margin: 24px 0; text-align: center; }
+        .cta-section h3 { color: #ffffff; margin: 0 0 16px 0; font-size: 20px; }
+        .cta-button { display: inline-block; background-color: #ffffff; color: #3b82f6; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px; }
+        .cta-button:hover { background-color: #f3f4f6; }
+        .faq-link { text-align: center; margin-top: 20px; }
+        .faq-link a { color: #3b82f6; text-decoration: none; font-size: 14px; }
+      </style>
     </head>
     <body>
       <div class="container">
@@ -544,12 +559,9 @@ function generateAthleteInviteEmail(
         <div class="content">
           <div class="greeting">Hi ${data.userName},</div>
           <div class="message">
-            ${data.message || "Your coach has invited you to join LiteWork, the complete workout tracking platform for weight lifting athletes."}
+            ${data.message || "Your coach has invited you to join LiteWork, the complete workout tracking platform built specifically for weight lifting athletes."}
           </div>
-          <div class="message">
-            <strong>What is LiteWork?</strong><br>
-            LiteWork helps you track workouts, monitor progress, hit new PRs, and stay connected with your coach. Get started today and take your training to the next level!
-          </div>
+          
           ${
             data.details
               ? `
@@ -568,20 +580,77 @@ function generateAthleteInviteEmail(
           `
               : ""
           }
-          ${
-            data.actionUrl
-              ? `
-            <a href="${data.actionUrl}" class="button">${data.actionText || "Accept Invitation"}</a>
-          `
-              : ""
-          }
-          <div class="message" style="margin-top: 24px; font-size: 14px; color: #6b7280;">
-            This invitation will expire in 7 days. If you didn't expect this invitation, you can safely ignore this email.
+
+          <div class="benefits">
+            <h3 style="color: #111827; margin-bottom: 16px; font-size: 18px;">What You'll Get:</h3>
+            
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="benefit-text">
+                <div class="benefit-title">Smart Workout Tracking</div>
+                <div class="benefit-description">Log sets, reps, and weight with lightning-fast mobile interface. Auto-calculates 1RMs and suggests progressive overload.</div>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="benefit-text">
+                <div class="benefit-title">Performance Analytics</div>
+                <div class="benefit-description">Visualize your progress with charts, track personal records, and see your strength gains over time.</div>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="benefit-text">
+                <div class="benefit-title">Personalized Programs</div>
+                <div class="benefit-description">Get workouts tailored to your goals, schedule, and experience level. Your coach assigns everything - you just show up and lift.</div>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="benefit-text">
+                <div class="benefit-title">Mobile-First Design</div>
+                <div class="benefit-description">Built for the gym. Large buttons, clear text, and works offline. Use it on your phone while training - no laptop needed.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-section">
+            <h3>Ready to Start Training Smarter?</h3>
+            ${
+              data.actionUrl
+                ? `
+              <a href="${data.actionUrl}" class="cta-button">${data.actionText || "Accept Invitation & Get Started"}</a>
+            `
+                : ""
+            }
+          </div>
+
+          <div class="faq-link">
+            <a href="${data.actionUrl?.split("?")[0] || "https://litework.app"}/faq">Have questions? Check our FAQ →</a>
+          </div>
+
+          <div class="message" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
+            <strong>This invitation expires in 7 days.</strong><br>
+            Click the button above to create your account and start tracking your workouts. If you didn't expect this invitation, you can safely ignore this email.
           </div>
         </div>
         <div class="footer">
-          <p>LiteWork - Weight Lifting Tracker</p>
+          <p style="font-weight: 600; color: #111827; margin-bottom: 8px;">LiteWork - Weight Lifting Tracker</p>
           <p>You received this email because your coach invited you to join their training program.</p>
+          <p style="margin-top: 16px; font-size: 12px;">
+            Questions? Reply to this email or contact your coach directly.
+          </p>
         </div>
       </div>
     </body>
