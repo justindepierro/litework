@@ -1,7 +1,7 @@
 # Workout Live - Industry-Leading UX Redesign
 
 **Date**: November 10, 2025  
-**Status**: 🚧 **Phase 1 In Progress** (Core Layout Complete)  
+**Status**: 🎉 **Phase 1 COMPLETE** | 🚧 **Phase 2 In Progress**  
 **Goal**: Create the most intuitive, powerful, and beautiful workout tracking experience
 
 ---
@@ -38,11 +38,26 @@
 - ✅ Indented exercises within groups
 - ✅ "X rounds" label for circuits
 - ✅ Active exercise indicator within groups
+- ✅ Database integration (groups loaded from workout_exercise_groups table)
+- ✅ Session persistence (group_id column added to session_exercises)
+
+**Database Changes**:
+- ✅ Added `group_id` column to `session_exercises` table
+- ✅ Updated `/api/sessions/start` to fetch and preserve groups
+- ✅ Updated `/api/sessions/[id]` GET to load groups on session resume
 
 **Files Modified**:
 - `src/app/api/sessions/start/route.ts` - Fetch exercise groups from database
+- `src/app/api/sessions/[id]/route.ts` - Load groups when resuming session
 - `src/types/session.ts` - Added `ExerciseGroupInfo` type and `groups` to `WorkoutSession`
+- `src/contexts/WorkoutSessionContext.tsx` - Handle groups in session loading
 - `src/components/WorkoutLive.tsx` - Group detection and collapsible headers
+- `database/add-group-id-to-session-exercises.sql` - Migration script
+
+**Bug Fixes**:
+- ✅ Fixed dashboard stats error (workout_sets → set_records)
+- ✅ Fixed DELETE endpoint schema mismatch (athlete_id → user_id)
+- ✅ Session abandon now works correctly
 
 ### 🚧 Phase 2: Enhanced Controls (IN PROGRESS)
 
@@ -51,18 +66,18 @@
 - ✅ Tap completed exercise → View all sets with edit/delete options
 - ✅ Tap pending/active exercise → Activate for recording
 - ✅ Large touch-friendly set cards
-- ✅ Per-set delete confirmation
-- ✅ Debug logging for group detection
+- ✅ Per-set delete/edit buttons (UI ready)
 
 **In Progress**:
-- [ ] Inline set editing (currently shows "Edit This Set" button)
-- [ ] Set deletion implementation
-- [ ] Workout controls menu (pause, reset, undo)
+- [ ] Set deletion implementation (delete set from database)
+- [ ] Inline set editing (modify weight/reps/RPE)
+- [ ] +/- stepper controls for easier input
 
 **Next Steps**:
-- Implement inline editing for weight/reps/RPE
-- Add undo last set functionality
-- Add workout pause/reset controls
+1. Implement set deletion functionality
+2. Implement inline set editing
+3. Add +/- steppers to input controls
+4. Add workout header with timer and progress
 
 ## 🎯 Design Principles
 
