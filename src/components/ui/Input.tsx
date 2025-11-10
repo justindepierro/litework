@@ -6,7 +6,7 @@
 
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { Eye, EyeOff, AlertCircle, Check } from "lucide-react";
 
 export interface InputProps

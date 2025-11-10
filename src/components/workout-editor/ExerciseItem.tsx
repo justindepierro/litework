@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { memo, useState  } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { GripVertical, Trash2, Edit3, MoreVertical, Check } from "lucide-react";

@@ -7,7 +7,7 @@
 
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { Trophy, TrendingUp, Award, Zap } from "lucide-react";
 import {
   PRComparison,

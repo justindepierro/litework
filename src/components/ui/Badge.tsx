@@ -4,7 +4,7 @@
  * Variants: primary, success, warning, error, neutral
  */
 
-import React, { HTMLAttributes, ReactNode } from "react";
+import React, { memo, HTMLAttributes, ReactNode  } from "react";
 
 export type BadgeVariant =
   | "primary"
