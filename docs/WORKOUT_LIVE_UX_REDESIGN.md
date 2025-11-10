@@ -24,14 +24,27 @@
 **Files Modified**:
 - `src/components/WorkoutLive.tsx` - Complete restructure
 
-### 🚧 Phase 1.2: Circuit/Superset Grouping (NEXT)
-- [ ] Add circuit/superset detection
-- [ ] Create `CircuitHeader` component
-- [ ] Implement collapsible groups
-- [ ] Add round tracking ("Round 1 of 3")
-- [ ] Color code by type (circuit=blue, superset=purple)
+### ✅ Phase 1.2: Circuit/Superset Grouping (COMPLETED - Nov 10, 2025)
 
----
+**Completed Features**:
+- ✅ Circuit/superset/section detection from workout data
+- ✅ Collapsible group headers (tap to expand/collapse)
+- ✅ Color coding by type:
+  - Circuit = Blue (#3b82f6)
+  - Superset = Purple (#8b5cf6)
+  - Section = Cyan (#06b6d4)
+  - Regular = Green (#10b981)
+- ✅ Group progress indicators
+- ✅ Indented exercises within groups
+- ✅ "X rounds" label for circuits
+- ✅ Active exercise indicator within groups
+
+**Files Modified**:
+- `src/app/api/sessions/start/route.ts` - Fetch exercise groups from database
+- `src/types/session.ts` - Added `ExerciseGroupInfo` type and `groups` to `WorkoutSession`
+- `src/components/WorkoutLive.tsx` - Group detection and collapsible headers
+
+### 🚧 Phase 2: Enhanced Controls (NEXT)
 
 ## 🎯 Design Principles
 

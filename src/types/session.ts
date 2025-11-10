@@ -2,6 +2,18 @@
 
 export type SessionStatus = "active" | "paused" | "completed" | "abandoned";
 
+export interface ExerciseGroupInfo {
+  id: string;
+  name: string;
+  type: "superset" | "circuit" | "section";
+  description?: string;
+  order_index: number;
+  rest_between_rounds?: number;
+  rest_between_exercises?: number;
+  rounds?: number;
+  notes?: string;
+}
+
 export interface SetRecord {
   id?: string;
   session_exercise_id: string;
@@ -28,6 +40,7 @@ export interface ExerciseProgress {
   order_index: number;
   completed: boolean;
   set_records: SetRecord[];
+  group_id?: string | null;
 }
 
 export interface WorkoutSession {
@@ -43,6 +56,7 @@ export interface WorkoutSession {
   total_duration_seconds: number; // Excludes paused time
   current_exercise_index: number;
   exercises: ExerciseProgress[];
+  groups?: ExerciseGroupInfo[]; // Exercise group information
   notes?: string | null;
 }
 

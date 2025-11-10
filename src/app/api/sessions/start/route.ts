@@ -148,6 +148,38 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      // 2b. Get exercise groups if any exercises are grouped
+      const groupIds = workoutExercises
+        .map((ex) => ex.group_id)
+        .filter((id): id is string => !!id);
+      
+      let exerciseGroups: Array<{
+        id: string;
+        name: string;
+        type: "superset" | "circuit" | "section";
+        description?: string;
+        order_index: number;
+        rest_between_rounds?: number;
+        rest_between_exercises?: number;
+        rounds?: number;
+        notes?: string;
+      }> = [];
+      
+      if (groupIds.length > 0) {
+        const { data: groupsData, error: groupsError } = await supabase
+          .from("workout_exercise_groups")
+          .select("*")
+          .eq("workout_plan_id", assignment.workout_plan_id);
+
+        if (!groupsError && groupsData) {
+          exerciseGroups = groupsData;
+          console.log("[SessionStart] Loaded exercise groups:", {
+            count: exerciseGroups.length,
+            types: exerciseGroups.map((g) => g.type),
+          });
+        }
+      }
+
       console.log("[SessionStart] Creating workout session...");
 
       // Get workout plan name from the assignment
@@ -223,6 +255,7 @@ export async function POST(request: NextRequest) {
       const sessionData = {
         id: session.id,
         assignment_id: assignment.id,
+        athlete_id: user.id,
         workout_plan_id: assignment.workout_plan_id,
         workout_name: workoutPlan?.name || "Untitled Workout",
         workout_description: workoutPlan?.description || "",
@@ -231,21 +264,28 @@ export async function POST(request: NextRequest) {
         current_exercise_index: 0,
         total_duration_seconds: 0,
         paused_at: null,
+        completed_at: null,
+        groups: exerciseGroups, // Include exercise groups
         exercises: createdExercises.map((se, index) => {
           const workoutExercise = workoutExercises[index];
 
           return {
             session_exercise_id: se.id,
             workout_exercise_id: se.workout_exercise_id,
+            exercise_id: workoutExercise?.exercise_id || "",
             exercise_name: se.exercise_name,
             sets_target: se.target_sets,
             sets_completed: se.completed_sets,
             reps_target: workoutExercise?.reps?.toString() || "10",
             weight_target: workoutExercise?.weight,
+            weight_percentage: workoutExercise?.percentage,
             rest_seconds: workoutExercise?.rest_time || 60,
+            tempo: workoutExercise?.tempo,
             notes: workoutExercise?.notes,
+            order_index: workoutExercise?.order_index || index,
             completed: se.completed,
             set_records: [],
+            group_id: workoutExercise?.group_id || null, // Include group_id
           };
         }),
       };
@@ -253,6 +293,7 @@ export async function POST(request: NextRequest) {
       console.log("[SessionStart] Session created successfully:", {
         session_id: sessionData.id,
         exercise_count: sessionData.exercises.length,
+        group_count: sessionData.groups.length,
       });
 
       return NextResponse.json({

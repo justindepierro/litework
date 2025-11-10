@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import RestTimer from "./RestTimer";
 import {
   ChevronRight,
+  ChevronDown,
   CheckCircle,
   X,
   Info,
@@ -23,6 +24,7 @@ import {
   ModalContent,
 } from "@/components/ui/Modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import type { ExerciseGroupInfo } from "@/types/session";
 
 interface WorkoutLiveProps {
   assignmentId: string;
@@ -50,6 +52,15 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+
+  // Get groups for display
+  const groups: Record<string, ExerciseGroupInfo> = {};
+  if (session?.groups) {
+    session.groups.forEach((g) => {
+      groups[g.id] = g;
+    });
+  }
 
   const currentExercise = session?.exercises[session.current_exercise_index];
   const isLastExercise = session
@@ -333,6 +344,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             const isPending = !exercise.completed && !isActive;
             const isCompleted = exercise.completed;
             
+            // Check if this is the first exercise in a group
+            const group = exercise.group_id ? groups[exercise.group_id] : null;
+            const isFirstInGroup =
+              group && (index === 0 || session.exercises[index - 1]?.group_id !== exercise.group_id);
+            
             // Determine exercise type color
             let colorClasses = {
               border: 'border-green-200',
@@ -342,18 +358,38 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               glow: 'shadow-green-200',
             };
             
-            // TODO: Add circuit/superset detection and color coding
-            // if (exercise.group_type === 'circuit') colorClasses = bluePalette
-            // if (exercise.group_type === 'superset') colorClasses = purplePalette
+            // Color by group type
+            if (group) {
+              if (group.type === 'circuit') {
+                colorClasses = {
+                  border: 'border-blue-300',
+                  bg: 'bg-blue-50',
+                  text: 'text-blue-700',
+                  badge: 'bg-blue-100 text-blue-800',
+                  glow: 'shadow-blue-200',
+                };
+              } else if (group.type === 'superset') {
+                colorClasses = {
+                  border: 'border-purple-300',
+                  bg: 'bg-purple-50',
+                  text: 'text-purple-700',
+                  badge: 'bg-purple-100 text-purple-800',
+                  glow: 'shadow-purple-200',
+                };
+              } else if (group.type === 'section') {
+                colorClasses = {
+                  border: 'border-cyan-300',
+                  bg: 'bg-cyan-50',
+                  text: 'text-cyan-700',
+                  badge: 'bg-cyan-100 text-cyan-800',
+                  glow: 'shadow-cyan-200',
+                };
+              }
+            }
             
             if (isActive) {
-              colorClasses = {
-                border: 'border-blue-400',
-                bg: 'bg-blue-50',
-                text: 'text-blue-900',
-                badge: 'bg-blue-100 text-blue-800',
-                glow: 'shadow-lg shadow-blue-200',
-              };
+              colorClasses.glow = 'shadow-lg shadow-blue-200';
+              colorClasses.border = 'border-blue-400';
             } else if (isPending) {
               colorClasses = {
                 border: 'border-gray-200',
@@ -363,109 +399,148 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 glow: 'shadow-sm',
               };
             } else if (isCompleted) {
-              colorClasses = {
-                border: 'border-green-300',
-                bg: 'bg-green-50',
-                text: 'text-green-900',
-                badge: 'bg-green-100 text-green-800',
-                glow: 'shadow-sm',
-              };
+              colorClasses.glow = 'shadow-sm';
             }
             
             return (
-              <button
-                key={exercise.session_exercise_id}
-                onClick={() => updateExerciseIndex(index)}
-                className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
-                  isActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'
-                } ${isPending ? 'opacity-75' : 'opacity-100'}`}
-                style={{ minHeight: '48px' }}
-              >
-                <div className="p-4">
-                  {/* Exercise Header */}
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        {isCompleted && (
-                          <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
-                        )}
-                        {isActive && (
-                          <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
-                        )}
-                        <h3 className={`text-lg font-semibold ${colorClasses.text}`}>
-                          {exercise.exercise_name}
-                        </h3>
-                      </div>
-                      
-                      {/* Exercise Meta */}
-                      <div className="flex flex-wrap gap-2 text-sm">
-                        <span className={`px-2 py-0.5 rounded ${colorClasses.badge} font-medium`}>
-                          {exercise.sets_target} × {exercise.reps_target}
-                        </span>
-                        {exercise.weight_target && (
-                          <span className={`px-2 py-0.5 rounded ${colorClasses.badge}`}>
-                            {exercise.weight_target} lbs
+              <div key={exercise.session_exercise_id}>
+                {/* Group Header (if first in group) */}
+                {isFirstInGroup && group && (
+                  <button
+                    onClick={() => {
+                      setCollapsedGroups((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(group.id)) {
+                          next.delete(group.id);
+                        } else {
+                          next.add(group.id);
+                        }
+                        return next;
+                      });
+                    }}
+                    className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ChevronDown
+                          className={`w-4 h-4 ${colorClasses.text} transition-transform ${
+                            collapsedGroups.has(group.id) ? "-rotate-90" : ""
+                          }`}
+                        />
+                        <div>
+                          <span className={`text-xs font-bold uppercase tracking-wide ${colorClasses.text} block`}>
+                            {group.type}
                           </span>
-                        )}
-                        {exercise.rest_seconds > 0 && (
-                          <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {exercise.rest_seconds}s
+                          <span className={`font-semibold ${colorClasses.text}`}>
+                            {group.name}
                           </span>
-                        )}
+                          {group.rounds && group.rounds > 1 && (
+                            <span className={`text-sm ${colorClasses.text} opacity-75 ml-2`}>
+                              • {group.rounds} rounds
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    
-                    {/* Progress Indicator */}
-                    <div className="ml-4 text-right shrink-0">
-                      {isCompleted ? (
-                        <div className="text-green-600 font-bold">✓</div>
-                      ) : (
-                        <div className={`text-sm font-semibold ${colorClasses.text}`}>
-                          {exercise.sets_completed}/{exercise.sets_target}
+                  </button>
+                )}
+
+                {/* Exercise Card (hide if group is collapsed) */}
+                {(!group || !collapsedGroups.has(group.id)) && (
+                  <button
+                    onClick={() => updateExerciseIndex(index)}
+                    className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
+                      isActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'
+                    } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''}`}
+                    style={{ minHeight: '48px' }}
+                  >
+                    <div className="p-4">
+                      {/* Exercise Header */}
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            {isCompleted && (
+                              <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
+                            )}
+                            {isActive && (
+                              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
+                            )}
+                            <h3 className={`text-lg font-semibold ${colorClasses.text}`}>
+                              {exercise.exercise_name}
+                            </h3>
+                          </div>
+                          
+                          {/* Exercise Meta */}
+                          <div className="flex flex-wrap gap-2 text-sm">
+                            <span className={`px-2 py-0.5 rounded ${colorClasses.badge} font-medium`}>
+                              {exercise.sets_target} × {exercise.reps_target}
+                            </span>
+                            {exercise.weight_target && (
+                              <span className={`px-2 py-0.5 rounded ${colorClasses.badge}`}>
+                                {exercise.weight_target} lbs
+                              </span>
+                            )}
+                            {exercise.rest_seconds > 0 && (
+                              <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {exercise.rest_seconds}s
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Progress Indicator */}
+                        <div className="ml-4 text-right shrink-0">
+                          {isCompleted ? (
+                            <div className="text-green-600 font-bold">✓</div>
+                          ) : (
+                            <div className={`text-sm font-semibold ${colorClasses.text}`}>
+                              {exercise.sets_completed}/{exercise.sets_target}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Progress Bar (if in progress) */}
+                      {!isCompleted && exercise.sets_completed > 0 && (
+                        <div className="mt-2">
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div
+                              className={`h-1.5 rounded-full transition-all duration-300 ${
+                                isActive ? 'bg-blue-500' : 'bg-green-500'
+                              }`}
+                              style={{
+                                width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Active Exercise: Show set records */}
+                      {isActive && exercise.set_records.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-blue-200">
+                          <div className="space-y-1">
+                            {exercise.set_records.slice(-2).map((set, setIndex) => (
+                              <div
+                                key={setIndex}
+                                className="flex items-center justify-between text-sm bg-white/50 rounded px-2 py-1"
+                              >
+                                <span className="text-gray-600 font-medium">Set {set.set_number}</span>
+                                <span className="text-gray-900">
+                                  {set.weight && `${set.weight} lbs × `}
+                                  {set.reps} reps
+                                  {set.rpe && ` @ RPE ${set.rpe}`}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
-                  </div>
-                  
-                  {/* Progress Bar (if in progress) */}
-                  {!isCompleted && exercise.sets_completed > 0 && (
-                    <div className="mt-2">
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`h-1.5 rounded-full transition-all duration-300 ${
-                            isActive ? 'bg-blue-500' : 'bg-green-500'
-                          }`}
-                          style={{
-                            width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Active Exercise: Show set records */}
-                  {isActive && exercise.set_records.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-blue-200">
-                      <div className="space-y-1">
-                        {exercise.set_records.slice(-2).map((set, setIndex) => (
-                          <div
-                            key={setIndex}
-                            className="flex items-center justify-between text-sm bg-white/50 rounded px-2 py-1"
-                          >
-                            <span className="text-gray-600 font-medium">Set {set.set_number}</span>
-                            <span className="text-gray-900">
-                              {set.weight && `${set.weight} lbs × `}
-                              {set.reps} reps
-                              {set.rpe && ` @ RPE ${set.rpe}`}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </button>
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
