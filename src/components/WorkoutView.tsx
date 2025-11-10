@@ -16,6 +16,9 @@ import {
   Weight,
   Check,
   Rocket,
+  Zap,
+  Package,
+  Flame,
 } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -170,6 +173,157 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               </Button>
             </Link>
           </div>
+
+          {/* Before You Start - Preparation Card */}
+          <Card
+            variant="default"
+            padding="lg"
+            className="mb-8 rounded-2xl border-2 border-blue-200 bg-blue-50"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">
+                Before You Start
+              </h2>
+            </div>
+
+            <div className="space-y-5">
+              {/* Equipment Needed */}
+              <div>
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Dumbbell className="w-5 h-5 text-blue-600" />
+                  Equipment Needed
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {(() => {
+                    const equipment = new Set<string>();
+                    workoutPlan.exercises.forEach((ex) => {
+                      // Extract equipment from exercise type/name
+                      const name = ex.exerciseName.toLowerCase();
+                      if (name.includes("barbell")) equipment.add("Barbell");
+                      if (name.includes("dumbbell"))
+                        equipment.add("Dumbbells");
+                      if (name.includes("cable")) equipment.add("Cable Machine");
+                      if (name.includes("bench") && !name.includes("press"))
+                        equipment.add("Bench");
+                      if (name.includes("pull-up") || name.includes("chin-up"))
+                        equipment.add("Pull-up Bar");
+                      if (
+                        name.includes("squat rack") ||
+                        name.includes("rack")
+                      )
+                        equipment.add("Squat Rack");
+                      if (name.includes("kettlebell"))
+                        equipment.add("Kettlebell");
+                      if (name.includes("resistance band"))
+                        equipment.add("Resistance Band");
+                      if (ex.weightType === "bodyweight")
+                        equipment.add("No Equipment");
+                    });
+
+                    return Array.from(equipment).length > 0 ? (
+                      Array.from(equipment).map((item) => (
+                        <span
+                          key={item}
+                          className="px-4 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900"
+                        >
+                          {item}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="px-4 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900">
+                        Check exercise details
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Difficulty & Intensity */}
+              <div>
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-orange-600" />
+                  Intensity Level
+                </h3>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 bg-white rounded-lg p-4 border-2 border-blue-300">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        Estimated Time
+                      </span>
+                      <span className="text-lg font-bold text-blue-600">
+                        {workoutPlan.estimatedDuration} min
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full"
+                        style={{
+                          width: `${Math.min((workoutPlan.estimatedDuration / 90) * 100, 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg px-4 py-4 border-2 border-orange-300">
+                    <div className="text-2xl font-bold text-orange-600">
+                      {workoutPlan.exercises.reduce(
+                        (acc, e) => acc + e.sets,
+                        0
+                      )}
+                    </div>
+                    <div className="text-xs font-medium text-gray-600 whitespace-nowrap">
+                      Total Sets
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Warmup Tips */}
+              <div>
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-yellow-600" />
+                  Warmup Tips
+                </h3>
+                <div className="bg-white rounded-lg p-4 border-2 border-blue-300 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-blue-600">
+                        1
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 flex-1">
+                      <strong>5 min cardio:</strong> Light jog, rowing, or jump
+                      rope to raise heart rate
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-blue-600">
+                        2
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 flex-1">
+                      <strong>Dynamic stretches:</strong> Arm circles, leg
+                      swings, hip openers for mobility
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-blue-600">
+                        3
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 flex-1">
+                      <strong>Movement prep:</strong> Do 1-2 light sets of your
+                      first exercise with minimal weight
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
 
           {/* Enhanced mobile progress overview */}
           <Card
