@@ -153,6 +153,17 @@ export async function POST(request: NextRequest) {
         .map((ex) => ex.group_id)
         .filter((id): id is string => !!id);
       
+      console.log("[SessionStart] Exercise group check:", {
+        totalExercises: workoutExercises.length,
+        exercisesWithGroupId: groupIds.length,
+        groupIds: groupIds,
+        sampleExercise: workoutExercises[0] ? {
+          id: workoutExercises[0].id,
+          name: workoutExercises[0].exercise_name,
+          group_id: workoutExercises[0].group_id,
+        } : null,
+      });
+      
       let exerciseGroups: Array<{
         id: string;
         name: string;
@@ -165,19 +176,26 @@ export async function POST(request: NextRequest) {
         notes?: string;
       }> = [];
       
-      if (groupIds.length > 0) {
-        const { data: groupsData, error: groupsError } = await supabase
-          .from("workout_exercise_groups")
-          .select("*")
-          .eq("workout_plan_id", assignment.workout_plan_id);
+      // ALWAYS try to fetch groups for this workout, regardless of exercise group_ids
+      const { data: groupsData, error: groupsError } = await supabase
+        .from("workout_exercise_groups")
+        .select("*")
+        .eq("workout_plan_id", assignment.workout_plan_id);
 
-        if (!groupsError && groupsData) {
-          exerciseGroups = groupsData;
-          console.log("[SessionStart] Loaded exercise groups:", {
-            count: exerciseGroups.length,
-            types: exerciseGroups.map((g) => g.type),
-          });
-        }
+      console.log("[SessionStart] Groups query result:", {
+        found: !!groupsData,
+        count: groupsData?.length || 0,
+        error: groupsError?.message,
+        groups: groupsData,
+      });
+
+      if (!groupsError && groupsData) {
+        exerciseGroups = groupsData;
+        console.log("[SessionStart] Loaded exercise groups:", {
+          count: exerciseGroups.length,
+          types: exerciseGroups.map((g) => g.type),
+          names: exerciseGroups.map((g) => g.name),
+        });
       }
 
       console.log("[SessionStart] Creating workout session...");
