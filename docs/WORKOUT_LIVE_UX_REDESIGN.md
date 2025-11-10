@@ -83,16 +83,21 @@
   - RPE steppers: ±1 (1-10 range)
   - Large 48px touch-friendly buttons
   - Applied to main recording area (bottom input section)
+- ✅ WorkoutHeader with timer (Nov 10 - commit 2be935e)
+  - Sticky header component stays visible while scrolling
+  - Live elapsed timer (MM:SS format, updates every second)
+  - Progress bar with gradient (blue→purple)
+  - Exercise completion counter (X/Y exercises)
+  - Progress percentage display
+  - Menu button opens exit confirmation dialog
 
 **In Progress**:
-- [ ] Add workout header with timer and progress
 - [ ] Circuit round tracking and auto-advance
 
 **Next Steps**:
-1. Add WorkoutHeader component (timer, progress, menu)
-2. Implement circuit round tracking
-3. Test on mobile device
-4. Polish animations and transitions
+1. Implement circuit round tracking
+2. Test on mobile device
+3. Polish animations and transitions
 
 ## 🎯 Design Principles
 
