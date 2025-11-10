@@ -236,6 +236,7 @@ interface WorkoutSessionContextType extends SessionState {
   abandonSession: () => Promise<void>;
   updateExerciseIndex: (index: number) => void;
   addSetRecord: (exerciseIndex: number, setRecord: SetRecord) => void;
+  deleteSet: (exerciseIndex: number, setId: string) => Promise<void>;
   completeExercise: (exerciseIndex: number) => void;
   clearCurrentSession: () => void;
   saveCurrentSession: () => void;
@@ -586,6 +587,41 @@ export function WorkoutSessionProvider({
     [state.session]
   );
 
+  // Delete a set record
+  const deleteSet = useCallback(
+    async (exerciseIndex: number, setId: string) => {
+      if (!state.session) return;
+
+      try {
+        // Call API to delete set from database
+        const response = await fetch(`/api/sets/${setId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to delete set");
+        }
+
+        // Update local state - remove set from exercise
+        const updatedSession = { ...state.session };
+        const exercise = updatedSession.exercises[exerciseIndex];
+        exercise.set_records = exercise.set_records.filter(
+          (set) => set.id !== setId
+        );
+        exercise.sets_completed = exercise.set_records.length;
+
+        dispatch({ type: "START_SESSION", payload: updatedSession });
+        saveSessionLocal(updatedSession);
+
+        console.log(`[WorkoutSession] Set ${setId} deleted successfully`);
+      } catch (error) {
+        console.error("Error deleting set:", error);
+        throw error;
+      }
+    },
+    [state.session]
+  );
+
   // Mark exercise as complete
   const completeExercise = useCallback((exerciseIndex: number) => {
     dispatch({ type: "COMPLETE_EXERCISE", payload: exerciseIndex });
@@ -616,6 +652,7 @@ export function WorkoutSessionProvider({
     abandonSession,
     updateExerciseIndex,
     addSetRecord,
+    deleteSet,
     completeExercise,
     clearCurrentSession,
     saveCurrentSession,

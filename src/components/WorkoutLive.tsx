@@ -42,6 +42,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     abandonSession,
     updateExerciseIndex,
     addSetRecord,
+    deleteSet,
     completeExercise,
   } = useWorkoutSession();
 
@@ -712,10 +713,22 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         Set {set.set_number}
                       </span>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           if (confirm(`Delete Set ${set.set_number}?`)) {
-                            // TODO: Implement set deletion
-                            console.log("Delete set:", set.set_number);
+                            try {
+                              if (!set.id) {
+                                alert("Cannot delete set without ID");
+                                return;
+                              }
+                              await deleteSet(editingExerciseIndex, set.id);
+                              // Close modal if no sets left
+                              if (session.exercises[editingExerciseIndex].set_records.length === 0) {
+                                setEditingExerciseIndex(null);
+                              }
+                            } catch (err) {
+                              console.error("Error deleting set:", err);
+                              alert("Failed to delete set. Please try again.");
+                            }
                           }
                         }}
                         className="text-red-600 hover:text-red-700 text-sm font-medium"
