@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Dumbbell, Users } from "lucide-react";
 import { KPITagBadge } from "@/components/ui/KPITagBadge";
+import { formatTime12Hour } from "@/lib/date-utils";
 
 interface HoverCardProps {
   trigger: React.ReactNode;
@@ -419,7 +420,7 @@ export function WorkoutPreviewCard({
               <>
                 <span style={{ color: "rgba(255,255,255,0.6)" }}>•</span>
                 <span style={{ color: "rgba(255,255,255,0.9)" }}>
-                  {duration}
+                  {formatTime12Hour(duration)}
                 </span>
               </>
             )}
