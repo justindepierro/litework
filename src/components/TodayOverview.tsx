@@ -8,6 +8,8 @@ interface TodayWorkout {
   id: string;
   workoutName: string;
   groupName: string;
+  groupId?: string | null;
+  groupColor?: string | null;
   athleteNames?: string[];
   isIndividual?: boolean;
   athleteCount: number;
@@ -135,9 +137,9 @@ const TodayOverview = memo(function TodayOverview() {
                             borderRadius: "9999px",
                             fontSize: "0.75rem",
                             fontWeight: "600",
-                            backgroundColor: "#3b82f620",
-                            color: "#3b82f6",
-                            border: "1.5px solid #3b82f6",
+                            backgroundColor: (workout.groupColor || "#3b82f6") + "20",
+                            color: workout.groupColor || "#3b82f6",
+                            border: `1.5px solid ${workout.groupColor || "#3b82f6"}`,
                           }}
                         >
                           <Users style={{ width: "0.75rem", height: "0.75rem" }} />

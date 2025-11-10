@@ -70,15 +70,19 @@ export async function GET() {
 
         // Get group name or athlete name for individual assignments
         let groupName = "Individual Assignment";
+        let groupId: string | null = null;
+        let groupColor: string | null = null;
         let athleteNames: string[] = [];
 
         if (assignment.assigned_to_group_id) {
           const { data: group } = await supabase
             .from("athlete_groups")
-            .select("name")
+            .select("name, color")
             .eq("id", assignment.assigned_to_group_id)
             .single();
           groupName = group?.name || "Unknown Group";
+          groupId = assignment.assigned_to_group_id;
+          groupColor = group?.color || "#3b82f6";
         } else if (
           assignment.athlete_ids &&
           assignment.athlete_ids.length > 0
@@ -118,6 +122,8 @@ export async function GET() {
           id: assignment.id,
           workoutName,
           groupName,
+          groupId,
+          groupColor,
           athleteNames,
           isIndividual: !assignment.assigned_to_group_id,
           athleteCount,
