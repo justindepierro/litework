@@ -31,7 +31,7 @@ import {
 } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Display, Heading, Body } from "@/components/ui/Typography";
+import { Display, Body } from "@/components/ui/Typography";
 import {
   Trophy,
   Calendar,
@@ -443,13 +443,13 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
       {/* Sticky Action Bar - Thumb Zone Optimized */}
       <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="container-responsive px-4 py-3">
+        <div className="container-responsive px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-lg font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Hi, {user.firstName}! 👋
               </h1>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-gray-500">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   month: "short",
@@ -470,9 +470,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="container-responsive px-4 py-4 pb-24 max-w-2xl mx-auto space-y-4">
+      <div className="container-responsive px-4 py-6 pb-24 max-w-2xl mx-auto space-y-6">
         {/* Quick Stats - Compact & Visual */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-4">
           <StatCard
             icon={<Dumbbell className="w-5 h-5 text-orange-600" />}
             value={stats.workoutsThisWeek}
@@ -501,8 +501,8 @@ export default function DashboardPage() {
         {/* Today's Workouts - Hero Section */}
         {user.role === "athlete" && (
           <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-orange-500 rounded-full" />
+            <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+              <div className="w-1 h-5 bg-orange-500 rounded-full" />
               Today&apos;s Workouts
             </h2>
 
@@ -511,15 +511,55 @@ export default function DashboardPage() {
               return checkIsToday(assignmentDate);
             }).length === 0 ? (
               <Card variant="default" padding="lg" className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                  <Calendar className="w-8 h-8 text-gray-400" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-4">
+                  <Calendar className="w-10 h-10 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
                   No Workouts Today
                 </h3>
-                <p className="text-sm text-gray-500">
-                  Enjoy your rest day or check tomorrow&apos;s schedule
+                <p className="text-base text-gray-600 mb-6">
+                  {assignments.length === 0
+                    ? "Your coach will assign workouts soon. Check back later or reach out to your coach."
+                    : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
                 </p>
+                {assignments.length === 0 && (
+                  <div className="bg-gray-50 rounded-lg p-4 text-left space-y-3">
+                    <h4 className="text-sm font-semibold text-gray-700">
+                      Getting Started:
+                    </h4>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-bold text-blue-600">
+                            1
+                          </span>
+                        </div>
+                        <span>
+                          Wait for your coach to assign your first workout
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-bold text-blue-600">
+                            2
+                          </span>
+                        </div>
+                        <span>Workouts will appear in your calendar below</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-bold text-blue-600">
+                            3
+                          </span>
+                        </div>
+                        <span>
+                          Tap &ldquo;Start Workout&rdquo; when ready to log
+                          your sets
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </Card>
             ) : (
               <div className="space-y-3">
@@ -594,8 +634,8 @@ export default function DashboardPage() {
 
         {/* This Week's Schedule - Compact List */}
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-            <div className="w-1 h-4 bg-blue-500 rounded-full" />
+          <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+            <div className="w-1 h-5 bg-blue-500 rounded-full" />
             This Week
           </h2>
 
@@ -612,8 +652,8 @@ export default function DashboardPage() {
         {/* Upcoming Workouts - Minimalist Cards */}
         {user.role === "athlete" && (
           <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-purple-500 rounded-full" />
+            <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+              <div className="w-1 h-5 bg-purple-500 rounded-full" />
               Coming Up
             </h2>
 
@@ -623,9 +663,17 @@ export default function DashboardPage() {
                 checkIsFuture(assignmentDate) && !checkIsToday(assignmentDate)
               );
             }).length === 0 ? (
-              <Card variant="default" padding="md" className="text-center">
-                <p className="text-sm text-gray-500">
-                  No upcoming workouts scheduled
+              <Card variant="default" padding="lg" className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-50 rounded-full mb-3">
+                  <Calendar className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                  No Upcoming Workouts
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {assignments.length === 0
+                    ? "Your training schedule will appear here once your coach assigns workouts."
+                    : "All caught up! Your coach will add more workouts soon."}
                 </p>
               </Card>
             ) : (
@@ -725,20 +773,20 @@ function StatCard({ icon, value, label, loading, color }: StatCardProps) {
   };
 
   return (
-    <Card variant="default" padding="sm" className="text-center">
+    <Card variant="default" padding="md" className="text-center">
       <div
-        className={`inline-flex items-center justify-center w-10 h-10 ${colorClasses[color]} rounded-full mb-2`}
+        className={`inline-flex items-center justify-center w-12 h-12 ${colorClasses[color]} rounded-full mb-3`}
       >
         {icon}
       </div>
-      <div className="text-3xl font-bold text-gray-900 tabular-nums">
+      <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
         {loading ? (
-          <div className="h-9 w-12 mx-auto animate-pulse bg-gray-200 rounded" />
+          <div className="h-10 w-14 mx-auto animate-pulse bg-gray-200 rounded" />
         ) : (
           count
         )}
       </div>
-      <div className="text-xs text-gray-500 mt-1">{label}</div>
+      <div className="text-sm text-gray-600 mt-2 font-medium">{label}</div>
     </Card>
   );
 }
