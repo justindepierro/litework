@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkoutSession } from "@/contexts/WorkoutSessionContext";
 import { OfflineStatusBanner } from "@/components/OfflineStatus";
@@ -45,6 +45,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     addSetRecord,
     deleteSet,
     completeExercise,
+    updateGroupRound,
   } = useWorkoutSession();
 
   const [weight, setWeight] = useState<number>(0);
@@ -57,13 +58,16 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
 
-  // Get groups for display
-  const groups: Record<string, ExerciseGroupInfo> = {};
-  if (session?.groups) {
-    session.groups.forEach((g) => {
-      groups[g.id] = g;
-    });
-  }
+  // Get groups for display (memoized to prevent re-creation on every render)
+  const groups: Record<string, ExerciseGroupInfo> = useMemo(() => {
+    const groupsMap: Record<string, ExerciseGroupInfo> = {};
+    if (session?.groups) {
+      session.groups.forEach((g) => {
+        groupsMap[g.id] = g;
+      });
+    }
+    return groupsMap;
+  }, [session?.groups]);
 
   // Debug: Log groups and exercises on mount
   useEffect(() => {
@@ -151,11 +155,54 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     }
     if (currentExercise.sets_completed + 1 >= currentExercise.sets_target) {
       completeExercise(session.current_exercise_index);
-      if (!isLastExercise) {
-        setTimeout(
-          () => updateExerciseIndex(session.current_exercise_index + 1),
-          500
-        );
+      
+      // Check if this exercise is part of a circuit/superset
+      const currentGroup = currentExercise.group_id ? groups[currentExercise.group_id] : null;
+      
+      if (currentGroup && (currentGroup.type === "circuit" || currentGroup.type === "superset") && currentGroup.rounds && currentGroup.rounds > 1) {
+        // Find all exercises in this group
+        const groupExercises = session.exercises
+          .map((ex, idx) => ({ ...ex, index: idx }))
+          .filter(ex => ex.group_id === currentGroup.id);
+        
+        const currentPositionInGroup = groupExercises.findIndex(ex => ex.index === session.current_exercise_index);
+        const isLastInGroup = currentPositionInGroup === groupExercises.length - 1;
+        
+        if (isLastInGroup) {
+          // Just finished last exercise in the circuit
+          const currentRound = session.group_rounds?.[currentGroup.id] || 1;
+          
+          if (currentRound < currentGroup.rounds) {
+            // More rounds to go - loop back to first exercise in circuit
+            const firstExerciseIndex = groupExercises[0].index;
+            // Increment round counter
+            updateGroupRound(currentGroup.id, currentRound + 1);
+            // Update session state and move to first exercise
+            setTimeout(() => {
+              updateExerciseIndex(firstExerciseIndex);
+            }, 500);
+          } else {
+            // Finished all rounds - move to next exercise after this group
+            if (!isLastExercise) {
+              setTimeout(
+                () => updateExerciseIndex(session.current_exercise_index + 1),
+                500
+              );
+            }
+          }
+        } else {
+          // Move to next exercise in circuit
+          const nextExerciseIndex = groupExercises[currentPositionInGroup + 1].index;
+          setTimeout(() => updateExerciseIndex(nextExerciseIndex), 500);
+        }
+      } else {
+        // Regular exercise or single-round group - just move to next
+        if (!isLastExercise) {
+          setTimeout(
+            () => updateExerciseIndex(session.current_exercise_index + 1),
+            500
+          );
+        }
       }
     } else {
       setShowRestTimer(true);
@@ -174,6 +221,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     completeExercise,
     isLastExercise,
     updateExerciseIndex,
+    updateGroupRound,
+    groups,
   ]);
 
   const handleRestComplete = useCallback(() => setShowRestTimer(false), []);
@@ -410,7 +459,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           </span>
                           {group.rounds && group.rounds > 1 && (
                             <span className={`text-sm ${colorClasses.text} opacity-75 ml-2`}>
-                              • {group.rounds} rounds
+                              • Round {session.group_rounds?.[group.id] || 1} of {group.rounds}
                             </span>
                           )}
                         </div>

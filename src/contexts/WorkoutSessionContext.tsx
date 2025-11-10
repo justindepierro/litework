@@ -99,12 +99,24 @@ function sessionReducer(
   action: SessionAction
 ): SessionState {
   switch (action.type) {
-    case "START_SESSION":
+    case "START_SESSION": {
+      const session = action.payload;
+      // Initialize group_rounds if not present
+      if (!session.group_rounds && session.groups) {
+        const groupRounds: Record<string, number> = {};
+        session.groups.forEach((group) => {
+          if (group.type === "circuit" || group.type === "superset") {
+            groupRounds[group.id] = 1; // Start at round 1
+          }
+        });
+        session.group_rounds = groupRounds;
+      }
       return {
         ...state,
-        session: action.payload,
+        session,
         error: null,
       };
+    }
 
     case "PAUSE_SESSION":
       if (!state.session) return state;
@@ -238,6 +250,7 @@ interface WorkoutSessionContextType extends SessionState {
   addSetRecord: (exerciseIndex: number, setRecord: SetRecord) => void;
   deleteSet: (exerciseIndex: number, setId: string) => Promise<void>;
   completeExercise: (exerciseIndex: number) => void;
+  updateGroupRound: (groupId: string, round: number) => void;
   clearCurrentSession: () => void;
   saveCurrentSession: () => void;
 }
@@ -642,6 +655,21 @@ export function WorkoutSessionProvider({
     }
   }, [state.session]);
 
+  // Update group round counter
+  const updateGroupRound = useCallback((groupId: string, round: number) => {
+    if (!state.session) return;
+    
+    const updatedSession = {
+      ...state.session,
+      group_rounds: {
+        ...(state.session.group_rounds || {}),
+        [groupId]: round,
+      },
+    };
+    
+    dispatch({ type: "UPDATE_SESSION", payload: { group_rounds: updatedSession.group_rounds } });
+  }, [state.session]);
+
   const value: WorkoutSessionContextType = {
     ...state,
     startSession,
@@ -654,6 +682,7 @@ export function WorkoutSessionProvider({
     addSetRecord,
     deleteSet,
     completeExercise,
+    updateGroupRound,
     clearCurrentSession,
     saveCurrentSession,
   };

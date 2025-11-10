@@ -271,6 +271,16 @@ export async function POST(request: NextRequest) {
       // 5. Build response with full session data
       // workoutPlan already extracted above
 
+      // Initialize round tracking for circuits/supersets
+      const groupRounds: Record<string, number> = {};
+      if (exerciseGroups) {
+        exerciseGroups.forEach((group) => {
+          if (group.type === "circuit" || group.type === "superset") {
+            groupRounds[group.id] = 1; // Start at round 1
+          }
+        });
+      }
+
       const sessionData = {
         id: session.id,
         assignment_id: assignment.id,
@@ -285,6 +295,7 @@ export async function POST(request: NextRequest) {
         paused_at: null,
         completed_at: null,
         groups: exerciseGroups, // Include exercise groups
+        group_rounds: groupRounds, // Include round tracking
         exercises: createdExercises.map((se, index) => {
           const workoutExercise = workoutExercises[index];
 

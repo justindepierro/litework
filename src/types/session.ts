@@ -57,6 +57,7 @@ export interface WorkoutSession {
   current_exercise_index: number;
   exercises: ExerciseProgress[];
   groups?: ExerciseGroupInfo[]; // Exercise group information
+  group_rounds?: Record<string, number>; // Track current round for each group (group_id -> current_round)
   notes?: string | null;
 }
 
