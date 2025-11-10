@@ -240,7 +240,7 @@ export function WorkoutPreviewCard({
           setWorkoutDetails({
             exercises: workoutData.data.exercises || [],
             groups: workoutData.data.groups || [],
-            kpiTags: kpiData.success ? kpiData.tags : [],
+            kpiTags: kpiData.success ? kpiData.data : [],
           });
         }
       })
