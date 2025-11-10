@@ -12,7 +12,6 @@ import {
   ChevronRight,
   ChevronDown,
   CheckCircle,
-  X,
   Info,
   Trophy,
   Clock,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/Modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { StepperInput } from "@/components/ui/StepperInput";
+import { WorkoutHeader } from "@/components/WorkoutHeader";
 import type { ExerciseGroupInfo } from "@/types/session";
 
 interface WorkoutLiveProps {
@@ -301,57 +301,14 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       {/* Offline Status Banner */}
       <OfflineStatusBanner />
 
-      {/* Sticky Header - 100px */}
-      <div className="bg-white border-b border-gray-200 shadow-sm shrink-0">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Exit Button */}
-            <button
-              onClick={() => setShowExitConfirm(true)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Exit workout"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            
-            {/* Workout Title & Progress */}
-            <div className="text-center flex-1 px-4">
-              <h1 className="text-xl font-bold text-gray-900 truncate">
-                {session.workout_name}
-              </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                {session.exercises.filter((ex) => ex.completed).length} of{" "}
-                {session.exercises.length} exercises complete
-              </p>
-            </div>
-            
-            {/* Menu Button (⋮) - For future controls */}
-            <button
-              onClick={() => {/* TODO: Open controls menu */}}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Workout controls"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-              </svg>
-            </button>
-          </div>
-          
-          {/* Overall Progress Bar */}
-          <div className="mt-3">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
-                style={{
-                  width: `${(session.exercises.filter((ex) => ex.completed).length / session.exercises.length) * 100}%`,
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Workout Header with Timer */}
+      <WorkoutHeader
+        workoutName={session.workout_name}
+        startedAt={session.started_at}
+        totalExercises={session.exercises.length}
+        completedExercises={session.exercises.filter((ex) => ex.completed).length}
+        onMenuClick={() => setShowExitConfirm(true)}
+      />
 
       {/* Scrollable Exercise List */}
       <div className="flex-1 overflow-y-auto pb-6" style={{ paddingBottom: '24px' }}>
