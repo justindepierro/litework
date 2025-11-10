@@ -57,6 +57,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [showCompletedExercises, setShowCompletedExercises] = useState(false);
   const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
 
   // Get groups for display (memoized to prevent re-creation on every render)
@@ -366,10 +367,60 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       {/* Scrollable Exercise List */}
       <div className="flex-1 overflow-y-auto pb-6" style={{ paddingBottom: '24px' }}>
         <div className="px-4 py-6 space-y-4">
+          {/* Completed Exercises - Collapsed by default */}
+          {session.exercises.some(ex => ex.completed) && (
+            <div className="mb-4">
+              <button
+                onClick={() => setShowCompletedExercises(!showCompletedExercises)}
+                className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 active:bg-green-200 border-2 border-green-200 rounded-xl transition-all duration-200"
+              >
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-semibold text-green-900">
+                    Completed ({session.exercises.filter(ex => ex.completed).length})
+                  </span>
+                </div>
+                <ChevronDown 
+                  className={`w-5 h-5 text-green-700 transition-transform duration-200 ${showCompletedExercises ? '' : '-rotate-90'}`}
+                />
+              </button>
+              
+              {/* Show completed exercises when expanded */}
+              {showCompletedExercises && (
+                <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  {session.exercises.map((exercise, index) => {
+                    if (!exercise.completed) return null;
+                    
+                    return (
+                      <button
+                        key={exercise.session_exercise_id}
+                        onClick={() => setEditingExerciseIndex(index)}
+                        className="w-full text-left p-4 bg-white border-2 border-green-200 rounded-lg hover:shadow-md active:scale-[0.99] transition-all duration-200"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 flex-1">
+                            <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+                            <span className="font-medium text-gray-900">{exercise.exercise_name}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {exercise.set_records.length} sets
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Active and Pending Exercises */}
           {session.exercises.map((exercise, index) => {
+            // Skip completed exercises (they're in collapsed section above)
+            if (exercise.completed) return null;
+            
             const isActive = index === session.current_exercise_index;
-            const isPending = !exercise.completed && !isActive;
-            const isCompleted = exercise.completed;
+            const isPending = !isActive; // All remaining exercises are pending since completed are filtered out
             
             // Check if this is the first exercise in a group
             const group = exercise.group_id ? groups[exercise.group_id] : null;
@@ -425,8 +476,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 badge: 'bg-gray-100 text-gray-600',
                 glow: 'shadow-sm',
               };
-            } else if (isCompleted) {
-              colorClasses.glow = 'shadow-sm';
             }
             
             return (
@@ -476,13 +525,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 {(!group || !collapsedGroups.has(group.id)) && (
                   <button
                     onClick={() => {
-                      if (isCompleted && exercise.set_records.length > 0) {
-                        // Open quick edit modal for completed exercises
-                        setEditingExerciseIndex(index);
-                      } else {
-                        // Activate for recording
-                        updateExerciseIndex(index);
-                      }
+                      // Always activate for recording since completed exercises are filtered out
+                      updateExerciseIndex(index);
                     }}
                     className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
                       isActive ? 'scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50' : 'hover:scale-[1.01] hover:shadow-md active:scale-[0.99]'
@@ -494,9 +538,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            {isCompleted && (
-                              <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
-                            )}
                             {isActive && (
                               <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
                             )}
@@ -526,18 +567,14 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         
                         {/* Progress Indicator */}
                         <div className="ml-4 text-right shrink-0">
-                          {isCompleted ? (
-                            <div className="text-green-600 font-bold">✓</div>
-                          ) : (
-                            <div className={`text-sm font-semibold ${colorClasses.text}`}>
-                              {exercise.sets_completed}/{exercise.sets_target}
-                            </div>
-                          )}
+                          <div className={`text-sm font-semibold ${colorClasses.text}`}>
+                            {exercise.sets_completed}/{exercise.sets_target}
+                          </div>
                         </div>
                       </div>
                       
                       {/* Progress Bar (if in progress) */}
-                      {!isCompleted && exercise.sets_completed > 0 && (
+                      {exercise.sets_completed > 0 && (
                         <div className="mt-2">
                           <div className="w-full bg-gray-200 rounded-full h-1.5">
                             <div
