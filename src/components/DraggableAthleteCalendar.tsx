@@ -126,7 +126,10 @@ function DraggableAssignment({
               <Dumbbell className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`} />
             )}
           </div>
-          <span className={`font-semibold truncate ${compact ? "text-xs" : "text-xs"}`}>
+          <span 
+            className={`font-semibold ${compact ? "text-xs" : "text-xs"} overflow-hidden text-ellipsis whitespace-nowrap`}
+            title={assignment.workoutPlanName || "Workout"}
+          >
             {assignment.workoutPlanName || "Workout"}
           </span>
         </div>
@@ -492,7 +495,9 @@ export default function DraggableAthleteCalendar({
                         assignedGroups={getAssignmentGroups(assignment)}
                       />
                     }
-                    openDelay={300}
+                    openDelay={150}
+                    closeDelay={150}
+                    offset={8}
                   />
                 ))}
               </div>

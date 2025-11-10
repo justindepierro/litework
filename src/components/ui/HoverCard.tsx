@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Dumbbell, Users } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
+import { KPITagBadge } from "@/components/ui/KPITagBadge";
 
 interface HoverCardProps {
   /** Content that triggers the hover card */
@@ -34,7 +36,7 @@ export function HoverCard({
   openDelay = 200,
   closeDelay = 100,
   side = "right",
-  offset = 16,
+  offset = 8,
   maxWidth = 440,
   disabled = false,
   className = "",
@@ -56,7 +58,7 @@ export function HoverCard({
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const cardWidth = maxWidth;
-    const cardHeight = cardRef.current?.offsetHeight || 300;
+    const cardHeight = cardRef.current?.offsetHeight || 400; // Better estimate
 
     let top = 0;
     let left = 0;
@@ -82,15 +84,21 @@ export function HoverCard({
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const padding = 16;
+    const padding = 12;
 
-    if (left < padding) left = padding;
+    // Smart edge detection
+    if (left < padding) {
+      left = padding;
+    }
     if (left + cardWidth > viewportWidth - padding) {
       left = viewportWidth - cardWidth - padding;
     }
-    if (top < padding) top = padding;
+    
+    if (top < padding) {
+      top = padding;
+    }
     if (top + cardHeight > viewportHeight - padding) {
-      top = viewportHeight - cardHeight - padding;
+      top = Math.max(padding, viewportHeight - cardHeight - padding);
     }
 
     setPosition({ top, left });
@@ -147,7 +155,7 @@ export function HoverCard({
   const card = isOpen && mounted ? (
     <div
       ref={cardRef}
-      className={`fixed z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-none
+      className={`fixed z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-auto
         animate-in fade-in-0 zoom-in-95 duration-150 ${className}`}
       style={{
         top: `${position.top}px`,
@@ -197,16 +205,38 @@ export function WorkoutPreviewCard({
 }) {
   const [workoutDetails, setWorkoutDetails] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [kpiTags, setKpiTags] = useState<Map<string, any>>(new Map());
 
+  // Fetch workout details and KPI tags
   useEffect(() => {
     if (!workoutPlanId) return;
 
     setLoading(true);
-    fetch(`/api/workouts/${workoutPlanId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.workout) {
-          setWorkoutDetails(data.workout);
+    
+    // Fetch workout and KPI tags in parallel
+    Promise.all([
+      fetch(`/api/workouts/${workoutPlanId}`).then(res => res.json()),
+      fetch('/api/kpi-tags').then(res => res.json())
+    ])
+      .then(([workoutData, kpiData]) => {
+        if (workoutData.workout) {
+          setWorkoutDetails(workoutData.workout);
+        }
+        
+        // Build a map of exercise names to KPI tags
+        if (kpiData.tags) {
+          const tagMap = new Map();
+          kpiData.tags.forEach((tag: any) => {
+            // Map common exercise names to KPI tags
+            const nameLower = tag.name.toLowerCase();
+            tagMap.set(nameLower, tag);
+            
+            // Also map display name variations
+            if (tag.displayName) {
+              tagMap.set(tag.displayName.toLowerCase(), tag);
+            }
+          });
+          setKpiTags(tagMap);
         }
       })
       .catch((err) => console.error("Failed to fetch workout details:", err))
@@ -217,13 +247,23 @@ export function WorkoutPreviewCard({
   const groups = workoutDetails?.groups || [];
   const displayCount = exercises.length || exerciseCount || 0;
 
-  const kpiExercises = exercises.filter((ex: any) => 
-    ex.exerciseName?.toLowerCase().includes('squat') ||
-    ex.exerciseName?.toLowerCase().includes('bench') ||
-    ex.exerciseName?.toLowerCase().includes('deadlift') ||
-    ex.exerciseName?.toLowerCase().includes('press') ||
-    ex.isKPI
-  );
+  // Find exercises that map to KPIs
+  const getKpiForExercise = (exerciseName: string) => {
+    const nameLower = exerciseName.toLowerCase();
+    
+    // Check for direct matches or partial matches
+    for (const [key, tag] of kpiTags.entries()) {
+      if (nameLower.includes(key) || key.includes(nameLower.split(' ')[0])) {
+        return tag;
+      }
+    }
+    return null;
+  };
+
+  const kpiExercises = exercises.filter((ex: any) => {
+    const kpi = getKpiForExercise(ex.exerciseName || '');
+    return kpi !== null || ex.isKPI || ex.kpiTagIds?.length > 0;
+  });
 
   const groupedExercises = exercises.reduce((acc: any, ex: any) => {
     const groupId = ex.groupId || 'ungrouped';
@@ -234,21 +274,21 @@ export function WorkoutPreviewCard({
 
   return (
     <div className="w-[400px]">
-      {/* Header - Sleek gradient */}
+      {/* Header - Clean gradient with white text */}
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 px-5 py-4">
         <h3 className="font-bold text-white text-lg leading-tight mb-1.5">{workoutName}</h3>
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-blue-100">
+          <div className="flex items-center gap-2 text-sm text-white">
             <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent" />
-            <span>Loading...</span>
+            <span className="text-white">Loading...</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 text-sm text-blue-50">
-            <span className="font-semibold">{displayCount} exercises</span>
+          <div className="flex items-center gap-2.5 text-sm text-white/95">
+            <span className="font-semibold text-white">{displayCount} exercises</span>
             {duration && (
               <>
-                <span className="text-blue-300">•</span>
-                <span>{duration}</span>
+                <span className="text-white/60">•</span>
+                <span className="text-white/90">{duration}</span>
               </>
             )}
           </div>
@@ -264,44 +304,47 @@ export function WorkoutPreviewCard({
             </div>
             <div className="flex flex-wrap gap-1.5">
               {assignedGroups.map((groupName, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-xs font-semibold"
-                >
+                <Badge key={idx} variant="success" size="sm">
                   <Users className="w-3 h-3" />
                   {groupName}
-                </span>
+                </Badge>
               ))}
             </div>
           </div>
         )}
 
-        {/* KPIs */}
+        {/* KPIs - Key Lifts with color badges (NO REPS) */}
         {!loading && kpiExercises.length > 0 && (
           <div>
             <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
               Key Lifts
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {kpiExercises.map((ex: any, idx: number) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg text-xs font-semibold shadow-sm"
-                >
-                  <Dumbbell className="w-3 h-3" />
-                  {ex.exerciseName}
-                  {ex.sets && ex.reps && (
-                    <span className="ml-0.5 opacity-90 font-medium">
-                      {ex.sets}×{ex.reps}
+            <div className="space-y-2">
+              {kpiExercises.map((ex: any, idx: number) => {
+                const kpiTag = getKpiForExercise(ex.exerciseName || '');
+                return (
+                  <div key={idx} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                    <Dumbbell className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm font-medium text-gray-900 flex-1">
+                      {ex.exerciseName}
                     </span>
-                  )}
-                </span>
-              ))}
+                    {kpiTag && (
+                      <KPITagBadge
+                        name={kpiTag.name}
+                        displayName={kpiTag.displayName}
+                        color={kpiTag.color}
+                        size="sm"
+                        showTooltip={false}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* Exercise Groups */}
+        {/* Exercise Groups - Full details */}
         {!loading && groups.length > 0 && (
           <div>
             <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -313,9 +356,9 @@ export function WorkoutPreviewCard({
                 if (groupExercises.length === 0) return null;
                 
                 const configs = {
-                  superset: { label: 'Superset', color: 'purple', bg: 'bg-purple-50', border: 'border-purple-200' },
-                  circuit: { label: 'Circuit', color: 'orange', bg: 'bg-orange-50', border: 'border-orange-200' },
-                  section: { label: 'Section', color: 'blue', bg: 'bg-blue-50', border: 'border-blue-200' },
+                  superset: { label: 'Superset', color: 'purple', bg: 'bg-purple-50', border: 'border-purple-200', badge: 'bg-purple-600' },
+                  circuit: { label: 'Circuit', color: 'orange', bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-600' },
+                  section: { label: 'Section', color: 'blue', bg: 'bg-blue-50', border: 'border-blue-200', badge: 'bg-blue-600' },
                 };
                 
                 const cfg = configs[group.groupType as keyof typeof configs] || configs.section;
@@ -323,32 +366,46 @@ export function WorkoutPreviewCard({
                 return (
                   <div key={group.id} className={`${cfg.bg} border ${cfg.border} rounded-lg p-3`}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`px-2 py-0.5 bg-${cfg.color}-600 text-white rounded text-xs font-bold`}>
-                        {cfg.label}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 ${cfg.badge} text-white rounded text-xs font-bold`}>
+                          {cfg.label}
+                        </span>
+                        {group.sets && group.sets > 1 && (
+                          <span className="text-xs font-semibold text-gray-600">
+                            {group.sets} {group.groupType === 'circuit' ? 'rounds' : 'sets'}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-xs text-gray-500 font-medium">
                         {groupExercises.length} {groupExercises.length === 1 ? 'exercise' : 'exercises'}
                       </span>
                     </div>
-                    <div className="space-y-1.5">
-                      {groupExercises.slice(0, 3).map((ex: any, idx: number) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm">
-                          <span className="text-gray-400 mt-0.5">•</span>
-                          <div className="flex-1">
-                            <span className="text-gray-900 font-medium">{ex.exerciseName}</span>
-                            {ex.sets && ex.reps && (
-                              <span className="text-gray-500 ml-2 text-xs">
-                                {ex.sets}×{ex.reps}
-                              </span>
+                    <div className="space-y-2">
+                      {groupExercises.map((ex: any, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2 text-sm bg-white rounded px-2 py-1.5">
+                          <span className="text-gray-400 mt-0.5 font-bold">{idx + 1}.</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-gray-900 font-medium truncate">{ex.exerciseName}</span>
+                              {ex.sets && ex.reps && (
+                                <span className="text-gray-600 text-xs font-semibold whitespace-nowrap">
+                                  {ex.sets}×{ex.reps}
+                                </span>
+                              )}
+                            </div>
+                            {ex.weight && (
+                              <div className="text-xs text-gray-500 mt-0.5">
+                                {ex.weight} {ex.weightUnit || 'lbs'}
+                              </div>
+                            )}
+                            {ex.tempo && (
+                              <div className="text-xs text-gray-500">
+                                Tempo: {ex.tempo}
+                              </div>
                             )}
                           </div>
                         </div>
                       ))}
-                      {groupExercises.length > 3 && (
-                        <div className="text-xs text-gray-500 italic pl-4">
-                          +{groupExercises.length - 3} more
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
@@ -357,31 +414,33 @@ export function WorkoutPreviewCard({
           </div>
         )}
 
-        {/* Ungrouped */}
+        {/* Ungrouped - Show all exercises */}
         {!loading && groupedExercises.ungrouped && groupedExercises.ungrouped.length > 0 && (
           <div>
             <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
               Additional
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-1.5">
-              {groupedExercises.ungrouped.slice(0, 4).map((ex: any, idx: number) => (
-                <div key={idx} className="flex items-start gap-2 text-sm">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-2">
+              {groupedExercises.ungrouped.map((ex: any, idx: number) => (
+                <div key={idx} className="flex items-start gap-2 text-sm bg-white rounded px-2 py-1.5">
                   <span className="text-gray-400 mt-0.5">•</span>
-                  <div className="flex-1">
-                    <span className="text-gray-900 font-medium">{ex.exerciseName}</span>
-                    {ex.sets && ex.reps && (
-                      <span className="text-gray-500 ml-2 text-xs">
-                        {ex.sets}×{ex.reps}
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-gray-900 font-medium truncate">{ex.exerciseName}</span>
+                      {ex.sets && ex.reps && (
+                        <span className="text-gray-600 text-xs font-semibold whitespace-nowrap">
+                          {ex.sets}×{ex.reps}
+                        </span>
+                      )}
+                    </div>
+                    {ex.weight && (
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {ex.weight} {ex.weightUnit || 'lbs'}
+                      </div>
                     )}
                   </div>
                 </div>
               ))}
-              {groupedExercises.ungrouped.length > 4 && (
-                <div className="text-xs text-gray-500 italic pl-4">
-                  +{groupedExercises.ungrouped.length - 4} more
-                </div>
-              )}
             </div>
           </div>
         )}
