@@ -49,9 +49,7 @@ export function useAthleteFilters(
   const filteredAthletes = useMemo(() => {
     return athletes.filter((athlete) => {
       const matchesSearch =
-        athlete.fullName
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
+        athlete.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         athlete.email.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" ||

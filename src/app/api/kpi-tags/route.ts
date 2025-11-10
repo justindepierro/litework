@@ -4,7 +4,7 @@ import { withAuth } from "@/lib/auth-server";
 
 /**
  * GET /api/kpi-tags
- * 
+ *
  * Fetch all available KPI tags (everyone can read)
  */
 export async function GET(request: NextRequest) {
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/kpi-tags
- * 
+ *
  * Create a new KPI tag (coaches/admins only)
  */
 export async function POST(request: NextRequest) {
@@ -67,35 +67,73 @@ export async function POST(request: NextRequest) {
       }
 
       const body = await request.json();
-      const { name, displayName, color, description, kpiType, primaryExerciseId } = body;
+      const {
+        name,
+        display_name,
+        displayName,
+        color,
+        description,
+        kpi_type,
+        kpiType,
+        primary_exercise_id,
+        primaryExerciseId,
+      } = body;
+
+      // Handle both camelCase and snake_case
+      const finalName = name;
+      const finalDisplayName = display_name || displayName;
+      const finalKpiType = kpi_type || kpiType;
+      const finalDescription = description;
+      const finalPrimaryExerciseId = primary_exercise_id || primaryExerciseId;
 
       // Validation
-      if (!name || !displayName || !color || !kpiType) {
+      if (!finalName || !finalDisplayName || !color || !finalKpiType) {
         return NextResponse.json(
           { success: false, error: "Missing required fields" },
           { status: 400 }
         );
       }
 
-      // Validate name format (uppercase, underscores only)
-      if (!/^[A-Z_]+$/.test(name)) {
+      // Validate name format (uppercase, underscores, numbers only)
+      if (!/^[A-Z0-9_]+$/.test(finalName)) {
         return NextResponse.json(
-          { success: false, error: "Name must be uppercase letters and underscores only" },
+          {
+            success: false,
+            error:
+              "Name must be uppercase letters, numbers, and underscores only",
+          },
           { status: 400 }
         );
       }
 
       const supabase = await createClient();
 
+      // Check for existing KPI with same name
+      const { data: existing } = await supabase
+        .from("kpi_tags")
+        .select("id, display_name")
+        .eq("name", finalName)
+        .single();
+
+      if (existing) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `A KPI with the name "${existing.display_name}" (${finalName}) already exists`,
+          },
+          { status: 409 }
+        );
+      }
+
       const { data, error } = await supabase
         .from("kpi_tags")
         .insert({
-          name,
-          display_name: displayName,
+          name: finalName,
+          display_name: finalDisplayName,
           color,
-          description,
-          kpi_type: kpiType,
-          primary_exercise_id: primaryExerciseId,
+          description: finalDescription,
+          kpi_type: finalKpiType,
+          primary_exercise_id: finalPrimaryExerciseId,
           created_by: user.id,
         })
         .select()
@@ -103,8 +141,9 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         console.error("[KPI_TAGS] Error creating tag:", error);
-        
-        if (error.code === "23505") { // Unique violation
+
+        if (error.code === "23505") {
+          // Unique violation
           return NextResponse.json(
             { success: false, error: "A tag with this name already exists" },
             { status: 409 }
@@ -144,7 +183,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * PATCH /api/kpi-tags
- * 
+ *
  * Update a KPI tag (coaches/admins only)
  */
 export async function PATCH(request: NextRequest) {
@@ -159,7 +198,14 @@ export async function PATCH(request: NextRequest) {
       }
 
       const body = await request.json();
-      const { id, displayName, color, description, kpiType, primaryExerciseId } = body;
+      const {
+        id,
+        displayName,
+        color,
+        description,
+        kpiType,
+        primaryExerciseId,
+      } = body;
 
       if (!id) {
         return NextResponse.json(
@@ -175,7 +221,8 @@ export async function PATCH(request: NextRequest) {
       if (color) updates.color = color;
       if (description !== undefined) updates.description = description;
       if (kpiType) updates.kpi_type = kpiType;
-      if (primaryExerciseId !== undefined) updates.primary_exercise_id = primaryExerciseId;
+      if (primaryExerciseId !== undefined)
+        updates.primary_exercise_id = primaryExerciseId;
 
       const { data, error } = await supabase
         .from("kpi_tags")
@@ -219,7 +266,7 @@ export async function PATCH(request: NextRequest) {
 
 /**
  * DELETE /api/kpi-tags
- * 
+ *
  * Delete a KPI tag (coaches/admins only)
  */
 export async function DELETE(request: NextRequest) {
@@ -245,10 +292,7 @@ export async function DELETE(request: NextRequest) {
 
       const supabase = await createClient();
 
-      const { error } = await supabase
-        .from("kpi_tags")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("kpi_tags").delete().eq("id", id);
 
       if (error) {
         console.error("[KPI_TAGS] Error deleting tag:", error);

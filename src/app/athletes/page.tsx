@@ -1,7 +1,14 @@
 "use client";
 
 import { useRequireCoach } from "@/hooks/use-auth-guard";
-import { useState, useEffect, lazy, useMemo, useCallback, Suspense } from "react";
+import {
+  useState,
+  useEffect,
+  lazy,
+  useMemo,
+  useCallback,
+  Suspense,
+} from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,6 +20,8 @@ import {
   Clock,
   Users,
   History,
+  Target,
+  Tag,
 } from "lucide-react";
 import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
@@ -21,6 +30,8 @@ import {
   AthleteKPI,
   AthleteGroup,
   WorkoutAssignment,
+  KPITag,
+  BulkAssignKPIsResponse,
 } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -59,6 +70,13 @@ const AthleteDetailModal = lazy(
 const IndividualAssignmentModal = lazy(
   () => import("@/components/IndividualAssignmentModal")
 );
+const KPIManagementModal = lazy(
+  () => import("@/components/KPIManagementModal")
+);
+const BulkKPIAssignmentModal = lazy(
+  () => import("@/components/BulkKPIAssignmentModal")
+);
+const AthleteEditModal = lazy(() => import("@/components/AthleteEditModal"));
 
 interface AthleteCommunication {
   unreadMessages: number;
@@ -74,6 +92,8 @@ interface EnhancedAthlete extends UserType {
   bio?: string | null;
   injuryStatus?: string;
   lastActivity?: Date | null;
+  inviteId?: string; // For invited athletes
+  inviteEmail?: string; // Email from invites table
   stats?: {
     totalWorkouts: number;
     completedWorkouts: number;
@@ -94,6 +114,7 @@ export default function AthletesPage() {
     athletes,
     groups,
     workoutPlans,
+    loadAthletes,
     loadGroups,
     setAthletes,
     setGroups,
@@ -112,8 +133,14 @@ export default function AthletesPage() {
   const [showManageGroupModal, setShowManageGroupModal] = useState(false);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [showEditEmailModal, setShowEditEmailModal] = useState(false);
+  const [showEditAthleteModal, setShowEditAthleteModal] = useState(false);
   const [showIndividualAssignment, setShowIndividualAssignment] =
     useState(false);
+  const [showKPIManagementModal, setShowKPIManagementModal] = useState(false);
+  const [showBulkKPIAssignmentModal, setShowBulkKPIAssignmentModal] =
+    useState(false);
+  const [availableKPIs, setAvailableKPIs] = useState<KPITag[]>([]);
+  const [editingKPI, setEditingKPI] = useState<KPITag | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
   const [selectedAthlete, setSelectedAthlete] =
     useState<EnhancedAthlete | null>(null);
@@ -145,7 +172,6 @@ export default function AthletesPage() {
     priority: "normal",
     notifyViaEmail: false,
   });
-
 
   // Handle group deletion
   const handleDeleteGroup = async (groupId: string) => {
@@ -200,6 +226,25 @@ export default function AthletesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Load available KPI tags
+  useEffect(() => {
+    const loadKPIs = async () => {
+      try {
+        const response = await fetch("/api/kpi-tags");
+        if (response.ok) {
+          const result = await response.json();
+          setAvailableKPIs(result.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to load KPI tags:", error);
+      }
+    };
+
+    if (!isLoading) {
+      loadKPIs();
+    }
+  }, [isLoading]);
+
   const handleAssignWorkout = async (
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
   ) => {
@@ -207,7 +252,7 @@ export default function AthletesPage() {
       const response = await fetch("/api/assignments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assignments: [assignment] }),
+        body: JSON.stringify(assignment),
       });
 
       const data = await response.json();
@@ -459,7 +504,10 @@ export default function AthletesPage() {
     }
   };
 
-  const handleAddAthleteToGroup = async (groupId: string, athleteId: string) => {
+  const handleAddAthleteToGroup = async (
+    groupId: string,
+    athleteId: string
+  ) => {
     try {
       const response = await fetch("/api/groups/members", {
         method: "POST",
@@ -748,6 +796,22 @@ export default function AthletesPage() {
               Bulk Actions
             </Button>
             <Button
+              onClick={() => setShowKPIManagementModal(true)}
+              variant="secondary"
+              className="shadow-md hover:shadow-lg bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200"
+              leftIcon={<Tag className="w-5 h-5 sm:w-4 sm:h-4" />}
+            >
+              Create KPI
+            </Button>
+            <Button
+              onClick={() => setShowBulkKPIAssignmentModal(true)}
+              variant="secondary"
+              className="shadow-md hover:shadow-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border-cyan-200"
+              leftIcon={<Target className="w-5 h-5 sm:w-4 sm:h-4" />}
+            >
+              Assign KPIs
+            </Button>
+            <Button
               onClick={() => setShowGroupFormModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
@@ -926,14 +990,16 @@ export default function AthletesPage() {
       {showDetailModal && selectedAthlete && (
         <AthleteDetailModal
           athlete={selectedAthlete}
-          groups={groups}
+          groups={groups.filter((g) =>
+            selectedAthlete.groupIds?.includes(g.id!)
+          )}
           onClose={() => {
             setShowDetailModal(false);
             setSelectedAthlete(null);
           }}
           onEdit={() => {
             setShowDetailModal(false);
-            // TODO: Open edit modal
+            setShowEditAthleteModal(true);
           }}
           onMessage={() => {
             setShowDetailModal(false);
@@ -942,6 +1008,9 @@ export default function AthletesPage() {
           onViewProgress={() => {
             setShowDetailModal(false);
             handleAnalytics(selectedAthlete);
+          }}
+          onResendInvite={async (inviteId) => {
+            await handleResendInvite(inviteId);
           }}
         />
       )}
@@ -1015,7 +1084,87 @@ export default function AthletesPage() {
             }}
             athletes={[selectedAthlete]}
             workoutPlans={workoutPlans}
+            currentUserId={user?.id}
             onAssignWorkout={handleAssignWorkout}
+          />
+        </Suspense>
+      )}
+
+      {/* KPI Management Modal */}
+      {showKPIManagementModal && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <KPIManagementModal
+            isOpen={showKPIManagementModal}
+            onClose={() => {
+              setShowKPIManagementModal(false);
+              setEditingKPI(null);
+            }}
+            onSave={(kpi: KPITag) => {
+              // Add or update KPI in local state
+              if (editingKPI) {
+                setAvailableKPIs(
+                  availableKPIs.map((k) => (k.id === kpi.id ? kpi : k))
+                );
+                toast.success("KPI updated successfully");
+              } else {
+                setAvailableKPIs([...availableKPIs, kpi]);
+                toast.success("KPI created successfully");
+              }
+              setShowKPIManagementModal(false);
+              setEditingKPI(null);
+            }}
+            editingKPI={editingKPI}
+          />
+        </Suspense>
+      )}
+
+      {/* Bulk KPI Assignment Modal */}
+      {showBulkKPIAssignmentModal && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <BulkKPIAssignmentModal
+            isOpen={showBulkKPIAssignmentModal}
+            onClose={() => setShowBulkKPIAssignmentModal(false)}
+            onComplete={(result: BulkAssignKPIsResponse) => {
+              const { totalAssigned, totalSkipped } = result;
+
+              if (totalAssigned > 0) {
+                let message = `Successfully assigned KPIs to ${totalAssigned} active athlete${totalAssigned === 1 ? "" : "s"}`;
+                if (totalSkipped > 0) {
+                  message += ` (${totalSkipped} already assigned)`;
+                }
+                message += `. Invited athletes will receive KPIs automatically when they accept.`;
+                toast.success(message);
+              } else if (totalSkipped > 0) {
+                toast.info(
+                  "All active athletes already have these KPIs assigned. Invited athletes will receive them when they accept."
+                );
+              } else {
+                toast.info(
+                  "Selected group contains only invited athletes. They will receive KPIs when they accept their invites."
+                );
+              }
+              setShowBulkKPIAssignmentModal(false);
+            }}
+            availableGroups={groups}
+            availableAthletes={athletes.filter((a) => a.status === "active")}
+            availableKPIs={availableKPIs}
+          />
+        </Suspense>
+      )}
+
+      {/* Athlete Edit Modal */}
+      {showEditAthleteModal && selectedAthlete && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <AthleteEditModal
+            athlete={selectedAthlete}
+            onClose={() => {
+              setShowEditAthleteModal(false);
+            }}
+            onSuccess={() => {
+              setShowEditAthleteModal(false);
+              loadAthletes(); // Refresh athlete data
+              toast.success("Athlete profile updated successfully");
+            }}
           />
         </Suspense>
       )}

@@ -1,6 +1,13 @@
 "use client";
 
-import { Users, MoreVertical, Edit3, Archive, Trash2, Plus } from "lucide-react";
+import {
+  Users,
+  MoreVertical,
+  Edit3,
+  Archive,
+  Trash2,
+  Plus,
+} from "lucide-react";
 import { AthleteGroup } from "@/types";
 
 interface GroupsSectionProps {

@@ -153,7 +153,10 @@ export default function MessageModal({
               <div className="flex items-start gap-3">
                 <MessageCircle className="h-5 w-5 text-accent-green shrink-0 mt-0.5" />
                 <div>
-                  <Heading level="h4" className="text-sm mb-1 text-accent-green">
+                  <Heading
+                    level="h4"
+                    className="text-sm mb-1 text-accent-green"
+                  >
                     Communication Tip
                   </Heading>
                   <Body variant="secondary" className="text-sm">

@@ -38,7 +38,9 @@ export default function AthleteStats({
     <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-6">
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-info-lighter rounded-xl sm:bg-transparent sm:p-0">
         <Users className="h-5 w-5 text-accent-blue" />
-        <span className="text-sm font-medium">{athleteCounts.active} Active</span>
+        <span className="text-sm font-medium">
+          {athleteCounts.active} Active
+        </span>
       </div>
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-orange-50 rounded-xl sm:bg-transparent sm:p-0">
         <Clock className="h-5 w-5 text-orange-600" />

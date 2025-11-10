@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { User, WorkoutPlan, WorkoutAssignment } from "@/types";
 import { Users, Search, Check, X } from "lucide-react";
-import DateTimePicker from "./DateTimePicker";
-import { Input, Textarea } from "@/components/ui/Input";
+import WorkoutAssignmentForm from "./WorkoutAssignmentForm";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Alert } from "@/components/ui/Alert";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import {
@@ -21,6 +19,7 @@ interface IndividualAssignmentModalProps {
   onClose: () => void;
   athletes: User[];
   workoutPlans: WorkoutPlan[];
+  currentUserId?: string; // User ID of the coach assigning
   onAssignWorkout: (
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
   ) => void;
@@ -31,6 +30,7 @@ export default function IndividualAssignmentModal({
   onClose,
   athletes,
   workoutPlans,
+  currentUserId,
   onAssignWorkout,
 }: IndividualAssignmentModalProps) {
   const [selectedAthleteIds, setSelectedAthleteIds] = useState<string[]>([]);
@@ -120,7 +120,7 @@ export default function IndividualAssignmentModal({
         workoutPlanName: selectedWorkout.name,
         assignmentType: "individual",
         athleteId: athleteId,
-        assignedBy: "coach1", // TODO: Get from auth context
+        assignedBy: currentUserId || "unknown",
         assignedDate: new Date(),
         scheduledDate: selectedDate,
         startTime,
@@ -163,105 +163,32 @@ export default function IndividualAssignmentModal({
         <ModalContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column - Workout & Schedule */}
-            <div className="space-y-6">
-              {/* Workout Selection */}
-              <div>
-                <label className="text-body-primary font-medium block mb-3">
-                  Select Workout
-                </label>
-                <select
-                  value={selectedWorkoutId}
-                  onChange={(e) => {
-                    setSelectedWorkoutId(e.target.value);
-                    if (errors.workout) {
-                      setErrors((prev) => ({ ...prev, workout: "" }));
-                    }
-                  }}
-                  className={`w-full p-3 border rounded-md ${
-                    errors.workout
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-silver-400 focus:ring-primary"
-                  } focus:outline-none focus:ring-2`}
-                >
-                  <option value="">Choose a workout...</option>
-                  {workoutPlans.map((workout) => (
-                    <option key={workout.id} value={workout.id}>
-                      {workout.name} ({workout.estimatedDuration} min)
-                    </option>
-                  ))}
-                </select>
-                {errors.workout && (
-                  <p className="text-red-500 text-sm mt-1">{errors.workout}</p>
-                )}
-              </div>
-
-              {/* Date & Time Picker */}
-              <DateTimePicker
+            <div>
+              <WorkoutAssignmentForm
+                selectedWorkoutId={selectedWorkoutId}
+                onWorkoutChange={(id) => {
+                  setSelectedWorkoutId(id);
+                  if (errors.workout) {
+                    setErrors((prev) => ({ ...prev, workout: "" }));
+                  }
+                }}
+                workoutPlans={workoutPlans}
+                workoutError={errors.workout}
                 selectedDate={selectedDate}
-                startTime={startTime}
-                endTime={endTime}
                 onDateChange={setSelectedDate}
+                startTime={startTime}
                 onStartTimeChange={setStartTime}
+                endTime={endTime}
                 onEndTimeChange={setEndTime}
-                showTimePicker={true}
+                timeError={errors.time}
+                location={location}
+                onLocationChange={setLocation}
+                notes={notes}
+                onNotesChange={setNotes}
+                showWorkoutPreview={true}
+                notesPlaceholder="Any special instructions or coaching notes..."
+                notesRows={4}
               />
-              {errors.time && (
-                <p className="text-red-500 text-sm mt-1">{errors.time}</p>
-              )}
-
-              {/* Location */}
-              <Input
-                label="Location (optional)"
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g., Main Gym, Weight Room"
-                fullWidth
-              />
-
-              {/* Notes */}
-              <Textarea
-                label="Notes (optional)"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={4}
-                placeholder="Any special instructions or coaching notes..."
-                fullWidth
-              />
-
-              {/* Workout Preview */}
-              {selectedWorkout && (
-                <Card variant="default" padding="md">
-                  <h3 className="text-heading-secondary text-lg mb-3">
-                    Workout Preview
-                  </h3>
-                  <div className="space-y-2">
-                    {selectedWorkout.exercises
-                      .slice(0, 5)
-                      .map((exercise, index) => (
-                        <div
-                          key={exercise.id}
-                          className="flex items-center gap-3 text-sm"
-                        >
-                          <span className="text-body-small w-6">
-                            {index + 1}.
-                          </span>
-                          <span className="flex-1">
-                            {exercise.exerciseName}
-                          </span>
-                          <span className="text-body-small">
-                            {exercise.sets}×{exercise.reps}
-                          </span>
-                        </div>
-                      ))}
-                    {selectedWorkout.exercises.length > 5 && (
-                      <div className="text-body-small text-silver-600 text-center pt-2">
-                        +{selectedWorkout.exercises.length - 5} more exercises
-                      </div>
-                    )}
-                  </div>
-                </Card>
-              )}
             </div>
 
             {/* Right Column - Athlete Selection */}

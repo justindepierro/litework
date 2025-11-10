@@ -4,7 +4,7 @@ import { withAuth } from "@/lib/auth-server";
 
 /**
  * POST /api/exercise-kpi-tags
- * 
+ *
  * Add KPI tag(s) to a workout exercise (coaches/admins only)
  */
 export async function POST(request: NextRequest) {
@@ -44,10 +44,14 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         console.error("[EXERCISE_KPI_TAGS] Error adding tags:", error);
-        
-        if (error.code === "23505") { // Unique violation
+
+        if (error.code === "23505") {
+          // Unique violation
           return NextResponse.json(
-            { success: false, error: "One or more tags are already assigned to this exercise" },
+            {
+              success: false,
+              error: "One or more tags are already assigned to this exercise",
+            },
             { status: 409 }
           );
         }
@@ -71,7 +75,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * DELETE /api/exercise-kpi-tags
- * 
+ *
  * Remove a KPI tag from a workout exercise (coaches/admins only)
  */
 export async function DELETE(request: NextRequest) {
@@ -123,7 +127,11 @@ export async function DELETE(request: NextRequest) {
         }
       } else {
         return NextResponse.json(
-          { success: false, error: "Must provide either id or both workoutExerciseId and kpiTagId" },
+          {
+            success: false,
+            error:
+              "Must provide either id or both workoutExerciseId and kpiTagId",
+          },
           { status: 400 }
         );
       }

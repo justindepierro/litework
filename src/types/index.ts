@@ -120,6 +120,9 @@ export interface WorkoutExercise {
   percentageMax?: number; // For percentage ranges (e.g., 70-80% of 1RM)
   percentageBaseKPI?: string; // KPI exercise ID to base percentage on (e.g., "bench-press")
 
+  // KPI tracking - exercises can be tagged with KPIs they help develop
+  kpiTagIds?: string[]; // Array of KPI tag IDs this exercise contributes to
+
   // Unilateral exercise flag
   eachSide?: boolean; // If true, perform reps on each side separately (e.g., single-arm rows, Bulgarian split squats)
 
@@ -483,4 +486,54 @@ export interface KPIVolumeSummary {
   totalVolume: number; // reps * weight
   avgRpe: number;
   maxWeight: number;
+}
+
+// ============================================================================
+// Athlete KPI Assignments
+// ============================================================================
+
+// Links athletes to their active KPI tags
+export interface AthleteAssignedKPI {
+  id: string;
+  athleteId: string;
+  kpiTagId: string;
+  assignedBy?: string;
+  assignedVia?: string; // 'individual' or 'group:{group_id}'
+  assignedAt: Date;
+  isActive: boolean;
+  targetValue?: number;
+  targetDate?: Date;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Athlete KPI assignment with full tag details
+export interface AthleteAssignedKPIWithDetails extends AthleteAssignedKPI {
+  kpiTag: KPITag;
+  athleteName?: string;
+  assignedByName?: string;
+}
+
+// Request body for bulk assigning KPIs
+export interface BulkAssignKPIsRequest {
+  athleteIds: string[]; // Can be populated from group selection
+  kpiTagIds: string[];
+  assignedVia?: string; // 'individual' or 'group:{group_id}'
+  targetValue?: number;
+  targetDate?: string; // ISO date string (YYYY-MM-DD)
+  notes?: string;
+}
+
+// Response from bulk assignment
+export interface BulkAssignKPIsResponse {
+  success: boolean;
+  assignments: Array<{
+    athleteId: string;
+    kpiTagId: string;
+    assignmentId: string;
+    wasAlreadyAssigned: boolean;
+  }>;
+  totalAssigned: number;
+  totalSkipped: number; // Already assigned
 }

@@ -737,6 +737,7 @@ export default function WorkoutsPage() {
               }}
               athletes={athletes}
               workoutPlans={workouts}
+              currentUserId={user?.id}
               onAssignWorkout={handleAssignWorkout}
             />
           </Suspense>

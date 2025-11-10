@@ -101,8 +101,8 @@ export default function EditEmailModal({
                     Ready to Send Invite
                   </Heading>
                   <Body variant="secondary" className="text-sm">
-                    After updating the email, you can use the &ldquo;Resend&rdquo; button
-                    to send the invitation.
+                    After updating the email, you can use the
+                    &ldquo;Resend&rdquo; button to send the invitation.
                   </Body>
                 </div>
               </div>

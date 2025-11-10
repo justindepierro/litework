@@ -27,6 +27,8 @@ export interface InputProps
   inputSize?: "sm" | "md" | "lg";
   /** Full width */
   fullWidth?: boolean;
+  /** Auto-select text on focus (useful for inline editing) */
+  selectOnFocus?: boolean;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -40,9 +42,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       rightIcon,
       inputSize = "md",
       fullWidth = false,
+      selectOnFocus = false,
       className = "",
       type = "text",
       disabled,
+      onFocus,
       ...props
     },
     ref
@@ -51,6 +55,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const isPassword = type === "password";
     const inputType = isPassword && showPassword ? "text" : type;
+
+    // Handle focus with optional text selection
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      if (selectOnFocus) {
+        e.target.select();
+      }
+      onFocus?.(e);
+    };
 
     // Size styles
     const sizeStyles = {
@@ -110,6 +122,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               ${className}
             `}
             disabled={disabled}
+            onFocus={handleFocus}
             {...props}
           />
 
@@ -172,6 +185,8 @@ export interface TextareaProps
   fullWidth?: boolean;
   /** Auto-resize based on content */
   autoResize?: boolean;
+  /** Auto-select text on focus (useful for inline editing) */
+  selectOnFocus?: boolean;
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -182,8 +197,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       error,
       fullWidth = false,
       autoResize = false,
+      selectOnFocus = false,
       className = "",
       disabled,
+      onFocus,
       ...props
     },
     ref
@@ -192,6 +209,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     // Combine refs
     React.useImperativeHandle(ref, () => textareaRef.current!);
+
+    // Handle focus with optional text selection
+    const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+      if (selectOnFocus) {
+        e.target.select();
+      }
+      onFocus?.(e);
+    };
 
     // Auto-resize functionality
     React.useEffect(() => {
@@ -238,6 +263,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             ${className}
           `}
           disabled={disabled}
+          onFocus={handleFocus}
           {...props}
         />
 

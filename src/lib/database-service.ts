@@ -124,6 +124,7 @@ export const getAllGroups = async (): Promise<AthleteGroup[]> => {
     coachId: group.coach_id,
     athleteIds: group.athlete_ids || [],
     color: group.color,
+    archived: group.archived || false,
     createdAt: new Date(group.created_at),
     updatedAt: new Date(group.updated_at),
   }));
@@ -153,6 +154,7 @@ export const getGroupById = async (
     coachId: data.coach_id,
     athleteIds: data.athlete_ids || [],
     color: data.color,
+    archived: data.archived || false,
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
   };
@@ -340,6 +342,31 @@ export const getAllWorkoutPlans = async (): Promise<WorkoutPlan[]> => {
     .in("workout_plan_id", planIds)
     .order("order_index", { ascending: true });
 
+  // Fetch KPI tags for all exercises
+  const exerciseIds = exercises?.map((ex) => ex.id) || [];
+  let exerciseKpiTags: Record<string, string[]> = {};
+
+  if (exerciseIds.length > 0) {
+    const { data: kpiTags } = await supabase
+      .from("exercise_kpi_tags")
+      .select("workout_exercise_id, kpi_tag_id")
+      .in("workout_exercise_id", exerciseIds);
+
+    // Group KPI tag IDs by exercise ID
+    if (kpiTags) {
+      exerciseKpiTags = kpiTags.reduce(
+        (acc, tag) => {
+          if (!acc[tag.workout_exercise_id]) {
+            acc[tag.workout_exercise_id] = [];
+          }
+          acc[tag.workout_exercise_id].push(tag.kpi_tag_id);
+          return acc;
+        },
+        {} as Record<string, string[]>
+      );
+    }
+  }
+
   const { data: groups } = await supabase
     .from("workout_exercise_groups")
     .select("*")
@@ -380,12 +407,14 @@ export const getAllWorkoutPlans = async (): Promise<WorkoutPlan[]> => {
         eachSide: ex.each_side,
         restTime: ex.rest_time,
         notes: ex.notes,
+        videoUrl: ex.video_url, // Load YouTube video URL
         order: ex.order_index,
         groupId: ex.group_id,
         blockInstanceId: ex.block_instance_id,
         substitutionReason: ex.substitution_reason,
         originalExercise: ex.original_exercise,
         progressionNotes: ex.progression_notes,
+        kpiTagIds: exerciseKpiTags[ex.id] || [],
       })),
     groups: (groups || [])
       .filter((g) => g.workout_plan_id === plan.id)
@@ -445,6 +474,31 @@ export const getWorkoutPlanById = async (
     .eq("workout_plan_id", id)
     .order("order_index", { ascending: true });
 
+  // Fetch KPI tags for all exercises in this plan
+  const exerciseIds = exercises?.map((ex) => ex.id) || [];
+  let exerciseKpiTags: Record<string, string[]> = {};
+
+  if (exerciseIds.length > 0) {
+    const { data: kpiTags } = await supabase
+      .from("exercise_kpi_tags")
+      .select("workout_exercise_id, kpi_tag_id")
+      .in("workout_exercise_id", exerciseIds);
+
+    // Group KPI tag IDs by exercise ID
+    if (kpiTags) {
+      exerciseKpiTags = kpiTags.reduce(
+        (acc, tag) => {
+          if (!acc[tag.workout_exercise_id]) {
+            acc[tag.workout_exercise_id] = [];
+          }
+          acc[tag.workout_exercise_id].push(tag.kpi_tag_id);
+          return acc;
+        },
+        {} as Record<string, string[]>
+      );
+    }
+  }
+
   // Fetch groups for this plan
   const { data: groups } = await supabase
     .from("workout_exercise_groups")
@@ -484,12 +538,14 @@ export const getWorkoutPlanById = async (
       eachSide: ex.each_side,
       restTime: ex.rest_time,
       notes: ex.notes,
+      videoUrl: ex.video_url, // Load YouTube video URL
       order: ex.order_index,
       groupId: ex.group_id,
       blockInstanceId: ex.block_instance_id,
       substitutionReason: ex.substitution_reason,
       originalExercise: ex.original_exercise,
       progressionNotes: ex.progression_notes,
+      kpiTagIds: exerciseKpiTags[ex.id] || [],
     })),
     groups: (groups || []).map((g) => ({
       id: g.id,
@@ -604,6 +660,7 @@ export const createWorkoutPlan = async (
       each_side: ex.eachSide,
       rest_time: ex.restTime,
       notes: ex.notes,
+      video_url: ex.videoUrl, // Save YouTube video URL
       order_index: ex.order,
       // Map temporary group ID to database UUID
       group_id:
@@ -616,13 +673,46 @@ export const createWorkoutPlan = async (
       progression_notes: ex.progressionNotes,
     }));
 
-    const { error: exercisesError } = await supabase
+    const { data: insertedExercises, error: exercisesError } = await supabase
       .from("workout_exercises")
-      .insert(exercisesToInsert);
+      .insert(exercisesToInsert)
+      .select("id");
 
     if (exercisesError) {
       console.error("Error creating workout exercises:", exercisesError);
       // Continue anyway - plan was created
+    } else if (insertedExercises) {
+      // 3a. Insert KPI tags for exercises that have them
+      const kpiTagsToInsert: Array<{
+        workout_exercise_id: string;
+        kpi_tag_id: string;
+      }> = [];
+
+      exercises.forEach((ex, index) => {
+        if (
+          ex.kpiTagIds &&
+          ex.kpiTagIds.length > 0 &&
+          insertedExercises[index]
+        ) {
+          ex.kpiTagIds.forEach((kpiTagId) => {
+            kpiTagsToInsert.push({
+              workout_exercise_id: insertedExercises[index].id,
+              kpi_tag_id: kpiTagId,
+            });
+          });
+        }
+      });
+
+      if (kpiTagsToInsert.length > 0) {
+        const { error: kpiTagsError } = await supabase
+          .from("exercise_kpi_tags")
+          .insert(kpiTagsToInsert);
+
+        if (kpiTagsError) {
+          console.error("Error creating exercise KPI tags:", kpiTagsError);
+          // Continue anyway - exercises were created
+        }
+      }
     }
   }
 
@@ -787,6 +877,7 @@ export const updateWorkoutPlan = async (
           each_side: ex.eachSide,
           rest_time: ex.restTime,
           notes: ex.notes,
+          video_url: ex.videoUrl, // Save YouTube video URL
           order_index: ex.order,
           // Map temporary group ID to database UUID
           group_id:
@@ -800,12 +891,42 @@ export const updateWorkoutPlan = async (
         })
       );
 
-      const { error: exercisesError } = await supabase
+      const { data: insertedExercises, error: exercisesError } = await supabase
         .from("workout_exercises")
-        .insert(exercisesToInsert);
+        .insert(exercisesToInsert)
+        .select("id");
 
       if (exercisesError) {
         console.error("Error updating workout exercises:", exercisesError);
+      } else if (insertedExercises) {
+        // 3a. Delete existing KPI tags for this workout's exercises (already deleted with exercises above)
+        // 3b. Insert KPI tags for exercises that have them
+        const kpiTagsToInsert: Array<{
+          workout_exercise_id: string;
+          kpi_tag_id: string;
+        }> = [];
+
+        exercises.forEach((ex: Record<string, unknown>, index) => {
+          const kpiTagIds = ex.kpiTagIds as string[] | undefined;
+          if (kpiTagIds && kpiTagIds.length > 0 && insertedExercises[index]) {
+            kpiTagIds.forEach((kpiTagId) => {
+              kpiTagsToInsert.push({
+                workout_exercise_id: insertedExercises[index].id,
+                kpi_tag_id: kpiTagId,
+              });
+            });
+          }
+        });
+
+        if (kpiTagsToInsert.length > 0) {
+          const { error: kpiTagsError } = await supabase
+            .from("exercise_kpi_tags")
+            .insert(kpiTagsToInsert);
+
+          if (kpiTagsError) {
+            console.error("Error updating exercise KPI tags:", kpiTagsError);
+          }
+        }
       }
     }
 

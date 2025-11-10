@@ -4,8 +4,7 @@ import { useState } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
 import { Settings, Check, Users as UsersIcon, Calendar } from "lucide-react";
 import AthleteModificationModal from "./AthleteModificationModal";
-import DateTimePicker from "./DateTimePicker";
-import { Select, Input, Textarea } from "@/components/ui/Input";
+import WorkoutAssignmentForm from "./WorkoutAssignmentForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -25,6 +24,7 @@ interface GroupAssignmentModalProps {
   groups: AthleteGroup[];
   workoutPlans: WorkoutPlan[];
   athletes: User[];
+  currentUserId?: string; // User ID of the coach assigning
   onAssignWorkout: (
     assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
   ) => void;
@@ -37,6 +37,7 @@ export default function GroupAssignmentModal({
   groups,
   workoutPlans,
   athletes,
+  currentUserId,
   onAssignWorkout,
 }: GroupAssignmentModalProps) {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
@@ -91,7 +92,7 @@ export default function GroupAssignmentModal({
         assignmentType: "group",
         groupId: groupId,
         athleteIds: group.athleteIds || [],
-        assignedBy: "coach1", // In real app, get from auth context
+        assignedBy: currentUserId || "unknown",
         assignedDate: new Date(),
         scheduledDate: selectedDate,
         status: "assigned",
@@ -196,76 +197,23 @@ export default function GroupAssignmentModal({
                   )}
                 </div>
 
-                <Select
-                  label="Select Workout"
-                  value={selectedWorkoutId}
-                  onChange={(e) => setSelectedWorkoutId(e.target.value)}
-                  options={[
-                    { value: "", label: "Choose a workout..." },
-                    ...workoutPlans.map((workout) => ({
-                      value: workout.id,
-                      label: `${workout.name} (${workout.estimatedDuration} min)`,
-                    })),
-                  ]}
-                  fullWidth
-                />
-
-                {/* Date & Time Picker */}
-                <DateTimePicker
+                {/* Shared Workout Assignment Form */}
+                <WorkoutAssignmentForm
+                  selectedWorkoutId={selectedWorkoutId}
+                  onWorkoutChange={setSelectedWorkoutId}
+                  workoutPlans={workoutPlans}
                   selectedDate={selectedDate}
-                  startTime={startTime}
-                  endTime={endTime}
                   onDateChange={setSelectedDate}
+                  startTime={startTime}
                   onStartTimeChange={setStartTime}
+                  endTime={endTime}
                   onEndTimeChange={setEndTime}
-                  showTimePicker={true}
+                  location={location}
+                  onLocationChange={setLocation}
+                  notes={notes}
+                  onNotesChange={setNotes}
+                  showWorkoutPreview={true}
                 />
-
-                <Input
-                  label="Location (optional)"
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Main Gym, Weight Room"
-                  fullWidth
-                />
-
-                <Textarea
-                  label="Session Notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={3}
-                  placeholder="Any special instructions, focus areas, or coaching notes..."
-                  fullWidth
-                />
-
-                {selectedWorkout && (
-                  <Card variant="default" padding="md">
-                    <h3 className="text-heading-secondary text-lg mb-3">
-                      Workout Preview
-                    </h3>
-                    <div className="space-y-2">
-                      {selectedWorkout.exercises.map((exercise, index) => (
-                        <div
-                          key={exercise.id}
-                          className="flex items-center gap-3 text-sm"
-                        >
-                          <span className="text-body-small w-6">
-                            {index + 1}.
-                          </span>
-                          <span className="flex-1">
-                            {exercise.exerciseName}
-                          </span>
-                          <span className="text-body-small">
-                            {exercise.sets}×{exercise.reps}
-                            {exercise.weightType === "percentage" &&
-                              ` @ ${exercise.percentage}%`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-                )}
               </div>
 
               {/* Right Column - Athletes & Modifications */}
@@ -333,24 +281,6 @@ export default function GroupAssignmentModal({
                   />
                 )}
               </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 mt-6 pt-6 border-t">
-              <Button onClick={onClose} variant="secondary" className="flex-1">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleAssign}
-                disabled={selectedGroupIds.length === 0 || !selectedWorkoutId}
-                variant="primary"
-                className="flex-1"
-              >
-                Assign to{" "}
-                {selectedGroupIds.length > 0
-                  ? `${selectedGroupIds.length} Group${selectedGroupIds.length > 1 ? "s" : ""} (${allAthleteIds.size} athletes)`
-                  : "Groups"}
-              </Button>
             </div>
           </ModalContent>
 

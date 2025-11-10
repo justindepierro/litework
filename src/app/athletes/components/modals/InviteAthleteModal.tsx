@@ -99,9 +99,7 @@ export default function InviteAthleteModal({
                 label="Last Name *"
                 type="text"
                 value={form.lastName}
-                onChange={(e) =>
-                  setForm({ ...form, lastName: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                 placeholder="Last name"
                 fullWidth
                 required

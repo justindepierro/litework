@@ -163,7 +163,10 @@ function AthleteCard({
                 <Body variant="primary" className="text-sm line-clamp-2">
                   {athlete.communication.lastMessage}
                 </Body>
-                <Body variant="secondary" className="text-xs mt-1 text-accent-blue">
+                <Body
+                  variant="secondary"
+                  className="text-xs mt-1 text-accent-blue"
+                >
                   {athlete.communication.lastMessageTime?.toLocaleDateString()}{" "}
                   at{" "}
                   {athlete.communication.lastMessageTime?.toLocaleTimeString(
@@ -247,10 +250,16 @@ function AthleteCard({
             <div className="flex items-start gap-2">
               <Mail className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <Body variant="primary" className="text-sm font-medium text-amber-900">
+                <Body
+                  variant="primary"
+                  className="text-sm font-medium text-amber-900"
+                >
                   Email Required
                 </Body>
-                <Body variant="secondary" className="text-xs text-amber-700 mt-0.5">
+                <Body
+                  variant="secondary"
+                  className="text-xs text-amber-700 mt-0.5"
+                >
                   Add an email address to send invitation
                 </Body>
               </div>

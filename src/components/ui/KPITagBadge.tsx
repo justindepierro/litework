@@ -2,10 +2,10 @@ import React from "react";
 
 /**
  * KPITagBadge Component
- * 
+ *
  * Displays a KPI tag badge with custom color and styling.
  * Used to show which KPI an exercise is associated with.
- * 
+ *
  * Example: <KPITagBadge name="BENCH" displayName="Bench Press" color="#EF4444" />
  */
 
@@ -52,7 +52,7 @@ export function KPITagBadge({
       title={showTooltip ? displayName : undefined}
     >
       <span className="font-bold">{name}</span>
-      
+
       {onRemove && (
         <button
           onClick={(e) => {
@@ -85,7 +85,7 @@ export function KPITagBadge({
 
 /**
  * KPITagList Component
- * 
+ *
  * Displays multiple KPI tags in a row with proper spacing.
  */
 
@@ -127,7 +127,7 @@ export function KPITagList({
           onRemove={onTagRemove ? () => onTagRemove(tag.id) : undefined}
         />
       ))}
-      
+
       {remainingCount > 0 && (
         <span className="text-xs text-silver-600 font-medium">
           +{remainingCount} more
@@ -139,7 +139,7 @@ export function KPITagList({
 
 /**
  * KPITagSelector Component
- * 
+ *
  * Dropdown selector for adding KPI tags to an exercise.
  * Shows available tags with search and current selections.
  */
@@ -188,11 +188,7 @@ export function KPITagSelector({
       {/* Selected tags display */}
       <div className="min-h-[42px] p-2 border border-silver-300 rounded-lg bg-white">
         {selectedTags.length > 0 ? (
-          <KPITagList
-            tags={selectedTags}
-            size="sm"
-            onTagRemove={onTagToggle}
-          />
+          <KPITagList tags={selectedTags} size="sm" onTagRemove={onTagToggle} />
         ) : (
           <span className="text-sm text-silver-500">
             Click to add KPI tags...

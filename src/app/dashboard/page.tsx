@@ -139,6 +139,10 @@ export default function DashboardPage() {
           athletesRes.json(),
         ]);
 
+      console.log("[Dashboard] Groups data:", groupsData);
+      console.log("[Dashboard] Workouts data:", workoutsData);
+      console.log("[Dashboard] Athletes data:", athletesData);
+
       if (assignmentsData.success && assignmentsData.data) {
         setAssignments(
           assignmentsData.data.assignments || assignmentsData.data || []
@@ -149,8 +153,9 @@ export default function DashboardPage() {
         setWorkoutPlans(workoutsData.data.workouts || workoutsData.data || []);
       }
 
-      if (groupsData.success && groupsData.data) {
-        setGroups(groupsData.data.groups || groupsData.data || []);
+      // Groups API returns { success: true, groups: [...] }
+      if (groupsData.success) {
+        setGroups(groupsData.groups || []);
       }
 
       if (athletesData.success && athletesData.data) {
@@ -170,7 +175,7 @@ export default function DashboardPage() {
       const response = await fetch("/api/assignments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assignments: [assignment] }),
+        body: JSON.stringify(assignment),
       });
 
       const data = await response.json();
@@ -386,6 +391,7 @@ export default function DashboardPage() {
               onClose={() => setShowIndividualAssignment(false)}
               athletes={athletes}
               workoutPlans={workoutPlans}
+              currentUserId={user?.id}
               onAssignWorkout={handleAssignWorkout}
             />
           )}

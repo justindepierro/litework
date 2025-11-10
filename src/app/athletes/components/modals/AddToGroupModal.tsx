@@ -94,8 +94,8 @@ export default function AddToGroupModal({
                       isInGroup
                         ? "border-accent-green/30 bg-accent-green/10 cursor-default"
                         : isAdding
-                        ? "border-accent-blue/30 bg-accent-blue/10 cursor-wait"
-                        : "border-silver-300 hover:border-accent-blue hover:bg-accent-blue/5"
+                          ? "border-accent-blue/30 bg-accent-blue/10 cursor-wait"
+                          : "border-silver-300 hover:border-accent-blue hover:bg-accent-blue/5"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -114,7 +114,10 @@ export default function AddToGroupModal({
                             {group.description}
                           </Body>
                         )}
-                        <Body variant="secondary" className="text-xs mt-1 opacity-70">
+                        <Body
+                          variant="secondary"
+                          className="text-xs mt-1 opacity-70"
+                        >
                           {group.athleteIds?.length || 0} athletes
                         </Body>
                       </div>

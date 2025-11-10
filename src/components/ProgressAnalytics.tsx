@@ -370,7 +370,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     Avg per Week
                   </p>
                   <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
-                    {overviewStats.avgWorkoutsPerWeek}
+                    {overviewStats.avgWorkoutsPerWeek || 0}
                   </p>
                 </div>
                 <div className="p-3 rounded-xl text-green-600 bg-green-50">

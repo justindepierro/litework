@@ -19,7 +19,7 @@ export default function SchedulePage() {
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<
     string | null
   >(null);
-  
+
   // Assignment modal state
   const [showGroupAssignment, setShowGroupAssignment] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -84,9 +84,24 @@ export default function SchedulePage() {
         athletesRes.json(),
       ]);
 
-      if (groupsData.success) setGroups(groupsData.data || []);
-      if (workoutsData.success) setWorkoutPlans(workoutsData.data || []);
+      console.log("[Schedule] Groups data:", groupsData);
+      console.log("[Schedule] Workouts data:", workoutsData);
+      console.log("[Schedule] Athletes data:", athletesData);
+
+      // Groups API returns { success: true, groups: [...] }
+      if (groupsData.success) setGroups(groupsData.groups || []);
+      // Workouts API returns { success: true, data: { workouts: [...] } }
+      if (workoutsData.success)
+        setWorkoutPlans(workoutsData.data?.workouts || []);
+      // Users API returns { success: true, data: [...] }
       if (athletesData.success) setAthletes(athletesData.data || []);
+
+      console.log("[Schedule] Set groups:", groupsData.groups?.length || 0);
+      console.log(
+        "[Schedule] Set workouts:",
+        workoutsData.data?.workouts?.length || 0
+      );
+      console.log("[Schedule] Set athletes:", athletesData.data?.length || 0);
     } catch (error) {
       console.error("Failed to fetch coach data:", error);
     }
@@ -268,6 +283,7 @@ export default function SchedulePage() {
           groups={groups}
           workoutPlans={workoutPlans}
           athletes={athletes}
+          currentUserId={user?.id}
           onAssignWorkout={handleAssignWorkout}
         />
       )}

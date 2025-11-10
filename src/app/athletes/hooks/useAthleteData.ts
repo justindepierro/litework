@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
-import { AthleteGroup, WorkoutPlan, User as UserType, AthleteKPI } from "@/types";
+import {
+  AthleteGroup,
+  WorkoutPlan,
+  User as UserType,
+  AthleteKPI,
+} from "@/types";
 
 interface AthleteCommunication {
   unreadMessages: number;
@@ -16,6 +21,8 @@ interface EnhancedAthlete extends UserType {
   bio?: string | null;
   injuryStatus?: string;
   lastActivity?: Date | null;
+  inviteId?: string; // For invited athletes
+  inviteEmail?: string; // Email from invites table
   stats?: {
     totalWorkouts: number;
     completedWorkouts: number;
@@ -134,6 +141,8 @@ export function useAthleteData(
             role: "athlete" as const,
             groupIds: invite.groupIds || [],
             status: "invited" as const,
+            inviteId: invite.id, // Store invite ID for resend functionality
+            inviteEmail: invite.email || "", // Store original invite email
             profileImage: null,
             bio: null,
             injuryStatus: undefined,
@@ -186,7 +195,7 @@ export function useAthleteData(
       const loadData = async () => {
         await Promise.all([loadGroups(), loadAthletes(), loadWorkoutPlans()]);
       };
-      
+
       loadData();
     }
   }, [isAuthLoading, user]);
