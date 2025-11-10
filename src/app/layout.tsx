@@ -7,6 +7,8 @@ import Navigation from "@/components/Navigation";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
+import { CommandPaletteProvider } from "@/components/CommandPaletteProvider";
+import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -98,11 +100,14 @@ export default function RootLayout({
         <GlobalErrorBoundary>
           <AuthProvider>
             <ToastProvider>
-              <Navigation />
-              {/* Add padding to compensate for fixed navigation */}
-              <main className="bg-white pt-16 sm:pt-18">{children}</main>
-              <PWAInstallBanner />
-              <ServiceWorkerRegistration />
+              <CommandPaletteProvider>
+                <Navigation />
+                {/* Add padding to compensate for fixed navigation */}
+                <main className="bg-white pt-16 sm:pt-18">{children}</main>
+                <PWAInstallBanner />
+                <ServiceWorkerRegistration />
+                <KeyboardShortcutsHelp />
+              </CommandPaletteProvider>
             </ToastProvider>
           </AuthProvider>
         </GlobalErrorBoundary>

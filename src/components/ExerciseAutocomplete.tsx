@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Search, Plus, Dumbbell } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Search, Plus, Dumbbell, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { ButtonLoading } from "@/components/ui/LoadingSpinner";
+import { Input } from "@/components/ui/Input";
+import Fuse from "fuse.js";
+import { highlightMatch } from "@/lib/highlight-match";
+import { useRecentExercises } from "@/hooks/use-recent-exercises";
 
 interface Exercise {
   id: string;
@@ -28,6 +31,7 @@ export default function ExerciseAutocomplete({
   placeholder = "Type exercise name...",
   className = "",
 }: ExerciseAutocompleteProps) {
+  const [allExercises, setAllExercises] = useState<Exercise[]>([]);
   const [suggestions, setSuggestions] = useState<Exercise[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +39,47 @@ export default function ExerciseAutocomplete({
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Debounced search
+  // Recent exercises hook
+  const { recentExercises, addRecentExercise } = useRecentExercises();
+
+  // Load all exercises once on mount
+  useEffect(() => {
+    const loadExercises = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("/api/exercises/search?limit=1000");
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          setAllExercises(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading exercises:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadExercises();
+  }, []);
+
+  // Initialize Fuse.js with fuzzy search config
+  const fuse = useMemo(() => {
+    return new Fuse(allExercises, {
+      keys: [
+        { name: "name", weight: 2 }, // Prioritize name matches
+        { name: "description", weight: 1 },
+        { name: "category", weight: 1.5 },
+      ],
+      threshold: 0.3, // 0 = exact match, 1 = match anything
+      includeScore: true,
+      includeMatches: true, // For highlighting
+      minMatchCharLength: 2,
+      ignoreLocation: true, // Don't care where in string match occurs
+    });
+  }, [allExercises]);
+
+  // Debounced fuzzy search
   useEffect(() => {
     if (!value || value.length < 2) {
       setSuggestions([]);
@@ -43,32 +87,26 @@ export default function ExerciseAutocomplete({
       return;
     }
 
-    const timeoutId = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/exercises/search?q=${encodeURIComponent(value)}&limit=10`
-        );
-        const data = await response.json();
+    const timeoutId = setTimeout(() => {
+      // Perform fuzzy search with Fuse.js
+      const results = fuse.search(value, { limit: 10 });
+      const exercises = results.map((result) => result.item);
 
-        if (data.success && data.data) {
-          setSuggestions(data.data);
-          setShowSuggestions(true);
-          setSelectedIndex(0);
-        }
-      } catch (error) {
-        console.error("Error searching exercises:", error);
-      } finally {
-        setLoading(false);
-      }
+      setSuggestions(exercises);
+      setShowSuggestions(true);
+      setSelectedIndex(0);
     }, 300); // 300ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [value]);
+  }, [value, fuse]);
+
+  // Show recent exercises when focused and search is empty
+  const showRecent = !value && recentExercises.length > 0;
+  const displayItems = showRecent ? recentExercises : suggestions;
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions || suggestions.length === 0) {
+    if (!showSuggestions || displayItems.length === 0) {
       if (e.key === "Enter") {
         // Create new exercise if no suggestions
         handleCreateNew();
@@ -80,7 +118,7 @@ export default function ExerciseAutocomplete({
       case "ArrowDown":
         e.preventDefault();
         setSelectedIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : prev
+          prev < displayItems.length - 1 ? prev + 1 : prev
         );
         break;
       case "ArrowUp":
@@ -89,8 +127,8 @@ export default function ExerciseAutocomplete({
         break;
       case "Enter":
         e.preventDefault();
-        if (suggestions[selectedIndex]) {
-          handleSelect(suggestions[selectedIndex]);
+        if (displayItems[selectedIndex]) {
+          handleSelect(displayItems[selectedIndex]);
         }
         break;
       case "Escape":
@@ -104,6 +142,9 @@ export default function ExerciseAutocomplete({
     onExerciseSelect(exercise);
     setShowSuggestions(false);
     inputRef.current?.blur();
+
+    // Add to recent exercises
+    addRecentExercise(exercise);
   };
 
   const handleCreateNew = async () => {
@@ -152,29 +193,26 @@ export default function ExerciseAutocomplete({
 
   return (
     <div className="relative w-full">
-      <div className="relative">
-        <input
-          ref={inputRef}
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => {
-            if (suggestions.length > 0) {
-              setShowSuggestions(true);
-            }
-          }}
-          placeholder={placeholder}
-          className={`w-full p-4 sm:p-3 pl-10 border-2 border-silver-300 rounded-xl sm:rounded-lg text-lg sm:text-base focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all touch-manipulation ${className}`}
-          autoComplete="off"
-        />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        {loading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <ButtonLoading size="md" />
-          </div>
-        )}
-      </div>
+      <Input
+        ref={inputRef}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onFocus={() => {
+          if (displayItems.length > 0 || recentExercises.length > 0) {
+            setShowSuggestions(true);
+          }
+        }}
+        placeholder={placeholder}
+        className={className}
+        autoComplete="off"
+        selectOnFocus
+        fullWidth
+        inputSize="lg"
+        leftIcon={<Search className="w-5 h-5" />}
+        rightIcon={loading ? <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" /> : undefined}
+      />
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (
@@ -182,9 +220,18 @@ export default function ExerciseAutocomplete({
           ref={suggestionsRef}
           className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto"
         >
-          {suggestions.length > 0 ? (
+          {displayItems.length > 0 ? (
             <>
-              {suggestions.map((exercise, index) => (
+              {/* Section Header */}
+              {showRecent && (
+                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <Clock className="w-4 h-4" />
+                  Recent Exercises
+                </div>
+              )}
+
+              {/* Exercise List */}
+              {displayItems.map((exercise, index) => (
                 <button
                   key={exercise.id}
                   onClick={() => handleSelect(exercise)}
@@ -195,13 +242,22 @@ export default function ExerciseAutocomplete({
                   <div className="flex items-center gap-3">
                     <Dumbbell className="w-5 h-5 text-gray-400 shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-gray-900 truncate">
-                        {exercise.name}
-                      </div>
+                      <div
+                        className="font-medium text-gray-900 truncate"
+                        dangerouslySetInnerHTML={{
+                          __html: highlightMatch(exercise.name, value),
+                        }}
+                      />
                       {exercise.description && (
-                        <div className="text-xs text-gray-500 truncate mt-0.5">
-                          {exercise.description}
-                        </div>
+                        <div
+                          className="text-xs text-gray-500 truncate mt-0.5"
+                          dangerouslySetInnerHTML={{
+                            __html: highlightMatch(
+                              exercise.description,
+                              value
+                            ),
+                          }}
+                        />
                       )}
                     </div>
                     {exercise.category && (

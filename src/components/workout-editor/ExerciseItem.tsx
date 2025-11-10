@@ -6,6 +6,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { GripVertical, Trash2, Edit3, MoreVertical, Check } from "lucide-react";
 import { WorkoutExercise, ExerciseGroup, KPITag } from "@/types";
 import ExerciseAutocomplete from "../ExerciseAutocomplete";
+import { SaveStatus, useSaveStatus } from "@/components/ui/SaveStatus";
 
 export interface ExerciseItemProps {
   exercise: WorkoutExercise;
@@ -48,9 +49,12 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
   const [editedExercise, setEditedExercise] = useState(exercise);
   const [showMoveMenu, setShowMoveMenu] = useState(false);
   const [inlineEditField, setInlineEditField] = useState<string | null>(null);
+  const [saveStatus, setSaving, setSaved, setError, setIdle] = useSaveStatus();
 
   const saveExercise = async () => {
     let updatedExercise = editedExercise;
+
+    setSaving();
 
     console.log("[ExerciseItem] saveExercise called:", {
       original: exercise.exerciseName,
@@ -58,40 +62,56 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
       exerciseId: exercise.id,
     });
 
-    // If exercise name changed and we have the callback, add to library
-    if (
-      onExerciseNameChange &&
-      editedExercise.exerciseName !== exercise.exerciseName &&
-      editedExercise.exerciseName.trim().length > 0
-    ) {
-      const libraryExerciseId = await onExerciseNameChange(
-        editedExercise.exerciseName
-      );
-      // Update the exerciseId with the one from the library
-      updatedExercise = {
-        ...editedExercise,
-        exerciseId: libraryExerciseId,
-      };
-    }
+    try {
+      // If exercise name changed and we have the callback, add to library
+      if (
+        onExerciseNameChange &&
+        editedExercise.exerciseName !== exercise.exerciseName &&
+        editedExercise.exerciseName.trim().length > 0
+      ) {
+        const libraryExerciseId = await onExerciseNameChange(
+          editedExercise.exerciseName
+        );
+        // Update the exerciseId with the one from the library
+        updatedExercise = {
+          ...editedExercise,
+          exerciseId: libraryExerciseId,
+        };
+      }
 
-    // [REMOVED] console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
-    onUpdate(updatedExercise);
-    setIsEditing(false);
+      // [REMOVED] console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
+      onUpdate(updatedExercise);
+      setSaved();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("[ExerciseItem] Error saving:", error);
+      setError();
+    }
   };
 
   const cancelEdit = () => {
     setEditedExercise(exercise);
     setIsEditing(false);
+    setIdle();
   };
 
-  // Quick inline edit handler
-  const handleInlineEdit = (
+  // Quick inline edit handler with save feedback
+  const handleInlineEdit = async (
     field: string,
     value: string | number | undefined
   ) => {
-    const updated = { ...exercise, [field]: value };
-    onUpdate(updated);
-    setInlineEditField(null);
+    setSaving();
+    try {
+      const updated = { ...exercise, [field]: value };
+      onUpdate(updated);
+      setSaved();
+      setTimeout(() => setIdle(), 2000); // Auto-hide after 2s
+    } catch (error) {
+      console.error("[ExerciseItem] Error in inline edit:", error);
+      setError();
+    } finally {
+      setInlineEditField(null);
+    }
   };
 
   return (
@@ -509,7 +529,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 />
 
                 {/* Enhanced mobile action buttons */}
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-center">
                   <Button
                     onClick={saveExercise}
                     variant="primary"
@@ -524,6 +544,11 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   >
                     Cancel
                   </Button>
+                  <SaveStatus 
+                    status={saveStatus} 
+                    onHidden={setIdle}
+                    size="md"
+                  />
                 </div>
               </div>
             ) : (
@@ -830,16 +855,19 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 </div>
 
                 {/* KPI Tags Display */}
-                {exercise.kpiTagIds &&
-                  exercise.kpiTagIds.length > 0 &&
+                {((isEditing ? editedExercise : exercise).kpiTagIds) &&
+                  ((isEditing ? editedExercise : exercise).kpiTagIds?.length ?? 0) > 0 &&
                   availableKPIs.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {exercise.kpiTagIds.map((tagId) => {
+                    <div 
+                      key={`kpi-tags-${((isEditing ? editedExercise : exercise).kpiTagIds ?? []).join('-')}`}
+                      className="flex flex-wrap gap-1.5 mt-2"
+                    >
+                      {((isEditing ? editedExercise : exercise).kpiTagIds ?? []).map((tagId) => {
                         const kpi = availableKPIs.find((k) => k.id === tagId);
                         if (!kpi) return null;
                         return (
                           <span
-                            key={tagId}
+                            key={`${tagId}-${kpi.id}`}
                             className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold text-white shadow-sm"
                             style={{ backgroundColor: kpi.color }}
                             title={`Develops ${kpi.displayName}`}
