@@ -732,12 +732,19 @@ export function onAuthChange(callback: (user: User | null) => void) {
         callback(user);
       } catch (error) {
         const classified = classifyAuthError(error);
-        timer.error("Auth state change error", {
-          type: classified.type,
-          userMessage: classified.userMessage,
-          technicalMessage: classified.technicalMessage,
-          userId: session.user.id,
-        });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        
+        // Log timeout as warning (expected on slow connections), other errors as error
+        if (errorMessage.includes("timeout")) {
+          console.warn(`[AUTH] Profile fetch timeout in auth state change - check network connection`);
+        } else {
+          timer.error("Auth state change error", {
+            type: classified.type,
+            userMessage: classified.userMessage,
+            technicalMessage: classified.technicalMessage,
+            userId: session.user.id,
+          });
+        }
         callback(null);
       }
     } else {
