@@ -486,21 +486,21 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                     }}
                     className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
                       isActive ? 'scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50' : 'hover:scale-[1.01] hover:shadow-md active:scale-[0.99]'
-                    } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''}`}
-                    style={{ minHeight: '48px' }}
+                    } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''} mb-3`}
+                    style={{ minHeight: '56px' }}
                   >
-                    <div className="p-4">
+                    <div className="p-5">
                       {/* Exercise Header */}
-                      <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-2">
                             {isCompleted && (
                               <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
                             )}
                             {isActive && (
                               <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
                             )}
-                            <h3 className={`text-lg font-semibold ${colorClasses.text}`}>
+                            <h3 className={`text-xl font-semibold ${colorClasses.text}`}>
                               {exercise.exercise_name}
                             </h3>
                           </div>
@@ -552,22 +552,35 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         </div>
                       )}
                       
-                      {/* Active Exercise: Show set records */}
+                      {/* Active Exercise: Show ALL set records */}
                       {isActive && exercise.set_records.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-blue-200 animate-in fade-in duration-300">
-                          <div className="space-y-1">
-                            {exercise.set_records.slice(-2).map((set, setIndex) => (
+                          <div className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+                            Completed Sets
+                          </div>
+                          <div className="space-y-1.5">
+                            {exercise.set_records.map((set, setIndex) => (
                               <div
                                 key={setIndex}
-                                className="flex items-center justify-between text-sm bg-white/50 rounded px-2 py-1 animate-in slide-in-from-right-2 duration-200"
+                                className="flex items-center justify-between text-sm bg-white/70 rounded-lg px-3 py-2 animate-in slide-in-from-right-2 duration-200 border border-blue-100"
                                 style={{ animationDelay: `${setIndex * 50}ms` }}
                               >
-                                <span className="text-gray-600 font-medium">Set {set.set_number}</span>
-                                <span className="text-gray-900 font-semibold">
-                                  {set.weight && `${set.weight} lbs × `}
-                                  {set.reps} reps
-                                  {set.rpe && ` @ RPE ${set.rpe}`}
-                                </span>
+                                <span className="text-gray-700 font-semibold">Set {set.set_number}</span>
+                                <div className="flex items-center gap-3">
+                                  {set.weight && (
+                                    <span className="text-blue-600 font-bold">
+                                      {set.weight} lbs
+                                    </span>
+                                  )}
+                                  <span className="text-gray-900 font-semibold">
+                                    × {set.reps}
+                                  </span>
+                                  {set.rpe && (
+                                    <span className="text-purple-600 font-medium text-xs px-2 py-0.5 bg-purple-50 rounded">
+                                      RPE {set.rpe}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -585,17 +598,61 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       {/* Bottom Input Area - Only show for active exercise */}
       {currentExercise && !currentExercise.completed && (
         <div className="bg-white border-t-2 border-gray-200 shadow-lg shrink-0 safe-area-bottom">
-          <div className="px-4 py-4">
-            <div className="mb-3">
-              <div className="text-center mb-2">
-                <span className="text-sm font-semibold text-gray-600">
-                  Recording Set {currentExercise.sets_completed + 1}
-                </span>
+          <div className="px-4 py-5">
+            {/* Active Exercise Summary Card */}
+            <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-bold text-gray-900 flex-1 pr-2">
+                  {currentExercise.exercise_name}
+                </h3>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {currentExercise.sets_completed + 1}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    of {currentExercise.sets_target}
+                  </div>
+                </div>
               </div>
               
-              {/* Quick Input Controls */}
-              <div className="space-y-3">
-                {/* Weight Input */}
+              {/* Target and Progress */}
+              <div className="flex items-center gap-3 text-sm">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
+                  <span className="text-gray-600">Target:</span>
+                  <span className="font-semibold text-gray-900">
+                    {currentExercise.sets_target} × {currentExercise.reps_target}
+                    {currentExercise.weight_target && ` @ ${currentExercise.weight_target} lbs`}
+                  </span>
+                </div>
+                {currentExercise.rest_seconds > 0 && (
+                  <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
+                    <Clock className="w-3.5 h-3.5 text-gray-600" />
+                    <span className="font-medium text-gray-700">{currentExercise.rest_seconds}s</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Quick Copy Last Set Button */}
+              {currentExercise.set_records.length > 0 && (
+                <button
+                  onClick={() => {
+                    const lastSet = currentExercise.set_records[currentExercise.set_records.length - 1];
+                    if (lastSet.weight) setWeight(lastSet.weight);
+                    setReps(lastSet.reps);
+                    if (lastSet.rpe) setRpe(lastSet.rpe);
+                  }}
+                  className="mt-2 w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                >
+                  <span>↻</span>
+                  Copy Last Set ({currentExercise.set_records[currentExercise.set_records.length - 1].weight || 0} lbs × {currentExercise.set_records[currentExercise.set_records.length - 1].reps})
+                </button>
+              )}
+            </div>
+            
+            {/* Horizontal Input Layout */}
+            <div className="space-y-3 mb-4">
+              {/* Weight and Reps side-by-side */}
+              <div className="grid grid-cols-2 gap-3">
                 <StepperInput
                   label="Weight"
                   value={weight}
@@ -604,8 +661,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   min={0}
                   unit="lbs"
                 />
-                
-                {/* Reps Input */}
                 <StepperInput
                   label="Reps"
                   value={reps}
@@ -613,26 +668,26 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   step={1}
                   min={0}
                 />
-                
-                {/* RPE Input */}
-                <StepperInput
-                  label="RPE"
-                  value={rpe}
-                  onChange={setRpe}
-                  step={1}
-                  min={1}
-                  max={10}
-                />
               </div>
+              
+              {/* RPE full width below */}
+              <StepperInput
+                label="RPE (Effort)"
+                value={rpe}
+                onChange={setRpe}
+                step={1}
+                min={1}
+                max={10}
+              />
             </div>
             
-            {/* Complete Set Button */}
+            {/* Complete Set Button - Larger */}
             <button
               onClick={handleCompleteSet}
-              className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-              style={{ minHeight: '56px' }}
+              className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+              style={{ minHeight: '64px' }}
             >
-              <CheckCircle className="w-6 h-6" />
+              <CheckCircle className="w-7 h-7" />
               Complete Set
             </button>
           </div>
@@ -642,24 +697,24 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       {/* Finished all sets but workout not complete - show finish button */}
       {currentExercise && currentExercise.completed && (
         <div className="bg-white border-t-2 border-gray-200 shadow-lg shrink-0 safe-area-bottom">
-          <div className="px-4 py-4">
+          <div className="px-4 py-5">
             {isLastExercise ? (
               <button
                 onClick={handleCompleteWorkout}
-                className="w-full py-4 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                style={{ minHeight: '56px' }}
+                className="w-full py-5 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                style={{ minHeight: '64px' }}
               >
-                <Trophy className="w-6 h-6" />
+                <Trophy className="w-7 h-7" />
                 Finish Workout
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                style={{ minHeight: '56px' }}
+                className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                style={{ minHeight: '64px' }}
               >
                 Next Exercise
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-7 h-7" />
               </button>
             )}
           </div>
