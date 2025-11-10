@@ -233,7 +233,7 @@ export function WorkoutPreviewCard({
 
     Promise.all([
       fetch("/api/workouts/" + workoutPlanId).then((r) => r.json()),
-      fetch("/api/analytics/kpi-tags").then((r) => r.json()),
+      fetch("/api/kpi-tags").then((r) => r.json()),
     ])
       .then(([workoutData, kpiData]) => {
         if (workoutData.success) {
