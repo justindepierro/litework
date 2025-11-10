@@ -245,6 +245,7 @@ export async function POST(request: NextRequest) {
         completed_sets: 0,
         started: false,
         completed: false,
+        group_id: we.group_id, // Preserve group assignment
       }));
 
       const { data: createdExercises, error: sessExError } = await supabase

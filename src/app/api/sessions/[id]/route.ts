@@ -77,6 +77,7 @@ export async function GET(
           weight_type,
           rest_time,
           notes,
+          group_id,
           exercises (
             id,
             name,
@@ -96,6 +97,22 @@ export async function GET(
           { status: 500 }
         );
       }
+
+      // Fetch exercise groups for this workout
+      const { data: groupsData, error: groupsError } = await supabase
+        .from("workout_exercise_groups")
+        .select("*")
+        .eq("workout_plan_id", session.workout_plan_id);
+
+      if (groupsError) {
+        console.error("Error fetching exercise groups:", groupsError);
+      }
+
+      console.log("[SessionLoad] Groups fetched:", {
+        workoutPlanId: session.workout_plan_id,
+        groupsFound: groupsData?.length || 0,
+        groups: groupsData?.map(g => ({ id: g.id, name: g.name, type: g.type }))
+      });
 
       // Fetch all completed sets for this session
       const { data: completedSets, error: setsError } = await supabase
@@ -133,8 +150,19 @@ export async function GET(
         weightType: exercise.weight_type,
         restTime: exercise.rest_time,
         notes: exercise.notes,
+        groupId: exercise.group_id,
         exerciseDetails: exercise.exercises,
         completedSets: setsByExercise[exercise.id] || [],
+      }));
+
+      // Transform groups data
+      const groups = groupsData?.map((group) => ({
+        id: group.id,
+        name: group.name,
+        type: group.type as "superset" | "circuit" | "section",
+        rounds: group.rounds,
+        rest_between_rounds: group.rest_between_rounds,
+        rest_between_exercises: group.rest_between_exercises,
       }));
 
       // Calculate session progress
@@ -151,6 +179,7 @@ export async function GET(
             id: session.id,
             assignmentId: session.assignment_id,
             athleteId: session.athlete_id,
+            workoutPlanId: session.workout_plan_id,
             workoutPlanName: assignment?.workout_plan_name || "Unknown Workout",
             status: session.status,
             startTime: session.start_time,
@@ -160,6 +189,7 @@ export async function GET(
             createdAt: session.created_at,
           },
           exercises,
+          groups,
           progress: {
             totalSets,
             completedSets: completedSetsCount,

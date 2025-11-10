@@ -310,6 +310,7 @@ export function WorkoutSessionProvider({
           ? apiSession.session.duration * 60
           : 0,
         current_exercise_index: 0,
+        groups: apiSession.groups || [],
         exercises: apiSession.exercises.map(
           (ex: {
             id: string;
@@ -322,6 +323,7 @@ export function WorkoutSessionProvider({
             weightType: string;
             restTime: number;
             notes: string;
+            groupId?: string | null;
             completedSets: Array<{
               id: string;
               session_exercise_id: string;
@@ -343,6 +345,7 @@ export function WorkoutSessionProvider({
             weight_type: ex.weightType,
             rest_time: ex.restTime,
             notes: ex.notes,
+            group_id: ex.groupId,
             is_completed: false,
             sets_completed: ex.completedSets?.length || 0,
             set_records:
