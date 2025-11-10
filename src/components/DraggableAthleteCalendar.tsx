@@ -21,7 +21,7 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { WorkoutAssignment, AthleteGroup } from "@/types";
-import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
+import { parseDate, isSameDay, isPast, formatTime12Hour } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
@@ -155,7 +155,7 @@ function DraggableAssignment({
           {assignment.startTime && (
             <div className="flex items-center gap-1.5 mt-1.5 text-xs font-medium">
               <Clock className="w-3.5 h-3.5" />
-              <span>{assignment.startTime}</span>
+              <span>{formatTime12Hour(assignment.startTime)}</span>
             </div>
           )}
           {assignment.location && (

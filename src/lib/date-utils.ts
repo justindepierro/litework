@@ -176,3 +176,39 @@ export function isToday(date: Date): boolean {
 export function isFuture(date: Date): boolean {
   return startOfDay(date) > startOfDay(new Date());
 }
+
+/**
+ * Format a time string from 24-hour to 12-hour format
+ * 
+ * @param timeStr - Time string in HH:MM:SS or HH:MM format (24-hour)
+ * @returns Time string in 12-hour format with AM/PM
+ * 
+ * @example
+ * formatTime12Hour("16:30:00") → "4:30 PM"
+ * formatTime12Hour("09:15:00") → "9:15 AM"
+ * formatTime12Hour("00:00:00") → "12:00 AM"
+ */
+export function formatTime12Hour(timeStr: string): string {
+  if (!timeStr) return '';
+  
+  const [hours24, minutes] = timeStr.split(':').map(Number);
+  const period = hours24 >= 12 ? 'PM' : 'AM';
+  const hours12 = hours24 % 12 || 12; // Convert 0 to 12 for midnight
+  
+  return `${hours12}:${String(minutes).padStart(2, '0')} ${period}`;
+}
+
+/**
+ * Format a time range from 24-hour to 12-hour format
+ * 
+ * @param startTime - Start time in HH:MM:SS format
+ * @param endTime - End time in HH:MM:SS format
+ * @returns Formatted time range string
+ * 
+ * @example
+ * formatTimeRange("16:30:00", "17:00:00") → "4:30 PM - 5:00 PM"
+ */
+export function formatTimeRange(startTime: string, endTime: string): string {
+  if (!startTime || !endTime) return '';
+  return `${formatTime12Hour(startTime)} - ${formatTime12Hour(endTime)}`;
+}

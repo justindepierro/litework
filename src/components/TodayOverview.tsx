@@ -2,6 +2,7 @@
 
 import { useState, useEffect, memo } from "react";
 import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
+import { formatTimeRange } from "@/lib/date-utils";
 
 interface TodayWorkout {
   id: string;
@@ -94,7 +95,7 @@ const TodayOverview = memo(function TodayOverview() {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock className="w-4 h-4" />
                     <span>
-                      {workout.startTime} - {workout.endTime}
+                      {formatTimeRange(workout.startTime, workout.endTime)}
                     </span>
                   </div>
                 </div>

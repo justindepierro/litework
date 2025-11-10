@@ -19,7 +19,7 @@ import {
   Trash2,
   FileText,
 } from "lucide-react";
-import { parseDate, isPast } from "@/lib/date-utils";
+import { parseDate, isPast, formatTimeRange } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
@@ -380,8 +380,9 @@ export default function WorkoutAssignmentDetailModal({
                     <Clock className="w-5 h-5 text-gray-500" />
                     <span className="font-medium">Time:</span>
                     <span>
-                      {getStartTime(assignment)}
-                      {getEndTime(assignment) && ` - ${getEndTime(assignment)}`}
+                      {getEndTime(assignment) 
+                        ? formatTimeRange(getStartTime(assignment)!, getEndTime(assignment)!)
+                        : formatTimeRange(getStartTime(assignment)!, getStartTime(assignment)!).split(' - ')[0]}
                     </span>
                   </div>
                 )}

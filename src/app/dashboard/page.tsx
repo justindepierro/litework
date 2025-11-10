@@ -16,6 +16,8 @@ import {
   parseDate,
   isToday as checkIsToday,
   isFuture as checkIsFuture,
+  formatTime12Hour,
+  formatTimeRange,
 } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -542,7 +544,9 @@ export default function DashboardPage() {
                               {assignment.startTime && (
                                 <span className="flex items-center gap-1">
                                   <Clock className="w-4 h-4" />
-                                  {assignment.startTime}
+                                  {assignment.endTime 
+                                    ? formatTimeRange(assignment.startTime, assignment.endTime)
+                                    : formatTime12Hour(assignment.startTime)}
                                 </span>
                               )}
                               {assignment.location && (
@@ -661,7 +665,7 @@ export default function DashboardPage() {
                                 day: "numeric",
                               })}
                               {assignment.startTime &&
-                                ` • ${assignment.startTime}`}
+                                ` • ${formatTime12Hour(assignment.startTime)}`}
                             </p>
                           </div>
                         </div>
