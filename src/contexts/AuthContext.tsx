@@ -359,7 +359,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
         }
 
-        router.push("/dashboard");
+        // Redirect to setup page for new accounts to show sync progress
+        router.push("/setup");
         return {};
       } catch (error) {
         if (mountedRef.current) {
