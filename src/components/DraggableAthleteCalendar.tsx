@@ -20,7 +20,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
-import { WorkoutAssignment } from "@/types";
+import { WorkoutAssignment, AthleteGroup } from "@/types";
 import { parseDate, isSameDay, isPast } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -38,6 +38,7 @@ interface DraggableAthleteCalendarProps {
   viewMode?: "month" | "week" | "day";
   selectedDate?: Date;
   isCoach?: boolean; // Enable drag-and-drop for coaches only
+  groups?: AthleteGroup[]; // Pass groups to show names in preview
 }
 
 interface DragItem {
@@ -96,20 +97,22 @@ function DraggableAssignment({
           onClick();
         }
       }}
-      className={`w-full text-left p-2.5 rounded-lg text-xs transition-all ${
+      className={`w-full text-left rounded-lg text-xs transition-all ${
+        compact ? "p-1.5" : "p-2.5"
+      } ${
         isCompleted
           ? "bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
           : isOverdue
             ? "bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
             : "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
-      } hover:scale-[1.02] ${isDragging ? "opacity-50 cursor-move" : ""} ${
+      } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
-      <div className="flex items-start justify-between gap-2 mb-1.5">
-        <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className={`flex items-center ${compact ? "gap-1" : "gap-2"} ${compact ? "" : "mb-1.5"}`}>
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <div
-            className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm ${
+            className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-sm ${
               isCompleted
                 ? "bg-green-500"
                 : isOverdue
@@ -118,16 +121,16 @@ function DraggableAssignment({
             }`}
           >
             {isCompleted ? (
-              <CheckCircle className="w-3.5 h-3.5 text-white" />
+              <CheckCircle className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`} />
             ) : (
-              <Dumbbell className="w-3.5 h-3.5 text-white" />
+              <Dumbbell className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-white`} />
             )}
           </div>
-          <div className="font-semibold truncate text-xs">
+          <span className={`font-semibold truncate ${compact ? "text-xs" : "text-xs"}`}>
             {assignment.workoutPlanName || "Workout"}
-          </div>
+          </span>
         </div>
-        {isCoach && <MoveIcon className="w-3 h-3 opacity-50 shrink-0 mt-1" />}
+        {isCoach && !compact && <MoveIcon className="w-3 h-3 opacity-50 shrink-0" />}
       </div>
       {!compact && (
         <>
@@ -213,6 +216,7 @@ export default function DraggableAthleteCalendar({
   viewMode: initialViewMode = "month",
   selectedDate: initialDate,
   isCoach = false,
+  groups = [],
 }: DraggableAthleteCalendarProps) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState<"month" | "week" | "day">(
@@ -223,6 +227,13 @@ export default function DraggableAthleteCalendar({
     assignment: WorkoutAssignment;
     newDate: Date;
   } | null>(null);
+
+  // Helper to get group names for an assignment
+  const getAssignmentGroups = (assignment: WorkoutAssignment): string[] => {
+    if (!assignment.groupId) return [];
+    const group = groups.find((g) => g.id === assignment.groupId);
+    return group ? [group.name] : [];
+  };
 
   // Helper functions for date calculations
   const startOfMonth = (date: Date) => {
@@ -478,6 +489,7 @@ export default function DraggableAthleteCalendar({
                         workoutPlanId={assignment.workoutPlanId}
                         duration={assignment.startTime}
                         notes={assignment.notes}
+                        assignedGroups={getAssignmentGroups(assignment)}
                       />
                     }
                     openDelay={300}
@@ -563,6 +575,7 @@ export default function DraggableAthleteCalendar({
                         workoutPlanId={assignment.workoutPlanId}
                         duration={assignment.startTime}
                         notes={assignment.notes}
+                        assignedGroups={getAssignmentGroups(assignment)}
                       />
                     }
                     openDelay={300}
@@ -610,6 +623,7 @@ export default function DraggableAthleteCalendar({
                     workoutPlanId={assignment.workoutPlanId}
                     duration={assignment.startTime}
                     notes={assignment.notes}
+                    assignedGroups={getAssignmentGroups(assignment)}
                   />
                 }
                 openDelay={300}

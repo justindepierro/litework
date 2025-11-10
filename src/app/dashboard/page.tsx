@@ -367,6 +367,7 @@ export default function DashboardPage() {
                   onAssignmentMove={handleAssignmentMove}
                   viewMode="month"
                   isCoach={true}
+                  groups={groups}
                 />
               )}
             </div>
