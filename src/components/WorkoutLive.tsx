@@ -53,6 +53,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
 
   // Get groups for display
   const groups: Record<string, ExerciseGroupInfo> = {};
@@ -61,6 +62,19 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       groups[g.id] = g;
     });
   }
+
+  // Debug: Log groups and exercises on mount
+  useEffect(() => {
+    if (session) {
+      console.log("[WorkoutLive] Session loaded:", {
+        hasGroups: !!session.groups,
+        groupCount: session.groups?.length || 0,
+        groups: session.groups,
+        exercisesWithGroups: session.exercises.filter((e) => e.group_id).length,
+        totalExercises: session.exercises.length,
+      });
+    }
+  }, [session]);
 
   const currentExercise = session?.exercises[session.current_exercise_index];
   const isLastExercise = session
@@ -448,7 +462,15 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 {/* Exercise Card (hide if group is collapsed) */}
                 {(!group || !collapsedGroups.has(group.id)) && (
                   <button
-                    onClick={() => updateExerciseIndex(index)}
+                    onClick={() => {
+                      if (isCompleted && exercise.set_records.length > 0) {
+                        // Open quick edit modal for completed exercises
+                        setEditingExerciseIndex(index);
+                      } else {
+                        // Activate for recording
+                        updateExerciseIndex(index);
+                      }
+                    }}
                     className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
                       isActive ? 'scale-[1.02]' : 'hover:scale-[1.01]'
                     } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''}`}
@@ -664,6 +686,95 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           onClose={() => setShowPRModal(false)}
         />
       )}
+      
+      {/* Quick Edit Modal - Edit completed sets */}
+      {editingExerciseIndex !== null && session && (
+        <ModalBackdrop
+          isOpen={true}
+          onClose={() => setEditingExerciseIndex(null)}
+        >
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <ModalHeader
+              title={session.exercises[editingExerciseIndex].exercise_name}
+              subtitle="Tap a set to edit or delete"
+              icon={<Info className="w-6 h-6" />}
+              onClose={() => setEditingExerciseIndex(null)}
+            />
+            <ModalContent>
+              <div className="space-y-2">
+                {session.exercises[editingExerciseIndex].set_records.map((set, setIndex) => (
+                  <div
+                    key={setIndex}
+                    className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl border-2 border-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-gray-900">
+                        Set {set.set_number}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete Set ${set.set_number}?`)) {
+                            // TODO: Implement set deletion
+                            console.log("Delete set:", set.set_number);
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      {set.weight && (
+                        <div>
+                          <div className="text-gray-600">Weight</div>
+                          <div className="font-semibold text-gray-900">
+                            {set.weight} lbs
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-gray-600">Reps</div>
+                        <div className="font-semibold text-gray-900">
+                          {set.reps}
+                        </div>
+                      </div>
+                      {set.rpe && (
+                        <div>
+                          <div className="text-gray-600">RPE</div>
+                          <div className="font-semibold text-gray-900">
+                            {set.rpe}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {/* Edit button - TODO: Make fields editable */}
+                    <button
+                      onClick={() => {
+                        // TODO: Implement inline editing
+                        console.log("Edit set:", set.set_number);
+                      }}
+                      className="mt-2 w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium text-sm transition-colors"
+                    >
+                      Edit This Set
+                    </button>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Close button */}
+              <div className="mt-4">
+                <button
+                  onClick={() => setEditingExerciseIndex(null)}
+                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium"
+                >
+                  Done
+                </button>
+              </div>
+            </ModalContent>
+          </div>
+        </ModalBackdrop>
+      )}
+      
       {showExitConfirm && (
         <ModalBackdrop
           isOpen={showExitConfirm}

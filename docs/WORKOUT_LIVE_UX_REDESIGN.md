@@ -44,7 +44,25 @@
 - `src/types/session.ts` - Added `ExerciseGroupInfo` type and `groups` to `WorkoutSession`
 - `src/components/WorkoutLive.tsx` - Group detection and collapsible headers
 
-### 🚧 Phase 2: Enhanced Controls (NEXT)
+### 🚧 Phase 2: Enhanced Controls (IN PROGRESS)
+
+**Completed Features**:
+- ✅ Quick edit modal for completed exercises
+- ✅ Tap completed exercise → View all sets with edit/delete options
+- ✅ Tap pending/active exercise → Activate for recording
+- ✅ Large touch-friendly set cards
+- ✅ Per-set delete confirmation
+- ✅ Debug logging for group detection
+
+**In Progress**:
+- [ ] Inline set editing (currently shows "Edit This Set" button)
+- [ ] Set deletion implementation
+- [ ] Workout controls menu (pause, reset, undo)
+
+**Next Steps**:
+- Implement inline editing for weight/reps/RPE
+- Add undo last set functionality
+- Add workout pause/reset controls
 
 ## 🎯 Design Principles
 
