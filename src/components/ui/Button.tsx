@@ -6,7 +6,7 @@
 
 "use client";
 
-import React, { memo, useRef, useState  } from "react";
+import React, { useRef, useState } from "react";
 import { Loader2, Check } from "lucide-react";
 
 export type ButtonVariant =
@@ -102,40 +102,55 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ${disabled || isLoading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
     `;
 
-    // Variant styles using design tokens
+    // Variant styles using interactive state tokens
     const variantStyles: Record<ButtonVariant, string> = {
       primary: `
-        bg-[var(--color-accent-orange)]
+        bg-[var(--color-interactive-primary-base)]
         text-[var(--color-text-inverse)]
-        border border-[var(--color-accent-orange)]
+        border border-[var(--color-interactive-primary-base)]
         shadow-[var(--elevation-1)]
-        ${!disabled && !isLoading ? "hover:bg-[#e55a2b] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:translate-y-0" : ""}
+        ${disabled || isLoading 
+          ? "bg-[var(--color-interactive-primary-disabled)] border-[var(--color-interactive-primary-disabled)]" 
+          : "hover:bg-[var(--color-interactive-primary-hover)] hover:border-[var(--color-interactive-primary-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-primary-active)] active:border-[var(--color-interactive-primary-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-primary-focus)] focus:ring-offset-2"
+        }
       `,
       secondary: `
         bg-[var(--color-silver-200)]
         text-[var(--color-navy-800)]
         border-2 border-[var(--color-border-secondary)]
-        ${!disabled && !isLoading ? "hover:bg-[var(--color-silver-300)] hover:border-[var(--color-navy-400)] hover:-translate-y-0.5 active:translate-y-0" : ""}
+        ${disabled || isLoading
+          ? "bg-[var(--color-silver-300)] border-[var(--color-silver-400)]"
+          : "hover:bg-[var(--color-silver-300)] hover:border-[var(--color-navy-400)] hover:-translate-y-0.5 active:bg-[var(--color-silver-400)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-navy-400)] focus:ring-offset-2"
+        }
       `,
       danger: `
-        bg-[var(--color-error)]
+        bg-[var(--color-interactive-danger-base)]
         text-[var(--color-text-inverse)]
-        border border-[var(--color-error)]
+        border border-[var(--color-interactive-danger-base)]
         shadow-[var(--elevation-1)]
-        ${!disabled && !isLoading ? "hover:bg-[#dc2626] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:translate-y-0" : ""}
+        ${disabled || isLoading
+          ? "bg-[var(--color-interactive-danger-disabled)] border-[var(--color-interactive-danger-disabled)]"
+          : "hover:bg-[var(--color-interactive-danger-hover)] hover:border-[var(--color-interactive-danger-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-danger-active)] active:border-[var(--color-interactive-danger-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-danger-focus)] focus:ring-offset-2"
+        }
       `,
       ghost: `
-        bg-transparent
+        bg-[var(--color-interactive-ghost-base)]
         text-[var(--color-text-primary)]
         border border-transparent
-        ${!disabled && !isLoading ? "hover:bg-[var(--color-silver-200)] hover:text-[var(--color-navy-900)] active:bg-[var(--color-silver-300)]" : ""}
+        ${disabled || isLoading
+          ? "text-[var(--color-text-tertiary)]"
+          : "hover:bg-[var(--color-interactive-ghost-hover)] hover:text-[var(--color-navy-900)] active:bg-[var(--color-interactive-ghost-active)] focus:ring-2 focus:ring-[var(--color-interactive-ghost-focus)] focus:ring-offset-2"
+        }
       `,
       success: `
-        bg-[var(--color-success)]
+        bg-[var(--color-interactive-success-base)]
         text-[var(--color-text-inverse)]
-        border border-[var(--color-success)]
+        border border-[var(--color-interactive-success-base)]
         shadow-[var(--elevation-1)]
-        ${!disabled && !isLoading ? "hover:bg-[#00b894] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:translate-y-0" : ""}
+        ${disabled || isLoading
+          ? "bg-[var(--color-interactive-success-disabled)] border-[var(--color-interactive-success-disabled)]"
+          : "hover:bg-[var(--color-interactive-success-hover)] hover:border-[var(--color-interactive-success-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-success-active)] active:border-[var(--color-interactive-success-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-success-focus)] focus:ring-offset-2"
+        }
       `,
     };
 

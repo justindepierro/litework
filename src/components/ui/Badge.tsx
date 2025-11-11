@@ -4,7 +4,7 @@
  * Variants: primary, success, warning, error, neutral
  */
 
-import React, { memo, HTMLAttributes, ReactNode  } from "react";
+import React, { HTMLAttributes, ReactNode } from "react";
 
 export type BadgeVariant =
   | "primary"
@@ -38,17 +38,20 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     const baseStyles =
       "inline-flex items-center gap-1.5 font-medium rounded-full transition-colors";
 
-    // Variant styles
+    // Variant styles using semantic color tokens
     const variantStyles: Record<BadgeVariant, string> = {
       primary:
-        "bg-accent-blue/10 text-accent-blue border border-accent-blue/20",
+        "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)] border border-[var(--color-semantic-info-light)]",
       success:
-        "bg-accent-green/10 text-accent-green border border-accent-green/20",
+        "bg-[var(--color-semantic-success-lightest)] text-[var(--color-semantic-success-dark)] border border-[var(--color-semantic-success-light)]",
       warning:
-        "bg-accent-yellow/10 text-accent-yellow border border-accent-yellow/20",
-      error: "bg-accent-red/10 text-accent-red border border-accent-red/20",
-      neutral: "bg-silver-300 text-silver-800 border border-silver-400",
-      info: "bg-info-lighter text-info-dark border border-info-light",
+        "bg-[var(--color-semantic-warning-lightest)] text-[var(--color-semantic-warning-dark)] border border-[var(--color-semantic-warning-light)]",
+      error: 
+        "bg-[var(--color-semantic-error-lightest)] text-[var(--color-semantic-error-dark)] border border-[var(--color-semantic-error-light)]",
+      neutral: 
+        "bg-[var(--color-semantic-neutral-lightest)] text-[var(--color-semantic-neutral-darker)] border border-[var(--color-semantic-neutral-light)]",
+      info: 
+        "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)] border border-[var(--color-semantic-info-light)]",
     };
 
     // Size styles
@@ -58,14 +61,14 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       lg: "text-base px-3 py-1.5",
     };
 
-    // Dot indicator
+    // Dot indicator using semantic colors
     const dotStyles: Record<BadgeVariant, string> = {
-      primary: "bg-accent-blue",
-      success: "bg-accent-green",
-      warning: "bg-accent-yellow",
-      error: "bg-accent-red",
-      neutral: "bg-silver-600",
-      info: "bg-info",
+      primary: "bg-[var(--color-semantic-info-base)]",
+      success: "bg-[var(--color-semantic-success-base)]",
+      warning: "bg-[var(--color-semantic-warning-base)]",
+      error: "bg-[var(--color-semantic-error-base)]",
+      neutral: "bg-[var(--color-semantic-neutral-base)]",
+      info: "bg-[var(--color-semantic-info-base)]",
     };
 
     const dotSize = size === "sm" ? "w-1.5 h-1.5" : "w-2 h-2";
