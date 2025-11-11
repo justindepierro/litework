@@ -19,12 +19,20 @@ export function WorkoutHeader({
   onMenuClick,
 }: WorkoutHeaderProps) {
   const [elapsedTime, setElapsedTime] = useState<string>("00:00");
+  const [isMounted, setIsMounted] = useState(true);
+
+  // Cleanup on unmount - only set false
+  useEffect(() => {
+    return () => setIsMounted(false);
+  }, []);
 
   // Calculate elapsed time
   useEffect(() => {
     const startTime = new Date(startedAt).getTime();
 
     const updateElapsedTime = () => {
+      if (!isMounted) return; // Don't update if unmounted
+      
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000); // seconds
       const minutes = Math.floor(elapsed / 60);
@@ -41,7 +49,7 @@ export function WorkoutHeader({
     const interval = setInterval(updateElapsedTime, 1000);
 
     return () => clearInterval(interval);
-  }, [startedAt]);
+  }, [startedAt, isMounted]);
 
   // Calculate progress percentage
   const progressPercent = totalExercises > 0 

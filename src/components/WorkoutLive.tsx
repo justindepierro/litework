@@ -192,13 +192,15 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             resetCircuitExercises(currentGroup.id);
             // Move to first exercise in circuit for next round
             setTimeout(() => {
-              updateExerciseIndex(firstExerciseIndex);
+              if (isMounted) updateExerciseIndex(firstExerciseIndex);
             }, 500);
           } else {
             // Finished all rounds - move to next exercise after this group
             if (!isLastExercise) {
               setTimeout(
-                () => updateExerciseIndex(session.current_exercise_index + 1),
+                () => {
+                  if (isMounted) updateExerciseIndex(session.current_exercise_index + 1);
+                },
                 500
               );
             }
@@ -206,13 +208,17 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         } else {
           // Move to next exercise in circuit
           const nextExerciseIndex = groupExercises[currentPositionInGroup + 1].index;
-          setTimeout(() => updateExerciseIndex(nextExerciseIndex), 500);
+          setTimeout(() => {
+            if (isMounted) updateExerciseIndex(nextExerciseIndex);
+          }, 500);
         }
       } else {
         // Regular exercise or single-round group - just move to next
         if (!isLastExercise) {
           setTimeout(
-            () => updateExerciseIndex(session.current_exercise_index + 1),
+            () => {
+              if (isMounted) updateExerciseIndex(session.current_exercise_index + 1);
+            },
             500
           );
         }
@@ -237,6 +243,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     updateGroupRound,
     resetCircuitExercises,
     groups,
+    isMounted,
   ]);
 
   const handleRestComplete = useCallback(() => {
@@ -265,8 +272,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     )
       return;
     await completeSession();
-    setTimeout(() => router.push("/dashboard"), 2000);
-  }, [session, completeSession, router]);
+    setTimeout(() => {
+      if (isMounted) router.push("/dashboard");
+    }, 2000);
+  }, [session, completeSession, router, isMounted]);
   
   if (isLoading) {
     return (

@@ -672,14 +672,15 @@ export function onAuthChange(callback: (user: User | null) => void) {
           .single();
 
         // 5 second timeout - if profile fetch takes longer, something is wrong
+        // 15 second timeout - accommodate slow mobile networks
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
             reject(
               new Error(
-                "Profile fetch timeout - database query exceeded 5 seconds. Check network connection."
+                "Profile fetch timeout - database query exceeded 15 seconds. Check network connection."
               )
             );
-          }, 5000)
+          }, 15000)
         );
 
         const result = await Promise.race([
@@ -711,7 +712,25 @@ export function onAuthChange(callback: (user: User | null) => void) {
             errorDetails: error,
             userId: session.user.id,
           });
-          callback(null);
+          
+          // DON'T log user out on transient failures (timeout, network issues)
+          // Instead, provide minimal user info from session token
+          console.warn('[AUTH] Profile fetch failed, retaining session with basic info', { 
+            error: error?.message || 'Profile not found',
+            userId: session.user.id 
+          });
+          
+          // Keep user logged in with basic session data
+          const fallbackUser: User = {
+            id: session.user.id,
+            email: session.user.email || '',
+            firstName: 'User', // Fallback name
+            lastName: '',
+            fullName: 'User',
+            role: 'athlete', // Safe default role
+          };
+          
+          callback(fallbackUser);
           return;
         }
 
