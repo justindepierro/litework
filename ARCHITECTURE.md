@@ -184,12 +184,12 @@ import { useState, useEffect, useCallback } from 'react';
 
 function MyComponent() {
   const [isMounted, setIsMounted] = useState(true);
-  
+
   // Cleanup on unmount
   useEffect(() => {
     return () => setIsMounted(false);
   }, []);
-  
+
   // Protected setTimeout
   const handleAction = useCallback(() => {
     setTimeout(() => {
@@ -199,19 +199,19 @@ function MyComponent() {
       }
     }, 1000);
   }, [isMounted]);
-  
+
   // Protected setInterval
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isMounted) return; // Early exit
-      
+
       // Safe to update state
       updateTimer();
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [isMounted]);
-  
+
   return <div>...</div>;
 }
 ```
@@ -219,6 +219,7 @@ function MyComponent() {
 ### When to Use isMounted
 
 **REQUIRED** for these scenarios:
+
 - ✅ Any `setTimeout` or `setInterval` that updates state
 - ✅ Delayed navigation (`router.push` after delay)
 - ✅ API calls with state updates in callbacks
@@ -226,6 +227,7 @@ function MyComponent() {
 - ✅ WebSocket/EventSource message handlers
 
 **NOT NEEDED** for:
+
 - ❌ Synchronous operations
 - ❌ Pure data transformations
 - ❌ Operations that don't update state
@@ -251,7 +253,7 @@ setTimeout(() => {
 // Timer updates every second - must check mount status
 const updateElapsedTime = () => {
   if (!isMounted) return; // Prevent crash
-  
+
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   setElapsedTime(formatTime(elapsed));
 };
@@ -277,10 +279,10 @@ if (error || !profile) {
 if (error || !profile) {
   const fallbackUser = {
     id: session.user.id,
-    email: session.user.email || '',
-    firstName: 'User',
-    lastName: '',
-    role: 'athlete',
+    email: session.user.email || "",
+    firstName: "User",
+    lastName: "",
+    role: "athlete",
   };
   callback(fallbackUser); // ✅ Session preserved
   return;
@@ -291,13 +293,13 @@ if (error || !profile) {
 
 ```typescript
 // OLD - Too short for mobile networks
-const timeoutPromise = new Promise((_, reject) => 
-  setTimeout(() => reject(new Error('Timeout')), 5000)
+const timeoutPromise = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error("Timeout")), 5000)
 );
 
 // NEW - Accommodates slow connections
-const timeoutPromise = new Promise((_, reject) => 
-  setTimeout(() => reject(new Error('Timeout')), 15000)
+const timeoutPromise = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error("Timeout")), 15000)
 );
 ```
 
@@ -333,21 +335,21 @@ useEffect(() => {
   const interval = setInterval(() => {
     if (isMounted) setState(value);
   }, 1000);
-  
+
   return () => clearInterval(interval);
 }, [isMounted]);
 
 // ❌ BAD - Navigation might happen after unmount
 const handleComplete = () => {
   saveData();
-  setTimeout(() => router.push('/dashboard'), 2000);
+  setTimeout(() => router.push("/dashboard"), 2000);
 };
 
 // ✅ GOOD - Navigation protected
 const handleComplete = useCallback(() => {
   saveData();
   setTimeout(() => {
-    if (isMounted) router.push('/dashboard');
+    if (isMounted) router.push("/dashboard");
   }, 2000);
 }, [isMounted, router]);
 ```

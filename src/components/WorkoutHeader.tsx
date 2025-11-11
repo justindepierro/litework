@@ -32,7 +32,7 @@ export function WorkoutHeader({
 
     const updateElapsedTime = () => {
       if (!isMounted) return; // Don't update if unmounted
-      
+
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000); // seconds
       const minutes = Math.floor(elapsed / 60);
@@ -52,9 +52,10 @@ export function WorkoutHeader({
   }, [startedAt, isMounted]);
 
   // Calculate progress percentage
-  const progressPercent = totalExercises > 0 
-    ? Math.round((completedExercises / totalExercises) * 100) 
-    : 0;
+  const progressPercent =
+    totalExercises > 0
+      ? Math.round((completedExercises / totalExercises) * 100)
+      : 0;
 
   return (
     <div className="sticky top-0 z-10 bg-white border-b-2 border-gray-200 shadow-sm">

@@ -56,9 +56,13 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
+    new Set()
+  );
   const [showCompletedExercises, setShowCompletedExercises] = useState(false);
-  const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
+  const [editingExerciseIndex, setEditingExerciseIndex] = useState<
+    number | null
+  >(null);
   const [isMounted, setIsMounted] = useState(true);
 
   // Cleanup on unmount to prevent state updates
@@ -166,23 +170,33 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     }
     if (currentExercise.sets_completed + 1 >= currentExercise.sets_target) {
       completeExercise(session.current_exercise_index);
-      
+
       // Check if this exercise is part of a circuit/superset
-      const currentGroup = currentExercise.group_id ? groups[currentExercise.group_id] : null;
-      
-      if (currentGroup && (currentGroup.type === "circuit" || currentGroup.type === "superset") && currentGroup.rounds && currentGroup.rounds > 1) {
+      const currentGroup = currentExercise.group_id
+        ? groups[currentExercise.group_id]
+        : null;
+
+      if (
+        currentGroup &&
+        (currentGroup.type === "circuit" || currentGroup.type === "superset") &&
+        currentGroup.rounds &&
+        currentGroup.rounds > 1
+      ) {
         // Find all exercises in this group
         const groupExercises = session.exercises
           .map((ex, idx) => ({ ...ex, index: idx }))
-          .filter(ex => ex.group_id === currentGroup.id);
-        
-        const currentPositionInGroup = groupExercises.findIndex(ex => ex.index === session.current_exercise_index);
-        const isLastInGroup = currentPositionInGroup === groupExercises.length - 1;
-        
+          .filter((ex) => ex.group_id === currentGroup.id);
+
+        const currentPositionInGroup = groupExercises.findIndex(
+          (ex) => ex.index === session.current_exercise_index
+        );
+        const isLastInGroup =
+          currentPositionInGroup === groupExercises.length - 1;
+
         if (isLastInGroup) {
           // Just finished last exercise in the circuit
           const currentRound = session.group_rounds?.[currentGroup.id] || 1;
-          
+
           if (currentRound < currentGroup.rounds) {
             // More rounds to go - loop back to first exercise in circuit
             const firstExerciseIndex = groupExercises[0].index;
@@ -197,17 +211,16 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           } else {
             // Finished all rounds - move to next exercise after this group
             if (!isLastExercise) {
-              setTimeout(
-                () => {
-                  if (isMounted) updateExerciseIndex(session.current_exercise_index + 1);
-                },
-                500
-              );
+              setTimeout(() => {
+                if (isMounted)
+                  updateExerciseIndex(session.current_exercise_index + 1);
+              }, 500);
             }
           }
         } else {
           // Move to next exercise in circuit
-          const nextExerciseIndex = groupExercises[currentPositionInGroup + 1].index;
+          const nextExerciseIndex =
+            groupExercises[currentPositionInGroup + 1].index;
           setTimeout(() => {
             if (isMounted) updateExerciseIndex(nextExerciseIndex);
           }, 500);
@@ -215,18 +228,18 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       } else {
         // Regular exercise or single-round group - just move to next
         if (!isLastExercise) {
-          setTimeout(
-            () => {
-              if (isMounted) updateExerciseIndex(session.current_exercise_index + 1);
-            },
-            500
-          );
+          setTimeout(() => {
+            if (isMounted)
+              updateExerciseIndex(session.current_exercise_index + 1);
+          }, 500);
         }
       }
     } else {
       setShowRestTimer(true);
     }
-    const repsTarget = currentExercise.reps_target ? parseInt(currentExercise.reps_target) : 0;
+    const repsTarget = currentExercise.reps_target
+      ? parseInt(currentExercise.reps_target)
+      : 0;
     setReps(repsTarget);
     setRpe(7);
   }, [
@@ -251,7 +264,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       setShowRestTimer(false);
     }
   }, [isMounted]);
-  
+
   const handleNext = useCallback(() => {
     if (
       !session ||
@@ -260,7 +273,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       return;
     updateExerciseIndex(session.current_exercise_index + 1);
   }, [session, updateExerciseIndex]);
-  
+
   const handleCompleteWorkout = useCallback(async () => {
     if (!session) return;
     const allComplete = session.exercises.every((ex) => ex.completed);
@@ -276,7 +289,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       if (isMounted) router.push("/dashboard");
     }, 2000);
   }, [session, completeSession, router, isMounted]);
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -382,450 +395,513 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         workoutName={session.workout_name}
         startedAt={session.started_at}
         totalExercises={session.exercises.length}
-        completedExercises={session.exercises.filter((ex) => ex.completed).length}
+        completedExercises={
+          session.exercises.filter((ex) => ex.completed).length
+        }
         onMenuClick={() => setShowExitConfirm(true)}
       />
 
       {/* SPLIT VIEW: Top = Scrollable Exercise List, Bottom = Fixed Input */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* TOP SECTION: Scrollable Exercise List (60% of available space) */}
-        <div className="grow-3 overflow-y-auto overscroll-contain" style={{ flexBasis: 0 }}>
+        <div
+          className="grow-3 overflow-y-auto overscroll-contain"
+          style={{ flexBasis: 0 }}
+        >
           <div className="px-4 py-4 space-y-4 pb-4">
             {/* Completed Exercises - Collapsed by default */}
-            {session.exercises.some(ex => ex.completed) && (
-            <div className="mb-4">
-              <button
-                onClick={() => setShowCompletedExercises(!showCompletedExercises)}
-                className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 active:bg-green-200 border-2 border-green-200 rounded-xl transition-all duration-200"
-              >
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="font-semibold text-green-900">
-                    Completed ({session.exercises.filter(ex => ex.completed).length})
-                  </span>
-                </div>
-                <ChevronDown 
-                  className={`w-5 h-5 text-green-700 transition-transform duration-200 ${showCompletedExercises ? '' : '-rotate-90'}`}
-                />
-              </button>
-              
-              {/* Show completed exercises when expanded */}
-              {showCompletedExercises && (
-                <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  {session.exercises.map((exercise, index) => {
-                    if (!exercise.completed) return null;
-                    
-                    return (
-                      <button
-                        key={exercise.session_exercise_id}
-                        onClick={() => setEditingExerciseIndex(index)}
-                        className="w-full text-left p-4 bg-white border-2 border-green-200 rounded-lg hover:shadow-md active:scale-[0.99] transition-all duration-200"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 flex-1">
-                            <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
-                            <span className="font-medium text-gray-900">{exercise.exercise_name}</span>
-                          </div>
-                          <span className="text-sm text-gray-500">
-                            {exercise.set_records.length} sets
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Active and Pending Exercises */}
-          {session.exercises.map((exercise, index) => {
-            // Skip completed exercises (they're in collapsed section above)
-            if (exercise.completed) return null;
-            
-            const isActive = index === session.current_exercise_index;
-            const isPending = !isActive; // All remaining exercises are pending since completed are filtered out
-            
-            // Check if this is the first exercise in a group
-            const group = exercise.group_id ? groups[exercise.group_id] : null;
-            const isFirstInGroup =
-              group && (index === 0 || session.exercises[index - 1]?.group_id !== exercise.group_id);
-            
-            // Determine exercise type color
-            let colorClasses = {
-              border: 'border-green-200',
-              bg: 'bg-green-50',
-              text: 'text-green-700',
-              badge: 'bg-green-100 text-green-800',
-              glow: 'shadow-green-200',
-            };
-            
-            // Color by group type
-            if (group) {
-              if (group.type === 'circuit') {
-                colorClasses = {
-                  border: 'border-blue-300',
-                  bg: 'bg-blue-50',
-                  text: 'text-blue-700',
-                  badge: 'bg-blue-100 text-blue-800',
-                  glow: 'shadow-blue-200',
-                };
-              } else if (group.type === 'superset') {
-                colorClasses = {
-                  border: 'border-purple-300',
-                  bg: 'bg-purple-50',
-                  text: 'text-purple-700',
-                  badge: 'bg-purple-100 text-purple-800',
-                  glow: 'shadow-purple-200',
-                };
-              } else if (group.type === 'section') {
-                colorClasses = {
-                  border: 'border-cyan-300',
-                  bg: 'bg-cyan-50',
-                  text: 'text-cyan-700',
-                  badge: 'bg-cyan-100 text-cyan-800',
-                  glow: 'shadow-cyan-200',
-                };
-              }
-            }
-            
-            if (isActive) {
-              colorClasses.glow = 'shadow-lg shadow-blue-200';
-              colorClasses.border = 'border-blue-400';
-            } else if (isPending) {
-              colorClasses = {
-                border: 'border-gray-200',
-                bg: 'bg-white',
-                text: 'text-gray-700',
-                badge: 'bg-gray-100 text-gray-600',
-                glow: 'shadow-sm',
-              };
-            }
-            
-            return (
-              <div key={exercise.session_exercise_id}>
-                {/* Group Header (if first in group) */}
-                {isFirstInGroup && group && (
-                  <button
-                    onClick={() => {
-                      setCollapsedGroups((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(group.id)) {
-                          next.delete(group.id);
-                        } else {
-                          next.add(group.id);
-                        }
-                        return next;
-                      });
-                    }}
-                    className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all duration-200 hover:shadow-md active:scale-[0.99]`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ChevronDown
-                          className={`w-4 h-4 ${colorClasses.text} transition-transform duration-200 ${
-                            collapsedGroups.has(group.id) ? "-rotate-90" : ""
-                          }`}
-                        />
-                        <div>
-                          <span className={`text-xs font-bold uppercase tracking-wide ${colorClasses.text} block`}>
-                            {group.type}
-                          </span>
-                          <span className={`font-semibold ${colorClasses.text}`}>
-                            {group.name}
-                          </span>
-                          {group.rounds && group.rounds > 1 && (
-                            <span className={`text-sm ${colorClasses.text} opacity-75 ml-2`}>
-                              • Round {session.group_rounds?.[group.id] || 1} of {group.rounds}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                )}
+            {session.exercises.some((ex) => ex.completed) && (
+              <div className="mb-4">
+                <button
+                  onClick={() =>
+                    setShowCompletedExercises(!showCompletedExercises)
+                  }
+                  className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 active:bg-green-200 border-2 border-green-200 rounded-xl transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold text-green-900">
+                      Completed (
+                      {session.exercises.filter((ex) => ex.completed).length})
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-green-700 transition-transform duration-200 ${showCompletedExercises ? "" : "-rotate-90"}`}
+                  />
+                </button>
 
-                {/* Exercise Card (hide if group is collapsed) */}
-                {(!group || !collapsedGroups.has(group.id)) && (
-                  <button
-                    onClick={() => {
-                      // Always activate for recording since completed exercises are filtered out
-                      updateExerciseIndex(index);
-                    }}
-                    className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
-                      isActive ? 'scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50' : 'hover:scale-[1.01] hover:shadow-md active:scale-[0.99]'
-                    } ${isPending ? 'opacity-75' : 'opacity-100'} ${group ? 'ml-4' : ''} mb-3`}
-                    style={{ minHeight: '56px' }}
-                  >
-                    <div className="p-5">
-                      {/* Exercise Header */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
-                            )}
-                            <h3 className={`text-xl font-semibold ${colorClasses.text}`}>
-                              {exercise.exercise_name}
-                            </h3>
-                          </div>
-                          
-                          {/* Exercise Meta */}
-                          <div className="flex flex-wrap gap-2 text-sm">
-                            <span className={`px-2 py-0.5 rounded ${colorClasses.badge} font-medium`}>
-                              {exercise.sets_target} × {exercise.reps_target}
-                            </span>
-                            {exercise.weight_target && (
-                              <span className={`px-2 py-0.5 rounded ${colorClasses.badge}`}>
-                                {exercise.weight_target} lbs
+                {/* Show completed exercises when expanded */}
+                {showCompletedExercises && (
+                  <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                    {session.exercises.map((exercise, index) => {
+                      if (!exercise.completed) return null;
+
+                      return (
+                        <button
+                          key={exercise.session_exercise_id}
+                          onClick={() => setEditingExerciseIndex(index)}
+                          className="w-full text-left p-4 bg-white border-2 border-green-200 rounded-lg hover:shadow-md active:scale-[0.99] transition-all duration-200"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 flex-1">
+                              <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+                              <span className="font-medium text-gray-900">
+                                {exercise.exercise_name}
                               </span>
-                            )}
-                            {exercise.rest_seconds > 0 && (
-                              <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {exercise.rest_seconds}s
-                              </span>
-                            )}
-                          </div>
-                          
-                          {/* Coach's Notes - Show for active exercise */}
-                          {isActive && exercise.notes && (
-                            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300">
-                              <div className="flex items-start gap-2">
-                                <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                                <div className="flex-1">
-                                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wide mb-1">
-                                    Coach&apos;s Tips
-                                  </h4>
-                                  <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">
-                                    {exercise.notes}
-                                  </p>
-                                </div>
-                              </div>
                             </div>
-                          )}
-                        </div>
-                        
-                        {/* Progress Indicator */}
-                        <div className="ml-4 text-right shrink-0">
-                          <div className={`text-sm font-semibold ${colorClasses.text}`}>
-                            {exercise.sets_completed}/{exercise.sets_target}
+                            <span className="text-sm text-gray-500">
+                              {exercise.set_records.length} sets
+                            </span>
                           </div>
-                        </div>
-                      </div>
-                      
-                      {/* Progress Bar (if in progress) */}
-                      {exercise.sets_completed > 0 && (
-                        <div className="mt-2">
-                          <div className="w-full bg-gray-200 rounded-full h-1.5">
-                            <div
-                              className={`h-1.5 rounded-full transition-all duration-300 ${
-                                isActive ? 'bg-blue-500' : 'bg-green-500'
-                              }`}
-                              style={{
-                                width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Active Exercise: Show ALL set records */}
-                      {isActive && exercise.set_records.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-blue-200 animate-in fade-in duration-300">
-                          <div className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
-                            Completed Sets
-                          </div>
-                          <div className="space-y-1.5">
-                            {exercise.set_records.map((set, setIndex) => (
-                              <div
-                                key={setIndex}
-                                className="flex items-center justify-between text-sm bg-white/70 rounded-lg px-3 py-2 animate-in slide-in-from-right-2 duration-200 border border-blue-100"
-                                style={{ animationDelay: `${setIndex * 50}ms` }}
-                              >
-                                <span className="text-gray-700 font-semibold">Set {set.set_number}</span>
-                                <div className="flex items-center gap-3">
-                                  {set.weight && (
-                                    <span className="text-blue-600 font-bold">
-                                      {set.weight} lbs
-                                    </span>
-                                  )}
-                                  <span className="text-gray-900 font-semibold">
-                                    × {set.reps}
-                                  </span>
-                                  {set.rpe && (
-                                    <span className="text-purple-600 font-medium text-xs px-2 py-0.5 bg-purple-50 rounded">
-                                      RPE {set.rpe}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </button>
+                        </button>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
-            );
-          })}
+            )}
+
+            {/* Active and Pending Exercises */}
+            {session.exercises.map((exercise, index) => {
+              // Skip completed exercises (they're in collapsed section above)
+              if (exercise.completed) return null;
+
+              const isActive = index === session.current_exercise_index;
+              const isPending = !isActive; // All remaining exercises are pending since completed are filtered out
+
+              // Check if this is the first exercise in a group
+              const group = exercise.group_id
+                ? groups[exercise.group_id]
+                : null;
+              const isFirstInGroup =
+                group &&
+                (index === 0 ||
+                  session.exercises[index - 1]?.group_id !== exercise.group_id);
+
+              // Determine exercise type color
+              let colorClasses = {
+                border: "border-green-200",
+                bg: "bg-green-50",
+                text: "text-green-700",
+                badge: "bg-green-100 text-green-800",
+                glow: "shadow-green-200",
+              };
+
+              // Color by group type
+              if (group) {
+                if (group.type === "circuit") {
+                  colorClasses = {
+                    border: "border-blue-300",
+                    bg: "bg-blue-50",
+                    text: "text-blue-700",
+                    badge: "bg-blue-100 text-blue-800",
+                    glow: "shadow-blue-200",
+                  };
+                } else if (group.type === "superset") {
+                  colorClasses = {
+                    border: "border-purple-300",
+                    bg: "bg-purple-50",
+                    text: "text-purple-700",
+                    badge: "bg-purple-100 text-purple-800",
+                    glow: "shadow-purple-200",
+                  };
+                } else if (group.type === "section") {
+                  colorClasses = {
+                    border: "border-cyan-300",
+                    bg: "bg-cyan-50",
+                    text: "text-cyan-700",
+                    badge: "bg-cyan-100 text-cyan-800",
+                    glow: "shadow-cyan-200",
+                  };
+                }
+              }
+
+              if (isActive) {
+                colorClasses.glow = "shadow-lg shadow-blue-200";
+                colorClasses.border = "border-blue-400";
+              } else if (isPending) {
+                colorClasses = {
+                  border: "border-gray-200",
+                  bg: "bg-white",
+                  text: "text-gray-700",
+                  badge: "bg-gray-100 text-gray-600",
+                  glow: "shadow-sm",
+                };
+              }
+
+              return (
+                <div key={exercise.session_exercise_id}>
+                  {/* Group Header (if first in group) */}
+                  {isFirstInGroup && group && (
+                    <button
+                      onClick={() => {
+                        setCollapsedGroups((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(group.id)) {
+                            next.delete(group.id);
+                          } else {
+                            next.add(group.id);
+                          }
+                          return next;
+                        });
+                      }}
+                      className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all duration-200 hover:shadow-md active:scale-[0.99]`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ChevronDown
+                            className={`w-4 h-4 ${colorClasses.text} transition-transform duration-200 ${
+                              collapsedGroups.has(group.id) ? "-rotate-90" : ""
+                            }`}
+                          />
+                          <div>
+                            <span
+                              className={`text-xs font-bold uppercase tracking-wide ${colorClasses.text} block`}
+                            >
+                              {group.type}
+                            </span>
+                            <span
+                              className={`font-semibold ${colorClasses.text}`}
+                            >
+                              {group.name}
+                            </span>
+                            {group.rounds && group.rounds > 1 && (
+                              <span
+                                className={`text-sm ${colorClasses.text} opacity-75 ml-2`}
+                              >
+                                • Round {session.group_rounds?.[group.id] || 1}{" "}
+                                of {group.rounds}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+
+                  {/* Exercise Card (hide if group is collapsed) */}
+                  {(!group || !collapsedGroups.has(group.id)) && (
+                    <button
+                      onClick={() => {
+                        // Always activate for recording since completed exercises are filtered out
+                        updateExerciseIndex(index);
+                      }}
+                      className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
+                        isActive
+                          ? "scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50"
+                          : "hover:scale-[1.01] hover:shadow-md active:scale-[0.99]"
+                      } ${isPending ? "opacity-75" : "opacity-100"} ${group ? "ml-4" : ""} mb-3`}
+                      style={{ minHeight: "56px" }}
+                    >
+                      <div className="p-5">
+                        {/* Exercise Header */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              {isActive && (
+                                <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
+                              )}
+                              <h3
+                                className={`text-xl font-semibold ${colorClasses.text}`}
+                              >
+                                {exercise.exercise_name}
+                              </h3>
+                            </div>
+
+                            {/* Exercise Meta */}
+                            <div className="flex flex-wrap gap-2 text-sm">
+                              <span
+                                className={`px-2 py-0.5 rounded ${colorClasses.badge} font-medium`}
+                              >
+                                {exercise.sets_target} × {exercise.reps_target}
+                              </span>
+                              {exercise.weight_target && (
+                                <span
+                                  className={`px-2 py-0.5 rounded ${colorClasses.badge}`}
+                                >
+                                  {exercise.weight_target} lbs
+                                </span>
+                              )}
+                              {exercise.rest_seconds > 0 && (
+                                <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {exercise.rest_seconds}s
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Coach's Notes - Show for active exercise */}
+                            {isActive && exercise.notes && (
+                              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div className="flex items-start gap-2">
+                                  <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                  <div className="flex-1">
+                                    <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wide mb-1">
+                                      Coach&apos;s Tips
+                                    </h4>
+                                    <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">
+                                      {exercise.notes}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Progress Indicator */}
+                          <div className="ml-4 text-right shrink-0">
+                            <div
+                              className={`text-sm font-semibold ${colorClasses.text}`}
+                            >
+                              {exercise.sets_completed}/{exercise.sets_target}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Progress Bar (if in progress) */}
+                        {exercise.sets_completed > 0 && (
+                          <div className="mt-2">
+                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                              <div
+                                className={`h-1.5 rounded-full transition-all duration-300 ${
+                                  isActive ? "bg-blue-500" : "bg-green-500"
+                                }`}
+                                style={{
+                                  width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Active Exercise: Show ALL set records */}
+                        {isActive && exercise.set_records.length > 0 && (
+                          <div className="mt-3 pt-3 border-t border-blue-200 animate-in fade-in duration-300">
+                            <div className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+                              Completed Sets
+                            </div>
+                            <div className="space-y-1.5">
+                              {exercise.set_records.map((set, setIndex) => (
+                                <div
+                                  key={setIndex}
+                                  className="flex items-center justify-between text-sm bg-white/70 rounded-lg px-3 py-2 animate-in slide-in-from-right-2 duration-200 border border-blue-100"
+                                  style={{
+                                    animationDelay: `${setIndex * 50}ms`,
+                                  }}
+                                >
+                                  <span className="text-gray-700 font-semibold">
+                                    Set {set.set_number}
+                                  </span>
+                                  <div className="flex items-center gap-3">
+                                    {set.weight && (
+                                      <span className="text-blue-600 font-bold">
+                                        {set.weight} lbs
+                                      </span>
+                                    )}
+                                    <span className="text-gray-900 font-semibold">
+                                      × {set.reps}
+                                    </span>
+                                    {set.rpe && (
+                                      <span className="text-purple-600 font-medium text-xs px-2 py-0.5 bg-purple-50 rounded">
+                                        RPE {set.rpe}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
         {/* END: Top Scrollable Section */}
 
         {/* BOTTOM SECTION: Fixed Input Area (40%) */}
         {currentExercise && !currentExercise.completed && (
-          <div className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto" style={{ flexBasis: 0 }}>
+          <div
+            className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto"
+            style={{ flexBasis: 0 }}
+          >
             <div className="px-4 py-4 pb-safe">
-            {/* Active Exercise Summary Card */}
-            <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-bold text-gray-900 flex-1 pr-2">
-                  {currentExercise.exercise_name}
-                </h3>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {currentExercise.sets_completed + 1}
-                  </div>
-                  <div className="text-xs text-gray-600 font-medium">
-                    of {currentExercise.sets_target}
+              {/* Active Exercise Summary Card */}
+              <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-bold text-gray-900 flex-1 pr-2">
+                    {currentExercise.exercise_name}
+                  </h3>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {currentExercise.sets_completed + 1}
+                    </div>
+                    <div className="text-xs text-gray-600 font-medium">
+                      of {currentExercise.sets_target}
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Target and Progress */}
-              <div className="flex items-center gap-3 text-sm">
-                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
-                  <span className="text-gray-600">Target:</span>
-                  <span className="font-semibold text-gray-900">
-                    {currentExercise.sets_target} × {currentExercise.reps_target}
-                    {currentExercise.weight_target && ` @ ${currentExercise.weight_target} lbs`}
-                  </span>
+
+                {/* Target and Progress */}
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
+                    <span className="text-gray-600">Target:</span>
+                    <span className="font-semibold text-gray-900">
+                      {currentExercise.sets_target} ×{" "}
+                      {currentExercise.reps_target}
+                      {currentExercise.weight_target &&
+                        ` @ ${currentExercise.weight_target} lbs`}
+                    </span>
+                  </div>
+                  {currentExercise.rest_seconds > 0 && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
+                      <Clock className="w-3.5 h-3.5 text-gray-600" />
+                      <span className="font-medium text-gray-700">
+                        {currentExercise.rest_seconds}s
+                      </span>
+                    </div>
+                  )}
                 </div>
-                {currentExercise.rest_seconds > 0 && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
-                    <Clock className="w-3.5 h-3.5 text-gray-600" />
-                    <span className="font-medium text-gray-700">{currentExercise.rest_seconds}s</span>
+
+                {/* Last Set Display + Quick Copy */}
+                {currentExercise.set_records.length > 0 && (
+                  <div className="mt-3">
+                    {/* Last Set Info */}
+                    <div className="flex items-center justify-between mb-2 px-1">
+                      <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                        Last Set
+                      </span>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-bold text-blue-600">
+                          {currentExercise.set_records[
+                            currentExercise.set_records.length - 1
+                          ].weight || 0}{" "}
+                          lbs
+                        </span>
+                        <span className="text-gray-400">×</span>
+                        <span className="font-bold text-gray-900">
+                          {
+                            currentExercise.set_records[
+                              currentExercise.set_records.length - 1
+                            ].reps
+                          }{" "}
+                          reps
+                        </span>
+                        {currentExercise.set_records[
+                          currentExercise.set_records.length - 1
+                        ].rpe && (
+                          <span className="text-xs font-medium text-purple-600 px-1.5 py-0.5 bg-purple-50 rounded">
+                            RPE{" "}
+                            {
+                              currentExercise.set_records[
+                                currentExercise.set_records.length - 1
+                              ].rpe
+                            }
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Copy Button */}
+                    <button
+                      onClick={() => {
+                        const lastSet =
+                          currentExercise.set_records[
+                            currentExercise.set_records.length - 1
+                          ];
+                        if (lastSet.weight) setWeight(lastSet.weight);
+                        setReps(lastSet.reps);
+                        if (lastSet.rpe) setRpe(lastSet.rpe);
+                      }}
+                      className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                    >
+                      <span className="text-base">↻</span>
+                      <span>Copy to Inputs</span>
+                    </button>
                   </div>
                 )}
               </div>
-              
-              {/* Last Set Display + Quick Copy */}
-              {currentExercise.set_records.length > 0 && (
-                <div className="mt-3">
-                  {/* Last Set Info */}
-                  <div className="flex items-center justify-between mb-2 px-1">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                      Last Set
-                    </span>
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="font-bold text-blue-600">
-                        {currentExercise.set_records[currentExercise.set_records.length - 1].weight || 0} lbs
-                      </span>
-                      <span className="text-gray-400">×</span>
-                      <span className="font-bold text-gray-900">
-                        {currentExercise.set_records[currentExercise.set_records.length - 1].reps} reps
-                      </span>
-                      {currentExercise.set_records[currentExercise.set_records.length - 1].rpe && (
-                        <span className="text-xs font-medium text-purple-600 px-1.5 py-0.5 bg-purple-50 rounded">
-                          RPE {currentExercise.set_records[currentExercise.set_records.length - 1].rpe}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Copy Button */}
-                  <button
-                    onClick={() => {
-                      const lastSet = currentExercise.set_records[currentExercise.set_records.length - 1];
-                      if (lastSet.weight) setWeight(lastSet.weight);
-                      setReps(lastSet.reps);
-                      if (lastSet.rpe) setRpe(lastSet.rpe);
-                    }}
-                    className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
-                  >
-                    <span className="text-base">↻</span>
-                    <span>Copy to Inputs</span>
-                  </button>
+
+              {/* Horizontal Input Layout */}
+              <div className="space-y-3 mb-4">
+                {/* Weight and Reps side-by-side */}
+                <div className="grid grid-cols-2 gap-3">
+                  <StepperInput
+                    label="Weight"
+                    value={weight}
+                    onChange={setWeight}
+                    step={5}
+                    min={0}
+                    unit="lbs"
+                  />
+                  <StepperInput
+                    label="Reps"
+                    value={reps}
+                    onChange={setReps}
+                    step={1}
+                    min={0}
+                  />
                 </div>
-              )}
-            </div>
-            
-            {/* Horizontal Input Layout */}
-            <div className="space-y-3 mb-4">
-              {/* Weight and Reps side-by-side */}
-              <div className="grid grid-cols-2 gap-3">
+
+                {/* RPE full width below */}
                 <StepperInput
-                  label="Weight"
-                  value={weight}
-                  onChange={setWeight}
-                  step={5}
-                  min={0}
-                  unit="lbs"
-                />
-                <StepperInput
-                  label="Reps"
-                  value={reps}
-                  onChange={setReps}
+                  label="RPE (Effort)"
+                  value={rpe}
+                  onChange={setRpe}
                   step={1}
-                  min={0}
+                  min={1}
+                  max={10}
                 />
               </div>
-              
-              {/* RPE full width below */}
-              <StepperInput
-                label="RPE (Effort)"
-                value={rpe}
-                onChange={setRpe}
-                step={1}
-                min={1}
-                max={10}
-              />
+
+              {/* Complete Set Button - Larger */}
+              <button
+                onClick={handleCompleteSet}
+                className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                style={{ minHeight: "64px" }}
+              >
+                <CheckCircle className="w-7 h-7" />
+                Complete Set
+              </button>
             </div>
-            
-            {/* Complete Set Button - Larger */}
-            <button
-              onClick={handleCompleteSet}
-              className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-              style={{ minHeight: '64px' }}
-            >
-              <CheckCircle className="w-7 h-7" />
-              Complete Set
-            </button>
           </div>
-        </div>
         )}
-        
+
         {/* Finished all sets but workout not complete - show finish button */}
         {currentExercise && currentExercise.completed && (
-          <div className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto" style={{ flexBasis: 0 }}>
+          <div
+            className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto"
+            style={{ flexBasis: 0 }}
+          >
             <div className="px-4 py-5">
-            {isLastExercise ? (
-              <button
-                onClick={handleCompleteWorkout}
-                className="w-full py-5 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                style={{ minHeight: '64px' }}
-              >
-                <Trophy className="w-7 h-7" />
-                Finish Workout
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                style={{ minHeight: '64px' }}
-              >
-                Next Exercise
-                <ChevronRight className="w-7 h-7" />
-              </button>
-            )}
+              {isLastExercise ? (
+                <button
+                  onClick={handleCompleteWorkout}
+                  className="w-full py-5 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  style={{ minHeight: "64px" }}
+                >
+                  <Trophy className="w-7 h-7" />
+                  Finish Workout
+                </button>
+              ) : (
+                <button
+                  onClick={handleNext}
+                  className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  style={{ minHeight: "64px" }}
+                >
+                  Next Exercise
+                  <ChevronRight className="w-7 h-7" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
         )}
       </div>
       {/* END: Split View Container */}
-      
+
       {showRestTimer && currentExercise && (
         <RestTimer
           key={`rest-${session.current_exercise_index}-${currentExercise.sets_completed}`}
@@ -841,7 +917,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           onClose={() => setShowPRModal(false)}
         />
       )}
-      
+
       {/* Quick Edit Modal - Edit completed sets */}
       {editingExerciseIndex !== null && session && (
         <ModalBackdrop
@@ -857,112 +933,157 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             />
             <ModalContent>
               <div className="space-y-2">
-                {session.exercises[editingExerciseIndex].set_records.map((set, setIndex) => (
-                  <div
-                    key={setIndex}
-                    className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl border-2 border-gray-200 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold text-gray-900">
-                        Set {set.set_number}
-                      </span>
-                      <button
-                        onClick={async () => {
-                          if (confirm(`Delete Set ${set.set_number}?`)) {
-                            try {
-                              if (!set.id) {
-                                alert("Cannot delete set without ID");
-                                return;
+                {session.exercises[editingExerciseIndex].set_records.map(
+                  (set, setIndex) => (
+                    <div
+                      key={setIndex}
+                      className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl border-2 border-gray-200 transition-colors"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-gray-900">
+                          Set {set.set_number}
+                        </span>
+                        <button
+                          onClick={async () => {
+                            if (confirm(`Delete Set ${set.set_number}?`)) {
+                              try {
+                                if (!set.id) {
+                                  alert("Cannot delete set without ID");
+                                  return;
+                                }
+                                await deleteSet(editingExerciseIndex, set.id);
+                                // Close modal if no sets left
+                                if (
+                                  session.exercises[editingExerciseIndex]
+                                    .set_records.length === 0
+                                ) {
+                                  setEditingExerciseIndex(null);
+                                }
+                              } catch (err) {
+                                console.error("Error deleting set:", err);
+                                alert(
+                                  "Failed to delete set. Please try again."
+                                );
                               }
-                              await deleteSet(editingExerciseIndex, set.id);
-                              // Close modal if no sets left
-                              if (session.exercises[editingExerciseIndex].set_records.length === 0) {
-                                setEditingExerciseIndex(null);
-                              }
-                            } catch (err) {
-                              console.error("Error deleting set:", err);
-                              alert("Failed to delete set. Please try again.");
                             }
-                          }
-                        }}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium active:scale-95 transition-all duration-150"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm mt-2">
-                      {set.weight !== undefined && set.weight !== null && (
+                          }}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium active:scale-95 transition-all duration-150"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-sm mt-2">
+                        {set.weight !== undefined && set.weight !== null && (
+                          <div>
+                            <label className="text-gray-600 text-xs block mb-1">
+                              Weight (lbs)
+                            </label>
+                            <input
+                              type="number"
+                              defaultValue={set.weight}
+                              onBlur={async (e) => {
+                                const newWeight = parseFloat(e.target.value);
+                                if (
+                                  !isNaN(newWeight) &&
+                                  newWeight !== set.weight &&
+                                  set.id
+                                ) {
+                                  try {
+                                    const response = await fetch(
+                                      `/api/sets/${set.id}`,
+                                      {
+                                        method: "PATCH",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          weight: newWeight,
+                                        }),
+                                      }
+                                    );
+                                    if (!response.ok)
+                                      throw new Error("Failed to update");
+                                    // Update local state
+                                    const updatedSession = { ...session };
+                                    const setRecord = updatedSession.exercises[
+                                      editingExerciseIndex
+                                    ].set_records.find((s) => s.id === set.id);
+                                    if (setRecord) setRecord.weight = newWeight;
+                                  } catch (err) {
+                                    console.error(
+                                      "Error updating weight:",
+                                      err
+                                    );
+                                    e.target.value =
+                                      set.weight?.toString() || "";
+                                  }
+                                }
+                              }}
+                              className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                        )}
                         <div>
-                          <label className="text-gray-600 text-xs block mb-1">Weight (lbs)</label>
+                          <label className="text-gray-600 text-xs block mb-1">
+                            Reps
+                          </label>
                           <input
                             type="number"
-                            defaultValue={set.weight}
+                            defaultValue={set.reps}
                             onBlur={async (e) => {
-                              const newWeight = parseFloat(e.target.value);
-                              if (!isNaN(newWeight) && newWeight !== set.weight && set.id) {
+                              const newReps = parseInt(e.target.value);
+                              if (
+                                !isNaN(newReps) &&
+                                newReps !== set.reps &&
+                                set.id
+                              ) {
                                 try {
-                                  const response = await fetch(`/api/sets/${set.id}`, {
-                                    method: "PATCH",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ weight: newWeight }),
-                                  });
-                                  if (!response.ok) throw new Error("Failed to update");
+                                  const response = await fetch(
+                                    `/api/sets/${set.id}`,
+                                    {
+                                      method: "PATCH",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                      },
+                                      body: JSON.stringify({ reps: newReps }),
+                                    }
+                                  );
+                                  if (!response.ok)
+                                    throw new Error("Failed to update");
                                   // Update local state
                                   const updatedSession = { ...session };
-                                  const setRecord = updatedSession.exercises[editingExerciseIndex].set_records.find(s => s.id === set.id);
-                                  if (setRecord) setRecord.weight = newWeight;
+                                  const setRecord = updatedSession.exercises[
+                                    editingExerciseIndex
+                                  ].set_records.find((s) => s.id === set.id);
+                                  if (setRecord) setRecord.reps = newReps;
                                 } catch (err) {
-                                  console.error("Error updating weight:", err);
-                                  e.target.value = set.weight?.toString() || "";
+                                  console.error("Error updating reps:", err);
+                                  e.target.value = set.reps.toString();
                                 }
                               }
                             }}
                             className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
                           />
                         </div>
-                      )}
-                      <div>
-                        <label className="text-gray-600 text-xs block mb-1">Reps</label>
-                        <input
-                          type="number"
-                          defaultValue={set.reps}
-                          onBlur={async (e) => {
-                            const newReps = parseInt(e.target.value);
-                            if (!isNaN(newReps) && newReps !== set.reps && set.id) {
-                              try {
-                                const response = await fetch(`/api/sets/${set.id}`, {
-                                  method: "PATCH",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ reps: newReps }),
-                                });
-                                if (!response.ok) throw new Error("Failed to update");
-                                // Update local state
-                                const updatedSession = { ...session };
-                                const setRecord = updatedSession.exercises[editingExerciseIndex].set_records.find(s => s.id === set.id);
-                                if (setRecord) setRecord.reps = newReps;
-                              } catch (err) {
-                                console.error("Error updating reps:", err);
-                                e.target.value = set.reps.toString();
-                              }
-                            }
-                          }}
-                          className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
-                        />
-                      </div>
-                      {set.rpe !== undefined && set.rpe !== null && (
-                        <div>
-                          <label className="text-gray-600 text-xs block mb-1">RPE</label>
-                          <div className="px-2 py-1.5 bg-gray-100 rounded-lg font-semibold text-gray-900">
-                            {set.rpe}
+                        {set.rpe !== undefined && set.rpe !== null && (
+                          <div>
+                            <label className="text-gray-600 text-xs block mb-1">
+                              RPE
+                            </label>
+                            <div className="px-2 py-1.5 bg-gray-100 rounded-lg font-semibold text-gray-900">
+                              {set.rpe}
+                            </div>
+                            <span className="text-[10px] text-gray-500">
+                              Not editable yet
+                            </span>
                           </div>
-                          <span className="text-[10px] text-gray-500">Not editable yet</span>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
-              
+
               {/* Close button */}
               <div className="mt-4">
                 <button
@@ -976,7 +1097,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </div>
         </ModalBackdrop>
       )}
-      
+
       {showExitConfirm && (
         <ModalBackdrop
           isOpen={showExitConfirm}

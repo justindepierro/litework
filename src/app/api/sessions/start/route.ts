@@ -133,7 +133,10 @@ export async function POST(request: NextRequest) {
       });
 
       if (exercisesError) {
-        console.error("[SessionStart] Failed to load exercises:", exercisesError);
+        console.error(
+          "[SessionStart] Failed to load exercises:",
+          exercisesError
+        );
         return NextResponse.json(
           { error: "Failed to load workout exercises" },
           { status: 500 }
@@ -152,18 +155,20 @@ export async function POST(request: NextRequest) {
       const groupIds = workoutExercises
         .map((ex) => ex.group_id)
         .filter((id): id is string => !!id);
-      
+
       console.log("[SessionStart] Exercise group check:", {
         totalExercises: workoutExercises.length,
         exercisesWithGroupId: groupIds.length,
         groupIds: groupIds,
-        sampleExercise: workoutExercises[0] ? {
-          id: workoutExercises[0].id,
-          name: workoutExercises[0].exercise_name,
-          group_id: workoutExercises[0].group_id,
-        } : null,
+        sampleExercise: workoutExercises[0]
+          ? {
+              id: workoutExercises[0].id,
+              name: workoutExercises[0].exercise_name,
+              group_id: workoutExercises[0].group_id,
+            }
+          : null,
       });
-      
+
       let exerciseGroups: Array<{
         id: string;
         name: string;
@@ -175,7 +180,7 @@ export async function POST(request: NextRequest) {
         rounds?: number;
         notes?: string;
       }> = [];
-      
+
       // ALWAYS try to fetch groups for this workout, regardless of exercise group_ids
       const { data: groupsData, error: groupsError } = await supabase
         .from("workout_exercise_groups")
@@ -259,7 +264,10 @@ export async function POST(request: NextRequest) {
       });
 
       if (sessExError || !createdExercises) {
-        console.error("[SessionStart] Session exercises creation error:", sessExError);
+        console.error(
+          "[SessionStart] Session exercises creation error:",
+          sessExError
+        );
         // Rollback: delete the session
         await supabase.from("workout_sessions").delete().eq("id", session.id);
         return NextResponse.json(

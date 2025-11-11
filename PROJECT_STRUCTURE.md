@@ -10,6 +10,7 @@ Clean, professional directory organization for maintainability and scalability.
 **Essential Files Only** (15 configuration + 4 core docs + 9 directories = 28 items total)
 
 ### Configuration Files (15)
+
 - `package.json`, `package-lock.json` - Dependencies
 - `tsconfig.json` - TypeScript configuration
 - `next.config.ts` - Next.js configuration
@@ -23,12 +24,14 @@ Clean, professional directory organization for maintainability and scalability.
 - `.gitignore` - Git ignore rules
 
 ### Core Documentation (4)
+
 - `README.md` - Project overview, quick start, feature list
 - `ARCHITECTURE.md` - System architecture, patterns, best practices
 - `CHANGELOG.md` - Version history with detailed changes
 - `PROJECT_STRUCTURE.md` - This file (organization guide)
 
 ### Directories (9)
+
 - `src/` - All application source code
 - `docs/` - All documentation (100+ files professionally organized)
 - `scripts/` - Automation scripts (categorized by purpose)
@@ -300,11 +303,13 @@ User Action → Component → API Route → Auth Check → Database → Response
 ### File Placement Rules (ENFORCED)
 
 **✅ KEEP in Root:**
+
 - Essential configuration files only (package.json, tsconfig.json, etc.)
 - Core documentation (README, ARCHITECTURE, CHANGELOG, PROJECT_STRUCTURE)
 - Directory folders (src/, docs/, scripts/, etc.)
 
 **❌ NEVER in Root:**
+
 - Loose markdown files (except core 4)
 - Temporary scripts (.sh, .mjs)
 - Planning documents → move to /docs/guides/
@@ -332,35 +337,38 @@ User Action → Component → API Route → Auth Check → Database → Response
 ### Component Organization
 
 **Feature Components** - `/components/` root
+
 ```typescript
 // Single-responsibility, reusable components
-WorkoutView.tsx
-WorkoutLive.tsx
-GroupAssignmentModal.tsx
+WorkoutView.tsx;
+WorkoutLive.tsx;
+GroupAssignmentModal.tsx;
 ```
 
 **Shared UI Components** - `/components/ui/`
+
 ```typescript
 // Design system components
-Typography.tsx  // Display, Heading, Body, Label, Caption
-Input.tsx       // Input, Textarea, Select
-Button.tsx      // All button variants
-Modal.tsx       // ModalBackdrop, ModalHeader, ModalContent, ModalFooter
-Badge.tsx       // Status badges
+Typography.tsx; // Display, Heading, Body, Label, Caption
+Input.tsx; // Input, Textarea, Select
+Button.tsx; // All button variants
+Modal.tsx; // ModalBackdrop, ModalHeader, ModalContent, ModalFooter
+Badge.tsx; // Status badges
 ```
 
 **Feature Sub-components** - `/components/feature-name/`
+
 ```typescript
 // Components specific to a feature
-/components/workout-editor/
-  ExerciseItem.tsx
-  GroupControls.tsx
-  ExerciseLibraryPanel.tsx
+/components/koortuw - editor / ExerciseItem.tsx;
+GroupControls.tsx;
+ExerciseLibraryPanel.tsx;
 ```
 
 ### File Naming Conventions
 
 **React Components**: `PascalCase.tsx`
+
 ```
 WorkoutEditor.tsx
 AthleteCard.tsx
@@ -368,6 +376,7 @@ GroupFormModal.tsx
 ```
 
 **Utilities**: `kebab-case.ts`
+
 ```
 auth-utils.ts
 api-client.ts
@@ -375,6 +384,7 @@ date-helpers.ts
 ```
 
 **Scripts**: `kebab-case.mjs` or `.sh`
+
 ```
 migrate-database.mjs
 export-schema.sh
@@ -382,12 +392,14 @@ dev-persistent.sh
 ```
 
 **API Routes**: `route.ts` in feature folders
+
 ```
 /api/workouts/route.ts         # GET /api/workouts, POST /api/workouts
 /api/workouts/[id]/route.ts   # GET/PUT/DELETE /api/workouts/:id
 ```
 
 **Types**: `PascalCase` interfaces/types, `camelCase` variables
+
 ```typescript
 interface WorkoutPlan { }      // PascalCase
 type SessionStatus = ...       // PascalCase
@@ -398,41 +410,48 @@ const API_ENDPOINT = ...       // SCREAMING_SNAKE_CASE for constants
 ### Documentation Organization
 
 **Major Documentation** (docs/ root):
+
 - DATABASE_SCHEMA.md (592 lines - complete schema reference)
-- ASSIGNMENT_SYSTEM_*.md (multi-file system documentation)
-- UX_AUDIT_*.md (user experience audits)
+- ASSIGNMENT*SYSTEM*\*.md (multi-file system documentation)
+- UX*AUDIT*\*.md (user experience audits)
 
 **Reports** (docs/reports/):
-- *_COMPLETE.md - Completion reports
-- *_AUDIT.md - Audit findings
-- *_SUMMARY.md - Implementation summaries
+
+- \*\_COMPLETE.md - Completion reports
+- \*\_AUDIT.md - Audit findings
+- \*\_SUMMARY.md - Implementation summaries
 - CRASH_FIXES_SUMMARY.md - Stability improvements
 
 **Guides** (docs/guides/):
-- *_GUIDE.md - How-to guides
-- *_QUICK_REF.md - Quick reference sheets
-- QUICK_START_*.md - Getting started guides
+
+- \*\_GUIDE.md - How-to guides
+- \*\_QUICK_REF.md - Quick reference sheets
+- QUICK*START*\*.md - Getting started guides
 - COMPONENT_USAGE_STANDARDS.md - Design system rules
 
 **Checklists** (docs/checklists/):
+
 - PRODUCTION_DEPLOYMENT_CHECKLIST.md
-- *-checklist.md - Process checklists
-- *-migration.md - Migration guides
+- \*-checklist.md - Process checklists
+- \*-migration.md - Migration guides
 
 ### Maintenance Guidelines
 
 **Daily:**
+
 - Run `git status` - ensure no stray files in root
 - Clean `.DS_Store`: `find . -name ".DS_Store" -delete`
 - Check TypeScript: `npm run typecheck`
 
 **Weekly:**
+
 - Review root for new loose files
 - Move documentation to proper /docs/ folders
 - Archive old temporary files
 - Update CHANGELOG.md with progress
 
 **Monthly:**
+
 - Review /docs/ organization
 - Clean up old log files
 - Update .gitignore if needed

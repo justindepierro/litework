@@ -9,8 +9,9 @@
 ## 🎯 Problems Solved
 
 ### User-Reported Issues:
+
 1. **"App kicks me out frequently"** ✅ FIXED
-2. **Random crashes during workouts** ✅ FIXED  
+2. **Random crashes during workouts** ✅ FIXED
 3. **Timer issues/instability** ✅ FIXED
 
 ---
@@ -18,14 +19,17 @@
 ## 🔍 Root Causes Identified
 
 ### 1. Silent Logout on Network Timeout
+
 **File**: `src/lib/auth-client.ts`  
 **The Problem**:
+
 - Profile fetch had 5-second timeout
 - On slow networks or Supabase delays, timeout triggered
 - **Code called `callback(null)` = instant logout without warning**
 - User saw app "kick them out" with no explanation
 
 **The Fix**:
+
 ```typescript
 // OLD (BAD):
 if (error || !profile) {
@@ -38,11 +42,11 @@ if (error || !profile) {
   // Keep user logged in with basic session data
   const fallbackUser: User = {
     id: session.user.id,
-    email: session.user.email || '',
-    firstName: 'User',
-    lastName: '',
-    fullName: 'User',
-    role: 'athlete',
+    email: session.user.email || "",
+    firstName: "User",
+    lastName: "",
+    fullName: "User",
+    role: "athlete",
   };
   callback(fallbackUser); // ✅ Session preserved!
   return;
@@ -54,8 +58,10 @@ if (error || !profile) {
 ---
 
 ### 2. Unprotected setTimeout Calls
+
 **File**: `src/components/WorkoutLive.tsx`  
 **The Problem**:
+
 - 5+ setTimeout calls with delays (500ms-2000ms)
 - User completes workout or navigates away
 - Component unmounts
@@ -64,6 +70,7 @@ if (error || !profile) {
 - App crashes
 
 **The Fix**:
+
 ```typescript
 // Added isMounted tracking:
 const [isMounted, setIsMounted] = useState(true);
@@ -82,6 +89,7 @@ setTimeout(() => {
 ```
 
 **Locations Fixed**:
+
 - Line 195: Circuit round navigation
 - Line 203: Next exercise after circuit
 - Line 210: Next exercise in circuit
@@ -93,8 +101,10 @@ setTimeout(() => {
 ---
 
 ### 3. Timer Race Condition
+
 **File**: `src/components/WorkoutHeader.tsx`  
 **The Problem**:
+
 - setInterval updates timer every second (1000ms)
 - User navigates away from workout
 - **Race condition**: Timer callback might be mid-execution during unmount
@@ -102,6 +112,7 @@ setTimeout(() => {
 - Over 30-minute workout: **1,800+ potential crash points**
 
 **The Fix**:
+
 ```typescript
 // Added isMounted protection:
 const [isMounted, setIsMounted] = useState(true);
@@ -111,7 +122,7 @@ useEffect(() => {
 
 const updateElapsedTime = () => {
   if (!isMounted) return; // ✅ Safe exit!
-  
+
   const now = Date.now();
   const elapsed = Math.floor((now - startTime) / 1000);
   setElapsedTime(...); // Only runs if mounted
@@ -123,8 +134,10 @@ const updateElapsedTime = () => {
 ---
 
 ### 4. Increased Network Timeout
+
 **File**: `src/lib/auth-client.ts`  
 **The Change**:
+
 ```typescript
 // OLD: 5 seconds (too short for mobile)
 setTimeout(() => reject(...), 5000);
@@ -140,21 +153,20 @@ setTimeout(() => reject(...), 15000);
 ## 📊 Technical Details
 
 ### Files Modified:
+
 - ✅ `src/lib/auth-client.ts` (2 changes)
   - Silent logout fix
   - Timeout increased: 5s → 15s
-  
 - ✅ `src/components/WorkoutLive.tsx` (6 changes)
   - Protected 5 setTimeout calls
   - Added isMounted to dependency array
-  
 - ✅ `src/components/WorkoutHeader.tsx` (1 change)
   - Protected setInterval timer
-  
 - ✅ `docs/reports/APP_CRASH_AUDIT.md` (new file)
   - Complete audit documentation
 
 ### Validation:
+
 - ✅ TypeScript: 0 errors
 - ✅ All async operations protected
 - ✅ Dependency arrays complete
@@ -165,6 +177,7 @@ setTimeout(() => reject(...), 15000);
 ## 🧪 Testing Checklist
 
 ### Before Fixes (Expected Failures):
+
 - ❌ App kicks user out after ~2 minutes on slow WiFi
 - ❌ Completing workout sometimes crashes app
 - ❌ Navigating away during rest timer causes crash
@@ -172,6 +185,7 @@ setTimeout(() => reject(...), 15000);
 - ❌ Rapid navigation causes React errors
 
 ### After Fixes (Should Pass):
+
 - [ ] Complete 30-minute workout without crashes
 - [ ] Navigate freely during workout (no crashes)
 - [ ] Complete workout and return to dashboard (smooth)
@@ -180,6 +194,7 @@ setTimeout(() => reject(...), 15000);
 - [ ] No console errors during workout session
 
 ### How to Test:
+
 1. **Test Silent Logout Fix**:
    - Turn on airplane mode for 10 seconds
    - Turn off airplane mode
@@ -209,6 +224,7 @@ setTimeout(() => reject(...), 15000);
 ## 🎯 Expected Results
 
 ### User Experience:
+
 - ✅ No more random logouts
 - ✅ No more crashes during workouts
 - ✅ Smooth navigation between screens
@@ -216,6 +232,7 @@ setTimeout(() => reject(...), 15000);
 - ✅ Works on slow networks
 
 ### Technical Improvements:
+
 - ✅ Zero React state update warnings
 - ✅ Clean unmount behavior
 - ✅ Proper async operation cleanup
@@ -227,12 +244,14 @@ setTimeout(() => reject(...), 15000);
 ## 📈 Performance Impact
 
 **Before**:
+
 - Crashes: 2-3 per workout session
 - Unexpected logouts: 1-2 per hour on slow networks
 - Memory leaks: Timers running after unmount
 - Console errors: Multiple per session
 
 **After**:
+
 - Crashes: 0 expected
 - Unexpected logouts: 0 expected
 - Memory leaks: None (proper cleanup)
@@ -243,6 +262,7 @@ setTimeout(() => reject(...), 15000);
 ## 🔮 Future Improvements
 
 ### Phase 2 (Next Week):
+
 1. **Error Tracking**: Add Sentry for crash monitoring
 2. **Offline Detection**: Show network status indicator
 3. **Better API Error Handling**: Retry logic + user notifications
@@ -250,6 +270,7 @@ setTimeout(() => reject(...), 15000);
 5. **Service Worker**: Proper PWA offline support
 
 ### Phase 3 (Future):
+
 1. **Session Replay**: Understand user crashes in detail
 2. **Performance Monitoring**: Track app speed metrics
 3. **Load Testing**: Ensure stability under stress
@@ -265,12 +286,14 @@ setTimeout(() => reject(...), 15000);
 **Verification**: Vercel auto-deploy successful
 
 ### Rollback Plan (if needed):
+
 ```bash
 git revert 257a2c8
 git push origin main
 ```
 
 ### Monitoring:
+
 - Watch Vercel logs for React errors
 - Monitor user reports for logout issues
 - Check console for state update warnings
@@ -281,6 +304,7 @@ git push origin main
 ## ✅ Success Criteria
 
 **This fix is successful when**:
+
 1. Users complete full workouts without crashes
 2. No more "kicked out of app" reports
 3. Timer runs smoothly throughout sessions
@@ -292,17 +316,20 @@ git push origin main
 ## 🎉 Summary
 
 **3 Critical Bugs Fixed**:
+
 1. ✅ Silent logout → Session preserved on network issues
 2. ✅ setTimeout crashes → All async operations protected
 3. ✅ Timer crashes → isMounted checks prevent race conditions
 
 **4 Files Changed**:
+
 - ✅ auth-client.ts (auth stability)
 - ✅ WorkoutLive.tsx (navigation stability)
 - ✅ WorkoutHeader.tsx (timer stability)
 - ✅ APP_CRASH_AUDIT.md (documentation)
 
 **User Impact**:
+
 - No more surprise logouts ✅
 - No more crashes during workouts ✅
 - Stable, reliable app experience ✅

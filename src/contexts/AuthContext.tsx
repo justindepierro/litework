@@ -236,7 +236,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(currentUser);
           }
         } catch (error) {
-          console.error("[AUTH] Failed to refresh session on visibility change:", error);
+          console.error(
+            "[AUTH] Failed to refresh session on visibility change:",
+            error
+          );
         }
       }
     };

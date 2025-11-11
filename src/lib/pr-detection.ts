@@ -6,7 +6,7 @@
  * - Total reps at a given weight
  * - Estimated 1RM improvements
  * - Volume PRs (sets x reps x weight)
- * 
+ *
  * NOTE: PR detection temporarily disabled to avoid client-side database calls
  */
 
@@ -73,7 +73,7 @@ export async function checkForPR(
       volume: calculateVolume(weight, reps),
     },
   };
-  
+
   /* Database PR detection logic - disabled for now
   const supabase = await createClient();
 

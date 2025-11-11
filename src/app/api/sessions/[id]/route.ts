@@ -111,7 +111,11 @@ export async function GET(
       console.log("[SessionLoad] Groups fetched:", {
         workoutPlanId: session.workout_plan_id,
         groupsFound: groupsData?.length || 0,
-        groups: groupsData?.map(g => ({ id: g.id, name: g.name, type: g.type }))
+        groups: groupsData?.map((g) => ({
+          id: g.id,
+          name: g.name,
+          type: g.type,
+        })),
       });
 
       // Fetch all completed sets for this session

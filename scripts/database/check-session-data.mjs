@@ -58,12 +58,20 @@ if (groups && groups.length > 0) {
 console.log();
 
 console.log("💡 Diagnosis:");
-if (!session.groups || session.groups === null || (Array.isArray(session.groups) && session.groups.length === 0)) {
+if (
+  !session.groups ||
+  session.groups === null ||
+  (Array.isArray(session.groups) && session.groups.length === 0)
+) {
   console.log("❌ Session was created WITHOUT groups data");
-  console.log("   This session was likely created before groups were properly linked.");
+  console.log(
+    "   This session was likely created before groups were properly linked."
+  );
   console.log();
   console.log("🔧 Solution: Start a NEW workout session to include groups.");
-  console.log("   The enhanced API will fetch and include groups in new sessions.");
+  console.log(
+    "   The enhanced API will fetch and include groups in new sessions."
+  );
 } else {
   console.log("✅ Session has groups data stored");
 }

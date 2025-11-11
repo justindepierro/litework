@@ -11,6 +11,7 @@
 ### ✅ Phase 1.1: Core Layout (COMPLETED - Nov 10, 2025)
 
 **Completed Features**:
+
 - ✅ Scrollable exercise list (replaced locked single-exercise view)
 - ✅ Tap-to-activate any exercise
 - ✅ Color-coded states: pending (gray), active (blue), completed (green)
@@ -22,11 +23,13 @@
 - ✅ Gradient action buttons (blue→purple, green→emerald)
 
 **Files Modified**:
+
 - `src/components/WorkoutLive.tsx` - Complete restructure
 
 ### ✅ Phase 1.2: Circuit/Superset Grouping (COMPLETED - Nov 10, 2025)
 
 **Completed Features**:
+
 - ✅ Circuit/superset/section detection from workout data
 - ✅ Collapsible group headers (tap to expand/collapse)
 - ✅ Color coding by type:
@@ -42,11 +45,13 @@
 - ✅ Session persistence (group_id column added to session_exercises)
 
 **Database Changes**:
+
 - ✅ Added `group_id` column to `session_exercises` table
 - ✅ Updated `/api/sessions/start` to fetch and preserve groups
 - ✅ Updated `/api/sessions/[id]` GET to load groups on session resume
 
 **Files Modified**:
+
 - `src/app/api/sessions/start/route.ts` - Fetch exercise groups from database
 - `src/app/api/sessions/[id]/route.ts` - Load groups when resuming session
 - `src/types/session.ts` - Added `ExerciseGroupInfo` type and `groups` to `WorkoutSession`
@@ -55,6 +60,7 @@
 - `database/add-group-id-to-session-exercises.sql` - Migration script
 
 **Bug Fixes**:
+
 - ✅ Fixed dashboard stats error (workout_sets → set_records)
 - ✅ Fixed DELETE endpoint schema mismatch (athlete_id → user_id)
 - ✅ Session abandon now works correctly
@@ -62,6 +68,7 @@
 ### ✅ Phase 2: Enhanced Controls (COMPLETE - Nov 10, 2025)
 
 **Completed Features**:
+
 - ✅ Quick edit modal for completed exercises
 - ✅ Tap completed exercise → View all sets with edit/delete options
 - ✅ Tap pending/active exercise → Activate for recording
@@ -100,6 +107,7 @@
   - updateGroupRound function in context
 
 **Next Steps**:
+
 - Test on mobile device
 - Polish animations and transitions
 - Optimize touch interactions
@@ -107,6 +115,7 @@
 ### ✨ Phase 3: Polish & UX Refinements (COMPLETE - Nov 10, 2025)
 
 **Completed Enhancements** (commit 183acbf):
+
 - ✅ All action buttons have `active:scale-95` for tap feedback
 - ✅ Stepper buttons use smooth scale transform (150ms duration)
 - ✅ Exercise cards have blue ring glow when active
@@ -120,6 +129,7 @@
 - ✅ Mobile-optimized touch feedback feels native
 
 **Results**:
+
 - Professional, polished feel throughout
 - Smooth 60fps animations
 - Native app-like responsiveness
@@ -133,6 +143,7 @@
 The WorkoutLive component is now feature-complete with professional polish. All Phase 1 and Phase 2 features have been implemented with smooth animations and feedback.
 
 **Test Checklist**:
+
 - [ ] Test on iPhone/Android device
 - [ ] Verify touch targets (all ≥48px)
 - [ ] Test circuit round progression
@@ -145,26 +156,31 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 🎯 Design Principles
 
 ### 1. **Glanceable Information**
+
 - See entire workout structure at a glance
 - Progress indicators everywhere
 - Clear visual hierarchy
 
 ### 2. **Zero Friction**
+
 - Start any exercise instantly
 - Log sets in 2 taps
 - Quick edit anything
 
 ### 3. **Flexibility Without Chaos**
+
 - Jump to any exercise
 - Reorder on the fly
 - Handle interruptions gracefully
 
 ### 4. **Confidence & Control**
+
 - Always know where you are
 - Easy undo/reset
 - Never lose data
 
 ### 5. **Colorful & Engaging**
+
 - Use our vibrant design system
 - Celebrate achievements
 - Make tracking fun
@@ -174,46 +190,41 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 🎨 Visual Design System
 
 ### Color Palette (From our tokens)
+
 ```css
 /* Exercise Type Colors */
---circuit-color: #3b82f6;      /* Blue */
---superset-color: #8b5cf6;     /* Purple */
---dropset-color: #f59e0b;      /* Amber */
---regular-color: #10b981;      /* Green */
---section-color: #06b6d4;      /* Cyan */
+--circuit-color: #3b82f6; /* Blue */
+--superset-color: #8b5cf6; /* Purple */
+--dropset-color: #f59e0b; /* Amber */
+--regular-color: #10b981; /* Green */
+--section-color: #06b6d4; /* Cyan */
 
 /* Status Colors */
---active-color: #3b82f6;       /* Blue - Currently logging */
---completed-color: #10b981;    /* Green - Done */
---pending-color: #64748b;      /* Slate - Not started */
---modified-color: #f59e0b;     /* Amber - Edited */
+--active-color: #3b82f6; /* Blue - Currently logging */
+--completed-color: #10b981; /* Green - Done */
+--pending-color: #64748b; /* Slate - Not started */
+--modified-color: #f59e0b; /* Amber - Edited */
 
 /* Action Colors */
---primary-action: #3b82f6;     /* Blue - Main actions */
---destructive: #ef4444;        /* Red - Delete/End */
---success: #10b981;            /* Green - Complete */
---warning: #f59e0b;            /* Amber - Caution */
+--primary-action: #3b82f6; /* Blue - Main actions */
+--destructive: #ef4444; /* Red - Delete/End */
+--success: #10b981; /* Green - Complete */
+--warning: #f59e0b; /* Amber - Caution */
 ```
 
 ### Typography Hierarchy
+
 ```css
 /* Workout Title */
---title: 24px, bold, primary
-
-/* Exercise Names */
---exercise-name: 18px, semibold, gray-900
-
-/* Set Details */
---set-info: 16px, medium, gray-700
-
-/* Metadata */
---meta: 14px, regular, gray-500
-
-/* Big Touch Buttons */
---button-text: 16px, semibold, white
+--title:
+  24px, bold, primary /* Exercise Names */ --exercise-name: 18px, semibold,
+  gray-900 /* Set Details */ --set-info: 16px, medium,
+  gray-700 /* Metadata */ --meta: 14px, regular,
+  gray-500 /* Big Touch Buttons */ --button-text: 16px, semibold, white;
 ```
 
 ### Spacing (Mobile-First)
+
 - **Minimum touch target**: 48px × 48px
 - **Card padding**: 16px
 - **Spacing between exercises**: 12px
@@ -225,6 +236,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 📱 Screen Layout
 
 ### Header (Sticky Top)
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ ← Back    In-Season Football temp        ⋮ Menu │ ← 56px height
@@ -233,6 +245,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 **Features:**
+
 - Back button (save warning if incomplete)
 - Workout name (truncated)
 - Menu (pause, reset, end)
@@ -241,6 +254,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 - Round indicator (for circuits)
 
 ### Main Content (Scrollable)
+
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
@@ -295,6 +309,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### Bottom Safe Area
+
 - 24px padding for iPhone home indicator
 - No fixed bottom bar (allows for keyboards)
 
@@ -303,6 +318,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 🎭 Exercise States & Visual Design
 
 ### 1. **Pending Exercise** (Not Started)
+
 ```
 ┌─────────────────────────────────────────┐
 │ 💪 Romanian Deadlift                    │ ← Gray-700 text
@@ -314,6 +330,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### 2. **Active Exercise** (Currently Logging)
+
 ```
 ┌─────────────────────────────────────────┐
 │ 💪 Bench Press          [🔵 Active]    │ ← Blue-600 badge
@@ -334,6 +351,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### 3. **Completed Exercise**
+
 ```
 ┌─────────────────────────────────────────┐
 │ 💪 Barbell Squat                   ✓   │ ← Green checkmark
@@ -350,6 +368,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### 4. **Modified Exercise** (Edited from target)
+
 ```
 ┌─────────────────────────────────────────┐
 │ 💪 Bench Press         [⚠ Modified]    │ ← Amber-600 badge
@@ -369,6 +388,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 🔄 Circuit/Superset Behavior
 
 ### Circuit Header (Collapsible)
+
 ```
 ┌─────────────────────────────────────────┐
 │ 🔵 Circuit A - Round 1 of 3         [▼] │ ← Tap to collapse
@@ -378,6 +398,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### Circuit Exercise Flow
+
 1. **Start Circuit** → Activates first exercise
 2. **Log Set** → Auto-advances to next exercise in circuit
 3. **Last Exercise** → Shows "Complete Round 1 of 3" button
@@ -385,6 +406,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 5. **All Rounds Done** → Circuit marked complete ✓
 
 ### Smart Circuit Behavior
+
 - **Rest Timer**: Starts automatically between exercises (configurable)
 - **Quick Skip**: Tap "Next Exercise" to skip mid-circuit
 - **Jump Out**: Tap any other exercise to leave circuit
@@ -395,17 +417,20 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## ⚡ Quick Actions & Gestures
 
 ### Tap Actions
+
 - **Tap Exercise Card** → Expand/collapse details
 - **Tap "Start"** → Activate exercise for logging
 - **Tap Completed Set** → Edit modal opens
 - **Tap Circuit Header** → Collapse/expand all exercises
 
 ### Swipe Actions (Future Enhancement)
+
 - **Swipe Right on Set** → Quick delete
 - **Swipe Left on Exercise** → Skip/mark complete
 - **Pull to Refresh** → Sync data
 
 ### Long Press (Future Enhancement)
+
 - **Long Press Exercise** → Show reorder handles
 - **Long Press Set** → Copy to clipboard
 
@@ -414,6 +439,7 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ## 🎛 Workout Controls Menu
 
 ### Top Right Menu (⋮)
+
 ```
 ┌─────────────────────────────────┐
 │ ⏸ Pause Workout                │
@@ -431,7 +457,9 @@ The WorkoutLive component is now feature-complete with professional polish. All 
 ```
 
 ### Action Confirmations
+
 **Abandon Workout:**
+
 ```
 ⚠️ Abandon Workout?
 
@@ -442,6 +470,7 @@ This cannot be undone.
 ```
 
 **End Workout Early:**
+
 ```
 💾 Save Incomplete Workout?
 
@@ -456,6 +485,7 @@ Save progress anyway?
 ## 🎬 Animations & Transitions
 
 ### Micro-interactions
+
 - **Set Logged**: Green checkmark scales in + haptic feedback
 - **Exercise Complete**: Confetti animation (🎉) + haptic
 - **PR Achieved**: Purple glow + "NEW PR!" badge
@@ -464,6 +494,7 @@ Save progress anyway?
 - **Card Expand**: Smooth height animation (200ms ease-out)
 
 ### Page Transitions
+
 - **Exercise to Exercise**: Fade + slide up (150ms)
 - **Round Complete**: Celebration animation (500ms)
 - **Workout Complete**: Full-screen celebration + summary
@@ -473,6 +504,7 @@ Save progress anyway?
 ## 📊 Post-Workout Summary
 
 ### Workout Complete Screen
+
 ```
 ┌─────────────────────────────────────────┐
 │              🎉 Workout Complete! 🎉      │
@@ -499,6 +531,7 @@ Save progress anyway?
 ## 🔧 Technical Implementation Notes
 
 ### State Management
+
 ```typescript
 interface WorkoutLiveState {
   sessionId: string;
@@ -515,9 +548,9 @@ interface WorkoutLiveState {
 interface Exercise {
   id: string;
   name: string;
-  type: 'regular' | 'circuit' | 'superset' | 'dropset';
+  type: "regular" | "circuit" | "superset" | "dropset";
   groupId?: string; // For circuits/supersets
-  status: 'pending' | 'active' | 'completed';
+  status: "pending" | "active" | "completed";
   sets: Set[];
   targetSets: number;
   targetReps: string;
@@ -537,12 +570,14 @@ interface Set {
 ```
 
 ### Performance Optimizations
+
 - **Virtualized List**: Only render visible exercises
 - **Optimistic Updates**: Update UI immediately, sync later
 - **Local Storage**: Auto-save every 10 seconds
 - **Offline Support**: Queue actions if no connection
 
 ### Accessibility
+
 - **ARIA labels**: All interactive elements
 - **Keyboard navigation**: Tab through inputs
 - **Screen reader**: Announce set completions
@@ -554,12 +589,14 @@ interface Set {
 ## 🚀 Implementation Phases
 
 ### Phase 1: Core Redesign ✅ COMPLETE
+
 - [x] New exercise card layout (Nov 10 - commit 6b30412)
 - [x] Collapsible circuits/groups (Nov 10 - commit ca7cbfb, 33fdf55, 3b0202c)
 - [x] Active exercise state (Nov 10)
 - [x] Basic navigation (Nov 10)
 
 ### Phase 2: Enhanced Controls 🚧 IN PROGRESS
+
 - [x] Edit completed sets - Delete functionality (Nov 10 - commit 876f8c0)
 - [x] Edit completed sets - Inline editing (Nov 10 - commit 7f9fc8c)
 - [x] Quick input controls - Stepper buttons (Nov 10 - commit 5d830ab)
@@ -569,12 +606,14 @@ interface Set {
 - [ ] Reset exercise
 
 ### Phase 3: Circuit Intelligence
+
 - [ ] Auto-advance in circuits
 - [ ] Round tracking
 - [ ] Rest timer between exercises
 - [ ] Smart suggestions
 
 ### Phase 4: Polish & Delight
+
 - [ ] Animations & transitions
 - [ ] Haptic feedback
 - [ ] PR celebrations
@@ -586,12 +625,14 @@ interface Set {
 ## 📝 User Testing Scenarios
 
 ### Scenario 1: Linear Workout
+
 1. Start workout
 2. Complete each exercise in order
 3. Log sets with quick inputs
 4. Finish workout
 
 ### Scenario 2: Circuit Training
+
 1. Start circuit
 2. Complete round 1
 3. See round counter advance
@@ -599,6 +640,7 @@ interface Set {
 5. Move to next section
 
 ### Scenario 3: Flexible Training
+
 1. Start exercise 3 first (out of order)
 2. Jump back to exercise 1
 3. Skip an exercise entirely
@@ -606,6 +648,7 @@ interface Set {
 5. End workout early
 
 ### Scenario 4: Error Recovery
+
 1. Log incorrect weight
 2. Tap set to edit
 3. Correct mistake

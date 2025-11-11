@@ -657,37 +657,49 @@ export function WorkoutSessionProvider({
   }, [state.session]);
 
   // Update group round counter
-  const updateGroupRound = useCallback((groupId: string, round: number) => {
-    if (!state.session) return;
-    
-    const updatedSession = {
-      ...state.session,
-      group_rounds: {
-        ...(state.session.group_rounds || {}),
-        [groupId]: round,
-      },
-    };
-    
-    dispatch({ type: "UPDATE_SESSION", payload: { group_rounds: updatedSession.group_rounds } });
-  }, [state.session]);
+  const updateGroupRound = useCallback(
+    (groupId: string, round: number) => {
+      if (!state.session) return;
+
+      const updatedSession = {
+        ...state.session,
+        group_rounds: {
+          ...(state.session.group_rounds || {}),
+          [groupId]: round,
+        },
+      };
+
+      dispatch({
+        type: "UPDATE_SESSION",
+        payload: { group_rounds: updatedSession.group_rounds },
+      });
+    },
+    [state.session]
+  );
 
   // Reset exercises in a circuit/superset for a new round
-  const resetCircuitExercises = useCallback((groupId: string) => {
-    if (!state.session) return;
-    
-    const updatedExercises = state.session.exercises.map(ex => {
-      if (ex.group_id === groupId) {
-        return {
-          ...ex,
-          completed: false, // Reset completed state for new round
-          // Keep set_records - those are the history
-        };
-      }
-      return ex;
-    });
-    
-    dispatch({ type: "UPDATE_SESSION", payload: { exercises: updatedExercises } });
-  }, [state.session]);
+  const resetCircuitExercises = useCallback(
+    (groupId: string) => {
+      if (!state.session) return;
+
+      const updatedExercises = state.session.exercises.map((ex) => {
+        if (ex.group_id === groupId) {
+          return {
+            ...ex,
+            completed: false, // Reset completed state for new round
+            // Keep set_records - those are the history
+          };
+        }
+        return ex;
+      });
+
+      dispatch({
+        type: "UPDATE_SESSION",
+        payload: { exercises: updatedExercises },
+      });
+    },
+    [state.session]
+  );
 
   const value: WorkoutSessionContextType = {
     ...state,

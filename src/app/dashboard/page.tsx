@@ -504,11 +504,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <Link href="/profile">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="text-xs"
-              >
+              <Button variant="secondary" size="sm" className="text-xs">
                 Profile
               </Button>
             </Link>
@@ -615,13 +611,13 @@ export default function DashboardPage() {
                     const assignmentId =
                       assignment.id ||
                       `${assignment.workoutPlanId}-${assignment.athleteId}`;
-                    
+
                     console.log("[Dashboard] Assignment data:", {
                       assignmentId,
                       hasId: !!assignment.id,
                       workoutPlanId: assignment.workoutPlanId,
                       athleteId: assignment.athleteId,
-                      fullAssignment: assignment
+                      fullAssignment: assignment,
                     });
 
                     return (

@@ -712,24 +712,27 @@ export function onAuthChange(callback: (user: User | null) => void) {
             errorDetails: error,
             userId: session.user.id,
           });
-          
+
           // DON'T log user out on transient failures (timeout, network issues)
           // Instead, provide minimal user info from session token
-          console.warn('[AUTH] Profile fetch failed, retaining session with basic info', { 
-            error: error?.message || 'Profile not found',
-            userId: session.user.id 
-          });
-          
+          console.warn(
+            "[AUTH] Profile fetch failed, retaining session with basic info",
+            {
+              error: error?.message || "Profile not found",
+              userId: session.user.id,
+            }
+          );
+
           // Keep user logged in with basic session data
           const fallbackUser: User = {
             id: session.user.id,
-            email: session.user.email || '',
-            firstName: 'User', // Fallback name
-            lastName: '',
-            fullName: 'User',
-            role: 'athlete', // Safe default role
+            email: session.user.email || "",
+            firstName: "User", // Fallback name
+            lastName: "",
+            fullName: "User",
+            role: "athlete", // Safe default role
           };
-          
+
           callback(fallbackUser);
           return;
         }
@@ -751,11 +754,14 @@ export function onAuthChange(callback: (user: User | null) => void) {
         callback(user);
       } catch (error) {
         const classified = classifyAuthError(error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
         // Log timeout as warning (expected on slow connections), other errors as error
         if (errorMessage.includes("timeout")) {
-          console.warn(`[AUTH] Profile fetch timeout in auth state change - check network connection`);
+          console.warn(
+            `[AUTH] Profile fetch timeout in auth state change - check network connection`
+          );
         } else {
           timer.error("Auth state change error", {
             type: classified.type,

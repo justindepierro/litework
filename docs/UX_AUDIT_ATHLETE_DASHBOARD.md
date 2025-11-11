@@ -69,6 +69,7 @@
 ### **Phase 1: Dashboard Reorganization** (30 min)
 
 #### 1.1 Simplify Hero Section
+
 ```
 ┌─────────────────────────────────────────┐
 │ Hi, Justin! 👋                          │
@@ -86,12 +87,14 @@
 ```
 
 **Changes:**
+
 - Move stats to separate page or collapse
 - Make today's workout the HERO element
 - Single prominent "Start" button
 - Show duration and exercise count
 
 #### 1.2 Combine Week View with List
+
 ```
 ┌─────────────────────────────────────────┐
 │ THIS WEEK                               │
@@ -107,12 +110,14 @@
 ```
 
 **Changes:**
+
 - Simple list with dots for assigned days
 - Tap to expand details
 - No redundant "Coming Up" section
 - Single source of truth
 
 #### 1.3 Quick Stats as Drawer
+
 ```
 Swipe up from bottom or tap "Stats"
 ┌─────────────────────────────────────────┐
@@ -127,6 +132,7 @@ Swipe up from bottom or tap "Stats"
 ```
 
 **Changes:**
+
 - Move stats to bottom drawer
 - Keep dashboard focused on action
 - Link to full analytics page
@@ -136,6 +142,7 @@ Swipe up from bottom or tap "Stats"
 ### **Phase 2: Workout Live Improvements** (45 min)
 
 #### 2.1 Exercise Progress Bar at Top
+
 ```
 ┌─────────────────────────────────────────┐
 │ ⏱ 12:34  Progress  3/8 exercises    ⋮  │
@@ -144,12 +151,14 @@ Swipe up from bottom or tap "Stats"
 ```
 
 **Changes:**
+
 - Add visual progress bar under header
 - Show exercise count: "3/8"
 - Show percentage complete
 - Quick glance at progress
 
 #### 2.2 Collapse Completed Exercises
+
 ```
 ┌─────────────────────────────────────────┐
 │ ✓ Completed (3) [Tap to expand]        │
@@ -166,12 +175,14 @@ Swipe up from bottom or tap "Stats"
 ```
 
 **Changes:**
+
 - Auto-collapse completed exercises
 - Active exercise is prominent
 - Pending shown as simple list
 - Less scrolling required
 
 #### 2.3 Show Exercise Notes
+
 ```
 ┌─────────────────────────────────────────┐
 │ BENCH PRESS                             │
@@ -183,11 +194,13 @@ Swipe up from bottom or tap "Stats"
 ```
 
 **Changes:**
+
 - Display `notes` field from database
 - Collapsible "Coach's Tips" section
 - Helps athletes with form cues
 
 #### 2.4 Smarter Weight Suggestions
+
 ```
 ┌─────────────────────────────────────────┐
 │ Recording Set 2 of 3                    │
@@ -201,6 +214,7 @@ Swipe up from bottom or tap "Stats"
 ```
 
 **Changes:**
+
 - Show last set ABOVE inputs
 - Suggest weight based on:
   - Last set of same exercise
@@ -209,6 +223,7 @@ Swipe up from bottom or tap "Stats"
 - Pre-fill intelligently
 
 #### 2.5 Exercise Quick Actions
+
 ```
 Long-press exercise card:
 ┌─────────────────────────────────────────┐
@@ -220,6 +235,7 @@ Long-press exercise card:
 ```
 
 **Changes:**
+
 - Long-press for context menu
 - Quick access to video (`videoUrl` field)
 - Skip exercises if needed
@@ -230,17 +246,20 @@ Long-press exercise card:
 ### **Phase 3: Navigation Flow** (15 min)
 
 #### 3.1 Unified Start Flow
+
 ```
 Dashboard → [Start Workout] → Assignment Picker (if multiple) → Workout Live
 ```
 
 **Changes:**
+
 - Remove confusing header "Start" button
 - Single entry point from today's workout card
 - If multiple workouts today, show picker modal
 - Clear, predictable flow
 
 #### 3.2 Bottom Navigation Bar
+
 ```
 ┌─────────────────────────────────────────┐
 │                                         │
@@ -254,6 +273,7 @@ Dashboard → [Start Workout] → Assignment Picker (if multiple) → Workout Li
 ```
 
 **Changes:**
+
 - Add bottom nav for key screens
 - Always accessible
 - Standard mobile pattern
@@ -264,6 +284,7 @@ Dashboard → [Start Workout] → Assignment Picker (if multiple) → Workout Li
 ## 🎯 Implementation Priority
 
 ### **High Impact, Low Effort** (Do First)
+
 1. ✅ Collapse completed exercises in live view
 2. ✅ Show exercise notes/tips
 3. ✅ Add progress bar to workout header
@@ -271,12 +292,14 @@ Dashboard → [Start Workout] → Assignment Picker (if multiple) → Workout Li
 5. ✅ Show last set above input area
 
 ### **High Impact, Medium Effort**
+
 6. Smart weight suggestions
 7. Unified start flow
 8. Combine week calendar with list
 9. Exercise quick actions menu
 
 ### **Nice to Have**
+
 10. Bottom navigation bar
 11. Stats drawer
 12. Video demo integration
@@ -315,17 +338,20 @@ Dashboard → [Start Workout] → Assignment Picker (if multiple) → Workout Li
 ## 🚀 Expected Impact
 
 **Dashboard:**
+
 - 50% reduction in scrolling
 - Clearer action hierarchy
 - Faster time-to-workout
 
 **Workout Live:**
+
 - 30% less scrolling during workout
 - Better awareness of progress
 - Easier to follow coaching cues
 - More confident exercise execution
 
 **Overall:**
+
 - More intuitive navigation
 - Reduced cognitive load
 - Professional, polished feel

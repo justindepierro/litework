@@ -64,7 +64,7 @@ export async function PATCH(
         workout_sessions: { user_id: string };
       };
       const session = sessionExercise.workout_sessions;
-      
+
       if (session.user_id !== user.id) {
         return NextResponse.json(
           { success: false, error: "Unauthorized to update this set" },
@@ -160,7 +160,7 @@ export async function DELETE(
         workout_sessions: { user_id: string };
       };
       const session = sessionExercise.workout_sessions;
-      
+
       if (session.user_id !== user.id) {
         return NextResponse.json(
           { success: false, error: "Unauthorized to delete this set" },
@@ -193,7 +193,9 @@ export async function DELETE(
         .update({ completed_sets: remainingSets?.length || 0 })
         .eq("id", setRecord.session_exercise_id);
 
-      console.log(`[DeleteSet] Deleted set ${setId}, ${remainingSets?.length || 0} sets remaining`);
+      console.log(
+        `[DeleteSet] Deleted set ${setId}, ${remainingSets?.length || 0} sets remaining`
+      );
 
       return NextResponse.json({
         success: true,
