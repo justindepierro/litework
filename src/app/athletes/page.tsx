@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Button } from "@/components/ui/Button";
+import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import {
   User,
   Plus,
@@ -849,7 +850,7 @@ export default function AthletesPage() {
         />
 
         {/* Athletes Grid - Mobile Optimized Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+        <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
           {/* Add Athlete Placeholder Card */}
           <button
             onClick={() => setShowInviteModal(true)}
@@ -887,7 +888,7 @@ export default function AthletesPage() {
                 getStatusText={getStatusText}
               />
             ))}
-        </div>
+        </AnimatedGrid>
 
         {/* Empty State - Only show if no athletes at all */}
         {filteredAthletes.length === 0 && (
