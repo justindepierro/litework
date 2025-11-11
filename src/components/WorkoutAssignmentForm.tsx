@@ -2,7 +2,8 @@
 
 import { WorkoutPlan } from "@/types";
 import DateTimePicker from "./DateTimePicker";
-import { Select, Input, Textarea } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Input";
+import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Card } from "@/components/ui/Card";
 
 interface WorkoutAssignmentFormProps {
@@ -29,7 +30,6 @@ interface WorkoutAssignmentFormProps {
 
   // Display options
   showWorkoutPreview?: boolean;
-  notesPlaceholder?: string;
   notesRows?: number;
 }
 
@@ -50,7 +50,6 @@ export default function WorkoutAssignmentForm({
   notes,
   onNotesChange,
   showWorkoutPreview = true,
-  notesPlaceholder = "Any special instructions, focus areas, or coaching notes...",
   notesRows = 3,
 }: WorkoutAssignmentFormProps) {
   const selectedWorkout = workoutPlans.find((w) => w.id === selectedWorkoutId);
@@ -92,22 +91,20 @@ export default function WorkoutAssignmentForm({
       </div>
 
       {/* Location */}
-      <Input
+      <FloatingLabelInput
         label="Location (optional)"
         type="text"
         value={location}
         onChange={(e) => onLocationChange(e.target.value)}
-        placeholder="e.g., Main Gym, Weight Room"
         fullWidth
       />
 
       {/* Notes */}
-      <Textarea
-        label="Session Notes"
+      <FloatingLabelTextarea
+        label="Session Notes (Optional)"
         value={notes}
         onChange={(e) => onNotesChange(e.target.value)}
         rows={notesRows}
-        placeholder={notesPlaceholder}
         fullWidth
       />
 

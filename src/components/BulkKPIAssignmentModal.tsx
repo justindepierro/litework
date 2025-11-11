@@ -9,8 +9,7 @@ import {
   BulkAssignKPIsResponse,
 } from "@/types";
 import { Target, ChevronLeft, ChevronRight } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Button } from "@/components/ui/Button";
 import { Body, Heading, Label } from "@/components/ui/Typography";
 import {
@@ -433,31 +432,32 @@ export default function BulkKPIAssignmentModal({
               </Body>
 
               <div className="grid grid-cols-2 gap-4">
-                <Input
+                <FloatingLabelInput
                   label="Target Value"
                   type="number"
                   step="0.1"
                   value={targetValue}
                   onChange={(e) => setTargetValue(e.target.value)}
-                  placeholder="e.g., 315"
                   disabled={isLoading}
+                  fullWidth
                 />
-                <Input
+                <FloatingLabelInput
                   label="Target Date"
                   type="date"
                   value={targetDate}
                   onChange={(e) => setTargetDate(e.target.value)}
                   disabled={isLoading}
+                  fullWidth
                 />
               </div>
 
-              <Textarea
-                label="Notes"
+              <FloatingLabelTextarea
+                label="Notes (Optional)"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Any notes about these KPI assignments..."
                 rows={3}
                 disabled={isLoading}
+                fullWidth
               />
 
               {/* Summary */}
