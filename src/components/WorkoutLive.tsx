@@ -7,7 +7,6 @@ import { OfflineStatusBanner } from "@/components/OfflineStatus";
 import { PRCelebrationModal } from "@/components/PRBadge";
 import { checkForPR, PRComparison } from "@/lib/pr-detection";
 import { useAuth } from "@/contexts/AuthContext";
-import RestTimer from "./RestTimer";
 import {
   ChevronRight,
   ChevronDown,
@@ -52,7 +51,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [weight, setWeight] = useState<number>(0);
   const [reps, setReps] = useState<number>(0);
   const [rpe, setRpe] = useState<number>(7);
-  const [showRestTimer, setShowRestTimer] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
@@ -235,7 +233,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         }
       }
     } else {
-      setShowRestTimer(true);
+      // More sets remaining - just continue to next set (no timer)
+      // Form inputs are already pre-filled for the next set
     }
     const repsTarget = currentExercise.reps_target
       ? parseInt(currentExercise.reps_target)
@@ -258,12 +257,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     groups,
     isMounted,
   ]);
-
-  const handleRestComplete = useCallback(() => {
-    if (isMounted) {
-      setShowRestTimer(false);
-    }
-  }, [isMounted]);
 
   const handleNext = useCallback(() => {
     if (
@@ -893,14 +886,6 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       </div>
       {/* END: Split View Container */}
 
-      {showRestTimer && currentExercise && (
-        <RestTimer
-          key={`rest-${session.current_exercise_index}-${currentExercise.sets_completed}`}
-          duration={currentExercise.rest_seconds}
-          onComplete={handleRestComplete}
-          onSkip={handleRestComplete}
-        />
-      )}
       {showPRModal && prComparison && currentExercise && (
         <PRCelebrationModal
           comparison={prComparison}
