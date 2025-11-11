@@ -1,13 +1,15 @@
 /**
  * Modal Component System
  * Unified modal backdrop and container with consistent z-index management
- * Uses design tokens for styling
+ * Uses design tokens for styling with Framer Motion animations
  */
 
 "use client";
 
 import React, { useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { modalBackdrop, modalContent } from "@/lib/animation-variants";
 
 export interface ModalBackdropProps {
   /** Whether the modal is open */
@@ -75,8 +77,6 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
     };
   }, [isOpen, handleEscapeKey]);
 
-  if (!isOpen) return null;
-
   // Backdrop opacity variants
   const backdropVariants = {
     default: "bg-[rgba(15,23,42,0.75)]", // --color-bg-overlay equivalent
@@ -88,19 +88,35 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
   const zIndexClass = zIndex === 60 ? "z-60" : "z-50";
 
   return (
-    <div
-      className={`
-        fixed inset-0 flex items-center justify-center p-4
-        ${zIndexClass}
-        ${backdropClass}
-        ${backdropClassName}
-      `}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={className}>{children}</div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          variants={modalBackdrop}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className={`
+            fixed inset-0 flex items-center justify-center p-4
+            ${zIndexClass}
+            ${backdropClass}
+            ${backdropClassName}
+          `}
+          onClick={handleBackdropClick}
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div
+            variants={modalContent}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={className}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
