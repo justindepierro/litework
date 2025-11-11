@@ -184,7 +184,7 @@ export function AchievementNotification({
           title="Achievement Unlocked!"
           subtitle=""
           onClose={onClose}
-          icon={<Trophy className="w-6 h-6 text-yellow-500" />}
+          icon={<Trophy className="w-6 h-6 text-[var(--color-semantic-warning-base)]" />}
         />
 
         <ModalContent>
