@@ -2,11 +2,13 @@
  * Polished Button Component with Micro-Interactions
  * Uses design tokens for consistency
  * Includes: hover lift, active press, ripple effect, loading states
+ * Enhanced with Framer Motion for smooth 60fps animations
  */
 
 "use client";
 
 import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Loader2, Check } from "lucide-react";
 
 export type ButtonVariant =
@@ -45,7 +47,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       onClick,
       children,
-      ...props
+      type,
+      form,
+      ...restProps
     },
     ref
   ) => {
@@ -164,15 +168,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // Success state content
     if (showSuccessState) {
       return (
-        <button
-          ref={buttonRef}
+        <motion.button
+          ref={buttonRef as React.Ref<HTMLButtonElement>}
           className={`${baseStyles} ${variantStyles.success} ${sizeStyles[size]} ${className}`}
           disabled={true}
-          {...props}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           <Check className="w-5 h-5 animate-success" />
           <span>Saved!</span>
-        </button>
+        </motion.button>
       );
     }
 
@@ -191,12 +197,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     return (
-      <button
-        ref={buttonRef}
+      <motion.button
+        ref={buttonRef as React.Ref<HTMLButtonElement>}
         className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
         disabled={disabled || isLoading}
         onClick={handleClick}
-        {...props}
+        type={type}
+        form={form}
+        whileHover={{ scale: disabled || isLoading ? 1 : 1.02 }}
+        whileTap={{ scale: disabled || isLoading ? 1 : 0.98 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        {...(restProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
       >
         {/* Ripple effects */}
         {ripples.map((ripple) => (
@@ -214,7 +225,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         {/* Button content */}
         {content}
-      </button>
+      </motion.button>
     );
   }
 );
@@ -242,7 +253,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <Button
         ref={ref}
         size={size}
-        className={`${sizeClasses[size]} !min-h-0 rounded-full ${className}`}
+        className={`${sizeClasses[size]} min-h-0! rounded-full ${className}`}
         {...props}
       >
         {icon}

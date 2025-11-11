@@ -2,11 +2,13 @@
  * Card Component with Hover Effects
  * Uses design tokens for consistency
  * Includes: subtle lift, shadow expansion, smooth transitions
+ * Enhanced with Framer Motion for magnetic hover effects
  */
 
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 
 export type CardVariant =
   | "default"
@@ -41,7 +43,11 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       interactive = false,
       className = "",
       children,
-      ...props
+      onClick,
+      onMouseEnter,
+      onMouseLeave,
+      onDrag,
+      ...restProps
     },
     ref
   ) => {
@@ -108,6 +114,37 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     `
       : "";
 
+    // Use motion for interactive/hoverable cards
+    if (interactive || hoverable) {
+      return (
+        <motion.div
+          ref={ref}
+          className={`
+            ${baseStyles}
+            ${variantStyles[variant]}
+            ${paddingStyles[padding]}
+            ${hoverStyles}
+            ${className}
+          `}
+          onClick={onClick}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          whileHover={{ 
+            y: -4, 
+            scale: 1.01,
+            transition: { type: "spring", stiffness: 300, damping: 20 }
+          }}
+          whileTap={{ 
+            scale: 0.98,
+            transition: { type: "spring", stiffness: 400, damping: 17 }
+          }}
+          {...(restProps as React.HTMLAttributes<HTMLDivElement>)}
+        >
+          {children}
+        </motion.div>
+      );
+    }
+
     return (
       <div
         ref={ref}
@@ -118,7 +155,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
           ${hoverStyles}
           ${className}
         `}
-        {...props}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        {...restProps}
       >
         {children}
       </div>
