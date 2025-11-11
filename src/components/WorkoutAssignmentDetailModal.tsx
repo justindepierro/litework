@@ -318,7 +318,7 @@ export default function WorkoutAssignmentDetailModal({
           <div className="p-8">
             <ModalHeader title="Error" onClose={onClose} />
             <ModalContent>
-              <p className="text-gray-600">{error}</p>
+              <p className="text-[var(--color-text-secondary)]">{error}</p>
             </ModalContent>
           </div>
         ) : assignment ? (
@@ -329,23 +329,23 @@ export default function WorkoutAssignmentDetailModal({
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
                     statusColor === "green"
-                      ? "bg-green-100 text-green-800"
+                      ? "bg-[var(--color-semantic-success-lightest)] text-[var(--color-semantic-success-dark)]"
                       : statusColor === "red"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-blue-100 text-blue-800"
+                        ? "bg-[var(--color-semantic-error-lightest)] text-[var(--color-semantic-error-dark)]"
+                        : "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)]"
                   }`}
                 >
                   {statusText}
                 </span>
                 {getWorkoutDescription(assignment) && (
-                  <p className="text-gray-600 mt-2">
+                  <p className="text-[var(--color-text-secondary)] mt-2">
                     {getWorkoutDescription(assignment)}
                   </p>
                 )}
                 {getGroupName(assignment) && (
                   <div className="flex items-center gap-2 mt-2">
-                    <Users className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">
+                    <Users className="w-4 h-4 text-[var(--color-text-tertiary)]" />
+                    <span className="text-sm text-[var(--color-text-secondary)]">
                       Group: {getGroupName(assignment)}
                     </span>
                   </div>
@@ -353,9 +353,9 @@ export default function WorkoutAssignmentDetailModal({
               </div>
 
               {/* Assignment Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Calendar className="w-5 h-5 text-gray-500" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-[var(--color-silver-200)] rounded-lg">
+                <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                  <Calendar className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                   <span className="font-medium">Date:</span>
                   <span>
                     {(() => {
@@ -376,8 +376,8 @@ export default function WorkoutAssignmentDetailModal({
                 </div>
 
                 {getStartTime(assignment) && (
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Clock className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                    <Clock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                     <span className="font-medium">Time:</span>
                     <span>
                       {getEndTime(assignment)
@@ -394,22 +394,22 @@ export default function WorkoutAssignmentDetailModal({
                 )}
 
                 {getLocation(assignment) && (
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <MapPin className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                    <MapPin className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                     <span className="font-medium">Location:</span>
                     <span>{getLocation(assignment)}</span>
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-gray-700">
-                  <User className="w-5 h-5 text-gray-500" />
+                <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                  <User className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                   <span className="font-medium">Assigned by:</span>
                   <span>{getAssignedBy(assignment)}</span>
                 </div>
 
                 {getWorkoutDuration(assignment) && (
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Clock className="w-5 h-5 text-gray-500" />
+                  <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                    <Clock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                     <span className="font-medium">Duration:</span>
                     <span>{getWorkoutDuration(assignment)} min</span>
                   </div>
