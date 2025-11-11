@@ -175,7 +175,7 @@ export default function AthleteModificationModal({
                         </div>
                         <button
                           onClick={() => removeModification(modification.id)}
-                          className="text-silver-600 hover:text-red-600 p-1"
+                          className="text-silver-600 hover:text-[var(--color-semantic-error-base)] p-1"
                         >
                           <X className="w-5 h-5" />
                         </button>

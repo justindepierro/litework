@@ -45,11 +45,11 @@ export const VirtualWorkoutList: React.FC<VirtualWorkoutListProps> = ({
         >
           <h3 className="font-semibold text-lg mb-2">{workout.name}</h3>
           {workout.description && (
-            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+            <p className="text-sm text-[var(--color-text-secondary)] mb-2 line-clamp-2">
               {workout.description}
             </p>
           )}
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-[var(--color-text-tertiary)]">
             {workout.exerciseCount} exercises
           </div>
         </div>
@@ -85,16 +85,16 @@ export const VirtualAthleteList: React.FC<VirtualAthleteListProps> = ({
           className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer"
           onClick={() => onAthleteClick(athlete.id)}
         >
-          <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-            <span className="text-lg font-semibold text-gray-600">
+          <div className="h-12 w-12 rounded-full bg-[var(--color-silver-300)] flex items-center justify-center">
+            <span className="text-lg font-semibold text-[var(--color-text-secondary)]">
               {athlete.name.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1">
             <div className="font-medium">{athlete.name}</div>
-            <div className="text-sm text-gray-600">{athlete.email}</div>
+            <div className="text-sm text-[var(--color-text-secondary)]">{athlete.email}</div>
             {athlete.sport && (
-              <div className="text-xs text-gray-500 mt-1">{athlete.sport}</div>
+              <div className="text-xs text-[var(--color-text-tertiary)] mt-1">{athlete.sport}</div>
             )}
           </div>
         </div>
@@ -128,13 +128,13 @@ export const VirtualExerciseList: React.FC<VirtualExerciseListProps> = ({
       {exercises.map((exercise) => (
         <div
           key={exercise.id}
-          className={`bg-gray-50 rounded-lg p-3 ${
-            onExerciseClick ? "cursor-pointer hover:bg-gray-100" : ""
+          className={`bg-[var(--color-silver-200)] rounded-lg p-3 ${
+            onExerciseClick ? "cursor-pointer hover:bg-[var(--color-silver-300)]" : ""
           }`}
           onClick={() => onExerciseClick?.(exercise.id)}
         >
           <div className="font-medium">{exercise.name}</div>
-          <div className="text-sm text-gray-600 mt-1 flex gap-3">
+          <div className="text-sm text-[var(--color-text-secondary)] mt-1 flex gap-3">
             {exercise.sets && <span>{exercise.sets} sets</span>}
             {exercise.reps && <span>{exercise.reps} reps</span>}
             {exercise.weight && <span>{exercise.weight}</span>}

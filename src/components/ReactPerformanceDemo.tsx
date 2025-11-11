@@ -39,13 +39,13 @@ const OptimizedListItem = memo(function OptimizedListItem({
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all ${
         isSelected
-          ? "bg-blue-50 border-blue-300"
-          : "bg-white border-gray-200 hover:border-gray-300"
+          ? "bg-[var(--color-semantic-info-lightest)] border-[var(--color-semantic-info-light)]"
+          : "bg-white border-[var(--color-silver-300)] hover:border-[var(--color-silver-400)]"
       }`}
       onClick={handleToggle}
     >
-      <h3 className="font-medium text-gray-900">{item.name}</h3>
-      <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+      <h3 className="font-medium text-[var(--color-text-primary)]">{item.name}</h3>
+      <p className="text-sm text-[var(--color-text-secondary)] mt-1">{item.description}</p>
     </div>
   );
 });
@@ -151,7 +151,7 @@ const OptimizedSearch = memo(function OptimizedSearch({
       value={query}
       onChange={handleInputChange}
       placeholder={placeholder}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      className="w-full px-4 py-2 border border-[var(--color-silver-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-semantic-info-base)] focus:border-[var(--color-semantic-info-base)]"
     />
   );
 });
@@ -226,15 +226,15 @@ const ReactPerformanceDemo = memo(function ReactPerformanceDemo() {
             onSearch={handleSearch}
             placeholder="Search workouts..."
           />
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-[var(--color-text-secondary)] mt-2">
             Search queries are debounced by 300ms to reduce unnecessary
             re-renders
           </p>
         </div>
 
         {/* Selected Items Counter */}
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <p className="text-blue-800">
+        <div className="bg-[var(--color-semantic-info-lightest)] p-4 rounded-lg">
+          <p className="text-[var(--color-semantic-info-dark)]">
             Selected: {selectedItems.size} items | Showing:{" "}
             {filteredData.length} / {sampleData.length} items
           </p>
@@ -251,18 +251,18 @@ const ReactPerformanceDemo = memo(function ReactPerformanceDemo() {
             containerHeight={400}
             renderItem={renderItem}
           />
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-[var(--color-text-secondary)] mt-2">
             Only visible items are rendered in the DOM for optimal performance
             with large datasets
           </p>
         </div>
 
         {/* Performance Tips */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-[var(--color-silver-200)] p-4 rounded-lg">
           <h3 className="font-semibold mb-2">
             Performance Optimizations Used:
           </h3>
-          <ul className="text-sm text-gray-700 space-y-1">
+          <ul className="text-sm text-[var(--color-text-primary)] space-y-1">
             <li>
               • <strong>React.memo</strong>: Prevents unnecessary re-renders
             </li>
