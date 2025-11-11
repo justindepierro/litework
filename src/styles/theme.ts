@@ -354,7 +354,7 @@ export const theme = {
       achievement: colors.accent.purple,
       motivation: colors.accent.pink,
       schedule: colors.accent.blue,
-      warning: colors.accent.yellow,
+      warning: colors.accent.amber,
       intensity: colors.accent.red,
     },
 

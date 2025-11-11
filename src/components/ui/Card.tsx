@@ -138,7 +138,15 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
             scale: 0.98,
             transition: { type: "spring", stiffness: 400, damping: 17 }
           }}
-          {...(restProps as React.HTMLAttributes<HTMLDivElement>)}
+          {...Object.fromEntries(
+            Object.entries(restProps).filter(
+              ([key]) =>
+                !key.startsWith("onAnimation") &&
+                !key.startsWith("onDrag") &&
+                !key.startsWith("while") &&
+                !key.startsWith("animate")
+            )
+          )}
         >
           {children}
         </motion.div>
