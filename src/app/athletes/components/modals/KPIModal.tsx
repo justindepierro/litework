@@ -8,7 +8,7 @@ import {
   ModalContent,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Heading, Body } from "@/components/ui/Typography";
 import { AthleteKPI } from "@/types";
 
@@ -84,25 +84,23 @@ export default function KPIModal({
               Add New Personal Record
             </Heading>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
+              <FloatingLabelInput
                 label="Exercise Name"
                 type="text"
                 value={form.kpiName}
                 onChange={(e) => setForm({ ...form, kpiName: e.target.value })}
-                placeholder="e.g., Bench Press"
                 fullWidth
                 required
               />
-              <Input
+              <FloatingLabelInput
                 label="Weight (lbs)"
                 type="number"
                 value={form.value}
                 onChange={(e) => setForm({ ...form, value: e.target.value })}
-                placeholder="225"
                 fullWidth
                 required
               />
-              <Input
+              <FloatingLabelInput
                 label="Date Achieved"
                 type="date"
                 value={form.dateSet}

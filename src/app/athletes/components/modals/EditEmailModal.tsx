@@ -9,7 +9,7 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Heading, Body } from "@/components/ui/Typography";
 
 export interface EditEmailForm {
@@ -78,12 +78,11 @@ export default function EditEmailModal({
             </div>
 
             {/* Email Input */}
-            <Input
+            <FloatingLabelInput
               label="Email Address *"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="athlete@email.com"
               autoFocus
               fullWidth
               required

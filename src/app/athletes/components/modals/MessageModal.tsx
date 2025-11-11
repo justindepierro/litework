@@ -9,8 +9,10 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { Heading, Body } from "@/components/ui/Typography";
 
@@ -79,7 +81,7 @@ export default function MessageModal({
         <ModalContent>
           <div className="space-y-4">
             {/* Subject Input */}
-            <Input
+            <FloatingLabelInput
               label="Subject (Optional)"
               type="text"
               value={form.subject}
@@ -89,12 +91,11 @@ export default function MessageModal({
                   subject: e.target.value,
                 })
               }
-              placeholder="Enter message subject..."
               fullWidth
             />
 
             {/* Message Textarea */}
-            <Textarea
+            <FloatingLabelTextarea
               label="Message *"
               value={form.message}
               onChange={(e) =>
@@ -104,7 +105,6 @@ export default function MessageModal({
                 })
               }
               rows={6}
-              placeholder="Type your message here..."
               fullWidth
               required
             />
