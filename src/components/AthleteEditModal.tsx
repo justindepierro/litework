@@ -16,7 +16,8 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Input, Textarea, Select } from "@/components/ui/Input";
+import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import { Select } from "@/components/ui/Select";
 import type { User as UserType } from "@/types";
 
 interface AthleteEditModalProps {
@@ -150,21 +151,23 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
           <div className="space-y-6">
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
+              <FloatingLabelInput
                 label="First Name"
                 value={formData.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
                 error={errors.firstName}
                 required
                 leftIcon={<User className="w-4 h-4" />}
+                fullWidth
               />
-              <Input
+              <FloatingLabelInput
                 label="Last Name"
                 value={formData.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
                 error={errors.lastName}
                 required
                 leftIcon={<User className="w-4 h-4" />}
+                fullWidth
               />
             </div>
 
@@ -173,7 +176,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
                 Contact Information
               </h3>
-              <Input
+              <FloatingLabelInput
                 label="Email"
                 type="email"
                 value={formData.email}
@@ -181,14 +184,15 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
                 error={errors.email}
                 required
                 leftIcon={<User className="w-4 h-4" />}
+                fullWidth
               />
-              <Input
+              <FloatingLabelInput
                 label="Phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="(555) 555-5555"
                 leftIcon={<Phone className="w-4 h-4" />}
+                fullWidth
               />
             </div>
 
@@ -197,22 +201,22 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
                 Emergency Contact
               </h3>
-              <Input
+              <FloatingLabelInput
                 label="Emergency Contact Name"
                 value={formData.emergencyContact}
                 onChange={(e) =>
                   handleChange("emergencyContact", e.target.value)
                 }
-                placeholder="Parent or guardian name"
                 leftIcon={<AlertCircle className="w-4 h-4" />}
+                fullWidth
               />
-              <Input
+              <FloatingLabelInput
                 label="Emergency Contact Phone"
                 type="tel"
                 value={formData.emergencyPhone}
                 onChange={(e) => handleChange("emergencyPhone", e.target.value)}
-                placeholder="(555) 555-5555"
                 leftIcon={<Phone className="w-4 h-4" />}
+                fullWidth
               />
             </div>
 
@@ -222,21 +226,21 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
                 Physical Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Input
+                <FloatingLabelInput
                   label="Height (inches)"
                   type="number"
                   value={formData.heightInches}
                   onChange={(e) => handleChange("heightInches", e.target.value)}
-                  placeholder="e.g., 72"
                   leftIcon={<Ruler className="w-4 h-4" />}
+                  fullWidth
                 />
-                <Input
+                <FloatingLabelInput
                   label="Weight (lbs)"
                   type="number"
                   value={formData.weightLbs}
                   onChange={(e) => handleChange("weightLbs", e.target.value)}
-                  placeholder="e.g., 185"
                   leftIcon={<Weight className="w-4 h-4" />}
+                  fullWidth
                 />
                 <Select
                   label="Gender"
@@ -251,12 +255,13 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
                   ]}
                 />
               </div>
-              <Input
+              <FloatingLabelInput
                 label="Date of Birth"
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                 leftIcon={<Calendar className="w-4 h-4" />}
+                fullWidth
               />
             </div>
 
@@ -265,13 +270,13 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
                 Health Status
               </h3>
-              <Input
+              <FloatingLabelInput
                 label="Injury Status"
                 value={formData.injuryStatus}
                 onChange={(e) => handleChange("injuryStatus", e.target.value)}
-                placeholder="e.g., Recovering from knee injury"
                 leftIcon={<AlertCircle className="w-4 h-4" />}
                 helperText="Leave blank if no current injuries"
+                fullWidth
               />
             </div>
 
@@ -280,12 +285,12 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
                 About
               </h3>
-              <Textarea
+              <FloatingLabelTextarea
                 label="Bio"
                 value={formData.bio}
                 onChange={(e) => handleChange("bio", e.target.value)}
-                placeholder="Brief description or notes about the athlete..."
                 rows={4}
+                fullWidth
               />
             </div>
 
