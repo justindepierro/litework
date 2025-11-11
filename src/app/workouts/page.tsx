@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -383,7 +384,7 @@ export default function WorkoutsPage() {
 
             {/* Workouts Grid */}
             {!loading && (
-              <div className="grid gap-4 md:grid-cols-2">
+              <AnimatedGrid columns={2} gap={4} delay={0.1} staggerDelay={0.05}>
                 {workouts.length === 0 ? (
                   <div className="col-span-full">
                     <EmptyWorkouts
@@ -574,7 +575,7 @@ export default function WorkoutsPage() {
                     );
                   })
                 )}
-              </div>
+              </AnimatedGrid>
             )}
           </>
         ) : (
