@@ -32,6 +32,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Display, Body } from "@/components/ui/Typography";
+import { AnimatedList, AnimatedListItem, AnimatedGrid } from "@/components/ui/AnimatedList";
 import {
   Trophy,
   Calendar,
@@ -601,7 +602,7 @@ export default function DashboardPage() {
                 )}
               </Card>
             ) : (
-              <div className="space-y-4">
+              <AnimatedList className="space-y-4" staggerDelay={0.08}>
                 {assignments
                   .filter((a) => {
                     const assignmentDate = parseDate(a.scheduledDate);
@@ -621,12 +622,12 @@ export default function DashboardPage() {
                     });
 
                     return (
-                      <Card
-                        key={assignmentId}
-                        variant="default"
-                        padding="none"
-                        className="overflow-hidden shadow-lg border-2 border-blue-200"
-                      >
+                      <AnimatedListItem key={assignmentId}>
+                        <Card
+                          variant="default"
+                          padding="none"
+                          className="overflow-hidden shadow-lg border-2 border-blue-200"
+                        >
                         {/* Hero Header */}
                         <div className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
                           <div className="flex items-start justify-between">
@@ -682,9 +683,10 @@ export default function DashboardPage() {
                           </Link>
                         </div>
                       </Card>
+                      </AnimatedListItem>
                     );
                   })}
-              </div>
+              </AnimatedList>
             )}
           </div>
         )}
@@ -695,7 +697,7 @@ export default function DashboardPage() {
             <div className="w-1 h-5 bg-accent-green rounded-full" />
             Your Progress
           </h2>
-          <div className="grid grid-cols-3 gap-4">
+          <AnimatedGrid columns={3} gap={4} delay={0.2}>
             <StatCard
               icon={<Dumbbell className="w-5 h-5 text-accent-orange" />}
               value={stats.workoutsThisWeek}
@@ -719,7 +721,7 @@ export default function DashboardPage() {
               loading={loadingStats}
               color="red"
             />
-          </div>
+          </AnimatedGrid>
         </div>
 
         {/* This Week's Schedule - Compact List */}
@@ -767,11 +769,7 @@ export default function DashboardPage() {
                 </p>
               </Card>
             ) : (
-              <Card
-                variant="default"
-                padding="none"
-                className="divide-y divide-silver-300"
-              >
+              <AnimatedList className="divide-y divide-silver-300 bg-white rounded-xl border border-silver-300 shadow-sm overflow-hidden">
                 {assignments
                   .filter((a) => {
                     const assignmentDate = parseDate(a.scheduledDate);
@@ -788,37 +786,38 @@ export default function DashboardPage() {
                       `${assignment.workoutPlanId}-${assignment.athleteId}`;
 
                     return (
-                      <button
-                        key={assignmentId}
-                        onClick={() => handleAssignmentClick(assignment)}
-                        className="w-full p-4 flex items-center justify-between hover:bg-silver-200 active:bg-silver-300 transition-colors text-left"
-                      >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <div className="shrink-0">
-                            <div className="w-10 h-10 bg-silver-300 rounded-full flex items-center justify-center">
-                              <Calendar className="w-5 h-5 text-steel-600" />
+                      <AnimatedListItem key={assignmentId}>
+                        <button
+                          onClick={() => handleAssignmentClick(assignment)}
+                          className="w-full p-4 flex items-center justify-between hover:bg-silver-200 active:bg-silver-300 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <div className="shrink-0">
+                              <div className="w-10 h-10 bg-silver-300 rounded-full flex items-center justify-center">
+                                <Calendar className="w-5 h-5 text-steel-600" />
+                              </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-sm font-semibold text-gray-900 truncate">
+                                {assignment.workoutPlanName || "Workout"}
+                              </h3>
+                              <p className="text-xs text-gray-500">
+                                {assignmentDate.toLocaleDateString("en-US", {
+                                  weekday: "short",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                                {assignment.startTime &&
+                                  ` • ${formatTime12Hour(assignment.startTime)}`}
+                              </p>
                             </div>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-gray-900 truncate">
-                              {assignment.workoutPlanName || "Workout"}
-                            </h3>
-                            <p className="text-xs text-gray-500">
-                              {assignmentDate.toLocaleDateString("en-US", {
-                                weekday: "short",
-                                month: "short",
-                                day: "numeric",
-                              })}
-                              {assignment.startTime &&
-                                ` • ${formatTime12Hour(assignment.startTime)}`}
-                            </p>
-                          </div>
-                        </div>
-                        <Eye className="w-5 h-5 text-gray-400 shrink-0" />
-                      </button>
+                          <Eye className="w-5 h-5 text-gray-400 shrink-0" />
+                        </button>
+                      </AnimatedListItem>
                     );
                   })}
-              </Card>
+              </AnimatedList>
             )}
           </div>
         )}
