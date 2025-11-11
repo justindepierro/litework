@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { completePasswordReset, getSession } from "@/lib/auth-client";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 
 export default function UpdatePasswordPage() {
@@ -107,14 +107,13 @@ export default function UpdatePasswordPage() {
           </Alert>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input
+            <FloatingLabelInput
               id="password"
               name="password"
               type="password"
               required
               minLength={8}
               label="New Password"
-              placeholder="Enter new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoFocus
@@ -123,14 +122,13 @@ export default function UpdatePasswordPage() {
               fullWidth
             />
 
-            <Input
+            <FloatingLabelInput
               id="confirmPassword"
               name="confirmPassword"
               type="password"
               required
               minLength={8}
               label="Confirm Password"
-              placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               inputSize="lg"

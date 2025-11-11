@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { requestPasswordReset } from "@/lib/auth-client";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 import { Display } from "@/components/ui/Typography";
 
@@ -81,13 +81,12 @@ export default function ResetPasswordPage() {
           </Alert>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input
+            <FloatingLabelInput
               id="email"
               name="email"
               type="email"
               required
               label="Email address"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus

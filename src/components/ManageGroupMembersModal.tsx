@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import {
@@ -128,9 +128,9 @@ export default function ManageGroupMembersModal({
 
         <ModalContent>
           {/* Search */}
-          <Input
+          <FloatingLabelInput
             type="text"
-            placeholder="Search athletes..."
+            label="Search athletes"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             leftIcon={<Search className="w-5 h-5" />}

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { KPITag } from "@/types";
 import { Tag } from "lucide-react";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Body, Label } from "@/components/ui/Typography";
@@ -190,15 +190,15 @@ export default function KPIManagementModal({
             <div className="space-y-4">
               {/* Display Name */}
               <div>
-                <Input
+                <FloatingLabelInput
                   label="KPI Name"
                   value={formData.displayName}
                   onChange={(e) =>
                     setFormData({ ...formData, displayName: e.target.value })
                   }
-                  placeholder="e.g., Bench Press or 40 Yard Dash"
                   required
                   disabled={isLoading}
+                  fullWidth
                 />
                 <Body variant="tertiary" className="mt-1 text-sm">
                   Database name: {databaseName || "(enter name above)"}

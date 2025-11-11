@@ -9,7 +9,11 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Input, Select, Textarea } from "@/components/ui/Input";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
+import { Select } from "@/components/ui/Select";
 import { Heading, Body } from "@/components/ui/Typography";
 import { AthleteGroup } from "@/types";
 
@@ -84,35 +88,32 @@ export default function InviteAthleteModal({
           <div className="space-y-4">
             {/* Name Inputs */}
             <div className="grid grid-cols-2 gap-4">
-              <Input
+              <FloatingLabelInput
                 label="First Name *"
                 type="text"
                 value={form.firstName}
                 onChange={(e) =>
                   setForm({ ...form, firstName: e.target.value })
                 }
-                placeholder="First name"
                 fullWidth
                 required
               />
-              <Input
+              <FloatingLabelInput
                 label="Last Name *"
                 type="text"
                 value={form.lastName}
                 onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                placeholder="Last name"
                 fullWidth
                 required
               />
             </div>
 
             {/* Email Input */}
-            <Input
+            <FloatingLabelInput
               label="Email Address (Optional)"
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="athlete@email.com (can add later)"
               helperText="Leave blank to add athlete profile without sending invite yet"
               fullWidth
             />
@@ -134,12 +135,11 @@ export default function InviteAthleteModal({
             />
 
             {/* Notes Textarea */}
-            <Textarea
+            <FloatingLabelTextarea
               label="Notes (Optional)"
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              placeholder="Add any notes about this athlete..."
               fullWidth
             />
 
