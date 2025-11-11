@@ -57,6 +57,8 @@ next-env.d.ts
 *.log
 .dev-server.log
 move-files.sh
+.cleanup-plan.txt
+*-plan.txt
 
 # IDE
 .vscode/*

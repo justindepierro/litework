@@ -27,7 +27,7 @@ Go to: https://vercel.com/dashboard → Your Project → Settings → Environmen
 
 ### Add these variables (Production environment):
 
-```bash
+````bash
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
@@ -49,11 +49,13 @@ VAPID_PUBLIC_KEY=<your-vapid-public-key>
 VAPID_PRIVATE_KEY=<your-vapid-private-key>
 VAPID_SUBJECT=mailto:jdepierro@burkecatholic.org
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=<your-vapid-public-key>
-```
+````
 
 # App Version
+
 NEXT_PUBLIC_APP_VERSION=1.0.0
-```
+
+````
 
 ---
 
@@ -64,7 +66,7 @@ NEXT_PUBLIC_APP_VERSION=1.0.0
 ```bash
 npm run build
 npm run start
-```
+````
 
 ### 2. **Check for TypeScript Errors**
 

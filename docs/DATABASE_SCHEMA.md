@@ -1,19 +1,26 @@
 # Database Schema Documentation
 
-**Last Updated**: November 5, 2025  
+**Last Updated**: November 10, 2025  
 **Database**: Supabase PostgreSQL  
-**Total Tables**: 34
+**Total Tables**: 34  
+**Current Schema**: Exported to `database-export/schema-dump.sql`  
+**Status**: Production-ready with Row Level Security (RLS)
+
+## Overview
+
+LiteWork uses a comprehensive 34-table PostgreSQL database hosted on Supabase. All tables implement Row Level Security (RLS) for data protection. The schema supports workout planning, exercise tracking, group management, progress analytics, and communication.
 
 ## Quick Reference
 
-### Core Tables
+### Core Systems
 
-- [Users & Authentication](#users--authentication)
-- [Workouts](#workouts)
-- [Exercises](#exercises)
-- [Progress Tracking](#progress-tracking)
-- [Groups & Assignments](#groups--assignments)
-- [Communication](#communication)
+- [Users & Authentication](#users--authentication) - User profiles and roles (3 tables)
+- [Workouts](#workouts) - Workout templates and structure (6 tables)
+- [Exercises](#exercises) - Exercise library and metadata (5 tables)
+- [Progress Tracking](#progress-tracking) - Sets, sessions, KPIs (4 tables)
+- [Groups & Assignments](#groups--assignments) - Group management and scheduling (5 tables)
+- [Communication](#communication) - Messages and notifications (2 tables)
+- [Additional Systems](#additional-systems) - Achievements, invites, feedback (9 tables)
 
 ---
 
