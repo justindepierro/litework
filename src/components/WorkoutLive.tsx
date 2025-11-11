@@ -59,6 +59,15 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [showCompletedExercises, setShowCompletedExercises] = useState(false);
   const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(true);
+
+  // Cleanup on unmount to prevent state updates
+  useEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
 
   // Get groups for display (memoized to prevent re-creation on every render)
   const groups: Record<string, ExerciseGroupInfo> = useMemo(() => {
@@ -230,7 +239,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     groups,
   ]);
 
-  const handleRestComplete = useCallback(() => setShowRestTimer(false), []);
+  const handleRestComplete = useCallback(() => {
+    if (isMounted) {
+      setShowRestTimer(false);
+    }
+  }, [isMounted]);
   
   const handleNext = useCallback(() => {
     if (
@@ -351,11 +364,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50 flex flex-col h-screen overflow-hidden">
+    <div className="h-screen bg-linear-to-br from-slate-50 to-blue-50 flex flex-col overflow-hidden">
       {/* Offline Status Banner */}
       <OfflineStatusBanner />
 
-      {/* Workout Header with Timer */}
+      {/* Workout Header with Timer - Fixed at top */}
       <WorkoutHeader
         workoutName={session.workout_name}
         startedAt={session.started_at}
@@ -364,11 +377,13 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         onMenuClick={() => setShowExitConfirm(true)}
       />
 
-      {/* Scrollable Exercise List */}
-      <div className="flex-1 overflow-y-auto pb-6" style={{ paddingBottom: '24px' }}>
-        <div className="px-4 py-6 space-y-4">
-          {/* Completed Exercises - Collapsed by default */}
-          {session.exercises.some(ex => ex.completed) && (
+      {/* SPLIT VIEW: Top = Scrollable Exercise List, Bottom = Fixed Input */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* TOP SECTION: Scrollable Exercise List (60% of available space) */}
+        <div className="grow-3 overflow-y-auto overscroll-contain" style={{ flexBasis: 0 }}>
+          <div className="px-4 py-4 space-y-4 pb-4">
+            {/* Completed Exercises - Collapsed by default */}
+            {session.exercises.some(ex => ex.completed) && (
             <div className="mb-4">
               <button
                 onClick={() => setShowCompletedExercises(!showCompletedExercises)}
@@ -646,13 +661,14 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               </div>
             );
           })}
+          </div>
         </div>
-      </div>
+        {/* END: Top Scrollable Section */}
 
-      {/* Bottom Input Area - Only show for active exercise */}
-      {currentExercise && !currentExercise.completed && (
-        <div className="bg-white border-t-2 border-gray-200 shadow-lg shrink-0 safe-area-bottom">
-          <div className="px-4 py-5">
+        {/* BOTTOM SECTION: Fixed Input Area (40%) */}
+        {currentExercise && !currentExercise.completed && (
+          <div className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto" style={{ flexBasis: 0 }}>
+            <div className="px-4 py-4 pb-safe">
             {/* Active Exercise Summary Card */}
             <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
               <div className="flex items-center justify-between mb-2">
@@ -770,12 +786,12 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             </button>
           </div>
         </div>
-      )}
-      
-      {/* Finished all sets but workout not complete - show finish button */}
-      {currentExercise && currentExercise.completed && (
-        <div className="bg-white border-t-2 border-gray-200 shadow-lg shrink-0 safe-area-bottom">
-          <div className="px-4 py-5">
+        )}
+        
+        {/* Finished all sets but workout not complete - show finish button */}
+        {currentExercise && currentExercise.completed && (
+          <div className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto" style={{ flexBasis: 0 }}>
+            <div className="px-4 py-5">
             {isLastExercise ? (
               <button
                 onClick={handleCompleteWorkout}
@@ -797,7 +813,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             )}
           </div>
         </div>
-      )}
+        )}
+      </div>
+      {/* END: Split View Container */}
+      
       {showRestTimer && currentExercise && (
         <RestTimer
           key={`rest-${session.current_exercise_index}-${currentExercise.sets_completed}`}
