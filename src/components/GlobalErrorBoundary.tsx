@@ -62,11 +62,11 @@ export class GlobalErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900 text-center mb-3">
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)] text-center mb-3">
               Oops! Something went wrong
             </h1>
 
-            <p className="text-gray-600 text-center mb-6">
+            <p className="text-[var(--color-text-secondary)] text-center mb-6">
               We encountered an unexpected error. Don&apos;t worry, your data is
               safe.
             </p>
@@ -82,7 +82,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={this.handleReset}
-                className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 bg-[var(--color-interactive-primary-base)] hover:bg-[var(--color-interactive-primary-hover)] text-[var(--color-text-inverse)] font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 Try Again
@@ -90,14 +90,14 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
               <Link
                 href="/"
-                className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 bg-[var(--color-silver-200)] hover:bg-[var(--color-silver-300)] text-[var(--color-text-primary)] font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <Home className="w-4 h-4" />
                 Go Home
               </Link>
             </div>
 
-            <p className="text-sm text-gray-500 text-center mt-6">
+            <p className="text-sm text-[var(--color-text-tertiary)] text-center mt-6">
               If this problem persists, please contact support
             </p>
           </div>
