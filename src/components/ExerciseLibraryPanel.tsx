@@ -53,9 +53,9 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
   }, [searchQuery]);
 
   return (
-    <div className="w-80 bg-gray-50 border-l border-gray-300 flex flex-col h-full">
+    <div className="w-80 bg-silver-200 border-l border-silver-400 flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-gray-300 bg-white">
+      <div className="p-4 border-b border-silver-400 bg-white">
         <Heading level="h3" className="mb-3 flex items-center gap-2">
           <Dumbbell className="w-5 h-5" />
           Exercise Library
@@ -63,13 +63,13 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-navy-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search exercises..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-accent-blue-500"
           />
         </div>
       </div>
@@ -83,8 +83,8 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
         )}
 
         {!loading && searchQuery.length < 2 && (
-          <div className="text-center text-gray-500 py-8">
-            <Dumbbell className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+          <div className="text-center text-navy-600 py-8">
+            <Dumbbell className="w-12 h-12 mx-auto mb-3 text-navy-500" />
             <p className="text-sm">Type to search exercises</p>
           </div>
         )}
@@ -106,11 +106,11 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
                 e.dataTransfer.setData("exercise", JSON.stringify(exercise));
                 onDragStart(exercise);
               }}
-              className="bg-white border border-gray-300 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-blue-400 transition-all"
+              className="bg-white border border-silver-400 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-accent-blue-400 transition-all"
             >
               <div className="font-medium text-sm">{exercise.name}</div>
               {exercise.description && (
-                <div className="text-xs text-gray-600 mt-1 line-clamp-2">
+                <div className="text-xs text-navy-600 mt-1 line-clamp-2">
                   {exercise.description}
                 </div>
               )}
@@ -120,9 +120,9 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
       </div>
 
       {/* Footer Hint */}
-      <div className="p-3 border-t border-gray-300 bg-white text-xs text-gray-600">
+      <div className="p-3 border-t border-silver-400 bg-white text-xs text-navy-600">
         <p className="font-medium mb-1">💡 Quick Tips:</p>
-        <ul className="space-y-1 text-gray-500">
+        <ul className="space-y-1 text-navy-500">
           <li>• Drag exercises into your workout</li>
           <li>• Drop on another exercise to create a group</li>
           <li>• Click values to edit inline</li>

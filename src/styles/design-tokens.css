@@ -38,20 +38,238 @@
   /* Off-white */
   --color-off-white: #fefefe;
 
-  /* Accent Colors */
+  /* ===========================
+     ACCENT COLORS (50-950 SCALES)
+     =========================== */
+
+  /* Orange - Energy/Strength (brand primary) */
+  --color-accent-orange-50: #fff7ed;
+  --color-accent-orange-100: #ffedd5;
+  --color-accent-orange-200: #fed7aa;
+  --color-accent-orange-300: #fdba74;
+  --color-accent-orange-400: #fb923c;
+  --color-accent-orange-500: #ff6b35;
+  --color-accent-orange-600: #ea5a28;
+  --color-accent-orange-700: #c2410c;
+  --color-accent-orange-800: #9a3412;
+  --color-accent-orange-900: #7c2d12;
+  --color-accent-orange-950: #431407;
   --color-accent-orange: #ff6b35;
+
+  /* Green - Success/Progress */
+  --color-accent-green-50: #ecfdf5;
+  --color-accent-green-100: #d1fae5;
+  --color-accent-green-200: #a7f3d0;
+  --color-accent-green-300: #6ee7b7;
+  --color-accent-green-400: #34d399;
+  --color-accent-green-500: #00d4aa;
+  --color-accent-green-600: #00b894;
+  --color-accent-green-700: #059669;
+  --color-accent-green-800: #047857;
+  --color-accent-green-900: #065f46;
+  --color-accent-green-950: #064e3b;
   --color-accent-green: #00d4aa;
+
+  /* Purple - Premium/Achievement */
+  --color-accent-purple-50: #faf5ff;
+  --color-accent-purple-100: #f3e8ff;
+  --color-accent-purple-200: #e9d5ff;
+  --color-accent-purple-300: #d8b4fe;
+  --color-accent-purple-400: #c084fc;
+  --color-accent-purple-500: #8b5cf6;
+  --color-accent-purple-600: #7c3aed;
+  --color-accent-purple-700: #6d28d9;
+  --color-accent-purple-800: #5b21b6;
+  --color-accent-purple-900: #4c1d95;
+  --color-accent-purple-950: #2e1065;
   --color-accent-purple: #8b5cf6;
+
+  /* Pink - Fun/Motivation */
+  --color-accent-pink-50: #fdf2f8;
+  --color-accent-pink-100: #fce7f3;
+  --color-accent-pink-200: #fbcfe8;
+  --color-accent-pink-300: #f9a8d4;
+  --color-accent-pink-400: #f472b6;
+  --color-accent-pink-500: #ec4899;
+  --color-accent-pink-600: #db2777;
+  --color-accent-pink-700: #be185d;
+  --color-accent-pink-800: #9d174d;
+  --color-accent-pink-900: #831843;
+  --color-accent-pink-950: #500724;
   --color-accent-pink: #ec4899;
-  --color-accent-yellow: #fbbf24;
+
+  /* Amber - Warning (replaces yellow for WCAG AA) */
+  --color-accent-amber-50: #fffbeb;
+  --color-accent-amber-100: #fef3c7;
+  --color-accent-amber-200: #fde68a;
+  --color-accent-amber-300: #fcd34d;
+  --color-accent-amber-400: #fbbf24;
+  --color-accent-amber-500: #f59e0b;
+  --color-accent-amber-600: #d97706;
+  --color-accent-amber-700: #b45309;
+  --color-accent-amber-800: #92400e;
+  --color-accent-amber-900: #78350f;
+  --color-accent-amber-950: #451a03;
+  --color-accent-amber: #f59e0b;
+  --color-accent-yellow: #f59e0b; /* Legacy alias */
+
+  /* Red - Alert/High Intensity */
+  --color-accent-red-50: #fef2f2;
+  --color-accent-red-100: #fee2e2;
+  --color-accent-red-200: #fecaca;
+  --color-accent-red-300: #fca5a5;
+  --color-accent-red-400: #f87171;
+  --color-accent-red-500: #ef4444;
+  --color-accent-red-600: #dc2626;
+  --color-accent-red-700: #b91c1c;
+  --color-accent-red-800: #991b1b;
+  --color-accent-red-900: #7f1d1d;
+  --color-accent-red-950: #450a0a;
   --color-accent-red: #ef4444;
+
+  /* Blue - Info/Cool Down */
+  --color-accent-blue-50: #eff6ff;
+  --color-accent-blue-100: #dbeafe;
+  --color-accent-blue-200: #bfdbfe;
+  --color-accent-blue-300: #93c5fd;
+  --color-accent-blue-400: #60a5fa;
+  --color-accent-blue-500: #3b82f6;
+  --color-accent-blue-600: #2563eb;
+  --color-accent-blue-700: #1d4ed8;
+  --color-accent-blue-800: #1e40af;
+  --color-accent-blue-900: #1e3a8a;
+  --color-accent-blue-950: #172554;
   --color-accent-blue: #3b82f6;
 
-  /* Semantic Colors */
+  /* Cyan - Tech/Modern (NEW) */
+  --color-accent-cyan-50: #ecfeff;
+  --color-accent-cyan-100: #cffafe;
+  --color-accent-cyan-200: #a5f3fc;
+  --color-accent-cyan-300: #67e8f9;
+  --color-accent-cyan-400: #22d3ee;
+  --color-accent-cyan-500: #06b6d4;
+  --color-accent-cyan-600: #0891b2;
+  --color-accent-cyan-700: #0e7490;
+  --color-accent-cyan-800: #155e75;
+  --color-accent-cyan-900: #164e63;
+  --color-accent-cyan-950: #083344;
+  --color-accent-cyan: #06b6d4;
+
+  /* Lime - Fresh/Active (NEW) */
+  --color-accent-lime-50: #f7fee7;
+  --color-accent-lime-100: #ecfccb;
+  --color-accent-lime-200: #d9f99d;
+  --color-accent-lime-300: #bef264;
+  --color-accent-lime-400: #a3e635;
+  --color-accent-lime-500: #84cc16;
+  --color-accent-lime-600: #65a30d;
+  --color-accent-lime-700: #4d7c0f;
+  --color-accent-lime-800: #3f6212;
+  --color-accent-lime-900: #365314;
+  --color-accent-lime-950: #1a2e05;
+  --color-accent-lime: #84cc16;
+
+  /* Indigo - Focus/Clarity (NEW) */
+  --color-accent-indigo-50: #eef2ff;
+  --color-accent-indigo-100: #e0e7ff;
+  --color-accent-indigo-200: #c7d2fe;
+  --color-accent-indigo-300: #a5b4fc;
+  --color-accent-indigo-400: #818cf8;
+  --color-accent-indigo-500: #6366f1;
+  --color-accent-indigo-600: #4f46e5;
+  --color-accent-indigo-700: #4338ca;
+  --color-accent-indigo-800: #3730a6;
+  --color-accent-indigo-900: #312e81;
+  --color-accent-indigo-950: #1e1b4b;
+  --color-accent-indigo: #6366f1;
+
+  /* ===========================
+     SEMANTIC COLORS (WITH SCALES)
+     =========================== */
+
+  /* Success */
+  --color-success-lightest: #ecfdf5;
+  --color-success-lighter: #d1fae5;
+  --color-success-light: #a7f3d0;
   --color-success: #00d4aa;
-  --color-warning: #fbbf24;
+  --color-success-dark: #00b894;
+  --color-success-darker: #059669;
+  --color-success-darkest: #065f46;
+
+  /* Warning */
+  --color-warning-lightest: #fffbeb;
+  --color-warning-lighter: #fef3c7;
+  --color-warning-light: #fde68a;
+  --color-warning: #f59e0b; /* Changed from yellow for WCAG AA */
+  --color-warning-dark: #d97706;
+  --color-warning-darker: #b45309;
+  --color-warning-darkest: #78350f;
+
+  /* Error */
+  --color-error-lightest: #fef2f2;
+  --color-error-lighter: #fee2e2;
+  --color-error-light: #fecaca;
   --color-error: #ef4444;
+  --color-error-dark: #dc2626;
+  --color-error-darker: #b91c1c;
+  --color-error-darkest: #7f1d1d;
+
+  /* Info */
+  --color-info-lightest: #eff6ff;
+  --color-info-lighter: #dbeafe;
+  --color-info-light: #bfdbfe;
   --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+  --color-info-darker: #1d4ed8;
+  --color-info-darkest: #1e3a8a;
+
+  /* Neutral */
+  --color-neutral-lightest: #fafafa;
+  --color-neutral-lighter: #f3f4f6;
+  --color-neutral-light: #e5e7eb;
+  --color-neutral: #9ca3af;
+  --color-neutral-dark: #6b7280;
+  --color-neutral-darker: #4b5563;
+  --color-neutral-darkest: #374151;
+
+  /* ===========================
+     INTERACTIVE STATE COLORS
+     =========================== */
+
+  /* Primary (Orange) States */
+  --color-interactive-primary-base: #ff6b35;
+  --color-interactive-primary-hover: #ea5a28;
+  --color-interactive-primary-active: #c2410c;
+  --color-interactive-primary-disabled: #fed7aa;
+  --color-interactive-primary-focus: #ff6b35;
+
+  /* Secondary (Purple) States */
+  --color-interactive-secondary-base: #8b5cf6;
+  --color-interactive-secondary-hover: #7c3aed;
+  --color-interactive-secondary-active: #6d28d9;
+  --color-interactive-secondary-disabled: #e9d5ff;
+  --color-interactive-secondary-focus: #8b5cf6;
+
+  /* Success (Green) States */
+  --color-interactive-success-base: #00d4aa;
+  --color-interactive-success-hover: #00b894;
+  --color-interactive-success-active: #059669;
+  --color-interactive-success-disabled: #a7f3d0;
+  --color-interactive-success-focus: #00d4aa;
+
+  /* Danger (Red) States */
+  --color-interactive-danger-base: #ef4444;
+  --color-interactive-danger-hover: #dc2626;
+  --color-interactive-danger-active: #b91c1c;
+  --color-interactive-danger-disabled: #fecaca;
+  --color-interactive-danger-focus: #ef4444;
+
+  /* Ghost States */
+  --color-interactive-ghost-base: transparent;
+  --color-interactive-ghost-hover: #f9fafb;
+  --color-interactive-ghost-active: #f3f4f6;
+  --color-interactive-ghost-disabled: transparent;
+  --color-interactive-ghost-focus: #f9fafb;
 
   /* Text Colors */
   --color-text-primary: #334155;
@@ -117,27 +335,57 @@
     "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Font Sizes */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  --font-size-5xl: 3rem;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-md: 1.0625rem; /* 17px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+  --font-size-7xl: 4.5rem; /* 72px */
+  --font-size-8xl: 6rem; /* 96px */
+  --font-size-9xl: 8rem; /* 128px */
 
-  /* Font Weights - Optimized for loaded fonts */
+  /* Fluid Font Sizes (responsive with clamp) */
+  --font-size-fluid-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --font-size-fluid-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --font-size-fluid-lg: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+  --font-size-fluid-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.875rem);
+  --font-size-fluid-2xl: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+  --font-size-fluid-3xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+  --font-size-fluid-4xl: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem);
+  --font-size-fluid-5xl: clamp(3rem, 2rem + 5vw, 4.5rem);
+
+  /* Font Weights - Complete scale */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
   --font-weight-normal: 400;
-  --font-weight-medium: 600; /* Changed from 500 to 600 since 500 is not loaded */
+  --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 700; /* Changed from 800 to 700 since 800 is not loaded */
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
 
-  /* Line Heights */
+  /* Line Heights - Enhanced scale */
+  --line-height-none: 1;
   --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
   --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
 
   /* ===========================
      SHADOW TOKENS
@@ -185,31 +433,53 @@
   --layout-footer-height: 6rem;
 
   /* ===========================
-     ANIMATION TOKENS
+     ANIMATION & MOTION TOKENS
      =========================== */
 
   /* Duration tokens */
-  --duration-instant: 100ms;
+  --duration-instant: 75ms;
   --duration-fast: 150ms;
   --duration-normal: 200ms;
   --duration-moderate: 300ms;
   --duration-slow: 400ms;
-  --duration-slower: 500ms;
+  --duration-slower: 600ms;
+  --duration-slowest: 800ms;
 
-  /* Easing tokens - using standard and spring physics */
+  /* Delay tokens (for staggered animations) */
+  --delay-none: 0ms;
+  --delay-xs: 50ms;
+  --delay-sm: 100ms;
+  --delay-md: 150ms;
+  --delay-lg: 200ms;
+  --delay-xl: 300ms;
+
+  /* Easing tokens - comprehensive curve library */
   --easing-linear: linear;
   --easing-ease: ease;
   --easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
   --easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Material Design easings */
+  --easing-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --easing-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --easing-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+  
+  /* Expressive easings */
   --easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --easing-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  
+  /* Smooth easings */
+  --easing-smooth: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --easing-silk: cubic-bezier(0.23, 1, 0.32, 1);
 
   /* Comprehensive transition tokens */
   --transition-fast: all 150ms var(--easing-ease-out);
   --transition-normal: all 200ms var(--easing-ease-out);
   --transition-slow: all 300ms var(--easing-ease-out);
   --transition-spring: all 300ms var(--easing-spring);
+  --transition-silk: all 400ms var(--easing-silk);
 
   --transition-colors:
     color 200ms var(--easing-ease-out),
@@ -218,6 +488,12 @@
   --transition-transform: transform 200ms var(--easing-ease-out);
   --transition-opacity: opacity 200ms var(--easing-ease-out);
   --transition-shadow: box-shadow 200ms var(--easing-ease-out);
+  
+  /* Property-specific transitions */
+  --transition-all-fast: all 150ms var(--easing-ease-out);
+  --transition-colors-fast: color 150ms, background-color 150ms, border-color 150ms;
+  --transition-transform-spring: transform 300ms var(--easing-spring);
+  --transition-scale-spring: scale 300ms var(--easing-spring);
 
   /* Elevation/Shadow levels for interactive states */
   --elevation-0: none;

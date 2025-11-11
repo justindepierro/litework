@@ -389,19 +389,19 @@ export const Input = React.memo<InputProps>(
     return (
       <div className="space-y-1">
         {label && (
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-navy-700">
             {label}
           </label>
         )}
         <input
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            error ? "border-red-500" : "border-gray-300"
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-transparent ${
+            error ? "border-accent-red-500" : "border-silver-400"
           } ${className}`}
           {...props}
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-accent-red-600">{error}</p>}
         {helperText && !error && (
-          <p className="text-sm text-gray-500">{helperText}</p>
+          <p className="text-sm text-navy-500">{helperText}</p>
         )}
       </div>
     );
