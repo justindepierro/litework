@@ -7,7 +7,7 @@ import { ACHIEVEMENTS, type AchievementType } from "@/lib/achievement-system";
 /**
  * Check and Award Achievements API
  * POST /api/achievements/check
- * 
+ *
  * Checks if user has earned new achievements after completing a workout
  * Body: { userId?: string } - Optional: for service/admin use
  */
@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
 
       // Only allow checking own achievements unless admin
       if (targetUserId !== user.id && user.role !== "admin") {
-        return NextResponse.json(
-          { error: "Unauthorized" },
-          { status: 403 }
-        );
+        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
       }
 
       const supabase = getAdminClient();
@@ -51,45 +48,81 @@ export async function POST(request: NextRequest) {
       // Check for streak achievements
       const streak = await calculateStreak(supabase, targetUserId);
       if (streak >= 3) {
-        const earned = await awardAchievement(supabase, targetUserId, "streak_3");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "streak_3"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (streak >= 7) {
-        const earned = await awardAchievement(supabase, targetUserId, "streak_7");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "streak_7"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (streak >= 30) {
-        const earned = await awardAchievement(supabase, targetUserId, "streak_30");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "streak_30"
+        );
         if (earned) newAchievements.push(earned);
       }
 
       // Check for volume achievements
       const totalVolume = await calculateTotalVolume(supabase, targetUserId);
       if (totalVolume >= 10000) {
-        const earned = await awardAchievement(supabase, targetUserId, "volume_10k");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "volume_10k"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (totalVolume >= 50000) {
-        const earned = await awardAchievement(supabase, targetUserId, "volume_50k");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "volume_50k"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (totalVolume >= 100000) {
-        const earned = await awardAchievement(supabase, targetUserId, "volume_100k");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "volume_100k"
+        );
         if (earned) newAchievements.push(earned);
       }
 
       // Check for set count achievements
       const totalSets = await countTotalSets(supabase, targetUserId);
       if (totalSets >= 100) {
-        const earned = await awardAchievement(supabase, targetUserId, "sets_100");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "sets_100"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (totalSets >= 500) {
-        const earned = await awardAchievement(supabase, targetUserId, "sets_500");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "sets_500"
+        );
         if (earned) newAchievements.push(earned);
       }
       if (totalSets >= 1000) {
-        const earned = await awardAchievement(supabase, targetUserId, "sets_1000");
+        const earned = await awardAchievement(
+          supabase,
+          targetUserId,
+          "sets_1000"
+        );
         if (earned) newAchievements.push(earned);
       }
 
@@ -195,10 +228,15 @@ async function calculateStreak(supabase: any, userId: string): Promise<number> {
   return streak;
 }
 
-async function calculateTotalVolume(supabase: any, userId: string): Promise<number> {
+async function calculateTotalVolume(
+  supabase: any,
+  userId: string
+): Promise<number> {
   const { data, error } = await supabase
     .from("set_records")
-    .select("weight, reps, session_exercises!inner(workout_sessions!inner(user_id))")
+    .select(
+      "weight, reps, session_exercises!inner(workout_sessions!inner(user_id))"
+    )
     .eq("session_exercises.workout_sessions.user_id", userId)
     .eq("completed", true);
 

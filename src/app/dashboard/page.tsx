@@ -376,14 +376,14 @@ export default function DashboardPage() {
           {/* Full-width calendar */}
           <div>
             {/* Calendar with integrated header */}
-            <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-md border border-silver-200 overflow-hidden">
               {/* Calendar Header */}
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-silver-200 flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-navy-900">
                     Team Schedule
                   </h2>
-                  <p className="text-sm text-gray-500 mt-0.5">
+                  <p className="text-sm text-steel-600 mt-0.5">
                     Manage workout assignments
                   </p>
                 </div>
@@ -488,14 +488,14 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
       {/* Simplified Header */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+      <div className="sticky top-0 z-50 bg-white border-b border-silver-300 shadow-sm">
         <div className="container-responsive px-4 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-lg font-bold text-gray-900">
+              <h1 className="text-lg font-bold text-navy-900">
                 Hi, {user.firstName}! 👋
               </h1>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-steel-600">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   month: "short",
@@ -516,8 +516,8 @@ export default function DashboardPage() {
         {/* Today's Workouts - HERO SECTION */}
         {user.role === "athlete" && (
           <div>
-            <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <div className="w-1 h-5 bg-orange-500 rounded-full" />
+            <h2 className="text-base font-semibold text-steel-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+              <div className="w-1 h-5 bg-accent-orange rounded-full" />
               Today&apos;s Workouts
             </h2>
 
@@ -526,13 +526,13 @@ export default function DashboardPage() {
               return checkIsToday(assignmentDate);
             }).length === 0 ? (
               <Card variant="default" padding="lg" className="text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-4">
-                  <Calendar className="w-10 h-10 text-blue-600" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-navy-100 rounded-full mb-4">
+                  <Calendar className="w-10 h-10 text-accent-blue" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-navy-900 mb-2">
                   No Workouts Today
                 </h3>
-                <p className="text-base text-gray-600 mb-6">
+                <p className="text-base text-steel-600 mb-6">
                   {assignments.length === 0
                     ? "Your coach will assign workouts soon. Check back later or reach out to your coach."
                     : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
@@ -541,16 +541,16 @@ export default function DashboardPage() {
                   <div className="space-y-4">
                     {/* Coach's Welcome Message */}
                     {coachWelcomeMessage && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                      <div className="bg-navy-100 border border-navy-300 rounded-lg p-4 text-left">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shrink-0">
+                          <div className="w-10 h-10 bg-accent-blue rounded-full flex items-center justify-center shrink-0">
                             <Users className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-sm font-semibold text-blue-900 mb-1">
+                            <h4 className="text-sm font-semibold text-navy-900 mb-1">
                               Message from Your Coach
                             </h4>
-                            <p className="text-sm text-blue-800 whitespace-pre-wrap">
+                            <p className="text-sm text-navy-700 whitespace-pre-wrap">
                               {coachWelcomeMessage}
                             </p>
                           </div>
@@ -559,14 +559,14 @@ export default function DashboardPage() {
                     )}
 
                     {/* Getting Started Guide */}
-                    <div className="bg-gray-50 rounded-lg p-4 text-left space-y-3">
-                      <h4 className="text-sm font-semibold text-gray-700">
+                    <div className="bg-silver-200 rounded-lg p-4 text-left space-y-3">
+                      <h4 className="text-sm font-semibold text-steel-700">
                         Getting Started:
                       </h4>
-                      <ul className="space-y-2 text-sm text-gray-600">
+                      <ul className="space-y-2 text-sm text-steel-600">
                         <li className="flex items-start gap-2">
-                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-xs font-bold text-blue-600">
+                          <div className="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-accent-blue">
                               1
                             </span>
                           </div>
@@ -575,8 +575,8 @@ export default function DashboardPage() {
                           </span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-xs font-bold text-blue-600">
+                          <div className="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-accent-blue">
                               2
                             </span>
                           </div>
@@ -585,8 +585,8 @@ export default function DashboardPage() {
                           </span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-xs font-bold text-blue-600">
+                          <div className="w-5 h-5 rounded-full bg-navy-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-accent-blue">
                               3
                             </span>
                           </div>
@@ -691,13 +691,13 @@ export default function DashboardPage() {
 
         {/* Quick Stats - Moved below */}
         <div>
-          <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
-            <div className="w-1 h-5 bg-green-500 rounded-full" />
+          <h2 className="text-base font-semibold text-steel-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+            <div className="w-1 h-5 bg-accent-green rounded-full" />
             Your Progress
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <StatCard
-              icon={<Dumbbell className="w-5 h-5 text-orange-600" />}
+              icon={<Dumbbell className="w-5 h-5 text-accent-orange" />}
               value={stats.workoutsThisWeek}
               label="This Week"
               loading={loadingStats}
@@ -705,7 +705,7 @@ export default function DashboardPage() {
             />
 
             <StatCard
-              icon={<Trophy className="w-5 h-5 text-green-600" />}
+              icon={<Trophy className="w-5 h-5 text-accent-green" />}
               value={stats.personalRecords}
               label="PRs"
               loading={loadingStats}
@@ -713,7 +713,7 @@ export default function DashboardPage() {
             />
 
             <StatCard
-              icon={<Flame className="w-5 h-5 text-red-600" />}
+              icon={<Flame className="w-5 h-5 text-accent-red" />}
               value={stats.currentStreak}
               label="Day Streak"
               loading={loadingStats}
@@ -724,8 +724,8 @@ export default function DashboardPage() {
 
         {/* This Week's Schedule - Compact List */}
         <div>
-          <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
-            <div className="w-1 h-5 bg-blue-500 rounded-full" />
+          <h2 className="text-base font-semibold text-steel-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+            <div className="w-1 h-5 bg-accent-blue rounded-full" />
             This Week
           </h2>
 
@@ -742,8 +742,8 @@ export default function DashboardPage() {
         {/* Upcoming Workouts - Minimalist Cards */}
         {user.role === "athlete" && (
           <div>
-            <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
-              <div className="w-1 h-5 bg-purple-500 rounded-full" />
+            <h2 className="text-base font-semibold text-steel-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+              <div className="w-1 h-5 bg-accent-purple rounded-full" />
               Coming Up
             </h2>
 
@@ -754,13 +754,13 @@ export default function DashboardPage() {
               );
             }).length === 0 ? (
               <Card variant="default" padding="lg" className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-50 rounded-full mb-3">
-                  <Calendar className="w-8 h-8 text-purple-600" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-navy-100 rounded-full mb-3">
+                  <Calendar className="w-8 h-8 text-accent-purple" />
                 </div>
-                <h3 className="text-base font-semibold text-gray-900 mb-1">
+                <h3 className="text-base font-semibold text-navy-900 mb-1">
                   No Upcoming Workouts
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-steel-600">
                   {assignments.length === 0
                     ? "Your training schedule will appear here once your coach assigns workouts."
                     : "All caught up! Your coach will add more workouts soon."}
@@ -770,7 +770,7 @@ export default function DashboardPage() {
               <Card
                 variant="default"
                 padding="none"
-                className="divide-y divide-gray-100"
+                className="divide-y divide-silver-300"
               >
                 {assignments
                   .filter((a) => {
@@ -791,12 +791,12 @@ export default function DashboardPage() {
                       <button
                         key={assignmentId}
                         onClick={() => handleAssignmentClick(assignment)}
-                        className="w-full p-4 flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                        className="w-full p-4 flex items-center justify-between hover:bg-silver-200 active:bg-silver-300 transition-colors text-left"
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <div className="shrink-0">
-                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                              <Calendar className="w-5 h-5 text-gray-600" />
+                            <div className="w-10 h-10 bg-silver-300 rounded-full flex items-center justify-center">
+                              <Calendar className="w-5 h-5 text-steel-600" />
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">

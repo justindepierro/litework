@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth-server";
 import { getAdminClient } from "@/lib/auth-server";
-import { calculateOneRM, calculateVolume, type PRData } from "@/lib/pr-detection";
+import {
+  calculateOneRM,
+  calculateVolume,
+  type PRData,
+} from "@/lib/pr-detection";
 
 /**
  * Check for Personal Records (PRs)
  * POST /api/analytics/check-pr
- * 
+ *
  * Body: { exerciseId: string, weight: number, reps: number }
  * Returns: PRComparison object with isPR flag and details
  */
@@ -17,9 +21,16 @@ export async function POST(request: NextRequest) {
       const { exerciseId, weight, reps } = body;
 
       // Validate inputs
-      if (!exerciseId || typeof weight !== "number" || typeof reps !== "number") {
+      if (
+        !exerciseId ||
+        typeof weight !== "number" ||
+        typeof reps !== "number"
+      ) {
         return NextResponse.json(
-          { error: "Missing or invalid parameters: exerciseId, weight, reps required" },
+          {
+            error:
+              "Missing or invalid parameters: exerciseId, weight, reps required",
+          },
           { status: 400 }
         );
       }

@@ -16,6 +16,7 @@
 **Mission**: Deliver a stable, polished, feature-complete workout tracking platform ready for 100+ users at a weight lifting club.
 
 **Success Criteria**:
+
 - ✅ Zero critical bugs in production
 - ✅ All core user flows tested and validated
 - ✅ Performance optimized for mobile devices
@@ -31,6 +32,7 @@
 ### 1. **Core Functionality** (Must Have)
 
 #### 1.1 Athlete Experience ✅ COMPLETE
+
 - [x] Dashboard with assigned workouts
 - [x] Live workout mode with set recording
 - [x] Exercise grouping (circuits, supersets)
@@ -41,6 +43,7 @@
 - [x] Set editing and deletion
 
 #### 1.2 Coach Experience ✅ MOSTLY COMPLETE
+
 - [x] Workout builder with 500+ exercises
 - [x] Group management
 - [x] Bulk assignment to groups
@@ -53,6 +56,7 @@
 > 📋 **Audit Note**: Progress components exist (`ProgressAnalytics.tsx`, `ProgressAnalyticsDashboard.tsx`). Just need enhancement, not full rebuild.
 
 #### 1.3 Admin Experience ✅ COMPLETE
+
 - [x] User management (invite system)
 - [x] Role assignment
 - [x] Group oversight
@@ -63,6 +67,7 @@
 ### 2. **Stability & Performance** (Critical)
 
 #### 2.1 Bug Fixes ✅ COMPLETE
+
 - [x] Silent logout fix (network timeout handling)
 - [x] Crash prevention (isMounted tracking)
 - [x] Timer race conditions fixed
@@ -70,6 +75,7 @@
 - [x] Clean build process
 
 #### 2.2 Performance Optimization 🚧 IN PROGRESS
+
 - [x] Turbopack enabled for fast dev builds
 - [x] **Performance monitoring ready** (`performance-monitor.ts` exists)
 - [ ] **Image optimization** (lazy loading, WebP conversion)
@@ -81,6 +87,7 @@
 > 📋 **Audit Note**: Performance monitoring system already implemented in `src/lib/performance-monitor.ts`. Just needs integration with analytics.
 
 #### 2.3 Mobile Optimization ✅ MOSTLY COMPLETE
+
 - [x] PWA configuration
 - [x] Touch-friendly UI (48px+ targets)
 - [x] Offline capability (basic)
@@ -96,6 +103,7 @@
 ### 3. **User Experience Polish** (High Priority)
 
 #### 3.1 Onboarding Flow ⚠️ NEEDS WORK
+
 - [ ] **First-time user tutorial** (coach and athlete paths)
 - [ ] **Sample workouts preloaded** (demo data)
 - [ ] **Quick start guide** (video or interactive)
@@ -103,6 +111,7 @@
 - [ ] **Mobile app install instructions** (iOS/Android)
 
 #### 3.2 Feedback System ⚠️ CRITICAL FOR V1.0
+
 - [ ] **Post-workout feedback form** (difficulty, soreness, notes) - BUILD NEW
 - [ ] **Database schema** (`workout_session_feedback` table) - CREATE NEW
 - [ ] **API endpoints** (`POST /api/sessions/[id]/feedback`) - BUILD NEW
@@ -112,6 +121,7 @@
 > 📋 **Audit Note**: This is genuinely new - no existing implementation. However, notification delivery can use existing `unified-notification-service.ts`. Database has `messages` table as reference structure.
 
 #### 3.3 Progress Analytics ⚠️ NEEDS ENHANCEMENT (NOT REBUILD)
+
 - [x] Basic stats (workouts completed, PRs, streak)
 - [x] **Progress components exist** (`ProgressAnalytics.tsx`, `ProgressAnalyticsDashboard.tsx`)
 - [x] **Database tables complete** (`set_records`, `athlete_kpis`, `progress_entries`)
@@ -122,15 +132,17 @@
 - [ ] **Achievement badges UI** (schema exists, add display) - UI ONLY
 
 > 📋 **Audit Note**: Major time saver! Components exist, database ready, just need:
+>
 > 1. Add charting library (5 min)
 > 2. Extend existing components (1-2 days)
 > 3. Re-enable pr-detection.ts (30 min)
 > 4. Add achievement UI (1 day)
-> 
+>
 > **Original Estimate**: 4-5 days  
 > **Revised Estimate**: 2-3 days
 
 #### 3.4 UI/UX Refinements 🚧 IN PROGRESS
+
 - [x] Consistent design system (Typography, Buttons, etc.)
 - [x] Mobile-first responsive layouts
 - [ ] **Loading skeleton states** (better UX)
@@ -144,6 +156,7 @@
 ### 4. **Security & Privacy** (Critical)
 
 #### 4.1 Authentication & Authorization ✅ COMPLETE
+
 - [x] Supabase Auth with RLS
 - [x] Role-based access control (admin/coach/athlete)
 - [x] Protected API routes (withAuth middleware)
@@ -151,6 +164,7 @@
 - [x] Password reset flow
 
 #### 4.2 Data Security 🚧 NEEDS REVIEW
+
 - [x] HTTPS everywhere
 - [x] Row Level Security policies
 - [x] **Security utilities exist** (`src/lib/security.ts` with rate limiting, sanitization)
@@ -163,6 +177,7 @@
 > 📋 **Audit Note**: Security utilities already built in `src/lib/security.ts`! Just need to apply them consistently and add headers to Next.js config.
 
 #### 4.3 Privacy ⚠️ NEEDS DOCUMENTATION
+
 - [ ] **Privacy policy** (clear, concise)
 - [ ] **Terms of service** (user agreement)
 - [ ] **Data retention policy** (how long we keep data)
@@ -173,6 +188,7 @@
 ### 5. **Production Infrastructure** (Critical)
 
 #### 5.1 Monitoring & Logging ⚠️ CRITICAL (MOSTLY CONFIGURE)
+
 - [x] **Sentry integration code exists** (`src/lib/logger.ts` has `logToSentry()`)
 - [x] **Error boundaries in place** (`GlobalErrorBoundary.tsx`)
 - [ ] **Install Sentry SDK** (`npm install @sentry/nextjs`) - 5 MIN
@@ -182,14 +198,16 @@
 - [ ] **Uptime monitoring** (UptimeRobot or similar) - EXTERNAL SERVICE
 
 > 📋 **Audit Note**: HUGE time saver! Sentry integration already coded, just needs:
+>
 > 1. Install SDK: `npm install @sentry/nextjs`
 > 2. Run wizard: `npx @sentry/wizard@latest -i nextjs`
 > 3. Add DSN to .env
-> 
+>
 > **Original Estimate**: 2 days  
 > **Revised Estimate**: 1 hour
 
 #### 5.2 Deployment & DevOps ✅ MOSTLY COMPLETE
+
 - [x] Vercel production deployment
 - [x] Environment variables secured
 - [x] Automated builds on push
@@ -198,6 +216,7 @@
 - [ ] **Rollback procedure** (quick revert)
 
 #### 5.3 Testing ⚠️ NEEDS WORK
+
 - [x] Manual testing of core flows
 - [ ] **E2E test suite** (Playwright or Cypress)
 - [ ] **Unit tests for critical functions** (Jest)
@@ -209,6 +228,7 @@
 ### 6. **Documentation** (High Priority)
 
 #### 6.1 User Documentation ⚠️ NEEDED
+
 - [ ] **Athlete guide** (how to use the app)
 - [ ] **Coach guide** (creating workouts, managing groups)
 - [ ] **Admin guide** (user management, system config)
@@ -216,6 +236,7 @@
 - [ ] **Video tutorials** (quick start, key features)
 
 #### 6.2 Developer Documentation ✅ COMPLETE
+
 - [x] README with setup instructions
 - [x] ARCHITECTURE.md with design patterns
 - [x] DATABASE_SCHEMA.md with complete schema
@@ -223,6 +244,7 @@
 - [x] API documentation in code comments
 
 #### 6.3 Operational Documentation ⚠️ NEEDED
+
 - [ ] **Incident response playbook** (what to do if down)
 - [ ] **Scaling guide** (handling growth)
 - [ ] **Backup and recovery** (disaster recovery)
@@ -233,16 +255,19 @@
 ## 🗓️ Sprint Breakdown to v1.0
 
 ### Sprint 9: Feedback & Analytics (Week 1)
+
 **Duration**: 2-3 days (revised from 3-4 days)  
 **Goal**: Enable coach-athlete communication and progress tracking
 
 > 🔍 **Pre-Sprint Review** (1 hour before starting):
+>
 > - [ ] Review `src/lib/unified-notification-service.ts` API
 > - [ ] Check `src/components/ProgressAnalytics.tsx` current features
 > - [ ] Test `src/lib/pr-detection.ts` - can we just uncomment?
 > - [ ] Review `database/achievements-schema.sql` structure
 
 **Tasks**:
+
 1. **Feedback System** (Day 1-2) - BUILD NEW
    - Create `workout_session_feedback` table
    - Build `WorkoutFeedbackModal.tsx` component
@@ -264,6 +289,7 @@
    - UI refinements
 
 **Deliverables**:
+
 - Athletes can provide feedback after workouts
 - Coaches can view all athlete feedback
 - Progress graphs show weight progression
@@ -274,16 +300,19 @@
 ---
 
 ### Sprint 10: Onboarding & UX Polish (Week 2)
+
 **Duration**: 2-3 days (revised from 3-4 days)  
 **Goal**: Smooth first-time experience and professional polish
 
 > 🔍 **Pre-Sprint Review** (1 hour before starting):
+>
 > - [ ] Test `PWAInstallBanner.tsx` on iOS Safari
 > - [ ] Test `EnhancedPWAInstall.tsx` on Android Chrome
 > - [ ] Review existing `Toast.tsx` component
 > - [ ] Check `skeletons.tsx` for loading states
 
 **Tasks**:
+
 1. **Onboarding Flow** (Day 1-2) - BUILD NEW
    - Install: `npm install react-joyride` (5 min)
    - Create `OnboardingFlow.tsx` multi-step wizard
@@ -306,6 +335,7 @@
    - **Use existing**: PWA components already built!
 
 **Deliverables**:
+
 - New users understand the app immediately
 - Professional, polished UI throughout
 - Mobile app installable with icon (components ready)
@@ -316,16 +346,19 @@
 ---
 
 ### Sprint 11: Production Readiness (Week 3)
+
 **Duration**: 2-3 days (revised from 4-5 days)  
 **Goal**: Security, monitoring, and launch preparation
 
 > 🔍 **Pre-Sprint Review** (30 min before starting):
+>
 > - [ ] Review `src/lib/logger.ts` Sentry integration
 > - [ ] Review `src/lib/security.ts` existing functions
 > - [ ] Sign up for Sentry account (free tier)
 > - [ ] Get Sentry DSN ready
 
 **Tasks**:
+
 1. **Security Audit** (Day 1) - MOSTLY CONFIGURE ⚡
    - Review: Existing `security.ts` functions (30 min)
    - Configure: Security headers in `next.config.ts` (1 hour)
@@ -357,6 +390,7 @@
    - Launch checklist
 
 **Deliverables**:
+
 - All security measures in place
 - Monitoring and error tracking active (Sentry configured)
 - Comprehensive testing complete
@@ -369,6 +403,7 @@
 ## 🚀 Launch Checklist
 
 ### Pre-Launch (24 hours before)
+
 - [ ] All tests passing
 - [ ] Security audit complete
 - [ ] Monitoring tools configured
@@ -380,6 +415,7 @@
 - [ ] Rollback plan documented
 
 ### Launch Day
+
 - [ ] Deploy to production
 - [ ] Smoke test all critical flows
 - [ ] Monitor error rates
@@ -388,6 +424,7 @@
 - [ ] Communication channels open
 
 ### Post-Launch (48 hours after)
+
 - [ ] User feedback collected
 - [ ] Issues triaged and prioritized
 - [ ] Performance metrics analyzed
@@ -399,6 +436,7 @@
 ## 📊 Success Metrics for v1.0
 
 ### Technical Metrics
+
 - **Uptime**: 99.9% (43 minutes downtime/month max)
 - **Page Load**: <2s on 3G mobile
 - **Error Rate**: <0.1% of requests
@@ -406,6 +444,7 @@
 - **Bundle Size**: <500kb initial load
 
 ### User Metrics
+
 - **Onboarding Completion**: >80% finish profile setup
 - **Daily Active Users**: >30% of registered athletes
 - **Workout Completion Rate**: >70% of started workouts finished
@@ -413,6 +452,7 @@
 - **Athlete Satisfaction**: >8/10 rating
 
 ### Business Metrics
+
 - **User Growth**: 100+ users in first month
 - **Retention**: >60% weekly active users
 - **Support Tickets**: <5% of active users need help
@@ -423,6 +463,7 @@
 ## 🎓 What We've Learned (v0.1 → v0.9)
 
 ### Major Achievements
+
 1. **Stability First**: Crash fixes in 0.9.0 proved critical
 2. **Mobile-First Works**: 60/40 split view is perfect for gym use
 3. **Organization Matters**: Clean project structure speeds development
@@ -430,6 +471,7 @@
 5. **TypeScript Safety**: Zero errors = fewer runtime bugs
 
 ### Key Insights
+
 1. **Coach Feedback is Gold**: Auto-collapse and circuit tracking came from coach input
 2. **Athletes Want Simple**: Complex features simplified = higher adoption
 3. **Performance is UX**: Fast loading = better perception
@@ -437,6 +479,7 @@
 5. **Security Can't Wait**: RLS and auth needed from day one
 
 ### Areas to Improve
+
 1. **Testing Earlier**: Manual testing found too many bugs late
 2. **Feedback Sooner**: Should have built feedback system in Sprint 5
 3. **Mobile Testing More**: Desktop works ≠ mobile works
@@ -448,24 +491,28 @@
 ## 🔮 Beyond v1.0 (Future Roadmap)
 
 ### v1.1 - Smart Features (1 month post-launch)
+
 - AI-powered workout suggestions
 - Automatic weight progression recommendations
 - Exercise form video library
 - Voice commands ("Alexa, log my set")
 
 ### v1.2 - Social Features (2 months post-launch)
+
 - Team leaderboards
 - Group challenges
 - Social sharing (achievements)
 - Athlete-to-athlete messaging
 
 ### v1.3 - Advanced Analytics (3 months post-launch)
+
 - Injury risk prediction
 - Fatigue monitoring
 - Recovery recommendations
 - Performance forecasting
 
 ### v2.0 - Multi-Sport Platform (6 months post-launch)
+
 - Sport-specific training programs
 - Nutrition tracking integration
 - Heart rate monitor integration
@@ -480,12 +527,14 @@
 **BEFORE starting any sprint, read**: `docs/FEATURE_AUDIT_V1_0.md`
 
 This audit reveals:
+
 - What already exists (30-40% of features)
 - What needs extension vs rebuild
 - Integration warnings (3 notification services!)
 - Time-saving opportunities
 
 ### Critical Path Items (Updated After Audit)
+
 1. **Feedback System** - BUILD NEW (genuinely needed)
 2. **Progress Graphs** - EXTEND EXISTING (components ready)
 3. **Onboarding** - BUILD NEW (minimal exists)
@@ -493,6 +542,7 @@ This audit reveals:
 5. **Security** - APPLY EXISTING (utilities ready)
 
 ### Nice-to-Have (Can Wait)
+
 - Advanced analytics
 - Social features
 - Integrations
@@ -500,6 +550,7 @@ This audit reveals:
 - Video tutorials (can be YouTube links initially)
 
 ### Risk Mitigation
+
 - **Performance**: Load test before launch
 - **Security**: Penetration test if possible
 - **Data Loss**: Daily backups automated
@@ -528,12 +579,14 @@ This audit reveals:
 ## 📊 Timeline Comparison
 
 ### Original Estimate (Before Audit):
+
 - Sprint 9: 3-4 days
-- Sprint 10: 3-4 days  
+- Sprint 10: 3-4 days
 - Sprint 11: 4-5 days
 - **Total: 10-13 days (2-3 weeks)**
 
 ### Revised Estimate (After Audit):
+
 - Sprint 9: 2-3 days (saved 1.5 days)
 - Sprint 10: 2-3 days (saved 1.5 days)
 - Sprint 11: 2-3 days (saved 2 days)
@@ -542,6 +595,7 @@ This audit reveals:
 ### Time Saved: 5.5 days (nearly a full sprint!)
 
 **Why?** Many features partially complete:
+
 - Progress analytics: Components exist, just add charts
 - PWA: Install banners built, just test
 - Monitoring: Sentry integrated, just configure

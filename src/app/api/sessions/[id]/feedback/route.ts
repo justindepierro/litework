@@ -18,12 +18,7 @@ export async function POST(
       const { id: sessionId } = await params;
       const body = await request.json();
 
-      const {
-        difficulty_rating,
-        soreness_rating,
-        energy_level,
-        notes,
-      } = body;
+      const { difficulty_rating, soreness_rating, energy_level, notes } = body;
 
       // Validate ratings (1-5 scale)
       if (

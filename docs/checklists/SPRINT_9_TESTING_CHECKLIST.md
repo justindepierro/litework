@@ -7,6 +7,7 @@
 ## 🎯 Testing Overview
 
 Sprint 9 delivered 4 major features that need comprehensive testing:
+
 1. **Workout Feedback System** - Athletes provide post-workout feedback
 2. **Exercise Progress Graphs** - Filter strength progress by exercise
 3. **1RM PR Tracking** - Automatic personal record detection
@@ -19,6 +20,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 1.1 WorkoutFeedbackModal (Athlete View)
 
 **Mobile Testing:**
+
 - [ ] Modal opens after completing workout session
 - [ ] Rating sliders are touch-friendly (easy to tap 1-5 buttons)
 - [ ] All three ratings display correctly: Difficulty, Soreness, Energy
@@ -30,11 +32,13 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Modal is scrollable on small screens
 
 **Desktop Testing:**
+
 - [ ] Modal centers correctly on screen
 - [ ] Layout adjusts appropriately for wider screens
 - [ ] Keyboard navigation works (Tab, Enter, Escape)
 
 **API Integration:**
+
 - [ ] POST /api/sessions/[id]/feedback saves data correctly
 - [ ] Validation works: ratings must be 1-5
 - [ ] Can update existing feedback (upsert works)
@@ -44,6 +48,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 1.2 FeedbackDashboard (Coach View)
 
 **Display & Layout:**
+
 - [ ] Summary cards show correct average ratings
 - [ ] Averages calculate correctly (difficulty/soreness/energy)
 - [ ] Icon colors match rating types (TrendingUp, Activity, Zap)
@@ -54,6 +59,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Notes section displays when present
 
 **Filters:**
+
 - [ ] Search filter works (athlete name, workout name, notes)
 - [ ] Athlete dropdown shows all athletes with feedback
 - [ ] Date range filter (All Time, Last 7 Days, Last 30 Days)
@@ -62,12 +68,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Clear/reset filters option works
 
 **Mobile Responsiveness:**
+
 - [ ] Cards stack vertically on mobile
 - [ ] Summary stats grid adjusts (1 column on mobile, 3 on desktop)
 - [ ] Filters stack vertically on mobile
 - [ ] Touch targets are 44px minimum
 
 **Edge Cases:**
+
 - [ ] Empty state: "No feedback yet" displays correctly
 - [ ] Single feedback item displays properly
 - [ ] Very long notes truncate or wrap correctly
@@ -80,6 +88,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 2.1 ProgressAnalytics - Exercise Filter
 
 **Functionality:**
+
 - [ ] Exercise selector dropdown populates with all exercises
 - [ ] "All Exercises" option shows all graphs
 - [ ] Selecting specific exercise filters to only that exercise
@@ -87,6 +96,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] No exercises with data shows empty state
 
 **Graph Display:**
+
 - [ ] Line charts render correctly for each exercise
 - [ ] X-axis shows dates in readable format
 - [ ] Y-axis shows weight values
@@ -96,12 +106,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Single data point shows as dot
 
 **Mobile Testing:**
+
 - [ ] Graphs are scrollable horizontally if needed
 - [ ] Touch to view tooltip works smoothly
 - [ ] Responsive container adjusts to screen size
 - [ ] Charts don't overflow on small screens
 
 **Edge Cases:**
+
 - [ ] No exercise data: shows empty state or message
 - [ ] Single workout: graph shows single point
 - [ ] Many workouts: graph doesn't get too crowded
@@ -114,6 +126,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 3.1 API Endpoint Testing
 
 **POST /api/analytics/check-pr:**
+
 - [ ] Returns correct PRComparison object
 - [ ] Detects 1RM PRs accurately
 - [ ] Detects weight PRs (heavier weight)
@@ -123,12 +136,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] No PR returns isPR: false with previous best
 
 **Calculations:**
+
 - [ ] Epley formula correct: weight × (1 + reps/30)
 - [ ] Volume calculation correct: weight × reps
 - [ ] Improvement percentage accurate
 - [ ] Previous best data returned correctly
 
 **Edge Cases:**
+
 - [ ] No previous sets: first attempt is PR
 - [ ] Same performance: not a PR
 - [ ] Slightly worse: not a PR
@@ -137,6 +152,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 3.2 Integration Points
 
 **Where PR checking should be called:**
+
 - [ ] After completing a set in WorkoutLive
 - [ ] After finishing workout session
 - [ ] Display PR notification to user
@@ -151,6 +167,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 4.1 AchievementsSection Component
 
 **Display:**
+
 - [ ] Achievement grid displays earned badges
 - [ ] Locked badges show greyed out with lock icon
 - [ ] Progress percentage calculates correctly
@@ -159,6 +176,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Full mode shows all badges
 
 **Badge Details:**
+
 - [ ] Icons match achievement types (Trophy, Flame, etc.)
 - [ ] Colors are distinct and appropriate
 - [ ] Badge names are readable
@@ -166,12 +184,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Earned dates display correctly (if showDate=true)
 
 **Mobile Responsiveness:**
+
 - [ ] Grid adjusts columns for screen size (3/4/5/6 columns)
 - [ ] Badges scale appropriately (small/medium/large sizes)
 - [ ] Touch targets adequate for tapping badges
 - [ ] Scrolls smoothly on mobile
 
 **Empty State:**
+
 - [ ] "No achievements yet" shows correctly
 - [ ] Encouragement text displays
 - [ ] Trophy icon shows greyed out
@@ -179,6 +199,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 4.2 Achievement Earning Logic
 
 **POST /api/achievements/check:**
+
 - [ ] Awards "first_workout" after first session
 - [ ] Awards "first_pr" after first personal record
 - [ ] Streak achievements: 3, 7, 30 days
@@ -188,21 +209,25 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Returns only newly earned achievements
 
 **Streak Calculation:**
+
 - [ ] Counts consecutive workout days correctly
 - [ ] Resets if more than 1 day gap
 - [ ] Today's workout counts toward streak
 - [ ] Yesterday's workout extends streak
 
 **Volume Calculation:**
+
 - [ ] Sums weight × reps for all completed sets
 - [ ] Only counts completed sets
 - [ ] Includes all exercises
 
 **Set Count:**
+
 - [ ] Counts all completed sets across all workouts
 - [ ] Only counts sets marked as completed
 
 **Integration:**
+
 - [ ] Achievement check called after workout completion
 - [ ] Notifications sent for new achievements (TODO: use unified-notification-service)
 - [ ] Achievements display updates immediately
@@ -210,6 +235,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 4.3 GET /api/achievements
 
 **Endpoint:**
+
 - [ ] Returns earned achievements with dates
 - [ ] Returns locked achievements
 - [ ] Returns progress (totalEarned/totalPossible)
@@ -223,6 +249,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 5.1 Complete Workout Flow
 
 **End-to-End Test:**
+
 1. [ ] Athlete starts workout session
 2. [ ] Completes sets (test PR detection)
 3. [ ] Finishes workout
@@ -237,12 +264,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 5.2 Design System Compliance
 
 **Check ALL components use design system:**
+
 - [ ] WorkoutFeedbackModal: Typography, Button, Input, Modal
 - [ ] FeedbackDashboard: Card, Badge, Input (Select), Typography
 - [ ] AchievementsSection: Card, Typography
 - [ ] ProgressAnalytics exercise filter: Select, Card
 
 **No hardcoded styles:**
+
 - [ ] No `text-blue-500` or similar hardcoded colors
 - [ ] No raw `<h1>`, `<p>` tags with text
 - [ ] No raw `<input>` elements
@@ -251,6 +280,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 5.3 Performance
 
 **Load Times:**
+
 - [ ] FeedbackDashboard loads < 2 seconds
 - [ ] ProgressAnalytics graphs render < 1 second
 - [ ] AchievementsSection loads < 1 second
@@ -258,6 +288,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 - [ ] Achievement check API responds < 1 second
 
 **Mobile Performance:**
+
 - [ ] No jank when scrolling feedback cards
 - [ ] Graphs render smoothly
 - [ ] Modal animations are smooth (60fps)
@@ -279,11 +310,13 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 6.2 Responsive Design
 
 **Breakpoints:**
+
 - [ ] Mobile (< 640px): All features work, stack vertically
 - [ ] Tablet (640-1024px): Two-column layouts where appropriate
 - [ ] Desktop (> 1024px): Full multi-column layouts
 
 **Specific Components:**
+
 - [ ] FeedbackDashboard: Summary cards go 1→2→3 columns
 - [ ] AchievementsSection: Badges go 3→4→5→6 columns
 - [ ] ProgressAnalytics: Filter row stacks vertically on mobile
@@ -310,12 +343,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 7.2 Data Edge Cases
 
 **Empty States:**
+
 - [ ] No feedback: Shows empty state with encouragement
 - [ ] No achievements: Shows empty state with first steps
 - [ ] No exercise data: Shows "No progress data yet"
 - [ ] No PRs: API returns isPR: false correctly
 
 **Data Extremes:**
+
 - [ ] Very long athlete names: Truncate or wrap
 - [ ] Very long workout names: Truncate or wrap
 - [ ] Very long feedback notes: Scroll or expand
@@ -364,6 +399,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ### 9.1 unified-notification-service.ts
 
 **TODO: Integrate notifications for:**
+
 - [ ] New achievement earned → Toast notification
 - [ ] New PR → Toast notification
 - [ ] Workout feedback reminder → Push notification
@@ -400,6 +436,7 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ## 🚀 11. Pre-Production Checklist
 
 **Before deploying Sprint 9:**
+
 - [ ] All features tested on mobile device
 - [ ] All features tested on desktop browser
 - [ ] Database schema applied to production
@@ -456,12 +493,14 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 ## 📝 Testing Notes
 
 **Testing Environment:**
+
 - Browser: Chrome/Safari/Firefox
 - Mobile Device: iPhone/Android
 - Screen Sizes: 375px, 768px, 1024px, 1440px
 - Network: 4G/WiFi/Offline
 
 **Test Data:**
+
 - Athlete account with workouts
 - Coach account with multiple athletes
 - Fresh account with no data
@@ -469,9 +508,9 @@ Sprint 9 delivered 4 major features that need comprehensive testing:
 
 ---
 
-**Testing Completed By:** _____________  
-**Date:** _____________  
-**Sign-off:** _____________  
+**Testing Completed By:** ******\_******  
+**Date:** ******\_******  
+**Sign-off:** ******\_******
 
 ---
 

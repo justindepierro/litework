@@ -673,9 +673,9 @@ export default function AthletesPage() {
 
   const getStatusIcon = (status: string, injuryStatus?: string | null) => {
     if (injuryStatus)
-      return <AlertCircle className="h-4 w-4 text-yellow-500" />;
+      return <AlertCircle className="h-4 w-4 text-accent-yellow" />;
     if (status === "active")
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-accent-green" />;
     if (status === "invited")
       return <Clock className="h-4 w-4 text-accent-blue" />;
     return <User className="h-4 w-4 text-silver-600" />;
@@ -791,7 +791,7 @@ export default function AthletesPage() {
             <Button
               onClick={() => setShowKPIManagementModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200"
+              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-orange border-navy-200"
               leftIcon={<Tag className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
               Create KPI
@@ -799,7 +799,7 @@ export default function AthletesPage() {
             <Button
               onClick={() => setShowBulkKPIAssignmentModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border-cyan-200"
+              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-blue border-navy-200"
               leftIcon={<Target className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
               Assign KPIs
@@ -807,7 +807,7 @@ export default function AthletesPage() {
             <Button
               onClick={() => setShowGroupFormModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
+              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-purple border-navy-200"
               leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
               Add Group
@@ -853,7 +853,7 @@ export default function AthletesPage() {
           {/* Add Athlete Placeholder Card */}
           <button
             onClick={() => setShowInviteModal(true)}
-            className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-dashed border-blue-300 hover:border-blue-500 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-blue-100 hover:to-blue-200"
+            className="bg-linear-to-br from-navy-50 to-navy-100 rounded-xl shadow-sm border-2 border-dashed border-navy-200 hover:border-accent-blue hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-navy-100 hover:to-navy-200"
           >
             <div className="w-16 h-16 bg-accent-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
               <Plus className="w-8 h-8 text-white" />
@@ -1064,7 +1064,7 @@ export default function AthletesPage() {
           fallback={
             <ModalBackdrop isOpen={true} onClose={() => {}}>
               <div className="bg-white rounded-lg p-8">
-                <div className="text-lg text-gray-700">Loading...</div>
+                <div className="text-lg text-steel-700">Loading...</div>
               </div>
             </ModalBackdrop>
           }

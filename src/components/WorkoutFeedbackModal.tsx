@@ -45,9 +45,7 @@ const RatingSlider: React.FC<RatingSliderProps> = ({
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <div className="text-primary">{icon}</div>
-        <Label className="text-base font-semibold">
-          {label}
-        </Label>
+        <Label className="text-base font-semibold">{label}</Label>
       </div>
 
       {/* Rating buttons */}
@@ -124,12 +122,12 @@ export function WorkoutFeedbackModal({
       }
 
       setIsSuccess(true);
-      
+
       // Call success callback after a brief delay
       setTimeout(() => {
         onSubmitSuccess?.();
         onClose();
-        
+
         // Reset state
         setIsSuccess(false);
         setDifficultyRating(3);
@@ -228,7 +226,11 @@ export function WorkoutFeedbackModal({
 
         {!isSuccess && (
           <ModalFooter>
-            <Button variant="secondary" onClick={handleClose} disabled={isSubmitting}>
+            <Button
+              variant="secondary"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button

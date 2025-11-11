@@ -114,7 +114,7 @@ export default function LoginPage() {
               </label>
               <Link
                 href="/reset-password"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium touch-manipulation"
+                className="text-sm text-accent-blue hover:text-navy-700 font-medium touch-manipulation"
               >
                 Forgot password?
               </Link>
@@ -145,7 +145,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading || isRateLimited || !!emailError}
-            className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
+            className="w-full py-4 px-6 bg-accent-blue hover:bg-navy-700 disabled:bg-silver-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -161,7 +161,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-body-secondary text-base sm:text-sm hover:text-blue-600 transition-colors font-medium touch-manipulation inline-block py-2 px-4 rounded-lg"
+            className="text-body-secondary text-base sm:text-sm hover:text-accent-blue transition-colors font-medium touch-manipulation inline-block py-2 px-4 rounded-lg"
           >
             ← Back to home
           </Link>

@@ -4,8 +4,18 @@ import { supabase } from "@/lib/supabase";
 /**
  * Diagnostic endpoint to help troubleshoot login issues
  * Access at: /api/auth/diagnose
+ *
+ * ⚠️ DISABLED IN PRODUCTION for security
  */
 export async function GET() {
+  // Disable in production to prevent information leakage
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Endpoint disabled in production" },
+      { status: 403 }
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const diagnostics: Record<string, any> = {
     timestamp: new Date().toISOString(),
@@ -86,7 +96,7 @@ export async function GET() {
   // 4. Check deployed URL
   diagnostics.checks.deployment = {
     host: process.env.VERCEL_URL || "localhost",
-    isProduction: process.env.NODE_ENV === "production",
+    isProduction: process.env.VERCEL_ENV === "production",
     isVercel: !!process.env.VERCEL,
   };
 
