@@ -487,15 +487,15 @@ export default function DashboardPage() {
   // Athlete Dashboard - Mobile-Forward, Industry-Leading Design
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      {/* Sticky Action Bar - Thumb Zone Optimized */}
+      {/* Simplified Header */}
       <div className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="container-responsive px-4 py-4">
+        <div className="container-responsive px-4 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h1 className="text-lg font-bold text-gray-900">
                 Hi, {user.firstName}! 👋
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   month: "short",
@@ -503,48 +503,21 @@ export default function DashboardPage() {
                 })}
               </p>
             </div>
-            <Link href="/workouts/live/new">
+            <Link href="/profile">
               <Button
-                variant="primary"
-                leftIcon={<Dumbbell className="w-4 h-4" />}
-                className="rounded-full px-6 shadow-lg"
+                variant="secondary"
+                size="sm"
+                className="text-xs"
               >
-                Start
+                Profile
               </Button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="container-responsive px-4 py-6 pb-24 max-w-2xl mx-auto space-y-6">
-        {/* Quick Stats - Compact & Visual */}
-        <div className="grid grid-cols-3 gap-4">
-          <StatCard
-            icon={<Dumbbell className="w-5 h-5 text-orange-600" />}
-            value={stats.workoutsThisWeek}
-            label="This Week"
-            loading={loadingStats}
-            color="orange"
-          />
-
-          <StatCard
-            icon={<Trophy className="w-5 h-5 text-green-600" />}
-            value={stats.personalRecords}
-            label="PRs"
-            loading={loadingStats}
-            color="green"
-          />
-
-          <StatCard
-            icon={<Flame className="w-5 h-5 text-red-600" />}
-            value={stats.currentStreak}
-            label="Day Streak"
-            loading={loadingStats}
-            color="red"
-          />
-        </div>
-
-        {/* Today's Workouts - Hero Section */}
+      <div className="container-responsive px-4 py-5 pb-24 max-w-2xl mx-auto space-y-6">
+        {/* Today's Workouts - HERO SECTION */}
         {user.role === "athlete" && (
           <div>
             <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
@@ -632,7 +605,7 @@ export default function DashboardPage() {
                 )}
               </Card>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {assignments
                   .filter((a) => {
                     const assignmentDate = parseDate(a.scheduledDate);
@@ -654,54 +627,64 @@ export default function DashboardPage() {
                     return (
                       <Card
                         key={assignmentId}
-                        variant="interactive"
-                        padding="md"
+                        variant="default"
+                        padding="none"
+                        className="overflow-hidden shadow-lg border-2 border-blue-200"
                       >
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <h3 className="text-lg font-bold text-gray-900 mb-1">
-                              {assignment.workoutPlanName || "Workout"}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                              {assignment.startTime && (
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-4 h-4" />
-                                  {assignment.endTime
-                                    ? formatTimeRange(
-                                        assignment.startTime,
-                                        assignment.endTime
-                                      )
-                                    : formatTime12Hour(assignment.startTime)}
-                                </span>
-                              )}
-                              {assignment.location && (
-                                <span className="flex items-center gap-1">
-                                  <MapPin className="w-4 h-4" />
-                                  {assignment.location}
-                                </span>
-                              )}
+                        {/* Hero Header */}
+                        <div className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <p className="text-xs font-bold uppercase tracking-wide opacity-90 mb-1">
+                                Today&apos;s Workout
+                              </p>
+                              <h3 className="text-2xl font-bold mb-2">
+                                {assignment.workoutPlanName || "Workout"}
+                              </h3>
+                              <div className="flex flex-wrap items-center gap-4 text-sm opacity-90">
+                                {assignment.startTime && (
+                                  <span className="flex items-center gap-1.5">
+                                    <Clock className="w-4 h-4" />
+                                    {assignment.endTime
+                                      ? formatTimeRange(
+                                          assignment.startTime,
+                                          assignment.endTime
+                                        )
+                                      : formatTime12Hour(assignment.startTime)}
+                                  </span>
+                                )}
+                                {assignment.location && (
+                                  <span className="flex items-center gap-1.5">
+                                    <MapPin className="w-4 h-4" />
+                                    {assignment.location}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div className="shrink-0 ml-4">
-                            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                              <Dumbbell className="w-6 h-6 text-orange-600" />
+                            <div className="shrink-0 ml-4">
+                              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                <Dumbbell className="w-8 h-8" />
+                              </div>
                             </div>
                           </div>
                         </div>
 
-                        <Link
-                          href={`/workouts/live/${assignmentId}`}
-                          className="block"
-                        >
-                          <Button
-                            variant="primary"
-                            fullWidth
-                            leftIcon={<Dumbbell className="w-5 h-5" />}
-                            className="h-12 text-base font-semibold rounded-xl"
+                        {/* Start Button */}
+                        <div className="p-5">
+                          <Link
+                            href={`/workouts/live/${assignmentId}`}
+                            className="block"
                           >
-                            Start Workout
-                          </Button>
-                        </Link>
+                            <Button
+                              variant="primary"
+                              fullWidth
+                              leftIcon={<Dumbbell className="w-6 h-6" />}
+                              className="h-16 text-lg font-bold rounded-xl shadow-lg"
+                            >
+                              Start Workout
+                            </Button>
+                          </Link>
+                        </div>
                       </Card>
                     );
                   })}
@@ -709,6 +692,39 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+
+        {/* Quick Stats - Moved below */}
+        <div>
+          <h2 className="text-base font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+            <div className="w-1 h-5 bg-green-500 rounded-full" />
+            Your Progress
+          </h2>
+          <div className="grid grid-cols-3 gap-4">
+            <StatCard
+              icon={<Dumbbell className="w-5 h-5 text-orange-600" />}
+              value={stats.workoutsThisWeek}
+              label="This Week"
+              loading={loadingStats}
+              color="orange"
+            />
+
+            <StatCard
+              icon={<Trophy className="w-5 h-5 text-green-600" />}
+              value={stats.personalRecords}
+              label="PRs"
+              loading={loadingStats}
+              color="green"
+            />
+
+            <StatCard
+              icon={<Flame className="w-5 h-5 text-red-600" />}
+              value={stats.currentStreak}
+              label="Day Streak"
+              loading={loadingStats}
+              color="red"
+            />
+          </div>
+        </div>
 
         {/* This Week's Schedule - Compact List */}
         <div>
