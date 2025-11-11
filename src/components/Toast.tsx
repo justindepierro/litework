@@ -37,28 +37,28 @@ export default function Toast({
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-semantic-success-dark)]" />;
       case "error":
-        return <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />;
+        return <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-semantic-error-dark)]" />;
       case "warning":
         return (
-          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
+          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-semantic-warning-dark)]" />
         );
       case "info":
-        return <Info className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />;
+        return <Info className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-semantic-info-dark)]" />;
     }
   };
 
   const getStyles = () => {
     switch (type) {
       case "success":
-        return "bg-green-50 border-green-300 text-green-900 shadow-green-100";
+        return "bg-[var(--color-semantic-success-lightest)] border-[var(--color-semantic-success-light)] text-[var(--color-semantic-success-darkest)] shadow-[var(--color-semantic-success-lightest)]";
       case "error":
-        return "bg-red-50 border-red-300 text-red-900 shadow-red-100";
+        return "bg-[var(--color-semantic-error-lightest)] border-[var(--color-semantic-error-light)] text-[var(--color-semantic-error-darkest)] shadow-[var(--color-semantic-error-lightest)]";
       case "warning":
-        return "bg-yellow-50 border-yellow-300 text-yellow-900 shadow-yellow-100";
+        return "bg-[var(--color-semantic-warning-lightest)] border-[var(--color-semantic-warning-light)] text-[var(--color-semantic-warning-darkest)] shadow-[var(--color-semantic-warning-lightest)]";
       case "info":
-        return "bg-blue-50 border-blue-300 text-blue-900 shadow-blue-100";
+        return "bg-[var(--color-semantic-info-lightest)] border-[var(--color-semantic-info-light)] text-[var(--color-semantic-info-darkest)] shadow-[var(--color-semantic-info-lightest)]";
     }
   };
 
