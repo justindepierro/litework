@@ -214,7 +214,7 @@ export default function IndividualAssignmentModal({
               </div>
 
               {errors.athletes && (
-                <p className="text-red-500 text-sm mb-2">{errors.athletes}</p>
+                <p className="text-[var(--color-semantic-error-base)] text-sm mb-2">{errors.athletes}</p>
               )}
 
               {/* Search Box */}
@@ -245,7 +245,7 @@ export default function IndividualAssignmentModal({
                         onClick={() => toggleAthlete(athlete.id)}
                         className={`w-full p-3 rounded-md border-2 transition-colors text-left ${
                           isSelected
-                            ? "border-primary bg-blue-50"
+                            ? "border-primary bg-[var(--color-semantic-info-lightest)]"
                             : "border-silver-300 hover:border-silver-400 bg-white"
                         }`}
                       >
@@ -287,14 +287,14 @@ export default function IndividualAssignmentModal({
                     {selectedAthletes.map((athlete) => (
                       <span
                         key={athlete.id}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-md text-sm border border-blue-300"
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-md text-sm border border-[var(--color-semantic-info-light)]"
                       >
                         {athlete.fullName ||
                           `${athlete.firstName} ${athlete.lastName}`}
                         <button
                           type="button"
                           onClick={() => toggleAthlete(athlete.id)}
-                          className="text-silver-600 hover:text-red-600"
+                          className="text-silver-600 hover:text-[var(--color-semantic-error-base)]"
                         >
                           <X className="w-3 h-3" />
                         </button>
