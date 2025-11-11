@@ -403,11 +403,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
       {/* SPLIT VIEW: Top = Scrollable Exercise List, Bottom = Fixed Input */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* TOP SECTION: Scrollable Exercise List (60% of available space) */}
-        <div
-          className="grow-3 overflow-y-auto overscroll-contain"
-          style={{ flexBasis: 0 }}
-        >
+        {/* TOP SECTION: Scrollable Exercise List */}
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           <div className="px-4 py-4 space-y-4 pb-4">
             {/* Completed Exercises - Collapsed by default */}
             {session.exercises.some((ex) => ex.completed) && (
@@ -722,12 +719,9 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         </div>
         {/* END: Top Scrollable Section */}
 
-        {/* BOTTOM SECTION: Fixed Input Area (40%) */}
+        {/* BOTTOM SECTION: Fixed Input Area - Always Visible, No Scroll */}
         {currentExercise && !currentExercise.completed && (
-          <div
-            className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto"
-            style={{ flexBasis: 0 }}
-          >
+          <div className="shrink-0 bg-white border-t-2 border-gray-200 shadow-2xl">
             <div className="px-4 py-4 pb-safe">
               {/* Active Exercise Summary Card */}
               <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
@@ -872,10 +866,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* Finished all sets but workout not complete - show finish button */}
         {currentExercise && currentExercise.completed && (
-          <div
-            className="grow-2 bg-white border-t-2 border-gray-200 shadow-2xl overflow-y-auto"
-            style={{ flexBasis: 0 }}
-          >
+          <div className="shrink-0 bg-white border-t-2 border-gray-200 shadow-2xl">
             <div className="px-4 py-5">
               {isLastExercise ? (
                 <button
