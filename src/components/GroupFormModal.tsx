@@ -5,8 +5,8 @@ import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
 import { Users } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
+import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import {
@@ -234,12 +234,11 @@ export default function GroupFormModal({
                 </h3>
 
                 {/* Group Name */}
-                <Input
-                  label="Group Name *"
+                <FloatingLabelInput
+                  label="Group Name"
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="e.g., Football Linemen, Volleyball Girls"
                   disabled={isLoading}
                   fullWidth
                   required
@@ -263,27 +262,25 @@ export default function GroupFormModal({
                 />
 
                 {/* Category */}
-                <Input
+                <FloatingLabelInput
                   label="Category"
                   type="text"
                   value={formData.category}
                   onChange={(e) =>
                     handleInputChange("category", e.target.value)
                   }
-                  placeholder="e.g., Varsity, JV, Linemen, Receivers"
                   disabled={isLoading}
                   fullWidth
                 />
 
                 {/* Description */}
-                <Textarea
+                <FloatingLabelTextarea
                   label="Description"
                   value={formData.description}
                   onChange={(e) =>
                     handleInputChange("description", e.target.value)
                   }
                   rows={3}
-                  placeholder="Brief description of the group..."
                   disabled={isLoading}
                   fullWidth
                 />

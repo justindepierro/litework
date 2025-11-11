@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail, validatePassword } from "@/lib/security";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
 
@@ -347,92 +348,65 @@ function SignUpForm() {
               <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
                 <div className="rounded-md space-y-5">
                   {/* First Name */}
-                  <div>
-                    <label
-                      htmlFor="first-name"
-                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
-                    >
-                      First Name
-                    </label>
-                    <input
-                      id="first-name"
-                      name="first-name"
-                      type="text"
-                      autoComplete="given-name"
-                      required
-                      disabled={!!inviteData}
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      placeholder="First Name"
-                    />
-                  </div>
+                  <FloatingLabelInput
+                    id="first-name"
+                    name="first-name"
+                    type="text"
+                    autoComplete="given-name"
+                    required
+                    disabled={!!inviteData}
+                    label="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    inputSize="lg"
+                    fullWidth
+                  />
 
                   {/* Last Name */}
-                  <div>
-                    <label
-                      htmlFor="last-name"
-                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      id="last-name"
-                      name="last-name"
-                      type="text"
-                      autoComplete="family-name"
-                      required
-                      disabled={!!inviteData}
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      placeholder="Last Name"
-                    />
-                  </div>
+                  <FloatingLabelInput
+                    id="last-name"
+                    name="last-name"
+                    type="text"
+                    autoComplete="family-name"
+                    required
+                    disabled={!!inviteData}
+                    label="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    inputSize="lg"
+                    fullWidth
+                  />
 
                   {/* Email */}
-                  <div>
-                    <label
-                      htmlFor="email-address"
-                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
-                    >
-                      Email Address
-                    </label>
-                    <input
-                      id="email-address"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      disabled={!!inviteData}
-                      value={email}
-                      onChange={(e) => handleEmailChange(e.target.value)}
-                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      placeholder="Email address"
-                    />
-                    {emailError && (
-                      <p className="mt-2 text-base text-red-600">{emailError}</p>
-                    )}
-                  </div>
+                  <FloatingLabelInput
+                    id="email-address"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    disabled={!!inviteData}
+                    label="Email Address"
+                    value={email}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    error={emailError}
+                    inputSize="lg"
+                    fullWidth
+                  />
 
                   {/* Password */}
                   <div>
-                    <label
-                      htmlFor="password"
-                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
-                    >
-                      Password
-                    </label>
-                    <input
+                    <FloatingLabelInput
                       id="password"
                       name="password"
                       type="password"
                       autoComplete="new-password"
                       required
+                      label="Password (min 8 characters)"
                       value={password}
                       onChange={(e) => handlePasswordChange(e.target.value)}
-                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
-                      placeholder="Password (min 8 characters)"
+                      error={passwordError}
+                      inputSize="lg"
+                      fullWidth
                     />
                     {passwordStrength && !passwordError && (
                       <div className="mt-2 flex items-center gap-2">
@@ -465,40 +439,24 @@ function SignUpForm() {
                         </span>
                       </div>
                     )}
-                    {passwordError && (
-                      <p className="mt-2 text-base text-red-600">
-                        {passwordError}
-                      </p>
-                    )}
                   </div>
 
                   {/* Confirm Password */}
-                  <div>
-                    <label
-                      htmlFor="confirm-password"
-                      className="block text-base sm:text-lg font-medium text-gray-700 mb-2"
-                    >
-                      Confirm Password
-                    </label>
-                    <input
-                      id="confirm-password"
-                      name="confirm-password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) =>
-                        handleConfirmPasswordChange(e.target.value)
-                      }
-                      className="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 text-lg rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
-                      placeholder="Confirm password"
-                    />
-                    {confirmPasswordError && (
-                      <p className="mt-2 text-base text-red-600">
-                        {confirmPasswordError}
-                      </p>
-                    )}
-                  </div>
+                  <FloatingLabelInput
+                    id="confirm-password"
+                    name="confirm-password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    label="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) =>
+                      handleConfirmPasswordChange(e.target.value)
+                    }
+                    error={confirmPasswordError}
+                    inputSize="lg"
+                    fullWidth
+                  />
                 </div>
 
                 {/* Error Message */}

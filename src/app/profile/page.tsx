@@ -10,8 +10,8 @@ import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ToastProvider";
 import ConfirmModal from "@/components/ConfirmModal";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
+import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
@@ -475,7 +475,7 @@ export default function ProfilePage() {
             {activeTab === "profile" && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
+                  <FloatingLabelInput
                     type="text"
                     label="First Name"
                     value={firstName}
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                     fullWidth
                   />
 
-                  <Input
+                  <FloatingLabelInput
                     type="text"
                     label="Last Name"
                     value={lastName}
@@ -494,7 +494,7 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <Input
+                <FloatingLabelInput
                   type="email"
                   label="Email"
                   value={profile?.email || ""}
@@ -504,12 +504,11 @@ export default function ProfilePage() {
                   fullWidth
                 />
 
-                <Textarea
+                <FloatingLabelTextarea
                   label="Bio"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   rows={4}
-                  placeholder="Tell us about yourself, your fitness goals, or training background..."
                   fullWidth
                 />
 
@@ -520,21 +519,19 @@ export default function ProfilePage() {
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Input
+                    <FloatingLabelInput
                       type="text"
                       label="Emergency Contact Name"
                       value={emergencyName}
                       onChange={(e) => setEmergencyName(e.target.value)}
-                      placeholder="Full name"
                       fullWidth
                     />
 
-                    <Input
+                    <FloatingLabelInput
                       type="tel"
                       label="Emergency Contact Phone"
                       value={emergencyPhone}
                       onChange={(e) => setEmergencyPhone(e.target.value)}
-                      placeholder="(555) 555-5555"
                       fullWidth
                     />
                   </div>
@@ -560,8 +557,9 @@ export default function ProfilePage() {
                       <Calendar className="w-4 h-4" />
                       Date of Birth
                     </label>
-                    <Input
+                    <FloatingLabelInput
                       type="date"
+                      label="Date of Birth"
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
                       helperText={
@@ -595,14 +593,14 @@ export default function ProfilePage() {
                       <Ruler className="w-4 h-4" />
                       Height (inches)
                     </label>
-                    <Input
+                    <FloatingLabelInput
                       type="number"
                       step="0.1"
                       min="36"
                       max="96"
+                      label="Height in inches"
                       value={heightInches}
                       onChange={(e) => setHeightInches(e.target.value)}
-                      placeholder="e.g., 72 (6 feet)"
                       helperText={
                         heightInches
                           ? calculateHeightDisplay(parseFloat(heightInches))
@@ -617,14 +615,14 @@ export default function ProfilePage() {
                       <Scale className="w-4 h-4" />
                       Weight (lbs)
                     </label>
-                    <Input
+                    <FloatingLabelInput
                       type="number"
                       step="0.1"
                       min="50"
                       max="500"
+                      label="Weight in lbs"
                       value={weightLbs}
                       onChange={(e) => setWeightLbs(e.target.value)}
-                      placeholder="e.g., 185"
                       fullWidth
                     />
                   </div>
@@ -674,23 +672,21 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                <Input
+                <FloatingLabelInput
                   type="password"
                   label="New Password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
                   minLength={6}
                   required
                   fullWidth
                 />
 
-                <Input
+                <FloatingLabelInput
                   type="password"
                   label="Confirm New Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
                   minLength={6}
                   required
                   fullWidth

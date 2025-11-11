@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail } from "@/lib/security";
 import { RateLimitError } from "@/components/ui/RateLimitError";
-import { Input } from "@/components/ui/Input";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Display } from "@/components/ui/Typography";
@@ -89,13 +89,12 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <Input
+          <FloatingLabelInput
             id="email"
             name="email"
             type="email"
             required
             label="Email address"
-            placeholder="Enter your email"
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
             disabled={isLoading || isRateLimited}
@@ -119,12 +118,12 @@ export default function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <Input
+            <FloatingLabelInput
               id="password"
               name="password"
               type="password"
               required
-              placeholder="Enter your password"
+              label="Password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
