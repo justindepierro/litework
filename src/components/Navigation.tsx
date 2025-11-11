@@ -330,7 +330,7 @@ const Navigation = memo(function Navigation() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <svg
-                  className="w-5 h-5 text-blue-400"
+                  className="w-5 h-5 text-[var(--color-semantic-info-base)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -350,10 +350,10 @@ const Navigation = memo(function Navigation() {
                   signOut();
                   setIsMobileMenuOpen(false);
                 }}
-                className="flex items-center gap-3 w-full text-left px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-red-900 transition-all touch-manipulation active:bg-red-800 bg-red-950"
+                className="flex items-center gap-3 w-full text-left px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-[var(--color-interactive-danger-hover)] transition-all touch-manipulation active:bg-[var(--color-interactive-danger-active)] bg-[var(--color-interactive-danger-base)]"
               >
-                <LogOut className="w-5 h-5 text-red-400" />
-                <span className="text-red-300">Logout</span>
+                <LogOut className="w-5 h-5 text-[var(--color-semantic-error-base)]" />
+                <span className="text-[var(--color-semantic-error-light)]">Logout</span>
               </button>
             </>
           ) : (
