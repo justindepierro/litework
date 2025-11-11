@@ -24,6 +24,7 @@ import {
   Area,
 } from "recharts";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Input";
 import {
   Calendar,
   TrendingUp,
@@ -86,6 +87,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(
     null
   );
+  const [selectedExercise, setSelectedExercise] = useState<string>("all");
 
   // Load analytics data from API
   useEffect(() => {
@@ -230,6 +232,14 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           ) || [],
     }));
   }, [analyticsData]);
+
+  // Filtered strength progress data based on selected exercise
+  const filteredStrengthData = useMemo(() => {
+    if (selectedExercise === "all") return strengthProgressData;
+    return strengthProgressData.filter(
+      (ex) => ex.exerciseId === selectedExercise
+    );
+  }, [strengthProgressData, selectedExercise]);
 
   const workoutFrequencyData = useMemo(() => {
     return analyticsData?.workoutFrequency || [];
@@ -475,7 +485,36 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {/* Mobile-optimized Strength Progress */}
       {viewMode === "strength" && (
         <div className="space-y-4 sm:space-y-6">
-          {strengthProgressData.map((exercise) => (
+          {/* Exercise Selector */}
+          {strengthProgressData.length > 0 && (
+            <Card variant="default" padding="md">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <label
+                  htmlFor="exercise-select"
+                  className="text-sm font-medium text-gray-700 flex items-center gap-2"
+                >
+                  <Dumbbell className="h-4 w-4" />
+                  Filter by Exercise:
+                </label>
+                <Select
+                  id="exercise-select"
+                  value={selectedExercise}
+                  onChange={(e) => setSelectedExercise(e.target.value)}
+                  options={[
+                    { value: "all", label: "All Exercises" },
+                    ...strengthProgressData.map((ex) => ({
+                      value: ex.exerciseId,
+                      label: ex.exerciseName,
+                    })),
+                  ]}
+                  className="flex-1 sm:flex-initial sm:min-w-[250px]"
+                />
+              </div>
+            </Card>
+          )}
+
+          {/* Exercise Charts */}
+          {filteredStrengthData.map((exercise) => (
             <div
               key={exercise.exerciseId}
               className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4"
