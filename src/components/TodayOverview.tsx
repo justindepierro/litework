@@ -5,6 +5,7 @@ import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 import { formatTimeRange } from "@/lib/date-utils";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface TodayWorkout {
   id: string;
@@ -81,13 +82,12 @@ const TodayOverview = memo(function TodayOverview() {
       </div>
 
       {todayWorkouts.length === 0 ? (
-        <div className="text-center py-8 flex-1 flex flex-col items-center justify-center">
-          <Calendar className="w-12 h-12 text-[var(--color-silver-500)] mx-auto mb-3" />
-          <p className="text-[var(--color-text-secondary)]">No workouts scheduled for today</p>
-          <p className="text-sm text-[var(--color-text-tertiary)] mt-1">
-            Assign workouts from the calendar
-          </p>
-        </div>
+        <EmptyState
+          icon={Calendar}
+          title="No workouts scheduled"
+          description="There are no workouts scheduled for today. Assign workouts from the calendar to get started."
+          size="sm"
+        />
       ) : (
         <div className="space-y-4 flex-1 overflow-y-auto">
           {todayWorkouts.map((workout) => {

@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Bell, X, Check, CheckCheck } from "lucide-react";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { EmptyNotifications } from "@/components/ui/EmptyState";
 
 interface InAppNotification {
   id: string;
@@ -248,10 +249,7 @@ export default function NotificationBell() {
                 <SkeletonCard />
               </div>
             ) : notifications.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Bell className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                <p>No notifications</p>
-              </div>
+              <EmptyNotifications />
             ) : (
               <div className="divide-y divide-gray-100">
                 {notifications.map((notification) => (

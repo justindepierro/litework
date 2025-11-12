@@ -1,14 +1,16 @@
 /**
  * EmptyState Component
  * Consistent, helpful empty states across the app
- * Uses design tokens for consistency
+ * Uses design tokens and Framer Motion animations for smooth fade-ins
  */
 
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { Button } from "./Button";
+import { fadeInUp, scaleIn } from "@/lib/animation-variants";
 
 export interface EmptyStateProps {
   /** Icon component from lucide-react */
@@ -32,6 +34,8 @@ export interface EmptyStateProps {
   illustration?: React.ReactNode;
   /** Size variant */
   size?: "sm" | "md" | "lg";
+  /** Animation delay in seconds (default: 0) */
+  delay?: number;
   /** Custom className */
   className?: string;
 }
@@ -44,6 +48,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   secondaryAction,
   illustration,
   size = "md",
+  delay = 0,
   className = "",
 }) => {
   const sizeStyles = {
@@ -70,7 +75,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   const styles = sizeStyles[size];
 
   return (
-    <div
+    <motion.div
+      variants={fadeInUp}
+      initial="hidden"
+      animate="visible"
+      transition={{ delay }}
       className={`
         flex flex-col items-center justify-center text-center
         ${styles.container}
@@ -79,24 +88,38 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     >
       {/* Custom illustration or icon */}
       {illustration ? (
-        <div className="mb-6">{illustration}</div>
+        <motion.div
+          variants={scaleIn}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: delay + 0.1 }}
+          className="mb-6"
+        >
+          {illustration}
+        </motion.div>
       ) : (
-        <div
+        <motion.div
+          variants={scaleIn}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: delay + 0.1 }}
           className={`
           ${styles.icon}
           text-[var(--color-text-tertiary)]
           flex items-center justify-center
           bg-[var(--color-silver-200)]
           rounded-full
-          animate-scale-in
         `}
         >
           <Icon className="w-3/5 h-3/5" />
-        </div>
+        </motion.div>
       )}
 
       {/* Title */}
-      <h3
+      <motion.h3
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: delay + 0.2 }}
         className={`
         ${styles.title}
         font-[var(--font-family-heading)]
@@ -106,10 +129,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       `}
       >
         {title}
-      </h3>
+      </motion.h3>
 
       {/* Description */}
-      <p
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: delay + 0.3 }}
         className={`
         ${styles.description}
         text-[var(--color-text-secondary)]
@@ -118,11 +144,16 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       `}
       >
         {description}
-      </p>
+      </motion.p>
 
       {/* Actions */}
       {(action || secondaryAction) && (
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: delay + 0.4 }}
+          className="flex flex-col sm:flex-row gap-3 items-center justify-center"
+        >
           {action && (
             <Button
               variant="primary"
@@ -142,9 +173,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               {secondaryAction.label}
             </Button>
           )}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
