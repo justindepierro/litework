@@ -16,11 +16,13 @@ const supabase = createClient(
 interface ProfileUpdate {
   first_name?: string;
   last_name?: string;
+  phone_number?: string;
   date_of_birth?: string; // ISO date string
   height_inches?: number;
   weight_lbs?: number;
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
   bio?: string;
+  injury_status?: string;
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
 }

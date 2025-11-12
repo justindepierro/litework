@@ -38,11 +38,13 @@ interface ProfileData {
   firstName: string;
   lastName: string;
   avatarUrl?: string;
+  phoneNumber?: string;
   dateOfBirth?: string;
   heightInches?: number;
   weightLbs?: number;
   gender?: "male" | "female" | "other" | "prefer_not_to_say";
   bio?: string;
+  injuryStatus?: string;
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   age?: number;
@@ -64,11 +66,14 @@ export default function ProfilePage() {
   // Form state
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [heightFeet, setHeightFeet] = useState("");
   const [heightInches, setHeightInches] = useState("");
   const [weightLbs, setWeightLbs] = useState("");
   const [gender, setGender] = useState<string>("");
   const [bio, setBio] = useState("");
+  const [injuryStatus, setInjuryStatus] = useState("");
   const [emergencyName, setEmergencyName] = useState("");
   const [emergencyPhone, setEmergencyPhone] = useState("");
 
@@ -119,11 +124,25 @@ export default function ProfilePage() {
         setProfile(data.profile);
         setFirstName(data.profile.firstName || "");
         setLastName(data.profile.lastName || "");
+        setPhoneNumber(data.profile.phoneNumber || "");
         setDateOfBirth(data.profile.dateOfBirth || "");
-        setHeightInches(data.profile.heightInches?.toString() || "");
+        
+        // Convert total inches to feet and inches
+        if (data.profile.heightInches) {
+          const totalInches = data.profile.heightInches;
+          const feet = Math.floor(totalInches / 12);
+          const inches = Math.round((totalInches % 12) * 10) / 10; // Round to 1 decimal
+          setHeightFeet(feet.toString());
+          setHeightInches(inches.toString());
+        } else {
+          setHeightFeet("");
+          setHeightInches("");
+        }
+        
         setWeightLbs(data.profile.weightLbs?.toString() || "");
         setGender(data.profile.gender || "");
         setBio(data.profile.bio || "");
+        setInjuryStatus(data.profile.injuryStatus || "");
         setEmergencyName(data.profile.emergencyContactName || "");
         setEmergencyPhone(data.profile.emergencyContactPhone || "");
       }
@@ -245,14 +264,23 @@ export default function ProfilePage() {
       };
 
       if (activeTab === "profile") {
+        updates.phoneNumber = phoneNumber;
         updates.bio = bio;
+        updates.injuryStatus = injuryStatus;
         updates.emergencyContactName = emergencyName;
         updates.emergencyContactPhone = emergencyPhone;
       }
 
       if (activeTab === "metrics") {
         if (dateOfBirth) updates.dateOfBirth = dateOfBirth;
-        if (heightInches) updates.heightInches = parseFloat(heightInches);
+        
+        // Convert feet and inches to total inches
+        if (heightFeet || heightInches) {
+          const feet = parseFloat(heightFeet) || 0;
+          const inches = parseFloat(heightInches) || 0;
+          updates.heightInches = (feet * 12) + inches;
+        }
+        
         if (weightLbs) updates.weightLbs = parseFloat(weightLbs);
         if (gender) updates.gender = gender;
       }
@@ -352,7 +380,7 @@ export default function ProfilePage() {
         {error && <Alert variant="error">{error}</Alert>}
 
         {/* Profile Picture Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Camera className="w-5 h-5" />
             Profile Picture
@@ -365,10 +393,10 @@ export default function ProfilePage() {
                 <img
                   src={avatarPreview || profile?.avatarUrl}
                   alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                  className="w-32 h-32 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+                <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
                   <User className="w-16 h-16 text-gray-400" />
                 </div>
               )}
@@ -440,8 +468,8 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="flex">
             <button
               onClick={() => setActiveTab("profile")}
               className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
@@ -481,47 +509,93 @@ export default function ProfilePage() {
             {/* Personal Info Tab */}
             {activeTab === "profile" && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FloatingLabelInput
-                    type="text"
-                    label="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    fullWidth
-                  />
+                {/* Basic Information Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <User className="w-5 h-5 text-blue-600" />
+                    Basic Information
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FloatingLabelInput
+                        type="text"
+                        label="First Name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        fullWidth
+                      />
 
-                  <FloatingLabelInput
-                    type="text"
-                    label="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    fullWidth
-                  />
+                      <FloatingLabelInput
+                        type="text"
+                        label="Last Name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        fullWidth
+                      />
+                    </div>
+
+                    <FloatingLabelInput
+                      type="email"
+                      label="Email"
+                      value={profile?.email || ""}
+                      disabled
+                      leftIcon={<Mail className="w-5 h-5" />}
+                      helperText="Contact support to change your email"
+                      fullWidth
+                    />
+
+                    <FloatingLabelInput
+                      type="tel"
+                      label="Phone Number"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      leftIcon={<Phone className="w-5 h-5" />}
+                      helperText="Your personal phone number"
+                      fullWidth
+                    />
+                  </div>
                 </div>
 
-                <FloatingLabelInput
-                  type="email"
-                  label="Email"
-                  value={profile?.email || ""}
-                  disabled
-                  leftIcon={<Mail className="w-5 h-5" />}
-                  helperText="Contact support to change your email"
-                  fullWidth
-                />
+                {/* About Section */}
+                <div className="pt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    About You
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <FloatingLabelTextarea
+                      label="Bio"
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      rows={4}
+                      helperText="Tell us about yourself, your fitness goals, experience level, etc."
+                      fullWidth
+                    />
 
-                <FloatingLabelTextarea
-                  label="Bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={4}
-                  fullWidth
-                />
+                    <div className="bg-amber-50 rounded-lg p-4">
+                      <label className="flex items-center gap-2 text-sm font-medium text-amber-900 mb-2">
+                        <AlertCircle className="w-4 h-4" />
+                        Current Injury Status
+                      </label>
+                      <FloatingLabelTextarea
+                        label="Injury Status"
+                        value={injuryStatus}
+                        onChange={(e) => setInjuryStatus(e.target.value)}
+                        rows={2}
+                        helperText="List any current injuries, limitations, or areas to avoid during training"
+                        fullWidth
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                <div className="border-t border-gray-200 pt-6">
+                {/* Emergency Contact Section */}
+                <div className="pt-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-5 h-5 text-red-600" />
                     Emergency Contact
                   </h3>
 
@@ -544,126 +618,153 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  <Save className="w-5 h-5" />
-                  {isSaving ? "Saving..." : "Save Changes"}
-                </button>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                  >
+                    <Save className="w-5 h-5" />
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
               </form>
             )}
 
             {/* Physical Metrics Tab */}
             {activeTab === "metrics" && (
               <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <Calendar className="w-4 h-4" />
-                      Date of Birth
-                    </label>
-                    <FloatingLabelInput
-                      type="date"
-                      label="Date of Birth"
-                      value={dateOfBirth}
-                      onChange={(e) => setDateOfBirth(e.target.value)}
-                      helperText={
-                        profile?.age ? `Current age: ${profile.age} years` : ""
-                      }
-                      fullWidth
-                    />
-                  </div>
-
-                  <Select
-                    label="Gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    options={[
-                      { value: "", label: "Select gender" },
-                      { value: "male", label: "Male" },
-                      { value: "female", label: "Female" },
-                      { value: "other", label: "Other" },
-                      {
-                        value: "prefer_not_to_say",
-                        label: "Prefer not to say",
-                      },
-                    ]}
-                    fullWidth
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <Ruler className="w-4 h-4" />
-                      Height (inches)
-                    </label>
-                    <FloatingLabelInput
-                      type="number"
-                      step="0.1"
-                      min="36"
-                      max="96"
-                      label="Height in inches"
-                      value={heightInches}
-                      onChange={(e) => setHeightInches(e.target.value)}
-                      helperText={
-                        heightInches
-                          ? calculateHeightDisplay(parseFloat(heightInches))
-                          : ""
-                      }
-                      fullWidth
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <Scale className="w-4 h-4" />
-                      Weight (lbs)
-                    </label>
-                    <FloatingLabelInput
-                      type="number"
-                      step="0.1"
-                      min="50"
-                      max="500"
-                      label="Weight in lbs"
-                      value={weightLbs}
-                      onChange={(e) => setWeightLbs(e.target.value)}
-                      fullWidth
-                    />
-                  </div>
-                </div>
-
-                {/* BMI Display */}
-                {profile?.bmi && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      Body Mass Index (BMI)
-                    </h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl font-bold text-blue-600">
-                        {profile.bmi}
-                      </span>
-                      <span className="px-3 py-1 bg-white border border-blue-300 text-blue-700 rounded-full text-sm font-medium capitalize">
-                        {profile.bmiCategory}
-                      </span>
+                {/* Personal Details Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    Personal Details
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <FloatingLabelInput
+                        type="date"
+                        label="Date of Birth"
+                        value={dateOfBirth}
+                        onChange={(e) => setDateOfBirth(e.target.value)}
+                        helperText={
+                          profile?.age ? `Current age: ${profile.age} years` : ""
+                        }
+                        fullWidth
+                      />
                     </div>
-                    <p className="text-xs text-gray-600 mt-2">
-                      BMI is a general indicator and may not reflect athletic
-                      body composition.
-                    </p>
-                  </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  <Save className="w-5 h-5" />
-                  {isSaving ? "Saving..." : "Save Metrics"}
-                </button>
+                    <Select
+                      label="Gender"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      options={[
+                        { value: "", label: "Select gender" },
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                        { value: "other", label: "Other" },
+                        {
+                          value: "prefer_not_to_say",
+                          label: "Prefer not to say",
+                        },
+                      ]}
+                      fullWidth
+                    />
+                  </div>
+                </div>
+
+                {/* Physical Measurements Section */}
+                <div className="pt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-green-600" />
+                    Physical Measurements
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                        <Ruler className="w-4 h-4" />
+                        Height
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <FloatingLabelInput
+                          type="number"
+                          min="3"
+                          max="8"
+                          label="Feet"
+                          value={heightFeet}
+                          onChange={(e) => setHeightFeet(e.target.value)}
+                          fullWidth
+                        />
+                        <FloatingLabelInput
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          max="11.5"
+                          label="Inches"
+                          value={heightInches}
+                          onChange={(e) => setHeightInches(e.target.value)}
+                          fullWidth
+                        />
+                      </div>
+                      {(heightFeet || heightInches) && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          Total: {((parseFloat(heightFeet) || 0) * 12 + (parseFloat(heightInches) || 0)).toFixed(1)} inches
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                        <Scale className="w-4 h-4" />
+                        Weight (lbs)
+                      </label>
+                      <FloatingLabelInput
+                        type="number"
+                        step="0.1"
+                        min="50"
+                        max="500"
+                        label="Weight in lbs"
+                        value={weightLbs}
+                        onChange={(e) => setWeightLbs(e.target.value)}
+                        fullWidth
+                      />
+                    </div>
+                  </div>
+
+                  {/* BMI Display */}
+                  {profile?.bmi && (
+                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mt-6">
+                      <h4 className="font-semibold text-gray-900 mb-2">
+                        Body Mass Index (BMI)
+                      </h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-3xl font-bold text-blue-600">
+                          {profile.bmi}
+                        </span>
+                        <span className="px-3 py-1 bg-white text-blue-700 rounded-full text-sm font-medium capitalize">
+                          {profile.bmiCategory}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-2">
+                        BMI is a general indicator and may not reflect athletic
+                        body composition.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-8 py-3 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                  >
+                    <Save className="w-5 h-5" />
+                    {isSaving ? "Saving..." : "Save Metrics"}
+                  </button>
+                </div>
               </form>
             )}
 
