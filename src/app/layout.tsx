@@ -11,7 +11,7 @@ import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
 import { CommandPaletteProvider } from "@/components/CommandPaletteProvider";
 import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import PageTransition from "@/components/PageTransition";
-import { SkipLink } from "@/lib/accessibility-utils";
+import { SkipLink } from "@/components/SkipLink";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
