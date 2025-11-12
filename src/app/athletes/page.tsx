@@ -10,6 +10,7 @@ import {
   Suspense,
 } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { Button } from "@/components/ui/Button";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import {
@@ -26,6 +27,7 @@ import {
 } from "lucide-react";
 import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import {
   User as UserType,
   AthleteKPI,
@@ -121,6 +123,9 @@ export default function AthletesPage() {
     setGroups,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useAthleteData(user as any, isLoading);
+
+  // Add minimum loading time for smooth skeleton display
+  const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
   const [error, setError] = useState<string | null>(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -738,10 +743,16 @@ export default function AthletesPage() {
     setShowEditEmailModal(true);
   }, []);
 
-  if (isLoading) {
+  if (showSkeleton) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
-        <div className="text-heading-secondary text-lg">Loading...</div>
+      <div className="min-h-screen bg-gradient-primary container-responsive section-spacing">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -1065,7 +1076,7 @@ export default function AthletesPage() {
           fallback={
             <ModalBackdrop isOpen={true} onClose={() => {}}>
               <div className="bg-white rounded-lg p-8">
-                <div className="text-lg text-steel-700">Loading...</div>
+                <SkeletonCard />
               </div>
             </ModalBackdrop>
           }
@@ -1086,7 +1097,7 @@ export default function AthletesPage() {
 
       {/* KPI Management Modal */}
       {showKPIManagementModal && (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<SkeletonCard />}>
           <KPIManagementModal
             isOpen={showKPIManagementModal}
             onClose={() => {
@@ -1114,7 +1125,7 @@ export default function AthletesPage() {
 
       {/* Bulk KPI Assignment Modal */}
       {showBulkKPIAssignmentModal && (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<SkeletonCard />}>
           <BulkKPIAssignmentModal
             isOpen={showBulkKPIAssignmentModal}
             onClose={() => setShowBulkKPIAssignmentModal(false)}
@@ -1148,7 +1159,7 @@ export default function AthletesPage() {
 
       {/* Athlete Edit Modal */}
       {showEditAthleteModal && selectedAthlete && (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<SkeletonCard />}>
           <AthleteEditModal
             athlete={selectedAthlete}
             onClose={() => {

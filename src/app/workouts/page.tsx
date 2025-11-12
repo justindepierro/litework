@@ -2,12 +2,14 @@
 
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { useToast } from "@/components/ToastProvider";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -79,6 +81,11 @@ export default function WorkoutsPage() {
   const { success, error: showErrorToast } = useToast();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Add minimum loading time for smooth skeleton display
+  const { showSkeleton: showAuthSkeleton } = useMinimumLoadingTime(authLoading, 300);
+  const { showSkeleton: showWorkoutsSkeleton } = useMinimumLoadingTime(loading, 300);
+  
   const [error, setError] = useState<string | null>(null);
   const [showAssignForm, setShowAssignForm] = useState(false);
   const [showGroupAssignModal, setShowGroupAssignModal] = useState(false);
@@ -224,10 +231,12 @@ export default function WorkoutsPage() {
     }
   }, [user, showArchived]);
 
-  if (authLoading) {
+  if (showAuthSkeleton) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-heading-secondary text-lg">Loading...</div>
+      <div className="min-h-screen bg-white container-responsive section-spacing">
+        <div className="max-w-7xl mx-auto">
+          <SkeletonCard />
+        </div>
       </div>
     );
   }
@@ -344,10 +353,10 @@ export default function WorkoutsPage() {
             )}
 
             {/* Loading state */}
-            {loading && <WorkoutListSkeleton count={4} />}
+            {showWorkoutsSkeleton && <WorkoutListSkeleton count={4} />}
 
             {/* Action Buttons */}
-            {!loading && (
+            {!showWorkoutsSkeleton && (
               <div className="flex flex-col gap-4 mb-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-heading-secondary text-xl">
@@ -383,7 +392,7 @@ export default function WorkoutsPage() {
             )}
 
             {/* Workouts Grid */}
-            {!loading && (
+            {!showWorkoutsSkeleton && (
               <AnimatedGrid columns={2} gap={4} delay={0.1} staggerDelay={0.05}>
                 {workouts.length === 0 ? (
                   <div className="col-span-full">
@@ -583,9 +592,7 @@ export default function WorkoutsPage() {
           <Suspense
             fallback={
               <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-lg text-silver-700">
-                  Loading exercise library...
-                </div>
+                <SkeletonCard />
               </div>
             }
           >
