@@ -30,6 +30,14 @@ export interface ButtonProps
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   children: React.ReactNode;
+  /** ARIA label for accessibility (required for icon-only buttons) */
+  "aria-label"?: string;
+  /** ARIA pressed state for toggle buttons */
+  "aria-pressed"?: boolean;
+  /** ARIA expanded state for dropdown/accordion triggers */
+  "aria-expanded"?: boolean;
+  /** ARIA controls - ID of element controlled by this button */
+  "aria-controls"?: string;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

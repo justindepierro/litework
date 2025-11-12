@@ -6,10 +6,11 @@
 
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { modalBackdrop, modalContent } from "@/lib/animation-variants";
+import { trapFocus, focusFirstElement } from "@/lib/accessibility-utils";
 
 export interface ModalBackdropProps {
   /** Whether the modal is open */
@@ -46,6 +47,9 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
   disableBackdropClick = false,
   disableEscapeKey = false,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
   // Handle ESC key press
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
@@ -63,7 +67,42 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
     }
   };
 
-  // Add/remove ESC key listener
+  // Focus management and trap
+  useEffect(() => {
+    if (isOpen && modalRef.current) {
+      // Store the element that had focus before modal opened
+      previousActiveElement.current = document.activeElement as HTMLElement;
+
+      // Focus first focusable element in modal
+      setTimeout(() => {
+        if (modalRef.current) {
+          const focused = focusFirstElement(modalRef.current);
+          // If no focusable element found, focus the modal container itself
+          if (!focused) {
+            modalRef.current.focus();
+          }
+        }
+      }, 100); // Small delay to allow modal to render
+
+      // Setup focus trap
+      const cleanup = trapFocus(modalRef.current);
+
+      return () => {
+        cleanup();
+      };
+    }
+  }, [isOpen]);
+
+  // Return focus when modal closes
+  useEffect(() => {
+    return () => {
+      if (!isOpen && previousActiveElement.current) {
+        previousActiveElement.current.focus();
+      }
+    };
+  }, [isOpen]);
+
+  // Add/remove ESC key listener and prevent body scroll
   useEffect(() => {
     if (isOpen) {
       document.addEventListener("keydown", handleEscapeKey);
@@ -106,11 +145,13 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
           aria-modal="true"
         >
           <motion.div
+            ref={modalRef}
             variants={modalContent}
             initial="hidden"
             animate="visible"
             exit="exit"
             className={className}
+            tabIndex={-1}
           >
             {children}
           </motion.div>
