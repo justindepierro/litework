@@ -11,6 +11,7 @@ import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
 import { CommandPaletteProvider } from "@/components/CommandPaletteProvider";
 import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import PageTransition from "@/components/PageTransition";
+import { SkipLink } from "@/lib/accessibility-utils";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -104,9 +105,16 @@ export default function RootLayout({
             <WorkoutSessionProvider>
               <ToastProvider>
                 <CommandPaletteProvider>
+                  <SkipLink targetId="main-content">
+                    Skip to main content
+                  </SkipLink>
                   <Navigation />
                   {/* Add padding to compensate for fixed navigation */}
-                  <main className="bg-white pt-16 sm:pt-18">
+                  <main
+                    id="main-content"
+                    tabIndex={-1}
+                    className="bg-white pt-16 sm:pt-18"
+                  >
                     <PageTransition>{children}</PageTransition>
                   </main>
                   <PWAInstallBanner />

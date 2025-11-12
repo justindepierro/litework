@@ -74,6 +74,38 @@ a:not(.no-underline):hover {
 }
 
 /* ============================================ */
+/* ACCESSIBILITY - Skip Link */
+/* ============================================ */
+
+/* Skip to main content link - for keyboard navigation */
+.skip-link:focus {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure focus indicators are visible on all interactive elements */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Remove default focus ring, use our custom one */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================ */
 /* PRODUCTION POLISH - Mobile Touch Targets */
 /* ============================================ */
 
