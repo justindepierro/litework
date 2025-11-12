@@ -1,7 +1,7 @@
 /**
  * Page-Specific Skeleton Loading States
  * Comprehensive skeleton screens for better perceived performance
- * 
+ *
  * Features:
  * - Match actual page layouts exactly
  * - Smooth transitions with minimum display time
@@ -22,7 +22,10 @@ export function DashboardStatsSkeleton() {
   return (
     <AnimatedGrid columns={3} gap={4} delay={0}>
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white rounded-xl border border-silver-300 shadow-sm p-6">
+        <div
+          key={i}
+          className="bg-white rounded-xl border border-silver-300 shadow-sm p-6"
+        >
           <div className="flex items-center gap-3 mb-3">
             <Skeleton variant="circular" className="w-10 h-10" />
             <Skeleton className="h-4 w-20" />
@@ -74,7 +77,10 @@ export function DashboardTodayWorkoutSkeleton() {
               <Skeleton className="h-4 w-32 bg-white/30" />
             </div>
           </div>
-          <Skeleton variant="circular" className="w-16 h-16 bg-white/20 shrink-0" />
+          <Skeleton
+            variant="circular"
+            className="w-16 h-16 bg-white/20 shrink-0"
+          />
         </div>
       </div>
       {/* Button Area */}
@@ -359,7 +365,10 @@ export function AthleteDetailSkeleton() {
       <div className="space-y-4">
         <Skeleton className="h-6 w-32" />
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center gap-3 p-3 border border-silver-300 rounded-lg">
+          <div
+            key={i}
+            className="flex items-center gap-3 p-3 border border-silver-300 rounded-lg"
+          >
             <Skeleton variant="circular" className="w-10 h-10" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-40" />
@@ -404,7 +413,10 @@ export function ScheduleSkeleton() {
         ))}
         {/* Calendar days */}
         {Array.from({ length: 35 }).map((_, i) => (
-          <div key={i} className="border border-silver-300 rounded-lg p-2 space-y-2 min-h-[100px]">
+          <div
+            key={i}
+            className="border border-silver-300 rounded-lg p-2 space-y-2 min-h-[100px]"
+          >
             <Skeleton className="h-6 w-8" />
             <Skeleton className="h-6 w-full" />
             <Skeleton className="h-6 w-full" />

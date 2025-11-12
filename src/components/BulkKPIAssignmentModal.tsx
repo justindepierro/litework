@@ -9,7 +9,10 @@ import {
   BulkAssignKPIsResponse,
 } from "@/types";
 import { Target, ChevronLeft, ChevronRight } from "lucide-react";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
 import { Button } from "@/components/ui/Button";
 import { Body, Heading, Label } from "@/components/ui/Typography";
 import {

@@ -214,7 +214,9 @@ export default function IndividualAssignmentModal({
               </div>
 
               {errors.athletes && (
-                <p className="text-[var(--color-semantic-error-base)] text-sm mb-2">{errors.athletes}</p>
+                <p className="text-[var(--color-semantic-error-base)] text-sm mb-2">
+                  {errors.athletes}
+                </p>
               )}
 
               {/* Search Box */}

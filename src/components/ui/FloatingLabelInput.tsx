@@ -63,7 +63,7 @@ export const FloatingLabelInput = React.forwardRef<
 
     // Check if label should be floating
     const hasValue =
-      value !== undefined && value !== null && value !== "" ||
+      (value !== undefined && value !== null && value !== "") ||
       props.defaultValue !== undefined;
     const isFloating = isFocused || hasValue;
 
@@ -268,7 +268,7 @@ export const FloatingLabelTextarea = React.forwardRef<
 
     // Check if label should be floating
     const hasValue =
-      value !== undefined && value !== null && value !== "" ||
+      (value !== undefined && value !== null && value !== "") ||
       props.defaultValue !== undefined;
     const isFloating = isFocused || hasValue;
 

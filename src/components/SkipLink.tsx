@@ -14,19 +14,22 @@ export interface SkipLinkProps {
 
 /**
  * SkipLink - Allows keyboard users to skip navigation and go directly to main content
- * 
+ *
  * @example
  * ```tsx
  * <SkipLink targetId="main-content">Skip to main content</SkipLink>
  * ```
  */
-export function SkipLink({ targetId, children }: SkipLinkProps): React.ReactElement {
+export function SkipLink({
+  targetId,
+  children,
+}: SkipLinkProps): React.ReactElement {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
     if (target) {
       target.focus();
-      target.scrollIntoView({ behavior: 'smooth' });
+      target.scrollIntoView({ behavior: "smooth" });
     }
   };
 

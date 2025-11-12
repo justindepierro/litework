@@ -174,7 +174,9 @@ const TodayOverview = memo(function TodayOverview() {
                 {/* Progress bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[var(--color-text-secondary)]">Completion</span>
+                    <span className="text-[var(--color-text-secondary)]">
+                      Completion
+                    </span>
                     <span className="font-medium text-[var(--color-text-primary)]">
                       {workout.completedCount}/{workout.athleteCount} athletes (
                       {rate}%)

@@ -33,7 +33,11 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Display, Body } from "@/components/ui/Typography";
-import { AnimatedList, AnimatedListItem, AnimatedGrid } from "@/components/ui/AnimatedList";
+import {
+  AnimatedList,
+  AnimatedListItem,
+  AnimatedGrid,
+} from "@/components/ui/AnimatedList";
 import {
   Trophy,
   Calendar,
@@ -62,10 +66,13 @@ export default function DashboardPage() {
     currentStreak: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
-  
+
   // Use minimum loading time to prevent jarring flashes
-  const { showSkeleton: showStatsSkeleton } = useMinimumLoadingTime(loadingStats, 300);
-  
+  const { showSkeleton: showStatsSkeleton } = useMinimumLoadingTime(
+    loadingStats,
+    300
+  );
+
   const [coachWelcomeMessage, setCoachWelcomeMessage] = useState<string | null>(
     null
   );
@@ -76,9 +83,12 @@ export default function DashboardPage() {
   const [groups, setGroups] = useState<AthleteGroup[]>([]);
   const [athletes, setAthletes] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(false);
-  
+
   // Use minimum loading time for assignments/calendar data
-  const { showSkeleton: showDataSkeleton } = useMinimumLoadingTime(loadingData, 300);
+  const { showSkeleton: showDataSkeleton } = useMinimumLoadingTime(
+    loadingData,
+    300
+  );
 
   // Modal state
   const [showGroupAssignment, setShowGroupAssignment] = useState(false);
@@ -636,61 +646,63 @@ export default function DashboardPage() {
                           padding="none"
                           className="overflow-hidden shadow-lg border-2 border-blue-200"
                         >
-                        {/* Hero Header */}
-                        <div className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <p className="text-xs font-bold uppercase tracking-wide opacity-90 mb-1">
-                                Today&apos;s Workout
-                              </p>
-                              <h3 className="text-2xl font-bold mb-2">
-                                {assignment.workoutPlanName || "Workout"}
-                              </h3>
-                              <div className="flex flex-wrap items-center gap-4 text-sm opacity-90">
-                                {assignment.startTime && (
-                                  <span className="flex items-center gap-1.5">
-                                    <Clock className="w-4 h-4" />
-                                    {assignment.endTime
-                                      ? formatTimeRange(
-                                          assignment.startTime,
-                                          assignment.endTime
-                                        )
-                                      : formatTime12Hour(assignment.startTime)}
-                                  </span>
-                                )}
-                                {assignment.location && (
-                                  <span className="flex items-center gap-1.5">
-                                    <MapPin className="w-4 h-4" />
-                                    {assignment.location}
-                                  </span>
-                                )}
+                          {/* Hero Header */}
+                          <div className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <p className="text-xs font-bold uppercase tracking-wide opacity-90 mb-1">
+                                  Today&apos;s Workout
+                                </p>
+                                <h3 className="text-2xl font-bold mb-2">
+                                  {assignment.workoutPlanName || "Workout"}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-4 text-sm opacity-90">
+                                  {assignment.startTime && (
+                                    <span className="flex items-center gap-1.5">
+                                      <Clock className="w-4 h-4" />
+                                      {assignment.endTime
+                                        ? formatTimeRange(
+                                            assignment.startTime,
+                                            assignment.endTime
+                                          )
+                                        : formatTime12Hour(
+                                            assignment.startTime
+                                          )}
+                                    </span>
+                                  )}
+                                  {assignment.location && (
+                                    <span className="flex items-center gap-1.5">
+                                      <MapPin className="w-4 h-4" />
+                                      {assignment.location}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            <div className="shrink-0 ml-4">
-                              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                                <Dumbbell className="w-8 h-8" />
+                              <div className="shrink-0 ml-4">
+                                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                  <Dumbbell className="w-8 h-8" />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Start Button */}
-                        <div className="p-5">
-                          <Link
-                            href={`/workouts/live/${assignmentId}`}
-                            className="block"
-                          >
-                            <Button
-                              variant="primary"
-                              fullWidth
-                              leftIcon={<Dumbbell className="w-6 h-6" />}
-                              className="h-16 text-lg font-bold rounded-xl shadow-lg"
+                          {/* Start Button */}
+                          <div className="p-5">
+                            <Link
+                              href={`/workouts/live/${assignmentId}`}
+                              className="block"
                             >
-                              Start Workout
-                            </Button>
-                          </Link>
-                        </div>
-                      </Card>
+                              <Button
+                                variant="primary"
+                                fullWidth
+                                leftIcon={<Dumbbell className="w-6 h-6" />}
+                                className="h-16 text-lg font-bold rounded-xl shadow-lg"
+                              >
+                                Start Workout
+                              </Button>
+                            </Link>
+                          </div>
+                        </Card>
                       </AnimatedListItem>
                     );
                   })}

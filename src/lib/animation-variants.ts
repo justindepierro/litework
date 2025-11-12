@@ -3,7 +3,7 @@
  * Reusable animation configurations for consistent motion design
  */
 
-import { Variants } from 'framer-motion';
+import { Variants } from "framer-motion";
 
 /**
  * Staggered List Animations
@@ -29,7 +29,7 @@ export const staggerItem: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 24,
     },
@@ -56,7 +56,7 @@ export const fadeInUp: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 24,
     },
@@ -72,7 +72,7 @@ export const fadeInDown: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 24,
     },
@@ -91,7 +91,7 @@ export const scaleIn: Variants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 20,
     },
@@ -107,7 +107,7 @@ export const scaleInCenter: Variants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 400,
       damping: 25,
     },
@@ -126,7 +126,7 @@ export const slideInFromLeft: Variants = {
     opacity: 1,
     x: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 24,
     },
@@ -142,7 +142,7 @@ export const slideInFromRight: Variants = {
     opacity: 1,
     x: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 24,
     },
@@ -175,7 +175,7 @@ export const modalContent: Variants = {
     scale: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 300,
       damping: 25,
     },
@@ -200,7 +200,7 @@ export const pageTransition: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 260,
       damping: 20,
     },
@@ -226,7 +226,7 @@ export const notificationSlideIn: Variants = {
     x: 0,
     scale: 1,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 500,
       damping: 30,
     },
@@ -246,7 +246,7 @@ export const hoverLift = {
   y: -4,
   scale: 1.01,
   transition: {
-    type: 'spring',
+    type: "spring",
     stiffness: 400,
     damping: 17,
   },
@@ -255,7 +255,7 @@ export const hoverLift = {
 export const hoverScale = {
   scale: 1.02,
   transition: {
-    type: 'spring',
+    type: "spring",
     stiffness: 400,
     damping: 17,
   },
@@ -264,7 +264,7 @@ export const hoverScale = {
 export const tapScale = {
   scale: 0.98,
   transition: {
-    type: 'spring',
+    type: "spring",
     stiffness: 400,
     damping: 17,
   },
@@ -287,7 +287,7 @@ export const spinnerCircle: Variants = {
     transition: {
       duration: 0.6,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: "easeInOut",
     },
   },
 };
@@ -304,7 +304,7 @@ export const successCheck: Variants = {
     pathLength: 1,
     opacity: 1,
     transition: {
-      pathLength: { type: 'spring', duration: 0.6, bounce: 0 },
+      pathLength: { type: "spring", duration: 0.6, bounce: 0 },
       opacity: { duration: 0.2 },
     },
   },

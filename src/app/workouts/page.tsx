@@ -81,11 +81,17 @@ export default function WorkoutsPage() {
   const { success, error: showErrorToast } = useToast();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Add minimum loading time for smooth skeleton display
-  const { showSkeleton: showAuthSkeleton } = useMinimumLoadingTime(authLoading, 300);
-  const { showSkeleton: showWorkoutsSkeleton } = useMinimumLoadingTime(loading, 300);
-  
+  const { showSkeleton: showAuthSkeleton } = useMinimumLoadingTime(
+    authLoading,
+    300
+  );
+  const { showSkeleton: showWorkoutsSkeleton } = useMinimumLoadingTime(
+    loading,
+    300
+  );
+
   const [error, setError] = useState<string | null>(null);
   const [showAssignForm, setShowAssignForm] = useState(false);
   const [showGroupAssignModal, setShowGroupAssignModal] = useState(false);
@@ -121,7 +127,6 @@ export default function WorkoutsPage() {
     if (groups.length > 0 && athletes.length > 0) return; // Already loaded
 
     try {
-
       const [groupsRes, athletesRes] = await Promise.all([
         fetch("/api/groups"),
         fetch("/api/athletes"),

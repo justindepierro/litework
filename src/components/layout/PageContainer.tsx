@@ -1,37 +1,37 @@
 /**
  * PageContainer - Standardized page wrapper component
- * 
+ *
  * Provides consistent max-width, padding, and background across all pages.
  * Part of Phase 3 Layout Modernization.
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 interface PageContainerProps {
   children: React.ReactNode;
-  maxWidth?: '1200px' | '1400px' | '1600px' | 'full';
-  padding?: '4' | '6' | '8';
+  maxWidth?: "1200px" | "1400px" | "1600px" | "full";
+  padding?: "4" | "6" | "8";
   className?: string;
   animate?: boolean;
 }
 
 const maxWidthMap = {
-  '1200px': 'max-w-[1200px]',
-  '1400px': 'max-w-[1400px]',
-  '1600px': 'max-w-[1600px]',
-  'full': 'max-w-full',
+  "1200px": "max-w-[1200px]",
+  "1400px": "max-w-[1400px]",
+  "1600px": "max-w-[1600px]",
+  full: "max-w-full",
 };
 
 const paddingMap = {
-  '4': 'p-4 md:p-6',
-  '6': 'p-4 md:p-6 lg:p-8',
-  '8': 'p-6 md:p-8 lg:p-10',
+  "4": "p-4 md:p-6",
+  "6": "p-4 md:p-6 lg:p-8",
+  "8": "p-6 md:p-8 lg:p-10",
 };
 
 /**
  * PageContainer Component
- * 
+ *
  * Usage:
  * ```tsx
  * <PageContainer maxWidth="1600px" padding="6">
@@ -44,9 +44,9 @@ const paddingMap = {
  */
 export function PageContainer({
   children,
-  maxWidth = '1600px',
-  padding = '6',
-  className = '',
+  maxWidth = "1600px",
+  padding = "6",
+  className = "",
   animate = true,
 }: PageContainerProps) {
   const containerClasses = `
@@ -70,18 +70,14 @@ export function PageContainer({
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
       >
-        <div className={innerClasses}>
-          {children}
-        </div>
+        <div className={innerClasses}>{children}</div>
       </motion.div>
     );
   }
 
   return (
     <div className={containerClasses}>
-      <div className={innerClasses}>
-        {children}
-      </div>
+      <div className={innerClasses}>{children}</div>
     </div>
   );
 }
@@ -98,7 +94,7 @@ interface PageSectionProps {
 
 export function PageSection({
   children,
-  className = '',
+  className = "",
   animate = true,
   delay = 0,
 }: PageSectionProps) {

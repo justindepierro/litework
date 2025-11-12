@@ -44,8 +44,12 @@ const OptimizedListItem = memo(function OptimizedListItem({
       }`}
       onClick={handleToggle}
     >
-      <h3 className="font-medium text-[var(--color-text-primary)]">{item.name}</h3>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">{item.description}</p>
+      <h3 className="font-medium text-[var(--color-text-primary)]">
+        {item.name}
+      </h3>
+      <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+        {item.description}
+      </p>
     </div>
   );
 });

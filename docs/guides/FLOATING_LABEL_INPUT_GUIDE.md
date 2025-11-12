@@ -20,7 +20,7 @@ import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
   onChange={(e) => setEmail(e.target.value)}
   error={errors.email}
   required
-/>
+/>;
 ```
 
 ### FloatingLabelTextarea
@@ -36,49 +36,51 @@ import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
   onChange={(e) => setDescription(e.target.value)}
   autoResize
   helperText="Describe your workout plan"
-/>
+/>;
 ```
 
 ## Props
 
 ### FloatingLabelInput Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | **Required** | Label text (floats on focus/value) |
-| `helperText` | `string` | - | Helper text below input |
-| `error` | `string` | - | Error message (red styling) |
-| `success` | `boolean` | `false` | Success state (green check) |
-| `leftIcon` | `ReactNode` | - | Icon on the left side |
-| `rightIcon` | `ReactNode` | - | Icon on the right side |
-| `inputSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size variant |
-| `fullWidth` | `boolean` | `false` | Stretch to full width |
-| `type` | `string` | `'text'` | Input type (text, email, password, etc.) |
-| `required` | `boolean` | `false` | Show red asterisk |
+| Prop         | Type                   | Default      | Description                              |
+| ------------ | ---------------------- | ------------ | ---------------------------------------- |
+| `label`      | `string`               | **Required** | Label text (floats on focus/value)       |
+| `helperText` | `string`               | -            | Helper text below input                  |
+| `error`      | `string`               | -            | Error message (red styling)              |
+| `success`    | `boolean`              | `false`      | Success state (green check)              |
+| `leftIcon`   | `ReactNode`            | -            | Icon on the left side                    |
+| `rightIcon`  | `ReactNode`            | -            | Icon on the right side                   |
+| `inputSize`  | `'sm' \| 'md' \| 'lg'` | `'md'`       | Size variant                             |
+| `fullWidth`  | `boolean`              | `false`      | Stretch to full width                    |
+| `type`       | `string`               | `'text'`     | Input type (text, email, password, etc.) |
+| `required`   | `boolean`              | `false`      | Show red asterisk                        |
 
 Plus all standard HTML input props (`value`, `onChange`, `placeholder`, `disabled`, etc.)
 
 ### FloatingLabelTextarea Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | **Required** | Label text (floats on focus/value) |
-| `helperText` | `string` | - | Helper text below textarea |
-| `error` | `string` | - | Error message (red styling) |
-| `fullWidth` | `boolean` | `false` | Stretch to full width |
-| `autoResize` | `boolean` | `false` | Auto-resize based on content |
-| `required` | `boolean` | `false` | Show red asterisk |
+| Prop         | Type      | Default      | Description                        |
+| ------------ | --------- | ------------ | ---------------------------------- |
+| `label`      | `string`  | **Required** | Label text (floats on focus/value) |
+| `helperText` | `string`  | -            | Helper text below textarea         |
+| `error`      | `string`  | -            | Error message (red styling)        |
+| `fullWidth`  | `boolean` | `false`      | Stretch to full width              |
+| `autoResize` | `boolean` | `false`      | Auto-resize based on content       |
+| `required`   | `boolean` | `false`      | Show red asterisk                  |
 
 Plus all standard HTML textarea props.
 
 ## Animation Details
 
 **Label Movement**:
+
 - **Default State**: Label centered in input
 - **Focused/Has Value**: Label moves up 8px and scales to 85%
 - **Transition**: Spring animation (stiffness 300, damping 25)
 
 **Color Transitions**:
+
 - **Default**: Gray (`--color-text-tertiary`)
 - **Focused**: Primary blue (`--color-primary`)
 - **Error**: Red (`--color-error`)
@@ -87,18 +89,21 @@ Plus all standard HTML textarea props.
 ## Size Variants
 
 ### Small (`sm`)
+
 - Height: 48px (12 spacing units)
 - Padding: 12px horizontal
 - Font: 14px
 - Label (floating): 12px
 
 ### Medium (`md`) - Default
+
 - Height: 56px (14 spacing units)
 - Padding: 16px horizontal
 - Font: 16px
 - Label (floating): 12px
 
 ### Large (`lg`)
+
 - Height: 64px (16 spacing units)
 - Padding: 20px horizontal
 - Font: 18px
@@ -154,7 +159,7 @@ import { Mail } from "lucide-react";
   leftIcon={<Mail className="w-5 h-5" />}
   value={email}
   onChange={(e) => setEmail(e.target.value)}
-/>
+/>;
 ```
 
 ### With Right Icon
@@ -167,7 +172,7 @@ import { Search } from "lucide-react";
   rightIcon={<Search className="w-5 h-5" />}
   value={search}
   onChange={(e) => setSearch(e.target.value)}
-/>
+/>;
 ```
 
 ### Large Size
@@ -213,7 +218,10 @@ Complete form using FloatingLabelInput:
 "use client";
 
 import { useState } from "react";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
 import { Button } from "@/components/ui/Button";
 
 export function WorkoutForm() {
@@ -243,7 +251,9 @@ export function WorkoutForm() {
       <FloatingLabelTextarea
         label="Description"
         value={formData.description}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        onChange={(e) =>
+          setFormData({ ...formData, description: e.target.value })
+        }
         autoResize
         helperText="Describe the workout and its goals"
         fullWidth
@@ -269,24 +279,19 @@ export function WorkoutForm() {
 ## Migration from Standard Input
 
 **Before**:
+
 ```tsx
-<Input
-  label="Email"
-  value={email}
-  onChange={handleChange}
-/>
+<Input label="Email" value={email} onChange={handleChange} />
 ```
 
 **After**:
+
 ```tsx
-<FloatingLabelInput
-  label="Email"
-  value={email}
-  onChange={handleChange}
-/>
+<FloatingLabelInput label="Email" value={email} onChange={handleChange} />
 ```
 
 Key differences:
+
 - Label is now **required** (not optional)
 - Label appears **inside** the input (not above)
 - No `placeholder` needed (label acts as placeholder)
@@ -340,11 +345,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 // Type-safe refs
 const inputRef = useRef<HTMLInputElement>(null);
 
-<FloatingLabelInput
-  ref={inputRef}
-  label="Name"
-  onChange={handleChange}
-/>
+<FloatingLabelInput ref={inputRef} label="Name" onChange={handleChange} />;
 ```
 
 ## Related Components
@@ -357,6 +358,7 @@ const inputRef = useRef<HTMLInputElement>(null);
 ## Questions?
 
 See also:
+
 - `docs/guides/COMPONENT_USAGE_STANDARDS.md` - Component usage guidelines
 - `src/components/ui/Input.tsx` - Standard Input component
 - `src/lib/animation-variants.ts` - Animation configurations

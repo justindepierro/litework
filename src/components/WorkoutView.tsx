@@ -217,17 +217,14 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                       // Extract equipment from exercise type/name
                       const name = ex.exerciseName.toLowerCase();
                       if (name.includes("barbell")) equipment.add("Barbell");
-                      if (name.includes("dumbbell"))
-                        equipment.add("Dumbbells");
-                      if (name.includes("cable")) equipment.add("Cable Machine");
+                      if (name.includes("dumbbell")) equipment.add("Dumbbells");
+                      if (name.includes("cable"))
+                        equipment.add("Cable Machine");
                       if (name.includes("bench") && !name.includes("press"))
                         equipment.add("Bench");
                       if (name.includes("pull-up") || name.includes("chin-up"))
                         equipment.add("Pull-up Bar");
-                      if (
-                        name.includes("squat rack") ||
-                        name.includes("rack")
-                      )
+                      if (name.includes("squat rack") || name.includes("rack"))
                         equipment.add("Squat Rack");
                       if (name.includes("kettlebell"))
                         equipment.add("Kettlebell");
@@ -303,9 +300,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                 <div className="bg-white rounded-lg p-4 border-2 border-blue-300 space-y-2">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">
-                        1
-                      </span>
+                      <span className="text-xs font-bold text-blue-600">1</span>
                     </div>
                     <p className="text-sm text-gray-700 flex-1">
                       <strong>5 min cardio:</strong> Light jog, rowing, or jump
@@ -314,9 +309,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">
-                        2
-                      </span>
+                      <span className="text-xs font-bold text-blue-600">2</span>
                     </div>
                     <p className="text-sm text-gray-700 flex-1">
                       <strong>Dynamic stretches:</strong> Arm circles, leg
@@ -325,9 +318,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-blue-600">
-                        3
-                      </span>
+                      <span className="text-xs font-bold text-blue-600">3</span>
                     </div>
                     <p className="text-sm text-gray-700 flex-1">
                       <strong>Movement prep:</strong> Do 1-2 light sets of your

@@ -1,34 +1,34 @@
 /**
  * Accessibility Utilities
- * 
+ *
  * Comprehensive utilities for WCAG 2.1 AA compliance and enhanced accessibility.
  * Provides helper functions for keyboard navigation, focus management, and ARIA attributes.
- * 
+ *
  * @see https://www.w3.org/WAI/WCAG21/quickref/
  * @see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA
  */
 
-import React from 'react';
+import React from "react";
 
 /**
  * Keyboard Key Constants
  * Use these instead of magic strings/numbers
  */
 export const Keys = {
-  ENTER: 'Enter',
-  SPACE: ' ',
-  SPACEBAR: 'Spacebar', // IE11 compatibility
-  ESCAPE: 'Escape',
-  ESC: 'Esc', // IE11 compatibility
-  TAB: 'Tab',
-  ARROW_UP: 'ArrowUp',
-  ARROW_DOWN: 'ArrowDown',
-  ARROW_LEFT: 'ArrowLeft',
-  ARROW_RIGHT: 'ArrowRight',
-  HOME: 'Home',
-  END: 'End',
-  PAGE_UP: 'PageUp',
-  PAGE_DOWN: 'PageDown',
+  ENTER: "Enter",
+  SPACE: " ",
+  SPACEBAR: "Spacebar", // IE11 compatibility
+  ESCAPE: "Escape",
+  ESC: "Esc", // IE11 compatibility
+  TAB: "Tab",
+  ARROW_UP: "ArrowUp",
+  ARROW_DOWN: "ArrowDown",
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+  HOME: "Home",
+  END: "End",
+  PAGE_UP: "PageUp",
+  PAGE_DOWN: "PageDown",
 } as const;
 
 /**
@@ -100,13 +100,13 @@ export function focusLastElement(container: HTMLElement): boolean {
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const selector = [
-    'a[href]',
-    'button:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
     '[tabindex]:not([tabindex="-1"])',
-  ].join(', ');
+  ].join(", ");
 
   const elements = Array.from(
     container.querySelectorAll<HTMLElement>(selector)
@@ -117,8 +117,8 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     return (
       element.offsetWidth > 0 &&
       element.offsetHeight > 0 &&
-      !element.hasAttribute('hidden') &&
-      window.getComputedStyle(element).visibility !== 'hidden'
+      !element.hasAttribute("hidden") &&
+      window.getComputedStyle(element).visibility !== "hidden"
     );
   });
 }
@@ -153,11 +153,11 @@ export function trapFocus(container: HTMLElement): () => void {
     }
   };
 
-  container.addEventListener('keydown', handleKeyDown);
+  container.addEventListener("keydown", handleKeyDown);
 
   // Return cleanup function
   return () => {
-    container.removeEventListener('keydown', handleKeyDown);
+    container.removeEventListener("keydown", handleKeyDown);
   };
 }
 
@@ -178,19 +178,19 @@ export function getButtonAriaProps(props: {
   const ariaProps: Record<string, string | boolean | undefined> = {};
 
   if (props.pressed !== undefined) {
-    ariaProps['aria-pressed'] = props.pressed;
+    ariaProps["aria-pressed"] = props.pressed;
   }
   if (props.expanded !== undefined) {
-    ariaProps['aria-expanded'] = props.expanded;
+    ariaProps["aria-expanded"] = props.expanded;
   }
   if (props.controls) {
-    ariaProps['aria-controls'] = props.controls;
+    ariaProps["aria-controls"] = props.controls;
   }
   if (props.label) {
-    ariaProps['aria-label'] = props.label;
+    ariaProps["aria-label"] = props.label;
   }
   if (props.disabled) {
-    ariaProps['aria-disabled'] = true;
+    ariaProps["aria-disabled"] = true;
   }
 
   return ariaProps;
@@ -201,7 +201,7 @@ export function getButtonAriaProps(props: {
  */
 export function getIconLinkAriaProps(label: string): Record<string, string> {
   return {
-    'aria-label': label,
+    "aria-label": label,
   };
 }
 
@@ -214,7 +214,7 @@ export function getIconLinkAriaProps(label: string): Record<string, string> {
  * Use this instead of display: none or visibility: hidden for SR-only content
  */
 export const srOnlyClass =
-  'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0';
+  "absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0";
 
 /**
  * Create a visually hidden span for screen readers
@@ -229,12 +229,12 @@ export function createSROnlyText(text: string): React.ReactElement {
  */
 export function announceToScreenReader(
   message: string,
-  priority: 'polite' | 'assertive' = 'polite'
+  priority: "polite" | "assertive" = "polite"
 ): void {
-  const announcement = document.createElement('div');
-  announcement.setAttribute('role', 'status');
-  announcement.setAttribute('aria-live', priority);
-  announcement.setAttribute('aria-atomic', 'true');
+  const announcement = document.createElement("div");
+  announcement.setAttribute("role", "status");
+  announcement.setAttribute("aria-live", priority);
+  announcement.setAttribute("aria-atomic", "true");
   announcement.className = srOnlyClass;
   announcement.textContent = message;
 
@@ -286,7 +286,7 @@ export function getContrastRatio(
  */
 export function meetsContrastRequirement(
   contrastRatio: number,
-  level: 'normal' | 'large' | 'ui' = 'normal'
+  level: "normal" | "large" | "ui" = "normal"
 ): boolean {
   const required = {
     normal: 4.5,
@@ -304,28 +304,28 @@ export function meetsContrastRequirement(
  * Check if user prefers reduced motion
  */
 export function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /**
  * Hook for reduced motion preference
  */
 export function usePrefersReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === "undefined") return false;
 
   const [prefersReduced, setPrefersReduced] = React.useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
 
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const handleChange = () => setPrefersReduced(mediaQuery.matches);
 
     // Modern browsers
     if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
     }
     // Fallback for older browsers
     else if (mediaQuery.addListener) {

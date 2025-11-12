@@ -3,7 +3,10 @@
 import { WorkoutPlan } from "@/types";
 import DateTimePicker from "./DateTimePicker";
 import { Select } from "@/components/ui/Input";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
 import { Card } from "@/components/ui/Card";
 
 interface WorkoutAssignmentFormProps {

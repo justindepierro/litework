@@ -1,18 +1,18 @@
 /**
  * useMinimumLoadingTime Hook
- * 
+ *
  * Ensures loading states are shown for a minimum duration to prevent jarring flashes.
  * Improves perceived performance by providing stable, predictable loading experiences.
- * 
+ *
  * Usage:
  * ```tsx
  * const { isLoading, showSkeleton } = useMinimumLoadingTime(dataIsLoading, 300);
- * 
+ *
  * if (showSkeleton) {
  *   return <SkeletonDashboard />;
  * }
  * ```
- * 
+ *
  * @param isLoading - The actual loading state from data fetching
  * @param minimumMs - Minimum time to show skeleton (default: 300ms)
  * @returns Object with isLoading and showSkeleton flags

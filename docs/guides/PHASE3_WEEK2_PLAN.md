@@ -10,6 +10,7 @@
 ## 📊 Week 1 Recap
 
 **Completed Infrastructure** (100%):
+
 - ✅ Framer Motion setup + bundle analyzer
 - ✅ PageContainer & PageHeader components
 - ✅ Button animations (hover/tap)
@@ -22,6 +23,7 @@
 - ✅ Bundle optimization analysis
 
 **What We Have**:
+
 - Complete animation system ready to use
 - Floating label inputs ready to apply
 - Modal transitions working on all modals
@@ -53,25 +55,28 @@
 **Estimated Time**: 2-3 hours
 
 **Target Files**:
+
 1. `/src/app/login/page.tsx` - Login form
-2. `/src/app/signup/page.tsx` - Signup form  
+2. `/src/app/signup/page.tsx` - Signup form
 3. `/src/app/profile/page.tsx` - Profile settings
 4. `/src/components/WorkoutEditor.tsx` - Workout creation forms
 5. `/src/components/GroupFormModal.tsx` - Group creation
 6. `/src/components/IndividualAssignmentModal.tsx` - Assignment modification
 
 **Implementation**:
+
 ```tsx
 // Before
 import { Input } from "@/components/ui/Input";
-<Input label="Email" value={email} onChange={handleChange} />
+<Input label="Email" value={email} onChange={handleChange} />;
 
 // After
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
-<FloatingLabelInput label="Email" value={email} onChange={handleChange} />
+<FloatingLabelInput label="Email" value={email} onChange={handleChange} />;
 ```
 
 **Validation**:
+
 - [ ] All forms use FloatingLabelInput/Textarea
 - [ ] Labels float smoothly on focus
 - [ ] Error states display correctly
@@ -88,31 +93,35 @@ import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 **Replace LoadingSpinner with Skeletons**:
 
 1. **Dashboard** (`/src/app/dashboard/page.tsx`):
+
    ```tsx
-   import { 
+   import {
      DashboardStatsSkeleton,
      DashboardWorkoutsSkeleton,
-     DashboardTodayWorkoutSkeleton 
+     DashboardTodayWorkoutSkeleton,
    } from "@/components/ui/PageSkeletons";
-   
+
    if (statsLoading) return <DashboardStatsSkeleton />;
    if (workoutsLoading) return <DashboardWorkoutsSkeleton />;
    if (todayLoading) return <DashboardTodayWorkoutSkeleton />;
    ```
 
 2. **Athletes Page** (`/src/app/athletes/page.tsx`):
+
    ```tsx
    import { AthleteRosterSkeleton } from "@/components/ui/PageSkeletons";
    if (isLoading) return <AthleteRosterSkeleton count={9} />;
    ```
 
 3. **Workouts Page** (`/src/app/workouts/page.tsx`):
+
    ```tsx
    import { WorkoutLibrarySkeleton } from "@/components/ui/PageSkeletons";
    if (isLoading) return <WorkoutLibrarySkeleton count={6} />;
    ```
 
 4. **Profile Page** (`/src/app/profile/page.tsx`):
+
    ```tsx
    import { ProfilePageSkeleton } from "@/components/ui/PageSkeletons";
    if (isLoading) return <ProfilePageSkeleton />;
@@ -124,6 +133,7 @@ import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
    - AthleteDetailModal → AthleteDetailSkeleton
 
 **Use with Minimum Loading Time**:
+
 ```tsx
 import { useMinimumLoadingTime } from "@/hooks/useMinimumLoadingTime";
 
@@ -132,6 +142,7 @@ if (showSkeleton) return <DashboardStatsSkeleton />;
 ```
 
 **Validation**:
+
 - [ ] No LoadingSpinner components visible
 - [ ] All async content has skeletons
 - [ ] Skeletons match actual layout
@@ -164,7 +175,7 @@ interface Toast {
 
 export function ToastContainer() {
   const { toasts, removeToast } = useToastStore();
-  
+
   return (
     <div className="fixed bottom-4 right-4 z-9999 space-y-2 w-full max-w-sm">
       <AnimatePresence>
@@ -205,18 +216,19 @@ export const useToastStore = create<ToastStore>((set) => ({
   addToast: (toast) => {
     const id = Math.random().toString(36).substring(7);
     set((state) => ({ toasts: [...state.toasts, { ...toast, id }] }));
-    
+
     // Auto-dismiss after duration
     setTimeout(() => {
-      set((state) => ({ toasts: state.toasts.filter(t => t.id !== id) }));
+      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
     }, toast.duration || 5000);
   },
   removeToast: (id) =>
-    set((state) => ({ toasts: state.toasts.filter(t => t.id !== id) })),
+    set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
 }));
 ```
 
 **Usage**:
+
 ```tsx
 import { useToastStore } from "@/stores/toast-store";
 
@@ -227,6 +239,7 @@ addToast({ type: "error", message: "Failed to save changes" });
 ```
 
 **Features**:
+
 - Stacking with proper z-index
 - Auto-dismiss after 5 seconds
 - Manual close button
@@ -264,7 +277,7 @@ export function EmptyState({
   description,
   actionLabel,
   onAction,
-  illustration
+  illustration,
 }: EmptyStateProps) {
   return (
     <motion.div
@@ -281,17 +294,17 @@ export function EmptyState({
       >
         {icon}
       </motion.div>
-      
+
       {/* Title */}
       <h3 className="text-xl font-bold text-(--color-text-primary) mb-2">
         {title}
       </h3>
-      
+
       {/* Description */}
       <p className="text-sm text-(--color-text-secondary) max-w-md mb-6">
         {description}
       </p>
-      
+
       {/* Action Button */}
       {actionLabel && onAction && (
         <motion.div
@@ -310,6 +323,7 @@ export function EmptyState({
 ```
 
 **Apply To**:
+
 - Empty workout library
 - No assignments on dashboard
 - No athletes in roster
@@ -318,18 +332,21 @@ export function EmptyState({
 - Empty notification inbox
 
 **Example**:
+
 ```tsx
 import { Dumbbell } from "lucide-react";
 
-{workouts.length === 0 && (
-  <EmptyState
-    icon={<Dumbbell className="w-full h-full" />}
-    title="No Workouts Yet"
-    description="Create your first workout plan to get started with training."
-    actionLabel="Create Workout"
-    onAction={() => setShowEditor(true)}
-  />
-)}
+{
+  workouts.length === 0 && (
+    <EmptyState
+      icon={<Dumbbell className="w-full h-full" />}
+      title="No Workouts Yet"
+      description="Create your first workout plan to get started with training."
+      actionLabel="Create Workout"
+      onAction={() => setShowEditor(true)}
+    />
+  );
+}
 ```
 
 ---
@@ -351,7 +368,7 @@ import { usePathname } from "next/navigation";
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  
+
   return (
     <motion.div
       key={pathname}
@@ -362,7 +379,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         type: "spring",
         stiffness: 300,
         damping: 30,
-        duration: 0.3
+        duration: 0.3,
       }}
     >
       {children}
@@ -382,9 +399,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <PageTransition>
-          {children}
-        </PageTransition>
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );
@@ -392,6 +407,7 @@ export default function RootLayout({ children }) {
 ```
 
 **Features**:
+
 - Fade + slide transition between routes
 - Smooth spring animation
 - No flicker
@@ -432,6 +448,7 @@ export default function RootLayout({ children }) {
    - [ ] Loading states announced
 
 **Tools**:
+
 ```bash
 # Install axe DevTools
 npm install --save-dev @axe-core/react
@@ -441,6 +458,7 @@ npm run test:a11y
 ```
 
 **Fixes**:
+
 - Add missing aria-labels to icon buttons
 - Improve focus management in modals
 - Add skip-to-content link
@@ -455,6 +473,7 @@ npm run test:a11y
 **Estimated Time**: 2-3 hours
 
 **Run Lighthouse Audit**:
+
 ```bash
 # Production build
 npm run build
@@ -464,6 +483,7 @@ npm run start
 ```
 
 **Target Scores**:
+
 - Performance: 95+
 - Accessibility: 100
 - Best Practices: 100
@@ -499,6 +519,7 @@ npm run start
    - [ ] Static assets cached
 
 **Monitor**:
+
 ```typescript
 // Add performance monitoring
 if (typeof window !== "undefined") {
@@ -564,10 +585,11 @@ const handlers = useSwipeable({
 
 <div {...handlers} className="swipeable">
   {content}
-</div>
+</div>;
 ```
 
 **Mobile Optimizations**:
+
 - [ ] Touch targets >= 44x44px
 - [ ] No double-tap zoom on buttons
 - [ ] Smooth scrolling
@@ -635,10 +657,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="text-sm text-(--color-text-secondary) mb-6 text-center max-w-md">
             We're sorry for the inconvenience. Please try refreshing the page.
           </p>
-          <Button
-            variant="primary"
-            onClick={() => window.location.reload()}
-          >
+          <Button variant="primary" onClick={() => window.location.reload()}>
             Reload Page
           </Button>
         </motion.div>
@@ -651,15 +670,12 @@ export class ErrorBoundary extends Component<Props, State> {
 ```
 
 **Apply to Layout**:
+
 ```tsx
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function Layout({ children }) {
-  return (
-    <ErrorBoundary>
-      {children}
-    </ErrorBoundary>
-  );
+  return <ErrorBoundary>{children}</ErrorBoundary>;
 }
 ```
 
@@ -702,6 +718,7 @@ export default function Layout({ children }) {
 - [ ] Performance scores meet targets
 
 **Browser Testing**:
+
 - [ ] Chrome (latest)
 - [ ] Firefox (latest)
 - [ ] Safari (latest)
@@ -713,6 +730,7 @@ export default function Layout({ children }) {
 ## 🎯 Success Criteria
 
 ### Performance Targets
+
 - [ ] Lighthouse Performance: 95+
 - [ ] First Contentful Paint: <1.0s
 - [ ] Time to Interactive: <2.0s
@@ -720,6 +738,7 @@ export default function Layout({ children }) {
 - [ ] Accessibility Score: 100
 
 ### User Experience
+
 - [ ] All forms use floating labels
 - [ ] No loading spinners (only skeletons)
 - [ ] Toast notifications working
@@ -730,6 +749,7 @@ export default function Layout({ children }) {
 - [ ] Mobile-optimized
 
 ### Code Quality
+
 - [ ] Zero TypeScript errors
 - [ ] Zero accessibility violations
 - [ ] All components documented
@@ -741,20 +761,13 @@ export default function Layout({ children }) {
 ## 📊 Implementation Order
 
 **Day 1**: Core Application
+
 1. Task 1: Apply FloatingLabelInput (HIGH)
 2. Task 2: Apply Skeleton Screens (HIGH)
 
-**Day 2**: Enhancements
-3. Task 3: Toast Notification System (MEDIUM)
-4. Task 4: Enhanced Empty States (MEDIUM)
-5. Task 5: Page Transitions (MEDIUM)
+**Day 2**: Enhancements 3. Task 3: Toast Notification System (MEDIUM) 4. Task 4: Enhanced Empty States (MEDIUM) 5. Task 5: Page Transitions (MEDIUM)
 
-**Day 3**: Quality & Testing
-6. Task 6: Accessibility Audit (HIGH)
-7. Task 7: Performance Testing (HIGH)
-8. Task 8: Mobile Touch Enhancements (MEDIUM)
-9. Task 9: Error Boundary Enhancement (MEDIUM)
-10. Task 10: Documentation & Testing (MEDIUM)
+**Day 3**: Quality & Testing 6. Task 6: Accessibility Audit (HIGH) 7. Task 7: Performance Testing (HIGH) 8. Task 8: Mobile Touch Enhancements (MEDIUM) 9. Task 9: Error Boundary Enhancement (MEDIUM) 10. Task 10: Documentation & Testing (MEDIUM)
 
 ---
 

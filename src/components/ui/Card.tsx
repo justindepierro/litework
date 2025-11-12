@@ -128,14 +128,14 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
           onClick={onClick}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          whileHover={{ 
-            y: -4, 
+          whileHover={{
+            y: -4,
             scale: 1.01,
-            transition: { type: "spring", stiffness: 300, damping: 20 }
+            transition: { type: "spring", stiffness: 300, damping: 20 },
           }}
-          whileTap={{ 
+          whileTap={{
             scale: 0.98,
-            transition: { type: "spring", stiffness: 400, damping: 17 }
+            transition: { type: "spring", stiffness: 400, damping: 17 },
           }}
           {...Object.fromEntries(
             Object.entries(restProps).filter(

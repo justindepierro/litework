@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 /**
  * PageTransition Component
- * 
+ *
  * Provides smooth fade + slide transitions between route changes in Next.js App Router.
  * Uses Framer Motion with spring physics for natural, professional animations.
- * 
+ *
  * Usage:
  * ```tsx
  * import PageTransition from '@/components/PageTransition';
- * 
+ *
  * export default function MyPage() {
  *   return (
  *     <PageTransition>
@@ -18,7 +18,7 @@
  *   );
  * }
  * ```
- * 
+ *
  * Features:
  * - Fade in/out with slide animation
  * - Spring physics (stiffness 260, damping 20)
@@ -27,10 +27,10 @@
  * - Mobile-friendly (respects reduced motion preferences)
  */
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
-import { ReactNode } from 'react';
-import { pageTransition } from '@/lib/animation-variants';
+import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
+import { pageTransition } from "@/lib/animation-variants";
 
 interface PageTransitionProps {
   children: ReactNode;
@@ -62,7 +62,7 @@ export default function PageTransition({
         variants={pageTransition}
         style={{
           // GPU acceleration for smoother animations
-          willChange: 'transform, opacity',
+          willChange: "transform, opacity",
         }}
       >
         {children}

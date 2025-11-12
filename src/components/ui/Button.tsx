@@ -121,18 +121,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         text-[var(--color-text-inverse)]
         border border-[var(--color-interactive-primary-base)]
         shadow-[var(--elevation-1)]
-        ${disabled || isLoading 
-          ? "bg-[var(--color-interactive-primary-disabled)] border-[var(--color-interactive-primary-disabled)]" 
-          : "hover:bg-[var(--color-interactive-primary-hover)] hover:border-[var(--color-interactive-primary-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-primary-active)] active:border-[var(--color-interactive-primary-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-primary-focus)] focus:ring-offset-2"
+        ${
+          disabled || isLoading
+            ? "bg-[var(--color-interactive-primary-disabled)] border-[var(--color-interactive-primary-disabled)]"
+            : "hover:bg-[var(--color-interactive-primary-hover)] hover:border-[var(--color-interactive-primary-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-primary-active)] active:border-[var(--color-interactive-primary-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-primary-focus)] focus:ring-offset-2"
         }
       `,
       secondary: `
         bg-[var(--color-silver-200)]
         text-[var(--color-navy-800)]
         border-2 border-[var(--color-border-secondary)]
-        ${disabled || isLoading
-          ? "bg-[var(--color-silver-300)] border-[var(--color-silver-400)]"
-          : "hover:bg-[var(--color-silver-300)] hover:border-[var(--color-navy-400)] hover:-translate-y-0.5 active:bg-[var(--color-silver-400)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-navy-400)] focus:ring-offset-2"
+        ${
+          disabled || isLoading
+            ? "bg-[var(--color-silver-300)] border-[var(--color-silver-400)]"
+            : "hover:bg-[var(--color-silver-300)] hover:border-[var(--color-navy-400)] hover:-translate-y-0.5 active:bg-[var(--color-silver-400)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-navy-400)] focus:ring-offset-2"
         }
       `,
       danger: `
@@ -140,18 +142,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         text-[var(--color-text-inverse)]
         border border-[var(--color-interactive-danger-base)]
         shadow-[var(--elevation-1)]
-        ${disabled || isLoading
-          ? "bg-[var(--color-interactive-danger-disabled)] border-[var(--color-interactive-danger-disabled)]"
-          : "hover:bg-[var(--color-interactive-danger-hover)] hover:border-[var(--color-interactive-danger-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-danger-active)] active:border-[var(--color-interactive-danger-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-danger-focus)] focus:ring-offset-2"
+        ${
+          disabled || isLoading
+            ? "bg-[var(--color-interactive-danger-disabled)] border-[var(--color-interactive-danger-disabled)]"
+            : "hover:bg-[var(--color-interactive-danger-hover)] hover:border-[var(--color-interactive-danger-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-danger-active)] active:border-[var(--color-interactive-danger-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-danger-focus)] focus:ring-offset-2"
         }
       `,
       ghost: `
         bg-[var(--color-interactive-ghost-base)]
         text-[var(--color-text-primary)]
         border border-transparent
-        ${disabled || isLoading
-          ? "text-[var(--color-text-tertiary)]"
-          : "hover:bg-[var(--color-interactive-ghost-hover)] hover:text-[var(--color-navy-900)] active:bg-[var(--color-interactive-ghost-active)] focus:ring-2 focus:ring-[var(--color-interactive-ghost-focus)] focus:ring-offset-2"
+        ${
+          disabled || isLoading
+            ? "text-[var(--color-text-tertiary)]"
+            : "hover:bg-[var(--color-interactive-ghost-hover)] hover:text-[var(--color-navy-900)] active:bg-[var(--color-interactive-ghost-active)] focus:ring-2 focus:ring-[var(--color-interactive-ghost-focus)] focus:ring-offset-2"
         }
       `,
       success: `
@@ -159,9 +163,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         text-[var(--color-text-inverse)]
         border border-[var(--color-interactive-success-base)]
         shadow-[var(--elevation-1)]
-        ${disabled || isLoading
-          ? "bg-[var(--color-interactive-success-disabled)] border-[var(--color-interactive-success-disabled)]"
-          : "hover:bg-[var(--color-interactive-success-hover)] hover:border-[var(--color-interactive-success-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-success-active)] active:border-[var(--color-interactive-success-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-success-focus)] focus:ring-offset-2"
+        ${
+          disabled || isLoading
+            ? "bg-[var(--color-interactive-success-disabled)] border-[var(--color-interactive-success-disabled)]"
+            : "hover:bg-[var(--color-interactive-success-hover)] hover:border-[var(--color-interactive-success-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-success-active)] active:border-[var(--color-interactive-success-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-success-focus)] focus:ring-offset-2"
         }
       `,
     };

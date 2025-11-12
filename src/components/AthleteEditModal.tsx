@@ -16,7 +16,10 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import {
+  FloatingLabelInput,
+  FloatingLabelTextarea,
+} from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import type { User as UserType } from "@/types";
 

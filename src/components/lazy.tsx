@@ -55,7 +55,10 @@ export const ExerciseLibraryLazy = dynamic(
         <div className="h-10 bg-[var(--color-silver-300)] rounded"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-32 bg-[var(--color-silver-300)] rounded"></div>
+            <div
+              key={i}
+              className="h-32 bg-[var(--color-silver-300)] rounded"
+            ></div>
           ))}
         </div>
       </div>

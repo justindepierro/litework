@@ -46,12 +46,11 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         "bg-[var(--color-semantic-success-lightest)] text-[var(--color-semantic-success-dark)] border border-[var(--color-semantic-success-light)]",
       warning:
         "bg-[var(--color-semantic-warning-lightest)] text-[var(--color-semantic-warning-dark)] border border-[var(--color-semantic-warning-light)]",
-      error: 
+      error:
         "bg-[var(--color-semantic-error-lightest)] text-[var(--color-semantic-error-dark)] border border-[var(--color-semantic-error-light)]",
-      neutral: 
+      neutral:
         "bg-[var(--color-semantic-neutral-lightest)] text-[var(--color-semantic-neutral-darker)] border border-[var(--color-semantic-neutral-light)]",
-      info: 
-        "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)] border border-[var(--color-semantic-info-light)]",
+      info: "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)] border border-[var(--color-semantic-info-light)]",
     };
 
     // Size styles

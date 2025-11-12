@@ -13,15 +13,15 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 
 ### Key Findings
 
-| Category | Current State | Issues | Priority |
-|----------|--------------|---------|----------|
-| Page Headers | Inconsistent | Mixed title styles, spacing varies | HIGH |
-| Content Spacing | Good | Some pages need polish | MEDIUM |
-| Grid Systems | Inconsistent | Mixed grid patterns | HIGH |
-| Mobile Layouts | Good | Stack order could improve | MEDIUM |
-| Empty States | Good | Could be more consistent | LOW |
-| Loading States | Mixed | Some missing skeletons | HIGH |
-| Card Consistency | Good | Minor spacing differences | MEDIUM |
+| Category         | Current State | Issues                             | Priority |
+| ---------------- | ------------- | ---------------------------------- | -------- |
+| Page Headers     | Inconsistent  | Mixed title styles, spacing varies | HIGH     |
+| Content Spacing  | Good          | Some pages need polish             | MEDIUM   |
+| Grid Systems     | Inconsistent  | Mixed grid patterns                | HIGH     |
+| Mobile Layouts   | Good          | Stack order could improve          | MEDIUM   |
+| Empty States     | Good          | Could be more consistent           | LOW      |
+| Loading States   | Mixed         | Some missing skeletons             | HIGH     |
+| Card Consistency | Good          | Minor spacing differences          | MEDIUM   |
 
 ---
 
@@ -30,16 +30,17 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 1. Dashboard Page (`/dashboard`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-50">
   {/* Stats Cards - Grid of 3 */}
   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
     <StatCard />
   </div>
-  
+
   {/* Today's Overview */}
   <TodayOverview />
-  
+
   {/* Calendar + Quick Actions */}
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <Calendar className="lg:col-span-2" />
@@ -49,6 +50,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ```
 
 **Issues**:
+
 - ❌ No consistent page header
 - ❌ Mixed spacing (some sections 6, some 4, some 8)
 - ⚠️ Stats cards could use more visual hierarchy
@@ -57,6 +59,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ✅ Mobile responsive
 
 **Recommendations**:
+
 1. Add consistent page header with breadcrumbs
 2. Standardize spacing to 6 or 8 units
 3. Add max-width container (1400px or 1600px)
@@ -69,6 +72,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 2. Workouts Page (`/workouts`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-50">
   {/* Header */}
@@ -76,12 +80,12 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
     <h1>Workouts</h1>
     <Button>Create Workout</Button>
   </div>
-  
+
   {/* Filters */}
   <div className="mb-6">
     <Filters />
   </div>
-  
+
   {/* Workout Grid */}
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <WorkoutCard />
@@ -90,6 +94,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ```
 
 **Issues**:
+
 - ❌ Header layout inconsistent with other pages
 - ❌ No visual separation between sections
 - ⚠️ Filter UI could be more prominent
@@ -98,6 +103,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ✅ Archive toggle works well
 
 **Recommendations**:
+
 1. Standardize header with page title component
 2. Add subtle section dividers
 3. Enhance filter bar with sticky positioning
@@ -110,19 +116,20 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 3. Athletes Page (`/athletes`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-50 p-6">
   {/* Header with Stats */}
   <div className="mb-6">
     <AthleteStats />
   </div>
-  
+
   {/* Search and Filters */}
   <SearchAndFilters />
-  
+
   {/* Groups Section */}
   <GroupsSection />
-  
+
   {/* Athlete Grid */}
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <AthleteCard />
@@ -131,6 +138,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ```
 
 **Issues**:
+
 - ⚠️ Stats could be more prominent
 - ⚠️ Search/filter could be sticky
 - ✅ Good visual hierarchy
@@ -139,6 +147,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ✅ Empty states are good
 
 **Recommendations**:
+
 1. Make stat cards more prominent (larger, better icons)
 2. Sticky search/filter bar on scroll
 3. Add quick action buttons to header
@@ -151,6 +160,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 4. Schedule/Calendar Page (`/schedule`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-50 p-6">
   {/* Calendar Header */}
@@ -158,13 +168,14 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
     <h1>Schedule</h1>
     <CalendarControls />
   </div>
-  
+
   {/* Calendar Grid */}
   <DraggableAthleteCalendar />
 </div>
 ```
 
 **Issues**:
+
 - ❌ Calendar takes full width (could be better contained)
 - ⚠️ Header could have more context
 - ⚠️ No legend for assignment types
@@ -172,6 +183,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ✅ Mobile fallback is good
 
 **Recommendations**:
+
 1. Add max-width container for calendar
 2. Add assignment type legend
 3. Add quick stats (assignments this week, etc.)
@@ -184,6 +196,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 5. Profile Page (`/profile`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-50 p-6">
   <div className="max-w-4xl mx-auto">
@@ -192,7 +205,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
       <Avatar />
       <UserInfo />
     </div>
-    
+
     {/* Settings Sections */}
     <div className="space-y-6">
       <Card>Account Settings</Card>
@@ -204,6 +217,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ```
 
 **Issues**:
+
 - ✅ Good max-width container
 - ✅ Nice centered layout
 - ⚠️ Cards could have better visual separation
@@ -211,6 +225,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ⚠️ Save buttons placement varies
 
 **Recommendations**:
+
 1. Consistent form layouts across all sections
 2. Sticky save bar for long forms
 3. Better visual separation between sections
@@ -223,6 +238,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ### 6. Workout Live Page (`/workouts/live/[id]`)
 
 **Current Structure**:
+
 ```tsx
 <div className="min-h-screen bg-gray-900 text-white">
   {/* Fullscreen layout optimized for gym use */}
@@ -231,6 +247,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 ```
 
 **Issues**:
+
 - ✅ Excellent fullscreen layout
 - ✅ Large touch targets
 - ✅ Great color contrast
@@ -238,6 +255,7 @@ This audit examines all page layouts in LiteWork to ensure consistency, moderniz
 - ⚠️ Rest timer could be more prominent
 
 **Recommendations**:
+
 1. Add celebration animations on exercise completion
 2. Larger rest timer with circular progress
 3. Smoother transitions between exercises
@@ -255,10 +273,10 @@ Create a consistent page wrapper component:
 
 ```tsx
 // src/components/layout/PageContainer.tsx
-export function PageContainer({ 
-  children, 
+export function PageContainer({
+  children,
   maxWidth = "1600px",
-  padding = "6"
+  padding = "6",
 }) {
   return (
     <div className={`min-h-screen bg-gray-50 p-${padding}`}>
@@ -285,7 +303,7 @@ export function PageHeader({
   subtitle,
   breadcrumbs,
   actions,
-  icon: Icon
+  icon: Icon,
 }) {
   return (
     <div className="mb-8 border-b border-gray-200 pb-6">
@@ -295,7 +313,7 @@ export function PageHeader({
           <Breadcrumbs items={breadcrumbs} />
         </nav>
       )}
-      
+
       {/* Title Row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -313,13 +331,9 @@ export function PageHeader({
             )}
           </div>
         </div>
-        
+
         {/* Actions */}
-        {actions && (
-          <div className="flex gap-3">
-            {actions}
-          </div>
-        )}
+        {actions && <div className="flex gap-3">{actions}</div>}
       </div>
     </div>
   );
@@ -327,6 +341,7 @@ export function PageHeader({
 ```
 
 **Example Usage**:
+
 ```tsx
 <PageHeader
   title="Workouts"
@@ -334,7 +349,7 @@ export function PageHeader({
   icon={Dumbbell}
   breadcrumbs={[
     { label: "Dashboard", href: "/dashboard" },
-    { label: "Workouts", href: "/workouts" }
+    { label: "Workouts", href: "/workouts" },
   ]}
   actions={
     <>
@@ -351,12 +366,7 @@ export function PageHeader({
 
 ```tsx
 // src/components/layout/SectionHeader.tsx
-export function SectionHeader({
-  title,
-  subtitle,
-  actions,
-  badge
-}) {
+export function SectionHeader({ title, subtitle, actions, badge }) {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-3">
@@ -472,13 +482,13 @@ Add depth with backdrop blur:
 
 ```tsx
 // Modal Backdrops
-className="backdrop-blur-md bg-black/40"
+className = "backdrop-blur-md bg-black/40";
 
 // Sticky Headers
-className="bg-white/95 backdrop-blur-sm"
+className = "bg-white/95 backdrop-blur-sm";
 
 // Floating Cards
-className="bg-white/90 backdrop-blur-lg"
+className = "bg-white/90 backdrop-blur-lg";
 ```
 
 ### 3. Smooth Transitions
@@ -510,12 +520,12 @@ Add page transition animations:
 Reveal elements on scroll:
 
 ```tsx
-import { useInView } from 'framer-motion';
+import { useInView } from "framer-motion";
 
 function ScrollReveal({ children }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  
+
   return (
     <motion.div
       ref={ref}
@@ -551,10 +561,12 @@ function ScrollReveal({ children }) {
 
 ```tsx
 // Collapsible header on mobile
-<header className="
+<header
+  className="
   sticky top-0 z-50 bg-white border-b
   lg:relative lg:border-0
-">
+"
+>
   <div className="flex items-center justify-between p-4 lg:p-6">
     {/* Mobile: Compact | Desktop: Full */}
   </div>
@@ -566,16 +578,14 @@ function ScrollReveal({ children }) {
 Optimize content order for mobile:
 
 ```tsx
-<div className="
+<div
+  className="
   flex flex-col lg:flex-row gap-6
-">
+"
+>
   {/* Mobile: Actions first, Desktop: Content first */}
-  <div className="order-2 lg:order-1">
-    {/* Main content */}
-  </div>
-  <div className="order-1 lg:order-2">
-    {/* Actions/Filters */}
-  </div>
+  <div className="order-2 lg:order-1">{/* Main content */}</div>
+  <div className="order-1 lg:order-2">{/* Actions/Filters */}</div>
 </div>
 ```
 
@@ -586,6 +596,7 @@ Optimize content order for mobile:
 ### Phase 3.6: Layout Modernization (Week 3)
 
 #### High Priority
+
 - [ ] Create `PageContainer` component
 - [ ] Create `PageHeader` component
 - [ ] Create `SectionHeader` component
@@ -595,6 +606,7 @@ Optimize content order for mobile:
 - [ ] Add sticky headers where appropriate
 
 #### Medium Priority
+
 - [ ] Add page transition animations
 - [ ] Implement scroll reveal for sections
 - [ ] Add backdrop blur effects
@@ -604,6 +616,7 @@ Optimize content order for mobile:
 - [ ] Enhance empty states
 
 #### Low Priority
+
 - [ ] Add breadcrumb navigation
 - [ ] Implement scroll-to-top button
 - [ ] Add keyboard shortcuts for navigation
@@ -617,6 +630,7 @@ Optimize content order for mobile:
 ### Dashboard Layout
 
 **Before**:
+
 ```tsx
 <div className="p-6">
   <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -627,6 +641,7 @@ Optimize content order for mobile:
 ```
 
 **After**:
+
 ```tsx
 <PageContainer maxWidth="1600px">
   <PageHeader
@@ -634,22 +649,19 @@ Optimize content order for mobile:
     subtitle="Your training overview"
     icon={LayoutDashboard}
   />
-  
+
   <div className="space-y-8">
     {/* Stats Section */}
     <section>
-      <SectionHeader 
-        title="Today's Stats"
-        badge={`${stats.count} workouts`}
-      />
+      <SectionHeader title="Today's Stats" badge={`${stats.count} workouts`} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <StatCard />
       </div>
     </section>
-    
+
     {/* Calendar Section */}
     <section>
-      <SectionHeader 
+      <SectionHeader
         title="Training Calendar"
         actions={<Button>View Full Calendar</Button>}
       />
@@ -660,6 +672,7 @@ Optimize content order for mobile:
 ```
 
 **Improvements**:
+
 - ✅ Consistent page structure
 - ✅ Better visual hierarchy
 - ✅ Max-width container prevents stretching
@@ -701,6 +714,7 @@ const shadows = {
 ## 🚀 Success Metrics
 
 **Layout Consistency**:
+
 - [ ] 100% of pages use PageContainer
 - [ ] 100% of pages use PageHeader
 - [ ] 100% of pages use standardized spacing
@@ -708,6 +722,7 @@ const shadows = {
 - [ ] Zero layout shift on page load (CLS < 0.05)
 
 **User Experience**:
+
 - [ ] All pages load with skeleton screens
 - [ ] Smooth page transitions (< 200ms)
 - [ ] Consistent navigation patterns
@@ -715,6 +730,7 @@ const shadows = {
 - [ ] Sticky elements improve usability
 
 **Performance**:
+
 - [ ] No layout thrashing
 - [ ] Smooth 60fps scrolling
 - [ ] Fast page transitions
@@ -725,6 +741,7 @@ const shadows = {
 ## 📋 Quick Reference: Layout Patterns
 
 ### Page Structure
+
 ```
 PageContainer (max-width, padding)
   ├─ PageHeader (title, actions, breadcrumbs)
@@ -740,6 +757,7 @@ PageContainer (max-width, padding)
 ```
 
 ### Spacing Scale
+
 - Page padding: `6` (24px) or `8` (32px)
 - Section gap: `8` (32px)
 - Card gap: `6` (24px)
@@ -747,6 +765,7 @@ PageContainer (max-width, padding)
 - Element gap: `2` or `3` (8px or 12px)
 
 ### Grid Patterns
+
 - Stats: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`
 - Cards: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4`
 - Main+Sidebar: `grid-cols-1 lg:grid-cols-3` (2+1 span)

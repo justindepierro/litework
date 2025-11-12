@@ -55,7 +55,7 @@ export const colors = {
       950: "#431407",
       DEFAULT: "#ff6b35",
     },
-    
+
     // Green - Success/Progress (energetic teal-green)
     green: {
       50: "#ecfdf5",
@@ -71,7 +71,7 @@ export const colors = {
       950: "#064e3b",
       DEFAULT: "#00d4aa",
     },
-    
+
     // Purple - Premium/Achievement
     purple: {
       50: "#faf5ff",
@@ -87,7 +87,7 @@ export const colors = {
       950: "#2e1065",
       DEFAULT: "#8b5cf6",
     },
-    
+
     // Pink - Fun/Motivation
     pink: {
       50: "#fdf2f8",
@@ -103,7 +103,7 @@ export const colors = {
       950: "#500724",
       DEFAULT: "#ec4899",
     },
-    
+
     // Amber - Warning/Attention (replacing yellow for WCAG AA compliance)
     amber: {
       50: "#fffbeb",
@@ -119,7 +119,7 @@ export const colors = {
       950: "#451a03",
       DEFAULT: "#f59e0b",
     },
-    
+
     // Red - Alert/High Intensity
     red: {
       50: "#fef2f2",
@@ -135,7 +135,7 @@ export const colors = {
       950: "#450a0a",
       DEFAULT: "#ef4444",
     },
-    
+
     // Blue - Info/Cool Down
     blue: {
       50: "#eff6ff",
@@ -151,9 +151,9 @@ export const colors = {
       950: "#172554",
       DEFAULT: "#3b82f6",
     },
-    
+
     // NEW ACCENTS for more variety
-    
+
     // Cyan - Tech/Modern
     cyan: {
       50: "#ecfeff",
@@ -169,7 +169,7 @@ export const colors = {
       950: "#083344",
       DEFAULT: "#06b6d4",
     },
-    
+
     // Lime - Fresh/Active
     lime: {
       50: "#f7fee7",
@@ -185,7 +185,7 @@ export const colors = {
       950: "#1a2e05",
       DEFAULT: "#84cc16",
     },
-    
+
     // Indigo - Focus/Clarity
     indigo: {
       50: "#eef2ff",
@@ -256,7 +256,7 @@ export const colors = {
       darkest: "#374151", // silver-900
     },
   },
-  
+
   // Interactive State Colors (for buttons, links, etc.)
   interactive: {
     primary: {
@@ -345,7 +345,7 @@ export const typography = {
     base: "1rem", // 16px - Body text (DEFAULT)
     md: "1.0625rem", // 17px - Slightly larger body
     lg: "1.125rem", // 18px - Large body, small headings
-    
+
     // Display sizes (h6-h1 range)
     xl: "1.25rem", // 20px - h6
     "2xl": "1.5rem", // 24px - h5
@@ -357,7 +357,7 @@ export const typography = {
     "8xl": "6rem", // 96px - Hero headings
     "9xl": "8rem", // 128px - Extra large displays
   },
-  
+
   // Fluid Typography (responsive scaling with clamp)
   fluidSize: {
     // Automatically scales between mobile and desktop
@@ -603,17 +603,17 @@ export const motion = {
     easeIn: "cubic-bezier(0.4, 0, 1, 1)",
     easeOut: "cubic-bezier(0, 0, 0.2, 1)",
     easeInOut: "cubic-bezier(0.4, 0, 0.2, 1)",
-    
+
     // Material Design easings
     standard: "cubic-bezier(0.4, 0.0, 0.2, 1)",
     decelerate: "cubic-bezier(0.0, 0.0, 0.2, 1)",
     accelerate: "cubic-bezier(0.4, 0.0, 1, 1)",
-    
+
     // Expressive easings
     spring: "cubic-bezier(0.34, 1.56, 0.64, 1)", // Bouncy spring
     bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)", // Bounce effect
     elastic: "cubic-bezier(0.68, -0.6, 0.32, 1.6)", // Elastic snap
-    
+
     // Smooth easings
     smooth: "cubic-bezier(0.45, 0.05, 0.55, 0.95)", // Very smooth
     silk: "cubic-bezier(0.23, 1, 0.32, 1)", // Silky smooth
@@ -642,7 +642,8 @@ export const motion = {
 
   // Common Transitions
   transitions: {
-    colors: "color 250ms ease-in-out, background-color 250ms ease-in-out, border-color 250ms ease-in-out",
+    colors:
+      "color 250ms ease-in-out, background-color 250ms ease-in-out, border-color 250ms ease-in-out",
     transform: "transform 250ms ease-in-out",
     opacity: "opacity 250ms ease-in-out",
     all: "all 250ms ease-in-out",
@@ -779,7 +780,8 @@ export const animations = {
 
   // Common Transitions (legacy support)
   transitions: {
-    colors: "color 250ms ease-in-out, background-color 250ms ease-in-out, border-color 250ms ease-in-out",
+    colors:
+      "color 250ms ease-in-out, background-color 250ms ease-in-out, border-color 250ms ease-in-out",
     transform: "transform 250ms ease-in-out",
     opacity: "opacity 250ms ease-in-out",
     all: "all 250ms ease-in-out",

@@ -3,9 +3,9 @@
  * Wrapper for lists with staggered fade-in animations
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { staggerContainer, staggerItem } from '@/lib/animation-variants';
+import React from "react";
+import { motion } from "framer-motion";
+import { staggerContainer, staggerItem } from "@/lib/animation-variants";
 
 interface AnimatedListProps {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ interface AnimatedListProps {
 
 /**
  * AnimatedList - Container for animated list items
- * 
+ *
  * Usage:
  * ```tsx
  * <AnimatedList>
@@ -32,7 +32,7 @@ interface AnimatedListProps {
  */
 export function AnimatedList({
   children,
-  className = '',
+  className = "",
   delay = 0,
   staggerDelay = 0.05,
 }: AnimatedListProps) {
@@ -63,13 +63,10 @@ interface AnimatedListItemProps {
  */
 export function AnimatedListItem({
   children,
-  className = '',
+  className = "",
 }: AnimatedListItemProps) {
   return (
-    <motion.div
-      className={className}
-      variants={staggerItem}
-    >
+    <motion.div className={className} variants={staggerItem}>
       {children}
     </motion.div>
   );
@@ -89,23 +86,23 @@ interface AnimatedGridProps {
 
 export function AnimatedGrid({
   children,
-  className = '',
+  className = "",
   columns = 3,
   gap = 6,
   delay = 0,
   staggerDelay = 0.05,
 }: AnimatedGridProps) {
   const columnsClass = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+    1: "grid-cols-1",
+    2: "grid-cols-1 md:grid-cols-2",
+    3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+    4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
   }[columns];
 
   const gapClass = {
-    4: 'gap-4',
-    6: 'gap-6',
-    8: 'gap-8',
+    4: "gap-4",
+    6: "gap-6",
+    8: "gap-8",
   }[gap];
 
   return (

@@ -13,15 +13,15 @@ With 100% design token coverage achieved, we now focus on elevating LiteWork to 
 
 ### Target Metrics
 
-| Metric | Current | Target | Priority |
-|--------|---------|--------|----------|
-| Lighthouse Performance | 85 | 95+ | HIGH |
-| First Contentful Paint | ~1.2s | <1.0s | HIGH |
-| Time to Interactive | ~2.5s | <2.0s | HIGH |
-| Cumulative Layout Shift | ~0.1 | <0.05 | MEDIUM |
-| WCAG AA Compliance | 90% | 100% | HIGH |
-| Animation Frame Rate | Varies | 60fps | HIGH |
-| Bundle Size | Current | -20% | MEDIUM |
+| Metric                  | Current | Target | Priority |
+| ----------------------- | ------- | ------ | -------- |
+| Lighthouse Performance  | 85      | 95+    | HIGH     |
+| First Contentful Paint  | ~1.2s   | <1.0s  | HIGH     |
+| Time to Interactive     | ~2.5s   | <2.0s  | HIGH     |
+| Cumulative Layout Shift | ~0.1    | <0.05  | MEDIUM   |
+| WCAG AA Compliance      | 90%     | 100%   | HIGH     |
+| Animation Frame Rate    | Varies  | 60fps  | HIGH     |
+| Bundle Size             | Current | -20%   | MEDIUM   |
 
 ---
 
@@ -41,26 +41,27 @@ const buttonAnimations = {
   hover: {
     y: -2,
     boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25)",
-    transition: { duration: 0.2, ease: "easeOut" }
+    transition: { duration: 0.2, ease: "easeOut" },
   },
-  
+
   // Press down feedback
   tap: {
     y: 0,
     scale: 0.98,
-    transition: { duration: 0.1 }
+    transition: { duration: 0.1 },
   },
-  
+
   // Success state morph
   success: {
     scale: [1, 1.05, 1],
     backgroundColor: "#10b981",
-    transition: { duration: 0.4 }
-  }
-}
+    transition: { duration: 0.4 },
+  },
+};
 ```
 
 **Enhancements**:
+
 - ✨ Hover: Lift + shadow expansion (200ms)
 - ✨ Press: Scale down feedback (100ms)
 - ✨ Loading: Spinning icon with pulse
@@ -81,7 +82,7 @@ const buttonAnimations = {
 
 .card:hover {
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.08),
     0 0 0 1px var(--color-primary-light);
 }
@@ -92,6 +93,7 @@ const buttonAnimations = {
 ```
 
 **Apply to**:
+
 - Workout cards (dashboard, library)
 - Athlete cards (roster)
 - Assignment cards (calendar)
@@ -106,24 +108,23 @@ const buttonAnimations = {
 ```tsx
 // Floating label animation
 <div className="relative">
-  <input
-    type="text"
-    className="peer"
-    placeholder=" "
-  />
-  <label className="
+  <input type="text" className="peer" placeholder=" " />
+  <label
+    className="
     absolute left-3 top-3
     text-gray-500
     transition-all duration-200
     peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary
     peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-xs
-  ">
+  "
+  >
     Exercise Name
   </label>
 </div>
 ```
 
 **Features**:
+
 - Floating labels (Material Design style)
 - Real-time validation feedback
 - Success checkmark animation
@@ -143,13 +144,13 @@ const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.05 }
-  }
+    transition: { staggerChildren: 0.05 },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 <motion.ul variants={container} initial="hidden" animate="show">
@@ -158,10 +159,11 @@ const item = {
       {/* content */}
     </motion.li>
   ))}
-</motion.ul>
+</motion.ul>;
 ```
 
 **Apply to**:
+
 - Workout list (dashboard)
 - Exercise list (editor)
 - Athlete roster
@@ -176,35 +178,35 @@ const item = {
 ```tsx
 // Enhanced modal animation
 const modalVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     scale: 0.95,
-    y: 20
+    y: 20,
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     y: 0,
     transition: {
       duration: 0.2,
-      ease: [0.4, 0, 0.2, 1]
-    }
+      ease: [0.4, 0, 0.2, 1],
+    },
   },
   exit: {
     opacity: 0,
     scale: 0.95,
     y: 20,
-    transition: { duration: 0.15 }
-  }
+    transition: { duration: 0.15 },
+  },
 };
 
 const backdropVariants = {
   hidden: { opacity: 0, backdropFilter: "blur(0px)" },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     backdropFilter: "blur(8px)",
-    transition: { duration: 0.2 }
-  }
+    transition: { duration: 0.2 },
+  },
 };
 ```
 
@@ -253,17 +255,17 @@ export function WorkoutListSkeleton({ count = 5 }) {
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-5 w-20" />
           </div>
-          
+
           {/* Description */}
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
-          
+
           {/* Meta */}
           <div className="flex gap-4">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-4 w-32" />
           </div>
-          
+
           {/* Actions */}
           <div className="flex gap-2 pt-2">
             <Skeleton className="h-9 w-24" />
@@ -281,14 +283,14 @@ export function WorkoutListSkeleton({ count = 5 }) {
 **Prevent Flash of Loading State**:
 
 ```tsx
-import { useMinimumSkeletonTime } from '@/components/skeletons';
+import { useMinimumSkeletonTime } from "@/components/skeletons";
 
 function WorkoutList() {
-  const { data, isLoading } = useSWR('/api/workouts');
-  
+  const { data, isLoading } = useSWR("/api/workouts");
+
   // Only show skeleton if loading takes > 300ms
   const showSkeleton = useMinimumSkeletonTime(isLoading, 300);
-  
+
   if (showSkeleton) return <WorkoutListSkeleton />;
   return <WorkoutGrid workouts={data} />;
 }
@@ -299,15 +301,19 @@ function WorkoutList() {
 ```tsx
 // Load critical data first, then enhance
 function Dashboard() {
-  const { data: stats } = useSWR('/api/stats'); // Fast, show immediately
-  const { data: workouts } = useSWR('/api/workouts'); // Slower, load after
-  const { data: assignments } = useSWR('/api/assignments'); // Slowest
-  
+  const { data: stats } = useSWR("/api/stats"); // Fast, show immediately
+  const { data: workouts } = useSWR("/api/workouts"); // Slower, load after
+  const { data: assignments } = useSWR("/api/assignments"); // Slowest
+
   return (
     <>
       {stats ? <StatsCards data={stats} /> : <StatsSkeleton />}
       {workouts ? <RecentWorkouts data={workouts} /> : <WorkoutsSkeleton />}
-      {assignments ? <TodayAssignments data={assignments} /> : <AssignmentsSkeleton />}
+      {assignments ? (
+        <TodayAssignments data={assignments} />
+      ) : (
+        <AssignmentsSkeleton />
+      )}
     </>
   );
 }
@@ -318,28 +324,28 @@ function Dashboard() {
 **Instant Feedback Without Waiting**:
 
 ```tsx
-import { useOptimisticUpdate } from '@/lib/optimistic-updates';
+import { useOptimisticUpdate } from "@/lib/optimistic-updates";
 
 function CompleteSetButton({ setId, onComplete }) {
   const [isCompleted, setIsCompleted] = useState(false);
-  
+
   const handleComplete = useOptimisticUpdate(
     async () => {
       // Optimistic update - instant feedback
       setIsCompleted(true);
-      
+
       // Actual API call
-      await fetch(`/api/sets/${setId}/complete`, { method: 'POST' });
+      await fetch(`/api/sets/${setId}/complete`, { method: "POST" });
     },
     {
       onError: () => {
         // Rollback on error
         setIsCompleted(false);
         toast.error("Failed to complete set");
-      }
+      },
     }
   );
-  
+
   return (
     <button onClick={handleComplete} disabled={isCompleted}>
       {isCompleted ? "✓ Completed" : "Complete Set"}
@@ -355,31 +361,35 @@ function CompleteSetButton({ setId, onComplete }) {
 ### 3.1 Bundle Size Analysis
 
 **Tools to Use**:
+
 - `npm run build` - Check bundle sizes
 - `@next/bundle-analyzer` - Visualize bundle
 - Lighthouse - Measure real performance
 
 **Target Reductions**:
 
-| Component | Current | Target | Strategy |
-|-----------|---------|--------|----------|
-| Main Bundle | ~350KB | <280KB | Code splitting |
-| Vendor Bundle | ~450KB | <400KB | Tree shaking |
-| CSS Bundle | ~80KB | <60KB | PurgeCSS |
-| Images | Varies | Optimized | WebP + lazy load |
+| Component     | Current | Target    | Strategy         |
+| ------------- | ------- | --------- | ---------------- |
+| Main Bundle   | ~350KB  | <280KB    | Code splitting   |
+| Vendor Bundle | ~450KB  | <400KB    | Tree shaking     |
+| CSS Bundle    | ~80KB   | <60KB     | PurgeCSS         |
+| Images        | Varies  | Optimized | WebP + lazy load |
 
 ### 3.2 Code Splitting Strategy
 
 ```tsx
 // Dynamic imports for heavy components
-const WorkoutEditor = dynamic(() => import('@/components/WorkoutEditor'), {
+const WorkoutEditor = dynamic(() => import("@/components/WorkoutEditor"), {
   loading: () => <WorkoutEditorSkeleton />,
-  ssr: false // Client-only for complex editor
+  ssr: false, // Client-only for complex editor
 });
 
-const ProgressAnalytics = dynamic(() => import('@/components/ProgressAnalytics'), {
-  loading: () => <AnalyticsSkeleton />
-});
+const ProgressAnalytics = dynamic(
+  () => import("@/components/ProgressAnalytics"),
+  {
+    loading: () => <AnalyticsSkeleton />,
+  }
+);
 
 // Route-based code splitting (Next.js automatic)
 // Each page is its own chunk
@@ -389,7 +399,7 @@ const ProgressAnalytics = dynamic(() => import('@/components/ProgressAnalytics')
 
 ```tsx
 // Use Next.js Image component everywhere
-import Image from 'next/image';
+import Image from "next/image";
 
 <Image
   src="/exercise-images/bench-press.jpg"
@@ -400,10 +410,11 @@ import Image from 'next/image';
   quality={85}
   placeholder="blur"
   blurDataURL="data:image/png;base64,..." // Generate blur placeholder
-/>
+/>;
 ```
 
 **Audit All Images**:
+
 - [ ] Exercise library images
 - [ ] Athlete avatars
 - [ ] Achievement badges
@@ -414,20 +425,20 @@ import Image from 'next/image';
 
 ```tsx
 // In layout.tsx
-import { Inter, Poppins } from 'next/font/google';
+import { Inter, Poppins } from "next/font/google";
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap', // Avoid FOIT (Flash of Invisible Text)
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", // Avoid FOIT (Flash of Invisible Text)
   preload: true,
-  variable: '--font-inter'
+  variable: "--font-inter",
 });
 
 const poppins = Poppins({
-  weight: ['600', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-poppins'
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
 });
 ```
 
@@ -447,8 +458,8 @@ const queryClient = new QueryClient({
 });
 
 // Prefetch critical data
-queryClient.prefetchQuery(['workouts'], fetchWorkouts);
-queryClient.prefetchQuery(['exercises'], fetchExercises);
+queryClient.prefetchQuery(["workouts"], fetchWorkouts);
+queryClient.prefetchQuery(["exercises"], fetchExercises);
 ```
 
 ---
@@ -458,6 +469,7 @@ queryClient.prefetchQuery(['exercises'], fetchExercises);
 ### 4.1 Keyboard Navigation Audit
 
 **Test All Flows**:
+
 - [ ] Navigate entire app with keyboard only
 - [ ] Tab order is logical
 - [ ] All interactive elements are focusable
@@ -468,35 +480,41 @@ queryClient.prefetchQuery(['exercises'], fetchExercises);
 **Focus Management**:
 
 ```tsx
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 function Modal({ isOpen, onClose }) {
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const lastFocusableRef = useRef<HTMLButtonElement>(null);
-  
+
   useEffect(() => {
     if (isOpen) {
       // Focus first element when opened
       firstFocusableRef.current?.focus();
-      
+
       // Trap focus inside modal
       const handleTab = (e: KeyboardEvent) => {
-        if (e.key === 'Tab') {
-          if (e.shiftKey && document.activeElement === firstFocusableRef.current) {
+        if (e.key === "Tab") {
+          if (
+            e.shiftKey &&
+            document.activeElement === firstFocusableRef.current
+          ) {
             e.preventDefault();
             lastFocusableRef.current?.focus();
-          } else if (!e.shiftKey && document.activeElement === lastFocusableRef.current) {
+          } else if (
+            !e.shiftKey &&
+            document.activeElement === lastFocusableRef.current
+          ) {
             e.preventDefault();
             firstFocusableRef.current?.focus();
           }
         }
       };
-      
-      document.addEventListener('keydown', handleTab);
-      return () => document.removeEventListener('keydown', handleTab);
+
+      document.addEventListener("keydown", handleTab);
+      return () => document.removeEventListener("keydown", handleTab);
     }
   }, [isOpen]);
-  
+
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <button ref={firstFocusableRef}>First Focusable</button>
@@ -518,7 +536,7 @@ function Modal({ isOpen, onClose }) {
 </button>
 
 // ✅ Good
-<button 
+<button
   onClick={handleDelete}
   aria-label="Delete workout"
 >
@@ -530,7 +548,7 @@ function Modal({ isOpen, onClose }) {
 
 // ✅ Good
 <label htmlFor="workout-name">Workout Name</label>
-<input 
+<input
   id="workout-name"
   type="text"
   aria-required="true"
@@ -542,11 +560,13 @@ function Modal({ isOpen, onClose }) {
 ### 4.3 Color Contrast Verification
 
 **Run Automated Checks**:
+
 - Use axe DevTools Chrome extension
 - Check all text/background combinations
 - Ensure WCAG AA compliance (4.5:1 for normal text)
 
 **Common Issues to Fix**:
+
 - Gray text on white backgrounds
 - Colored badges with light backgrounds
 - Placeholder text colors
@@ -555,6 +575,7 @@ function Modal({ isOpen, onClose }) {
 ### 4.4 Screen Reader Testing
 
 **Test with VoiceOver/NVDA**:
+
 - [ ] Page landmarks are announced
 - [ ] Heading hierarchy is correct (h1 → h2 → h3)
 - [ ] Form labels are read correctly
@@ -585,7 +606,7 @@ export function EmptyState({
   title,
   description,
   action,
-  illustration
+  illustration,
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -609,15 +630,12 @@ export function EmptyState({
   icon={Dumbbell}
   title="No workouts yet"
   description="Create your first workout to get started with tracking your training."
-  action={
-    <Button onClick={() => setShowEditor(true)}>
-      Create Workout
-    </Button>
-  }
-/>
+  action={<Button onClick={() => setShowEditor(true)}>Create Workout</Button>}
+/>;
 ```
 
 **Apply to**:
+
 - Empty workout library
 - No assigned workouts
 - No athletes in group
@@ -633,19 +651,19 @@ export function ErrorState({
   description,
   error,
   onRetry,
-  showDetails = false
+  showDetails = false,
 }) {
   const [showError, setShowError] = useState(false);
-  
+
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
         <AlertCircle className="w-8 h-8 text-red-600" />
       </div>
-      
+
       <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 max-w-md mb-6">{description}</p>
-      
+
       <div className="flex gap-3">
         {onRetry && (
           <Button onClick={onRetry} variant="primary">
@@ -656,7 +674,7 @@ export function ErrorState({
           Refresh Page
         </Button>
       </div>
-      
+
       {showDetails && error && (
         <details className="mt-6 w-full max-w-lg text-left">
           <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -686,11 +704,11 @@ export function ErrorState({
     min-height: 48px;
     padding: 12px 20px;
   }
-  
+
   .card {
     padding: 20px;
   }
-  
+
   .input {
     min-height: 48px;
     font-size: 16px; // Prevents zoom on iOS
@@ -701,16 +719,16 @@ export function ErrorState({
 ### 6.2 Gesture Support
 
 ```tsx
-import { useSwipeable } from 'react-swipeable';
+import { useSwipeable } from "react-swipeable";
 
 function WorkoutCard({ workout, onDelete, onEdit }) {
   const handlers = useSwipeable({
     onSwipedLeft: () => onDelete(workout.id),
     onSwipedRight: () => onEdit(workout.id),
     preventScrollOnSwipe: true,
-    trackMouse: false // Only touch, not mouse
+    trackMouse: false, // Only touch, not mouse
   });
-  
+
   return (
     <div {...handlers} className="swipeable-card">
       {/* Card content */}
@@ -722,16 +740,16 @@ function WorkoutCard({ workout, onDelete, onEdit }) {
 ### 6.3 Pull-to-Refresh
 
 ```tsx
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 
 function WorkoutList() {
-  const { mutate, isValidating } = useSWR('/api/workouts');
-  
+  const { mutate, isValidating } = useSWR("/api/workouts");
+
   const { isPulling, progress } = usePullToRefresh({
     onRefresh: () => mutate(),
-    threshold: 80
+    threshold: 80,
   });
-  
+
   return (
     <>
       {isPulling && (

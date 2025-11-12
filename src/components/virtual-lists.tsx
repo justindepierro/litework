@@ -92,9 +92,13 @@ export const VirtualAthleteList: React.FC<VirtualAthleteListProps> = ({
           </div>
           <div className="flex-1">
             <div className="font-medium">{athlete.name}</div>
-            <div className="text-sm text-[var(--color-text-secondary)]">{athlete.email}</div>
+            <div className="text-sm text-[var(--color-text-secondary)]">
+              {athlete.email}
+            </div>
             {athlete.sport && (
-              <div className="text-xs text-[var(--color-text-tertiary)] mt-1">{athlete.sport}</div>
+              <div className="text-xs text-[var(--color-text-tertiary)] mt-1">
+                {athlete.sport}
+              </div>
             )}
           </div>
         </div>
@@ -129,7 +133,9 @@ export const VirtualExerciseList: React.FC<VirtualExerciseListProps> = ({
         <div
           key={exercise.id}
           className={`bg-[var(--color-silver-200)] rounded-lg p-3 ${
-            onExerciseClick ? "cursor-pointer hover:bg-[var(--color-silver-300)]" : ""
+            onExerciseClick
+              ? "cursor-pointer hover:bg-[var(--color-silver-300)]"
+              : ""
           }`}
           onClick={() => onExerciseClick?.(exercise.id)}
         >

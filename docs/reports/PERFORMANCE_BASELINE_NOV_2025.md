@@ -1,4 +1,5 @@
 # Performance Baseline & Optimization Plan
+
 **Date:** November 12, 2025  
 **Project:** LiteWork - Workout Tracker  
 **Status:** Baseline Analysis Complete
@@ -14,11 +15,13 @@ Current application performance analysis based on Next.js 16 build output and co
 ## Build Analysis
 
 ### Route Configuration ✅
+
 ```
 All 22 routes: ○ (Static) - prerendered as static content
 ```
 
 **Routes:**
+
 - ✅ `/` - Landing
 - ✅ `/dashboard` - Main dashboard
 - ✅ `/athletes` - Athlete management
@@ -39,29 +42,34 @@ All 22 routes: ○ (Static) - prerendered as static content
 ## Current Optimizations ✅
 
 ### 1. **Code Splitting** ✅
+
 - Next.js automatic code splitting per route
 - Dynamic imports for heavy components
 - Lazy loading patterns in place
 
 ### 2. **React Performance** ✅
+
 - `useMemo` for expensive computations
 - `useCallback` for stable function references
 - `React.memo` for pure components
 - Proper dependency arrays in hooks
 
 ### 3. **Animation Performance** ✅
+
 - Framer Motion with GPU acceleration
 - `will-change` properties for transforms
 - Spring physics (60fps target)
 - Respects `prefers-reduced-motion`
 
 ### 4. **Loading Optimization** ✅
+
 - Skeleton screens with 300ms minimum
 - `useMinimumLoadingTime` hook prevents flashing
 - Progressive loading patterns
 - Optimistic UI updates
 
 ### 5. **PWA Configuration** ✅
+
 - Service worker for offline capability
 - Manifest for app installation
 - Caching strategies in place
@@ -73,10 +81,12 @@ All 22 routes: ○ (Static) - prerendered as static content
 ### Priority 1: High Impact, Low Effort
 
 #### 1.1 Font Optimization
+
 **Current State:** Font loading not optimized  
 **Target:** Preload critical fonts, use `font-display: swap`
 
 **Action Items:**
+
 ```typescript
 // In layout.tsx or _document.tsx
 <link
@@ -89,6 +99,7 @@ All 22 routes: ○ (Static) - prerendered as static content
 ```
 
 **Expected Impact:**
+
 - Reduce First Contentful Paint (FCP) by 200-400ms
 - Eliminate font flash (FOIT/FOUT)
 - Lighthouse score: +5-10 points
@@ -96,10 +107,12 @@ All 22 routes: ○ (Static) - prerendered as static content
 ---
 
 #### 1.2 Image Optimization
+
 **Current State:** No images currently in use (icon-based UI)  
 **Future Proof:** Ready for athlete photos, workout images
 
 **Action Items:**
+
 ```typescript
 // When adding images, use next/image
 import Image from 'next/image';
@@ -116,6 +129,7 @@ import Image from 'next/image';
 ```
 
 **Expected Impact:**
+
 - Automatic WebP/AVIF conversion
 - Responsive images (srcset)
 - Lazy loading below fold
@@ -124,29 +138,33 @@ import Image from 'next/image';
 ---
 
 #### 1.3 Bundle Analysis
+
 **Current State:** No bundle size analysis performed  
 **Action:** Generate bundle analysis report
 
 **Action Items:**
+
 ```bash
 npm install --save-dev @next/bundle-analyzer
 ```
 
 ```javascript
 // next.config.ts
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
 });
 
 module.exports = withBundleAnalyzer(nextConfig);
 ```
 
 **Run:**
+
 ```bash
 ANALYZE=true npm run build
 ```
 
 **Expected Insights:**
+
 - Identify largest dependencies
 - Find duplicate code
 - Discover tree-shaking opportunities
@@ -156,10 +174,12 @@ ANALYZE=true npm run build
 ### Priority 2: Medium Impact, Medium Effort
 
 #### 2.1 API Route Optimization
+
 **Current State:** All API routes use cookies (dynamic rendering)  
 **Observation:** Expected for authenticated routes
 
 **Action Items:**
+
 - Implement API response caching where appropriate
 - Use SWR/React Query for client-side caching
 - Consider edge caching for public data
@@ -172,13 +192,14 @@ export async function GET() {
   const exercises = await getExercises();
   return NextResponse.json(exercises, {
     headers: {
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=7200'
-    }
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+    },
   });
 }
 ```
 
 **Expected Impact:**
+
 - Reduce API response times by 50-80%
 - Lower database load
 - Better user experience
@@ -186,15 +207,18 @@ export async function GET() {
 ---
 
 #### 2.2 Critical CSS Extraction
+
 **Current State:** Tailwind CSS loaded in full  
 **Target:** Inline critical CSS, defer non-critical
 
 **Action Items:**
+
 - Use Next.js CSS optimization (already enabled)
 - Consider critical CSS plugin for above-fold content
 - Purge unused Tailwind classes (already configured)
 
 **Expected Impact:**
+
 - Faster First Contentful Paint (FCP)
 - Reduce render-blocking CSS
 - Lighthouse score: +5-8 points
@@ -202,29 +226,31 @@ export async function GET() {
 ---
 
 #### 2.3 Database Query Optimization
+
 **Current State:** Supabase queries throughout app  
 **Target:** Optimize query patterns, add indexes
 
 **Action Items:**
+
 1. Analyze slow queries in Supabase dashboard
 2. Add database indexes for frequently queried fields
 3. Use `select` to limit columns returned
 4. Implement query batching where possible
 
 **Example:**
+
 ```typescript
 // Before: Fetch all columns
-const { data } = await supabase
-  .from('workouts')
-  .select('*');
+const { data } = await supabase.from("workouts").select("*");
 
 // After: Fetch only needed columns
 const { data } = await supabase
-  .from('workouts')
-  .select('id, name, estimated_duration, created_at');
+  .from("workouts")
+  .select("id, name, estimated_duration, created_at");
 ```
 
 **Expected Impact:**
+
 - Reduce API response times by 30-50%
 - Lower bandwidth usage
 - Better mobile performance
@@ -234,16 +260,19 @@ const { data } = await supabase
 ### Priority 3: Low Impact, High Effort
 
 #### 3.1 Service Worker Enhancement
+
 **Current State:** Basic PWA service worker  
 **Target:** Advanced caching strategies
 
 **Action Items:**
+
 - Implement runtime caching for API responses
 - Add offline page with useful content
 - Cache workout data for offline access
 - Implement background sync for pending actions
 
 **Expected Impact:**
+
 - Better offline experience
 - Faster repeat visits
 - Reduced server load
@@ -251,10 +280,12 @@ const { data } = await supabase
 ---
 
 #### 3.2 Component Lazy Loading
+
 **Current State:** Some dynamic imports in place  
 **Target:** Lazy load all heavy components
 
 **Action Items:**
+
 ```typescript
 // Lazy load modals and heavy components
 const WorkoutEditor = dynamic(() => import('@/components/WorkoutEditor'), {
@@ -269,6 +300,7 @@ const GroupAssignmentModal = dynamic(() => import('@/components/GroupAssignmentM
 ```
 
 **Expected Impact:**
+
 - Reduce initial bundle size by 20-30KB per lazy component
 - Faster Time to Interactive (TTI)
 - Better mobile performance
@@ -278,13 +310,16 @@ const GroupAssignmentModal = dynamic(() => import('@/components/GroupAssignmentM
 ## Performance Metrics Target
 
 ### Current (Estimated)
+
 Based on static rendering and optimizations in place:
+
 - **Performance:** 85-90
 - **Accessibility:** 95-98
 - **Best Practices:** 90-95
 - **SEO:** 95-100
 
 ### Target (After Optimizations)
+
 - **Performance:** 95+ ✅
 - **Accessibility:** 100 ✅
 - **Best Practices:** 100 ✅
@@ -305,12 +340,14 @@ Based on static rendering and optimizations in place:
 ## Monitoring & Testing
 
 ### Tools to Use:
+
 1. **Lighthouse** - Chrome DevTools → Lighthouse tab
 2. **WebPageTest** - https://webpagetest.org
 3. **Next.js Analytics** - Vercel Analytics (if deployed)
 4. **Bundle Analyzer** - `ANALYZE=true npm run build`
 
 ### Metrics to Track:
+
 - First Contentful Paint (FCP) - Target: <1.8s
 - Largest Contentful Paint (LCP) - Target: <2.5s
 - Total Blocking Time (TBT) - Target: <200ms

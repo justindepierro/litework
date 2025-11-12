@@ -18,13 +18,15 @@ Comprehensive performance optimization pass focusing on bundle size, lazy loadin
 
 **Tool**: @next/bundle-analyzer  
 **Reports Generated**:
+
 - `.next/analyze/client.html` (856KB) - Client-side bundle visualization
-- `.next/analyze/edge.html` (268KB) - Edge runtime analysis  
+- `.next/analyze/edge.html` (268KB) - Edge runtime analysis
 - `.next/analyze/nodejs.html` (1.2MB) - Server-side bundle analysis
 
 **Command**: `ANALYZE=true npm run build --webpack`
 
 **Key Findings**:
+
 - All 22 routes are statically prerendered (○ marker)
 - Zero dynamic pages during build
 - Build time: ~8-9s (excellent for project size)
@@ -37,12 +39,13 @@ Comprehensive performance optimization pass focusing on bundle size, lazy loadin
 **Location**: `src/app/layout.tsx`
 
 **Optimizations**:
+
 ```typescript
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",           // ✅ Prevents FOIT (Flash of Invisible Text)
-  preload: true,             // ✅ Preloads font files
+  display: "swap", // ✅ Prevents FOIT (Flash of Invisible Text)
+  preload: true, // ✅ Preloads font files
 });
 
 const poppins = Poppins({
@@ -55,6 +58,7 @@ const poppins = Poppins({
 ```
 
 **Benefits**:
+
 - Font display swap prevents layout shift
 - Preloading reduces First Contentful Paint (FCP)
 - Limited weights reduce bundle size
@@ -67,10 +71,15 @@ const poppins = Poppins({
 **Location**: `src/app/layout.tsx` (`<head>`)
 
 **Resources Preconnected**:
+
 ```html
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+<link
+  rel="preconnect"
+  href="https://fonts.gstatic.com"
+  crossorigin="anonymous"
+/>
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
 <!-- Supabase API -->
@@ -79,6 +88,7 @@ const poppins = Poppins({
 ```
 
 **Impact**:
+
 - Reduces DNS lookup time for critical resources
 - Establishes early connections to external services
 - Improves Time to First Byte (TTFB) for API calls
@@ -90,6 +100,7 @@ const poppins = Poppins({
 **Location**: `next.config.ts`
 
 **Configuration**:
+
 ```typescript
 images: {
   formats: ["image/webp", "image/avif"],    // Modern formats
@@ -101,6 +112,7 @@ images: {
 ```
 
 **Benefits**:
+
 - WebP/AVIF provide 30-50% smaller file sizes vs JPEG/PNG
 - Responsive device sizes serve optimal image for screen
 - 1-year cache reduces repeat downloads
@@ -113,11 +125,13 @@ images: {
 **Added**: `src/app/schedule/page.tsx` - GroupAssignmentModal lazy loading
 
 **Before**:
+
 ```typescript
 import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 ```
 
 **After**:
+
 ```typescript
 import { lazy, Suspense } from "react";
 
@@ -134,12 +148,14 @@ const GroupAssignmentModal = lazy(
 ```
 
 **Impact**:
+
 - Modal only loaded when user opens it
 - Reduces initial page bundle size
 - Faster Time to Interactive (TTI)
 - Already implemented in: Dashboard, Workouts, Athletes pages
 
 **Components Already Lazy-Loaded**:
+
 - ✅ WorkoutEditor (workouts page)
 - ✅ GroupAssignmentModal (dashboard, workouts, schedule)
 - ✅ BulkKPIAssignmentModal (athletes page)
@@ -153,6 +169,7 @@ const GroupAssignmentModal = lazy(
 **Optimizations**:
 
 **A. Chunk Splitting**:
+
 ```typescript
 splitChunks: {
   chunks: "all",
@@ -169,35 +186,40 @@ splitChunks: {
 ```
 
 **Benefits**:
+
 - Vendors, React, Supabase, UI isolated into separate chunks
 - Better browser caching (framework code rarely changes)
 - Parallel download of multiple smaller chunks
 - Max 150KB chunks for optimal HTTP/2 multiplexing
 
 **B. Tree Shaking**:
+
 ```typescript
 usedExports: true,
 sideEffects: false,
 ```
 
 **Benefits**:
+
 - Removes unused exports from final bundle
 - Reduces dead code in production
 - Automatic optimization by Next.js
 
 **C. Production Minification**:
+
 ```typescript
 new TerserPlugin({
   terserOptions: {
     compress: {
-      drop_console: true,    // Remove console.log
-      drop_debugger: true,   // Remove debugger statements
+      drop_console: true, // Remove console.log
+      drop_debugger: true, // Remove debugger statements
     },
   },
-})
+});
 ```
 
 **Benefits**:
+
 - Removes all `console.log` statements in production
 - Smaller bundle size
 - No debug information leaked to production
@@ -209,6 +231,7 @@ new TerserPlugin({
 **Location**: `next.config.ts`
 
 **Configuration**:
+
 ```typescript
 experimental: {
   optimizeCss: true,
@@ -222,12 +245,14 @@ experimental: {
 ```
 
 **Benefits**:
+
 - Only imports used icons/functions (not entire library)
 - Reduces bundle size by 50-70% for icon libraries
 - Faster build times
 - Automatic by Next.js 15+
 
 **Example**:
+
 ```typescript
 // Old: Imports entire library (~500KB)
 import * as Icons from "lucide-react";
@@ -243,6 +268,7 @@ import { Calendar, User, Settings } from "lucide-react";
 **Location**: `next.config.ts` (headers section)
 
 **Cache Headers**:
+
 ```typescript
 // Images, icons: 1 year immutable
 {
@@ -270,6 +296,7 @@ import { Calendar, User, Settings } from "lucide-react";
 ```
 
 **Benefits**:
+
 - Static assets cached for 1 year (no re-downloads)
 - Service worker always fresh (critical for updates)
 - Manifest cached daily (PWA metadata)
@@ -282,6 +309,7 @@ import { Calendar, User, Settings } from "lucide-react";
 **Location**: `src/lib/api-cache.ts` (277 lines)
 
 **Features**:
+
 - In-memory client-side cache with TTL
 - Automatic cleanup of expired entries
 - Request deduplication (prevents duplicate concurrent requests)
@@ -289,23 +317,25 @@ import { Calendar, User, Settings } from "lucide-react";
 - Cache statistics and management
 
 **Usage Example**:
+
 ```typescript
 import { cachedApiRequest } from "@/lib/api-cache";
 
 // Caches for 5 minutes (default TTL)
-const exercises = await cachedApiRequest<Exercise[]>(
-  "/api/exercises",
-  { ttl: 5 * 60 * 1000 }
-);
+const exercises = await cachedApiRequest<Exercise[]>("/api/exercises", {
+  ttl: 5 * 60 * 1000,
+});
 ```
 
 **Cache Keys Available**:
+
 - `/api/exercises` - Exercise library (rarely changes)
 - `/api/kpi-tags` - KPI tags (static data)
 - `/api/muscle-groups` - Muscle groups (static data)
 - `/api/blocks` - Workout blocks (semi-static)
 
 **Impact**:
+
 - Reduces API calls by 60-80%
 - Instant data on revisit (same session)
 - Better perceived performance
@@ -318,6 +348,7 @@ const exercises = await cachedApiRequest<Exercise[]>(
 **Location**: `next.config.ts` (headers section)
 
 **Headers Applied**:
+
 ```typescript
 {
   key: "X-Content-Type-Options",
@@ -338,6 +369,7 @@ const exercises = await cachedApiRequest<Exercise[]>(
 ```
 
 **Benefits**:
+
 - Prevents MIME type sniffing attacks
 - Blocks clickjacking (iframe embedding)
 - Enables XSS protection
@@ -350,33 +382,33 @@ const exercises = await cachedApiRequest<Exercise[]>(
 
 ### Build Performance
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Build Time | 8.6s | ✅ Excellent |
-| TypeScript Compilation | 7.9s | ✅ Fast |
-| Static Pages | 22/22 (100%) | ✅ Perfect |
-| Dynamic Pages | 0 | ✅ Optimal |
-| API Routes | 60 | ✅ All functional |
+| Metric                 | Value        | Status            |
+| ---------------------- | ------------ | ----------------- |
+| Build Time             | 8.6s         | ✅ Excellent      |
+| TypeScript Compilation | 7.9s         | ✅ Fast           |
+| Static Pages           | 22/22 (100%) | ✅ Perfect        |
+| Dynamic Pages          | 0            | ✅ Optimal        |
+| API Routes             | 60           | ✅ All functional |
 
 ### Bundle Size (Estimated)
 
-| Component | Size (gzipped) | Status |
-|-----------|----------------|--------|
-| Main Bundle | ~150KB | ✅ Excellent |
-| Framework (React) | ~45KB | ✅ Standard |
-| Vendors | ~180KB | ✅ Good |
-| Supabase | ~60KB | ✅ Acceptable |
-| UI/Icons | ~40KB | ✅ Optimized |
-| **Total Initial** | **~475KB** | ✅ Under 500KB target |
+| Component         | Size (gzipped) | Status                |
+| ----------------- | -------------- | --------------------- |
+| Main Bundle       | ~150KB         | ✅ Excellent          |
+| Framework (React) | ~45KB          | ✅ Standard           |
+| Vendors           | ~180KB         | ✅ Good               |
+| Supabase          | ~60KB          | ✅ Acceptable         |
+| UI/Icons          | ~40KB          | ✅ Optimized          |
+| **Total Initial** | **~475KB**     | ✅ Under 500KB target |
 
 ### Expected Lighthouse Scores
 
-| Category | Target | Confidence |
-|----------|--------|------------|
-| Performance | 95+ | High |
-| Accessibility | 100 | ✅ Verified (Task 6) |
-| Best Practices | 100 | High |
-| SEO | 95+ | High |
+| Category       | Target | Confidence           |
+| -------------- | ------ | -------------------- |
+| Performance    | 95+    | High                 |
+| Accessibility  | 100    | ✅ Verified (Task 6) |
+| Best Practices | 100    | High                 |
+| SEO            | 95+    | High                 |
 
 ---
 
@@ -384,14 +416,14 @@ const exercises = await cachedApiRequest<Exercise[]>(
 
 ### Load Time Improvements
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| First Contentful Paint (FCP) | ~1.2s | ~0.8s | **33% faster** |
-| Time to Interactive (TTI) | ~2.5s | ~1.8s | **28% faster** |
-| Cumulative Layout Shift (CLS) | 0.05 | 0.02 | **60% better** |
-| Total Blocking Time (TBT) | 250ms | 150ms | **40% reduction** |
+| Metric                        | Before | After | Improvement       |
+| ----------------------------- | ------ | ----- | ----------------- |
+| First Contentful Paint (FCP)  | ~1.2s  | ~0.8s | **33% faster**    |
+| Time to Interactive (TTI)     | ~2.5s  | ~1.8s | **28% faster**    |
+| Cumulative Layout Shift (CLS) | 0.05   | 0.02  | **60% better**    |
+| Total Blocking Time (TBT)     | 250ms  | 150ms | **40% reduction** |
 
-*(Estimated based on optimizations - actual results will be measured in production)*
+_(Estimated based on optimizations - actual results will be measured in production)_
 
 ### User Experience Improvements
 

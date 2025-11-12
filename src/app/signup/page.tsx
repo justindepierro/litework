@@ -138,11 +138,26 @@ function SignUpForm() {
 
       // Calculate password strength
       let strength: "weak" | "fair" | "good" | "strong" = "weak";
-      if (value.length >= 12 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) {
+      if (
+        value.length >= 12 &&
+        /[A-Z]/.test(value) &&
+        /[a-z]/.test(value) &&
+        /[0-9]/.test(value) &&
+        /[^A-Za-z0-9]/.test(value)
+      ) {
         strength = "strong";
-      } else if (value.length >= 10 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value)) {
+      } else if (
+        value.length >= 10 &&
+        /[A-Z]/.test(value) &&
+        /[a-z]/.test(value) &&
+        /[0-9]/.test(value)
+      ) {
         strength = "good";
-      } else if (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value)) {
+      } else if (
+        value.length >= 8 &&
+        /[A-Z]/.test(value) &&
+        /[a-z]/.test(value)
+      ) {
         strength = "fair";
       }
       setPasswordStrength(strength);
@@ -416,10 +431,10 @@ function SignUpForm() {
                               passwordStrength === "weak"
                                 ? "w-1/4 bg-red-500"
                                 : passwordStrength === "fair"
-                                ? "w-2/4 bg-yellow-500"
-                                : passwordStrength === "good"
-                                ? "w-3/4 bg-blue-500"
-                                : "w-full bg-green-500"
+                                  ? "w-2/4 bg-yellow-500"
+                                  : passwordStrength === "good"
+                                    ? "w-3/4 bg-blue-500"
+                                    : "w-full bg-green-500"
                             }`}
                           />
                         </div>
@@ -428,10 +443,10 @@ function SignUpForm() {
                             passwordStrength === "weak"
                               ? "text-red-600"
                               : passwordStrength === "fair"
-                              ? "text-yellow-600"
-                              : passwordStrength === "good"
-                              ? "text-blue-600"
-                              : "text-green-600"
+                                ? "text-yellow-600"
+                                : passwordStrength === "good"
+                                  ? "text-blue-600"
+                                  : "text-green-600"
                           }`}
                         >
                           {passwordStrength.charAt(0).toUpperCase() +

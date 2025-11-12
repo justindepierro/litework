@@ -353,7 +353,9 @@ const Navigation = memo(function Navigation() {
                 className="flex items-center gap-3 w-full text-left px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-[var(--color-interactive-danger-hover)] transition-all touch-manipulation active:bg-[var(--color-interactive-danger-active)] bg-[var(--color-interactive-danger-base)]"
               >
                 <LogOut className="w-5 h-5 text-[var(--color-semantic-error-base)]" />
-                <span className="text-[var(--color-semantic-error-light)]">Logout</span>
+                <span className="text-[var(--color-semantic-error-light)]">
+                  Logout
+                </span>
               </button>
             </>
           ) : (
