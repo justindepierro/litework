@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useCountUp } from "@/hooks/use-count-up";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import TodayOverview from "@/components/TodayOverview";
 import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { SkeletonStatCard, SkeletonWorkoutCard, SkeletonCard } from "@/components/ui/Skeleton";
 
 // Lazy load heavy components
 const DraggableAthleteCalendar = lazy(
@@ -61,6 +62,10 @@ export default function DashboardPage() {
     currentStreak: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  
+  // Use minimum loading time to prevent jarring flashes
+  const { showSkeleton: showStatsSkeleton } = useMinimumLoadingTime(loadingStats, 300);
+  
   const [coachWelcomeMessage, setCoachWelcomeMessage] = useState<string | null>(
     null
   );
@@ -71,6 +76,9 @@ export default function DashboardPage() {
   const [groups, setGroups] = useState<AthleteGroup[]>([]);
   const [athletes, setAthletes] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+  
+  // Use minimum loading time for assignments/calendar data
+  const { showSkeleton: showDataSkeleton } = useMinimumLoadingTime(loadingData, 300);
 
   // Modal state
   const [showGroupAssignment, setShowGroupAssignment] = useState(false);
@@ -414,15 +422,15 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {loadingData ? (
-                <div className="p-12 text-center">
-                  <LoadingSpinner size="lg" message="Loading calendar..." />
+              {showDataSkeleton ? (
+                <div className="p-8">
+                  <SkeletonCard className="h-96" />
                 </div>
               ) : (
                 <Suspense
                   fallback={
-                    <div className="p-12 text-center">
-                      <LoadingSpinner size="lg" message="Loading calendar..." />
+                    <div className="p-8">
+                      <SkeletonCard className="h-96" />
                     </div>
                   }
                 >
@@ -442,7 +450,7 @@ export default function DashboardPage() {
 
           {/* Assignment Modals */}
           {showGroupAssignment && (
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<SkeletonCard className="h-96" />}>
               <GroupAssignmentModal
                 isOpen={showGroupAssignment}
                 onClose={() => setShowGroupAssignment(false)}
@@ -456,7 +464,7 @@ export default function DashboardPage() {
           )}
 
           {showIndividualAssignment && (
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<SkeletonCard className="h-96" />}>
               <IndividualAssignmentModal
                 isOpen={showIndividualAssignment}
                 onClose={() => setShowIndividualAssignment(false)}
@@ -702,7 +710,7 @@ export default function DashboardPage() {
               icon={<Dumbbell className="w-5 h-5 text-accent-orange" />}
               value={stats.workoutsThisWeek}
               label="This Week"
-              loading={loadingStats}
+              loading={showStatsSkeleton}
               color="orange"
             />
 
@@ -710,7 +718,7 @@ export default function DashboardPage() {
               icon={<Trophy className="w-5 h-5 text-accent-green" />}
               value={stats.personalRecords}
               label="PRs"
-              loading={loadingStats}
+              loading={showStatsSkeleton}
               color="green"
             />
 
@@ -718,7 +726,7 @@ export default function DashboardPage() {
               icon={<Flame className="w-5 h-5 text-accent-red" />}
               value={stats.currentStreak}
               label="Day Streak"
-              loading={loadingStats}
+              loading={showStatsSkeleton}
               color="red"
             />
           </AnimatedGrid>
@@ -861,6 +869,10 @@ function StatCard({ icon, value, label, loading, color }: StatCardProps) {
     red: "bg-red-100",
   };
 
+  if (loading) {
+    return <SkeletonStatCard />;
+  }
+
   return (
     <Card variant="default" padding="md" className="text-center">
       <div
@@ -869,11 +881,7 @@ function StatCard({ icon, value, label, loading, color }: StatCardProps) {
         {icon}
       </div>
       <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
-        {loading ? (
-          <div className="h-10 w-14 mx-auto animate-pulse bg-gray-200 rounded" />
-        ) : (
-          count
-        )}
+        {count}
       </div>
       <div className="text-sm text-gray-600 mt-2 font-medium">{label}</div>
     </Card>
