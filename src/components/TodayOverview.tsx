@@ -3,6 +3,8 @@
 import { useState, useEffect, memo } from "react";
 import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 import { formatTimeRange } from "@/lib/date-utils";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 
 interface TodayWorkout {
   id: string;
@@ -21,6 +23,7 @@ interface TodayWorkout {
 const TodayOverview = memo(function TodayOverview() {
   const [todayWorkouts, setTodayWorkouts] = useState<TodayWorkout[]>([]);
   const [loading, setLoading] = useState(true);
+  const { showSkeleton } = useMinimumLoadingTime(loading, 300);
 
   useEffect(() => {
     fetchTodayWorkouts();
@@ -50,13 +53,19 @@ const TodayOverview = memo(function TodayOverview() {
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   };
 
-  if (loading) {
+  if (showSkeleton) {
     return (
-      <div className="bg-white rounded-lg shadow-md border border-[var(--color-border-primary)] p-6 animate-pulse">
-        <div className="h-6 bg-[var(--color-silver-300)] rounded w-1/3 mb-4"></div>
-        <div className="space-y-3">
-          <div className="h-20 bg-[var(--color-silver-300)] rounded"></div>
-          <div className="h-20 bg-[var(--color-silver-300)] rounded"></div>
+      <div className="bg-white rounded-lg shadow-md border border-[var(--color-border-primary)] p-6 h-full flex flex-col">
+        <div className="flex items-center gap-3 mb-6">
+          <Calendar className="w-6 h-6 text-[var(--color-accent-orange)]" />
+          <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+            Today&apos;s Schedule
+          </h2>
+        </div>
+        <div className="space-y-3 flex-1">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       </div>
     );

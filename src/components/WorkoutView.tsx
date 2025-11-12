@@ -20,7 +20,8 @@ import {
   Package,
   Flame,
 } from "lucide-react";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { SkeletonExerciseItem } from "@/components/ui/Skeleton";
 
 interface WorkoutViewProps {
   sessionId: string;
@@ -32,6 +33,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showSkeleton } = useMinimumLoadingTime(loading, 300);
 
   // Load workout session from API
   useEffect(() => {
@@ -92,10 +94,22 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
     );
   }
 
-  if (loading) {
+  if (showSkeleton) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <LoadingSpinner size="md" message="Loading workout..." />
+      <div className="min-h-screen bg-white p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <div className="h-8 bg-silver-300 rounded w-1/3 mb-2"></div>
+            <div className="h-4 bg-silver-300 rounded w-1/4"></div>
+          </div>
+          <div className="space-y-3">
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+          </div>
+        </div>
       </div>
     );
   }

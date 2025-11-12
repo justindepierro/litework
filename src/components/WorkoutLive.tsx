@@ -21,7 +21,8 @@ import {
   ModalHeader,
   ModalContent,
 } from "@/components/ui/Modal";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { SkeletonCard, SkeletonExerciseItem } from "@/components/ui/Skeleton";
 import { StepperInput } from "@/components/ui/StepperInput";
 import { WorkoutHeader } from "@/components/WorkoutHeader";
 import type { ExerciseGroupInfo } from "@/types/session";
@@ -47,6 +48,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     updateGroupRound,
     resetCircuitExercises,
   } = useWorkoutSession();
+
+  const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
   const [weight, setWeight] = useState<number>(0);
   const [reps, setReps] = useState<number>(0);
@@ -283,10 +286,18 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     }, 2000);
   }, [session, completeSession, router, isMounted]);
 
-  if (isLoading) {
+  if (showSkeleton) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <LoadingSpinner size="lg" message="Loading workout..." />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="w-full max-w-4xl space-y-4">
+          <SkeletonCard />
+          <div className="space-y-3">
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+            <SkeletonExerciseItem />
+          </div>
+          <SkeletonCard />
+        </div>
       </div>
     );
   }
