@@ -7,13 +7,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ToastProvider";
 import ConfirmModal from "@/components/ConfirmModal";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Alert } from "@/components/ui/Alert";
 import {
   User,
@@ -55,6 +56,10 @@ export default function ProfilePage() {
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+
+  // Add minimum loading time for smooth skeleton display
+  const isLoading = authLoading || isLoadingProfile;
+  const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
   // Form state
   const [firstName, setFirstName] = useState("");
@@ -317,12 +322,14 @@ export default function ProfilePage() {
     return `${feet}'${remainingInches}"`;
   };
 
-  if (authLoading || isLoadingProfile) {
+  if (showSkeleton) {
     return (
       <main className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-center p-12">
-            <LoadingSpinner size="lg" />
+          <div className="space-y-4">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
           </div>
         </div>
       </main>
