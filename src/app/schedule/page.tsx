@@ -1,16 +1,20 @@
 "use client";
 
 import { useRequireAuth } from "@/hooks/use-auth-guard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { WorkoutAssignment, AthleteGroup, WorkoutPlan, User } from "@/types";
 import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
-import GroupAssignmentModal from "@/components/GroupAssignmentModal";
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+
+// Lazy load heavy modal components
+const GroupAssignmentModal = lazy(
+  () => import("@/components/GroupAssignmentModal")
+);
 
 export default function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
@@ -259,16 +263,18 @@ export default function SchedulePage() {
 
       {/* Group Assignment Modal */}
       {showGroupAssignment && (
-        <GroupAssignmentModal
-          isOpen={showGroupAssignment}
-          onClose={() => setShowGroupAssignment(false)}
-          selectedDate={selectedDate}
-          groups={groups}
-          workoutPlans={workoutPlans}
-          athletes={athletes}
-          currentUserId={user?.id}
-          onAssignWorkout={handleAssignWorkout}
-        />
+        <Suspense fallback={<LoadingSpinner />}>
+          <GroupAssignmentModal
+            isOpen={showGroupAssignment}
+            onClose={() => setShowGroupAssignment(false)}
+            selectedDate={selectedDate}
+            groups={groups}
+            workoutPlans={workoutPlans}
+            athletes={athletes}
+            currentUserId={user?.id}
+            onAssignWorkout={handleAssignWorkout}
+          />
+        </Suspense>
       )}
     </div>
   );
