@@ -41,7 +41,8 @@ export function useMinimumLoadingTime(
     // When loading starts
     if (isLoading && !loadingStartTimeRef.current) {
       loadingStartTimeRef.current = Date.now();
-      setShowSkeleton(true);
+      // Use queueMicrotask to avoid sync setState in effect
+      queueMicrotask(() => setShowSkeleton(true));
     }
 
     // When loading finishes
@@ -56,9 +57,11 @@ export function useMinimumLoadingTime(
           loadingStartTimeRef.current = null;
         }, remainingTime);
       } else {
-        // Minimum time already elapsed
-        setShowSkeleton(false);
-        loadingStartTimeRef.current = null;
+        // Minimum time already elapsed - use queueMicrotask
+        queueMicrotask(() => {
+          setShowSkeleton(false);
+          loadingStartTimeRef.current = null;
+        });
       }
     }
 
@@ -90,20 +93,21 @@ export function useDebouncedSkeleton(
 
   useEffect(() => {
     if (isLoading) {
-      // Show skeleton immediately
-      setShowSkeleton(true);
+      // Show skeleton immediately - use queueMicrotask to avoid sync setState
+      queueMicrotask(() => setShowSkeleton(true));
       // Clear any pending hide
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
     } else {
-      // Delay hiding skeleton
+      // Debounce hiding
       timerRef.current = setTimeout(() => {
         setShowSkeleton(false);
       }, delayMs);
     }
 
+    // Cleanup
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
