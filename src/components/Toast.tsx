@@ -128,7 +128,7 @@ export default function Toast({
               mt-2 px-3 py-1.5 rounded-lg font-medium text-sm
               transition-colors touch-manipulation
               ${getActionButtonStyles()}
-              min-h-[44px] sm:min-h-0
+              min-h-11 sm:min-h-0
             `}
           >
             {action.label}
@@ -139,7 +139,7 @@ export default function Toast({
       {/* Close Button - Minimum 44x44px touch target */}
       <button
         onClick={onClose}
-        className="shrink-0 p-2 hover:bg-black/5 rounded-lg transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
+        className="shrink-0 p-2 hover:bg-black/5 rounded-lg transition-colors touch-manipulation min-w-11 min-h-11 flex items-center justify-center"
         aria-label="Close notification"
       >
         <X className="w-5 h-5" />

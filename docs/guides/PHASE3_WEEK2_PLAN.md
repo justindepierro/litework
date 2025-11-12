@@ -166,7 +166,7 @@ export function ToastContainer() {
   const { toasts, removeToast } = useToastStore();
   
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] space-y-2 w-full max-w-sm">
+    <div className="fixed bottom-4 right-4 z-9999 space-y-2 w-full max-w-sm">
       <AnimatePresence>
         {toasts.map((toast, index) => (
           <motion.div
@@ -523,13 +523,13 @@ Check all interactive elements meet 44x44px minimum:
 
 ```tsx
 // Button minimum size
-<Button className="min-h-[44px] min-w-[44px]" />
+<Button className="min-h-11 min-w-11" />
 
 // Icon buttons
 <button className="w-11 h-11 flex items-center justify-center" />
 
 // List items
-<li className="min-h-[56px]" />
+<li className="min-h-14" />
 ```
 
 **Haptic Feedback** (iOS/Android):

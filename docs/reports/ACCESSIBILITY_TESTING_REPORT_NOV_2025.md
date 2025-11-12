@@ -338,13 +338,13 @@ export const prefersReducedMotion = () => {
 **Buttons**:
 ```typescript
 // Small size (minimum)
-className="min-h-[44px] px-4"
+className="min-h-11 px-4"
 
 // Icon-only buttons
-className="min-w-[44px] min-h-[44px] p-2"
+className="min-w-11 min-h-11 p-2"
 
 // Toast close button
-className="min-w-[44px] min-h-[44px] flex items-center justify-center"
+className="min-w-11 min-h-11 flex items-center justify-center"
 ```
 
 **Links**:
@@ -356,7 +356,7 @@ className="py-3 px-4" // 44px+ height
 **Form Inputs**:
 ```typescript
 // All inputs
-className="min-h-[44px] px-3"
+className="min-h-11 px-3"
 ```
 
 ---
