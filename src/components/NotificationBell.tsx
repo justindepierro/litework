@@ -8,7 +8,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Bell, X, Check, CheckCheck } from "lucide-react";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 
 interface InAppNotification {
   id: string;
@@ -27,6 +28,7 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Memoized function to load unread count
@@ -239,9 +241,11 @@ export default function NotificationBell() {
 
           {/* Notification List */}
           <div className="overflow-y-auto max-h-[500px]">
-            {isLoading ? (
-              <div className="flex items-center justify-center p-8">
-                <LoadingSpinner size="md" />
+            {showSkeleton ? (
+              <div className="p-4 space-y-3">
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
               </div>
             ) : notifications.length === 0 ? (
               <div className="text-center py-8 text-gray-500">

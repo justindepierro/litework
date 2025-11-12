@@ -10,7 +10,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { EmptyNotifications } from "@/components/ui/EmptyState";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Display } from "@/components/ui/Typography";
 
 interface InAppNotification {
@@ -30,6 +31,7 @@ export default function NotificationsPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
   const loadNotifications = async () => {
     try {
@@ -217,9 +219,13 @@ export default function NotificationsPage() {
 
           {/* Notifications List */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            {isLoading ? (
-              <div className="flex items-center justify-center p-12">
-                <LoadingSpinner size="lg" />
+            {showSkeleton ? (
+              <div className="p-6 space-y-4">
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
               </div>
             ) : notifications.length === 0 ? (
               <EmptyNotifications />
