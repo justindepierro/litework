@@ -115,14 +115,12 @@ export default function WorkoutsPage() {
   // Assignment data - load when needed
   const [groups, setGroups] = useState<AthleteGroup[]>([]);
   const [athletes, setAthletes] = useState<UserType[]>([]);
-  const [loadingAssignmentData, setLoadingAssignmentData] = useState(false);
 
   // Load assignment data when assign modal opens
   const loadAssignmentData = async () => {
     if (groups.length > 0 && athletes.length > 0) return; // Already loaded
 
     try {
-      setLoadingAssignmentData(true);
 
       const [groupsRes, athletesRes] = await Promise.all([
         fetch("/api/groups"),
@@ -146,8 +144,6 @@ export default function WorkoutsPage() {
     } catch (err) {
       console.error("Failed to load assignment data:", err);
       showErrorToast("Failed to load groups and athletes");
-    } finally {
-      setLoadingAssignmentData(false);
     }
   };
 

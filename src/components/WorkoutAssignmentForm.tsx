@@ -30,6 +30,7 @@ interface WorkoutAssignmentFormProps {
 
   // Display options
   showWorkoutPreview?: boolean;
+  notesPlaceholder?: string;
   notesRows?: number;
 }
 
@@ -50,6 +51,7 @@ export default function WorkoutAssignmentForm({
   notes,
   onNotesChange,
   showWorkoutPreview = true,
+  notesPlaceholder = "Add notes or instructions...",
   notesRows = 3,
 }: WorkoutAssignmentFormProps) {
   const selectedWorkout = workoutPlans.find((w) => w.id === selectedWorkoutId);
@@ -102,6 +104,7 @@ export default function WorkoutAssignmentForm({
       {/* Notes */}
       <FloatingLabelTextarea
         label="Session Notes (Optional)"
+        placeholder={notesPlaceholder}
         value={notes}
         onChange={(e) => onNotesChange(e.target.value)}
         rows={notesRows}

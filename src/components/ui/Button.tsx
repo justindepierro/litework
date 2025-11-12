@@ -57,11 +57,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       type,
       form,
-      onAnimationStart,
-      onAnimationEnd,
-      onDrag,
-      onDragStart,
-      onDragEnd,
       ...restProps
     },
     ref

@@ -10,7 +10,7 @@ import QuickActions from "@/components/QuickActions";
 import GroupCompletionStats from "@/components/GroupCompletionStats";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
-import { SkeletonStatCard, SkeletonWorkoutCard, SkeletonCard } from "@/components/ui/Skeleton";
+import { SkeletonStatCard, SkeletonCard } from "@/components/ui/Skeleton";
 
 // Lazy load heavy components
 const DraggableAthleteCalendar = lazy(

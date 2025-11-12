@@ -46,7 +46,6 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       onClick,
       onMouseEnter,
       onMouseLeave,
-      onDrag,
       ...restProps
     },
     ref
@@ -266,7 +265,6 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   change,
   icon,
-  trend,
   className = "",
   onClick,
 }) => {

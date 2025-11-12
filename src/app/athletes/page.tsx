@@ -452,11 +452,6 @@ export default function AthletesPage() {
     });
   };
 
-  const handleKPIManagement = (athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowKPIModal(true);
-  };
-
   const handleUpdateEmail = async (email: string) => {
     if (!selectedAthlete || !email) {
       toast.error("Email is required");
