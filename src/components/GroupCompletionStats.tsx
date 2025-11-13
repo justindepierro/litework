@@ -37,7 +37,7 @@ export default function GroupCompletionStats() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 animate-pulse">
+      <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
           <div className="h-16 bg-gray-200 rounded"></div>
@@ -48,7 +48,7 @@ export default function GroupCompletionStats() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 h-full flex flex-col">
+    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <TrendingUp className="w-6 h-6 text-green-600" />
         <h2 className="text-xl font-bold text-gray-900">Group Performance</h2>
@@ -64,7 +64,7 @@ export default function GroupCompletionStats() {
           {groupStats.map((group) => (
             <div
               key={group.id}
-              className="border border-gray-200 rounded-lg p-4 hover:border-green-300 hover:shadow-md transition-all"
+              className="rounded-lg p-4 bg-linear-to-br from-white to-green-50/30 border border-green-200 shadow-sm hover:shadow-lg hover:border-green-300 hover:scale-[1.02] transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">

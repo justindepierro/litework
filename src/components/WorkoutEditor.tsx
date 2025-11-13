@@ -527,7 +527,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "superset"
                       ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-gray-400"
                   }`}
                 >
                   <Zap className="w-6 h-6 mx-auto mb-2" />
@@ -542,7 +542,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "circuit"
                       ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-gray-400"
                   }`}
                 >
                   <RotateCcw className="w-6 h-6 mx-auto mb-2" />
@@ -557,7 +557,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "section"
                       ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-gray-400"
                   }`}
                 >
                   <Target className="w-6 h-6 mx-auto mb-2" />
@@ -582,7 +582,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 }
                 min="0"
                 step="15"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
 
@@ -599,7 +599,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                     onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
                     min="1"
                     max="10"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                   />
                 </div>
 
@@ -615,7 +615,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                     }
                     min="0"
                     step="15"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </>

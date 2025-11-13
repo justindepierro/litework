@@ -56,7 +56,7 @@ const TodayOverview = memo(function TodayOverview() {
 
   if (showSkeleton) {
     return (
-      <div className="bg-white rounded-lg shadow-md border border-[var(--color-border-primary)] p-6 h-full flex flex-col">
+      <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
         <div className="flex items-center gap-3 mb-6">
           <Calendar className="w-6 h-6 text-[var(--color-accent-orange)]" />
           <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
@@ -73,7 +73,7 @@ const TodayOverview = memo(function TodayOverview() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-[var(--color-border-primary)] p-6 h-full flex flex-col">
+    <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6 text-[var(--color-accent-orange)]" />
         <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
@@ -98,7 +98,7 @@ const TodayOverview = memo(function TodayOverview() {
             return (
               <div
                 key={workout.id}
-                className="border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-[var(--color-accent-orange)] hover:shadow-md transition-all"
+                className="rounded-lg p-4 bg-linear-to-br from-white to-blue-50/30 border border-blue-200 hover:border-blue-400 hover:shadow-lg hover:scale-[1.01] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">

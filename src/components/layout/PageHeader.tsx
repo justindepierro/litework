@@ -61,7 +61,7 @@ export function PageHeader({
   animate = true,
 }: PageHeaderProps) {
   const headerContent = (
-    <div className={`mb-8 border-b border-gray-200 pb-6 ${className}`}>
+    <div className={`mb-8 border-b border-silver-300 pb-6 ${className}`}>
       {/* Breadcrumbs */}
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav

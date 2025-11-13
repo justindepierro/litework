@@ -395,9 +395,9 @@ export default function DashboardPage() {
           {/* Full-width calendar */}
           <div>
             {/* Calendar with integrated header */}
-            <div className="bg-white rounded-xl shadow-md border border-silver-200 overflow-hidden">
+            <div className="bg-linear-to-br from-white to-blue-50/20 rounded-xl shadow-lg overflow-hidden">
               {/* Calendar Header */}
-              <div className="px-6 py-4 border-b border-silver-200 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-blue-100 flex items-center justify-between bg-linear-to-r from-white to-blue-50/30">
                 <div>
                   <h2 className="text-lg font-semibold text-navy-900">
                     Team Schedule

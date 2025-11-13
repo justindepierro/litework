@@ -88,7 +88,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
         className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
           isSelected
             ? "border-blue-500 bg-blue-50"
-            : "border-gray-200 hover:border-gray-300"
+            : "border-silver-300 hover:border-silver-400"
         }`}
         onClick={() => onSelect(exercise)}
       >
@@ -415,7 +415,7 @@ function ExerciseLibrary({
           )}
 
           {/* Search and Filters */}
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-6 border-b border-silver-300">
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 relative">
                 <Button
@@ -432,7 +432,7 @@ function ExerciseLibrary({
                   placeholder="Search exercises..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <button
@@ -469,7 +469,7 @@ function ExerciseLibrary({
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Categories</option>
                     {categories.map((category) => (
@@ -487,7 +487,7 @@ function ExerciseLibrary({
                   <select
                     value={selectedMuscleGroup}
                     onChange={(e) => setSelectedMuscleGroup(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Muscle Groups</option>
                     {muscleGroups.map((muscle) => (
@@ -505,7 +505,7 @@ function ExerciseLibrary({
                   <select
                     value={selectedEquipment}
                     onChange={(e) => setSelectedEquipment(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Equipment</option>
                     {equipmentTypes.map((equipment) => (
@@ -523,7 +523,7 @@ function ExerciseLibrary({
                   <select
                     value={selectedDifficulty}
                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-silver-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Levels</option>
                     <option value="1">Beginner</option>
@@ -573,7 +573,7 @@ function ExerciseLibrary({
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
+          <div className="p-6 border-t border-silver-300 bg-gray-50">
             <div className="flex justify-between items-center">
               <div className="text-sm text-gray-600">
                 {multiSelect && selectedExercises.length > 0 && (
@@ -684,7 +684,7 @@ function ExerciseLibrary({
                     {equipmentTypes.map((equipment) => (
                       <label
                         key={equipment.id}
-                        className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                        className="flex items-center gap-2 px-3 py-2 border border-silver-400 rounded-lg cursor-pointer hover:bg-gray-50"
                       >
                         <input
                           type="checkbox"
@@ -772,7 +772,7 @@ function ExerciseLibrary({
                             instructions: newInstructions,
                           });
                         }}
-                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 p-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder={`Step ${index + 1}`}
                       />
                       {newExercise.instructions.length > 1 && (
@@ -826,7 +826,7 @@ function ExerciseLibrary({
             <ModalFooter align="between">
               <button
                 onClick={() => setShowCreateForm(false)}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                className="flex-1 px-4 py-3 border border-silver-400 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
                 disabled={creating}
               >
                 Cancel

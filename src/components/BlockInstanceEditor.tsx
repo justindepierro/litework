@@ -277,7 +277,7 @@ export default function BlockInstanceEditor({
           </div>
 
           {/* Exercise Customization Summary */}
-          <div className="bg-silver-50 border border-silver-200 rounded-lg p-4">
+          <div className="bg-silver-50 rounded-lg p-4 shadow-sm">
             <h3 className="font-medium text-silver-900 mb-3">Block Contents</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">

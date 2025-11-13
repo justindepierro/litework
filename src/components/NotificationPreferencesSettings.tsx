@@ -205,7 +205,7 @@ export default function NotificationPreferencesSettings() {
                     e.target.value as NotificationTiming
                   )
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="smart">
                   Smart (2 hours before or day before)

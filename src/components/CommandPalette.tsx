@@ -89,10 +89,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-[20vh] px-4">
       <Command
-        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden border-2 border-gray-200"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden shadow-lg"
         shouldFilter={false} // We'll handle filtering ourselves for exercises
       >
-        <div className="flex items-center border-b border-gray-200 px-4">
+        <div className="flex items-center border-b border-silver-300 px-4">
           <Search className="w-5 h-5 text-gray-400 shrink-0" />
           <Command.Input
             placeholder="Type a command or search..."
@@ -226,20 +226,20 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         <div className="border-t border-gray-200 px-4 py-2 bg-gray-50 flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center gap-4">
             <span>
-              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">
+              <kbd className="px-2 py-1 bg-white border border-silver-400 rounded text-xs font-mono">
                 ↑↓
               </kbd>{" "}
               to navigate
             </span>
             <span>
-              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">
+              <kbd className="px-2 py-1 bg-white border border-silver-400 rounded text-xs font-mono">
                 ↵
               </kbd>{" "}
               to select
             </span>
           </div>
           <span>
-            <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs font-mono">
+            <kbd className="px-2 py-1 bg-white border border-silver-400 rounded text-xs font-mono">
               esc
             </kbd>{" "}
             to close

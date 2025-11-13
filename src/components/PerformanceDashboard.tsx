@@ -45,7 +45,7 @@ const WebVitalCard: React.FC<WebVitalDisplayProps> = ({
       case "poor":
         return "text-red-600 bg-red-50 border-red-200";
       default:
-        return "text-gray-600 bg-gray-50 border-gray-200";
+        return "text-gray-600 bg-gray-50 border-silver-300";
     }
   };
 
@@ -114,7 +114,7 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-white rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <Gauge className="w-6 h-6 text-gray-600" />
         <h3 className="text-lg font-semibold text-gray-900">
@@ -365,7 +365,7 @@ const PerformanceDashboard: React.FC = () => {
           </div>
 
           {getLatestWebVitals().length === 0 && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+            <div className="bg-gray-50 border border-silver-300 rounded-lg p-8 text-center">
               <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No Web Vitals Data Yet
@@ -386,8 +386,8 @@ const PerformanceDashboard: React.FC = () => {
               Resource Performance
             </h2>
 
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <div className="p-4 border-b border-gray-200">
+            <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-silver-300">
                 <h3 className="font-medium text-gray-900">
                   Resource Loading Times
                 </h3>
@@ -460,7 +460,7 @@ const PerformanceDashboard: React.FC = () => {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   <span className="font-medium text-gray-900">
@@ -472,7 +472,7 @@ const PerformanceDashboard: React.FC = () => {
                 </span>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className="font-medium text-gray-900">
@@ -484,7 +484,7 @@ const PerformanceDashboard: React.FC = () => {
                 </span>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
                   <span className="font-medium text-gray-900">First Paint</span>
@@ -494,7 +494,7 @@ const PerformanceDashboard: React.FC = () => {
                 </span>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                   <span className="font-medium text-gray-900">
@@ -517,7 +517,7 @@ const PerformanceDashboard: React.FC = () => {
               Memory Usage
             </h2>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-red-600 mb-1">
@@ -580,12 +580,12 @@ const PerformanceDashboard: React.FC = () => {
               Recent Activity
             </h2>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="space-y-3">
                 {webVitalsHistory.slice(0, 5).map((vital, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+                    className="flex items-center justify-between py-2 border-b border-silver-300 last:border-b-0"
                   >
                     <div className="flex items-center gap-3">
                       <span className="font-medium text-gray-900">

@@ -276,7 +276,7 @@ export default function BulkOperationModal({
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_invite"
                       ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-primary"
                   }`}
                 >
                   <Send className="w-5 h-5 text-blue-600 mb-2" />
@@ -291,7 +291,7 @@ export default function BulkOperationModal({
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_message"
                       ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-primary"
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 text-green-600 mb-2" />
@@ -306,7 +306,7 @@ export default function BulkOperationModal({
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_update_status"
                       ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-primary"
                   }`}
                 >
                   <UserCheck className="w-5 h-5 text-orange-600 mb-2" />
@@ -321,7 +321,7 @@ export default function BulkOperationModal({
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_assign_workout"
                       ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      : "border-silver-400 hover:border-primary"
                   }`}
                 >
                   <Calendar className="w-5 h-5 text-purple-600 mb-2" />
@@ -364,7 +364,7 @@ export default function BulkOperationModal({
                   {groups.map((group) => (
                     <div
                       key={group.id}
-                      className="border border-gray-200 rounded-lg"
+                      className="rounded-lg shadow-sm"
                     >
                       <div className="flex items-center p-3">
                         <button
@@ -850,7 +850,7 @@ export default function BulkOperationModal({
         />
         <ModalContent>
           {/* Progress Indicator */}
-          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="px-6 py-4 bg-silver-200 border-b border-silver-300">
             <div className="flex items-center space-x-4">
               {["select", "configure", "confirm", "executing"].map(
                 (step, index) => (

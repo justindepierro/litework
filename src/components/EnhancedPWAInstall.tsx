@@ -286,7 +286,7 @@ const EnhancedPWAInstall: React.FC = () => {
       </div>
 
       {/* Cache Status */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+      <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <Database className="w-5 h-5 text-gray-600" />
           <h3 className="font-medium text-gray-900">Offline Cache Status</h3>
@@ -353,7 +353,7 @@ const EnhancedPWAInstall: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-gray-300">
+          <div className="pt-2 border-t border-silver-400">
             <div className="flex items-center justify-between">
               <span className="font-medium">Total Cache Size</span>
               <span className="text-gray-600">
@@ -366,7 +366,7 @@ const EnhancedPWAInstall: React.FC = () => {
 
       {/* Installation Instructions */}
       {!deferredPrompt && !isInstalled && (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
           <h3 className="font-medium text-gray-900 mb-2">
             Manual Installation
           </h3>

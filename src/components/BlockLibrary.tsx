@@ -63,7 +63,7 @@ const CATEGORY_CONFIG = {
     icon: Star,
     color: "text-gray-500",
     bgColor: "bg-gray-50",
-    borderColor: "border-gray-200",
+    borderColor: "border-silver-300",
   },
 };
 
@@ -198,7 +198,7 @@ export default function BlockLibrary({
         />
 
         {/* Search and Filters */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-silver-300">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -288,7 +288,7 @@ export default function BlockLibrary({
               onChange={(e) =>
                 setSortBy(e.target.value as "name" | "usage" | "recent")
               }
-              className="px-3 py-1 border border-gray-300 rounded-lg text-sm"
+              className="px-3 py-1 border border-silver-400 rounded-lg text-sm"
             >
               <option value="usage">Most Used</option>
               <option value="recent">Recently Used</option>
@@ -352,7 +352,7 @@ export default function BlockLibrary({
                     className={`bg-white border-2 rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer ${
                       isSelected
                         ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-gray-200 hover:border-blue-300"
+                        : "border-silver-300 hover:border-blue-300"
                     }`}
                     onClick={() => onSelectBlock(block)}
                   >

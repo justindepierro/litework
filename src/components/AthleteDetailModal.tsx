@@ -461,7 +461,7 @@ export default function AthleteDetailModal({
                             {assignedKPIs.map((kpi) => (
                               <div
                                 key={kpi.id}
-                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-gray-200 shadow-sm"
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-silver-300 shadow-sm"
                               >
                                 <span
                                   className="px-2 py-0.5 rounded text-xs font-semibold text-white"
@@ -513,7 +513,7 @@ export default function AthleteDetailModal({
                             {pendingGroupKPIs.map((tag) => (
                               <div
                                 key={tag.id}
-                                className="inline-flex items-center gap-2 px-3 py-2 bg-white rounded-lg border-2 border-dashed border-gray-300 shadow-sm"
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-white rounded-lg border-2 border-dashed border-silver-400 shadow-sm"
                               >
                                 <span
                                   className="px-2.5 py-0.5 rounded text-sm font-semibold text-white shrink-0 shadow-sm"
@@ -547,7 +547,7 @@ export default function AthleteDetailModal({
                       Performance Statistics
                     </h3>
                     {athlete.status === "invited" ? (
-                      <div className="p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
+                      <div className="p-6 bg-gray-50 rounded-lg border-2 border-dashed border-silver-400 text-center">
                         <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                         <p className="text-gray-600 font-medium mb-1">
                           No Activity Yet
@@ -647,7 +647,7 @@ export default function AthleteDetailModal({
                     {athlete.personalRecords.map((pr: AthleteKPI) => (
                       <div
                         key={pr.id}
-                        className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                        className="rounded-lg p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"
                       >
                         <div className="flex justify-between items-start">
                           <div>

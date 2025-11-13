@@ -89,7 +89,7 @@ function AthleteCard({
   return (
     <div
       onClick={() => onCardClick(athlete)}
-      className="bg-white rounded-xl shadow-sm border border-silver-300 hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer"
+      className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer relative overflow-hidden before:absolute before:inset-0 before:bg-linear-to-br before:from-blue-500/5 before:to-purple-500/5 before:opacity-0 hover:before:opacity-100 before:transition-opacity"
     >
       {/* Mobile-Optimized Card Header */}
       <div className="p-4 sm:p-6 pb-3 sm:pb-4">

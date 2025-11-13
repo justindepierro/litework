@@ -68,7 +68,7 @@ export function StepperInput({
             value={value}
             onChange={handleInputChange}
             disabled={disabled}
-            className="w-full px-4 py-3 text-center text-lg font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 text-center text-lg font-semibold border-2 border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             aria-label={label}
           />
           {unit && (

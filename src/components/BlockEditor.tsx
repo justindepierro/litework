@@ -202,7 +202,7 @@ export default function BlockEditor({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g., My Push Day Main Lifts"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
 
@@ -215,7 +215,7 @@ export default function BlockEditor({
                   onChange={(e) =>
                     setCategory(e.target.value as WorkoutBlock["category"])
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 >
                   {CATEGORY_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -235,7 +235,7 @@ export default function BlockEditor({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of this workout block..."
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
 
@@ -249,7 +249,7 @@ export default function BlockEditor({
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., push, strength, chest"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export default function BlockEditor({
                   onChange={(e) => setEstimatedDuration(e.target.value)}
                   placeholder="30"
                   min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function BlockEditor({
               </div>
 
               {exercises.length === 0 ? (
-                <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <div className="text-center py-8 bg-silver-200 rounded-lg border-2 border-dashed border-silver-400">
                   <Dumbbell className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                   <p className="text-gray-600">No exercises yet</p>
                   <p className="text-sm text-gray-500">
@@ -296,7 +296,7 @@ export default function BlockEditor({
                   {exercises.map((exercise, index) => (
                     <div
                       key={exercise.id}
-                      className="p-4 bg-gray-50 rounded-lg border border-gray-200"
+                      className="p-4 bg-silver-200 rounded-lg shadow-sm"
                     >
                       <div className="flex items-start gap-3">
                         <div className="shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
@@ -314,7 +314,7 @@ export default function BlockEditor({
                               })
                             }
                             placeholder="Exercise name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                           />
 
                           {/* Sets, Reps, Tempo */}
@@ -333,7 +333,7 @@ export default function BlockEditor({
                                 }
                                 placeholder="Sets"
                                 min="0"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               />
                             </div>
 
@@ -351,7 +351,7 @@ export default function BlockEditor({
                                 }
                                 placeholder="Reps"
                                 min="0"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               />
                             </div>
 
@@ -374,7 +374,7 @@ export default function BlockEditor({
                                   })
                                 }
                                 placeholder="3-1-1-0"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               />
                             </div>
 
@@ -393,7 +393,7 @@ export default function BlockEditor({
                                 }
                                 placeholder="60"
                                 min="0"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               />
                             </div>
                           </div>
@@ -416,7 +416,7 @@ export default function BlockEditor({
                                     percentage: undefined,
                                   })
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                               >
                                 <option value="fixed">Fixed Weight</option>
                                 <option value="percentage">% of 1RM</option>
@@ -441,7 +441,7 @@ export default function BlockEditor({
                                   placeholder="135"
                                   min="0"
                                   step="5"
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 />
                               </div>
                             )}
@@ -464,7 +464,7 @@ export default function BlockEditor({
                                   min="0"
                                   max="100"
                                   step="5"
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 />
                               </div>
                             )}
@@ -479,7 +479,7 @@ export default function BlockEditor({
                                       eachSide: e.target.checked,
                                     })
                                   }
-                                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-500"
+                                  className="w-4 h-4 text-purple-600 border-silver-400 rounded focus:ring-2 focus:ring-purple-500"
                                 />
                                 <span className="text-xs text-gray-700">
                                   Each Side
@@ -500,7 +500,7 @@ export default function BlockEditor({
                               }
                               placeholder="e.g., Use resistance band, focus on squeeze at top..."
                               rows={2}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                              className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
                             />
                           </div>
                         </div>

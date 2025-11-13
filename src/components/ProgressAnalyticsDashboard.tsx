@@ -119,7 +119,7 @@ export default function ProgressAnalyticsDashboard() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-silver-200 transition-colors shadow-sm hover:shadow-md"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -140,7 +140,7 @@ export default function ProgressAnalyticsDashboard() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+        <div className="bg-silver-200 rounded-xl p-4 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -149,7 +149,7 @@ export default function ProgressAnalyticsDashboard() {
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
               >
                 <option value="7d">Last 7 days</option>
                 <option value="30d">Last 30 days</option>
@@ -165,7 +165,7 @@ export default function ProgressAnalyticsDashboard() {
               <select
                 value={selectedAthlete}
                 onChange={(e) => setSelectedAthlete(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
               >
                 <option value="all">All Athletes</option>
                 <option value="john-doe">John Doe</option>
@@ -181,7 +181,7 @@ export default function ProgressAnalyticsDashboard() {
               <select
                 value={selectedMetric}
                 onChange={(e) => setSelectedMetric(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
               >
                 <option value="strength">Strength (1RM)</option>
                 <option value="volume">Volume</option>
@@ -195,7 +195,7 @@ export default function ProgressAnalyticsDashboard() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-blue-600" />
@@ -215,7 +215,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
               <Zap className="w-5 h-5 text-green-600" />
@@ -235,7 +235,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
               <Target className="w-5 h-5 text-purple-600" />
@@ -255,7 +255,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
               <Calendar className="w-5 h-5 text-orange-600" />
@@ -279,11 +279,11 @@ export default function ProgressAnalyticsDashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Strength Progression Chart */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-4">
             Strength Progression
           </h3>
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <p className="text-gray-500">Chart visualization would go here</p>
@@ -295,11 +295,11 @@ export default function ProgressAnalyticsDashboard() {
         </div>
 
         {/* Volume Trends */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-4">
             Volume Trends
           </h3>
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <p className="text-gray-500">Chart visualization would go here</p>
@@ -312,7 +312,7 @@ export default function ProgressAnalyticsDashboard() {
       </div>
 
       {/* Top Exercises Table */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900">Top Exercises</h3>
           <Award className="w-5 h-5 text-yellow-500" />
@@ -321,7 +321,7 @@ export default function ProgressAnalyticsDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-silver-300">
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">
                   Exercise
                 </th>
@@ -340,7 +340,7 @@ export default function ProgressAnalyticsDashboard() {
               {analyticsSummary.topExercises.map((exercise, index) => (
                 <tr
                   key={index}
-                  className="border-b border-gray-100 hover:bg-gray-50"
+                  className="border-b border-silver-300 hover:bg-silver-200 transition-colors"
                 >
                   <td className="py-4 px-4">
                     <div className="font-medium text-gray-900">
@@ -368,7 +368,7 @@ export default function ProgressAnalyticsDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
           <Users className="w-5 h-5 text-blue-500" />

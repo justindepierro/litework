@@ -141,7 +141,7 @@ export default function NotificationPreferences() {
       {error && <Alert variant="error">{error}</Alert>}
 
       {/* Channel Preferences */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Notification Channels
         </h3>
@@ -212,7 +212,7 @@ export default function NotificationPreferences() {
           </div>
 
           {/* Preferred Contact Method */}
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-silver-300">
             <label className="text-sm font-medium text-gray-900 block mb-2">
               Preferred Contact Method
             </label>
@@ -225,7 +225,7 @@ export default function NotificationPreferences() {
                   className={`flex-1 px-4 py-2 text-sm font-medium rounded-md border transition-colors ${
                     preferences.preferred_contact === method
                       ? "bg-blue-50 border-blue-600 text-blue-700"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                      : "bg-white border-silver-400 text-gray-700 hover:bg-gray-50"
                   }`}
                 >
                   {method === "push" && "Push"}
@@ -239,7 +239,7 @@ export default function NotificationPreferences() {
       </div>
 
       {/* Category Preferences */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Notification Types
         </h3>
@@ -255,7 +255,7 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("workout_reminders", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
               />
             </div>
             <div className="ml-3">
@@ -281,7 +281,7 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("assignment_notifications", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
               />
             </div>
             <div className="ml-3">
@@ -307,7 +307,7 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("message_notifications", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
               />
             </div>
             <div className="ml-3">
@@ -333,7 +333,7 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("progress_updates", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
               />
             </div>
             <div className="ml-3">
@@ -362,7 +362,7 @@ export default function NotificationPreferences() {
                     e.target.checked
                   )
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
               />
             </div>
             <div className="ml-3">

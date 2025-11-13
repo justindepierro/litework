@@ -98,10 +98,10 @@ function DraggableAssignment({
         compact ? "p-1.5" : "p-2.5"
       } ${
         isCompleted
-          ? "bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 text-green-900 shadow-sm hover:shadow-md"
+          ? "bg-linear-to-r from-green-50 to-emerald-50 text-green-900 shadow-sm hover:shadow-md"
           : isOverdue
-            ? "bg-linear-to-r from-red-50 to-rose-50 border border-red-200 text-red-900 shadow-sm hover:shadow-md"
-            : "bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 shadow-sm hover:shadow-md"
+            ? "bg-linear-to-r from-red-50 to-rose-50 text-red-900 shadow-sm hover:shadow-md"
+            : "bg-linear-to-r from-blue-50 to-indigo-50 text-blue-900 shadow-sm hover:shadow-md"
       } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
@@ -479,9 +479,9 @@ export default function DraggableAthleteCalendar({
               onClick={() => isCoach && onDateClick?.(date)}
               className={`min-h-32 p-2 rounded-xl transition-all duration-200 flex flex-col ${
                 isCurrentMonth
-                  ? "bg-white shadow-sm hover:shadow-md border border-gray-100"
-                  : "bg-gray-50 text-gray-400 border border-gray-100"
-              } ${isTodayDate ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg" : ""} ${
+                  ? "bg-white shadow-md hover:shadow-xl hover:scale-[1.01]"
+                  : "bg-linear-to-br from-silver-100 to-silver-200 text-gray-400"
+              } ${isTodayDate ? "ring-2 ring-blue-500 ring-offset-2 bg-linear-to-br from-blue-50 to-indigo-50 shadow-xl" : ""} ${
                 isCoach ? "cursor-pointer" : ""
               }`}
             >
@@ -563,7 +563,7 @@ export default function DraggableAthleteCalendar({
                 className={`rounded-xl p-3 transition-all duration-200 ${
                   isTodayDate
                     ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg"
-                    : "bg-white shadow-sm hover:shadow-md border border-gray-100"
+                    : "bg-white shadow-md hover:shadow-lg"
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
                 <div className="text-center mb-3">
@@ -644,11 +644,11 @@ export default function DraggableAthleteCalendar({
                 className={`rounded-xl p-4 transition-all duration-200 ${
                   isTodayDate
                     ? "ring-2 ring-blue-500 bg-blue-50 shadow-lg"
-                    : "bg-white shadow-sm border border-gray-100"
+                    : "bg-white shadow-md"
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
                 {/* Mobile day header */}
-                <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
+                <div className="flex items-center justify-between mb-3 pb-3 border-b border-silver-300">
                   <div className="flex items-center gap-3">
                     <div
                       className={`text-3xl font-bold ${
@@ -690,7 +690,7 @@ export default function DraggableAthleteCalendar({
                       <div
                         key={assignment.id}
                         onClick={() => onAssignmentClick?.(assignment)}
-                        className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all touch-manipulation"
+                        className="p-3 bg-silver-200 rounded-lg shadow-sm hover:shadow-md hover:bg-blue-50 transition-all touch-manipulation cursor-pointer"
                       >
                         <div className="font-semibold text-gray-900 mb-1">
                           {assignment.workoutPlanName || "Workout"}
@@ -809,7 +809,7 @@ export default function DraggableAthleteCalendar({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+      <div className="bg-linear-to-br from-white to-blue-50/20 rounded-xl shadow-lg p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -834,12 +834,12 @@ export default function DraggableAthleteCalendar({
 
           <div className="flex items-center gap-2">
             {/* View mode selector */}
-            <div className="flex bg-silver-200 rounded-lg p-1">
+            <div className="flex bg-linear-to-br from-silver-100 to-silver-200 rounded-lg p-1 shadow-sm">
               <button
                 onClick={() => setViewMode("month")}
                 className={`px-3 py-1 rounded text-sm transition-colors ${
                   viewMode === "month"
-                    ? "bg-white text-accent-blue font-medium shadow-sm"
+                    ? "bg-linear-to-br from-white to-blue-50 text-accent-blue font-medium shadow-md"
                     : "text-silver-700 hover:text-navy-900"
                 }`}
               >
@@ -849,7 +849,7 @@ export default function DraggableAthleteCalendar({
                 onClick={() => setViewMode("week")}
                 className={`px-3 py-1 rounded text-sm transition-colors ${
                   viewMode === "week"
-                    ? "bg-white text-accent-blue font-medium shadow-sm"
+                    ? "bg-linear-to-br from-white to-blue-50 text-accent-blue font-medium shadow-md"
                     : "text-silver-700 hover:text-navy-900"
                 }`}
               >
@@ -859,7 +859,7 @@ export default function DraggableAthleteCalendar({
                 onClick={() => setViewMode("day")}
                 className={`px-3 py-1 rounded text-sm transition-colors ${
                   viewMode === "day"
-                    ? "bg-white text-accent-blue font-medium shadow-sm"
+                    ? "bg-linear-to-br from-white to-blue-50 text-accent-blue font-medium shadow-md"
                     : "text-silver-700 hover:text-navy-900"
                 }`}
               >
@@ -880,7 +880,7 @@ export default function DraggableAthleteCalendar({
 
         {/* Info banner for coaches */}
         {isCoach && (
-          <div className="mb-4 p-3 bg-info-lighter border border-info-light rounded-lg text-sm text-accent-blue">
+          <div className="mb-4 p-3 bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg text-sm text-accent-blue shadow-sm">
             <div className="flex items-center gap-2">
               <MoveIcon className="w-4 h-4" />
               <span>
@@ -901,15 +901,15 @@ export default function DraggableAthleteCalendar({
         {/* Legend */}
         <div className="flex items-center gap-4 mt-6 pt-4 border-t text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-info-lighter border border-info-light" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-blue-100 to-blue-200 shadow-sm border border-blue-300" />
             <span className="text-silver-700">Assigned</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-success-lighter border border-success-light" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-green-100 to-green-200 shadow-sm border border-green-300" />
             <span className="text-silver-700">Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-error-lighter border border-error-light" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-red-100 to-red-200 shadow-sm border border-red-300" />
             <span className="text-silver-700">Overdue</span>
           </div>
         </div>

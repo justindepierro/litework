@@ -69,7 +69,7 @@ export function SkeletonText({ lines = 3, className = "" }: { lines?: number; cl
 
 export function SkeletonCard({ className = "" }: { className?: string }) {
   return (
-    <div className={`border border-gray-200 rounded-lg p-6 ${className}`}>
+    <div className={`border border-silver-300 rounded-lg p-6 ${className}`}>
       <div className="flex items-center gap-4 mb-4">
         <Skeleton variant="circular" className="w-12 h-12" />
         <div className="flex-1 space-y-2">
@@ -84,7 +84,7 @@ export function SkeletonCard({ className = "" }: { className?: string }) {
 
 export function SkeletonWorkoutCard({ className = "" }: { className?: string }) {
   return (
-    <div className={`border border-gray-200 rounded-lg p-4 ${className}`}>
+    <div className={`rounded-lg p-4 shadow-sm ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
@@ -110,7 +110,7 @@ export function SkeletonWorkoutCard({ className = "" }: { className?: string }) 
 
 export function SkeletonStatCard({ className = "" }: { className?: string }) {
   return (
-    <div className={`border border-gray-200 rounded-lg p-6 ${className}`}>
+    <div className={`border border-silver-300 rounded-lg p-6 ${className}`}>
       <Skeleton className="h-14 w-24 mb-2" />
       <Skeleton className="h-4 w-32" />
     </div>
@@ -119,7 +119,7 @@ export function SkeletonStatCard({ className = "" }: { className?: string }) {
 
 export function SkeletonCalendarDay({ className = "" }: { className?: string }) {
   return (
-    <div className={`border border-gray-200 rounded-lg p-3 ${className}`}>
+    <div className={`rounded-lg p-3 shadow-sm ${className}`}>
       <Skeleton className="h-6 w-8 mb-2" />
       <div className="space-y-2">
         <Skeleton className="h-8" />
@@ -131,7 +131,7 @@ export function SkeletonCalendarDay({ className = "" }: { className?: string }) 
 
 export function SkeletonExerciseItem({ className = "" }: { className?: string }) {
   return (
-    <div className={`border border-gray-200 rounded-lg p-4 flex items-center gap-4 ${className}`}>
+    <div className={`rounded-lg p-4 shadow-sm flex items-center gap-4 ${className}`}>
       <Skeleton variant="circular" className="w-10 h-10" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-5 w-40" />

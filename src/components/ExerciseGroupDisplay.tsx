@@ -200,7 +200,7 @@ export function ExerciseGroupDisplay({
                       key={exercise.id}
                       onClick={() => onExerciseClick?.(exercise)}
                       className={`bg-white border-2 ${
-                        isCompleted ? "border-green-300" : "border-gray-200"
+                        isCompleted ? "border-green-300" : "border-silver-300"
                       } rounded-lg p-4 transition-all hover:shadow-md ${
                         onExerciseClick ? "cursor-pointer" : ""
                       }`}
@@ -269,7 +269,7 @@ export function ExerciseGroupDisplay({
 
                           {/* Exercise notes */}
                           {exercise.notes && (
-                            <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-gray-300 pl-3">
+                            <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-silver-400 pl-3">
                               {exercise.notes}
                             </p>
                           )}
@@ -301,7 +301,7 @@ export function ExerciseGroupDisplay({
 
               {/* Group notes */}
               {group.notes && (
-                <div className="mt-3 p-3 bg-white bg-opacity-60 rounded-lg border border-gray-200">
+                <div className="mt-3 p-3 bg-white bg-opacity-60 rounded-lg border border-silver-300">
                   <p className="text-sm text-gray-700 italic">{group.notes}</p>
                 </div>
               )}
@@ -317,7 +317,7 @@ export function ExerciseGroupDisplay({
               key={exercise.id}
               onClick={() => onExerciseClick?.(exercise)}
               className={`border-2 ${
-                isCompleted ? "border-green-300 bg-green-50" : "border-gray-200 bg-white"
+                isCompleted ? "border-green-300 bg-green-50" : "border-silver-300 bg-white"
               } rounded-xl p-4 shadow-sm transition-all hover:shadow-md ${
                 onExerciseClick ? "cursor-pointer" : ""
               }`}
@@ -384,7 +384,7 @@ export function ExerciseGroupDisplay({
 
                   {/* Exercise notes */}
                   {exercise.notes && (
-                    <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-gray-300 pl-3">
+                    <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-silver-400 pl-3">
                       {exercise.notes}
                     </p>
                   )}

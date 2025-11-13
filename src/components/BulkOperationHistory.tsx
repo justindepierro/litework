@@ -202,7 +202,7 @@ export default function BulkOperationHistory({
               {operations.map((operation) => (
                 <div
                   key={operation.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  className="rounded-lg p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">

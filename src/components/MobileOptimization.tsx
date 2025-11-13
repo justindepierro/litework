@@ -194,8 +194,8 @@ export function MobileInput({
   const deviceInfo = useDeviceDetection();
 
   const inputClasses = deviceInfo.isMobile
-    ? "w-full px-4 py-4 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent touch-manipulation"
-    : "w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
+    ? "w-full px-4 py-4 text-base border border-silver-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent touch-manipulation"
+    : "w-full px-3 py-2 text-sm border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
 
   return (
     <div className="space-y-2">
@@ -233,8 +233,8 @@ export function MobileCard({
   const deviceInfo = useDeviceDetection();
 
   const baseClasses = deviceInfo.isMobile
-    ? "bg-white rounded-xl shadow-sm border border-gray-100 p-4"
-    : "bg-white rounded-lg shadow-sm border border-gray-100 p-6";
+    ? "bg-white rounded-xl shadow-sm border border-silver-300 p-4"
+    : "bg-white rounded-lg shadow-sm border border-silver-300 p-6";
 
   const interactiveClasses =
     onClick || hoverable

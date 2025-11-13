@@ -34,12 +34,12 @@ const QuickActions = memo(function QuickActions() {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200",
+      blue: "bg-linear-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-700 shadow-sm hover:shadow-lg border border-blue-200",
       orange:
-        "bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200",
+        "bg-linear-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 text-orange-700 shadow-sm hover:shadow-lg border border-orange-200",
       purple:
-        "bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200",
-      green: "bg-green-50 hover:bg-green-100 text-green-700 border-green-200",
+        "bg-linear-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 text-purple-700 shadow-sm hover:shadow-lg border border-purple-200",
+      green: "bg-linear-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
@@ -55,7 +55,7 @@ const QuickActions = memo(function QuickActions() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5 mb-6">
+    <div className="bg-white rounded-lg shadow-md p-5 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
           Quick Actions
@@ -69,7 +69,7 @@ const QuickActions = memo(function QuickActions() {
             <Link
               key={action.label}
               href={action.href}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all hover:shadow-md hover:scale-[1.02] active:scale-[0.98] ${getColorClasses(action.color)}`}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98] ${getColorClasses(action.color)}`}
             >
               <Icon
                 className={`w-4 h-4 ${getIconColorClasses(action.color)}`}

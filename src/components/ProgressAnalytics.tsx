@@ -357,7 +357,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {viewMode === "overview" && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-blue-500">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">
@@ -367,13 +367,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.totalWorkouts}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-blue-600 bg-blue-50">
+                <div className="p-3 rounded-xl text-blue-600 bg-linear-to-br from-blue-50 to-blue-100">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-green-500">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">
@@ -383,13 +383,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.avgWorkoutsPerWeek || 0}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-green-600 bg-green-50">
+                <div className="p-3 rounded-xl text-green-600 bg-linear-to-br from-green-50 to-green-100">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-orange-500">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">
@@ -400,13 +400,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     <span className="text-lg text-gray-600 ml-1">%</span>
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-orange-600 bg-orange-50">
+                <div className="p-3 rounded-xl text-orange-600 bg-linear-to-br from-orange-50 to-orange-100">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow touch-manipulation">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-purple-500">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">
@@ -421,7 +421,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-xl text-purple-600 bg-purple-50">
+                <div className="p-3 rounded-xl text-purple-600 bg-linear-to-br from-purple-50 to-purple-100">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>
@@ -429,7 +429,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           </div>
 
           {/* Mobile-optimized Workout Frequency Chart */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4">
+          <div className="bg-white rounded-xl shadow-sm p-6 sm:p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-blue-600" />
               Workout Frequency
@@ -517,7 +517,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           {filteredStrengthData.map((exercise) => (
             <div
               key={exercise.exerciseId}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-4"
+              className="bg-white rounded-xl shadow-sm p-6 sm:p-4"
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -674,7 +674,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
               </h3>
             </div>
             <div className="space-y-4">
-              <div className="border border-surface-border rounded-lg p-4">
+              <div className="rounded-lg p-4 shadow-sm bg-white">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">Bench Press 1RM</span>
                   <span className="text-primary-600 font-semibold">
@@ -690,7 +690,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 </div>
               </div>
 
-              <div className="border border-surface-border rounded-lg p-4">
+              <div className="rounded-lg p-4 shadow-sm bg-white">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">Weekly Consistency</span>
                   <span className="text-primary-600 font-semibold">

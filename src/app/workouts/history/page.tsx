@@ -314,7 +314,7 @@ export default function WorkoutHistoryPage() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="mt-4 bg-white rounded-lg border border-gray-200 p-4">
+            <div className="mt-4 bg-white rounded-lg border border-silver-300 p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900">Filters</h3>
                 <button
@@ -348,7 +348,7 @@ export default function WorkoutHistoryPage() {
                       );
                       setCurrentPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
                     <option value="all">All</option>
                     <option value="completed">Completed</option>
@@ -368,7 +368,7 @@ export default function WorkoutHistoryPage() {
                       setDateFrom(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function WorkoutHistoryPage() {
                       setDateTo(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
               </div>
@@ -526,7 +526,7 @@ export default function WorkoutHistoryPage() {
 
                     {/* Expanded Details */}
                     {isExpanded && (
-                      <div className="border-t border-gray-200 p-4 bg-gray-50">
+                      <div className="border-t border-silver-300 p-4 bg-gray-50">
                         <h4 className="font-semibold text-gray-900 mb-3">
                           Exercises
                         </h4>
@@ -585,7 +585,7 @@ export default function WorkoutHistoryPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6 p-4 bg-white rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between mt-6 p-4 bg-white rounded-lg border border-silver-300">
                 <div className="text-sm text-gray-600">
                   Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                   {Math.min(

@@ -258,7 +258,7 @@ export function AssignmentDetailsSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="border border-silver-300 rounded-lg p-4 space-y-3"
+            className="rounded-lg p-4 shadow-sm space-y-3"
           >
             <div className="flex items-center gap-3">
               <Skeleton variant="circular" className="w-10 h-10" />
@@ -312,7 +312,7 @@ export function WorkoutEditorSkeleton() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="border border-silver-300 rounded-lg p-4 space-y-3"
+            className="rounded-lg p-4 shadow-sm space-y-3"
           >
             <div className="flex items-center justify-between">
               <Skeleton className="h-5 w-48" />
@@ -437,7 +437,7 @@ export function NotificationListSkeleton({ count = 10 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="bg-white border border-silver-300 rounded-lg p-4 flex items-start gap-4"
+          className="bg-white rounded-lg p-4 shadow-sm flex items-start gap-4"
         >
           <Skeleton variant="circular" className="w-10 h-10 shrink-0" />
           <div className="flex-1 space-y-2">

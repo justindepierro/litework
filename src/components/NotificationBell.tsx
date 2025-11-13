@@ -225,9 +225,9 @@ export default function NotificationBell() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 max-w-[95vw] max-h-[600px] bg-white rounded-lg shadow-2xl border-2 border-gray-300 z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-96 max-w-[95vw] max-h-[600px] bg-white rounded-lg shadow-2xl border-2 border-silver-400 z-50 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b-2 border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+          <div className="flex items-center justify-between px-4 py-3 border-b-2 border-silver-300 bg-gradient-to-r from-blue-50 to-purple-50">
             <h3 className="text-lg font-bold text-gray-900">Notifications</h3>
             {unreadCount > 0 && (
               <button
@@ -319,7 +319,7 @@ export default function NotificationBell() {
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
+            <div className="px-4 py-3 border-t border-silver-300 bg-gray-50">
               <button
                 onClick={() => {
                   window.location.href = "/notifications";

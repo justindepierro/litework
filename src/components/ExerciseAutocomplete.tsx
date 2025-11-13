@@ -222,13 +222,13 @@ export default function ExerciseAutocomplete({
       {showSuggestions && (
         <div
           ref={suggestionsRef}
-          className="absolute z-50 w-full mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto"
+          className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg max-h-80 overflow-y-auto"
         >
           {displayItems.length > 0 ? (
             <>
               {/* Section Header */}
               {showRecent && (
-                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="px-4 py-2 bg-silver-200 border-b border-silver-300 flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   <Clock className="w-4 h-4" />
                   Recent Exercises
                 </div>
@@ -241,7 +241,7 @@ export default function ExerciseAutocomplete({
                   onClick={() => handleSelect(exercise)}
                   className={`w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors ${
                     index === selectedIndex ? "bg-blue-50" : ""
-                  } ${index > 0 ? "border-t border-gray-100" : ""}`}
+                  } ${index > 0 ? "border-t border-silver-300" : ""}`}
                 >
                   <div className="flex items-center gap-3">
                     <Dumbbell className="w-5 h-5 text-gray-400 shrink-0" />
@@ -271,7 +271,7 @@ export default function ExerciseAutocomplete({
               ))}
               <button
                 onClick={handleCreateNew}
-                className="w-full text-left px-4 py-3 border-t-2 border-gray-200 hover:bg-green-50 transition-colors text-green-700 font-medium"
+                className="w-full text-left px-4 py-3 border-t-2 border-silver-300 hover:bg-green-50 transition-colors text-green-700 font-medium"
               >
                 <div className="flex items-center gap-3">
                   <Plus className="w-5 h-5" />

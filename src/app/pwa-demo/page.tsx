@@ -18,7 +18,7 @@ export default function PWADemoPage() {
 
         <EnhancedPWAInstall />
 
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="bg-white shadow-sm rounded-lg p-6">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Dumbbell className="w-6 h-6" />
             Gym-Optimized Features
@@ -105,7 +105,7 @@ export default function PWADemoPage() {
           </div>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-blue-900 mb-4">
             🚀 Performance Enhancements
           </h2>
@@ -135,7 +135,7 @@ export default function PWADemoPage() {
           </div>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <div className="bg-silver-200 shadow-sm rounded-lg p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Smartphone className="w-5 h-5" />
             Installation Instructions

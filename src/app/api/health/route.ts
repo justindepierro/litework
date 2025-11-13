@@ -31,7 +31,7 @@ async function checkDatabase(): Promise<HealthCheckResult> {
     const start = Date.now();
 
     // Simple query to test database connectivity
-    const { error } = await supabase.from("profiles").select("count").limit(1);
+    const { error } = await supabase.from("users").select("count").limit(1);
 
     const responseTime = Date.now() - start;
 

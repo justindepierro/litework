@@ -81,7 +81,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         bg-[var(--color-bg-surface)]
         border border-[var(--color-border-primary)]
         shadow-[var(--elevation-1)]
-        hover:border-gray-200
+        hover:border-silver-300
         hover:shadow-[var(--elevation-2)]
         active:scale-[0.98]
         transition-all

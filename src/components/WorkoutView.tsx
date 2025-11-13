@@ -153,7 +153,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               </p>
 
               {/* Enhanced mobile workout info */}
-              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-gray-50 rounded-xl p-4">
+              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-linear-to-br from-gray-50 to-blue-50/30 rounded-xl p-4 border border-blue-100">
                 <div className="flex items-center justify-center gap-2 text-body-small">
                   <Calendar className="w-5 h-5 text-accent-blue" />
                   <span className="font-medium">
@@ -238,13 +238,13 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                       Array.from(equipment).map((item) => (
                         <span
                           key={item}
-                          className="px-4 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900"
+                          className="px-4 py-2 bg-linear-to-br from-white to-blue-50 border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900 shadow-sm hover:shadow-md transition-shadow"
                         >
                           {item}
                         </span>
                       ))
                     ) : (
-                      <span className="px-4 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900">
+                      <span className="px-4 py-2 bg-linear-to-br from-white to-blue-50 border-2 border-blue-300 rounded-lg text-sm font-medium text-gray-900 shadow-sm">
                         Check exercise details
                       </span>
                     );
@@ -334,7 +334,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
           <Card
             variant="hero"
             padding="lg"
-            className="mb-8 rounded-2xl border-2 border-gray-200"
+            className="mb-8 rounded-2xl border-2 border-silver-300"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h2 className="text-heading-secondary text-xl font-bold">
@@ -355,7 +355,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
 
             {/* Mobile-optimized stats grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+              <div className="text-center p-4 bg-green-50 rounded-xl shadow-sm">
                 <div className="text-heading-primary text-2xl sm:text-xl font-bold text-green-800">
                   {workout.exercises.filter((e) => e.completed).length}
                 </div>
@@ -363,7 +363,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   Completed
                 </div>
               </div>
-              <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+              <div className="text-center p-4 bg-blue-50 rounded-xl shadow-sm">
                 <div className="text-heading-primary text-2xl sm:text-xl font-bold text-blue-800">
                   {workout.exercises.length}
                 </div>
@@ -371,7 +371,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   Total Exercises
                 </div>
               </div>
-              <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
+              <div className="text-center p-4 bg-purple-50 rounded-xl shadow-sm">
                 <div className="text-heading-primary text-2xl sm:text-xl font-bold text-purple-800">
                   {workout.exercises.reduce(
                     (acc, e) => acc + e.completedSets,
@@ -382,7 +382,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   Sets Done
                 </div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-xl border border-orange-200">
+              <div className="text-center p-4 bg-orange-50 rounded-xl shadow-sm">
                 <div className="text-heading-primary text-2xl sm:text-xl font-bold text-orange-800">
                   {workout.exercises.reduce((acc, e) => acc + e.targetSets, 0)}
                 </div>
@@ -413,7 +413,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   className={`rounded-2xl border-2 transition-all touch-manipulation ${
                     isCompleted
                       ? "border-accent-green bg-green-50 shadow-lg"
-                      : "border-gray-200 hover:border-gray-300"
+                      : "border-silver-300 hover:border-silver-400"
                   }`}
                 >
                   {/* Enhanced exercise header */}
@@ -464,7 +464,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                     </div>
 
                     {isCompleted && (
-                      <div className="flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-200 rounded-xl text-accent-green font-bold">
+                      <div className="flex items-center gap-2 px-4 py-2 bg-green-100 rounded-xl text-accent-green font-bold shadow-sm">
                         <Check className="w-5 h-5" />
                         <span>Complete</span>
                       </div>
@@ -485,7 +485,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                           className={`p-4 rounded-xl border-2 transition-all touch-manipulation ${
                             isSetComplete
                               ? "border-accent-green bg-green-50 shadow-md"
-                              : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+                              : "border-silver-400 bg-gray-50 hover:bg-gray-100"
                           }`}
                         >
                           <div className="flex justify-between items-center mb-2">

@@ -860,16 +860,16 @@ export default function AthletesPage() {
           {/* Add Athlete Placeholder Card */}
           <button
             onClick={() => setShowInviteModal(true)}
-            className="bg-linear-to-br from-navy-50 to-navy-100 rounded-xl shadow-sm border-2 border-dashed border-navy-200 hover:border-accent-blue hover:shadow-lg transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 hover:from-navy-100 hover:to-navy-200"
+            className="bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl shadow-sm hover:shadow-xl border-2 border-dashed border-blue-300 hover:border-blue-500 hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
           >
-            <div className="w-16 h-16 bg-accent-blue rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-lg">
               <Plus className="w-8 h-8 text-white" />
             </div>
             <div className="text-center">
               <h3 className="text-lg font-semibold text-navy-900 mb-1">
                 Add New Athlete
               </h3>
-              <p className="text-sm text-accent-blue">
+              <p className="text-sm text-blue-600 font-medium">
                 Click to add athlete profile
               </p>
             </div>

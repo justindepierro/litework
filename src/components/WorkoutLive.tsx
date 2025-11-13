@@ -633,7 +633,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                             {/* Coach's Notes - Show for active exercise */}
                             {isActive && exercise.notes && (
-                              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300">
+                              <div className="mt-3 p-3 bg-blue-50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
                                 <div className="flex items-start gap-2">
                                   <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                                   <div className="flex-1">
@@ -725,7 +725,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* BOTTOM SECTION: Fixed Input Area - Always Visible, No Scroll */}
         {currentExercise && !currentExercise.completed && (
-          <div className="shrink-0 bg-white border-t-2 border-gray-200 shadow-2xl">
+          <div className="shrink-0 bg-white border-t-2 border-silver-300 shadow-2xl">
             <div className="px-4 py-4 pb-safe">
               {/* Active Exercise Summary Card */}
               <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
@@ -870,7 +870,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* Finished all sets but workout not complete - show finish button */}
         {currentExercise && currentExercise.completed && (
-          <div className="shrink-0 bg-white border-t-2 border-gray-200 shadow-2xl">
+          <div className="shrink-0 bg-white border-t-2 border-silver-300 shadow-2xl">
             <div className="px-4 py-5">
               {isLastExercise ? (
                 <button
@@ -924,7 +924,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   (set, setIndex) => (
                     <div
                       key={setIndex}
-                      className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl border-2 border-gray-200 transition-colors"
+                      className="p-4 bg-silver-200 hover:bg-silver-300 rounded-xl shadow-sm transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-semibold text-gray-900">
@@ -1006,7 +1006,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                   }
                                 }
                               }}
-                              className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
+                              className="w-full px-2 py-1.5 border-2 border-silver-400 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
                             />
                           </div>
                         )}
@@ -1049,7 +1049,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                 }
                               }
                             }}
-                            className="w-full px-2 py-1.5 border-2 border-gray-300 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
+                            className="w-full px-2 py-1.5 border-2 border-silver-400 rounded-lg font-semibold text-gray-900 focus:border-blue-500 focus:outline-none"
                           />
                         </div>
                         {set.rpe !== undefined && set.rpe !== null && (

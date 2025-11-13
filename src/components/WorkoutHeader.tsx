@@ -58,7 +58,7 @@ export function WorkoutHeader({
       : 0;
 
   return (
-    <div className="sticky top-0 z-10 bg-white border-b-2 border-gray-200 shadow-sm">
+    <div className="sticky top-0 z-10 bg-white border-b-2 border-silver-300 shadow-sm">
       <div className="px-4 py-3">
         {/* Top Row: Title and Menu */}
         <div className="flex items-center justify-between mb-2">
