@@ -33,7 +33,7 @@ import {
 } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Display, Body } from "@/components/ui/Typography";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   AnimatedList,
   AnimatedListItem,
@@ -44,10 +44,10 @@ import {
   Calendar,
   Eye,
   Dumbbell,
-  Hand,
   Flame,
   Users,
   UserPlus,
+  LayoutDashboard,
   Clock,
   MapPin,
   Settings,
@@ -347,34 +347,24 @@ export default withPageErrorBoundary(function DashboardPage() {
         <div className="max-w-7xl mx-auto">
           {/* Welcome Header */}
           <div className="mb-8">
-            <div className="flex items-start justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <Display size="lg" className="mb-2">
-                  Welcome back,
-                </Display>
-                <Display
-                  size="md"
-                  className="flex items-center gap-2 justify-center sm:justify-start"
-                >
-                  {user.fullName}! <Hand className="w-6 h-6" />
-                </Display>
-                <Body variant="secondary" className="mt-2">
-                  {user.role === "admin" ? "Administrator" : "Coach"} Dashboard
-                </Body>
-              </div>
-
-              {/* Profile Button */}
-              <Link href="/profile">
-                <Button
-                  variant="secondary"
-                  leftIcon={<Settings className="w-5 h-5" />}
-                  className="shrink-0"
-                >
-                  <span className="hidden sm:inline">Profile & Settings</span>
-                  <span className="sm:hidden">Profile</span>
-                </Button>
-              </Link>
-            </div>
+            <PageHeader
+              title={`Welcome back, ${user.fullName}! 👋`}
+              subtitle={`${user.role === "admin" ? "Administrator" : "Coach"} Dashboard`}
+              icon={<LayoutDashboard className="w-6 h-6" />}
+              gradientVariant="primary"
+              actions={
+                <Link href="/profile">
+                  <Button
+                    variant="secondary"
+                    leftIcon={<Settings className="w-5 h-5" />}
+                    className="shrink-0"
+                  >
+                    <span className="hidden sm:inline">Profile & Settings</span>
+                    <span className="sm:hidden">Profile</span>
+                  </Button>
+                </Link>
+              }
+            />
           </div>
 
           {/* Quick Actions Bar - Full Width */}
@@ -396,9 +386,9 @@ export default withPageErrorBoundary(function DashboardPage() {
           {/* Full-width calendar */}
           <div>
             {/* Calendar with integrated header */}
-            <div className="bg-linear-to-br from-white to-blue-50/20 rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-gradient-to-br from-white to-blue-50/20 rounded-xl shadow-lg overflow-hidden">
               {/* Calendar Header */}
-              <div className="px-6 py-4 border-b border-blue-100 flex items-center justify-between bg-linear-to-r from-white to-blue-50/30">
+              <div className="px-6 py-4 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-white to-blue-50/30">
                 <div>
                   <h2 className="text-lg font-semibold text-navy-900">
                     Team Schedule
@@ -506,7 +496,7 @@ export default withPageErrorBoundary(function DashboardPage() {
 
   // Athlete Dashboard - Mobile-Forward, Industry-Leading Design
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Simplified Header */}
       <div className="sticky top-0 z-50 bg-white border-b border-silver-300 shadow-sm">
         <div className="container-responsive px-4 py-3">
@@ -648,7 +638,7 @@ export default withPageErrorBoundary(function DashboardPage() {
                           className="overflow-hidden shadow-lg border-2 border-blue-200"
                         >
                           {/* Hero Header */}
-                          <div className="bg-linear-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
+                          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <p className="text-xs font-bold uppercase tracking-wide opacity-90 mb-1">

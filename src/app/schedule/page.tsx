@@ -9,6 +9,7 @@ import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailMo
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 
@@ -196,25 +197,25 @@ export default withPageErrorBoundary(function SchedulePage() {
   return (
     <div className="min-h-screen bg-gradient-primary container-responsive section-spacing px-4 py-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div>
-            <h1 className="text-heading-primary text-3xl sm:text-2xl font-bold">
-              Schedule
-            </h1>
-            <p className="text-heading-secondary text-base sm:text-sm mt-1">
-              View and manage your workout schedule
-            </p>
-          </div>
-          {isCoachUser && (
-            <Button
-              onClick={() => (window.location.href = "/dashboard")}
-              variant="primary"
-              leftIcon={<Plus className="w-5 h-5" />}
-              className="py-3 px-4 rounded-xl font-medium"
-            >
-              Assign Workout
-            </Button>
-          )}
+        <div className="mb-6">
+          <PageHeader
+            title="Schedule"
+            subtitle="View and manage your workout schedule"
+            icon={<CalendarIcon className="w-6 h-6" />}
+            gradientVariant="primary"
+            actions={
+              isCoachUser ? (
+                <Button
+                  onClick={() => (window.location.href = "/dashboard")}
+                  variant="primary"
+                  leftIcon={<Plus className="w-5 h-5" />}
+                  className="py-3 px-4 rounded-xl font-medium"
+                >
+                  Assign Workout
+                </Button>
+              ) : undefined
+            }
+          />
         </div>
 
         {/* Draggable Calendar */}

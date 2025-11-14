@@ -16,6 +16,7 @@ import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Alert } from "@/components/ui/Alert";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   User,
   Save,
@@ -369,10 +370,12 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="text-gray-600 mt-1">
-            Manage your account and personal information
-          </p>
+          <PageHeader
+            title="Profile Settings"
+            subtitle="Manage your account and personal information"
+            icon={<User className="w-6 h-6" />}
+            gradientVariant="tertiary"
+          />
         </div>
 
         {/* Success/Error Messages */}
@@ -622,7 +625,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
                   >
                     <Save className="w-5 h-5" />
                     {isSaving ? "Saving..." : "Save Changes"}
@@ -742,7 +745,7 @@ export default function ProfilePage() {
 
                   {/* BMI Display */}
                   {profile?.bmi && (
-                    <div className="bg-linear-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mt-6">
+                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mt-6">
                       <h4 className="font-semibold text-gray-900 mb-2">
                         Body Mass Index (BMI)
                       </h4>
@@ -766,7 +769,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-8 py-3 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
                   >
                     <Save className="w-5 h-5" />
                     {isSaving ? "Saving..." : "Save Metrics"}

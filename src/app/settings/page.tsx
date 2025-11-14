@@ -5,9 +5,11 @@
 "use client";
 
 import { useRequireAuth } from "@/hooks/use-auth-guard";
+import { PageHeader } from "@/components/ui/PageHeader";
 import NotificationPermission from "@/components/NotificationPermission";
 import NotificationPreferencesSettings from "@/components/NotificationPreferencesSettings";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
+import { Settings as SettingsIcon } from "lucide-react";
 
 export default function SettingsPage() {
   const { user, isLoading } = useRequireAuth();
@@ -24,10 +26,12 @@ export default function SettingsPage() {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-2 text-gray-600">
-          Manage your account and notification preferences
-        </p>
+        <PageHeader
+          title="Settings"
+          subtitle="Manage your account and notification preferences"
+          icon={<SettingsIcon className="w-6 h-6" />}
+          gradientVariant="primary"
+        />
       </div>
 
       <div className="space-y-8">

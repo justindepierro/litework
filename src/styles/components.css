@@ -1,0 +1,205 @@
+/**
+ * COMPONENT UTILITIES
+ * Reusable component-level utility classes
+ * These build on top of Tailwind utilities for common patterns
+ */
+
+/* ===========================
+   LAYOUT UTILITIES
+   =========================== */
+
+.container-responsive {
+  @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+}
+
+.section-spacing {
+  @apply py-6 sm:py-8 lg:py-12;
+}
+
+/* ===========================
+   CARD UTILITIES
+   =========================== */
+
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 transition-shadow duration-200;
+}
+
+.card-interactive {
+  @apply card hover:shadow-md hover:border-accent-orange-300 cursor-pointer;
+}
+
+.card-elevated {
+  @apply bg-white rounded-xl shadow-md border border-gray-100 p-6;
+}
+
+/* ===========================
+   BUTTON UTILITIES
+   =========================== */
+
+.btn-base {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply btn-base bg-accent-orange-500 text-white hover:bg-accent-orange-600 active:bg-accent-orange-700 focus:ring-accent-orange-500 shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply btn-base bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-gray-500;
+}
+
+.btn-ghost {
+  @apply btn-base bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500;
+}
+
+.btn-success {
+  @apply btn-base bg-accent-green-500 text-white hover:bg-accent-green-600 active:bg-accent-green-700 focus:ring-accent-green-500 shadow-sm hover:shadow-md;
+}
+
+.btn-danger {
+  @apply btn-base bg-red-500 text-white hover:bg-red-600 active:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md;
+}
+
+/* ===========================
+   INPUT UTILITIES
+   =========================== */
+
+.input-base {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-orange-500 focus:border-transparent transition-colors;
+}
+
+.input-error {
+  @apply input-base border-red-500 focus:ring-red-500;
+}
+
+/* ===========================
+   BADGE UTILITIES
+   =========================== */
+
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply badge bg-accent-green-100 text-accent-green-800;
+}
+
+.badge-warning {
+  @apply badge bg-yellow-100 text-yellow-800;
+}
+
+.badge-error {
+  @apply badge bg-red-100 text-red-800;
+}
+
+.badge-info {
+  @apply badge bg-blue-100 text-blue-800;
+}
+
+.badge-neutral {
+  @apply badge bg-gray-100 text-gray-800;
+}
+
+/* ===========================
+   GRADIENT UTILITIES
+   =========================== */
+
+.gradient-brand {
+  @apply bg-gradient-to-r from-accent-orange-500 to-accent-pink-500;
+}
+
+.gradient-brand-hover {
+  @apply hover:from-accent-orange-600 hover:to-accent-pink-600;
+}
+
+.gradient-success {
+  @apply bg-gradient-to-r from-accent-green-500 to-emerald-600;
+}
+
+.gradient-purple {
+  @apply bg-gradient-to-r from-accent-purple-500 to-accent-blue-500;
+}
+
+.gradient-page-bg {
+  @apply bg-gradient-to-br from-accent-orange-50 via-white to-accent-purple-50;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+}
+
+/* ===========================
+   ANIMATION UTILITIES
+   =========================== */
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===========================
+   ACCESSIBILITY UTILITIES
+   =========================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-accent-orange-500 focus:ring-offset-2;
+}
+
+/* ===========================
+   INTERACTIVE STATES
+   =========================== */
+
+.interactive-lift {
+  @apply transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0;
+}
+
+.interactive-scale {
+  @apply transition-transform duration-150 hover:scale-105 active:scale-95;
+}
+
+/* ===========================
+   LOADING STATES
+   =========================== */
+
+.skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+.spinner {
+  @apply animate-spin rounded-full border-2 border-gray-300 border-t-accent-orange-500;
+}
