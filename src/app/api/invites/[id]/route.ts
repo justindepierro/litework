@@ -190,8 +190,22 @@ export async function PUT(
     const body = await request.json();
     const { email } = body;
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    if (!email || !email.trim()) {
+      return NextResponse.json({ 
+        success: false,
+        error: "Email is required" 
+      }, { status: 400 });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    if (!emailRegex.test(trimmedEmail)) {
+      return NextResponse.json({ 
+        success: false,
+        error: "Please enter a valid email address" 
+      }, { status: 400 });
     }
 
     const supabase = getAdminClient();
@@ -232,7 +246,7 @@ export async function PUT(
 
     // Update the invite with new email
     const updateData: Record<string, string> = {
-      email,
+      email: trimmedEmail,
       status: "pending", // Set to pending once email is added
       updated_at: new Date().toISOString(),
     };
@@ -265,7 +279,7 @@ export async function PUT(
       const inviteUrl = `${appUrl}/signup?invite=${inviteId}`;
 
       await sendEmailNotification({
-        to: email.toLowerCase(),
+        to: trimmedEmail,
         subject: "You're invited to join LiteWork!",
         category: "invite",
         templateData: {

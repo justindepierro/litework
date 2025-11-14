@@ -46,11 +46,12 @@ export default function EditEmailModal({
   };
 
   const handleSubmit = async () => {
-    if (!email) return;
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) return;
 
     setIsSubmitting(true);
     try {
-      await onUpdateEmail(email);
+      await onUpdateEmail(trimmedEmail);
       setEmail("");
       onClose();
     } finally {
@@ -60,13 +61,21 @@ export default function EditEmailModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={handleClose}>
-      <div className="bg-white rounded-xl w-full max-w-md">
+      <div className="
+        bg-white 
+        w-full h-full
+        sm:rounded-xl sm:max-w-md sm:h-auto
+        flex flex-col 
+        sm:shadow-2xl
+        safe-area-inset
+      ">
         <ModalHeader
           title={`${athlete.email ? "Edit" : "Add"} Email Address`}
           icon={<Send className="w-6 h-6" />}
           onClose={handleClose}
         />
-        <ModalContent>
+        <div className="flex-1 overflow-y-auto">
+          <ModalContent>
           <div className="space-y-4">
             <div>
               <Body variant="secondary" className="block text-sm mb-2">
@@ -108,6 +117,8 @@ export default function EditEmailModal({
             </div>
           </div>
         </ModalContent>
+        </div>
+
         <ModalFooter align="between">
           <Button onClick={handleClose} variant="secondary" className="flex-1">
             Cancel
@@ -116,7 +127,7 @@ export default function EditEmailModal({
             onClick={handleSubmit}
             variant="primary"
             className="flex-1"
-            disabled={!email || isSubmitting}
+            disabled={!email.trim() || isSubmitting}
           >
             {isSubmitting
               ? "Updating..."

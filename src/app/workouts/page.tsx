@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
@@ -295,45 +296,40 @@ export default withPageErrorBoundary(function WorkoutsPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Enhanced mobile-first header */}
-      <div className="bg-gradient-primary text-white p-6 sm:p-4">
+      <div className="container-responsive p-6 sm:p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center">
-              <Dumbbell className="w-10 h-10 sm:w-8 sm:h-8 mr-3" />
-              <div>
-                <h1 className="text-3xl sm:text-2xl font-bold">
-                  Workout Management
-                </h1>
-                <p className="text-blue-100 text-base sm:text-sm mt-1">
-                  Create and manage training plans
-                </p>
+          <PageHeader
+            title="Workout Management"
+            subtitle="Create and manage training plans"
+            icon={<Dumbbell className="w-6 h-6" />}
+            gradientVariant="primary"
+            actions={
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
+                    currentView === "workouts"
+                      ? "bg-accent-blue text-white shadow-md"
+                      : "bg-silver-200 text-navy-900 hover:bg-silver-300"
+                  }`}
+                  onClick={() => setCurrentView("workouts")}
+                >
+                  <Dumbbell className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
+                  Workouts
+                </button>
+                <button
+                  className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
+                    currentView === "library"
+                      ? "bg-accent-blue text-white shadow-md"
+                      : "bg-silver-200 text-navy-900 hover:bg-silver-300"
+                  }`}
+                  onClick={() => setCurrentView("library")}
+                >
+                  <Library className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
+                  Exercise Library
+                </button>
               </div>
-            </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <button
-                className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
-                  currentView === "workouts"
-                    ? "bg-white text-accent-blue shadow-md"
-                    : "bg-accent-blue text-white hover:bg-accent-blue/90"
-                }`}
-                onClick={() => setCurrentView("workouts")}
-              >
-                <Dumbbell className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
-                Workouts
-              </button>
-              <button
-                className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
-                  currentView === "library"
-                    ? "bg-white text-accent-blue shadow-md"
-                    : "bg-accent-blue text-white hover:bg-accent-blue/90"
-                }`}
-                onClick={() => setCurrentView("library")}
-              >
-                <Library className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
-                Exercise Library
-              </button>
-            </div>
-          </div>
+            }
+          />
         </div>
       </div>
 
@@ -359,37 +355,47 @@ export default withPageErrorBoundary(function WorkoutsPage() {
 
             {/* Action Buttons */}
             {!showWorkoutsSkeleton && (
-              <div className="flex flex-col gap-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-heading-secondary text-xl">
-                    {showArchived ? "Archived Workouts" : "Your Workouts"}
-                  </h2>
+              <div className="bg-gradient-subtle-primary rounded-xl p-6 mb-6 border border-silver-200">
+                <div className="flex flex-col gap-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-heading-primary text-xl font-bold mb-1">
+                        {showArchived ? "Archived Workouts" : "Your Workouts"}
+                      </h2>
+                      <p className="text-body-small text-steel-600">
+                        {showArchived
+                          ? "Previously archived training plans"
+                          : "Create and manage your training programs"}
+                      </p>
+                    </div>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        setCreatingWorkout(true);
+                      }}
+                      leftIcon={<Plus className="w-4 h-4" />}
+                      className="shrink-0"
+                    >
+                      Create Workout
+                    </Button>
+                  </div>
                   <Button
-                    variant="primary"
-                    onClick={() => {
-                      setCreatingWorkout(true);
-                    }}
-                    leftIcon={<Plus className="w-4 h-4" />}
+                    onClick={() => setShowArchived(!showArchived)}
+                    variant="secondary"
+                    className="w-full sm:w-auto self-start"
+                    leftIcon={
+                      showArchived ? (
+                        <Dumbbell className="w-4 h-4" />
+                      ) : (
+                        <Archive className="w-4 h-4" />
+                      )
+                    }
                   >
-                    Create Workout
+                    {showArchived
+                      ? "View Active Workouts"
+                      : "View Archived Workouts"}
                   </Button>
                 </div>
-                <Button
-                  onClick={() => setShowArchived(!showArchived)}
-                  variant="secondary"
-                  className="w-full sm:w-auto self-start"
-                  leftIcon={
-                    showArchived ? (
-                      <Dumbbell className="w-4 h-4" />
-                    ) : (
-                      <Archive className="w-4 h-4" />
-                    )
-                  }
-                >
-                  {showArchived
-                    ? "View Active Workouts"
-                    : "View Archived Workouts"}
-                </Button>
               </div>
             )}
 
@@ -412,18 +418,23 @@ export default withPageErrorBoundary(function WorkoutsPage() {
                       <Card
                         key={workout.id}
                         variant="default"
-                        padding="md"
-                        className={
+                        padding="none"
+                        className={`relative overflow-hidden ${
                           isOptimistic ? "opacity-70 animate-pulse" : ""
-                        }
+                        } hover:shadow-lg transition-shadow`}
                       >
-                        {/* Header - Always visible, clickable to expand */}
-                        <div
-                          className="flex justify-between items-start mb-3 cursor-pointer hover:bg-gray-50 -m-4 p-4 rounded-lg transition-colors"
-                          onClick={() =>
-                            setExpandedWorkout(isExpanded ? null : workout.id)
-                          }
-                        >
+                        {/* Gradient Accent Bar - Inside Card */}
+                        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-accent-primary" />
+                        
+                        {/* Card Content with left padding to account for gradient bar */}
+                        <div className="pl-6 pr-4 py-4">
+                          {/* Header - Always visible, clickable to expand */}
+                          <div
+                            className="flex justify-between items-start mb-3 cursor-pointer hover:bg-gray-50 -m-4 p-4 rounded-lg transition-colors"
+                            onClick={() =>
+                              setExpandedWorkout(isExpanded ? null : workout.id)
+                            }
+                          >
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <h3 className="text-body-primary font-semibold">
@@ -581,6 +592,7 @@ export default withPageErrorBoundary(function WorkoutsPage() {
                               </>
                             )}
                           </button>
+                        </div>
                         </div>
                       </Card>
                     );

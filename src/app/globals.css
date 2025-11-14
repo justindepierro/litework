@@ -1,25 +1,26 @@
 /**
  * Global Styles for LiteWork Workout Tracker
- * Using Design Tokens for consistent styling
+ * Professional Design System Architecture
  */
 
-@import "../styles/design-tokens.css";
+/* 1. Import Tailwind CSS v4 - MUST BE FIRST */
+@import "tailwindcss";
+
+/* 2. Import Design Tokens */
+@import "../styles/tokens.css";
+
+/* 3. Import Celebrations */
 @import "../styles/celebrations.css";
 
-/* Additional global styles and overrides */
-
-/* Force light mode - remove dark mode override */
-/* We want a consistent light mode experience */
-
-/* Ensure root colors are properly set */
+/* Force light mode - consistent experience */
 :root {
   color-scheme: light;
 }
 
 body {
-  color: var(--color-text-primary) !important;
-  background-color: var(--color-bg-primary) !important;
-  font-family: var(--font-family-primary);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  font-family: var(--font-primary);
   /* Mobile optimizations */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,74 +29,172 @@ body {
 }
 
 /* ============================================ */
-/* PRODUCTION POLISH - Micro-Interactions */
+/* SAFE AREA HANDLING FOR MOBILE DEVICES */
 /* ============================================ */
 
-/* Smooth transitions for interactive elements only */
+/* Support for iOS notch and home indicator */
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-inset-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ============================================ */
+/* GRADIENT DESIGN SYSTEM - SINGLE SOURCE OF TRUTH */
+/* ============================================ */
+
+/* 
+ * All gradient colors are defined here using design tokens.
+ * To change gradient colors site-wide, update the CSS custom properties in tokens.css
+ * 
+ * Primary Gradient: Orange → Purple → Green (default)
+ * Secondary Gradient: Orange → Purple → Pink
+ * Tertiary Gradient: Blue → Purple → Pink
+ */
+
+/* Gradient Accent Bars (thin decorative bars) */
+.bg-gradient-accent-primary {
+  background: linear-gradient(
+    to bottom,
+    var(--accent-orange-500),
+    var(--accent-purple-500),
+    var(--accent-green-500)
+  );
+}
+
+.bg-gradient-accent-secondary {
+  background: linear-gradient(
+    to bottom,
+    var(--accent-orange-500),
+    var(--accent-purple-500),
+    var(--accent-pink-500)
+  );
+}
+
+.bg-gradient-accent-tertiary {
+  background: linear-gradient(
+    to bottom,
+    var(--accent-blue-500),
+    var(--accent-purple-500),
+    var(--accent-pink-500)
+  );
+}
+
+/* Gradient Headers (full background, horizontal) */
+.bg-gradient-header-primary {
+  background: linear-gradient(
+    to right,
+    var(--accent-orange-500),
+    var(--accent-purple-500),
+    var(--accent-green-500)
+  );
+}
+
+.bg-gradient-header-secondary {
+  background: linear-gradient(
+    to right,
+    var(--accent-orange-500),
+    var(--accent-purple-500),
+    var(--accent-pink-500)
+  );
+}
+
+.bg-gradient-header-tertiary {
+  background: linear-gradient(
+    to right,
+    var(--accent-blue-500),
+    var(--accent-purple-500),
+    var(--accent-pink-500)
+  );
+}
+
+/* Gradient Backgrounds (subtle, for cards/sections) */
+.bg-gradient-subtle-primary {
+  background: linear-gradient(
+    135deg,
+    var(--accent-orange-50),
+    var(--accent-purple-50),
+    var(--accent-green-50)
+  );
+}
+
+.bg-gradient-subtle-secondary {
+  background: linear-gradient(
+    135deg,
+    var(--accent-orange-50),
+    var(--accent-purple-50),
+    var(--accent-pink-50)
+  );
+}
+
+/* ============================================ */
+/* MICRO-INTERACTIONS */
+/* ============================================ */
+
 button,
 a,
 input,
 textarea,
 select {
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-fast);
 }
 
-/* Button hover lift effect - subtle */
 button:not(:disabled):hover {
   transform: translateY(-0.5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 button:not(:disabled):active {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Interactive card hover - only for clickable cards */
+/* Interactive cards */
 .card-interactive:hover,
 button.card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: rgba(59, 130, 246, 0.3);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-accent);
+  transition: all var(--transition-base);
 }
 
-/* Input focus effect - very subtle */
 input:focus,
 textarea:focus,
 select:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
-/* Link hover - minimal underline */
 a:not(.no-underline):hover {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 
 /* ============================================ */
-/* ACCESSIBILITY - Skip Link */
+/* ACCESSIBILITY */
 /* ============================================ */
 
-/* Skip to main content link - for keyboard navigation */
 .skip-link:focus {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--border-accent);
   outline-offset: 2px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Ensure focus indicators are visible on all interactive elements */
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--border-accent);
   outline-offset: 2px;
 }
 
-/* Remove default focus ring, use our custom one */
 *:focus {
   outline: none;
 }

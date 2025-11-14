@@ -10,31 +10,31 @@ export interface ApiClientOptions extends Omit<RequestInit, "body"> {
    * Request body (will be JSON stringified automatically)
    */
   body?: unknown;
-  
+
   /**
    * Show error toast notification on failure
    * Note: Toast function must be passed explicitly as API client can't access React hooks
    * @default false
    */
   showErrorToast?: boolean;
-  
+
   /**
    * Toast function (from useToast hook)
    */
   toastError?: (message: string) => void;
-  
+
   /**
    * Custom error message to display
    * @default null (uses API error message)
    */
   customErrorMessage?: string;
-  
+
   /**
    * Request timeout in milliseconds
    * @default 10000 (10 seconds)
    */
   timeout?: number;
-  
+
   /**
    * Skip JSON parsing (for non-JSON responses)
    * @default false
@@ -85,7 +85,7 @@ class ApiClient {
   /**
    * Make an authenticated API request with enhanced error handling
    * Returns Promise<ApiResponse<T>> with data, error, and success fields
-   * 
+   *
    * Features:
    * - Automatic timeout management
    * - Consistent error handling
@@ -145,8 +145,9 @@ class ApiClient {
 
       // Handle authentication errors
       if (response.status === 401) {
-        const message = customErrorMessage || "Authentication required. Please sign in.";
-        
+        const message =
+          customErrorMessage || "Authentication required. Please sign in.";
+
         if (showErrorToast && toastError) {
           toastError(message);
         }
@@ -187,7 +188,9 @@ class ApiClient {
             status: response.status,
             statusText: response.statusText,
             errorData,
-            rawResponse: errorText ? errorText.substring(0, 500) : "No response",
+            rawResponse: errorText
+              ? errorText.substring(0, 500)
+              : "No response",
           });
         }
 
@@ -245,7 +248,10 @@ class ApiClient {
       }
 
       if (process.env.NODE_ENV === "development") {
-        console.error(`[API] Error ${fetchOptions.method || "GET"} ${endpoint}:`, err);
+        console.error(
+          `[API] Error ${fetchOptions.method || "GET"} ${endpoint}:`,
+          err
+        );
       }
 
       if (showErrorToast && toastError) {
@@ -266,7 +272,7 @@ class ApiClient {
    */
   private async request<T>(
     endpoint: string,
-    options: RequestInit & { body?: unknown } = {}
+    options: ApiClientOptions = {}
   ): Promise<T> {
     const response = await this.requestWithResponse<T>(endpoint, options);
 
@@ -285,14 +291,14 @@ class ApiClient {
   async createGroup(groupData: Record<string, unknown>) {
     return this.request("/groups", {
       method: "POST",
-      body: JSON.stringify(groupData),
+      body: groupData,
     });
   }
 
   async updateGroup(groupId: string, updateData: Record<string, unknown>) {
     return this.request(`/groups/${groupId}`, {
       method: "PUT",
-      body: JSON.stringify(updateData),
+      body: updateData,
     });
   }
 
@@ -310,14 +316,14 @@ class ApiClient {
   async createWorkout(workoutData: Record<string, unknown>) {
     return this.request("/workouts", {
       method: "POST",
-      body: JSON.stringify(workoutData),
+      body: workoutData,
     });
   }
 
   async updateWorkout(id: string, workoutData: Record<string, unknown>) {
     return this.request("/workouts", {
       method: "PUT",
-      body: JSON.stringify({ id, ...workoutData }),
+      body: { id, ...workoutData },
     });
   }
 
@@ -334,7 +340,7 @@ class ApiClient {
   }) {
     return this.request("/exercises/find-or-create", {
       method: "POST",
-      body: JSON.stringify(exerciseData),
+      body: exerciseData,
     });
   }
 
@@ -356,7 +362,7 @@ class ApiClient {
   async createAssignment(assignmentData: Record<string, unknown>) {
     return this.request("/assignments", {
       method: "POST",
-      body: JSON.stringify(assignmentData),
+      body: assignmentData,
     });
   }
 
@@ -372,7 +378,7 @@ class ApiClient {
   }) {
     return this.request("/users", {
       method: "POST",
-      body: JSON.stringify(athleteData),
+      body: athleteData,
     });
   }
 
@@ -386,7 +392,7 @@ class ApiClient {
   }) {
     return this.request("/kpis", {
       method: "POST",
-      body: JSON.stringify(kpiData),
+      body: kpiData,
     });
   }
 
@@ -401,7 +407,7 @@ class ApiClient {
   ) {
     return this.request(`/kpis/${kpiId}`, {
       method: "PUT",
-      body: JSON.stringify(kpiData),
+      body: kpiData,
     });
   }
 
@@ -424,7 +430,7 @@ class ApiClient {
   }) {
     return this.request("/invites", {
       method: "POST",
-      body: JSON.stringify(inviteData),
+      body: inviteData,
     });
   }
 
@@ -437,7 +443,7 @@ class ApiClient {
   async updateInvite(inviteId: string, data: { email: string }) {
     return this.request(`/invites/${inviteId}`, {
       method: "PUT",
-      body: JSON.stringify(data),
+      body: data, // Let requestWithResponse handle JSON.stringify
     });
   }
 
@@ -454,7 +460,7 @@ class ApiClient {
   async acceptInvite(inviteCode: string, password: string) {
     return this.request("/invites/accept", {
       method: "POST",
-      body: JSON.stringify({ inviteCode, password }),
+      body: { inviteCode, password },
     });
   }
 

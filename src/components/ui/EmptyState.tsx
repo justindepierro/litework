@@ -36,6 +36,8 @@ export interface EmptyStateProps {
   size?: "sm" | "md" | "lg";
   /** Animation delay in seconds (default: 0) */
   delay?: number;
+  /** Show subtle gradient background */
+  showGradient?: boolean;
   /** Custom className */
   className?: string;
 }
@@ -49,6 +51,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   illustration,
   size = "md",
   delay = 0,
+  showGradient = false,
   className = "",
 }) => {
   const sizeStyles = {
@@ -83,6 +86,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       className={`
         flex flex-col items-center justify-center text-center
         ${styles.container}
+        ${showGradient ? "bg-gradient-subtle-primary rounded-xl border border-silver-200" : ""}
         ${className}
       `}
     >
@@ -202,6 +206,7 @@ export const EmptyWorkouts: React.FC<{
     icon={Dumbbell}
     title="No workouts yet"
     description="Create your first workout to get started with your training program."
+    showGradient={true}
     action={{
       label: "Create Workout",
       onClick: onCreateWorkout,
