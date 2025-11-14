@@ -365,9 +365,9 @@ export function NetworkQualityBadge() {
   if (quality === "high") return null; // Don't show for good connections
 
   const colors: Record<string, string> = {
-    medium: "bg-yellow-100 text-yellow-800",
-    low: "bg-red-100 text-red-800",
-    offline: "bg-gray-100 text-gray-800",
+    medium: "bg-warning-light text-warning-dark",
+    low: "bg-error-light text-error-dark",
+    offline: "bg-steel-100 text-steel-800",
   };
 
   const labels: Record<string, string> = {

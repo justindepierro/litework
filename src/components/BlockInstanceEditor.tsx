@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
 import { Package, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
@@ -46,7 +47,7 @@ export default function BlockInstanceEditor({
   const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
   const [groups, setGroups] = useState<ExerciseGroup[]>([]);
   const [sourceBlock, setSourceBlock] = useState<WorkoutBlock | null>(null);
-  const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+  const { isLoading: isLoadingTemplate, execute } = useAsyncState<void>();
 
   // Load exercises and groups for this block instance
   useEffect(() => {
@@ -69,9 +70,8 @@ export default function BlockInstanceEditor({
 
   // Load source block template for reset functionality
   useEffect(() => {
-    const fetchSourceBlock = async () => {
-      setIsLoadingTemplate(true);
-      try {
+    if (isOpen && blockInstance.sourceBlockId) {
+      execute(async () => {
         const response = await fetch(
           `/api/blocks/${blockInstance.sourceBlockId}`,
           {
@@ -84,17 +84,9 @@ export default function BlockInstanceEditor({
           const data = await response.json();
           setSourceBlock(data.block);
         }
-      } catch (error) {
-        console.error("Error fetching source block:", error);
-      } finally {
-        setIsLoadingTemplate(false);
-      }
-    };
-
-    if (isOpen && blockInstance.sourceBlockId) {
-      fetchSourceBlock();
+      });
     }
-  }, [isOpen, blockInstance.sourceBlockId]);
+  }, [isOpen, blockInstance.sourceBlockId, execute]);
 
   const resetToTemplate = () => {
     if (!sourceBlock) return;

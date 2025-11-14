@@ -228,7 +228,7 @@ export default function ExerciseAutocomplete({
             <>
               {/* Section Header */}
               {showRecent && (
-                <div className="px-4 py-2 bg-silver-200 border-b border-silver-300 flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="px-4 py-2 bg-silver-200 border-b border-silver-300 flex items-center gap-2 text-xs font-semibold text-body-secondary uppercase tracking-wider">
                   <Clock className="w-4 h-4" />
                   Recent Exercises
                 </div>
@@ -239,22 +239,22 @@ export default function ExerciseAutocomplete({
                 <button
                   key={exercise.id}
                   onClick={() => handleSelect(exercise)}
-                  className={`w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors ${
-                    index === selectedIndex ? "bg-blue-50" : ""
+                  className={`w-full text-left px-4 py-3 hover:bg-primary-lighter transition-colors ${
+                    index === selectedIndex ? "bg-primary-lighter" : ""
                   } ${index > 0 ? "border-t border-silver-300" : ""}`}
                 >
                   <div className="flex items-center gap-3">
-                    <Dumbbell className="w-5 h-5 text-gray-400 shrink-0" />
+                    <Dumbbell className="w-5 h-5 text-steel-400 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div
-                        className="font-medium text-gray-900 truncate"
+                        className="font-medium text-heading-primary truncate"
                         dangerouslySetInnerHTML={{
                           __html: highlightMatch(exercise.name, value),
                         }}
                       />
                       {exercise.description && (
                         <div
-                          className="text-xs text-gray-500 truncate mt-0.5"
+                          className="text-xs text-caption-muted truncate mt-0.5"
                           dangerouslySetInnerHTML={{
                             __html: highlightMatch(exercise.description, value),
                           }}
@@ -271,7 +271,7 @@ export default function ExerciseAutocomplete({
               ))}
               <button
                 onClick={handleCreateNew}
-                className="w-full text-left px-4 py-3 border-t-2 border-silver-300 hover:bg-green-50 transition-colors text-green-700 font-medium"
+                className="w-full text-left px-4 py-3 border-t-2 border-silver-300 hover:bg-success-lighter transition-colors text-success font-medium"
               >
                 <div className="flex items-center gap-3">
                   <Plus className="w-5 h-5" />
@@ -282,15 +282,15 @@ export default function ExerciseAutocomplete({
           ) : (
             <button
               onClick={handleCreateNew}
-              className="w-full text-left px-4 py-4 hover:bg-green-50 transition-colors"
+              className="w-full text-left px-4 py-4 hover:bg-success-lighter transition-colors"
             >
-              <div className="flex items-center gap-3 text-green-700">
+              <div className="flex items-center gap-3 text-success">
                 <Plus className="w-5 h-5" />
                 <div>
                   <div className="font-medium">
                     Create &quot;{value}&quot; as new exercise
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
+                  <div className="text-xs text-caption-muted mt-0.5">
                     This will be added to your exercise library
                   </div>
                 </div>

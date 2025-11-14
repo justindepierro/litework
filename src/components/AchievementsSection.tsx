@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/components/ToastProvider";
 import { Card } from "@/components/ui/Card";
 import { Heading, Body } from "@/components/ui/Typography";
 import { AchievementBadge, LockedBadge } from "@/components/AchievementBadge";
+import { useAsyncState } from "@/hooks/use-async-state";
 import { Trophy, Lock } from "lucide-react";
 import type { Achievement, AchievementType } from "@/lib/achievement-system";
 
@@ -26,35 +29,31 @@ export function AchievementsSection({
   const [achievements, setAchievements] = useState<AchievementsData | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading, error, execute } = useAsyncState<AchievementsData>();
+  const { error: toastError } = useToast();
 
   useEffect(() => {
-    const fetchAchievements = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
+    const fetchAchievements = () =>
+      execute(async () => {
         const params = athleteId
           ? new URLSearchParams({ athleteId })
           : new URLSearchParams();
-        const response = await fetch(`/api/achievements?${params.toString()}`);
-        const data = await response.json();
+        
+        const { data, error } = await apiClient.requestWithResponse<AchievementsData>(
+          `/api/achievements?${params.toString()}`,
+          { toastError }
+        );
 
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch achievements");
+        if (error) {
+          throw new Error(error);
         }
 
         setAchievements(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        return data as AchievementsData;
+      });
 
     fetchAchievements();
-  }, [athleteId]);
+  }, [athleteId, execute, toastError]);
 
   if (isLoading) {
     return (

@@ -108,10 +108,10 @@ export default function ProgressAnalyticsDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-heading-primary mb-2">
             Progress Analytics
           </h1>
-          <p className="text-gray-600">
+          <p className="text-body-secondary">
             Track strength gains, volume, and performance trends
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function ProgressAnalyticsDashboard() {
 
           <button
             onClick={exportData}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
           >
             <Download className="w-4 h-4" />
             Export
@@ -143,7 +143,7 @@ export default function ProgressAnalyticsDashboard() {
         <div className="bg-silver-200 rounded-xl p-4 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-body-secondary mb-2">
                 Time Range
               </label>
               <select
@@ -159,7 +159,7 @@ export default function ProgressAnalyticsDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-body-secondary mb-2">
                 Athlete
               </label>
               <select
@@ -175,7 +175,7 @@ export default function ProgressAnalyticsDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-body-secondary mb-2">
                 Metric
               </label>
               <select
@@ -197,81 +197,81 @@ export default function ProgressAnalyticsDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-primary-lighter rounded-xl flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">Total Workouts</h3>
-              <p className="text-sm text-gray-600">This period</p>
+              <h3 className="font-semibold text-heading-primary">Total Workouts</h3>
+              <p className="text-sm text-body-secondary">This period</p>
             </div>
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-3xl font-bold text-heading-primary mb-2">
             {analyticsSummary.totalWorkouts}
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span className="text-green-600 font-medium">+12%</span>
-            <span className="text-gray-500">vs last period</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+            <span className="text-success font-medium">+12%</span>
+            <span className="text-caption-muted">vs last period</span>
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-success-light rounded-xl flex items-center justify-center">
+              <Zap className="w-5 h-5 text-success" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">Total Volume</h3>
-              <p className="text-sm text-gray-600">Pounds lifted</p>
+              <h3 className="font-semibold text-heading-primary">Total Volume</h3>
+              <p className="text-sm text-body-secondary">Pounds lifted</p>
             </div>
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-3xl font-bold text-heading-primary mb-2">
             {analyticsSummary.totalVolume.toLocaleString()}
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span className="text-green-600 font-medium">+8.3%</span>
-            <span className="text-gray-500">vs last period</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+            <span className="text-success font-medium">+8.3%</span>
+            <span className="text-caption-muted">vs last period</span>
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Target className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 bg-accent-light rounded-xl flex items-center justify-center">
+              <Target className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">Strength Gain</h3>
-              <p className="text-sm text-gray-600">Average 1RM increase</p>
+              <h3 className="font-semibold text-heading-primary">Strength Gain</h3>
+              <p className="text-sm text-body-secondary">Average 1RM increase</p>
             </div>
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-3xl font-bold text-heading-primary mb-2">
             +{analyticsSummary.strengthGain}%
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span className="text-green-600 font-medium">+2.1%</span>
-            <span className="text-gray-500">vs last period</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+            <span className="text-success font-medium">+2.1%</span>
+            <span className="text-caption-muted">vs last period</span>
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 bg-warning-light rounded-xl flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-warning" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">Consistency</h3>
-              <p className="text-sm text-gray-600">Workout adherence</p>
+              <h3 className="font-semibold text-heading-primary">Consistency</h3>
+              <p className="text-sm text-body-secondary">Workout adherence</p>
             </div>
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-3xl font-bold text-heading-primary mb-2">
             {analyticsSummary.consistencyScore}%
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span className="text-green-600 font-medium">+5%</span>
-            <span className="text-gray-500">vs last period</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+            <span className="text-success font-medium">+5%</span>
+            <span className="text-caption-muted">vs last period</span>
           </div>
         </div>
       </div>
@@ -280,14 +280,14 @@ export default function ProgressAnalyticsDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Strength Progression Chart */}
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <h3 className="text-lg font-bold text-heading-primary mb-4">
             Strength Progression
           </h3>
           <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
-              <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-500">Chart visualization would go here</p>
-              <p className="text-sm text-gray-400">
+              <BarChart3 className="w-12 h-12 text-steel-400 mx-auto mb-2" />
+              <p className="text-caption-muted">Chart visualization would go here</p>
+              <p className="text-sm text-steel-400">
                 Shows 1RM progression over time
               </p>
             </div>
@@ -296,14 +296,14 @@ export default function ProgressAnalyticsDashboard() {
 
         {/* Volume Trends */}
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <h3 className="text-lg font-bold text-heading-primary mb-4">
             Volume Trends
           </h3>
           <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
-              <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-500">Chart visualization would go here</p>
-              <p className="text-sm text-gray-400">
+              <TrendingUp className="w-12 h-12 text-steel-400 mx-auto mb-2" />
+              <p className="text-caption-muted">Chart visualization would go here</p>
+              <p className="text-sm text-steel-400">
                 Shows total volume over time
               </p>
             </div>
@@ -314,24 +314,24 @@ export default function ProgressAnalyticsDashboard() {
       {/* Top Exercises Table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-gray-900">Top Exercises</h3>
-          <Award className="w-5 h-5 text-yellow-500" />
+          <h3 className="text-lg font-bold text-heading-primary">Top Exercises</h3>
+          <Award className="w-5 h-5 text-warning" />
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-silver-300">
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-body-secondary">
                   Exercise
                 </th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-body-secondary">
                   Sessions
                 </th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-body-secondary">
                   Improvement
                 </th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-body-secondary">
                   Status
                 </th>
               </tr>
@@ -343,15 +343,15 @@ export default function ProgressAnalyticsDashboard() {
                   className="border-b border-silver-300 hover:bg-silver-200 transition-colors"
                 >
                   <td className="py-4 px-4">
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-heading-primary">
                       {exercise.name}
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-gray-600">
+                  <td className="py-4 px-4 text-body-secondary">
                     {exercise.sessions}
                   </td>
                   <td className="py-4 px-4">
-                    <span className="text-green-600 font-medium">
+                    <span className="text-success font-medium">
                       +{exercise.improvement}%
                     </span>
                   </td>
@@ -370,29 +370,29 @@ export default function ProgressAnalyticsDashboard() {
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
-          <Users className="w-5 h-5 text-blue-500" />
+          <h3 className="text-lg font-bold text-heading-primary">Recent Activity</h3>
+          <Users className="w-5 h-5 text-primary" />
         </div>
 
         <div className="space-y-4">
           {chartData.slice(-5).map((activity, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
+              className="flex items-center gap-4 p-3 bg-silver-100 rounded-lg"
             >
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <Target className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-primary-lighter rounded-full flex items-center justify-center">
+                <Target className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-gray-900">
+                <div className="font-medium text-heading-primary">
                   {activity.exercise}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-body-secondary">
                   {activity.weight}lbs × {activity.reps} × {activity.sets} ={" "}
                   {activity.volume.toLocaleString()} total lbs
                 </div>
               </div>
-              <div className="text-sm text-gray-500">{activity.date}</div>
+              <div className="text-sm text-caption-muted">{activity.date}</div>
             </div>
           ))}
         </div>

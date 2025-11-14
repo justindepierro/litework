@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   User,
   Calendar,
@@ -9,6 +9,7 @@ import {
   Ruler,
   Weight,
 } from "lucide-react";
+import { useFormValidation } from "@/hooks/use-form-validation";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -42,81 +43,52 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [formData, setFormData] = useState({
-    firstName: athlete.firstName || "",
-    lastName: athlete.lastName || "",
-    email: athlete.email || "",
-    dateOfBirth: athlete.dateOfBirth
-      ? new Date(athlete.dateOfBirth).toISOString().split("T")[0]
-      : "",
-    injuryStatus: athlete.injuryStatus || "",
-    bio: athlete.bio || "",
-    phone: athlete.phone || "",
-    emergencyContact: athlete.emergencyContact || "",
-    emergencyPhone: athlete.emergencyPhone || "",
-    heightInches: athlete.heightInches?.toString() || "",
-    weightLbs: athlete.weightLbs?.toString() || "",
-    gender: athlete.gender || "",
-  });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error for this field
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
-  };
-
-  const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-
-    setIsSubmitting(true);
-
-    try {
+  const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
+    initialValues: {
+      firstName: athlete.firstName || "",
+      lastName: athlete.lastName || "",
+      email: athlete.email || "",
+      dateOfBirth: athlete.dateOfBirth
+        ? new Date(athlete.dateOfBirth).toISOString().split("T")[0]
+        : "",
+      injuryStatus: athlete.injuryStatus || "",
+      bio: athlete.bio || "",
+      phone: athlete.phone || "",
+      emergencyContact: athlete.emergencyContact || "",
+      emergencyPhone: athlete.emergencyPhone || "",
+      heightInches: athlete.heightInches?.toString() || "",
+      weightLbs: athlete.weightLbs?.toString() || "",
+      gender: athlete.gender || "",
+    },
+    validationRules: {
+      firstName: { required: "First name is required" },
+      lastName: { required: "Last name is required" },
+      email: { 
+        required: "Email is required",
+        email: "Invalid email format"
+      },
+    },
+    onSubmit: async (formValues) => {
       // Construct name from first and last name
-      const name = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+      const name = `${formValues.firstName.trim()} ${formValues.lastName.trim()}`;
 
       const response = await fetch(`/api/users/${athlete.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          email: formData.email,
-          dateOfBirth: formData.dateOfBirth || null,
-          injuryStatus: formData.injuryStatus || null,
-          bio: formData.bio || null,
-          phone: formData.phone || null,
-          emergencyContact: formData.emergencyContact || null,
-          emergencyPhone: formData.emergencyPhone || null,
-          heightInches: formData.heightInches
-            ? parseFloat(formData.heightInches)
+          email: formValues.email,
+          dateOfBirth: formValues.dateOfBirth || null,
+          injuryStatus: formValues.injuryStatus || null,
+          bio: formValues.bio || null,
+          phone: formValues.phone || null,
+          emergencyContact: formValues.emergencyContact || null,
+          emergencyPhone: formValues.emergencyPhone || null,
+          heightInches: formValues.heightInches
+            ? parseFloat(formValues.heightInches)
             : null,
-          weightLbs: formData.weightLbs ? parseFloat(formData.weightLbs) : null,
-          gender: formData.gender || null,
+          weightLbs: formValues.weightLbs ? parseFloat(formValues.weightLbs) : null,
+          gender: formValues.gender || null,
         }),
       });
 
@@ -127,18 +99,8 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
       } else {
         throw new Error(result.error || "Failed to update athlete");
       }
-    } catch (error) {
-      console.error("Error updating athlete:", error);
-      setErrors({
-        submit:
-          error instanceof Error
-            ? error.message
-            : "Failed to update athlete. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+  });
 
   return (
     <ModalBackdrop isOpen={true} onClose={onClose}>
@@ -156,7 +118,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FloatingLabelInput
                 label="First Name"
-                value={formData.firstName}
+                value={values.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
                 error={errors.firstName}
                 required
@@ -165,7 +127,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               />
               <FloatingLabelInput
                 label="Last Name"
-                value={formData.lastName}
+                value={values.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
                 error={errors.lastName}
                 required
@@ -182,7 +144,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <FloatingLabelInput
                 label="Email"
                 type="email"
-                value={formData.email}
+                value={values.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 error={errors.email}
                 required
@@ -192,7 +154,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <FloatingLabelInput
                 label="Phone"
                 type="tel"
-                value={formData.phone}
+                value={values.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 leftIcon={<Phone className="w-4 h-4" />}
                 fullWidth
@@ -206,7 +168,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               </h3>
               <FloatingLabelInput
                 label="Emergency Contact Name"
-                value={formData.emergencyContact}
+                value={values.emergencyContact}
                 onChange={(e) =>
                   handleChange("emergencyContact", e.target.value)
                 }
@@ -216,7 +178,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <FloatingLabelInput
                 label="Emergency Contact Phone"
                 type="tel"
-                value={formData.emergencyPhone}
+                value={values.emergencyPhone}
                 onChange={(e) => handleChange("emergencyPhone", e.target.value)}
                 leftIcon={<Phone className="w-4 h-4" />}
                 fullWidth
@@ -232,7 +194,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
                 <FloatingLabelInput
                   label="Height (inches)"
                   type="number"
-                  value={formData.heightInches}
+                  value={values.heightInches}
                   onChange={(e) => handleChange("heightInches", e.target.value)}
                   leftIcon={<Ruler className="w-4 h-4" />}
                   fullWidth
@@ -240,14 +202,14 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
                 <FloatingLabelInput
                   label="Weight (lbs)"
                   type="number"
-                  value={formData.weightLbs}
+                  value={values.weightLbs}
                   onChange={(e) => handleChange("weightLbs", e.target.value)}
                   leftIcon={<Weight className="w-4 h-4" />}
                   fullWidth
                 />
                 <Select
                   label="Gender"
-                  value={formData.gender}
+                  value={values.gender}
                   onChange={(e) => handleChange("gender", e.target.value)}
                   options={[
                     { value: "", label: "Select gender" },
@@ -261,7 +223,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               <FloatingLabelInput
                 label="Date of Birth"
                 type="date"
-                value={formData.dateOfBirth}
+                value={values.dateOfBirth}
                 onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                 leftIcon={<Calendar className="w-4 h-4" />}
                 fullWidth
@@ -275,7 +237,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               </h3>
               <FloatingLabelInput
                 label="Injury Status"
-                value={formData.injuryStatus}
+                value={values.injuryStatus}
                 onChange={(e) => handleChange("injuryStatus", e.target.value)}
                 leftIcon={<AlertCircle className="w-4 h-4" />}
                 helperText="Leave blank if no current injuries"
@@ -290,7 +252,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
               </h3>
               <FloatingLabelTextarea
                 label="Bio"
-                value={formData.bio}
+                value={values.bio}
                 onChange={(e) => handleChange("bio", e.target.value)}
                 rows={4}
                 fullWidth
@@ -299,8 +261,8 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Error Message */}
             {errors.submit && (
-              <div className="rounded-lg bg-red-50 border border-red-200 p-4">
-                <p className="text-sm text-red-800">{errors.submit}</p>
+              <div className="rounded-lg bg-error-light border border-error p-4">
+                <p className="text-sm text-error">{errors.submit}</p>
               </div>
             )}
           </div>

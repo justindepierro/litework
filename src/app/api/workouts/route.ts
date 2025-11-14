@@ -2,16 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 import {
   getAllWorkoutPlans,
-  createWorkoutPlan,
-  updateWorkoutPlan,
+  createWorkoutPlanTransaction,
+  updateWorkoutPlanTransaction,
 } from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
-import { supabaseAdmin } from "@/lib/supabase-admin";
 import {
   authenticationError,
-  successResponse,
-  errorResponse,
-  handleSupabaseError,
 } from "@/lib/api-errors";
 
 // GET /api/workouts - Get workout plans
@@ -133,8 +129,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create new workout plan in database
-    const newWorkout = await createWorkoutPlan({
+    // Create new workout plan in database (using transaction-safe function)
+    const newWorkout = await createWorkoutPlanTransaction({
       name,
       description,
       exercises: exercises.map((ex, index: number) => ({
@@ -240,39 +236,16 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Update workout plan in database
-    // Note: This currently only updates the workout_plans table
-    // TODO: Also update workout_exercises, workout_exercise_groups, and workout_block_instances tables
+    // Update workout plan in database (using transaction-safe function)
     // [REMOVED] console.log("[PUT /api/workouts] Updating workout:", { id, name, description, estimatedDuration, hasExercises: exercises?.length > 0, hasGroups: groups?.length > 0, hasBlockInstances: blockInstances?.length > 0 });
 
-    // First check if the workout exists
-    const { data: existingWorkout, error: checkError } = await supabaseAdmin
-      .from("workout_plans")
-      .select("id, name")
-      .eq("id", id)
-      .single();
-
-    if (checkError || !existingWorkout) {
-      console.error("[PUT /api/workouts] Workout not found:", {
-        id,
-        error: checkError,
-      });
-      return NextResponse.json(
-        {
-          error: `Workout not found with ID: ${id}`,
-          details: "The workout may have been deleted or the ID is invalid",
-        },
-        { status: 404 }
-      );
-    }
-
-    const updatedWorkout = await updateWorkoutPlan(id, {
+    const updatedWorkout = await updateWorkoutPlanTransaction(id, {
       name,
       description,
       estimatedDuration: estimatedDuration || 60,
-      exercises, // Pass through for future implementation
-      groups, // Pass through for future implementation
-      blockInstances, // Pass through for future implementation
+      exercises, // Fully handles exercises, groups, and block instances in transaction
+      groups,
+      blockInstances,
     });
 
     // [REMOVED] console.log("[PUT /api/workouts] Update result:", updatedWorkout);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { apiClient } from "@/lib/api-client";
 import {
   AthleteGroup,
   User,
@@ -174,20 +175,20 @@ export default function BulkKPIAssignmentModal({
         notes: notes.trim() || undefined,
       };
 
-      const response = await fetch("/api/athlete-assigned-kpis", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const { data, error } = await apiClient.requestWithResponse<BulkAssignKPIsResponse>(
+        "/api/athlete-assigned-kpis",
+        {
+          method: "POST",
+          body: payload,
+          toastError: toast.error,
+        }
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to assign KPIs");
+      if (error) {
+        throw new Error(error);
       }
 
-      const result: BulkAssignKPIsResponse = await response.json();
+      const result = data as BulkAssignKPIsResponse;
 
       // Success toast
       const { totalAssigned, totalSkipped } = result;

@@ -2,6 +2,60 @@
 
 import { supabase } from "./supabase";
 
+/**
+ * API Request Options
+ */
+export interface ApiClientOptions extends Omit<RequestInit, "body"> {
+  /**
+   * Request body (will be JSON stringified automatically)
+   */
+  body?: unknown;
+  
+  /**
+   * Show error toast notification on failure
+   * Note: Toast function must be passed explicitly as API client can't access React hooks
+   * @default false
+   */
+  showErrorToast?: boolean;
+  
+  /**
+   * Toast function (from useToast hook)
+   */
+  toastError?: (message: string) => void;
+  
+  /**
+   * Custom error message to display
+   * @default null (uses API error message)
+   */
+  customErrorMessage?: string;
+  
+  /**
+   * Request timeout in milliseconds
+   * @default 10000 (10 seconds)
+   */
+  timeout?: number;
+  
+  /**
+   * Skip JSON parsing (for non-JSON responses)
+   * @default false
+   */
+  skipJsonParse?: boolean;
+}
+
+/**
+ * Standardized API Response
+ */
+export interface ApiResponse<T = unknown> {
+  data: T | null;
+  error: string | null;
+  success: boolean;
+}
+
+/**
+ * Default request timeout (10 seconds)
+ */
+const DEFAULT_TIMEOUT = 10000;
+
 class ApiClient {
   private baseUrl: string;
 
@@ -29,64 +83,198 @@ class ApiClient {
   }
 
   /**
-   * Make an authenticated API request
+   * Make an authenticated API request with enhanced error handling
+   * Returns Promise<ApiResponse<T>> with data, error, and success fields
+   * 
+   * Features:
+   * - Automatic timeout management
+   * - Consistent error handling
+   * - Optional toast notifications
+   * - Development logging
+   * - Type-safe responses
+   */
+  async requestWithResponse<T>(
+    endpoint: string,
+    options: ApiClientOptions = {}
+  ): Promise<ApiResponse<T>> {
+    const {
+      showErrorToast = false,
+      toastError,
+      customErrorMessage,
+      timeout = DEFAULT_TIMEOUT,
+      skipJsonParse = false,
+      body,
+      ...fetchOptions
+    } = options;
+
+    const startTime = Date.now();
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    try {
+      const token = await this.getAuthToken();
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(fetchOptions.headers as Record<string, string>),
+      };
+
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      // Setup timeout
+      const controller = new AbortController();
+      timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...fetchOptions,
+        headers,
+        credentials: "include",
+        signal: controller.signal,
+        body: body ? JSON.stringify(body) : undefined,
+      });
+
+      clearTimeout(timeoutId);
+
+      // Log in development
+      if (process.env.NODE_ENV === "development") {
+        const duration = Date.now() - startTime;
+        console.log(
+          `[API] ${fetchOptions.method || "GET"} ${endpoint} - ${response.status} (${duration}ms)`
+        );
+      }
+
+      // Handle authentication errors
+      if (response.status === 401) {
+        const message = customErrorMessage || "Authentication required. Please sign in.";
+        
+        if (showErrorToast && toastError) {
+          toastError(message);
+        }
+
+        return {
+          data: null,
+          error: message,
+          success: false,
+        };
+      }
+
+      // Handle HTTP errors
+      if (!response.ok) {
+        let errorData: Record<string, unknown> = {};
+        let errorText = "";
+
+        try {
+          errorText = await response.text();
+          if (errorText) {
+            errorData = JSON.parse(errorText);
+          }
+        } catch {
+          errorData = { error: errorText || "Unknown error" };
+        }
+
+        const message =
+          customErrorMessage ||
+          (errorData.error as string) ||
+          (errorData.details as string) ||
+          (errorData.message as string) ||
+          errorText ||
+          `Request failed: ${response.status} ${response.statusText}`;
+
+        if (process.env.NODE_ENV === "development") {
+          console.error("[API] Request failed:", {
+            url: `${this.baseUrl}${endpoint}`,
+            method: fetchOptions.method || "GET",
+            status: response.status,
+            statusText: response.statusText,
+            errorData,
+            rawResponse: errorText ? errorText.substring(0, 500) : "No response",
+          });
+        }
+
+        if (showErrorToast && toastError) {
+          toastError(message);
+        }
+
+        return {
+          data: null,
+          error: message,
+          success: false,
+        };
+      }
+
+      // Parse successful response
+      let data: T | null = null;
+
+      if (!skipJsonParse) {
+        try {
+          data = await response.json();
+        } catch {
+          const message = "Invalid response format";
+
+          if (showErrorToast && toastError) {
+            toastError(message);
+          }
+
+          return {
+            data: null,
+            error: message,
+            success: false,
+          };
+        }
+      }
+
+      return {
+        data,
+        error: null,
+        success: true,
+      };
+    } catch (err) {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      // Handle network errors and timeouts
+      let message = customErrorMessage || "Request failed";
+
+      if (err instanceof Error) {
+        if (err.name === "AbortError") {
+          message = `Request timeout after ${timeout}ms`;
+        } else if (err.message.includes("Failed to fetch")) {
+          message = "Network error. Please check your connection.";
+        } else {
+          message = customErrorMessage || err.message;
+        }
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.error(`[API] Error ${fetchOptions.method || "GET"} ${endpoint}:`, err);
+      }
+
+      if (showErrorToast && toastError) {
+        toastError(message);
+      }
+
+      return {
+        data: null,
+        error: message,
+        success: false,
+      };
+    }
+  }
+
+  /**
+   * Legacy request method - throws on error
+   * Keep for backwards compatibility with existing code
    */
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit & { body?: unknown } = {}
   ): Promise<T> {
-    const token = await this.getAuthToken();
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...(options.headers as Record<string, string>),
-    };
+    const response = await this.requestWithResponse<T>(endpoint, options);
 
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
+    if (!response.success || response.data === null) {
+      throw new Error(response.error || "Request failed");
     }
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      ...options,
-      headers,
-      credentials: "include", // Required to send cookies with requests
-    });
-
-    if (!response.ok) {
-      let errorData: { error?: string; details?: string } = {};
-      let errorText = "";
-
-      try {
-        // Try to get the response text first
-        errorText = await response.text();
-        // Then try to parse it as JSON
-        if (errorText) {
-          errorData = JSON.parse(errorText);
-        }
-      } catch {
-        // If JSON parsing fails, use the text as the error
-        errorData = { error: errorText || "Unknown error" };
-      }
-
-      console.error("API request failed:", {
-        url: `${this.baseUrl}${endpoint}`,
-        method: options.method || "GET",
-        status: response.status,
-        statusText: response.statusText,
-        errorData,
-        rawResponse: errorText
-          ? errorText.substring(0, 500)
-          : "No response text", // First 500 chars
-      });
-
-      throw new Error(
-        errorData.error ||
-          errorData.details ||
-          errorText ||
-          `API Error: ${response.status} ${response.statusText}`
-      );
-    }
-
-    return response.json();
+    return response.data;
   }
 
   // Groups
@@ -273,6 +461,61 @@ class ApiClient {
   async deleteAthlete(athleteId: string) {
     return this.request(`/users/${athleteId}`, {
       method: "DELETE",
+    });
+  }
+
+  // Enhanced Methods (with ApiResponse wrapper)
+  // These methods return the full ApiResponse<T> for better error handling
+  // Use these for new code or when migrating existing code
+
+  /**
+   * Get groups with enhanced response handling
+   * @param toastError - Optional callback for error toast notifications
+   */
+  async getGroupsWithResponse(toastError?: (message: string) => void) {
+    return this.requestWithResponse<{ groups: unknown[] }>("/groups", {
+      showErrorToast: true,
+      toastError,
+    });
+  }
+
+  /**
+   * Create group with enhanced response handling
+   */
+  async createGroupWithResponse(
+    groupData: unknown,
+    toastError?: (message: string) => void
+  ) {
+    return this.requestWithResponse("/groups", {
+      method: "POST",
+      body: groupData,
+      showErrorToast: true,
+      toastError,
+    });
+  }
+
+  /**
+   * Get workouts with enhanced response handling
+   */
+  async getWorkoutsWithResponse(toastError?: (message: string) => void) {
+    return this.requestWithResponse<unknown[]>("/workouts", {
+      showErrorToast: true,
+      toastError,
+    });
+  }
+
+  /**
+   * Create workout with enhanced response handling
+   */
+  async createWorkoutWithResponse(
+    workoutData: unknown,
+    toastError?: (message: string) => void
+  ) {
+    return this.requestWithResponse("/workouts", {
+      method: "POST",
+      body: workoutData,
+      showErrorToast: true,
+      toastError,
     });
   }
 }

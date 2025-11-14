@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, memo } from "react";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/components/ToastProvider";
 import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 import { formatTimeRange } from "@/lib/date-utils";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
@@ -25,17 +27,28 @@ const TodayOverview = memo(function TodayOverview() {
   const [todayWorkouts, setTodayWorkouts] = useState<TodayWorkout[]>([]);
   const [loading, setLoading] = useState(true);
   const { showSkeleton } = useMinimumLoadingTime(loading, 300);
+  const { error: toastError } = useToast();
 
   useEffect(() => {
     fetchTodayWorkouts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchTodayWorkouts = async () => {
     try {
-      const response = await fetch("/api/analytics/today-schedule");
-      const data = await response.json();
+      const { data, error } = await apiClient.requestWithResponse<{
+        success: boolean;
+        workouts: TodayWorkout[];
+      }>("/analytics/today-schedule", { 
+        showErrorToast: false  // Silently handle errors
+      });
 
-      if (data.success) {
+      if (error) {
+        console.error("Error fetching today's workouts:", error);
+        return;
+      }
+
+      if (data?.success) {
         console.log("[TodayOverview] Received workouts:", data.workouts);
         console.log(
           "[TodayOverview] First workout detail:",
@@ -98,7 +111,7 @@ const TodayOverview = memo(function TodayOverview() {
             return (
               <div
                 key={workout.id}
-                className="rounded-lg p-4 bg-linear-to-br from-white to-blue-50/30 border border-blue-200 hover:border-blue-400 hover:shadow-lg hover:scale-[1.01] transition-all"
+                className="rounded-lg p-4 bg-linear-to-br from-white to-primary-lighter/30 border border-primary-light hover:border-primary hover:shadow-lg hover:scale-[1.01] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">

@@ -11,6 +11,7 @@ import GroupCompletionStats from "@/components/GroupCompletionStats";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import { SkeletonStatCard, SkeletonCard } from "@/components/ui/Skeleton";
+import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 
 // Lazy load heavy components
 const DraggableAthleteCalendar = lazy(
@@ -58,7 +59,7 @@ interface DashboardStats {
   currentStreak: number;
 }
 
-export default function DashboardPage() {
+export default withPageErrorBoundary(function DashboardPage() {
   const { user, isLoading } = useRequireAuth();
   const [stats, setStats] = useState<DashboardStats>({
     workoutsThisWeek: 0,
@@ -857,7 +858,7 @@ export default function DashboardPage() {
       )}
     </div>
   );
-}
+}, "Dashboard");
 
 // StatCard Component with count-up animation
 interface StatCardProps {

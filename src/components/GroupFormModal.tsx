@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
+import { useFormValidation } from "@/hooks/use-form-validation";
 import { Users } from "lucide-react";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
@@ -58,22 +59,92 @@ export default function GroupFormModal({
   editingGroup,
   existingGroups,
 }: GroupFormModalProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    sport: "",
-    category: "",
-    color: predefinedColors[0].value,
-    athleteIds: [] as string[],
-  });
   const [availableAthletes, setAvailableAthletes] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  
+  const { values, errors, handleChange, handleSubmit, setValues, isSubmitting } = useFormValidation({
+    initialValues: {
+      name: editingGroup?.name || "",
+      description: editingGroup?.description || "",
+      sport: editingGroup?.sport || "",
+      category: editingGroup?.category || "",
+      color: editingGroup?.color || predefinedColors[0].value,
+      athleteIds: (editingGroup?.athleteIds || []) as string[],
+    },
+    validationRules: {
+      name: { 
+        required: "Group name is required",
+        custom: (value, allValues) => {
+          const name = String(value).trim();
+          if (!name) return "Group name is required";
+          
+          const duplicateName = existingGroups.some(
+            (group) =>
+              group.name.toLowerCase() === name.toLowerCase() &&
+              (!editingGroup || group.id !== editingGroup.id)
+          );
+
+          if (duplicateName) {
+            return "A group with this name already exists";
+          }
+          
+          return undefined;
+        }
+      },
+      sport: { required: "Sport selection is required" },
+    },
+    onSubmit: async (values) => {
+      try {
+        if (editingGroup) {
+          const response = (await apiClient.updateGroup(
+            editingGroup.id,
+            values
+          )) as ApiResponse;
+          if (response.success && response.data) {
+            const data = response.data as { group?: AthleteGroup };
+            if (data.group) {
+              onSave(data.group);
+              onClose();
+            } else {
+              throw new Error("Failed to update group");
+            }
+          } else {
+            throw new Error(
+              typeof response.error === "string"
+                ? response.error
+                : "Failed to update group"
+            );
+          }
+        } else {
+          const response = (await apiClient.createGroup(values)) as ApiResponse;
+          if (response.success) {
+            const data = response as unknown as { group?: AthleteGroup };
+            if (data.group) {
+              onSave(data.group);
+              onClose();
+            } else {
+              console.error("No group in response:", data);
+              throw new Error("Failed to create group - no group returned");
+            }
+          } else {
+            console.error("API returned error:", response.error);
+            throw new Error(
+              typeof response.error === "string"
+                ? response.error
+                : "Failed to create group"
+            );
+          }
+        }
+      } catch (err) {
+        // Re-throw to let useFormValidation handle it
+        throw err;
+      }
+    },
+  });
 
   // Load form data when editing
   useEffect(() => {
     if (editingGroup) {
-      setFormData({
+      setValues({
         name: editingGroup.name,
         description: editingGroup.description || "",
         sport: editingGroup.sport,
@@ -82,7 +153,7 @@ export default function GroupFormModal({
         athleteIds: editingGroup.athleteIds || [],
       });
     } else {
-      setFormData({
+      setValues({
         name: "",
         description: "",
         sport: "",
@@ -91,8 +162,7 @@ export default function GroupFormModal({
         athleteIds: [],
       });
     }
-    setError("");
-  }, [editingGroup, isOpen]);
+  }, [editingGroup, isOpen, setValues]);
 
   // Load available athletes
   useEffect(() => {
@@ -109,110 +179,25 @@ export default function GroupFormModal({
     loadAthletes();
   }, [isOpen, existingGroups, editingGroup]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setError("");
+  const handleInputChange = (field: keyof typeof values, value: string) => {
+    handleChange(field, value as never); // Type assertion needed for generic constraint
   };
 
   const handleAthleteSelection = (athleteId: string, selected: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      athleteIds: selected
-        ? [...prev.athleteIds, athleteId]
-        : prev.athleteIds.filter((id) => id !== athleteId),
-    }));
-  };
-
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      setError("Group name is required");
-      return false;
-    }
-    if (!formData.sport) {
-      setError("Sport selection is required");
-      return false;
-    }
-
-    const duplicateName = existingGroups.some(
-      (group) =>
-        group.name.toLowerCase() === formData.name.toLowerCase() &&
-        (!editingGroup || group.id !== editingGroup.id)
+    handleChange('athleteIds', selected
+      ? [...values.athleteIds, athleteId]
+      : values.athleteIds.filter((id) => id !== athleteId) as never
     );
-
-    if (duplicateName) {
-      setError("A group with this name already exists");
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    setError("");
-
-    try {
-      if (editingGroup) {
-        const response = (await apiClient.updateGroup(
-          editingGroup.id,
-          formData
-        )) as ApiResponse;
-        if (response.success && response.data) {
-          const data = response.data as { group?: AthleteGroup };
-          if (data.group) {
-            onSave(data.group);
-            onClose();
-          } else {
-            setError("Failed to update group");
-          }
-        } else {
-          setError(
-            typeof response.error === "string"
-              ? response.error
-              : "Failed to update group"
-          );
-        }
-      } else {
-        const response = (await apiClient.createGroup(formData)) as ApiResponse;
-        // [REMOVED] console.log("Create group response:", response);
-        if (response.success) {
-          const data = response as unknown as { group?: AthleteGroup };
-          if (data.group) {
-            onSave(data.group);
-            onClose();
-          } else {
-            console.error("No group in response:", data);
-            setError("Failed to create group - no group returned");
-          }
-        } else {
-          console.error("API returned error:", response.error);
-          setError(
-            typeof response.error === "string"
-              ? response.error
-              : "Failed to create group"
-          );
-        }
-      }
-    } catch (err) {
-      console.error("Exception creating group:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   if (!isOpen) return null;
 
   const selectedAthletes = availableAthletes.filter((athlete) =>
-    formData.athleteIds.includes(athlete.id)
+    values.athleteIds.includes(athlete.id)
   );
 
   const unselectedAthletes = availableAthletes.filter(
-    (athlete) => !formData.athleteIds.includes(athlete.id)
+    (athlete) => !values.athleteIds.includes(athlete.id)
   );
 
   return (
@@ -237,9 +222,9 @@ export default function GroupFormModal({
                 <FloatingLabelInput
                   label="Group Name"
                   type="text"
-                  value={formData.name}
+                  value={values.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   fullWidth
                   required
                 />
@@ -247,9 +232,9 @@ export default function GroupFormModal({
                 {/* Sport */}
                 <Select
                   label="Sport *"
-                  value={formData.sport}
+                  value={values.sport}
                   onChange={(e) => handleInputChange("sport", e.target.value)}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   fullWidth
                   required
                   options={[
@@ -265,23 +250,23 @@ export default function GroupFormModal({
                 <FloatingLabelInput
                   label="Category"
                   type="text"
-                  value={formData.category}
+                  value={values.category}
                   onChange={(e) =>
                     handleInputChange("category", e.target.value)
                   }
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   fullWidth
                 />
 
                 {/* Description */}
                 <FloatingLabelTextarea
                   label="Description"
-                  value={formData.description}
+                  value={values.description}
                   onChange={(e) =>
                     handleInputChange("description", e.target.value)
                   }
                   rows={3}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   fullWidth
                 />
 
@@ -296,12 +281,12 @@ export default function GroupFormModal({
                         type="button"
                         onClick={() => handleInputChange("color", color.value)}
                         className={`p-3 rounded-md border-2 transition-all ${
-                          formData.color === color.value
+                          values.color === color.value
                             ? "border-navy-600 scale-105"
                             : "border-silver-300 hover:border-silver-400"
                         }`}
                         style={{ backgroundColor: color.value }}
-                        disabled={isLoading}
+                        disabled={isSubmitting}
                         title={color.name}
                       >
                         <div className="w-full h-4"></div>
@@ -313,7 +298,7 @@ export default function GroupFormModal({
 
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">
-                  Select Athletes ({formData.athleteIds?.length || 0} selected)
+                  Select Athletes ({values.athleteIds?.length || 0} selected)
                 </h3>
 
                 {selectedAthletes.length > 0 && (
@@ -341,7 +326,7 @@ export default function GroupFormModal({
                               handleAthleteSelection(athlete.id, false)
                             }
                             className="text-red-600 hover:text-red-800 text-sm"
-                            disabled={isLoading}
+                            disabled={isSubmitting}
                           >
                             Remove
                           </button>
@@ -378,7 +363,7 @@ export default function GroupFormModal({
                             variant="secondary"
                             size="sm"
                             className="px-3 py-1"
-                            disabled={isLoading}
+                            disabled={isSubmitting}
                           >
                             Add
                           </Button>
@@ -397,9 +382,11 @@ export default function GroupFormModal({
               </div>
             </div>
 
-            {error && (
-              <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
-                <p className="text-red-700 text-sm">{error}</p>
+            {(errors.name || errors.sport || errors.submit) && (
+              <div className="mt-4 p-3 bg-error-light border border-error rounded-md">
+                <p className="text-error text-sm">
+                  {errors.name || errors.sport || errors.submit}
+                </p>
               </div>
             )}
           </form>
@@ -411,7 +398,7 @@ export default function GroupFormModal({
             onClick={onClose}
             variant="secondary"
             className="flex-1"
-            disabled={isLoading}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -420,9 +407,9 @@ export default function GroupFormModal({
             form="group-form"
             variant="primary"
             className="flex-1"
-            disabled={isLoading}
+            disabled={isSubmitting}
           >
-            {isLoading
+            {isSubmitting
               ? "Saving..."
               : editingGroup
                 ? "Update Group"

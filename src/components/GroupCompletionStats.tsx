@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/components/ToastProvider";
 import { TrendingUp, Users, Award } from "lucide-react";
 
 interface GroupStats {
@@ -14,26 +17,26 @@ interface GroupStats {
 
 export default function GroupCompletionStats() {
   const [groupStats, setGroupStats] = useState<GroupStats[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { isLoading: loading, execute } = useAsyncState<GroupStats[]>();
+  const { error: toastError } = useToast();
 
   useEffect(() => {
-    fetchGroupStats();
-  }, []);
+    execute(async () => {
+      const { data, error } = await apiClient.requestWithResponse<{
+        success: boolean;
+        groups: GroupStats[];
+      }>("/analytics/group-stats", { toastError });
 
-  const fetchGroupStats = async () => {
-    try {
-      const response = await fetch("/api/analytics/group-stats");
-      const data = await response.json();
-
-      if (data.success) {
-        setGroupStats(data.groups || []);
+      if (error) {
+        console.error("Failed to load group stats:", error);
+        return [];
       }
-    } catch (error) {
-      console.error("Error fetching group stats:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      const stats = data?.groups || [];
+      setGroupStats(stats);
+      return stats;
+    });
+  }, [execute, toastError]);
 
   if (loading) {
     return (

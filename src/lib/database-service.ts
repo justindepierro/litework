@@ -579,8 +579,386 @@ export const getWorkoutPlanById = async (
       updatedAt: new Date(bi.updated_at),
     })),
   };
+
+  // Validate and fix orphaned exercises (exercises with invalid groupIds)
+  const groupIds = new Set((groups || []).map((g) => g.id));
+  const orphanedExercises = (exercises || []).filter(
+    (ex) => ex.group_id && !groupIds.has(ex.group_id)
+  );
+
+  if (orphanedExercises.length > 0) {
+    console.warn(
+      "[getWorkoutPlanById] Found orphaned exercises, clearing invalid groupIds:",
+      orphanedExercises.map((ex) => ({
+        id: ex.id,
+        name: ex.exercise_name,
+        invalidGroupId: ex.group_id,
+      }))
+    );
+
+    // Update exercises in database to remove invalid groupIds
+    const updatePromises = orphanedExercises.map((ex) =>
+      supabase
+        .from("workout_exercises")
+        .update({ group_id: null })
+        .eq("id", ex.id)
+    );
+
+    await Promise.all(updatePromises);
+
+    // Also update the returned data structure
+    const result = {
+      id: plan.id,
+      name: plan.name,
+      description: plan.description,
+      estimatedDuration: plan.estimated_duration,
+      targetGroupId: plan.target_group_id,
+      createdBy: plan.created_by,
+      createdAt: new Date(plan.created_at),
+      updatedAt: new Date(plan.updated_at),
+      archived: plan.archived || false,
+      exercises: (exercises || []).map((ex) => ({
+        id: ex.id,
+        exerciseId: ex.exercise_id,
+        exerciseName: ex.exercise_name,
+        sets: ex.sets,
+        reps: ex.reps,
+        weightType: ex.weight_type,
+        weight: ex.weight,
+        weightMax: ex.weight_max,
+        percentage: ex.percentage,
+        percentageMax: ex.percentage_max,
+        percentageBaseKPI: ex.percentage_base_kpi,
+        tempo: ex.tempo,
+        eachSide: ex.each_side,
+        restTime: ex.rest_time,
+        notes: ex.notes,
+        videoUrl: ex.video_url,
+        order: ex.order_index,
+        groupId: ex.group_id && groupIds.has(ex.group_id) ? ex.group_id : undefined, // Clear invalid groupIds
+        blockInstanceId: ex.block_instance_id,
+        substitutionReason: ex.substitution_reason,
+        originalExercise: ex.original_exercise,
+        progressionNotes: ex.progression_notes,
+        kpiTagIds: exerciseKpiTags[ex.id] || [],
+      })),
+      groups: (groups || []).map((g) => ({
+        id: g.id,
+        name: g.name,
+        type: g.type,
+        description: g.description,
+        order: g.order_index,
+        restBetweenRounds: g.rest_between_rounds,
+        restBetweenExercises: g.rest_between_exercises,
+        rounds: g.rounds,
+        notes: g.notes,
+        blockInstanceId: g.block_instance_id,
+      })),
+      blockInstances: (blockInstances || []).map((bi) => ({
+        id: bi.id,
+        sourceBlockId: bi.source_block_id,
+        sourceBlockName: bi.source_block_name,
+        instanceName: bi.instance_name,
+        notes: bi.notes,
+        estimatedDuration: bi.estimated_duration,
+        customizations: {
+          modifiedExercises: bi.modified_exercises || [],
+          addedExercises: bi.added_exercises || [],
+          removedExercises: bi.removed_exercises || [],
+          modifiedGroups: bi.modified_groups || [],
+          addedGroups: bi.added_groups || [],
+          removedGroups: bi.removed_groups || [],
+        },
+        createdAt: new Date(bi.created_at),
+        updatedAt: new Date(bi.updated_at),
+      })),
+    };
+
+    return result;
+  }
+
+  // No orphaned exercises, return as-is
+  return {
+    id: plan.id,
+    name: plan.name,
+    description: plan.description,
+    estimatedDuration: plan.estimated_duration,
+    targetGroupId: plan.target_group_id,
+    createdBy: plan.created_by,
+    createdAt: new Date(plan.created_at),
+    updatedAt: new Date(plan.updated_at),
+    archived: plan.archived || false,
+    exercises: (exercises || []).map((ex) => ({
+      id: ex.id,
+      exerciseId: ex.exercise_id,
+      exerciseName: ex.exercise_name,
+      sets: ex.sets,
+      reps: ex.reps,
+      weightType: ex.weight_type,
+      weight: ex.weight,
+      weightMax: ex.weight_max,
+      percentage: ex.percentage,
+      percentageMax: ex.percentage_max,
+      percentageBaseKPI: ex.percentage_base_kpi,
+      tempo: ex.tempo,
+      eachSide: ex.each_side,
+      restTime: ex.rest_time,
+      notes: ex.notes,
+      videoUrl: ex.video_url,
+      order: ex.order_index,
+      groupId: ex.group_id,
+      blockInstanceId: ex.block_instance_id,
+      substitutionReason: ex.substitution_reason,
+      originalExercise: ex.original_exercise,
+      progressionNotes: ex.progression_notes,
+      kpiTagIds: exerciseKpiTags[ex.id] || [],
+    })),
+    groups: (groups || []).map((g) => ({
+      id: g.id,
+      name: g.name,
+      type: g.type,
+      description: g.description,
+      order: g.order_index,
+      restBetweenRounds: g.rest_between_rounds,
+      restBetweenExercises: g.rest_between_exercises,
+      rounds: g.rounds,
+      notes: g.notes,
+      blockInstanceId: g.block_instance_id,
+    })),
+    blockInstances: (blockInstances || []).map((bi) => ({
+      id: bi.id,
+      sourceBlockId: bi.source_block_id,
+      sourceBlockName: bi.source_block_name,
+      instanceName: bi.instance_name,
+      notes: bi.notes,
+      estimatedDuration: bi.estimated_duration,
+      customizations: {
+        modifiedExercises: bi.modified_exercises || [],
+        addedExercises: bi.added_exercises || [],
+        removedExercises: bi.removed_exercises || [],
+        modifiedGroups: bi.modified_groups || [],
+        addedGroups: bi.added_groups || [],
+        removedGroups: bi.removed_groups || [],
+      },
+      createdAt: new Date(bi.created_at),
+      updatedAt: new Date(bi.updated_at),
+    })),
+  };
 };
 
+/**
+ * Transaction-safe workout plan creation using Supabase RPC function
+ * Ensures all-or-nothing semantics for workout creation
+ */
+export const createWorkoutPlanTransaction = async (
+  workoutData: Omit<WorkoutPlan, "id" | "createdAt" | "updatedAt">
+): Promise<WorkoutPlan | null> => {
+  try {
+    // Prepare exercises data for JSONB
+    const exercisesJson = (workoutData.exercises || []).map((ex, index) => ({
+      exercise_id: ex.exerciseId || null,
+      exercise_name: ex.exerciseName,
+      sets: ex.sets,
+      reps: ex.reps,
+      weight_type: ex.weightType,
+      weight: ex.weight,
+      weight_max: ex.weightMax,
+      percentage: ex.percentage,
+      percentage_max: ex.percentageMax,
+      percentage_base_kpi: ex.percentageBaseKPI,
+      tempo: ex.tempo,
+      each_side: ex.eachSide,
+      rest_time: ex.restTime,
+      notes: ex.notes,
+      video_url: ex.videoUrl,
+      order_index: index,
+      group_id: ex.groupId || null,
+      block_instance_id: ex.blockInstanceId || null,
+      substitution_reason: ex.substitutionReason,
+      original_exercise: ex.originalExercise,
+      progression_notes: ex.progressionNotes,
+      kpi_tag_ids: ex.kpiTagIds || [],
+    }));
+
+    // Prepare groups data for JSONB
+    const groupsJson = (workoutData.groups || []).map((group, index) => ({
+      name: group.name,
+      type: group.type,
+      description: group.description,
+      order_index: index,
+      rest_between_rounds: group.restBetweenRounds,
+      rest_between_exercises: group.restBetweenExercises,
+      rounds: group.rounds,
+      notes: group.notes,
+      block_instance_id: group.blockInstanceId || null,
+    }));
+
+    // Prepare block instances data for JSONB
+    const blockInstancesJson = (workoutData.blockInstances || []).map((bi) => ({
+      source_block_id: bi.sourceBlockId,
+      source_block_name: bi.sourceBlockName,
+      instance_name: bi.instanceName,
+      notes: bi.notes,
+      estimated_duration: bi.estimatedDuration,
+      modified_exercises: bi.customizations?.modifiedExercises || [],
+      added_exercises: bi.customizations?.addedExercises || [],
+      removed_exercises: bi.customizations?.removedExercises || [],
+      modified_groups: bi.customizations?.modifiedGroups || [],
+      added_groups: bi.customizations?.addedGroups || [],
+      removed_groups: bi.customizations?.removedGroups || [],
+    }));
+
+    // Call RPC function
+    const { data: planId, error } = await supabase.rpc(
+      "create_workout_plan_transaction",
+      {
+        p_name: workoutData.name,
+        p_description: workoutData.description,
+        p_estimated_duration: workoutData.estimatedDuration,
+        p_target_group_id: workoutData.targetGroupId || null,
+        p_created_by: workoutData.createdBy,
+        p_archived: workoutData.archived || false,
+        p_exercises: exercisesJson,
+        p_groups: groupsJson,
+        p_block_instances: blockInstancesJson,
+      }
+    );
+
+    if (error) {
+      console.error("Error creating workout plan (transaction):", error);
+      return null;
+    }
+
+    // Fetch and return the created workout
+    if (planId) {
+      return await getWorkoutPlanById(planId);
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error in createWorkoutPlanTransaction:", error);
+    return null;
+  }
+};
+
+/**
+ * Transaction-safe workout plan update using Supabase RPC function
+ * Ensures all-or-nothing semantics for workout updates
+ */
+export const updateWorkoutPlanTransaction = async (
+  id: string,
+  workoutData: Partial<WorkoutPlan>
+): Promise<WorkoutPlan | null> => {
+  try {
+    // Get existing workout to merge with partial data
+    const existingWorkout = await getWorkoutPlanById(id);
+    if (!existingWorkout) {
+      console.error("Workout plan not found:", id);
+      return null;
+    }
+
+    // Merge existing with updates
+    const mergedWorkout = { ...existingWorkout, ...workoutData };
+
+    // Prepare exercises data for JSONB
+    const exercisesJson = (mergedWorkout.exercises || []).map((ex, index) => ({
+      exercise_id: ex.exerciseId || null,
+      exercise_name: ex.exerciseName,
+      sets: ex.sets,
+      reps: ex.reps,
+      weight_type: ex.weightType,
+      weight: ex.weight,
+      weight_max: ex.weightMax,
+      percentage: ex.percentage,
+      percentage_max: ex.percentageMax,
+      percentage_base_kpi: ex.percentageBaseKPI,
+      tempo: ex.tempo,
+      each_side: ex.eachSide,
+      rest_time: ex.restTime,
+      notes: ex.notes,
+      video_url: ex.videoUrl,
+      order_index: index,
+      group_id: ex.groupId || null,
+      block_instance_id: ex.blockInstanceId || null,
+      substitution_reason: ex.substitutionReason,
+      original_exercise: ex.originalExercise,
+      progression_notes: ex.progressionNotes,
+      kpi_tag_ids: ex.kpiTagIds || [],
+    }));
+
+    // Prepare groups data for JSONB
+    const groupsJson = (mergedWorkout.groups || []).map((group, index) => ({
+      name: group.name,
+      type: group.type,
+      description: group.description,
+      order_index: index,
+      rest_between_rounds: group.restBetweenRounds,
+      rest_between_exercises: group.restBetweenExercises,
+      rounds: group.rounds,
+      notes: group.notes,
+      block_instance_id: group.blockInstanceId || null,
+    }));
+
+    // Prepare block instances data for JSONB
+    const blockInstancesJson = (mergedWorkout.blockInstances || []).map((bi) => ({
+      source_block_id: bi.sourceBlockId,
+      source_block_name: bi.sourceBlockName,
+      instance_name: bi.instanceName,
+      notes: bi.notes,
+      estimated_duration: bi.estimatedDuration,
+      modified_exercises: bi.customizations?.modifiedExercises || [],
+      added_exercises: bi.customizations?.addedExercises || [],
+      removed_exercises: bi.customizations?.removedExercises || [],
+      modified_groups: bi.customizations?.modifiedGroups || [],
+      added_groups: bi.customizations?.addedGroups || [],
+      removed_groups: bi.customizations?.removedGroups || [],
+    }));
+
+    // Call RPC function
+    const { error } = await supabase.rpc("update_workout_plan_transaction", {
+      p_plan_id: id,
+      p_name: mergedWorkout.name,
+      p_description: mergedWorkout.description,
+      p_estimated_duration: mergedWorkout.estimatedDuration,
+      p_target_group_id: mergedWorkout.targetGroupId || null,
+      p_archived: mergedWorkout.archived || false,
+      p_exercises: exercisesJson,
+      p_groups: groupsJson,
+      p_block_instances: blockInstancesJson,
+    });
+
+    if (error) {
+      console.error("Error updating workout plan (transaction):", error);
+      return null;
+    }
+
+    // Fetch and return the updated workout
+    return await getWorkoutPlanById(id);
+  } catch (error) {
+    console.error("Error in updateWorkoutPlanTransaction:", error);
+    return null;
+  }
+};
+
+/**
+ * @deprecated Use createWorkoutPlanTransaction instead
+ * 
+ * This function does not provide transaction safety and may leave orphaned data
+ * on failure (e.g., workout plan created but exercises fail to insert).
+ * 
+ * **Will be removed in v1.1.0**
+ * 
+ * Migration:
+ * ```typescript
+ * // Old (deprecated):
+ * const workout = await createWorkoutPlan(data);
+ * 
+ * // New (transaction-safe):
+ * const workout = await createWorkoutPlanTransaction(data);
+ * ```
+ * 
+ * @see createWorkoutPlanTransaction for the recommended transaction-safe version
+ */
 export const createWorkoutPlan = async (
   workoutData: Omit<WorkoutPlan, "id" | "createdAt" | "updatedAt">
 ): Promise<WorkoutPlan | null> => {
@@ -761,6 +1139,25 @@ export const createWorkoutPlan = async (
   };
 };
 
+/**
+ * @deprecated Use updateWorkoutPlanTransaction instead
+ * 
+ * This function does not provide transaction safety and may leave orphaned or
+ * inconsistent data on failure (e.g., exercises deleted but new ones fail to insert).
+ * 
+ * **Will be removed in v1.1.0**
+ * 
+ * Migration:
+ * ```typescript
+ * // Old (deprecated):
+ * const workout = await updateWorkoutPlan(id, updates);
+ * 
+ * // New (transaction-safe):
+ * const workout = await updateWorkoutPlanTransaction(id, updates);
+ * ```
+ * 
+ * @see updateWorkoutPlanTransaction for the recommended transaction-safe version
+ */
 export const updateWorkoutPlan = async (
   id: string,
   updates: Partial<WorkoutPlan> & {

@@ -24,6 +24,7 @@ import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useAsyncState } from "@/hooks/use-async-state";
 import type { WorkoutAssignment, WorkoutPlan, ExerciseGroup } from "@/types";
 
 interface WorkoutExercise {
@@ -137,8 +138,7 @@ export default function WorkoutAssignmentDetailModal({
   onDelete,
 }: WorkoutAssignmentDetailModalProps) {
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading: loading, error, execute } = useAsyncState<AssignmentDetail>();
 
   const isCoach = userRole === "coach" || userRole === "admin";
 
@@ -191,26 +191,18 @@ export default function WorkoutAssignmentDetailModal({
   const getGroupName = (a: AssignmentDetail | null) =>
     a?.assigned_group?.name || a?.assignedGroup?.name;
 
-  const fetchAssignment = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const fetchAssignment = useCallback(() => 
+    execute(async () => {
       const response = await fetch(`/api/assignments/${assignmentId}`);
       const data = await response.json();
 
       if (data.success && data.data) {
         setAssignment(data.data);
+        return data.data;
       } else {
-        setError(data.error || "Failed to load assignment");
+        throw new Error(data.error || "Failed to load assignment");
       }
-    } catch (err) {
-      console.error("Error fetching assignment:", err);
-      setError("Failed to load assignment details");
-    } finally {
-      setLoading(false);
-    }
-  }, [assignmentId]);
+    }), [assignmentId, execute]);
 
   useEffect(() => {
     if (isOpen && assignmentId) {
@@ -519,9 +511,9 @@ export default function WorkoutAssignmentDetailModal({
                       </Button>
                     )}
                     {statusText === "Completed" && (
-                      <div className="flex-1 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
-                        <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
-                        <p className="text-green-800 font-medium">
+                      <div className="flex-1 p-3 bg-success-lighter border border-success-light rounded-lg text-center">
+                        <CheckCircle className="w-6 h-6 text-success mx-auto mb-1" />
+                        <p className="text-success-dark font-medium">
                           Workout Completed!
                         </p>
                       </div>
@@ -546,7 +538,7 @@ export default function WorkoutAssignmentDetailModal({
                       onClick={handleDelete}
                       variant="secondary"
                       leftIcon={<Trash2 className="w-4 h-4" />}
-                      className="text-red-600 hover:bg-red-50 border-red-300"
+                      className="text-error hover:bg-error-lighter border-error-light"
                     >
                       Delete
                     </Button>

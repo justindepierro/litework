@@ -5,6 +5,7 @@ import { Search, Dumbbell } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/Typography";
+import { useAsyncState } from "@/hooks/use-async-state";
 
 interface Exercise {
   id: string;
@@ -21,36 +22,43 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
   onDragStart,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { 
+    data: exercises, 
+    isLoading: loading, 
+    error, 
+    execute,
+    setData: setExercises,
+    setError,
+  } = useAsyncState<Exercise[]>();
 
   // Fetch exercises when search query changes
   useEffect(() => {
-    const fetchExercises = async () => {
-      if (searchQuery.length < 2) {
-        setExercises([]);
-        return;
-      }
+    if (searchQuery.length < 2) {
+      setExercises([]);
+      setError(null);
+      return;
+    }
 
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/exercises/search?q=${encodeURIComponent(searchQuery)}&limit=50`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setExercises(data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching exercises:", error);
-      } finally {
-        setLoading(false);
+    const fetchExercises = () => execute(async () => {
+      const response = await fetch(
+        `/api/exercises/search?q=${encodeURIComponent(searchQuery)}&limit=50`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch exercises: ${response.statusText}`);
       }
-    };
+      
+      const data = await response.json();
+      if (data.success) {
+        return data.data || [];
+      } else {
+        throw new Error(data.error || 'Failed to load exercises');
+      }
+    });
 
     const debounce = setTimeout(fetchExercises, 300);
     return () => clearTimeout(debounce);
-  }, [searchQuery]);
+  }, [searchQuery, execute, setExercises, setError]);
 
   return (
     <div className="w-80 bg-silver-200 border-l border-silver-400 flex flex-col h-full">
@@ -89,15 +97,34 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
           </div>
         )}
 
-        {!loading && searchQuery.length >= 2 && exercises.length === 0 && (
+        {!loading && searchQuery.length >= 2 && (!exercises || exercises.length === 0) && !error && (
           <EmptySearch
             searchTerm={searchQuery}
             onClearSearch={() => setSearchQuery("")}
           />
         )}
 
+        {error && (
+          <div className="text-center py-8 px-4">
+            <div className="bg-error-lighter border border-error-light rounded-lg p-4">
+              <p className="text-sm text-error-dark font-medium mb-2">
+                {error}
+              </p>
+              <button
+                onClick={() => {
+                  setError(null);
+                  setSearchQuery("");
+                }}
+                className="text-xs text-error hover:text-error-dark underline"
+              >
+                Try again
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2">
-          {exercises.map((exercise) => (
+          {exercises?.map((exercise) => (
             <div
               key={exercise.id}
               draggable

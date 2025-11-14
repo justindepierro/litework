@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Input, Select } from "@/components/ui/Input";
 import { Heading, Body, Label } from "@/components/ui/Typography";
+import { useAsyncState } from "@/hooks/use-async-state";
 import {
   MessageSquare,
   TrendingUp,
@@ -85,8 +86,7 @@ const RatingBadge = ({
 export function FeedbackDashboard({ athleteId }: FeedbackDashboardProps) {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [filteredFeedback, setFilteredFeedback] = useState<FeedbackItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading, error, execute } = useAsyncState<FeedbackItem[]>();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,11 +97,8 @@ export function FeedbackDashboard({ athleteId }: FeedbackDashboardProps) {
 
   // Fetch feedback from API
   useEffect(() => {
-    const fetchFeedback = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
+    const fetchFeedback = () =>
+      execute(async () => {
         const params = new URLSearchParams();
         if (selectedAthlete) {
           params.append("athleteId", selectedAthlete);
@@ -125,17 +122,14 @@ export function FeedbackDashboard({ athleteId }: FeedbackDashboardProps) {
           throw new Error(data.error || "Failed to fetch feedback");
         }
 
-        setFeedback(data.feedback || []);
-        setFilteredFeedback(data.feedback || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+        const feedbackData = data.feedback || [];
+        setFeedback(feedbackData);
+        setFilteredFeedback(feedbackData);
+        return feedbackData;
+      });
 
     fetchFeedback();
-  }, [selectedAthlete, dateRange]);
+  }, [selectedAthlete, dateRange, execute]);
 
   // Apply search filter
   useEffect(() => {

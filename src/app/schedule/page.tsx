@@ -10,13 +10,14 @@ import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 
 // Lazy load heavy modal components
 const GroupAssignmentModal = lazy(
   () => import("@/components/GroupAssignmentModal")
 );
 
-export default function SchedulePage() {
+export default withPageErrorBoundary(function SchedulePage() {
   const { user, isLoading } = useRequireAuth();
   const [assignments, setAssignments] = useState<WorkoutAssignment[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
@@ -278,4 +279,4 @@ export default function SchedulePage() {
       )}
     </div>
   );
-}
+}, "Schedule");

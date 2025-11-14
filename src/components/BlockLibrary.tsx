@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
 import {
   Search,
   Plus,
@@ -40,29 +41,29 @@ const CATEGORY_CONFIG = {
   main: {
     label: "Main Lifts",
     icon: Dumbbell,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-200",
+    color: "text-primary",
+    bgColor: "bg-info-lightest",
+    borderColor: "border-info-lighter",
   },
   accessory: {
     label: "Accessory",
     icon: Zap,
-    color: "text-purple-500",
-    bgColor: "bg-purple-50",
-    borderColor: "border-purple-200",
+    color: "text-accent-purple-500",
+    bgColor: "bg-accent-purple-50",
+    borderColor: "border-accent-purple-200",
   },
   cooldown: {
     label: "Cool Down",
     icon: Wind,
-    color: "text-green-500",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
+    color: "text-success",
+    bgColor: "bg-success-lightest",
+    borderColor: "border-success-lighter",
   },
   custom: {
     label: "Custom",
     icon: Star,
-    color: "text-gray-500",
-    bgColor: "bg-gray-50",
+    color: "text-neutral",
+    bgColor: "bg-silver-200",
     borderColor: "border-silver-300",
   },
 };
@@ -75,8 +76,7 @@ export default function BlockLibrary({
   selectedBlocks = [],
 }: BlockLibraryProps) {
   const [blocks, setBlocks] = useState<WorkoutBlock[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading, error, execute } = useAsyncState<void>();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -84,10 +84,7 @@ export default function BlockLibrary({
 
   // Fetch blocks from API
   const fetchBlocks = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
+    execute(async () => {
       const params = new URLSearchParams();
       if (selectedCategory !== "all") {
         params.append("category", selectedCategory);
@@ -114,14 +111,8 @@ export default function BlockLibrary({
 
       const data = await response.json();
       setBlocks(data.blocks || []);
-    } catch (err) {
-      console.error("Error fetching blocks:", err);
-      setError(err instanceof Error ? err.message : "Failed to load blocks");
-      setBlocks([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedCategory, showFavoritesOnly]);
+    });
+  }, [selectedCategory, showFavoritesOnly, execute]);
 
   // Fetch blocks when the modal opens or filters change
   useEffect(() => {
@@ -201,13 +192,13 @@ export default function BlockLibrary({
         <div className="p-4 border-b border-silver-300">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search blocks by name, description, or tags..."
-                className="w-full pl-10 pr-4 py-3 rounded-lg border-0 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-white"
+                className="w-full pl-10 pr-4 py-3 rounded-lg border-0 text-navy-900 placeholder-neutral focus:ring-2 focus:ring-white"
               />
             </div>
 
@@ -216,7 +207,7 @@ export default function BlockLibrary({
                 onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
                 className={`px-4 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${
                   showFavoritesOnly
-                    ? "bg-yellow-400 text-gray-900"
+                    ? "bg-warning text-navy-900"
                     : "bg-white/20 text-white hover:bg-white/30"
                 }`}
                 aria-label={
@@ -232,7 +223,7 @@ export default function BlockLibrary({
               {onCreateBlock && (
                 <button
                   onClick={onCreateBlock}
-                  className="px-4 py-3 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors flex items-center gap-2"
+                  className="px-4 py-3 bg-white text-primary rounded-lg font-medium hover:bg-info-lightest transition-colors flex items-center gap-2"
                   aria-label="Create new block"
                 >
                   <Plus className="w-4 h-4" />
@@ -244,13 +235,13 @@ export default function BlockLibrary({
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-2 p-4 bg-gray-50 border-b overflow-x-auto">
+        <div className="flex gap-2 p-4 bg-silver-200 border-b overflow-x-auto">
           <button
             onClick={() => setSelectedCategory("all")}
             className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
               selectedCategory === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
+                ? "bg-primary text-white"
+                : "bg-white text-neutral-darker hover:bg-silver-300"
             }`}
           >
             All Blocks ({blocks.length})
@@ -265,7 +256,7 @@ export default function BlockLibrary({
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
                   selectedCategory === key
                     ? `${config.bgColor} ${config.color} border ${config.borderColor}`
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    : "bg-white text-neutral-darker hover:bg-silver-300"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -276,13 +267,13 @@ export default function BlockLibrary({
         </div>
 
         {/* Sort Options */}
-        <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-b">
-          <div className="text-sm text-gray-600">
+        <div className="flex items-center justify-between px-6 py-3 bg-silver-200 border-b">
+          <div className="text-sm text-neutral-dark">
             {filteredBlocks.length} block
             {filteredBlocks.length !== 1 ? "s" : ""} found
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Sort by:</span>
+            <span className="text-sm text-neutral-dark">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) =>
@@ -305,11 +296,11 @@ export default function BlockLibrary({
             </div>
           ) : error ? (
             <div className="text-center py-12">
-              <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <p className="text-red-600 text-lg font-semibold">{error}</p>
+              <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
+              <p className="text-error-dark text-lg font-semibold">{error}</p>
               <button
                 onClick={fetchBlocks}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
               >
                 Try Again
               </button>
@@ -351,8 +342,8 @@ export default function BlockLibrary({
                     key={block.id}
                     className={`bg-white border-2 rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer ${
                       isSelected
-                        ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-silver-300 hover:border-blue-300"
+                        ? "border-primary ring-2 ring-info-lighter"
+                        : "border-silver-300 hover:border-info-light"
                     }`}
                     onClick={() => onSelectBlock(block)}
                   >
@@ -365,7 +356,7 @@ export default function BlockLibrary({
                           <Icon className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-sm">
+                          <h3 className="font-bold text-navy-900 text-sm">
                             {block.name}
                           </h3>
                           <span
@@ -383,8 +374,8 @@ export default function BlockLibrary({
                         }}
                         className={`p-1 rounded transition-colors ${
                           block.isFavorite
-                            ? "text-yellow-500"
-                            : "text-gray-400 hover:text-yellow-500"
+                            ? "text-warning"
+                            : "text-neutral hover:text-warning"
                         }`}
                         aria-label={
                           block.isFavorite
@@ -400,13 +391,13 @@ export default function BlockLibrary({
 
                     {/* Description */}
                     {block.description && (
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      <p className="text-sm text-neutral-dark mb-3 line-clamp-2">
                         {block.description}
                       </p>
                     )}
 
                     {/* Stats */}
-                    <div className="flex items-center gap-4 mb-3 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 mb-3 text-xs text-neutral">
                       <div className="flex items-center gap-1">
                         <Dumbbell className="w-3 h-3" />
                         {block.exercises.length} exercises
@@ -434,7 +425,7 @@ export default function BlockLibrary({
                           </Badge>
                         ))}
                         {block.tags.length > 3 && (
-                          <span className="px-2 py-1 text-gray-500 text-xs">
+                          <span className="px-2 py-1 text-neutral text-xs">
                             +{block.tags.length - 3}
                           </span>
                         )}
@@ -459,7 +450,7 @@ export default function BlockLibrary({
                             e.stopPropagation();
                             // Handle edit - would open block editor
                           }}
-                          className="flex-1 px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors flex items-center justify-center gap-1"
+                          className="flex-1 px-3 py-1.5 text-xs bg-silver-300 hover:bg-silver-400 rounded transition-colors flex items-center justify-center gap-1"
                           aria-label="Edit block"
                         >
                           <Edit2 className="w-3 h-3" />
@@ -470,7 +461,7 @@ export default function BlockLibrary({
                             e.stopPropagation();
                             // Handle duplicate
                           }}
-                          className="flex-1 px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors flex items-center justify-center gap-1"
+                          className="flex-1 px-3 py-1.5 text-xs bg-silver-300 hover:bg-silver-400 rounded transition-colors flex items-center justify-center gap-1"
                           aria-label="Duplicate block"
                         >
                           <Copy className="w-3 h-3" />

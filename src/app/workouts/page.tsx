@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -76,7 +77,7 @@ interface LibraryExercise {
   usage_count: number;
 }
 
-export default function WorkoutsPage() {
+export default withPageErrorBoundary(function WorkoutsPage() {
   const { user, isLoading: authLoading } = useRequireCoach();
   const { success, error: showErrorToast } = useToast();
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
@@ -1012,4 +1013,4 @@ export default function WorkoutsPage() {
       )}
     </div>
   );
-}
+}, "Workouts");

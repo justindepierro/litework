@@ -34,7 +34,7 @@ function DefaultErrorFallback({
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
         <div className="flex justify-center mb-4">
-          <AlertTriangle className="w-12 h-12 text-red-500" />
+          <AlertTriangle className="w-12 h-12 text-error" />
         </div>
 
         <h1 className="text-heading-primary text-xl mb-2">
@@ -48,10 +48,10 @@ function DefaultErrorFallback({
 
         {process.env.NODE_ENV === "development" && error && (
           <details className="mb-6 text-left">
-            <summary className="cursor-pointer text-red-600 font-medium mb-2">
+            <summary className="cursor-pointer text-error font-medium mb-2">
               Error Details (Development Only)
             </summary>
-            <pre className="text-xs bg-gray-100 p-3 rounded overflow-auto">
+            <pre className="text-xs bg-silver-100 p-3 rounded overflow-auto">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>

@@ -21,6 +21,7 @@ import {
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface EnhancedAthlete {
   id: string;
@@ -79,7 +80,7 @@ interface BulkWorkoutData {
   notes?: string;
 }
 
-export default function BulkOperationModal({
+export default withErrorBoundary(function BulkOperationModal({
   isOpen,
   onClose,
   athletes,
@@ -267,7 +268,7 @@ export default function BulkOperationModal({
           <div className="space-y-6">
             {/* Operation Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-body-secondary mb-3">
                 Select Operation Type
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -275,13 +276,13 @@ export default function BulkOperationModal({
                   onClick={() => setOperationType("bulk_invite")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_invite"
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-primary bg-primary-lighter"
                       : "border-silver-400 hover:border-primary"
                   }`}
                 >
-                  <Send className="w-5 h-5 text-blue-600 mb-2" />
+                  <Send className="w-5 h-5 text-primary mb-2" />
                   <div className="font-medium">Bulk Invite</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-body-secondary">
                     Send invites to multiple people
                   </div>
                 </button>
@@ -290,13 +291,13 @@ export default function BulkOperationModal({
                   onClick={() => setOperationType("bulk_message")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_message"
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-primary bg-primary-lighter"
                       : "border-silver-400 hover:border-primary"
                   }`}
                 >
-                  <MessageCircle className="w-5 h-5 text-green-600 mb-2" />
+                  <MessageCircle className="w-5 h-5 text-success mb-2" />
                   <div className="font-medium">Bulk Message</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-body-secondary">
                     Send messages to athletes
                   </div>
                 </button>
@@ -305,13 +306,13 @@ export default function BulkOperationModal({
                   onClick={() => setOperationType("bulk_update_status")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_update_status"
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-primary bg-primary-lighter"
                       : "border-silver-400 hover:border-primary"
                   }`}
                 >
-                  <UserCheck className="w-5 h-5 text-orange-600 mb-2" />
+                  <UserCheck className="w-5 h-5 text-warning mb-2" />
                   <div className="font-medium">Update Status</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-body-secondary">
                     Change athlete status
                   </div>
                 </button>
@@ -320,13 +321,13 @@ export default function BulkOperationModal({
                   onClick={() => setOperationType("bulk_assign_workout")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_assign_workout"
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-primary bg-primary-lighter"
                       : "border-silver-400 hover:border-primary"
                   }`}
                 >
-                  <Calendar className="w-5 h-5 text-purple-600 mb-2" />
+                  <Calendar className="w-5 h-5 text-accent mb-2" />
                   <div className="font-medium">Assign Workout</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-body-secondary">
                     Assign workouts to groups
                   </div>
                 </button>
@@ -336,19 +337,19 @@ export default function BulkOperationModal({
             {/* Target Selection */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-body-secondary">
                   Select Targets ({getTotalSelectedCount()} selected)
                 </label>
                 <div className="flex gap-2">
                   <button
                     onClick={selectAllAthletes}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-primary hover:text-primary-dark"
                   >
                     Select All
                   </button>
                   <button
                     onClick={clearAllSelections}
-                    className="text-sm text-gray-600 hover:text-gray-800"
+                    className="text-sm text-body-secondary hover:text-heading-primary"
                   >
                     Clear All
                   </button>
@@ -357,7 +358,7 @@ export default function BulkOperationModal({
 
               {/* Groups Section */}
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">
+                <h4 className="text-sm font-medium text-heading-primary mb-2">
                   Groups
                 </h4>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -382,13 +383,13 @@ export default function BulkOperationModal({
                           className="flex items-center flex-1"
                         >
                           {selectedGroups.includes(group.id) ? (
-                            <CheckSquare className="w-5 h-5 text-blue-600 mr-3" />
+                            <CheckSquare className="w-5 h-5 text-primary mr-3" />
                           ) : (
-                            <Square className="w-5 h-5 text-gray-400 mr-3" />
+                            <Square className="w-5 h-5 text-steel-400 mr-3" />
                           )}
                           <div className="flex-1 text-left">
                             <div className="font-medium">{group.name}</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-body-secondary">
                               {getAthletesInGroup(group.id).length} athletes
                             </div>
                           </div>
@@ -400,7 +401,7 @@ export default function BulkOperationModal({
                           {getAthletesInGroup(group.id).map((athlete) => (
                             <div
                               key={athlete.id}
-                              className="text-sm text-gray-600"
+                              className="text-sm text-body-secondary"
                             >
                               • {athlete.fullName}
                             </div>
@@ -414,27 +415,27 @@ export default function BulkOperationModal({
 
               {/* Individual Athletes Section */}
               <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-2">
+                <h4 className="text-sm font-medium text-heading-primary mb-2">
                   Individual Athletes
                 </h4>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {athletes.map((athlete) => (
                     <div
                       key={athlete.id}
-                      className="flex items-center p-2 hover:bg-gray-50 rounded-lg"
+                      className="flex items-center p-2 hover:bg-silver-100 rounded-lg"
                     >
                       <button
                         onClick={() => toggleAthleteSelection(athlete.id)}
                         className="flex items-center flex-1"
                       >
                         {selectedAthletes.includes(athlete.id) ? (
-                          <CheckSquare className="w-5 h-5 text-blue-600 mr-3" />
+                          <CheckSquare className="w-5 h-5 text-primary mr-3" />
                         ) : (
-                          <Square className="w-5 h-5 text-gray-400 mr-3" />
+                          <Square className="w-5 h-5 text-steel-400 mr-3" />
                         )}
                         <div className="flex-1 text-left">
                           <div className="font-medium">{athlete.fullName}</div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-body-secondary">
                             {athlete.email}
                           </div>
                         </div>
@@ -467,7 +468,7 @@ export default function BulkOperationModal({
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-body-secondary mb-2">
                 Assign to Groups (Optional)
               </label>
               <div className="space-y-2">
@@ -752,11 +753,11 @@ export default function BulkOperationModal({
     if (isExecuting) {
       return (
         <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <Loader2 className="w-8 h-8 text-primary mx-auto mb-4 animate-spin" />
+          <h3 className="text-lg font-medium text-heading-primary mb-2">
             Processing Operation
           </h3>
-          <p className="text-gray-600">
+          <p className="text-body-secondary">
             Please wait while we process your bulk operation...
           </p>
         </div>
@@ -768,21 +769,21 @@ export default function BulkOperationModal({
         <div className="text-center py-8">
           {executionResults.success ? (
             <>
-              <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-heading-primary mb-2">
                 Operation Completed
               </h3>
-              <p className="text-gray-600">
+              <p className="text-body-secondary">
                 Your bulk operation has been completed successfully.
               </p>
             </>
           ) : (
             <>
-              <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <AlertCircle className="w-12 h-12 text-error mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-heading-primary mb-2">
                 Operation Failed
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-body-secondary mb-4">
                 There was an error processing your request:
               </p>
               <Alert variant="error">{executionResults.error}</Alert>
@@ -858,7 +859,7 @@ export default function BulkOperationModal({
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                         currentStep === step
-                          ? "bg-blue-600 text-white"
+                          ? "bg-primary text-white"
                           : index <
                               [
                                 "select",
@@ -866,8 +867,8 @@ export default function BulkOperationModal({
                                 "confirm",
                                 "executing",
                               ].indexOf(currentStep)
-                            ? "bg-green-600 text-white"
-                            : "bg-gray-300 text-gray-600"
+                            ? "bg-success text-white"
+                            : "bg-steel-300 text-body-secondary"
                       }`}
                     >
                       {index + 1}
@@ -882,8 +883,8 @@ export default function BulkOperationModal({
                             "confirm",
                             "executing",
                           ].indexOf(currentStep)
-                            ? "bg-green-600"
-                            : "bg-gray-300"
+                            ? "bg-success"
+                            : "bg-steel-300"
                         }`}
                       />
                     )}
@@ -934,4 +935,4 @@ export default function BulkOperationModal({
       </div>
     </ModalBackdrop>
   );
-}
+});

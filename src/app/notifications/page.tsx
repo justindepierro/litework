@@ -147,9 +147,9 @@ export default function NotificationsPage() {
     return (
       <>
         <Navigation />
-        <main className="min-h-screen bg-gray-50 pt-20">
+        <main className="min-h-screen bg-silver-100 pt-20">
           <div className="max-w-4xl mx-auto px-4 py-8">
-            <p className="text-center text-gray-600">
+            <p className="text-center text-body-secondary">
               Please log in to view notifications.
             </p>
           </div>
@@ -161,16 +161,16 @@ export default function NotificationsPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <main className="min-h-screen bg-silver-100 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-3">
-                <Bell className="w-8 h-8 text-blue-600" />
+                <Bell className="w-8 h-8 text-primary" />
                 <div>
                   <Display size="md">Notifications</Display>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-body-secondary mt-1">
                     {unreadCount > 0
                       ? `${unreadCount} unread`
                       : "All caught up!"}
@@ -185,8 +185,8 @@ export default function NotificationsPage() {
                     onClick={() => setFilter("all")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                       filter === "all"
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
+                        ? "bg-white text-heading-primary shadow-sm"
+                        : "text-body-secondary hover:text-heading-primary"
                     }`}
                   >
                     <Filter className="w-4 h-4 inline mr-1" />
@@ -196,8 +196,8 @@ export default function NotificationsPage() {
                     onClick={() => setFilter("unread")}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                       filter === "unread"
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
+                        ? "bg-white text-heading-primary shadow-sm"
+                        : "text-body-secondary hover:text-heading-primary"
                     }`}
                   >
                     Unread ({unreadCount})
@@ -207,7 +207,7 @@ export default function NotificationsPage() {
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                    className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
                   >
                     <CheckCheck className="w-4 h-4" />
                     Mark all read
@@ -235,7 +235,7 @@ export default function NotificationsPage() {
                   <div
                     key={notification.id}
                     className={`p-6 hover:bg-silver-200 transition-colors cursor-pointer ${
-                      !notification.read ? "bg-blue-50" : ""
+                      !notification.read ? "bg-primary-lighter" : ""
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >
@@ -249,18 +249,18 @@ export default function NotificationsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4 mb-2">
                           <h3
-                            className={`text-base font-medium text-gray-900 ${
+                            className={`text-base font-medium text-heading-primary ${
                               !notification.read ? "font-semibold" : ""
                             }`}
                           >
                             {notification.title}
                           </h3>
-                          <span className="text-sm text-gray-500 shrink-0">
+                          <span className="text-sm text-caption-muted shrink-0">
                             {formatTime(notification.createdAt)}
                           </span>
                         </div>
                         {notification.body && (
-                          <p className="text-gray-600 mb-3">
+                          <p className="text-body-secondary mb-3">
                             {notification.body}
                           </p>
                         )}
@@ -271,7 +271,7 @@ export default function NotificationsPage() {
                                 e.stopPropagation();
                                 markAsRead(notification.id);
                               }}
-                              className="px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium bg-blue-100 hover:bg-blue-200 rounded-md transition-colors flex items-center gap-1"
+                              className="px-3 py-1.5 text-sm text-primary hover:text-primary-dark font-medium bg-primary-lighter hover:bg-primary-light rounded-md transition-colors flex items-center gap-1"
                             >
                               <Check className="w-4 h-4" />
                               Mark read
@@ -282,7 +282,7 @@ export default function NotificationsPage() {
                               e.stopPropagation();
                               deleteNotification(notification.id);
                             }}
-                            className="px-3 py-1.5 text-sm text-red-600 hover:text-red-700 font-medium bg-red-50 hover:bg-red-100 rounded-md transition-colors flex items-center gap-1"
+                            className="px-3 py-1.5 text-sm text-error hover:text-error-dark font-medium bg-error-lighter hover:bg-error-light rounded-md transition-colors flex items-center gap-1"
                           >
                             <Trash2 className="w-4 h-4" />
                             Delete

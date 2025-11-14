@@ -39,7 +39,8 @@ const QuickActions = memo(function QuickActions() {
         "bg-linear-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 text-orange-700 shadow-sm hover:shadow-lg border border-orange-200",
       purple:
         "bg-linear-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 text-purple-700 shadow-sm hover:shadow-lg border border-purple-200",
-      green: "bg-linear-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
+      green:
+        "bg-linear-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };

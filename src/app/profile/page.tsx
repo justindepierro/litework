@@ -126,7 +126,7 @@ export default function ProfilePage() {
         setLastName(data.profile.lastName || "");
         setPhoneNumber(data.profile.phoneNumber || "");
         setDateOfBirth(data.profile.dateOfBirth || "");
-        
+
         // Convert total inches to feet and inches
         if (data.profile.heightInches) {
           const totalInches = data.profile.heightInches;
@@ -138,7 +138,7 @@ export default function ProfilePage() {
           setHeightFeet("");
           setHeightInches("");
         }
-        
+
         setWeightLbs(data.profile.weightLbs?.toString() || "");
         setGender(data.profile.gender || "");
         setBio(data.profile.bio || "");
@@ -273,14 +273,14 @@ export default function ProfilePage() {
 
       if (activeTab === "metrics") {
         if (dateOfBirth) updates.dateOfBirth = dateOfBirth;
-        
+
         // Convert feet and inches to total inches
         if (heightFeet || heightInches) {
           const feet = parseFloat(heightFeet) || 0;
           const inches = parseFloat(heightInches) || 0;
-          updates.heightInches = (feet * 12) + inches;
+          updates.heightInches = feet * 12 + inches;
         }
-        
+
         if (weightLbs) updates.weightLbs = parseFloat(weightLbs);
         if (gender) updates.gender = gender;
       }
@@ -515,7 +515,7 @@ export default function ProfilePage() {
                     <User className="w-5 h-5 text-blue-600" />
                     Basic Information
                   </h3>
-                  
+
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FloatingLabelInput
@@ -564,7 +564,7 @@ export default function ProfilePage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     About You
                   </h3>
-                  
+
                   <div className="space-y-4">
                     <FloatingLabelTextarea
                       label="Bio"
@@ -640,7 +640,7 @@ export default function ProfilePage() {
                     <Calendar className="w-5 h-5 text-blue-600" />
                     Personal Details
                   </h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <FloatingLabelInput
@@ -649,7 +649,9 @@ export default function ProfilePage() {
                         value={dateOfBirth}
                         onChange={(e) => setDateOfBirth(e.target.value)}
                         helperText={
-                          profile?.age ? `Current age: ${profile.age} years` : ""
+                          profile?.age
+                            ? `Current age: ${profile.age} years`
+                            : ""
                         }
                         fullWidth
                       />
@@ -680,7 +682,7 @@ export default function ProfilePage() {
                     <Activity className="w-5 h-5 text-green-600" />
                     Physical Measurements
                   </h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
@@ -710,7 +712,12 @@ export default function ProfilePage() {
                       </div>
                       {(heightFeet || heightInches) && (
                         <p className="text-xs text-gray-600 mt-1">
-                          Total: {((parseFloat(heightFeet) || 0) * 12 + (parseFloat(heightInches) || 0)).toFixed(1)} inches
+                          Total:{" "}
+                          {(
+                            (parseFloat(heightFeet) || 0) * 12 +
+                            (parseFloat(heightInches) || 0)
+                          ).toFixed(1)}{" "}
+                          inches
                         </p>
                       )}
                     </div>

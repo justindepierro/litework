@@ -65,9 +65,9 @@ export function DashboardWorkoutsSkeleton({ count = 5 }: { count?: number }) {
  */
 export function DashboardTodayWorkoutSkeleton() {
   return (
-    <div className="bg-white rounded-xl border-2 border-blue-200 shadow-lg overflow-hidden">
+    <div className="bg-white rounded-xl border-2 border-primary-light shadow-lg overflow-hidden">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5">
+      <div className="bg-gradient-to-r from-primary to-accent px-6 py-5">
         <div className="flex items-start justify-between">
           <div className="flex-1 space-y-3">
             <Skeleton className="h-3 w-24 bg-white/30" />

@@ -6,6 +6,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
+import { apiClient } from "@/lib/api-client";
 import { UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
@@ -35,25 +37,28 @@ export default function ManageGroupMembersModal({
   onMembersUpdated,
 }: ManageGroupMembersModalProps) {
   const toast = useToast();
+  const { error: toastError } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, execute } = useAsyncState<void>();
   const [isSaving, setIsSaving] = useState(false);
 
   const loadGroupMembers = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/groups/members?groupId=${group.id}`);
-      const data = await response.json();
+    execute(async () => {
+      const { data, error } = await apiClient.requestWithResponse<{
+        success: boolean;
+        athletes: UserType[];
+      }>(`/api/groups/members?groupId=${group.id}`, { toastError });
 
-      if (data.success) {
+      if (error) {
+        console.error("Failed to load group members:", error);
+        return;
+      }
+
+      if (data?.success) {
         setGroupMembers(data.athletes.map((a: UserType) => a.id));
       }
-    } catch (error) {
-      console.error("Failed to load group members:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   useEffect(() => {
@@ -71,28 +76,38 @@ export default function ManageGroupMembersModal({
 
       if (isCurrentlyInGroup) {
         // Remove from group
-        const response = await fetch(
-          `/api/groups/members?groupId=${group.id}&athleteId=${athleteId}`,
-          { method: "DELETE" }
-        );
-        const data = await response.json();
+        const { data, error } = await apiClient.requestWithResponse<{
+          success: boolean;
+        }>(`/api/groups/members?groupId=${group.id}&athleteId=${athleteId}`, {
+          method: "DELETE",
+          toastError,
+        });
 
-        if (data.success) {
+        if (error) {
+          throw new Error(error);
+        }
+
+        if (data?.success) {
           setGroupMembers(groupMembers.filter((id) => id !== athleteId));
         }
       } else {
         // Add to group
-        const response = await fetch("/api/groups/members", {
+        const { data, error } = await apiClient.requestWithResponse<{
+          success: boolean;
+        }>("/api/groups/members", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: {
             groupId: group.id,
             athleteIds: [athleteId],
-          }),
+          },
+          toastError,
         });
-        const data = await response.json();
 
-        if (data.success) {
+        if (error) {
+          throw new Error(error);
+        }
+
+        if (data?.success) {
           setGroupMembers([...groupMembers, athleteId]);
         }
       }

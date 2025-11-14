@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
 import {
   Clock,
   CheckCircle,
@@ -39,17 +40,10 @@ export default function BulkOperationHistory({
   onClose,
 }: BulkOperationHistoryProps) {
   const [operations, setOperations] = useState<BulkOperation[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { isLoading: loading, execute } = useAsyncState<void>();
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchOperationHistory();
-    }
-  }, [isOpen]);
-
-  const fetchOperationHistory = async () => {
-    setLoading(true);
-    try {
+  const fetchOperationHistory = () => {
+    execute(async () => {
       const response = await fetch("/api/bulk-operations");
       if (response.ok) {
         const result = await response.json();
@@ -74,27 +68,30 @@ export default function BulkOperationHistory({
           )
         );
       }
-    } catch (error) {
-      console.error("Failed to fetch operation history:", error);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchOperationHistory();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const getOperationIcon = (type: string) => {
     switch (type) {
       case "bulk_invite":
-        return <Send className="w-5 h-5 text-blue-600" />;
+        return <Send className="w-5 h-5 text-primary" />;
       case "bulk_message":
-        return <MessageCircle className="w-5 h-5 text-green-600" />;
+        return <MessageCircle className="w-5 h-5 text-success" />;
       case "bulk_update_status":
-        return <UserCheck className="w-5 h-5 text-orange-600" />;
+        return <UserCheck className="w-5 h-5 text-accent-orange" />;
       case "bulk_assign_workout":
-        return <Calendar className="w-5 h-5 text-purple-600" />;
+        return <Calendar className="w-5 h-5 text-accent-purple-500" />;
       default:
-        return <Users className="w-5 h-5 text-gray-600" />;
+        return <Users className="w-5 h-5 text-neutral" />;
     }
   };
 
@@ -116,15 +113,15 @@ export default function BulkOperationHistory({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case "failed":
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
+        return <AlertCircle className="w-5 h-5 text-error" />;
       case "in_progress":
-        return <Clock className="w-5 h-5 text-blue-600" />;
+        return <Clock className="w-5 h-5 text-primary" />;
       case "cancelled":
-        return <X className="w-5 h-5 text-gray-600" />;
+        return <X className="w-5 h-5 text-neutral" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-neutral" />;
     }
   };
 
@@ -173,27 +170,27 @@ export default function BulkOperationHistory({
             <button
               onClick={fetchOperationHistory}
               disabled={loading}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
+              className="p-2 hover:bg-silver-200 rounded-lg transition-colors flex items-center gap-2"
             >
               <RefreshCw
-                className={`w-5 h-5 text-gray-500 ${loading ? "animate-spin" : ""}`}
+                className={`w-5 h-5 text-neutral ${loading ? "animate-spin" : ""}`}
               />
-              <span className="text-sm text-gray-600">Refresh</span>
+              <span className="text-sm text-neutral-dark">Refresh</span>
             </button>
           </div>
 
           {loading ? (
             <div className="text-center py-8">
-              <RefreshCw className="w-8 h-8 text-gray-400 mx-auto mb-4 animate-spin" />
-              <p className="text-gray-600">Loading operation history...</p>
+              <RefreshCw className="w-8 h-8 text-neutral mx-auto mb-4 animate-spin" />
+              <p className="text-neutral-dark">Loading operation history...</p>
             </div>
           ) : operations.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Users className="w-16 h-16 text-silver-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-navy-900 mb-2">
                 No Operations Yet
               </h3>
-              <p className="text-gray-600">
+              <p className="text-neutral-dark">
                 Your bulk operations will appear here once you start using them.
               </p>
             </div>
@@ -202,7 +199,7 @@ export default function BulkOperationHistory({
               {operations.map((operation) => (
                 <div
                   key={operation.id}
-                  className="rounded-lg p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"
+                  className="rounded-lg p-4 shadow-sm hover:shadow-md hover:bg-silver-200 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
@@ -211,7 +208,7 @@ export default function BulkOperationHistory({
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-medium text-gray-900">
+                          <h3 className="font-medium text-navy-900">
                             {getOperationTitle(operation.type)}
                           </h3>
                           <Badge
@@ -222,7 +219,7 @@ export default function BulkOperationHistory({
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-neutral-dark mb-3">
                           <div>
                             <span className="font-medium">Targets:</span>{" "}
                             {operation.targetCount}
@@ -246,7 +243,7 @@ export default function BulkOperationHistory({
                           </div>
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-neutral">
                           Started: {operation.createdAt.toLocaleString()}
                           {operation.completedAt && (
                             <span>
@@ -268,7 +265,7 @@ export default function BulkOperationHistory({
                   {operation.status === "completed" &&
                     operation.targetCount > 0 && (
                       <div className="mt-4">
-                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <div className="flex justify-between text-xs text-neutral-dark mb-1">
                           <span>Success Rate</span>
                           <span>
                             {Math.round(
@@ -278,9 +275,9 @@ export default function BulkOperationHistory({
                             %
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-silver-400 rounded-full h-2">
                           <div
-                            className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-success h-2 rounded-full transition-all duration-300"
                             style={{
                               width: `${(operation.successCount / operation.targetCount) * 100}%`,
                             }}

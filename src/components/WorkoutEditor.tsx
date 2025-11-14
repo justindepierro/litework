@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/Button";
 import {
   ModalBackdrop,
@@ -10,10 +10,8 @@ import {
 } from "@/components/ui/Modal";
 import {
   Plus,
-  GripVertical,
   Trash2,
   Edit3,
-  MoreVertical,
   Users,
   Zap,
   RotateCcw,
@@ -22,7 +20,6 @@ import {
   ChevronDown,
   ChevronRight,
   Package,
-  Check,
 } from "lucide-react";
 import {
   WorkoutPlan,
@@ -33,13 +30,12 @@ import {
   KPITag,
 } from "@/types";
 import { apiClient } from "@/lib/api-client";
-import ExerciseAutocomplete from "./ExerciseAutocomplete";
 import ExerciseLibraryPanel from "./ExerciseLibraryPanel";
 import { Badge } from "@/components/ui/Badge";
 import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
-import { Input, Textarea } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
 import { ExerciseItem } from "./workout-editor/ExerciseItem";
 
 interface WorkoutEditorProps {
@@ -278,14 +274,15 @@ const GroupItem: React.FC<GroupItemProps> = ({
           {isEditing ? (
             <div className="flex flex-col space-y-2 flex-1">
               <div className="flex items-center space-x-2">
-                <input
+                <Input
                   type="text"
                   value={editedGroup.name}
                   onChange={(e) =>
                     setEditedGroup({ ...editedGroup, name: e.target.value })
                   }
-                  className="p-1 border border-silver-300 rounded text-sm flex-1"
                   placeholder="Group name"
+                  inputSize="sm"
+                  className="flex-1"
                 />
                 <select
                   value={editedGroup.type}
@@ -315,7 +312,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                       <span className="text-gray-600">
                         Rest between exercises:
                       </span>
-                      <input
+                      <Input
                         type="number"
                         value={editedGroup.restBetweenExercises || ""}
                         onChange={(e) =>
@@ -325,9 +322,10 @@ const GroupItem: React.FC<GroupItemProps> = ({
                               parseInt(e.target.value) || undefined,
                           })
                         }
-                        className="w-16 p-1 border border-silver-300 rounded"
                         placeholder="0"
                         min="0"
+                        inputSize="sm"
+                        className="w-16"
                       />
                       <span className="text-gray-600">sec</span>
                     </label>
@@ -336,7 +334,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                       <span className="text-gray-600">
                         Rest between rounds:
                       </span>
-                      <input
+                      <Input
                         type="number"
                         value={editedGroup.restBetweenRounds || ""}
                         onChange={(e) =>
@@ -346,9 +344,10 @@ const GroupItem: React.FC<GroupItemProps> = ({
                               parseInt(e.target.value) || undefined,
                           })
                         }
-                        className="w-16 p-1 border border-silver-300 rounded"
                         placeholder="60"
                         min="0"
+                        inputSize="sm"
+                        className="w-16"
                       />
                       <span className="text-gray-600">sec</span>
                     </label>
@@ -358,7 +357,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                 {editedGroup.type === "circuit" && (
                   <label className="flex items-center space-x-1">
                     <span className="text-gray-600">Rounds:</span>
-                    <input
+                    <Input
                       type="number"
                       value={editedGroup.rounds || ""}
                       onChange={(e) =>
@@ -367,9 +366,10 @@ const GroupItem: React.FC<GroupItemProps> = ({
                           rounds: parseInt(e.target.value) || undefined,
                         })
                       }
-                      className="w-12 p-1 border border-silver-300 rounded"
                       placeholder="3"
                       min="1"
+                      inputSize="sm"
+                      className="w-12"
                     />
                   </label>
                 )}
@@ -526,8 +526,8 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("superset")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "superset"
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-silver-400 hover:border-gray-400"
+                      ? "border-primary bg-primary-light text-primary"
+                      : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <Zap className="w-6 h-6 mx-auto mb-2" />
@@ -541,8 +541,8 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("circuit")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "circuit"
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-silver-400 hover:border-gray-400"
+                      ? "border-primary bg-primary-light text-primary"
+                      : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <RotateCcw className="w-6 h-6 mx-auto mb-2" />
@@ -556,8 +556,8 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("section")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "section"
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-silver-400 hover:border-gray-400"
+                      ? "border-primary bg-primary-light text-primary"
+                      : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <Target className="w-6 h-6 mx-auto mb-2" />
@@ -574,7 +574,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Rest Between Exercises (seconds)
               </label>
-              <input
+              <Input
                 type="number"
                 value={restBetweenExercises}
                 onChange={(e) =>
@@ -582,7 +582,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 }
                 min="0"
                 step="15"
-                className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                fullWidth
               />
             </div>
 
@@ -593,13 +593,13 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Number of Rounds
                   </label>
-                  <input
+                  <Input
                     type="number"
                     value={rounds}
                     onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
                     min="1"
                     max="10"
-                    className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    fullWidth
                   />
                 </div>
 
@@ -607,7 +607,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Rest Between Rounds (seconds)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     value={restBetweenRounds}
                     onChange={(e) =>
@@ -615,7 +615,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                     }
                     min="0"
                     step="15"
-                    className="w-full px-4 py-3 border border-silver-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    fullWidth
                   />
                 </div>
               </>
@@ -623,18 +623,20 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
           </div>
         </ModalContent>
         <ModalFooter align="between">
-          <button
+          <Button
             onClick={onClose}
-            className="flex-1 px-6 py-3 border-2 border-navy-400 text-navy-800 bg-white rounded-lg font-semibold hover:bg-navy-50 hover:border-navy-600 transition-colors"
+            variant="secondary"
+            fullWidth
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSubmit}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors border-2 border-blue-700"
+            variant="primary"
+            fullWidth
           >
             Create Group
-          </button>
+          </Button>
         </ModalFooter>
       </div>
     </ModalBackdrop>
@@ -647,9 +649,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   onChange,
   onClose,
 }) => {
-  // Workout name state - MUST be at top so it's available to updateWorkout
-  const [workoutName, setWorkoutName] = useState(workout.name || "");
-
   // UI-only state (not part of workout data)
   const [showBlockLibrary, setShowBlockLibrary] = useState(false);
   const [showBlockEditor, setShowBlockEditor] = useState(false);
@@ -682,39 +681,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     fetchKPIs();
   }, []);
 
-  // Fix orphaned exercises on load - if exercises have groupIds that don't exist, clear them
-  useEffect(() => {
-    const groupIds = new Set((workout.groups || []).map((g) => g.id));
-    const orphanedExercises = workout.exercises.filter(
-      (ex) => ex.groupId && !groupIds.has(ex.groupId)
-    );
-
-    if (orphanedExercises.length > 0) {
-      console.log(
-        "[WorkoutEditor] Found orphaned exercises, clearing invalid groupIds:",
-        orphanedExercises.map((ex) => ({
-          name: ex.exerciseName,
-          oldGroupId: ex.groupId,
-        }))
-      );
-
-      // Update exercises to remove invalid groupIds
-      const fixedExercises = workout.exercises.map((ex) => {
-        if (ex.groupId && !groupIds.has(ex.groupId)) {
-          return { ...ex, groupId: undefined };
-        }
-        return ex;
-      });
-
-      // Trigger an update with fixed exercises
-      onChange({
-        ...workout,
-        exercises: fixedExercises,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount
-
   // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
@@ -727,20 +693,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         })),
       });
 
-      // CRITICAL: Always include the current workout name from local state
-      // This ensures the name persists even when other properties change
-      const workoutWithName = {
-        ...updatedWorkout,
-        name: workoutName || updatedWorkout.name,
-      };
-
+      // No need to override name - it's already in updatedWorkout
       // [REMOVED] console.log("[WorkoutEditor] Calling parent onChange with workout");
-      onChange(workoutWithName);
+      onChange(updatedWorkout);
     },
-    [onChange, workoutName]
+    [onChange]
   );
 
-  // Auto-add exercise to library when name is set/changed
+  // Auto-add exercise to library when name is set/changed (with debouncing)
   const handleExerciseNameChange = useCallback(
     async (exerciseName: string): Promise<string> => {
       if (!exerciseName || exerciseName.trim().length === 0) {
@@ -775,6 +735,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     []
   );
 
+  // Memoize expensive computations
+  const ungroupedExercises = useMemo(
+    () => workout.exercises.filter((ex) => !ex.groupId),
+    [workout.exercises]
+  );
+
   // Add new exercise
   const addExercise = () => {
     const newExercise: WorkoutExercise = {
@@ -787,6 +753,31 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       weight: 0,
       restTime: 120,
       order: workout.exercises.length + 1,
+    };
+
+    updateWorkout({
+      ...workout,
+      exercises: [...workout.exercises, newExercise],
+    });
+  };
+
+  // Add exercise from library (drag-and-drop)
+  const addExerciseFromLibrary = (libraryExercise: {
+    id: string;
+    name: string;
+    video_url?: string;
+  }) => {
+    const newExercise: WorkoutExercise = {
+      id: Date.now().toString(),
+      exerciseId: libraryExercise.id,
+      exerciseName: libraryExercise.name,
+      sets: 3,
+      reps: 10,
+      weightType: "fixed",
+      weight: 0,
+      restTime: 120,
+      order: workout.exercises.length + 1,
+      videoUrl: libraryExercise.video_url,
     };
 
     updateWorkout({
@@ -1110,15 +1101,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     });
   };
 
-  // Get ungrouped exercises
-  const ungroupedExercises = workout.exercises.filter((ex) => !ex.groupId);
-
   // State for saving
   const [isSaving, setIsSaving] = useState(false);
 
   // Save workout to library
   const saveWorkout = async () => {
-    if (!workoutName.trim()) {
+    if (!workout.name?.trim()) {
       alert("Please enter a workout name");
       return;
     }
@@ -1127,7 +1115,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     try {
       const workoutData = {
         ...workout,
-        name: workoutName.trim(),
+        name: workout.name.trim(),
         updatedAt: new Date(),
         _shouldSave: true, // Flag to tell parent to save to API
       } as WorkoutPlan & { _shouldSave: boolean };
@@ -1157,11 +1145,10 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 <Input
                   label="Workout Name"
                   type="text"
-                  value={workoutName}
+                  value={workout.name || ""}
                   onChange={(e) => {
                     const newName = e.target.value;
-                    setWorkoutName(newName);
-                    // Immediately sync name to workout state
+                    // Directly update workout state
                     onChange({ ...workout, name: newName });
                   }}
                   placeholder="Enter workout name..."
@@ -1280,7 +1267,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               {!selectionMode && (
                 <Button
                   onClick={saveWorkout}
-                  disabled={isSaving || !workoutName.trim()}
+                  disabled={isSaving || !workout.name?.trim()}
                   variant="primary"
                   fullWidth
                   className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-2 border-green-700"
@@ -1292,7 +1279,25 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
           </div>
 
           {/* Enhanced mobile content area */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div
+            className="flex-1 overflow-y-auto p-4 sm:p-6"
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "copy";
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              try {
+                const exerciseData = e.dataTransfer.getData("exercise");
+                if (exerciseData) {
+                  const exercise = JSON.parse(exerciseData);
+                  addExerciseFromLibrary(exercise);
+                }
+              } catch (error) {
+                console.error("Error adding exercise:", error);
+              }
+            }}
+          >
             <div className="space-y-6 sm:space-y-4">
               {/* Block Instances */}
               {workout.blockInstances?.map((blockInstance) => (

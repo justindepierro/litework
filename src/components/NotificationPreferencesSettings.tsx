@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAsyncState } from "@/hooks/use-async-state";
 import type { NotificationPreferences, NotificationTiming } from "@/types";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -9,7 +10,7 @@ export default function NotificationPreferencesSettings() {
   const { user } = useAuth();
   const [preferences, setPreferences] =
     useState<NotificationPreferences | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, execute } = useAsyncState<void>();
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -18,25 +19,17 @@ export default function NotificationPreferencesSettings() {
 
   // Load current preferences
   useEffect(() => {
-    async function loadPreferences() {
-      try {
+    if (user) {
+      execute(async () => {
         const response = await fetch("/api/user/preferences");
         const data = await response.json();
 
         if (data.success) {
           setPreferences(data.preferences);
         }
-      } catch (error) {
-        console.error("Failed to load preferences:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      });
     }
-
-    if (user) {
-      loadPreferences();
-    }
-  }, [user]);
+  }, [user, execute]);
 
   const handleSave = async () => {
     if (!preferences) return;

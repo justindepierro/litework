@@ -81,7 +81,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Feature 1 - Progress Tracking */}
             <Card variant="default" padding="md">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 mx-auto">
+              <div className="flex items-center justify-center w-12 h-12 bg-success-light rounded-lg mb-4 mx-auto">
                 <TrendingUp className="w-6 h-6 text-accent-green" />
               </div>
               <Heading level="h3" className="text-center mb-3">
@@ -100,7 +100,7 @@ export default function Home() {
 
             {/* Feature 2 - Smart Scheduling */}
             <Card variant="default" padding="md">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 mx-auto">
+              <div className="flex items-center justify-center w-12 h-12 bg-primary-lighter rounded-lg mb-4 mx-auto">
                 <Calendar className="w-6 h-6 text-accent-blue" />
               </div>
               <Heading level="h3" className="text-center mb-3">
@@ -123,7 +123,7 @@ export default function Home() {
               padding="md"
               className="sm:col-span-2 lg:col-span-1"
             >
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 mx-auto">
+              <div className="flex items-center justify-center w-12 h-12 bg-accent-light rounded-lg mb-4 mx-auto">
                 <Users className="w-6 h-6 text-accent-purple" />
               </div>
               <Heading level="h3" className="text-center mb-3">

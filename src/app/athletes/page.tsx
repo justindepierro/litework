@@ -13,6 +13,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { Button } from "@/components/ui/Button";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
+import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 import {
   User,
   Plus,
@@ -108,7 +109,7 @@ interface EnhancedAthlete extends UserType {
   communication?: AthleteCommunication;
 }
 
-export default function AthletesPage() {
+export default withPageErrorBoundary(function AthletesPage() {
   const { isLoading, user } = useRequireCoach();
   const toast = useToast();
 
@@ -1182,4 +1183,4 @@ export default function AthletesPage() {
       />
     </div>
   );
-}
+}, "Athletes");

@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
+              className="w-full py-4 px-6 bg-primary hover:bg-primary-dark disabled:bg-steel-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -117,7 +117,7 @@ export default function ResetPasswordPage() {
         <div className="text-center space-y-2">
           <Link
             href="/login"
-            className="text-body-secondary text-base sm:text-sm hover:text-blue-600 transition-colors font-medium touch-manipulation inline-block py-2 px-4 rounded-lg"
+            className="text-body-secondary text-base sm:text-sm hover:text-primary transition-colors font-medium touch-manipulation inline-block py-2 px-4 rounded-lg"
           >
             ← Back to login
           </Link>

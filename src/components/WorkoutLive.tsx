@@ -306,12 +306,12 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark"
           >
             Back to Dashboard
           </button>
@@ -324,7 +324,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
-          <Info className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+          <Info className="w-16 h-16 text-info mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             No Active Workout
           </h2>
@@ -333,7 +333,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </p>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark"
           >
             Go to Dashboard
           </button>
@@ -353,26 +353,26 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-blue-50 p-4">
         <div className="bg-white rounded-2xl p-8 max-w-lg w-full text-center">
-          <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4 animate-bounce" />
+          <Trophy className="w-24 h-24 text-warning mx-auto mb-4 animate-bounce" />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Workout Complete!
           </h1>
           <p className="text-xl text-gray-600 mb-8">Great job!</p>
           <div className="grid grid-cols-3 gap-4 mb-8">
             <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-3xl font-bold text-primary">
                 {completedExercises}
               </div>
               <div className="text-sm text-gray-600">Exercises</div>
             </div>
             <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-green-600">
+              <div className="text-3xl font-bold text-success">
                 {totalSets}
               </div>
               <div className="text-sm text-gray-600">Total Sets</div>
             </div>
             <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-purple-600">
+              <div className="text-3xl font-bold text-brand">
                 {Math.floor(session.total_duration_seconds / 60)}m
               </div>
               <div className="text-sm text-gray-600">Duration</div>
@@ -380,7 +380,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </div>
           <button
             onClick={() => router.push("/dashboard")}
-            className="w-full px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium text-lg"
+            className="w-full px-6 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark font-medium text-lg"
           >
             Back to Dashboard
           </button>
@@ -417,17 +417,17 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   onClick={() =>
                     setShowCompletedExercises(!showCompletedExercises)
                   }
-                  className="w-full flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 active:bg-green-200 border-2 border-green-200 rounded-xl transition-all duration-200"
+                  className="w-full flex items-center justify-between p-4 bg-success-light hover:bg-success-lighter active:bg-success border-2 border-success-light rounded-xl transition-all duration-200"
                 >
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <span className="font-semibold text-green-900">
+                    <CheckCircle className="w-5 h-5 text-success" />
+                    <span className="font-semibold text-success-dark">
                       Completed (
                       {session.exercises.filter((ex) => ex.completed).length})
                     </span>
                   </div>
                   <ChevronDown
-                    className={`w-5 h-5 text-green-700 transition-transform duration-200 ${showCompletedExercises ? "" : "-rotate-90"}`}
+                    className={`w-5 h-5 text-success transition-transform duration-200 ${showCompletedExercises ? "" : "-rotate-90"}`}
                   />
                 </button>
 
@@ -441,11 +441,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         <button
                           key={exercise.session_exercise_id}
                           onClick={() => setEditingExerciseIndex(index)}
-                          className="w-full text-left p-4 bg-white border-2 border-green-200 rounded-lg hover:shadow-md active:scale-[0.99] transition-all duration-200"
+                          className="w-full text-left p-4 bg-white border-2 border-success-light rounded-lg hover:shadow-md active:scale-[0.99] transition-all duration-200"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 flex-1">
-                              <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+                              <CheckCircle className="w-4 h-4 text-success shrink-0" />
                               <span className="font-medium text-gray-900">
                                 {exercise.exercise_name}
                               </span>
@@ -481,22 +481,22 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
               // Determine exercise type color
               let colorClasses = {
-                border: "border-green-200",
-                bg: "bg-green-50",
-                text: "text-green-700",
-                badge: "bg-green-100 text-green-800",
-                glow: "shadow-green-200",
+                border: "border-success-light",
+                bg: "bg-success-light",
+                text: "text-success",
+                badge: "bg-success-lighter text-success-dark",
+                glow: "shadow-success-light",
               };
 
               // Color by group type
               if (group) {
                 if (group.type === "circuit") {
                   colorClasses = {
-                    border: "border-blue-300",
-                    bg: "bg-blue-50",
-                    text: "text-blue-700",
-                    badge: "bg-blue-100 text-blue-800",
-                    glow: "shadow-blue-200",
+                    border: "border-primary-light",
+                    bg: "bg-primary-light",
+                    text: "text-primary",
+                    badge: "bg-primary-lighter text-primary-dark",
+                    glow: "shadow-primary-light",
                   };
                 } else if (group.type === "superset") {
                   colorClasses = {
@@ -600,7 +600,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               {isActive && (
-                                <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shrink-0" />
+                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
                               )}
                               <h3
                                 className={`text-xl font-semibold ${colorClasses.text}`}
@@ -633,14 +633,14 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                             {/* Coach's Notes - Show for active exercise */}
                             {isActive && exercise.notes && (
-                              <div className="mt-3 p-3 bg-blue-50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+                              <div className="mt-3 p-3 bg-primary-lighter rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
                                 <div className="flex items-start gap-2">
-                                  <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                   <div className="flex-1">
-                                    <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wide mb-1">
+                                    <h4 className="text-xs font-bold text-primary-dark uppercase tracking-wide mb-1">
                                       Coach&apos;s Tips
                                     </h4>
-                                    <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap">
+                                    <p className="text-sm text-primary-dark leading-relaxed whitespace-pre-wrap">
                                       {exercise.notes}
                                     </p>
                                   </div>
@@ -665,7 +665,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                             <div className="w-full bg-gray-200 rounded-full h-1.5">
                               <div
                                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                                  isActive ? "bg-blue-500" : "bg-green-500"
+                                  isActive ? "bg-primary" : "bg-success"
                                 }`}
                                 style={{
                                   width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
@@ -695,7 +695,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                   </span>
                                   <div className="flex items-center gap-3">
                                     {set.weight && (
-                                      <span className="text-blue-600 font-bold">
+                                      <span className="text-primary font-bold">
                                         {set.weight} lbs
                                       </span>
                                     )}
@@ -703,7 +703,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                       × {set.reps}
                                     </span>
                                     {set.rpe && (
-                                      <span className="text-purple-600 font-medium text-xs px-2 py-0.5 bg-purple-50 rounded">
+                                      <span className="text-brand font-medium text-xs px-2 py-0.5 bg-brand-lighter rounded">
                                         RPE {set.rpe}
                                       </span>
                                     )}
@@ -734,7 +734,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                     {currentExercise.exercise_name}
                   </h3>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-primary">
                       {currentExercise.sets_completed + 1}
                     </div>
                     <div className="text-xs text-gray-600 font-medium">
@@ -791,7 +791,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         {currentExercise.set_records[
                           currentExercise.set_records.length - 1
                         ].rpe && (
-                          <span className="text-xs font-medium text-purple-600 px-1.5 py-0.5 bg-purple-50 rounded">
+                          <span className="text-xs font-medium text-brand px-1.5 py-0.5 bg-brand-lighter rounded">
                             RPE{" "}
                             {
                               currentExercise.set_records[
@@ -814,7 +814,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         setReps(lastSet.reps);
                         if (lastSet.rpe) setRpe(lastSet.rpe);
                       }}
-                      className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                      className="w-full py-2 bg-white hover:bg-primary-lighter active:bg-primary-light border-2 border-primary-light text-primary-dark rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
                     >
                       <span className="text-base">↻</span>
                       <span>Copy to Inputs</span>
@@ -954,7 +954,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                               }
                             }
                           }}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium active:scale-95 transition-all duration-150"
+                          className="text-error hover:text-error-dark hover:bg-error-lighter px-3 py-1.5 rounded-lg text-sm font-medium active:scale-95 transition-all duration-150"
                         >
                           Delete
                         </button>
@@ -1104,10 +1104,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                     await pauseSession();
                     router.push("/dashboard");
                   }}
-                  className="w-full p-4 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-900 rounded-xl font-medium text-left border-2 border-blue-200 transition-all duration-150 active:scale-[0.99]"
+                  className="w-full p-4 bg-primary-lighter hover:bg-primary-light active:bg-primary text-primary-dark rounded-xl font-medium text-left border-2 border-primary-light transition-all duration-150 active:scale-[0.99]"
                 >
                   <div className="font-semibold mb-1">💾 Save & Exit</div>
-                  <div className="text-sm text-blue-700">
+                  <div className="text-sm text-primary-dark">
                     Your progress will be saved. Resume anytime.
                   </div>
                 </button>
@@ -1123,10 +1123,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       router.push("/dashboard");
                     }
                   }}
-                  className="w-full p-4 bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-900 rounded-xl font-medium text-left border-2 border-red-200 transition-all duration-150 active:scale-[0.99]"
+                  className="w-full p-4 bg-error-lighter hover:bg-error-light active:bg-error text-error-dark rounded-xl font-medium text-left border-2 border-error-light transition-all duration-150 active:scale-[0.99]"
                 >
                   <div className="font-semibold mb-1">🗑️ Abandon Workout</div>
-                  <div className="text-sm text-red-700">
+                  <div className="text-sm text-error-dark">
                     Discard this session completely.
                   </div>
                 </button>

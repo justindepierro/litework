@@ -8,6 +8,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert } from "@/components/ui/Alert";
+import { useAsyncState } from "@/hooks/use-async-state";
 import { Bell, CheckCircle, XCircle } from "lucide-react";
 
 interface NotificationPermissionProps {
@@ -25,8 +26,7 @@ export default function NotificationPermission({
   const [permission, setPermission] =
     useState<NotificationPermission>("default");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading, error, execute, setError } = useAsyncState();
 
   // Check current permission status on mount
   useEffect(() => {
@@ -54,21 +54,16 @@ export default function NotificationPermission({
   /**
    * Request notification permission from user
    */
-  const requestPermission = async () => {
-    if (!("Notification" in window)) {
-      setError("Push notifications are not supported in this browser");
-      return;
-    }
+  const requestPermission = () =>
+    execute(async () => {
+      if (!("Notification" in window)) {
+        throw new Error("Push notifications are not supported in this browser");
+      }
 
-    if (!user) {
-      setError("You must be logged in to enable notifications");
-      return;
-    }
+      if (!user) {
+        throw new Error("You must be logged in to enable notifications");
+      }
 
-    setIsLoading(true);
-    setError(null);
-
-    try {
       // Request permission
       const result = await Notification.requestPermission();
       setPermission(result);
@@ -80,13 +75,7 @@ export default function NotificationPermission({
         setError("Notification permission denied");
         onPermissionDenied?.();
       }
-    } catch (err) {
-      console.error("Error requesting permission:", err);
-      setError("Failed to request notification permission");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    });
 
   /**
    * Subscribe to push notifications
@@ -145,41 +134,45 @@ export default function NotificationPermission({
   /**
    * Unsubscribe from push notifications
    */
-  const unsubscribe = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      if ("serviceWorker" in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-
-        if (subscription) {
-          // Unsubscribe from push manager
-          await subscription.unsubscribe();
-
-          // Remove from backend
-          await fetch("/api/notifications/subscribe", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              endpoint: subscription.endpoint,
-            }),
-          });
-
-          setIsSubscribed(false);
-          // [REMOVED] console.log("✅ Successfully unsubscribed from push notifications");
-        }
+  const unsubscribe = () =>
+    execute(async () => {
+      if (!("serviceWorker" in navigator)) {
+        throw new Error("Service workers are not supported");
       }
-    } catch (err) {
-      console.error("Error unsubscribing:", err);
-      setError("Failed to unsubscribe from notifications");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+      // Get current subscription
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+
+      if (!subscription) {
+        throw new Error("No subscription found");
+      }
+
+      // Unsubscribe
+      const success = await subscription.unsubscribe();
+      if (!success) {
+        throw new Error("Failed to unsubscribe");
+      }
+
+      // Remove subscription from backend
+      const response = await fetch("/api/notifications/unsubscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          endpoint: subscription.endpoint,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to remove subscription");
+      }
+
+      setIsSubscribed(false);
+      // [REMOVED] console.log("✅ Successfully unsubscribed from push notifications");
+    });
 
   /**
    * Get a friendly device name

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useState  } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { GripVertical, Trash2, Edit3, MoreVertical, Check } from "lucide-react";
@@ -124,6 +124,13 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
               type="checkbox"
               checked={isSelected}
               onChange={() => onToggleSelection(exercise.id)}
+              onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Enter") {
+                  e.preventDefault();
+                  onToggleSelection(exercise.id);
+                }
+              }}
+              aria-label={`Select ${exercise.exerciseName}`}
               className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
             />
           )}
@@ -132,6 +139,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
             <button
               onClick={onMoveUp}
               disabled={!canMoveUp}
+              aria-label="Move exercise up"
               className={`p-1 text-xs ${
                 canMoveUp
                   ? "text-silver-500 hover:text-silver-700"
@@ -145,6 +153,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
             <button
               onClick={onMoveDown}
               disabled={!canMoveDown}
+              aria-label="Move exercise down"
               className={`p-1 text-xs ${
                 canMoveDown
                   ? "text-silver-500 hover:text-silver-700"

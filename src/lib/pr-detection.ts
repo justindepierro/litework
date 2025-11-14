@@ -256,10 +256,10 @@ export async function checkForPR(
  * Get PR badge color based on improvement percentage
  */
 export function getPRBadgeColor(improvement: number): string {
-  if (improvement >= 20) return "text-purple-600 bg-purple-100";
-  if (improvement >= 10) return "text-yellow-600 bg-yellow-100";
-  if (improvement >= 5) return "text-blue-600 bg-blue-100";
-  return "text-green-600 bg-green-100";
+  if (improvement >= 20) return "text-accent bg-accent-light";
+  if (improvement >= 10) return "text-warning bg-warning-light";
+  if (improvement >= 5) return "text-primary bg-primary-lighter";
+  return "text-success bg-success-light";
 }
 
 /**

@@ -7,8 +7,11 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { apiClient } from "@/lib/api-client";
+import { useToast } from "@/components/ToastProvider";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useAsyncState } from "@/hooks/use-async-state";
 
 interface NotificationPreferencesData {
   user_id: string;
@@ -31,39 +34,30 @@ export default function NotificationPreferences() {
   const { user } = useAuth();
   const [preferences, setPreferences] =
     useState<NotificationPreferencesData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, execute } = useAsyncState<NotificationPreferencesData | null>();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { error: toastError } = useToast();
 
   // Load preferences on mount
   useEffect(() => {
-    if (user) {
-      loadPreferences();
-    }
-  }, [user]);
+    if (!user) return;
+    
+    execute(async () => {
+      const { data, error } = await apiClient.requestWithResponse<{
+        preferences: NotificationPreferencesData;
+      }>("/api/notifications/preferences", { toastError });
 
-  /**
-   * Load user's notification preferences
-   */
-  const loadPreferences = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/notifications/preferences");
-
-      if (!response.ok) {
-        throw new Error("Failed to load preferences");
+      if (error) {
+        console.error("Failed to load preferences:", error);
+        throw new Error(error);
       }
 
-      const data = await response.json();
-      setPreferences(data.preferences);
-    } catch (err) {
-      console.error("Error loading preferences:", err);
-      setError("Failed to load notification preferences");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      setPreferences(data?.preferences || null);
+      return data?.preferences || null;
+    });
+  }, [user, execute, toastError]);
 
   /**
    * Save preferences to database
@@ -76,16 +70,17 @@ export default function NotificationPreferences() {
       setError(null);
       setSuccessMessage(null);
 
-      const response = await fetch("/api/notifications/preferences", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(preferences),
-      });
+      const { error } = await apiClient.requestWithResponse(
+        "/api/notifications/preferences",
+        {
+          method: "PUT",
+          body: preferences,
+          toastError,
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to save preferences");
+      if (error) {
+        throw new Error(error);
       }
 
       setSuccessMessage("✅ Preferences saved successfully!");
@@ -127,10 +122,10 @@ export default function NotificationPreferences() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-navy-900">
           Notification Settings
         </h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <p className="mt-1 text-sm text-neutral-dark">
           Manage how and when you receive notifications from LiteWork
         </p>
       </div>
@@ -142,7 +137,7 @@ export default function NotificationPreferences() {
 
       {/* Channel Preferences */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-navy-900 mb-4">
           Notification Channels
         </h3>
 
@@ -152,11 +147,11 @@ export default function NotificationPreferences() {
             <div>
               <label
                 htmlFor="push_enabled"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 Push Notifications
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Receive instant notifications in your browser
               </p>
             </div>
@@ -168,8 +163,8 @@ export default function NotificationPreferences() {
                 updatePreference("push_enabled", !preferences.push_enabled)
               }
               className={`${
-                preferences.push_enabled ? "bg-blue-600" : "bg-gray-200"
-              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                preferences.push_enabled ? "bg-primary" : "bg-silver-400"
+              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -184,11 +179,11 @@ export default function NotificationPreferences() {
             <div>
               <label
                 htmlFor="email_enabled"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 Email Notifications
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Receive notifications via email
               </p>
             </div>
@@ -200,8 +195,8 @@ export default function NotificationPreferences() {
                 updatePreference("email_enabled", !preferences.email_enabled)
               }
               className={`${
-                preferences.email_enabled ? "bg-blue-600" : "bg-gray-200"
-              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                preferences.email_enabled ? "bg-primary" : "bg-silver-400"
+              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
             >
               <span
                 className={`${
@@ -213,7 +208,7 @@ export default function NotificationPreferences() {
 
           {/* Preferred Contact Method */}
           <div className="pt-4 border-t border-silver-300">
-            <label className="text-sm font-medium text-gray-900 block mb-2">
+            <label className="text-sm font-medium text-navy-900 block mb-2">
               Preferred Contact Method
             </label>
             <div className="flex gap-4">
@@ -224,8 +219,8 @@ export default function NotificationPreferences() {
                   onClick={() => updatePreference("preferred_contact", method)}
                   className={`flex-1 px-4 py-2 text-sm font-medium rounded-md border transition-colors ${
                     preferences.preferred_contact === method
-                      ? "bg-blue-50 border-blue-600 text-blue-700"
-                      : "bg-white border-silver-400 text-gray-700 hover:bg-gray-50"
+                      ? "bg-info-lightest border-primary text-primary-dark"
+                      : "bg-white border-silver-400 text-neutral-darker hover:bg-silver-200"
                   }`}
                 >
                   {method === "push" && "Push"}
@@ -240,7 +235,7 @@ export default function NotificationPreferences() {
 
       {/* Category Preferences */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-navy-900 mb-4">
           Notification Types
         </h3>
 
@@ -255,17 +250,17 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("workout_reminders", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
               />
             </div>
             <div className="ml-3">
               <label
                 htmlFor="workout_reminders"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 ⏰ Workout Reminders
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Get reminded about scheduled workouts
               </p>
             </div>
@@ -281,17 +276,17 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("assignment_notifications", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
               />
             </div>
             <div className="ml-3">
               <label
                 htmlFor="assignment_notifications"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 New Assignments
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Get notified when new workouts are assigned to you
               </p>
             </div>
@@ -307,17 +302,17 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("message_notifications", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
               />
             </div>
             <div className="ml-3">
               <label
                 htmlFor="message_notifications"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 💬 Coach Messages
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Get notified when your coach sends you a message
               </p>
             </div>
@@ -333,17 +328,17 @@ export default function NotificationPreferences() {
                 onChange={(e) =>
                   updatePreference("progress_updates", e.target.checked)
                 }
-                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
               />
             </div>
             <div className="ml-3">
               <label
                 htmlFor="progress_updates"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 Weekly Progress Reports
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Receive weekly summaries of your training progress
               </p>
             </div>
@@ -362,17 +357,17 @@ export default function NotificationPreferences() {
                     e.target.checked
                   )
                 }
-                className="h-4 w-4 rounded border-silver-400 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
               />
             </div>
             <div className="ml-3">
               <label
                 htmlFor="achievement_notifications"
-                className="text-sm font-medium text-gray-900"
+                className="text-sm font-medium text-navy-900"
               >
                 Achievements & PRs
               </label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral">
                 Celebrate when you hit new personal records
               </p>
             </div>
@@ -385,7 +380,7 @@ export default function NotificationPreferences() {
         <button
           onClick={savePreferences}
           disabled={isSaving}
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSaving ? (
             <>
