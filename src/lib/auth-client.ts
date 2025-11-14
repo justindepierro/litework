@@ -578,7 +578,7 @@ export async function getCurrentUser(): Promise<User | null> {
       }
     );
 
-    // Get user profile from database with timeout
+    // Get user profile from database with shorter timeout (profile fetch should be fast)
     const profilePromise = supabase
       .from("users")
       .select("*")
@@ -586,7 +586,7 @@ export async function getCurrentUser(): Promise<User | null> {
       .single();
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
+      setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)
     );
 
     const { data: profile, error } = await Promise.race([
@@ -650,10 +650,28 @@ export async function refreshSession() {
 // Listen to auth changes
 export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
+    // Only fetch profile for significant auth events
+    // Skip TOKEN_REFRESHED to avoid unnecessary database calls
+    const shouldFetchProfile = event !== 'TOKEN_REFRESHED';
+    
     // We already have the session from the event, no need to fetch it again
     if (session?.user) {
       const correlationId = generateCorrelationId();
       const timer = new AuthTimer(correlationId, "profile_fetch");
+
+      // For token refresh events, just return minimal user info from session
+      // This prevents excessive database queries and speeds up app
+      if (!shouldFetchProfile) {
+        logAuthEvent(
+          correlationId,
+          "debug",
+          "profile_fetch",
+          "Token refreshed, skipping profile fetch",
+          { event, userId: session.user.id }
+        );
+        // Don't call callback on token refresh - keep existing user object
+        return;
+      }
 
       try {
         logAuthEvent(
@@ -664,23 +682,22 @@ export function onAuthChange(callback: (user: User | null) => void) {
           { event, userId: session.user.id }
         );
 
-        // Get user profile from database with timeout
+        // Get user profile from database with shorter timeout
         const profilePromise = supabase
           .from("users")
           .select("*")
           .eq("id", session.user.id)
           .single();
 
-        // 5 second timeout - if profile fetch takes longer, something is wrong
-        // 15 second timeout - accommodate slow mobile networks
+        // 3 second timeout for faster failure detection
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
             reject(
               new Error(
-                "Profile fetch timeout - database query exceeded 15 seconds. Check network connection."
+                "Profile fetch timeout - database query exceeded 3 seconds"
               )
             );
-          }, 15000)
+          }, 3000)
         );
 
         const result = await Promise.race([

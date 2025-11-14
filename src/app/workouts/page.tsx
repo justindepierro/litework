@@ -506,10 +506,10 @@ export default withPageErrorBoundary(function WorkoutsPage() {
                                         <span
                                           className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
                                             group.type === "superset"
-                                              ? "bg-purple-100 text-purple-700"
+                                              ? "bg-accent-lightest text-accent-dark"
                                               : group.type === "circuit"
                                                 ? "bg-info-lighter text-accent-blue"
-                                                : "bg-amber-100 text-amber-700"
+                                                : "bg-warning-lightest text-warning-dark"
                                           }`}
                                         >
                                           {group.type === "superset" && (

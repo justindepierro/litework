@@ -3,27 +3,39 @@
  * Runs daily at 2 AM to clean up old/expired data
  * 
  * External Cron: Daily at 2 AM
+ * Manual Trigger: Admin only
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminClient } from '@/lib/auth-server';
+import { getAdminClient, getAuthenticatedUser, isAdmin } from '@/lib/auth-server';
 
 /**
  * GET /api/maintenance/cleanup
  * Clean up expired invites, old sessions, and orphaned data
+ * 
+ * Protected: Cron secret OR admin user required
  */
 export async function GET(request: NextRequest) {
   try {
-    // Verify this is a legitimate cron request
+    // Check for cron secret first (for automated runs)
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
     
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      console.error('❌ Unauthorized maintenance request');
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const isCronRequest = cronSecret && authHeader === `Bearer ${cronSecret}`;
+    
+    // If not a cron request, require admin authentication
+    if (!isCronRequest) {
+      const { user } = await getAuthenticatedUser();
+      
+      if (!user || !isAdmin(user)) {
+        console.error('❌ Unauthorized maintenance request - admin access required');
+        return NextResponse.json(
+          { error: 'Unauthorized - Admin access required' },
+          { status: 401 }
+        );
+      }
+      
+      console.log(`🔐 Manual cleanup triggered by admin: ${user.email}`);
     }
 
     // [REMOVED] console.log('🧹 Starting database cleanup...');

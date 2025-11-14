@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
+import { getAuthenticatedUser } from "@/lib/auth-server";
+import { authenticationError } from "@/lib/api-errors";
 
 // GET /api/exercises/search?q=bench
+// Protected: Requires authentication
 export async function GET(request: NextRequest) {
   try {
+    // Require authentication
+    const { user, error: authError } = await getAuthenticatedUser();
+    
+    if (!user) {
+      return authenticationError(authError || undefined);
+    }
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q") || "";
     const limit = parseInt(searchParams.get("limit") || "20");
@@ -43,8 +53,16 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/exercises/search - Create new exercise in library
+// Protected: Requires authentication (coaches can create exercises)
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const { user, error: authError } = await getAuthenticatedUser();
+    
+    if (!user) {
+      return authenticationError(authError || undefined);
+    }
+
     const body = await request.json();
     const { name, description, videoUrl } = body;
 

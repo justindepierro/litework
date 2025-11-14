@@ -386,9 +386,9 @@ export default withPageErrorBoundary(function DashboardPage() {
           {/* Full-width calendar */}
           <div>
             {/* Calendar with integrated header */}
-            <div className="bg-gradient-to-br from-white to-blue-50/20 rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-gradient-subtle-primary rounded-xl shadow-lg overflow-hidden">
               {/* Calendar Header */}
-              <div className="px-6 py-4 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-white to-blue-50/30">
+              <div className="px-6 py-4 border-b border-silver-200 flex items-center justify-between bg-gradient-subtle-primary">
                 <div>
                   <h2 className="text-lg font-semibold text-navy-900">
                     Team Schedule
@@ -635,10 +635,10 @@ export default withPageErrorBoundary(function DashboardPage() {
                         <Card
                           variant="default"
                           padding="none"
-                          className="overflow-hidden shadow-lg border-2 border-blue-200"
+                          className="overflow-hidden shadow-lg border-2 border-primary-light"
                         >
                           {/* Hero Header */}
-                          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-white">
+                          <div className="bg-gradient-accent-primary px-6 py-5 text-white">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <p className="text-xs font-bold uppercase tracking-wide opacity-90 mb-1">
@@ -867,9 +867,9 @@ function StatCard({ icon, value, label, loading, color }: StatCardProps) {
   });
 
   const colorClasses = {
-    orange: "bg-orange-100",
-    green: "bg-green-100",
-    red: "bg-red-100",
+    orange: "bg-warning-lightest",
+    green: "bg-success-lightest",
+    red: "bg-error-lightest",
   };
 
   if (loading) {

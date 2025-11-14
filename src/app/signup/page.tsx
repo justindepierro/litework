@@ -40,6 +40,7 @@ function SignUpForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<
     "weak" | "fair" | "good" | "strong" | null
   >(null);
@@ -183,6 +184,13 @@ function SignUpForm() {
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
+
+    // Validate TOS acceptance
+    if (!tosAccepted) {
+      setError("You must accept the Terms of Service to create an account");
+      setIsLoading(false);
+      return;
+    }
 
     // Validate all fields
     const emailValidation = validateEmail(email);
@@ -399,11 +407,16 @@ function SignUpForm() {
                     type="email"
                     autoComplete="email"
                     required
-                    disabled={!!inviteData}
+                    disabled={!!inviteData?.email}
                     label="Email Address"
                     value={email}
                     onChange={(e) => handleEmailChange(e.target.value)}
                     error={emailError}
+                    helperText={
+                      inviteData?.email
+                        ? "Email from your coach's invitation (cannot be changed)"
+                        : undefined
+                    }
                     inputSize="lg"
                     fullWidth
                   />
@@ -474,6 +487,35 @@ function SignUpForm() {
                   />
                 </div>
 
+                {/* Terms of Service */}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="tos"
+                    checked={tosAccepted}
+                    onChange={(e) => setTosAccepted(e.target.checked)}
+                    className="mt-1 h-4 w-4 text-primary border-silver-300 rounded focus:ring-primary"
+                  />
+                  <label htmlFor="tos" className="text-sm text-gray-700">
+                    I agree to the{" "}
+                    <Link
+                      href="/terms"
+                      target="_blank"
+                      className="text-primary hover:text-primary-dark underline"
+                    >
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      className="text-primary hover:text-primary-dark underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </label>
+                </div>
+
                 {/* Error Message */}
                 {error && (
                   <div className="rounded-md bg-red-50 p-4">
@@ -485,7 +527,7 @@ function SignUpForm() {
                 <div>
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !tosAccepted}
                     className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isLoading ? (

@@ -767,7 +767,7 @@ export default withPageErrorBoundary(function AthletesPage() {
         <div className="flex flex-col gap-6 mb-8">
           <div className="text-center sm:text-left relative">
             {/* Decorative gradient bar */}
-            <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-500 via-purple-500 to-green-500 rounded-full hidden sm:block" />
+            <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-accent-primary rounded-full hidden sm:block" />
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold text-gray-900">
               Team Athletes
@@ -786,7 +786,7 @@ export default withPageErrorBoundary(function AthletesPage() {
             <Button
               onClick={() => setShowHistoryModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg border-purple-200 hover:border-purple-300 hover:bg-purple-50"
+              className="shadow-md hover:shadow-lg border-accent-light hover:border-accent transition-colors"
               leftIcon={
                 <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple" />
               }
@@ -796,7 +796,7 @@ export default withPageErrorBoundary(function AthletesPage() {
             <Button
               onClick={() => setShowBulkModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg border-blue-200 hover:border-blue-300 hover:bg-blue-50"
+              className="shadow-md hover:shadow-lg border-primary-light hover:border-primary transition-colors"
               leftIcon={
                 <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue" />
               }
@@ -806,37 +806,37 @@ export default withPageErrorBoundary(function AthletesPage() {
             <Button
               onClick={() => setShowKPIManagementModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg border-orange-200 hover:border-orange-300 bg-orange-50 hover:bg-orange-100"
+              className="shadow-md hover:shadow-lg border-warning-light hover:border-warning bg-warning-lightest hover:bg-warning-light transition-colors"
               leftIcon={
                 <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
               }
             >
-              <span className="text-orange-700">Create KPI</span>
+              <span className="text-warning-dark">Create KPI</span>
             </Button>
             <Button
               onClick={() => setShowBulkKPIAssignmentModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg border-green-200 hover:border-green-300 bg-green-50 hover:bg-green-100"
+              className="shadow-md hover:shadow-lg border-success-light hover:border-success bg-success-lightest hover:bg-success-light transition-colors"
               leftIcon={
                 <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
               }
             >
-              <span className="text-green-700">Assign KPIs</span>
+              <span className="text-success-dark">Assign KPIs</span>
             </Button>
             <Button
               onClick={() => setShowGroupFormModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg border-pink-200 hover:border-pink-300 bg-pink-50 hover:bg-pink-100"
+              className="shadow-md hover:shadow-lg border-accent-light hover:border-accent bg-accent-lightest hover:bg-accent-light transition-colors"
               leftIcon={
                 <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
               }
             >
-              <span className="text-pink-700">Add Group</span>
+              <span className="text-accent-dark">Add Group</span>
             </Button>
             <Button
               onClick={() => setShowInviteModal(true)}
               variant="primary"
-              className="shadow-lg hover:shadow-xl bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+              className="shadow-lg hover:shadow-xl bg-gradient-accent-primary hover:opacity-90 transition-opacity"
               leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
               Add Athlete
@@ -874,15 +874,15 @@ export default withPageErrorBoundary(function AthletesPage() {
           {/* Add Athlete Placeholder Card - Colorful & Energetic */}
           <button
             onClick={() => setShowInviteModal(true)}
-            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-gray-300 hover:border-orange-400 hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
+            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-silver-300 hover:border-warning hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
             aria-label="Add new athlete"
           >
             {/* Colorful accent bar - only on hover */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-purple-500 to-green-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-accent-primary rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
             {/* Centered content */}
             <div className="flex flex-col items-center justify-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
+              <div className="w-16 h-16 bg-gradient-accent-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
                 <Plus className="w-8 h-8 text-white" />
               </div>
               <div className="text-center">

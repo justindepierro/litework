@@ -36,6 +36,10 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
   db: {
     schema: "public",
   },
+  realtime: {
+    // Keep connection alive to prevent session timeouts
+    heartbeatIntervalMs: 30000, // 30 seconds
+  },
   cookies: {
     getAll() {
       if (typeof document === "undefined") return [];
@@ -55,8 +59,9 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
       cookies.forEach(({ name, value, options }) => {
         let cookie = `${name}=${value}; path=${options?.path || "/"}`;
 
-        // Set max age - 30 days for mobile app persistence
-        const maxAge = options?.maxAge || 2592000; // 30 days in seconds
+        // Set max age - 7 DAYS for persistence (was 30 days, but that's too long for security)
+        // Supabase will auto-refresh the token, so we don't need super long expiry
+        const maxAge = options?.maxAge || 604800; // 7 days in seconds
         cookie += `; max-age=${maxAge}`;
 
         if (options?.domain) cookie += `; domain=${options.domain}`;

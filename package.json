@@ -19,6 +19,7 @@
     "cleanup:codebase": "./scripts/dev/cleanup-codebase.sh"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.3.1",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.77.0",
     "@vercel/analytics": "^1.5.0",
