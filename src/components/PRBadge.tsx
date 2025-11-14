@@ -115,7 +115,7 @@ export function PRCelebrationModal({
 
         <ModalContent>
           {/* PR details */}
-          <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
             <div className="text-center">
               <div className="text-4xl font-bold text-gray-900 mb-2">
                 {currentPerformance.weight}lbs × {currentPerformance.reps}

@@ -351,7 +351,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       0
     );
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-blue-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
         <div className="bg-white rounded-2xl p-8 max-w-lg w-full text-center">
           <Trophy className="w-24 h-24 text-warning mx-auto mb-4 animate-bounce" />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
@@ -366,9 +366,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               <div className="text-sm text-gray-600">Exercises</div>
             </div>
             <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-success">
-                {totalSets}
-              </div>
+              <div className="text-3xl font-bold text-success">{totalSets}</div>
               <div className="text-sm text-gray-600">Total Sets</div>
             </div>
             <div className="bg-gray-50 rounded-xl p-4">
@@ -390,7 +388,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   }
 
   return (
-    <div className="h-screen bg-linear-to-br from-slate-50 to-blue-50 flex flex-col overflow-hidden">
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col overflow-hidden">
       {/* Offline Status Banner */}
       <OfflineStatusBanner />
 
@@ -728,7 +726,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           <div className="shrink-0 bg-white border-t-2 border-silver-300 shadow-2xl">
             <div className="px-4 py-4 pb-safe">
               {/* Active Exercise Summary Card */}
-              <div className="mb-4 p-4 bg-linear-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
+              <div className="mb-4 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-lg font-bold text-gray-900 flex-1 pr-2">
                     {currentExercise.exercise_name}
@@ -858,7 +856,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               {/* Complete Set Button - Larger */}
               <button
                 onClick={handleCompleteSet}
-                className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                 style={{ minHeight: "64px" }}
               >
                 <CheckCircle className="w-7 h-7" />
@@ -875,7 +873,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               {isLastExercise ? (
                 <button
                   onClick={handleCompleteWorkout}
-                  className="w-full py-5 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  className="w-full py-5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                   style={{ minHeight: "64px" }}
                 >
                   <Trophy className="w-7 h-7" />
@@ -884,7 +882,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               ) : (
                 <button
                   onClick={handleNext}
-                  className="w-full py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                   style={{ minHeight: "64px" }}
                 >
                   Next Exercise

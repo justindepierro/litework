@@ -39,8 +39,8 @@ const TodayOverview = memo(function TodayOverview() {
       const { data, error } = await apiClient.requestWithResponse<{
         success: boolean;
         workouts: TodayWorkout[];
-      }>("/analytics/today-schedule", { 
-        showErrorToast: false  // Silently handle errors
+      }>("/analytics/today-schedule", {
+        showErrorToast: false, // Silently handle errors
       });
 
       if (error) {
@@ -111,7 +111,7 @@ const TodayOverview = memo(function TodayOverview() {
             return (
               <div
                 key={workout.id}
-                className="rounded-lg p-4 bg-linear-to-br from-white to-primary-lighter/30 border border-primary-light hover:border-primary hover:shadow-lg hover:scale-[1.01] transition-all"
+                className="rounded-lg p-4 bg-gradient-to-br from-white to-primary-lighter/30 border border-primary-light hover:border-primary hover:shadow-lg hover:scale-[1.01] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">

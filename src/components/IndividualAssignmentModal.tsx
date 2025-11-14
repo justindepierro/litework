@@ -36,8 +36,16 @@ export default function IndividualAssignmentModal({
 }: IndividualAssignmentModalProps) {
   const [selectedAthleteIds, setSelectedAthleteIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const { values, errors, handleChange, handleSubmit, setFieldError, resetForm, isSubmitting } = useFormValidation({
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+    setFieldError,
+    resetForm,
+    isSubmitting,
+  } = useFormValidation({
     initialValues: {
       workoutId: "",
       date: new Date(),
@@ -50,26 +58,31 @@ export default function IndividualAssignmentModal({
       workoutId: { required: "Please select a workout" },
       date: { required: "Please select a date" },
       startTime: { required: true },
-      endTime: { 
+      endTime: {
         required: true,
         custom: (value, allValues) => {
-          const start = String(allValues.startTime || '');
-          const end = String(value || '');
+          const start = String(allValues.startTime || "");
+          const end = String(value || "");
           if (start && end && start >= end) {
             return "End time must be after start time";
           }
           return undefined;
-        }
+        },
       },
     },
     onSubmit: async (formValues) => {
       // Custom validation for athletes (not part of form values)
       if (selectedAthleteIds.length === 0) {
-        setFieldError('workoutId' as never, 'Please select at least one athlete');
-        throw new Error('Please select at least one athlete');
+        setFieldError(
+          "workoutId" as never,
+          "Please select at least one athlete"
+        );
+        throw new Error("Please select at least one athlete");
       }
 
-      const selectedWorkout = workoutPlans.find((w) => w.id === formValues.workoutId);
+      const selectedWorkout = workoutPlans.find(
+        (w) => w.id === formValues.workoutId
+      );
       if (!selectedWorkout) return;
 
       // Create individual assignments for each selected athlete
@@ -155,20 +168,26 @@ export default function IndividualAssignmentModal({
             <div>
               <WorkoutAssignmentForm
                 selectedWorkoutId={values.workoutId}
-                onWorkoutChange={(id) => handleChange('workoutId', id as never)}
+                onWorkoutChange={(id) => handleChange("workoutId", id as never)}
                 workoutPlans={workoutPlans}
                 workoutError={errors.workoutId}
                 selectedDate={values.date}
-                onDateChange={(date) => handleChange('date', date as never)}
+                onDateChange={(date) => handleChange("date", date as never)}
                 startTime={values.startTime}
-                onStartTimeChange={(time) => handleChange('startTime', time as never)}
+                onStartTimeChange={(time) =>
+                  handleChange("startTime", time as never)
+                }
                 endTime={values.endTime}
-                onEndTimeChange={(time) => handleChange('endTime', time as never)}
+                onEndTimeChange={(time) =>
+                  handleChange("endTime", time as never)
+                }
                 timeError={errors.endTime}
                 location={values.location}
-                onLocationChange={(loc) => handleChange('location', loc as never)}
+                onLocationChange={(loc) =>
+                  handleChange("location", loc as never)
+                }
                 notes={values.notes}
-                onNotesChange={(notes) => handleChange('notes', notes as never)}
+                onNotesChange={(notes) => handleChange("notes", notes as never)}
                 showWorkoutPreview={true}
                 notesPlaceholder="Any special instructions or coaching notes..."
                 notesRows={4}
@@ -198,9 +217,7 @@ export default function IndividualAssignmentModal({
               </div>
 
               {selectedAthleteIds.length === 0 && errors.submit && (
-                <p className="text-error text-sm mb-2">
-                  {errors.submit}
-                </p>
+                <p className="text-error text-sm mb-2">{errors.submit}</p>
               )}
 
               {/* Search Box */}
@@ -302,11 +319,17 @@ export default function IndividualAssignmentModal({
               e.preventDefault();
               handleSubmit();
             }}
-            disabled={selectedAthleteIds.length === 0 || !values.workoutId || isSubmitting}
+            disabled={
+              selectedAthleteIds.length === 0 ||
+              !values.workoutId ||
+              isSubmitting
+            }
             variant="primary"
             className="flex-1"
           >
-            {isSubmitting ? 'Assigning...' : `Assign to ${selectedAthleteIds.length || "0"} Athlete${selectedAthleteIds.length !== 1 ? "s" : ""}`}
+            {isSubmitting
+              ? "Assigning..."
+              : `Assign to ${selectedAthleteIds.length || "0"} Athlete${selectedAthleteIds.length !== 1 ? "s" : ""}`}
           </Button>
         </ModalFooter>
       </div>

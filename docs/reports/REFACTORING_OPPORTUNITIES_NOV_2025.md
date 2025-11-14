@@ -15,6 +15,7 @@
 **Expected ROI**: High - significant reduction in boilerplate and improved maintainability
 
 **Status Update (Nov 13 - Priorities 1-4 Complete)**:
+
 - ✅ **Priority 1 Complete**: useAsyncState hook - 14 components, 160 lines removed, 2 hours
 - ✅ **Priority 2 Complete**: API Client Wrapper - 7 components, 65 lines removed, 1.5 hours
 - ✅ **Priority 3 Complete**: Form Validation Hook - 3 forms, 65 lines removed, 1 hour
@@ -25,6 +26,7 @@
 - 🎯 **Next**: Priority 5 (Accessibility audit), Priority 6 (Performance optimization), or continue Priority 4 Phases 2-3
 
 **Key Achievements**:
+
 1. ✅ Zero TypeScript errors maintained throughout all migrations
 2. ✅ Consistent patterns established across similar components
 3. ✅ Comprehensive documentation for future development
@@ -45,6 +47,7 @@
 **TypeScript Errors**: 0 maintained throughout
 
 **Phase 1 Migrations** (Nov 13 - Session 1):
+
 - ✅ ExerciseLibraryPanel.tsx (17 lines saved)
 - ✅ WorkoutView.tsx (17 lines saved)
 - ✅ FeedbackDashboard.tsx (14 lines saved)
@@ -52,6 +55,7 @@
 - ✅ NotificationPermission.tsx (11 lines saved)
 
 **Phase 2 Migrations** (Nov 13 - Session 2):
+
 - ✅ AchievementsSection.tsx (14 lines saved)
 - ✅ NotificationPreferences.tsx (12 lines saved)
 - ✅ BlockLibrary.tsx (12 lines saved)
@@ -63,6 +67,7 @@
 - ✅ GroupCompletionStats.tsx (6 lines saved)
 
 **Patterns Established**:
+
 1. Simple fetch-on-mount (most common)
 2. Fetch with dependencies (useEffect with deps)
 3. Button-triggered actions (onClick handlers)
@@ -128,7 +133,8 @@ export function useAsyncState<T>() {
       setData(result);
       return result;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
       throw err;
     } finally {
@@ -206,6 +212,7 @@ const fetchExercises = () =>
 **TypeScript Errors**: 0 maintained throughout
 
 **Components Migrated**:
+
 - ✅ GroupCompletionStats.tsx (1 GET)
 - ✅ NotificationPreferences.tsx (1 GET + 1 PUT)
 - ✅ NotificationBell.tsx (1 GET + 3 PATCH/DELETE)
@@ -215,12 +222,14 @@ const fetchExercises = () =>
 - ✅ TodayOverview.tsx (1 GET)
 
 **Infrastructure Created**:
+
 - Enhanced `src/lib/api-client.ts` with timeout management
 - Added `ApiResponse<T>` interface for standardized responses
 - Maintained backwards compatibility with legacy methods
 - Created `docs/guides/API_CLIENT_USAGE.md` (400+ lines)
 
 **Features Implemented**:
+
 - ✅ Timeout management (10s default, configurable)
 - ✅ Comprehensive error handling (401, 4xx, 5xx, network, timeout)
 - ✅ Optional toast notifications via callback
@@ -306,11 +315,11 @@ export async function apiRequest<T = any>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const message = errorData.error || errorMessage;
-      
+
       if (showErrorToast) {
         toast.error(message);
       }
-      
+
       return { data: null, error: message };
     }
 
@@ -337,7 +346,7 @@ export async function apiRequest<T = any>(
 export const api = {
   get: <T>(url: string, options?: ApiOptions) =>
     apiRequest<T>(url, { ...options, method: "GET" }),
-  
+
   post: <T>(url: string, body: any, options?: ApiOptions) =>
     apiRequest<T>(url, {
       ...options,
@@ -345,7 +354,7 @@ export const api = {
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(body),
     }),
-  
+
   put: <T>(url: string, body: any, options?: ApiOptions) =>
     apiRequest<T>(url, {
       ...options,
@@ -353,7 +362,7 @@ export const api = {
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(body),
     }),
-  
+
   delete: <T>(url: string, options?: ApiOptions) =>
     apiRequest<T>(url, { ...options, method: "DELETE" }),
 };
@@ -368,12 +377,12 @@ const loadWorkouts = async () => {
   try {
     setLoading(true);
     setError(null);
-    
+
     const response = await fetch("/api/workouts");
     if (!response.ok) {
       throw new Error(`Failed: ${response.statusText}`);
     }
-    
+
     const result = await response.json();
     setWorkouts(result.data.workouts);
   } catch (err) {
@@ -429,16 +438,16 @@ const loadWorkouts = () => execute(() => api.get("/api/workouts"));
 **Documentation**: FORM_VALIDATION_USAGE.md created (700+ lines)
 
 **Migrated Components**:
+
 1. ✅ **GroupFormModal.tsx** (~25 lines saved)
    - Validators: required (name, sport), custom duplicate check
-   
 2. ✅ **IndividualAssignmentModal.tsx** (~22 lines saved)
    - Validators: required (workoutId, date), custom time range
-   
 3. ✅ **AthleteEditModal.tsx** (~18 lines saved)
    - Validators: required (firstName, lastName, email), email format
 
 **Hook Features**:
+
 - ✅ Declarative validation rules (required, email, minLength, maxLength, min, max, pattern)
 - ✅ Custom validators (cross-field, conditional)
 - ✅ Async validation (API checks)
@@ -449,6 +458,7 @@ const loadWorkouts = () => execute(() => api.get("/api/workouts"));
 - ✅ Programmatic field manipulation (setFieldValue, setFieldError)
 
 **Before Example** (GroupFormModal - 30 lines):
+
 ```typescript
 const [formData, setFormData] = useState({ name: "", sport: "" });
 const [error, setError] = useState("");
@@ -474,18 +484,20 @@ const validateForm = () => {
 ```
 
 **After Example** (5 lines):
+
 ```typescript
-const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
-  initialValues: { name: "", sport: "" },
-  validationRules: {
-    name: { 
-      required: "Group name is required",
-      custom: (value) => checkDuplicateName(value)
+const { values, errors, handleChange, handleSubmit, isSubmitting } =
+  useFormValidation({
+    initialValues: { name: "", sport: "" },
+    validationRules: {
+      name: {
+        required: "Group name is required",
+        custom: (value) => checkDuplicateName(value),
+      },
+      sport: { required: "Sport selection is required" },
     },
-    sport: { required: "Sport selection is required" },
-  },
-  onSubmit: async (values) => await apiClient.createGroup(values),
-});
+    onSubmit: async (values) => await apiClient.createGroup(values),
+  });
 ```
 
 ### Remaining Work
@@ -493,6 +505,7 @@ const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormVali
 **Status**: ~15 more forms identified for migration  
 **Approach**: Incremental migration as forms are modified  
 **Target files**:
+
 - InviteAthleteModal.tsx
 - KPIModal.tsx
 - KPIManagementModal.tsx
@@ -501,6 +514,7 @@ const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormVali
 - ~9 more forms
 
 **Future Enhancement Ideas**:
+
 - Form-level validation (multi-field dependencies)
 - Debounced async validation
 - Validation schemas from Zod/Yup integration
@@ -524,15 +538,15 @@ const [errors, setErrors] = useState<Record<string, string>>({});
 
 const validate = () => {
   const newErrors: Record<string, string> = {};
-  
+
   if (!formData.name.trim()) {
     newErrors.name = "Name is required";
   }
-  
+
   if (!formData.email.includes("@")) {
     newErrors.email = "Invalid email";
   }
-  
+
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
@@ -602,9 +616,13 @@ export function useForm<T extends Record<string, any>>(config: FormConfig<T>) {
       if (typeof value === "string") {
         // Min length
         if (rules.minLength) {
-          const config = typeof rules.minLength === "number" 
-            ? { value: rules.minLength, message: `Minimum ${rules.minLength} characters` }
-            : rules.minLength;
+          const config =
+            typeof rules.minLength === "number"
+              ? {
+                  value: rules.minLength,
+                  message: `Minimum ${rules.minLength} characters`,
+                }
+              : rules.minLength;
           if (value.length < config.value) {
             return config.message;
           }
@@ -612,9 +630,13 @@ export function useForm<T extends Record<string, any>>(config: FormConfig<T>) {
 
         // Max length
         if (rules.maxLength) {
-          const config = typeof rules.maxLength === "number"
-            ? { value: rules.maxLength, message: `Maximum ${rules.maxLength} characters` }
-            : rules.maxLength;
+          const config =
+            typeof rules.maxLength === "number"
+              ? {
+                  value: rules.maxLength,
+                  message: `Maximum ${rules.maxLength} characters`,
+                }
+              : rules.maxLength;
           if (value.length > config.value) {
             return config.message;
           }
@@ -652,24 +674,30 @@ export function useForm<T extends Record<string, any>>(config: FormConfig<T>) {
     return isValid;
   }, [values, validateField, config.validationRules]);
 
-  const handleChange = useCallback((field: keyof T, value: any) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    
-    // Clear error for this field
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-  }, [errors]);
+  const handleChange = useCallback(
+    (field: keyof T, value: any) => {
+      setValues((prev) => ({ ...prev, [field]: value }));
 
-  const handleBlur = useCallback((field: keyof T) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    
-    // Validate on blur if field was touched
-    const error = validateField(field, values[field]);
-    if (error) {
-      setErrors((prev) => ({ ...prev, [field]: error }));
-    }
-  }, [validateField, values]);
+      // Clear error for this field
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: undefined }));
+      }
+    },
+    [errors]
+  );
+
+  const handleBlur = useCallback(
+    (field: keyof T) => {
+      setTouched((prev) => ({ ...prev, [field]: true }));
+
+      // Validate on blur if field was touched
+      const error = validateField(field, values[field]);
+      if (error) {
+        setErrors((prev) => ({ ...prev, [field]: error }));
+      }
+    },
+    [validateField, values]
+  );
 
   const handleSubmit = useCallback(
     async (e?: React.FormEvent) => {
@@ -763,13 +791,7 @@ const handleSubmit = async () => {
 **After** (15 lines):
 
 ```typescript
-const {
-  values,
-  errors,
-  handleChange,
-  handleSubmit,
-  isSubmitting,
-} = useForm({
+const { values, errors, handleChange, handleSubmit, isSubmitting } = useForm({
   initialValues: { firstName: "", lastName: "", email: "" },
   validationRules: {
     firstName: { required: "First name is required" },
@@ -858,12 +880,19 @@ export function useWorkoutSessions(athleteId?: string) {
 }
 
 export function useBlocks(params?: { category?: string; favorites?: boolean }) {
-  const queryString = params ? `?${new URLSearchParams(params).toString()}` : "";
+  const queryString = params
+    ? `?${new URLSearchParams(params).toString()}`
+    : "";
   return useSWR(`/api/blocks${queryString}`, fetcher);
 }
 
-export function useExerciseLibrary(params?: { search?: string; category?: string }) {
-  const queryString = params ? `?${new URLSearchParams(params).toString()}` : "";
+export function useExerciseLibrary(params?: {
+  search?: string;
+  category?: string;
+}) {
+  const queryString = params
+    ? `?${new URLSearchParams(params).toString()}`
+    : "";
   return useSWR(`/api/exercises${queryString}`, fetcher);
 }
 
@@ -893,7 +922,7 @@ export function useQuery<T = any>(
         headers: { "Content-Type": "application/json" },
         body: options?.body ? JSON.stringify(options.body) : undefined,
       });
-      
+
       if (!response.ok) throw new Error("Request failed");
       return response.json();
     },
@@ -907,7 +936,7 @@ export function useQuery<T = any>(
   return {
     data: data as T | undefined,
     isLoading,
-    error: error ? (error.message || "Request failed") : null,
+    error: error ? error.message || "Request failed" : null,
     refetch: mutate,
   };
 }
@@ -947,7 +976,11 @@ const { data: exercises, isLoading, error } = useExercises();
 **After - Option 2** (1 line with generic hook):
 
 ```typescript
-const { data: exercises, isLoading, error } = useQuery<Exercise[]>("/api/exercises");
+const {
+  data: exercises,
+  isLoading,
+  error,
+} = useQuery<Exercise[]>("/api/exercises");
 ```
 
 ### Impact
@@ -1160,11 +1193,11 @@ export function InfoModal({
       icon={<Send className="w-6 h-6" />}
       onClose={onClose}
     />
-    
+
     <ModalContent>
       {/* form fields */}
     </ModalContent>
-    
+
     <ModalFooter align="between">
       <button
         onClick={onClose}

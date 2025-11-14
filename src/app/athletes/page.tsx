@@ -754,7 +754,7 @@ export default withPageErrorBoundary(function AthletesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary container-responsive section-spacing">
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       <div className="max-w-7xl mx-auto">
         {/* Error Display */}
         {error && (
@@ -765,8 +765,11 @@ export default withPageErrorBoundary(function AthletesPage() {
 
         {/* Enhanced Mobile-Optimized Header */}
         <div className="flex flex-col gap-6 mb-8">
-          <div className="text-center sm:text-left">
-            <h1 className="text-heading-primary text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold">
+          <div className="text-center sm:text-left relative">
+            {/* Decorative gradient bar */}
+            <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-500 via-purple-500 to-green-500 rounded-full hidden sm:block" />
+
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold text-gray-900">
               Team Athletes
             </h1>
             <p className="text-heading-secondary text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0">
@@ -783,47 +786,57 @@ export default withPageErrorBoundary(function AthletesPage() {
             <Button
               onClick={() => setShowHistoryModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg"
-              leftIcon={<History className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="shadow-md hover:shadow-lg border-purple-200 hover:border-purple-300 hover:bg-purple-50"
+              leftIcon={
+                <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple" />
+              }
             >
               History
             </Button>
             <Button
               onClick={() => setShowBulkModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg"
-              leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="shadow-md hover:shadow-lg border-blue-200 hover:border-blue-300 hover:bg-blue-50"
+              leftIcon={
+                <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue" />
+              }
             >
               Bulk Actions
             </Button>
             <Button
               onClick={() => setShowKPIManagementModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-orange border-navy-200"
-              leftIcon={<Tag className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="shadow-md hover:shadow-lg border-orange-200 hover:border-orange-300 bg-orange-50 hover:bg-orange-100"
+              leftIcon={
+                <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
+              }
             >
-              Create KPI
+              <span className="text-orange-700">Create KPI</span>
             </Button>
             <Button
               onClick={() => setShowBulkKPIAssignmentModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-blue border-navy-200"
-              leftIcon={<Target className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="shadow-md hover:shadow-lg border-green-200 hover:border-green-300 bg-green-50 hover:bg-green-100"
+              leftIcon={
+                <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
+              }
             >
-              Assign KPIs
+              <span className="text-green-700">Assign KPIs</span>
             </Button>
             <Button
               onClick={() => setShowGroupFormModal(true)}
               variant="secondary"
-              className="shadow-md hover:shadow-lg bg-navy-50 hover:bg-navy-100 text-accent-purple border-navy-200"
-              leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="shadow-md hover:shadow-lg border-pink-200 hover:border-pink-300 bg-pink-50 hover:bg-pink-100"
+              leftIcon={
+                <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
+              }
             >
-              Add Group
+              <span className="text-pink-700">Add Group</span>
             </Button>
             <Button
               onClick={() => setShowInviteModal(true)}
               variant="primary"
-              className="shadow-md hover:shadow-lg"
+              className="shadow-lg hover:shadow-xl bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
               leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
             >
               Add Athlete
@@ -858,21 +871,28 @@ export default withPageErrorBoundary(function AthletesPage() {
 
         {/* Athletes Grid - Mobile Optimized Cards */}
         <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
-          {/* Add Athlete Placeholder Card */}
+          {/* Add Athlete Placeholder Card - Colorful & Energetic */}
           <button
             onClick={() => setShowInviteModal(true)}
-            className="bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl shadow-sm hover:shadow-xl border-2 border-dashed border-blue-300 hover:border-blue-500 hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
+            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-gray-300 hover:border-orange-400 hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
+            aria-label="Add new athlete"
           >
-            <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-lg">
-              <Plus className="w-8 h-8 text-white" />
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-navy-900 mb-1">
-                Add New Athlete
-              </h3>
-              <p className="text-sm text-blue-600 font-medium">
-                Click to add athlete profile
-              </p>
+            {/* Colorful accent bar - only on hover */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-purple-500 to-green-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+            {/* Centered content */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
+                <Plus className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  Add New Athlete
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Click to add athlete profile
+                </p>
+              </div>
             </div>
           </button>
 

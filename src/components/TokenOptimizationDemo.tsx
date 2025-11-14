@@ -283,7 +283,7 @@ export default function TokenOptimizationDemo() {
       </div>
 
       {/* Performance Info */}
-      <div className="card bg-linear-to-r from-green-50 to-blue-50 border-green-200">
+      <div className="card bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
         <div className="text-center space-y-2">
           <div className="text-2xl">🚀</div>
           <div className="text-navy-7 font-heading font-medium">

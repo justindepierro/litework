@@ -138,7 +138,11 @@ export default function WorkoutAssignmentDetailModal({
   onDelete,
 }: WorkoutAssignmentDetailModalProps) {
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
-  const { isLoading: loading, error, execute } = useAsyncState<AssignmentDetail>();
+  const {
+    isLoading: loading,
+    error,
+    execute,
+  } = useAsyncState<AssignmentDetail>();
 
   const isCoach = userRole === "coach" || userRole === "admin";
 
@@ -191,18 +195,21 @@ export default function WorkoutAssignmentDetailModal({
   const getGroupName = (a: AssignmentDetail | null) =>
     a?.assigned_group?.name || a?.assignedGroup?.name;
 
-  const fetchAssignment = useCallback(() => 
-    execute(async () => {
-      const response = await fetch(`/api/assignments/${assignmentId}`);
-      const data = await response.json();
+  const fetchAssignment = useCallback(
+    () =>
+      execute(async () => {
+        const response = await fetch(`/api/assignments/${assignmentId}`);
+        const data = await response.json();
 
-      if (data.success && data.data) {
-        setAssignment(data.data);
-        return data.data;
-      } else {
-        throw new Error(data.error || "Failed to load assignment");
-      }
-    }), [assignmentId, execute]);
+        if (data.success && data.data) {
+          setAssignment(data.data);
+          return data.data;
+        } else {
+          throw new Error(data.error || "Failed to load assignment");
+        }
+      }),
+    [assignmentId, execute]
+  );
 
   useEffect(() => {
     if (isOpen && assignmentId) {

@@ -12,6 +12,7 @@
 ## 🔥 Immediate Actions (This Sprint)
 
 ### 1. Update CHANGELOG
+
 **File**: `CHANGELOG.md`  
 **Action**: Add deprecation notice
 
@@ -19,6 +20,7 @@
 ## [Unreleased]
 
 ### Deprecated
+
 - `createWorkoutPlan()` - Use `createWorkoutPlanTransaction()` instead (will be removed in v1.1.0)
 - `updateWorkoutPlan()` - Use `updateWorkoutPlanTransaction()` instead (will be removed in v1.1.0)
 
@@ -27,6 +29,7 @@ See deprecation warnings in `src/lib/database-service.ts` for migration instruct
 ```
 
 ### 2. Document in README
+
 **File**: `README.md` or `docs/guides/MIGRATION_GUIDE.md`  
 **Action**: Add to "Known Issues" or "Breaking Changes" section
 
@@ -41,7 +44,6 @@ See deprecation warnings in `src/lib/database-service.ts` for migration instruct
 1. **WorkoutLive.tsx** (15 violations)
    - Lines: 309, 314, 327, 336, 363, 369, 383, 420, 423, 424, 430, 448, 485-498
    - Impact: HIGH (user-facing workout sessions)
-   
 2. **BulkOperationModal.tsx** (12 violations)
    - Lines: 278, 282, 293, 297, 308, 323, 345, 382, 428, 752, 768, 778, 858-882
    - Impact: MEDIUM (coach workflows)
@@ -102,14 +104,16 @@ See deprecation warnings in `src/lib/database-service.ts` for migration instruct
 ### Refactor Notification Services
 
 **Current state**:
+
 - `notification-service.ts` (552 lines) - push + email + preferences
 - `unified-notification-service.ts` (414 lines) - wrapper around above
 
 **Proposed structure**:
+
 ```
 src/lib/notifications/
 ├── push-notifications.ts      # Push-specific logic
-├── email-notifications.ts     # Email-specific logic  
+├── email-notifications.ts     # Email-specific logic
 ├── preferences.ts             # User preferences
 ├── subscription.ts            # Push subscription management
 ├── in-app.ts                  # In-app notifications
@@ -117,6 +121,7 @@ src/lib/notifications/
 ```
 
 **Benefits**:
+
 - Reduced file sizes (< 200 lines each)
 - Clear separation of concerns
 - Easier testing and maintenance
@@ -127,10 +132,12 @@ src/lib/notifications/
 **Version**: v1.1.0  
 **Files**: `src/lib/database-service.ts`  
 **Functions to remove**:
+
 - `createWorkoutPlan` (line ~943)
 - `updateWorkoutPlan` (line ~1123)
 
 **Before removal**:
+
 1. ✅ Verify no external dependencies
 2. ✅ Check for any dynamic/string-based calls
 3. ✅ Update exports section at bottom of file
@@ -140,17 +147,17 @@ src/lib/notifications/
 
 ## 📊 Progress Tracking
 
-| Item | Status | Priority | Effort | Target |
-|------|--------|----------|--------|--------|
-| Code audit | ✅ Done | P0 | 2h | Nov 13 |
-| Deprecation warnings | ✅ Done | P1 | 15m | Nov 13 |
-| Audit report | ✅ Done | P1 | 1h | Nov 13 |
-| CHANGELOG update | ⏳ Todo | P1 | 5m | This week |
-| WorkoutLive colors | ⏳ Todo | P2 | 30m | Next sprint |
-| BulkOperation colors | ⏳ Todo | P2 | 30m | Next sprint |
-| ESLint rule | ⏳ Todo | P2 | 15m | Next sprint |
-| Notification refactor | ⏳ Todo | P3 | 4h | Q1 2026 |
-| Remove deprecated | ⏳ Todo | P3 | 30m | v1.1.0 |
+| Item                  | Status  | Priority | Effort | Target      |
+| --------------------- | ------- | -------- | ------ | ----------- |
+| Code audit            | ✅ Done | P0       | 2h     | Nov 13      |
+| Deprecation warnings  | ✅ Done | P1       | 15m    | Nov 13      |
+| Audit report          | ✅ Done | P1       | 1h     | Nov 13      |
+| CHANGELOG update      | ⏳ Todo | P1       | 5m     | This week   |
+| WorkoutLive colors    | ⏳ Todo | P2       | 30m    | Next sprint |
+| BulkOperation colors  | ⏳ Todo | P2       | 30m    | Next sprint |
+| ESLint rule           | ⏳ Todo | P2       | 15m    | Next sprint |
+| Notification refactor | ⏳ Todo | P3       | 4h     | Q1 2026     |
+| Remove deprecated     | ⏳ Todo | P3       | 30m    | v1.1.0      |
 
 ---
 
@@ -161,6 +168,7 @@ src/lib/notifications/
 **Target for next sprint: 95% (A)**
 
 Improvements needed:
+
 - Fix top 3 component color violations (+2%)
 - Add ESLint prevention rule (+1%)
 
@@ -175,4 +183,4 @@ Improvements needed:
 
 ---
 
-*Last updated: November 13, 2025*
+_Last updated: November 13, 2025_

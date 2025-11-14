@@ -72,13 +72,21 @@ export default function MessageModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="
+        bg-white 
+        w-full h-full
+        sm:rounded-xl sm:max-w-2xl sm:h-auto sm:max-h-[85vh]
+        flex flex-col 
+        sm:shadow-2xl
+        safe-area-inset
+      ">
         <ModalHeader
           title={`Message ${athlete.fullName || "Athlete"}`}
           icon={<MessageCircle className="w-6 h-6" />}
           onClose={onClose}
         />
-        <ModalContent>
+        <div className="flex-1 overflow-y-auto">
+          <ModalContent>
           <div className="space-y-4">
             {/* Subject Input */}
             <FloatingLabelInput
@@ -169,6 +177,8 @@ export default function MessageModal({
             </div>
           </div>
         </ModalContent>
+        </div>
+
         <ModalFooter align="between">
           <Button onClick={onClose} variant="secondary" className="flex-1">
             Cancel

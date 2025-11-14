@@ -233,40 +233,40 @@ const config: Config = {
 
         // Semantic Color Mappings for Consistent UI
         primary: {
-          light: "#dbeafe",     // blue-100
-          lighter: "#eff6ff",   // blue-50
-          DEFAULT: "#3b82f6",   // blue-500
-          dark: "#1d4ed8",      // blue-700
+          light: "#dbeafe", // blue-100
+          lighter: "#eff6ff", // blue-50
+          DEFAULT: "#3b82f6", // blue-500
+          dark: "#1d4ed8", // blue-700
         },
         success: {
-          light: "#d1fae5",     // green-100
-          lighter: "#ecfdf5",   // green-50
-          DEFAULT: "#00d4aa",   // accent-green
-          dark: "#047857",      // green-800
+          light: "#d1fae5", // green-100
+          lighter: "#ecfdf5", // green-50
+          DEFAULT: "#00d4aa", // accent-green
+          dark: "#047857", // green-800
         },
         error: {
-          light: "#fee2e2",     // red-100
-          lighter: "#fef2f2",   // red-50
-          DEFAULT: "#ef4444",   // red-500
-          dark: "#b91c1c",      // red-700
+          light: "#fee2e2", // red-100
+          lighter: "#fef2f2", // red-50
+          DEFAULT: "#ef4444", // red-500
+          dark: "#b91c1c", // red-700
         },
         warning: {
-          light: "#fef3c7",     // amber-100
-          lighter: "#fffbeb",   // amber-50
-          DEFAULT: "#f59e0b",   // amber-500
-          dark: "#b45309",      // amber-700
+          light: "#fef3c7", // amber-100
+          lighter: "#fffbeb", // amber-50
+          DEFAULT: "#f59e0b", // amber-500
+          dark: "#b45309", // amber-700
         },
         info: {
-          light: "#cffafe",     // cyan-100
-          lighter: "#ecfeff",   // cyan-50
-          DEFAULT: "#06b6d4",   // cyan-500
-          dark: "#0e7490",      // cyan-700
+          light: "#cffafe", // cyan-100
+          lighter: "#ecfeff", // cyan-50
+          DEFAULT: "#06b6d4", // cyan-500
+          dark: "#0e7490", // cyan-700
         },
         brand: {
-          light: "#fed7aa",     // orange-200
-          lighter: "#ffedd5",   // orange-100
-          DEFAULT: "#ff6b35",   // brand orange
-          dark: "#c2410c",      // orange-700
+          light: "#fed7aa", // orange-200
+          lighter: "#ffedd5", // orange-100
+          DEFAULT: "#ff6b35", // brand orange
+          dark: "#c2410c", // orange-700
         },
       },
       backgroundImage: {

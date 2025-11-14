@@ -13,8 +13,9 @@ This document tracks the migration from hardcoded Tailwind colors to our semanti
 ## Problem
 
 Found **150+ violations** across **25+ components**:
+
 - Blue colors (`text-blue-*`, `bg-blue-*`): ~60 instances
-- Gray colors (`text-gray-*`, `bg-gray-*`): ~50 instances  
+- Gray colors (`text-gray-*`, `bg-gray-*`): ~50 instances
 - Red colors (`text-red-*`, `bg-red-*`): ~15 instances
 - Green colors (`text-green-*`, `bg-green-*`): ~20 instances
 - Purple colors (`text-purple-*`, `bg-purple-*`): ~10 instances
@@ -43,8 +44,8 @@ border-blue-500  → border-info
 
 ```tsx
 // ✅ CORRECT - Using design tokens
-className="text-primary bg-info-lightest border-info-lighter"
-className="hover:bg-info-light hover:text-info-dark"
+className = "text-primary bg-info-lightest border-info-lighter";
+className = "hover:bg-info-light hover:text-info-dark";
 ```
 
 ### Neutral/Gray Colors (Gray → Neutral/Silver)

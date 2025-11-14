@@ -15,7 +15,7 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     // Persist session across page reloads
     persistSession: true,
-    // Auto refresh token before expiry
+    // Auto refresh token before expiry (30 seconds before expiration)
     autoRefreshToken: true,
     // Detect session from URL (for email confirmations, password resets)
     detectSessionInUrl: true,
@@ -25,6 +25,8 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
     storageKey: "litework-auth-token",
     // Use localStorage for better mobile PWA persistence
     storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    // Set debug mode to see what's happening with auth
+    debug: process.env.NODE_ENV === "development",
   },
   global: {
     headers: {

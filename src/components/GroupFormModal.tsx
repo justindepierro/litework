@@ -60,8 +60,15 @@ export default function GroupFormModal({
   existingGroups,
 }: GroupFormModalProps) {
   const [availableAthletes, setAvailableAthletes] = useState<User[]>([]);
-  
-  const { values, errors, handleChange, handleSubmit, setValues, isSubmitting } = useFormValidation({
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+    setValues,
+    isSubmitting,
+  } = useFormValidation({
     initialValues: {
       name: editingGroup?.name || "",
       description: editingGroup?.description || "",
@@ -71,12 +78,12 @@ export default function GroupFormModal({
       athleteIds: (editingGroup?.athleteIds || []) as string[],
     },
     validationRules: {
-      name: { 
+      name: {
         required: "Group name is required",
         custom: (value, allValues) => {
           const name = String(value).trim();
           if (!name) return "Group name is required";
-          
+
           const duplicateName = existingGroups.some(
             (group) =>
               group.name.toLowerCase() === name.toLowerCase() &&
@@ -86,9 +93,9 @@ export default function GroupFormModal({
           if (duplicateName) {
             return "A group with this name already exists";
           }
-          
+
           return undefined;
-        }
+        },
       },
       sport: { required: "Sport selection is required" },
     },
@@ -184,9 +191,11 @@ export default function GroupFormModal({
   };
 
   const handleAthleteSelection = (athleteId: string, selected: boolean) => {
-    handleChange('athleteIds', selected
-      ? [...values.athleteIds, athleteId]
-      : values.athleteIds.filter((id) => id !== athleteId) as never
+    handleChange(
+      "athleteIds",
+      selected
+        ? [...values.athleteIds, athleteId]
+        : (values.athleteIds.filter((id) => id !== athleteId) as never)
     );
   };
 
@@ -202,16 +211,24 @@ export default function GroupFormModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="
+        bg-white 
+        w-full h-full
+        sm:rounded-lg sm:max-w-4xl sm:h-auto sm:max-h-[85vh]
+        flex flex-col 
+        sm:shadow-2xl
+        safe-area-inset
+      ">
         <ModalHeader
           title={editingGroup ? "Edit Group" : "Create New Group"}
           subtitle="Configure group details and member settings"
           onClose={onClose}
-          icon={<Users className="w-6 h-6 text-primary" />}
+          icon={<Users className="w-6 h-6" />}
         />
 
-        <ModalContent>
-          <form onSubmit={handleSubmit} id="group-form">
+        <div className="flex-1 overflow-y-auto">
+          <ModalContent>
+            <form onSubmit={handleSubmit} id="group-form">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <h3 className="text-heading-secondary text-lg mb-4">
@@ -391,6 +408,7 @@ export default function GroupFormModal({
             )}
           </form>
         </ModalContent>
+        </div>
 
         <ModalFooter align="between">
           <Button

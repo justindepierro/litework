@@ -55,7 +55,7 @@ export function StepperInput({
           type="button"
           onClick={handleDecrement}
           disabled={disabled || value <= min}
-          className="flex items-center justify-center w-12 h-12 bg-linear-to-b from-red-500 to-red-600 text-white rounded-lg font-bold text-xl shadow-md active:shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          className="flex items-center justify-center w-12 h-12 bg-gradient-to-b from-red-500 to-red-600 text-white rounded-lg font-bold text-xl shadow-md active:shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
           aria-label={`Decrease ${label.toLowerCase()} by ${step}`}
         >
           −{step}
@@ -83,7 +83,7 @@ export function StepperInput({
           type="button"
           onClick={handleIncrement}
           disabled={disabled || (max !== undefined && value >= max)}
-          className="flex items-center justify-center w-12 h-12 bg-linear-to-b from-green-500 to-green-600 text-white rounded-lg font-bold text-xl shadow-md active:shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          className="flex items-center justify-center w-12 h-12 bg-gradient-to-b from-green-500 to-green-600 text-white rounded-lg font-bold text-xl shadow-md active:shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
           aria-label={`Increase ${label.toLowerCase()} by ${step}`}
         >
           +{step}

@@ -12,11 +12,11 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 
 ### Final Results
 
-| Category | Initial Count | Fixed | Remaining | Status |
-|----------|--------------|-------|-----------|---------|
-| **Phase 1 (Top 3 Files)** | 70 | 70 | 0 | ✅ Complete |
-| **Phase 2 (Remaining Files)** | 35 | 35 | 0 | ✅ Complete |
-| **TOTAL** | **105** | **105** | **0** | ✅ 100% Complete |
+| Category                      | Initial Count | Fixed   | Remaining | Status           |
+| ----------------------------- | ------------- | ------- | --------- | ---------------- |
+| **Phase 1 (Top 3 Files)**     | 70            | 70      | 0         | ✅ Complete      |
+| **Phase 2 (Remaining Files)** | 35            | 35      | 0         | ✅ Complete      |
+| **TOTAL**                     | **105**       | **105** | **0**     | ✅ 100% Complete |
 
 ---
 
@@ -48,6 +48,7 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 ### 1. lib/pr-detection.ts (8 fixes)
 
 **PR Badge Colors by Improvement Level**:
+
 - ✅ 20%+ improvement: `text-purple-600 bg-purple-100` → `text-accent bg-accent-light`
 - ✅ 10%+ improvement: `text-yellow-600 bg-yellow-100` → `text-warning bg-warning-light`
 - ✅ 5%+ improvement: `text-blue-600 bg-blue-100` → `text-primary bg-primary-lighter`
@@ -56,6 +57,7 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 ### 2. lib/achievement-system.ts (8 fixes)
 
 **Achievement Badge Colors**:
+
 - ✅ First Workout: `bg-blue-500` → `bg-primary`
 - ✅ First PR / Streaks: `bg-yellow-500`, `bg-orange-500/600` → `bg-warning`
 - ✅ Monthly Champion: `bg-purple-600` → `bg-accent`
@@ -102,6 +104,7 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 ### 9. connection-aware.tsx (4 fixes)
 
 **Network Quality Badge Colors**:
+
 - ✅ Medium quality: `bg-yellow-100 text-yellow-800` → `bg-warning-light text-warning-dark`
 - ✅ Low quality: Already using `bg-error-light text-error-dark` ✓
 - ✅ Offline: `bg-gray-100 text-gray-800` → `bg-steel-100 text-steel-800`
@@ -109,6 +112,7 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 ### 10. page.tsx - Landing Page (3 fixes)
 
 **Feature Card Icons**:
+
 - ✅ Progress Tracking: `bg-green-100` → `bg-success-light`
 - ✅ Smart Scheduling: `bg-blue-100` → `bg-primary-lighter`
 - ✅ Team Management: `bg-purple-100` → `bg-accent-light`
@@ -120,8 +124,10 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 ### Priority 1: HIGH IMPACT (Core Components)
 
 #### 1. **BulkOperationModal.tsx** - 🔴 CRITICAL (25+ violations)
+
 **Impact**: Used frequently in athlete management  
 **Violations**:
+
 - Lines 279, 294, 309, 324: `border-blue-500 bg-blue-50` (operation cards)
 - Lines 283, 298, 313, 328: Icon colors (`text-blue-600`, `text-green-600`, `text-orange-600`, `text-purple-600`)
 - Lines 346: `text-blue-600 hover:text-blue-800` (links)
@@ -131,6 +137,7 @@ Successfully migrated **ALL 100+ hardcoded color instances** to design tokens ac
 - Lines 862, 870, 886: `bg-blue-600`, `bg-green-600` (step indicators)
 
 **Recommended Fix**:
+
 ```tsx
 // ❌ Before
 className="border-blue-500 bg-blue-50"
@@ -144,8 +151,10 @@ className="border-primary bg-primary-lighter"
 ---
 
 #### 2. **ProgressAnalyticsDashboard.tsx** - 🔴 CRITICAL (30+ violations)
+
 **Impact**: Performance metrics dashboard  
 **Violations**:
+
 - Lines 133: `bg-blue-600 hover:bg-blue-700` (export button)
 - Lines 200-201: `bg-blue-100`, `text-blue-600` (workout stat card)
 - Lines 212-213: `text-green-500`, `text-green-600` (trend indicators)
@@ -156,6 +165,7 @@ className="border-primary bg-primary-lighter"
 - Lines 374: `text-blue-500` (comparison icon)
 
 **Recommended Fix**:
+
 ```tsx
 // ❌ Before
 <div className="w-10 h-10 bg-blue-100 rounded-xl">
@@ -171,8 +181,10 @@ className="border-primary bg-primary-lighter"
 ---
 
 #### 3. **notifications/page.tsx** - 🔴 CRITICAL (15+ violations)
+
 **Impact**: Notification center  
 **Violations**:
+
 - Lines 170: `text-blue-600` (bell icon)
 - Lines 210: `bg-blue-600 hover:bg-blue-700` (mark all read button)
 - Lines 238: `bg-blue-50` (unread notification background)
@@ -180,12 +192,13 @@ className="border-primary bg-primary-lighter"
 - Lines 285: `text-red-600 bg-red-50 hover:bg-red-100` (delete button)
 
 **Recommended Fix**:
+
 ```tsx
 // ❌ Before
-className="bg-blue-600 text-white hover:bg-blue-700"
+className = "bg-blue-600 text-white hover:bg-blue-700";
 
 // ✅ After
-className="bg-primary text-white hover:bg-primary-dark"
+className = "bg-primary text-white hover:bg-primary-dark";
 ```
 
 ---
@@ -193,8 +206,10 @@ className="bg-primary text-white hover:bg-primary-dark"
 ### Priority 2: MEDIUM IMPACT (Utility Files)
 
 #### 4. **lib/pr-detection.ts** - 🟡 MEDIUM (8 violations)
+
 **Impact**: PR badge styling logic  
 **Violations**:
+
 - Lines 259-262: All hardcoded colors for improvement levels
   - `text-purple-600 bg-purple-100` (20%+ improvement)
   - `text-yellow-600 bg-yellow-100` (10%+ improvement)
@@ -202,6 +217,7 @@ className="bg-primary text-white hover:bg-primary-dark"
   - `text-green-600 bg-green-100` (default)
 
 **Recommended Fix**:
+
 ```typescript
 // ❌ Before
 if (improvement >= 20) return "text-purple-600 bg-purple-100";
@@ -213,8 +229,10 @@ if (improvement >= 20) return "text-accent bg-accent-lighter";
 ---
 
 #### 5. **lib/achievement-system.ts** - 🟡 MEDIUM (8 violations)
+
 **Impact**: Achievement badge colors  
 **Violations**:
+
 - Lines 46-95: All achievement tier colors hardcoded
   - Bronze: `bg-orange-500`, `bg-orange-600`
   - Silver: `bg-gray-400` (acceptable)
@@ -224,6 +242,7 @@ if (improvement >= 20) return "text-accent bg-accent-lighter";
   - Elite: `bg-green-500`, `bg-green-600`, `bg-green-700`
 
 **Recommended Fix**:
+
 ```typescript
 // ❌ Before
 { tier: "gold", color: "bg-yellow-500" }
@@ -237,20 +256,25 @@ if (improvement >= 20) return "text-accent bg-accent-lighter";
 ### Priority 3: LOW IMPACT (Edge Cases & Demo Pages)
 
 #### 6. **ExerciseAutocomplete.tsx** - 🟢 LOW (6 violations)
+
 - Lines 242-243: `hover:bg-blue-50`, `bg-blue-50` (hover states)
 - Lines 274, 285, 287: `hover:bg-green-50`, `text-green-700` (create new exercise)
 
 #### 7. **pwa-demo/page.tsx** - 🟢 LOW (Demo page, can skip)
+
 - Multiple demo color dots and sections
 
 #### 8. **page.tsx (Landing)** - 🟢 LOW (3 violations)
+
 - Feature icon backgrounds: `bg-green-100`, `bg-blue-100`, `bg-purple-100`
 
 #### 9. **reset-password/page.tsx** - 🟢 LOW (3 violations)
+
 - Submit button: `bg-blue-600 hover:bg-blue-700`
 - Link: `hover:text-blue-600`
 
 #### 10. **update-password/page.tsx** - 🟢 LOW (2 violations)
+
 - Submit button: `bg-blue-600 hover:bg-blue-700`
 
 ---
@@ -258,6 +282,7 @@ if (improvement >= 20) return "text-accent bg-accent-lighter";
 ## 🎨 Design Token Mapping Guide
 
 ### Primary Colors (Blue → Primary)
+
 ```tsx
 // ❌ Hardcoded
 text-blue-600  →  ✅ text-primary
@@ -273,6 +298,7 @@ border-blue-200 → ✅ border-primary-light
 ```
 
 ### Success Colors (Green → Success)
+
 ```tsx
 // ❌ Hardcoded
 text-green-600  →  ✅ text-success
@@ -284,6 +310,7 @@ hover:bg-green-50 → ✅ hover:bg-success-lighter
 ```
 
 ### Error Colors (Red → Error)
+
 ```tsx
 // ❌ Hardcoded
 text-red-600    →  ✅ text-error
@@ -294,6 +321,7 @@ border-red-500  →  ✅ border-error
 ```
 
 ### Warning Colors (Orange/Yellow → Warning)
+
 ```tsx
 // ❌ Hardcoded
 text-orange-600  →  ✅ text-warning
@@ -303,6 +331,7 @@ bg-yellow-100    →  ✅ bg-warning-light
 ```
 
 ### Info/Accent Colors (Purple → Accent)
+
 ```tsx
 // ❌ Hardcoded
 text-purple-600  →  ✅ text-accent
@@ -311,6 +340,7 @@ bg-purple-600    →  ✅ bg-accent
 ```
 
 ### Neutral Colors (Gray - Context Dependent)
+
 ```tsx
 // Some gray usage is acceptable, but prefer semantic tokens:
 text-gray-600   →  ✅ text-body-secondary (for secondary text)
@@ -388,18 +418,21 @@ border-gray-300 →  ✅ border-silver-300
 ## 🎯 Recommended Approach
 
 ### Option 1: Incremental (Safer)
+
 Fix one file at a time, test thoroughly, commit.
 
 **Pros**: Lower risk, easier to review  
 **Cons**: Takes longer, multiple PRs
 
 ### Option 2: Batch by Component Type (Recommended)
+
 Fix all similar components together (e.g., all modals, then all dashboards).
 
 **Pros**: Consistent patterns, efficient  
 **Cons**: Larger changesets
 
 ### Option 3: All at Once (Fastest)
+
 Fix everything in one session.
 
 **Pros**: Done quickly, single PR  
@@ -410,12 +443,14 @@ Fix everything in one session.
 ## 📊 Expected Results
 
 ### Before
+
 - 100+ hardcoded color instances
 - Inconsistent color usage
 - Difficult to maintain design system
 - Hard to implement theming
 
 ### After
+
 - 0 hardcoded colors (except edge cases)
 - Consistent design token usage
 - Easy design system updates
@@ -439,20 +474,26 @@ find src -type f -name "*.tsx" -exec sed -i '' 's/text-blue-600/text-primary/g' 
 ## 📝 Notes
 
 ### Already Migrated
+
 These components were previously cleaned up:
+
 - Dashboard page (some violations remain)
 - Workouts page (some violations remain)
 - Athletes page (some violations remain)
 - Most UI components in `src/components/ui/`
 
 ### Acceptable Gray Usage
+
 Some gray colors are fine when used for:
+
 - Disabled states (`disabled:bg-gray-400`)
 - Subtle borders (`border-gray-300` is same as `border-silver-300`)
 - Loading states
 
 ### Color Hierarchy
+
 Remember the semantic hierarchy:
+
 1. **Primary**: Main brand color (blue)
 2. **Success**: Positive actions (green)
 3. **Error**: Negative actions (red)
@@ -512,11 +553,11 @@ $ get_errors (all Phase 2 files)
 
 ### Total Migration Summary
 
-| Phase | Files | Violations Fixed | Status |
-|-------|-------|-----------------|--------|
-| Phase 1 | 3 | 70 | ✅ Complete |
-| Phase 2 | 10 | 35 | ✅ Complete |
-| **TOTAL** | **13** | **105** | **✅ 100% FIXED** |
+| Phase     | Files  | Violations Fixed | Status            |
+| --------- | ------ | ---------------- | ----------------- |
+| Phase 1   | 3      | 70               | ✅ Complete       |
+| Phase 2   | 10     | 35               | ✅ Complete       |
+| **TOTAL** | **13** | **105**          | **✅ 100% FIXED** |
 
 ---
 

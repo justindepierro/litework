@@ -363,10 +363,7 @@ export default withErrorBoundary(function BulkOperationModal({
                 </h4>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {groups.map((group) => (
-                    <div
-                      key={group.id}
-                      className="rounded-lg shadow-sm"
-                    >
+                    <div key={group.id} className="rounded-lg shadow-sm">
                       <div className="flex items-center p-3">
                         <button
                           onClick={() => toggleGroupExpansion(group.id)}

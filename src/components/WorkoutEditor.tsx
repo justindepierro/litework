@@ -623,18 +623,10 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
           </div>
         </ModalContent>
         <ModalFooter align="between">
-          <Button
-            onClick={onClose}
-            variant="secondary"
-            fullWidth
-          >
+          <Button onClick={onClose} variant="secondary" fullWidth>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="primary"
-            fullWidth
-          >
+          <Button onClick={handleSubmit} variant="primary" fullWidth>
             Create Group
           </Button>
         </ModalFooter>
@@ -1173,7 +1165,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       onClick={() => setShowBlockLibrary(true)}
                       variant="primary"
                       leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                     >
                       Add Block
                     </Button>
@@ -1270,7 +1262,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   disabled={isSaving || !workout.name?.trim()}
                   variant="primary"
                   fullWidth
-                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-2 border-green-700"
+                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-2 border-green-700"
                 >
                   {isSaving ? "Saving..." : "Save Workout"}
                 </Button>

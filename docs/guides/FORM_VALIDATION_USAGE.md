@@ -46,7 +46,7 @@ function MyForm() {
         onChange={(e) => handleChange('name', e.target.value)}
       />
       {errors.name && <span className="text-error">{errors.name}</span>}
-      
+
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Submitting...' : 'Submit'}
       </button>
@@ -62,13 +62,13 @@ function MyForm() {
 ### Hook Configuration
 
 ```typescript
-const { 
+const {
   values,        // Current form values
   errors,        // Field errors { fieldName: 'error message' }
   touched,       // Fields that have been interacted with
   isValid,       // True if no errors exist
   isSubmitting,  // True during async submission
-  
+
   // Methods
   handleChange,  // Update field value: (field, value) => void
   handleBlur,    // Mark field as touched: (field) => void
@@ -102,8 +102,8 @@ interface MyFormValues {
 
 const { values, errors, handleChange } = useFormValidation<MyFormValues>({
   initialValues: {
-    name: '',
-    email: '',
+    name: "",
+    email: "",
     age: 0,
   },
   validationRules: {
@@ -148,7 +148,7 @@ validationRules: {
 
 ```typescript
 validationRules: {
-  password: { 
+  password: {
     minLength: 8,
     // OR with custom message
     minLength: { value: 8, message: 'Password must be 8+ characters' }
@@ -165,7 +165,7 @@ validationRules: {
 
 ```typescript
 validationRules: {
-  age: { 
+  age: {
     min: 18,
     max: 120,
     // OR with custom messages
@@ -179,12 +179,12 @@ validationRules: {
 
 ```typescript
 validationRules: {
-  phone: { 
+  phone: {
     pattern: /^\d{10}$/,
     // OR with custom message
-    pattern: { 
-      value: /^\d{10}$/, 
-      message: 'Phone must be 10 digits' 
+    pattern: {
+      value: /^\d{10}$/,
+      message: 'Phone must be 10 digits'
     }
   },
 }
@@ -251,19 +251,19 @@ Validate one field based on another field's value:
 ```typescript
 const { values, errors, handleChange, handleSubmit } = useFormValidation({
   initialValues: {
-    startTime: '09:00',
-    endTime: '17:00',
+    startTime: "09:00",
+    endTime: "17:00",
   },
   validationRules: {
     endTime: {
       custom: (value, allValues) => {
-        const start = String(allValues.startTime || '');
-        const end = String(value || '');
+        const start = String(allValues.startTime || "");
+        const end = String(value || "");
         if (start && end && start >= end) {
-          return 'End time must be after start time';
+          return "End time must be after start time";
         }
         return undefined;
-      }
+      },
     },
   },
   onSubmit: async (values) => {
@@ -320,16 +320,16 @@ Validate data that isn't part of the form values (like checkbox lists):
 const [selectedAthletes, setSelectedAthletes] = useState<string[]>([]);
 
 const { handleSubmit } = useFormValidation({
-  initialValues: { workoutId: '', date: new Date() },
+  initialValues: { workoutId: "", date: new Date() },
   validationRules: {
     workoutId: { required: true },
   },
   onSubmit: async (values) => {
     // Custom validation for external state
     if (selectedAthletes.length === 0) {
-      throw new Error('Please select at least one athlete');
+      throw new Error("Please select at least one athlete");
     }
-    
+
     await apiClient.assignWorkout({
       ...values,
       athleteIds: selectedAthletes,
@@ -405,28 +405,31 @@ const handleSubmit = async (e: React.FormEvent) => {
 **After** (useFormValidation hook, 5 lines):
 
 ```typescript
-const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
-  initialValues: {
-    name: editingGroup?.name || "",
-    sport: editingGroup?.sport || "",
-    // ...
-  },
-  validationRules: {
-    name: { 
-      required: "Group name is required",
-      custom: (value) => {
-        const duplicateName = existingGroups.some(
-          (group) => group.name.toLowerCase() === String(value).toLowerCase()
-        );
-        return duplicateName ? "A group with this name already exists" : undefined;
-      }
+const { values, errors, handleChange, handleSubmit, isSubmitting } =
+  useFormValidation({
+    initialValues: {
+      name: editingGroup?.name || "",
+      sport: editingGroup?.sport || "",
+      // ...
     },
-    sport: { required: "Sport selection is required" },
-  },
-  onSubmit: async (values) => {
-    await apiClient.createGroup(values);
-  },
-});
+    validationRules: {
+      name: {
+        required: "Group name is required",
+        custom: (value) => {
+          const duplicateName = existingGroups.some(
+            (group) => group.name.toLowerCase() === String(value).toLowerCase()
+          );
+          return duplicateName
+            ? "A group with this name already exists"
+            : undefined;
+        },
+      },
+      sport: { required: "Sport selection is required" },
+    },
+    onSubmit: async (values) => {
+      await apiClient.createGroup(values);
+    },
+  });
 ```
 
 **Lines Saved**: ~25
@@ -463,30 +466,31 @@ const validateForm = () => {
 **After** (Unified form state, declarative validation):
 
 ```typescript
-const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
-  initialValues: {
-    workoutId: "",
-    date: new Date(),
-    startTime: "15:30",
-    endTime: "16:30",
-  },
-  validationRules: {
-    workoutId: { required: "Please select a workout" },
-    date: { required: "Please select a date" },
-    endTime: { 
-      custom: (value, allValues) => {
-        const start = String(allValues.startTime || '');
-        const end = String(value || '');
-        return (start && end && start >= end) 
-          ? "End time must be after start time" 
-          : undefined;
-      }
+const { values, errors, handleChange, handleSubmit, isSubmitting } =
+  useFormValidation({
+    initialValues: {
+      workoutId: "",
+      date: new Date(),
+      startTime: "15:30",
+      endTime: "16:30",
     },
-  },
-  onSubmit: async (formValues) => {
-    // Submit logic
-  },
-});
+    validationRules: {
+      workoutId: { required: "Please select a workout" },
+      date: { required: "Please select a date" },
+      endTime: {
+        custom: (value, allValues) => {
+          const start = String(allValues.startTime || "");
+          const end = String(value || "");
+          return start && end && start >= end
+            ? "End time must be after start time"
+            : undefined;
+        },
+      },
+    },
+    onSubmit: async (formValues) => {
+      // Submit logic
+    },
+  });
 ```
 
 **Lines Saved**: ~22
@@ -510,7 +514,7 @@ const handleChange = (field: keyof typeof formData, value: string) => {
 
 const validate = (): boolean => {
   const newErrors: Record<string, string> = {};
-  
+
   if (!formData.firstName.trim()) {
     newErrors.firstName = "First name is required";
   }
@@ -522,7 +526,7 @@ const validate = (): boolean => {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
     newErrors.email = "Invalid email format";
   }
-  
+
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
@@ -531,24 +535,25 @@ const validate = (): boolean => {
 **After** (Built-in validators, automatic error clearing):
 
 ```typescript
-const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
-  initialValues: {
-    firstName: athlete.firstName || "",
-    lastName: athlete.lastName || "",
-    email: athlete.email || "",
-  },
-  validationRules: {
-    firstName: { required: "First name is required" },
-    lastName: { required: "Last name is required" },
-    email: { 
-      required: "Email is required",
-      email: "Invalid email format"
+const { values, errors, handleChange, handleSubmit, isSubmitting } =
+  useFormValidation({
+    initialValues: {
+      firstName: athlete.firstName || "",
+      lastName: athlete.lastName || "",
+      email: athlete.email || "",
     },
-  },
-  onSubmit: async (values) => {
-    await apiClient.updateAthlete(athlete.id, values);
-  },
-});
+    validationRules: {
+      firstName: { required: "First name is required" },
+      lastName: { required: "Last name is required" },
+      email: {
+        required: "Email is required",
+        email: "Invalid email format",
+      },
+    },
+    onSubmit: async (values) => {
+      await apiClient.updateAthlete(athlete.id, values);
+    },
+  });
 ```
 
 **Lines Saved**: ~18
@@ -564,22 +569,24 @@ const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormVali
 ```tsx
 <input
   value={values.email}
-  onChange={(e) => handleChange('email', e.target.value)}
-  className={errors.email ? 'border-error' : ''}
-/>
-{errors.email && (
-  <span className="text-error text-sm">{errors.email}</span>
-)}
+  onChange={(e) => handleChange("email", e.target.value)}
+  className={errors.email ? "border-error" : ""}
+/>;
+{
+  errors.email && <span className="text-error text-sm">{errors.email}</span>;
+}
 ```
 
 **Form-level errors** (at top/bottom):
 
 ```tsx
-{errors.submit && (
-  <div className="bg-error-light border border-error rounded p-3">
-    <p className="text-error">{errors.submit}</p>
-  </div>
-)}
+{
+  errors.submit && (
+    <div className="bg-error-light border border-error rounded p-3">
+      <p className="text-error">{errors.submit}</p>
+    </div>
+  );
+}
 ```
 
 ### 2. Submit Button States
@@ -593,7 +600,7 @@ const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormVali
   }}
   disabled={isSubmitting}
 >
-  {isSubmitting ? 'Saving...' : 'Save'}
+  {isSubmitting ? "Saving..." : "Save"}
 </Button>
 ```
 
@@ -648,7 +655,7 @@ email: { required: true }
 email: { required: 'Please enter your email address' }
 
 // ✅ Better: Context-specific
-email: { 
+email: {
   required: 'Email is required to send assignment notifications',
   email: 'Please enter a valid email (e.g., athlete@example.com)'
 }
@@ -670,7 +677,7 @@ Design your rules accordingly:
 
 ```typescript
 // ✅ Good: required runs first, then format
-email: { 
+email: {
   required: 'Email is required',
   email: 'Invalid email format'
 }
@@ -720,10 +727,10 @@ If you get type errors when using `handleChange`, you may need to cast for gener
 
 ```typescript
 // Type error: Type 'string[]' is not assignable to 'never'
-handleChange('athleteIds', newAthleteIds);
+handleChange("athleteIds", newAthleteIds);
 
 // ✅ Fix: Cast to never for complex types
-handleChange('athleteIds', newAthleteIds as never);
+handleChange("athleteIds", newAthleteIds as never);
 ```
 
 ### Submit Button Not Working

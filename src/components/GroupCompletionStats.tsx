@@ -67,7 +67,7 @@ export default function GroupCompletionStats() {
           {groupStats.map((group) => (
             <div
               key={group.id}
-              className="rounded-lg p-4 bg-linear-to-br from-white to-green-50/30 border border-green-200 shadow-sm hover:shadow-lg hover:border-green-300 hover:scale-[1.02] transition-all cursor-pointer"
+              className="rounded-lg p-4 bg-gradient-to-br from-white to-green-50/30 border border-green-200 shadow-sm hover:shadow-lg hover:border-green-300 hover:scale-[1.02] transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">

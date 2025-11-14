@@ -367,7 +367,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.totalWorkouts}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-blue-600 bg-linear-to-br from-blue-50 to-blue-100">
+                <div className="p-3 rounded-xl text-blue-600 bg-gradient-to-br from-blue-50 to-blue-100">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
@@ -383,7 +383,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.avgWorkoutsPerWeek || 0}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-green-600 bg-linear-to-br from-green-50 to-green-100">
+                <div className="p-3 rounded-xl text-green-600 bg-gradient-to-br from-green-50 to-green-100">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
@@ -400,7 +400,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     <span className="text-lg text-gray-600 ml-1">%</span>
                   </p>
                 </div>
-                <div className="p-3 rounded-xl text-orange-600 bg-linear-to-br from-orange-50 to-orange-100">
+                <div className="p-3 rounded-xl text-orange-600 bg-gradient-to-br from-orange-50 to-orange-100">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
@@ -421,7 +421,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-xl text-purple-600 bg-linear-to-br from-purple-50 to-purple-100">
+                <div className="p-3 rounded-xl text-purple-600 bg-gradient-to-br from-purple-50 to-purple-100">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>

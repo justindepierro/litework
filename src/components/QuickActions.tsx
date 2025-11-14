@@ -34,13 +34,13 @@ const QuickActions = memo(function QuickActions() {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-linear-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-700 shadow-sm hover:shadow-lg border border-blue-200",
+      blue: "bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-700 shadow-sm hover:shadow-lg border border-blue-200",
       orange:
-        "bg-linear-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 text-orange-700 shadow-sm hover:shadow-lg border border-orange-200",
+        "bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 text-orange-700 shadow-sm hover:shadow-lg border border-orange-200",
       purple:
-        "bg-linear-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 text-purple-700 shadow-sm hover:shadow-lg border border-purple-200",
+        "bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 text-purple-700 shadow-sm hover:shadow-lg border border-purple-200",
       green:
-        "bg-linear-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
+        "bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };

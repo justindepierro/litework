@@ -38,11 +38,12 @@ export function AchievementsSection({
         const params = athleteId
           ? new URLSearchParams({ athleteId })
           : new URLSearchParams();
-        
-        const { data, error } = await apiClient.requestWithResponse<AchievementsData>(
-          `/api/achievements?${params.toString()}`,
-          { toastError }
-        );
+
+        const { data, error } =
+          await apiClient.requestWithResponse<AchievementsData>(
+            `/api/achievements?${params.toString()}`,
+            { toastError }
+          );
 
         if (error) {
           throw new Error(error);

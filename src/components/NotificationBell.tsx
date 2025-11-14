@@ -77,8 +77,8 @@ export default function NotificationBell() {
         success: boolean;
         notifications: InAppNotification[];
         unreadCount: number;
-      }>("/api/notifications/inbox?limit=10", { 
-        showErrorToast: false  // Silently handle errors
+      }>("/api/notifications/inbox?limit=10", {
+        showErrorToast: false, // Silently handle errors
       });
 
       if (error) {

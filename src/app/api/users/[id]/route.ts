@@ -126,14 +126,79 @@ export async function DELETE(
     const { id } = await params;
     const supabase = getAdminClient();
 
-    const { error } = await supabase.from("users").delete().eq("id", id);
+    // Parse query params to determine delete type
+    const url = new URL(request.url);
+    const permanent = url.searchParams.get("permanent") === "true";
+    const reason = url.searchParams.get("reason") || "No reason provided";
 
-    if (error) throw error;
+    if (permanent) {
+      // HARD DELETE with CASCADE cleanup (requires confirmation)
+      const confirmationCode = url.searchParams.get("confirm");
 
-    return NextResponse.json({
-      success: true,
-      data: { deleted: true },
-    });
+      if (confirmationCode !== id) {
+        return NextResponse.json(
+          {
+            error:
+              "Confirmation required. Set ?confirm={athleteId} to permanently delete.",
+          },
+          { status: 400 }
+        );
+      }
+
+      // Call stored procedure for safe hard delete with cascade
+      const { data, error } = await supabase.rpc("hard_delete_athlete", {
+        athlete_id: id,
+        deleted_by: user.id,
+        deletion_reason: reason,
+        confirmation_code: confirmationCode,
+      });
+
+      if (error) {
+        console.error("Hard delete error:", error);
+        throw error;
+      }
+
+      // Also delete from Supabase Auth
+      try {
+        await supabase.auth.admin.deleteUser(id);
+      } catch (authError) {
+        console.warn(
+          "Could not delete from auth (user may not exist):",
+          authError
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          ...data,
+          type: "hard_delete",
+          warning: "This action cannot be undone",
+        },
+      });
+    } else {
+      // SOFT DELETE (default, can be restored)
+      const { data, error } = await supabase.rpc("soft_delete_athlete", {
+        athlete_id: id,
+        deleted_by: user.id,
+        deletion_reason: reason,
+      });
+
+      if (error) {
+        console.error("Soft delete error:", error);
+        throw error;
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          ...data,
+          type: "soft_delete",
+          message:
+            "Athlete has been archived and can be restored from the admin panel",
+        },
+      });
+    }
   } catch (error) {
     if (error instanceof Error && error.message === "Forbidden") {
       return NextResponse.json(
@@ -153,7 +218,8 @@ export async function DELETE(
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to delete athlete",
+        error:
+          error instanceof Error ? error.message : "Failed to delete athlete",
       },
       { status: 500 }
     );

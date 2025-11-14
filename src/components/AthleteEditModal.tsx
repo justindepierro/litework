@@ -43,64 +43,67 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { values, errors, handleChange, handleSubmit, isSubmitting } = useFormValidation({
-    initialValues: {
-      firstName: athlete.firstName || "",
-      lastName: athlete.lastName || "",
-      email: athlete.email || "",
-      dateOfBirth: athlete.dateOfBirth
-        ? new Date(athlete.dateOfBirth).toISOString().split("T")[0]
-        : "",
-      injuryStatus: athlete.injuryStatus || "",
-      bio: athlete.bio || "",
-      phone: athlete.phone || "",
-      emergencyContact: athlete.emergencyContact || "",
-      emergencyPhone: athlete.emergencyPhone || "",
-      heightInches: athlete.heightInches?.toString() || "",
-      weightLbs: athlete.weightLbs?.toString() || "",
-      gender: athlete.gender || "",
-    },
-    validationRules: {
-      firstName: { required: "First name is required" },
-      lastName: { required: "Last name is required" },
-      email: { 
-        required: "Email is required",
-        email: "Invalid email format"
+  const { values, errors, handleChange, handleSubmit, isSubmitting } =
+    useFormValidation({
+      initialValues: {
+        firstName: athlete.firstName || "",
+        lastName: athlete.lastName || "",
+        email: athlete.email || "",
+        dateOfBirth: athlete.dateOfBirth
+          ? new Date(athlete.dateOfBirth).toISOString().split("T")[0]
+          : "",
+        injuryStatus: athlete.injuryStatus || "",
+        bio: athlete.bio || "",
+        phone: athlete.phone || "",
+        emergencyContact: athlete.emergencyContact || "",
+        emergencyPhone: athlete.emergencyPhone || "",
+        heightInches: athlete.heightInches?.toString() || "",
+        weightLbs: athlete.weightLbs?.toString() || "",
+        gender: athlete.gender || "",
       },
-    },
-    onSubmit: async (formValues) => {
-      // Construct name from first and last name
-      const name = `${formValues.firstName.trim()} ${formValues.lastName.trim()}`;
+      validationRules: {
+        firstName: { required: "First name is required" },
+        lastName: { required: "Last name is required" },
+        email: {
+          required: "Email is required",
+          email: "Invalid email format",
+        },
+      },
+      onSubmit: async (formValues) => {
+        // Construct name from first and last name
+        const name = `${formValues.firstName.trim()} ${formValues.lastName.trim()}`;
 
-      const response = await fetch(`/api/users/${athlete.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email: formValues.email,
-          dateOfBirth: formValues.dateOfBirth || null,
-          injuryStatus: formValues.injuryStatus || null,
-          bio: formValues.bio || null,
-          phone: formValues.phone || null,
-          emergencyContact: formValues.emergencyContact || null,
-          emergencyPhone: formValues.emergencyPhone || null,
-          heightInches: formValues.heightInches
-            ? parseFloat(formValues.heightInches)
-            : null,
-          weightLbs: formValues.weightLbs ? parseFloat(formValues.weightLbs) : null,
-          gender: formValues.gender || null,
-        }),
-      });
+        const response = await fetch(`/api/users/${athlete.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email: formValues.email,
+            dateOfBirth: formValues.dateOfBirth || null,
+            injuryStatus: formValues.injuryStatus || null,
+            bio: formValues.bio || null,
+            phone: formValues.phone || null,
+            emergencyContact: formValues.emergencyContact || null,
+            emergencyPhone: formValues.emergencyPhone || null,
+            heightInches: formValues.heightInches
+              ? parseFloat(formValues.heightInches)
+              : null,
+            weightLbs: formValues.weightLbs
+              ? parseFloat(formValues.weightLbs)
+              : null,
+            gender: formValues.gender || null,
+          }),
+        });
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (result.success) {
-        onSuccess();
-      } else {
-        throw new Error(result.error || "Failed to update athlete");
-      }
-    },
-  });
+        if (result.success) {
+          onSuccess();
+        } else {
+          throw new Error(result.error || "Failed to update athlete");
+        }
+      },
+    });
 
   return (
     <ModalBackdrop isOpen={true} onClose={onClose}>

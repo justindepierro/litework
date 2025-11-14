@@ -31,11 +31,12 @@ export async function GET() {
 
     const supabase = getAdminClient();
 
-    // Fetch athletes (users with role 'athlete')
+    // Fetch athletes (users with role 'athlete', excluding soft-deleted)
     const { data: athletes, error: athletesError } = await supabase
       .from("users")
       .select("id, first_name, last_name, email, role, created_at, updated_at")
       .eq("role", "athlete")
+      .is("deleted_at", null) // Exclude soft-deleted athletes
       .order("first_name");
 
     if (athletesError) {
@@ -43,13 +44,14 @@ export async function GET() {
       throw athletesError;
     }
 
-    // Fetch pending invites (including draft invites without email)
+    // Fetch pending invites (including draft invites without email, excluding deleted)
     const { data: invites, error: invitesError } = await supabase
       .from("invites")
       .select(
         "id, first_name, last_name, email, status, created_at, expires_at, group_ids"
       )
       .in("status", ["pending", "draft"])
+      .is("deleted_at", null) // Exclude soft-deleted invites
       .order("created_at", { ascending: false });
 
     if (invitesError) {

@@ -43,10 +43,11 @@ import { useAsyncState } from "@/hooks/use-async-state";
 
 const { data, isLoading, error, execute } = useAsyncState<Exercise[]>();
 
-const fetchData = () => execute(async () => {
-  const response = await fetch("/api/exercises");
-  return response.json();
-});
+const fetchData = () =>
+  execute(async () => {
+    const response = await fetch("/api/exercises");
+    return response.json();
+  });
 ```
 
 **Lines of code**: 6 lines  
@@ -60,13 +61,13 @@ const fetchData = () => execute(async () => {
 
 ```typescript
 interface UseAsyncStateReturn<T> {
-  data: T | null;              // The data from async operation
-  isLoading: boolean;          // Loading state
-  error: string | null;        // Error message if failed
+  data: T | null; // The data from async operation
+  isLoading: boolean; // Loading state
+  error: string | null; // Error message if failed
   execute: (fn) => Promise<T>; // Execute async operation
-  reset: () => void;           // Reset to initial state
-  setError: (err) => void;     // Manually set error
-  setData: (data) => void;     // Manually set data
+  reset: () => void; // Reset to initial state
+  setError: (err) => void; // Manually set error
+  setData: (data) => void; // Manually set data
   setIsLoading: (bool) => void; // Manually set loading
 }
 ```
@@ -102,7 +103,7 @@ const { data: workout, isLoading, error, execute } = useAsyncState<Workout>();
 
 useEffect(() => {
   if (!workoutId) return;
-  
+
   execute(async () => {
     const response = await fetch(`/api/workouts/${workoutId}`);
     return response.json();
@@ -113,7 +114,13 @@ useEffect(() => {
 ### Pattern 3: Search with Debounce
 
 ```typescript
-const { data: results, isLoading, execute, setData, setError } = useAsyncState<SearchResult[]>();
+const {
+  data: results,
+  isLoading,
+  execute,
+  setData,
+  setError,
+} = useAsyncState<SearchResult[]>();
 const [searchQuery, setSearchQuery] = useState("");
 
 useEffect(() => {
@@ -127,7 +134,9 @@ useEffect(() => {
   // Debounce search
   const debounce = setTimeout(() => {
     execute(async () => {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(
+        `/api/search?q=${encodeURIComponent(searchQuery)}`
+      );
       return response.json();
     });
   }, 300);
@@ -147,7 +156,7 @@ const handleSubmit = async (formData: FormData) => {
       method: "POST",
       body: JSON.stringify(formData),
     });
-    
+
     if (!response.ok) throw new Error("Submission failed");
     return response.json();
   });
@@ -172,15 +181,8 @@ return (
 ### Pattern 5: Manual State Control
 
 ```typescript
-const { 
-  data, 
-  isLoading, 
-  error, 
-  execute,
-  setData,
-  setError,
-  reset 
-} = useAsyncState<User>();
+const { data, isLoading, error, execute, setData, setError, reset } =
+  useAsyncState<User>();
 
 // Manual data update
 const handleOptimisticUpdate = (updatedUser: User) => {
@@ -207,11 +209,13 @@ const handleCancel = () => {
 When migrating a component to use `useAsyncState`:
 
 1. **Import the hook**:
+
    ```typescript
    import { useAsyncState } from "@/hooks/use-async-state";
    ```
 
 2. **Replace useState declarations**:
+
    ```typescript
    // ❌ Remove these
    const [data, setData] = useState([]);
@@ -219,10 +223,12 @@ When migrating a component to use `useAsyncState`:
    const [error, setError] = useState<string | null>(null);
 
    // ✅ Replace with this
-   const { data, isLoading, error, execute, setData, setError } = useAsyncState<DataType>();
+   const { data, isLoading, error, execute, setData, setError } =
+     useAsyncState<DataType>();
    ```
 
 3. **Update async functions**:
+
    ```typescript
    // ❌ Old way
    const fetchData = async () => {
@@ -239,9 +245,10 @@ When migrating a component to use `useAsyncState`:
    };
 
    // ✅ New way
-   const fetchData = () => execute(async () => {
-     return await apiCall();
-   });
+   const fetchData = () =>
+     execute(async () => {
+       return await apiCall();
+     });
    ```
 
 4. **Update variable references**:
@@ -249,6 +256,7 @@ When migrating a component to use `useAsyncState`:
    - Keep `data`, `error` the same
 
 5. **Add null checks** (since data starts as null):
+
    ```typescript
    // ❌ Before (data defaults to [])
    {data.map(item => ...)}
@@ -276,6 +284,7 @@ When migrating a component to use `useAsyncState`:
 **Savings**: 11 lines (65% reduction)
 
 **Changes**:
+
 - Replaced 3 `useState` declarations with single hook
 - Simplified `fetchExercises` function
 - Added null-safe array access (`exercises?.map`)
@@ -290,7 +299,7 @@ When migrating a component to use `useAsyncState`:
 ### High Priority (10+ lines saved each)
 
 1. **WorkoutAssignmentDetailModal.tsx** - 18 lines saved
-2. **BlockLibrary.tsx** - 16 lines saved  
+2. **BlockLibrary.tsx** - 16 lines saved
 3. **FeedbackDashboard.tsx** - 15 lines saved
 4. **WorkoutView.tsx** - 14 lines saved
 5. **NotificationPermission.tsx** - 12 lines saved
@@ -337,6 +346,7 @@ When migrating a component to use `useAsyncState`:
 ### Issue: "data is possibly null"
 
 **Solution**: Add null check or default value
+
 ```typescript
 // Option 1: Optional chaining
 {data?.map(item => ...)}
@@ -352,6 +362,7 @@ return <List items={data} />;
 ### Issue: "execute is not a function"
 
 **Solution**: Ensure `execute` is in useEffect dependency array
+
 ```typescript
 useEffect(() => {
   execute(fetchData);
@@ -361,6 +372,7 @@ useEffect(() => {
 ### Issue: "Too many re-renders"
 
 **Solution**: Don't call execute() directly in render
+
 ```typescript
 // ❌ Wrong - infinite loop
 execute(fetchData);
@@ -374,6 +386,7 @@ useEffect(() => {
 ### Issue: "Data not updating after mutation"
 
 **Solution**: Use `setData` for optimistic updates or refetch
+
 ```typescript
 // Option 1: Refetch
 await execute(fetchData);

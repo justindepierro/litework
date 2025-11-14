@@ -1,4 +1,5 @@
 # Code Audit: Duplicate, Conflicting & Deprecated Code
+
 **Date**: November 13, 2025  
 **Auditor**: GitHub Copilot  
 **Scope**: Full codebase analysis for code quality and maintainability
@@ -28,15 +29,18 @@ Comprehensive audit conducted across authentication, database services, componen
 **Location**: `src/lib/database-service.ts`
 
 #### Issue
+
 The old non-transaction-safe functions `createWorkoutPlan` and `updateWorkoutPlan` still exist alongside the new transaction-safe versions (`createWorkoutPlanTransaction`, `updateWorkoutPlanTransaction`).
 
 **Found at**:
+
 - Line 943: `export const createWorkoutPlan = async (`
 - Line 1123: `export const updateWorkoutPlan = async (`
 
 **Status**: NOT USED in codebase (grep confirmed no imports)
 
 #### Recommendation
+
 **DEPRECATE with clear warnings**, then remove in next release:
 
 ```typescript
@@ -44,27 +48,27 @@ The old non-transaction-safe functions `createWorkoutPlan` and `updateWorkoutPla
  * @deprecated Use createWorkoutPlanTransaction instead
  * This function does not provide transaction safety and may leave
  * orphaned data on failure. Will be removed in v1.1.0.
- * 
+ *
  * Migration:
  * - Replace: createWorkoutPlan(data)
  * - With: createWorkoutPlanTransaction(data)
  */
-export const createWorkoutPlan = async (
+export const createWorkoutPlan =
+  async();
   // ... existing implementation
-);
 
 /**
  * @deprecated Use updateWorkoutPlanTransaction instead
  * This function does not provide transaction safety and may leave
  * orphaned data on failure. Will be removed in v1.1.0.
- * 
+ *
  * Migration:
  * - Replace: updateWorkoutPlan(id, updates)
  * - With: updateWorkoutPlanTransaction(id, updates)
  */
-export const updateWorkoutPlan = async (
+export const updateWorkoutPlan =
+  async();
   // ... existing implementation
-);
 ```
 
 **Remove these in next major version** (after confirming no external dependencies).
@@ -80,12 +84,15 @@ export const updateWorkoutPlan = async (
 **Locations**: Multiple components (50+ instances)
 
 #### Issue
+
 Found 50+ instances of hardcoded Tailwind color classes instead of design tokens:
+
 - `text-blue-600`, `text-red-500`, `text-green-600`
 - `bg-blue-50`, `bg-red-100`, `bg-green-50`
 - `border-blue-500`, `border-green-200`
 
 **Most violations in**:
+
 1. `src/components/WorkoutLive.tsx` (15 instances)
 2. `src/components/BulkOperationModal.tsx` (12 instances)
 3. `src/components/WorkoutAssignmentDetailModal.tsx` (8 instances)
@@ -95,6 +102,7 @@ Found 50+ instances of hardcoded Tailwind color classes instead of design tokens
 #### Examples
 
 **WorkoutLive.tsx (Line 363-369)**:
+
 ```typescript
 // ❌ WRONG
 <div className="text-3xl font-bold text-blue-600">
@@ -106,6 +114,7 @@ Found 50+ instances of hardcoded Tailwind color classes instead of design tokens
 ```
 
 **BulkOperationModal.tsx (Line 278-297)**:
+
 ```typescript
 // ❌ WRONG
 ? "border-blue-500 bg-blue-50"
@@ -150,6 +159,7 @@ border-red-300 → border-error
 **Locations**: `src/lib/notification-service.ts` + `src/lib/unified-notification-service.ts`
 
 #### Issue
+
 Two separate notification service files with overlapping functionality:
 
 1. **notification-service.ts** (552 lines)
@@ -164,10 +174,12 @@ Two separate notification service files with overlapping functionality:
    - In-app notification storage
 
 **Both files export similar functions**:
+
 - `notification-service.ts`: `sendPushNotification`, `getUserPreferences`
 - `unified-notification-service.ts`: `sendUnifiedNotification` (calls the above)
 
 #### Current Usage
+
 **unified-notification-service.ts** is the recommended interface, but both files contain business logic.
 
 #### Recommendation
@@ -177,7 +189,7 @@ Two separate notification service files with overlapping functionality:
 ```
 src/lib/notifications/
 ├── push-notifications.ts      # Push-specific logic only
-├── email-notifications.ts     # Email-specific logic only  
+├── email-notifications.ts     # Email-specific logic only
 ├── preferences.ts             # User preferences management
 ├── subscription.ts            # Push subscription management
 ├── in-app.ts                  # In-app notification storage
@@ -185,6 +197,7 @@ src/lib/notifications/
 ```
 
 **Benefits**:
+
 - Clear separation of concerns
 - Easier testing
 - Reduced file sizes
@@ -201,6 +214,7 @@ src/lib/notifications/
 **Status**: ✅ Clean and consistent
 
 **Findings**:
+
 - ✅ No JWT code found (fully migrated to Supabase Auth)
 - ✅ All API routes use `withAuth` wrapper from `auth-server.ts`
 - ✅ Consistent server-side auth with `getAuthenticatedUser()`
@@ -208,6 +222,7 @@ src/lib/notifications/
 - ✅ No deprecated JWT libraries or code patterns
 
 **Evidence**:
+
 - 82 uses of `withAuth` wrapper across API routes
 - 0 instances of `jwt.sign`, `jwt.verify`, or `jsonwebtoken`
 - Clean separation: `auth-client.ts` (client), `auth-server.ts` (API routes)
@@ -219,6 +234,7 @@ src/lib/notifications/
 **Status**: ✅ Fully compliant with design system
 
 **Findings**:
+
 - ✅ No raw `<input>`, `<textarea>`, `<select>` elements found
 - ✅ All forms use Input, Textarea, Select components
 - ✅ No raw `<button>` elements (all use Button component)
@@ -226,11 +242,13 @@ src/lib/notifications/
 - ✅ All modals use unified Modal components (26 modal files, all compliant)
 
 **Evidence**:
+
 - 26 modal components, all import from `@/components/ui/Modal`
 - Grep searches returned 0 raw HTML form elements
 - 100% design system compliance
 
 **Example compliance** (WorkoutEditor.tsx):
+
 ```typescript
 // ✅ Using Input component
 <Input
@@ -254,29 +272,33 @@ src/lib/notifications/
 **Status**: ✅ Properly implemented and in use
 
 **Findings**:
+
 - ✅ Transaction functions exist: `createWorkoutPlanTransaction`, `updateWorkoutPlanTransaction`
 - ✅ API routes use transaction-safe versions exclusively
 - ✅ Database functions handle atomic operations correctly
 - ⚠️ Old functions still exported but not used
 
 **Evidence**:
+
 - `src/app/api/workouts/route.ts` imports and uses transaction versions (line 5-6, 133, 242)
 - 0 imports of old `createWorkoutPlan` or `updateWorkoutPlan` in codebase
 - PostgreSQL RPC functions implement proper transaction rollback
 
 ---
 
-### 7. API Route Consistency - EXCELLENT  
+### 7. API Route Consistency - EXCELLENT
 
 **Status**: ✅ Clean and well-organized
 
 **Findings**:
+
 - ✅ All routes follow REST conventions (GET, POST, PUT, DELETE, PATCH)
 - ✅ Consistent error handling with proper status codes (401, 403, 404, 500)
 - ✅ All protected routes use `withAuth` wrapper
 - ✅ Clear separation of concerns (one file per resource)
 
 **Evidence**:
+
 - 50+ API routes identified, all follow NextRequest/NextResponse pattern
 - Consistent error responses: `NextResponse.json({ error }, { status })`
 - No mixed patterns or conflicting approaches
@@ -287,15 +309,15 @@ src/lib/notifications/
 
 ### Code Quality Metrics
 
-| Category | Status | Score |
-|----------|--------|-------|
-| Authentication | ✅ Excellent | 100% |
-| Component Compliance | ✅ Excellent | 100% |
-| Modal Patterns | ✅ Excellent | 100% |
-| API Routes | ✅ Excellent | 100% |
-| Design System Colors | ⚠️ Needs Work | 75% |
-| Service Architecture | ⚠️ Could Improve | 85% |
-| Deprecated Code | ⚠️ Minor Issue | 90% |
+| Category             | Status           | Score |
+| -------------------- | ---------------- | ----- |
+| Authentication       | ✅ Excellent     | 100%  |
+| Component Compliance | ✅ Excellent     | 100%  |
+| Modal Patterns       | ✅ Excellent     | 100%  |
+| API Routes           | ✅ Excellent     | 100%  |
+| Design System Colors | ⚠️ Needs Work    | 75%   |
+| Service Architecture | ⚠️ Could Improve | 85%   |
+| Deprecated Code      | ⚠️ Minor Issue   | 90%   |
 
 ### Overall Score: **92%** (A-)
 
@@ -370,5 +392,5 @@ src/lib/notifications/
 
 ---
 
-*Report generated: November 13, 2025*  
-*Next audit due: February 2026*
+_Report generated: November 13, 2025_  
+_Next audit due: February 2026_

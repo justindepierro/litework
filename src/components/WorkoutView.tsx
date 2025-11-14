@@ -145,7 +145,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               </p>
 
               {/* Enhanced mobile workout info */}
-              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-linear-to-br from-silver-200 to-info-lightest rounded-xl p-4 border border-info-lighter">
+              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-gradient-to-br from-silver-200 to-info-lightest rounded-xl p-4 border border-info-lighter">
                 <div className="flex items-center justify-center gap-2 text-body-small">
                   <Calendar className="w-5 h-5 text-accent-blue" />
                   <span className="font-medium">
@@ -230,13 +230,13 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                       Array.from(equipment).map((item) => (
                         <span
                           key={item}
-                          className="px-4 py-2 bg-linear-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-sm font-medium text-navy-900 shadow-sm hover:shadow-md transition-shadow"
+                          className="px-4 py-2 bg-gradient-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-sm font-medium text-navy-900 shadow-sm hover:shadow-md transition-shadow"
                         >
                           {item}
                         </span>
                       ))
                     ) : (
-                      <span className="px-4 py-2 bg-linear-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-sm font-medium text-navy-900 shadow-sm">
+                      <span className="px-4 py-2 bg-gradient-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-sm font-medium text-navy-900 shadow-sm">
                         Check exercise details
                       </span>
                     );
@@ -340,7 +340,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
             {/* Enhanced progress bar */}
             <div className="w-full bg-silver-300 rounded-full h-4 mb-6 shadow-inner">
               <div
-                className="bg-linear-to-r from-accent-green to-green-600 h-4 rounded-full transition-all duration-500 shadow-sm"
+                className="bg-gradient-to-r from-accent-green to-green-600 h-4 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${workout.progressPercentage}%` }}
               ></div>
             </div>
@@ -415,7 +415,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                         className={`w-12 h-12 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-lg sm:text-base font-bold shadow-md ${
                           isCompleted
                             ? "bg-accent-green text-white"
-                            : "bg-linear-to-br from-silver-400 to-silver-500 text-navy-700"
+                            : "bg-gradient-to-br from-silver-400 to-silver-500 text-navy-700"
                         }`}
                       >
                         {isCompleted ? (

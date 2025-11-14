@@ -6,9 +6,7 @@ import {
   updateWorkoutPlanTransaction,
 } from "@/lib/database-service";
 import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
-import {
-  authenticationError,
-} from "@/lib/api-errors";
+import { authenticationError } from "@/lib/api-errors";
 
 // GET /api/workouts - Get workout plans
 export async function GET(request: NextRequest) {

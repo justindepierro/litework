@@ -175,14 +175,15 @@ export default function BulkKPIAssignmentModal({
         notes: notes.trim() || undefined,
       };
 
-      const { data, error } = await apiClient.requestWithResponse<BulkAssignKPIsResponse>(
-        "/api/athlete-assigned-kpis",
-        {
-          method: "POST",
-          body: payload,
-          toastError: toast.error,
-        }
-      );
+      const { data, error } =
+        await apiClient.requestWithResponse<BulkAssignKPIsResponse>(
+          "/api/athlete-assigned-kpis",
+          {
+            method: "POST",
+            body: payload,
+            toastError: toast.error,
+          }
+        );
 
       if (error) {
         throw new Error(error);

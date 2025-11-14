@@ -256,10 +256,7 @@ export function AssignmentDetailsSkeleton() {
       <div className="space-y-4">
         <Skeleton className="h-6 w-32" />
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="rounded-lg p-4 shadow-sm space-y-3"
-          >
+          <div key={i} className="rounded-lg p-4 shadow-sm space-y-3">
             <div className="flex items-center gap-3">
               <Skeleton variant="circular" className="w-10 h-10" />
               <div className="flex-1 space-y-2">
@@ -310,10 +307,7 @@ export function WorkoutEditorSkeleton() {
           <Skeleton className="h-10 w-32" />
         </div>
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="rounded-lg p-4 shadow-sm space-y-3"
-          >
+          <div key={i} className="rounded-lg p-4 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <Skeleton className="h-5 w-48" />
               <Skeleton variant="circular" className="w-8 h-8" />

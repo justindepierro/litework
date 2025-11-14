@@ -201,7 +201,9 @@ export default function ProgressAnalyticsDashboard() {
               <BarChart3 className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-heading-primary">Total Workouts</h3>
+              <h3 className="font-semibold text-heading-primary">
+                Total Workouts
+              </h3>
               <p className="text-sm text-body-secondary">This period</p>
             </div>
           </div>
@@ -221,7 +223,9 @@ export default function ProgressAnalyticsDashboard() {
               <Zap className="w-5 h-5 text-success" />
             </div>
             <div>
-              <h3 className="font-semibold text-heading-primary">Total Volume</h3>
+              <h3 className="font-semibold text-heading-primary">
+                Total Volume
+              </h3>
               <p className="text-sm text-body-secondary">Pounds lifted</p>
             </div>
           </div>
@@ -241,8 +245,12 @@ export default function ProgressAnalyticsDashboard() {
               <Target className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <h3 className="font-semibold text-heading-primary">Strength Gain</h3>
-              <p className="text-sm text-body-secondary">Average 1RM increase</p>
+              <h3 className="font-semibold text-heading-primary">
+                Strength Gain
+              </h3>
+              <p className="text-sm text-body-secondary">
+                Average 1RM increase
+              </p>
             </div>
           </div>
           <div className="text-3xl font-bold text-heading-primary mb-2">
@@ -261,7 +269,9 @@ export default function ProgressAnalyticsDashboard() {
               <Calendar className="w-5 h-5 text-warning" />
             </div>
             <div>
-              <h3 className="font-semibold text-heading-primary">Consistency</h3>
+              <h3 className="font-semibold text-heading-primary">
+                Consistency
+              </h3>
               <p className="text-sm text-body-secondary">Workout adherence</p>
             </div>
           </div>
@@ -286,7 +296,9 @@ export default function ProgressAnalyticsDashboard() {
           <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <BarChart3 className="w-12 h-12 text-steel-400 mx-auto mb-2" />
-              <p className="text-caption-muted">Chart visualization would go here</p>
+              <p className="text-caption-muted">
+                Chart visualization would go here
+              </p>
               <p className="text-sm text-steel-400">
                 Shows 1RM progression over time
               </p>
@@ -302,7 +314,9 @@ export default function ProgressAnalyticsDashboard() {
           <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-steel-400 mx-auto mb-2" />
-              <p className="text-caption-muted">Chart visualization would go here</p>
+              <p className="text-caption-muted">
+                Chart visualization would go here
+              </p>
               <p className="text-sm text-steel-400">
                 Shows total volume over time
               </p>
@@ -314,7 +328,9 @@ export default function ProgressAnalyticsDashboard() {
       {/* Top Exercises Table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-heading-primary">Top Exercises</h3>
+          <h3 className="text-lg font-bold text-heading-primary">
+            Top Exercises
+          </h3>
           <Award className="w-5 h-5 text-warning" />
         </div>
 
@@ -370,7 +386,9 @@ export default function ProgressAnalyticsDashboard() {
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-heading-primary">Recent Activity</h3>
+          <h3 className="text-lg font-bold text-heading-primary">
+            Recent Activity
+          </h3>
           <Users className="w-5 h-5 text-primary" />
         </div>
 

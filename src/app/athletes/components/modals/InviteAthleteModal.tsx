@@ -78,13 +78,21 @@ export default function InviteAthleteModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="
+        bg-white 
+        w-full h-full
+        sm:rounded-xl sm:max-w-md sm:h-auto sm:max-h-[85vh]
+        flex flex-col 
+        sm:shadow-2xl
+        safe-area-inset
+      ">
         <ModalHeader
           title="Invite New Athlete"
           icon={<Send className="w-6 h-6" />}
           onClose={onClose}
         />
-        <ModalContent>
+        <div className="flex-1 overflow-y-auto">
+          <ModalContent>
           <div className="space-y-4">
             {/* Name Inputs */}
             <div className="grid grid-cols-2 gap-4">
@@ -144,9 +152,9 @@ export default function InviteAthleteModal({
             />
 
             {/* Info Box */}
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-gradient-to-r from-orange-50 to-purple-50 p-4 rounded-lg border border-orange-200">
               <div className="flex items-start gap-3">
-                <Send className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                <Send className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                 <div>
                   <Heading level="h4" className="mb-1">
                     How It Works
@@ -161,6 +169,8 @@ export default function InviteAthleteModal({
             </div>
           </div>
         </ModalContent>
+        </div>
+
         <ModalFooter align="between">
           <Button onClick={onClose} variant="secondary" className="flex-1">
             Cancel

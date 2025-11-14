@@ -7,9 +7,10 @@
 "use client";
 
 import React, { useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { modalBackdrop, modalContent } from "@/lib/animation-variants";
+import { modalBackdrop, modalContent as modalContentVariants } from "@/lib/animation-variants";
 import { trapFocus, focusFirstElement } from "@/lib/accessibility-utils";
 
 export interface ModalBackdropProps {
@@ -126,7 +127,7 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
   const backdropClass = backdropVariants[backdropVariant];
   const zIndexClass = zIndex === 60 ? "z-60" : "z-50";
 
-  return (
+  const modalElement = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -135,7 +136,10 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
           animate="visible"
           exit="exit"
           className={`
-            fixed inset-0 flex items-center justify-center p-4
+            fixed inset-0
+            flex items-start sm:items-center justify-center 
+            p-0 sm:p-4
+            overflow-y-auto overflow-x-hidden
             ${zIndexClass}
             ${backdropClass}
             ${backdropClassName}
@@ -146,11 +150,17 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
         >
           <motion.div
             ref={modalRef}
-            variants={modalContent}
+            variants={modalContentVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={className}
+            className={`
+              relative 
+              w-full h-full 
+              sm:w-auto sm:h-auto
+              sm:my-8 sm:max-h-[90vh]
+              ${className}
+            `}
             tabIndex={-1}
           >
             {children}
@@ -159,6 +169,10 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
       )}
     </AnimatePresence>
   );
+
+  // Render modal in a portal to document.body to avoid stacking context issues
+  if (typeof window === 'undefined') return null;
+  return createPortal(modalElement, document.body);
 };
 
 ModalBackdrop.displayName = "ModalBackdrop";
@@ -184,19 +198,21 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   return (
     <div
       className={`
-      flex items-start justify-between gap-4 p-6 pb-4
-      border-b border-[var(--color-border-primary)]
+      relative
+      flex items-center justify-between gap-4 p-6
+      bg-gradient-header-secondary
+      rounded-t-xl sm:rounded-t-xl
       ${headerClassName}
     `}
     >
-      <div className="flex items-start gap-3 flex-1">
-        {icon && <div className="shrink-0 mt-1">{icon}</div>}
+      <div className="flex items-center gap-3 flex-1">
+        {icon && <div className="shrink-0 !text-white">{icon}</div>}
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-1">
+          <h2 className="text-2xl font-bold !text-white">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+            <p className="text-sm !text-white/90 mt-0.5">
               {subtitle}
             </p>
           )}
@@ -206,10 +222,13 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         onClick={onClose}
         className="
           shrink-0 p-2 rounded-lg
-          hover:bg-[var(--color-bg-secondary)]
+          hover:bg-white/20
           transition-colors
-          text-[var(--color-text-secondary)]
-          hover:text-[var(--color-text-primary)]
+          !text-white
+          hover:!text-white
+          focus:outline-none
+          focus:ring-2
+          focus:ring-white/50
         "
         aria-label="Close modal"
       >

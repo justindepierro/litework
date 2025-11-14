@@ -39,8 +39,8 @@ export default function GroupsSection({
 
   return (
     <div className="mb-6 bg-white rounded-xl shadow-sm border border-silver-400 p-4">
-      <h3 className="text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
-        <Users className="w-5 h-5 text-purple-600" />
+      <h3 className="text-lg font-semibold text-heading-primary mb-4 flex items-center gap-2">
+        <Users className="w-5 h-5 text-accent" />
         Groups ({groups.length})
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

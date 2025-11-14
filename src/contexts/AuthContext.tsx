@@ -199,6 +199,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Set up periodic session refresh to prevent expiry
+    // Supabase tokens expire after 1 hour, so refresh every 30 minutes
     const refreshInterval = setInterval(
       async () => {
         if (
@@ -207,17 +208,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           !authOperationInProgress.current
         ) {
           try {
-            // Refresh session every 4 hours (tokens expire after 1 hour by default, but are auto-refreshed)
-            // [REMOVED] console.log("[AUTH] Refreshing session...");
+            console.log("[AUTH] Refreshing session...");
             await authClient.refreshSession();
-            // [REMOVED] console.log("[AUTH] Session refreshed successfully");
+            console.log("[AUTH] Session refreshed successfully");
           } catch (error) {
             console.error("[AUTH] Failed to refresh session:", error);
+            // If refresh fails, try to get current user
+            try {
+              const currentUser = await authClient.getCurrentUser();
+              if (!currentUser && mountedRef.current) {
+                console.error("[AUTH] Session expired, redirecting to login");
+                router.push("/login");
+              }
+            } catch (e) {
+              console.error("[AUTH] Failed to verify user session:", e);
+            }
           }
         }
       },
-      4 * 60 * 60 * 1000
-    ); // 4 hours
+      30 * 60 * 1000
+    ); // 30 minutes (half of token lifetime)
 
     // Refresh session when app becomes visible (mobile PWA support)
     const handleVisibilityChange = async () => {

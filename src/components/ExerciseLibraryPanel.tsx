@@ -22,10 +22,10 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
   onDragStart,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { 
-    data: exercises, 
-    isLoading: loading, 
-    error, 
+  const {
+    data: exercises,
+    isLoading: loading,
+    error,
     execute,
     setData: setExercises,
     setError,
@@ -39,22 +39,23 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
       return;
     }
 
-    const fetchExercises = () => execute(async () => {
-      const response = await fetch(
-        `/api/exercises/search?q=${encodeURIComponent(searchQuery)}&limit=50`
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch exercises: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      if (data.success) {
-        return data.data || [];
-      } else {
-        throw new Error(data.error || 'Failed to load exercises');
-      }
-    });
+    const fetchExercises = () =>
+      execute(async () => {
+        const response = await fetch(
+          `/api/exercises/search?q=${encodeURIComponent(searchQuery)}&limit=50`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch exercises: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          return data.data || [];
+        } else {
+          throw new Error(data.error || "Failed to load exercises");
+        }
+      });
 
     const debounce = setTimeout(fetchExercises, 300);
     return () => clearTimeout(debounce);
@@ -97,12 +98,15 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
           </div>
         )}
 
-        {!loading && searchQuery.length >= 2 && (!exercises || exercises.length === 0) && !error && (
-          <EmptySearch
-            searchTerm={searchQuery}
-            onClearSearch={() => setSearchQuery("")}
-          />
-        )}
+        {!loading &&
+          searchQuery.length >= 2 &&
+          (!exercises || exercises.length === 0) &&
+          !error && (
+            <EmptySearch
+              searchTerm={searchQuery}
+              onClearSearch={() => setSearchQuery("")}
+            />
+          )}
 
         {error && (
           <div className="text-center py-8 px-4">

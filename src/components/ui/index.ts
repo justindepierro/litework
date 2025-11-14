@@ -8,6 +8,7 @@ export * from "./Button";
 export * from "./Card";
 export * from "./Input";
 export * from "./EmptyState";
+export * from "./PageHeader";
 
 // Existing components
 export * from "./LoadingSpinner";

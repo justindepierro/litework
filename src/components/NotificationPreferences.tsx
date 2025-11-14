@@ -34,7 +34,8 @@ export default function NotificationPreferences() {
   const { user } = useAuth();
   const [preferences, setPreferences] =
     useState<NotificationPreferencesData | null>(null);
-  const { isLoading, execute } = useAsyncState<NotificationPreferencesData | null>();
+  const { isLoading, execute } =
+    useAsyncState<NotificationPreferencesData | null>();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -43,7 +44,7 @@ export default function NotificationPreferences() {
   // Load preferences on mount
   useEffect(() => {
     if (!user) return;
-    
+
     execute(async () => {
       const { data, error } = await apiClient.requestWithResponse<{
         preferences: NotificationPreferencesData;

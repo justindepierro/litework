@@ -71,13 +71,21 @@ export default function KPIModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="
+        bg-white 
+        w-full h-full
+        sm:rounded-xl sm:max-w-2xl sm:h-auto sm:max-h-[85vh]
+        flex flex-col 
+        sm:shadow-2xl
+        safe-area-inset
+      ">
         <ModalHeader
           title={`Manage Personal Records - ${athlete.fullName || "Athlete"}`}
           icon={<Trophy className="w-6 h-6" />}
           onClose={onClose}
         />
-        <ModalContent>
+        <div className="flex-1 overflow-y-auto">
+          <ModalContent>
           {/* Add New PR Form */}
           <div className="bg-silver-100 rounded-lg p-4 mb-6">
             <Heading level="h3" className="mb-3">
@@ -149,7 +157,7 @@ export default function KPIModal({
                     {onDeleteKPI && (
                       <button
                         onClick={() => handleDelete(kpi.id)}
-                        className="p-2 text-accent-red hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-error hover:bg-error-lighter rounded-lg transition-colors"
                         aria-label={`Delete ${kpi.exerciseName} record`}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -167,6 +175,7 @@ export default function KPIModal({
             )}
           </div>
         </ModalContent>
+        </div>
       </div>
     </ModalBackdrop>
   );

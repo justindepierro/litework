@@ -635,7 +635,8 @@ export const getWorkoutPlanById = async (
         notes: ex.notes,
         videoUrl: ex.video_url,
         order: ex.order_index,
-        groupId: ex.group_id && groupIds.has(ex.group_id) ? ex.group_id : undefined, // Clear invalid groupIds
+        groupId:
+          ex.group_id && groupIds.has(ex.group_id) ? ex.group_id : undefined, // Clear invalid groupIds
         blockInstanceId: ex.block_instance_id,
         substitutionReason: ex.substitution_reason,
         originalExercise: ex.original_exercise,
@@ -900,19 +901,21 @@ export const updateWorkoutPlanTransaction = async (
     }));
 
     // Prepare block instances data for JSONB
-    const blockInstancesJson = (mergedWorkout.blockInstances || []).map((bi) => ({
-      source_block_id: bi.sourceBlockId,
-      source_block_name: bi.sourceBlockName,
-      instance_name: bi.instanceName,
-      notes: bi.notes,
-      estimated_duration: bi.estimatedDuration,
-      modified_exercises: bi.customizations?.modifiedExercises || [],
-      added_exercises: bi.customizations?.addedExercises || [],
-      removed_exercises: bi.customizations?.removedExercises || [],
-      modified_groups: bi.customizations?.modifiedGroups || [],
-      added_groups: bi.customizations?.addedGroups || [],
-      removed_groups: bi.customizations?.removedGroups || [],
-    }));
+    const blockInstancesJson = (mergedWorkout.blockInstances || []).map(
+      (bi) => ({
+        source_block_id: bi.sourceBlockId,
+        source_block_name: bi.sourceBlockName,
+        instance_name: bi.instanceName,
+        notes: bi.notes,
+        estimated_duration: bi.estimatedDuration,
+        modified_exercises: bi.customizations?.modifiedExercises || [],
+        added_exercises: bi.customizations?.addedExercises || [],
+        removed_exercises: bi.customizations?.removedExercises || [],
+        modified_groups: bi.customizations?.modifiedGroups || [],
+        added_groups: bi.customizations?.addedGroups || [],
+        removed_groups: bi.customizations?.removedGroups || [],
+      })
+    );
 
     // Call RPC function
     const { error } = await supabase.rpc("update_workout_plan_transaction", {
@@ -942,21 +945,21 @@ export const updateWorkoutPlanTransaction = async (
 
 /**
  * @deprecated Use createWorkoutPlanTransaction instead
- * 
+ *
  * This function does not provide transaction safety and may leave orphaned data
  * on failure (e.g., workout plan created but exercises fail to insert).
- * 
+ *
  * **Will be removed in v1.1.0**
- * 
+ *
  * Migration:
  * ```typescript
  * // Old (deprecated):
  * const workout = await createWorkoutPlan(data);
- * 
+ *
  * // New (transaction-safe):
  * const workout = await createWorkoutPlanTransaction(data);
  * ```
- * 
+ *
  * @see createWorkoutPlanTransaction for the recommended transaction-safe version
  */
 export const createWorkoutPlan = async (
@@ -1141,21 +1144,21 @@ export const createWorkoutPlan = async (
 
 /**
  * @deprecated Use updateWorkoutPlanTransaction instead
- * 
+ *
  * This function does not provide transaction safety and may leave orphaned or
  * inconsistent data on failure (e.g., exercises deleted but new ones fail to insert).
- * 
+ *
  * **Will be removed in v1.1.0**
- * 
+ *
  * Migration:
  * ```typescript
  * // Old (deprecated):
  * const workout = await updateWorkoutPlan(id, updates);
- * 
+ *
  * // New (transaction-safe):
  * const workout = await updateWorkoutPlanTransaction(id, updates);
  * ```
- * 
+ *
  * @see updateWorkoutPlanTransaction for the recommended transaction-safe version
  */
 export const updateWorkoutPlan = async (
