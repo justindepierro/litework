@@ -3,11 +3,13 @@
 ## Why This Matters
 
 **WCAG 2.1 Level AA Standards:**
+
 - Normal text (< 18px): **4.5:1 minimum contrast ratio**
 - Large text (≥ 18px): **3:1 minimum contrast ratio**
 - UI components & graphics: **3:1 minimum contrast ratio**
 
 **Real-World Impact:**
+
 - 1 in 12 men and 1 in 200 women have color vision deficiency
 - Low contrast text is difficult to read in bright sunlight (gym environment!)
 - Mobile screens have varying brightness levels
@@ -16,11 +18,13 @@
 ## The Problem We Had
 
 Our navigation bar had **text-slate-300 on slate-900 background**:
+
 - Text: `#cbd5e1` (RGB: 203, 213, 225)
 - Background: `#0f172a` (RGB: 15, 23, 42)
 - **Contrast Ratio: ~8.5:1** ✅ (technically passes)
 
 BUT in practice, it looked nearly invisible because:
+
 1. Slate-900 blended with page background
 2. iOS Safari rendering bugs with transparent/gradient backgrounds
 3. Slate-300 is psychologically perceived as "gray" not "high contrast"
@@ -28,6 +32,7 @@ BUT in practice, it looked nearly invisible because:
 ## Fixed Solution
 
 **New High-Contrast Scheme:**
+
 - Background: `slate-950` (#020617 - nearly black)
 - Text: `white` (#ffffff)
 - **Contrast Ratio: ~19:1** ✅✅✅ (exceptional)
@@ -37,39 +42,40 @@ BUT in practice, it looked nearly invisible because:
 
 ### Dark Backgrounds (Navigation, Modals, Overlays)
 
-| Background | Text Color | Contrast | Status | Use Case |
-|------------|-----------|----------|--------|----------|
-| `slate-950` | `white` | 19:1 | ✅ Excellent | Primary navigation |
-| `slate-950` | `slate-100` | 16:1 | ✅ Excellent | Secondary text |
-| `slate-900` | `white` | 17:1 | ✅ Excellent | Cards, containers |
-| `slate-800` | `white` | 12.6:1 | ✅ Excellent | Buttons, badges |
-| `slate-700` | `white` | 8.6:1 | ✅ Good | Hover states |
+| Background  | Text Color  | Contrast | Status       | Use Case           |
+| ----------- | ----------- | -------- | ------------ | ------------------ |
+| `slate-950` | `white`     | 19:1     | ✅ Excellent | Primary navigation |
+| `slate-950` | `slate-100` | 16:1     | ✅ Excellent | Secondary text     |
+| `slate-900` | `white`     | 17:1     | ✅ Excellent | Cards, containers  |
+| `slate-800` | `white`     | 12.6:1   | ✅ Excellent | Buttons, badges    |
+| `slate-700` | `white`     | 8.6:1    | ✅ Good      | Hover states       |
 
 ### Light Backgrounds (Main Content)
 
-| Background | Text Color | Contrast | Status | Use Case |
-|------------|-----------|----------|--------|----------|
-| `white` | `slate-950` | 19:1 | ✅ Excellent | Body text |
-| `white` | `slate-900` | 17:1 | ✅ Excellent | Headings |
-| `white` | `slate-700` | 8.6:1 | ✅ Good | Paragraph text |
-| `white` | `slate-500` | 4.6:1 | ✅ Minimum | Muted text (large only) |
-| `slate-50` | `slate-900` | 16.2:1 | ✅ Excellent | Cards |
+| Background | Text Color  | Contrast | Status       | Use Case                |
+| ---------- | ----------- | -------- | ------------ | ----------------------- |
+| `white`    | `slate-950` | 19:1     | ✅ Excellent | Body text               |
+| `white`    | `slate-900` | 17:1     | ✅ Excellent | Headings                |
+| `white`    | `slate-700` | 8.6:1    | ✅ Good      | Paragraph text          |
+| `white`    | `slate-500` | 4.6:1    | ✅ Minimum   | Muted text (large only) |
+| `slate-50` | `slate-900` | 16.2:1   | ✅ Excellent | Cards                   |
 
 ### Accent Colors (Buttons, Badges, Alerts)
 
-| Background | Text Color | Contrast | Status | Use Case |
-|------------|-----------|----------|--------|----------|
-| `orange-500` (#ff6b35) | `white` | 3.8:1 | ⚠️ Large text only | Primary buttons (18px+) |
-| `orange-600` (#ea5a28) | `white` | 4.6:1 | ✅ Good | Primary buttons |
-| `orange-700` (#c2410c) | `white` | 6.3:1 | ✅ Excellent | Strong CTAs |
-| `green-500` (#00d4aa) | `white` | 2.8:1 | ❌ Too low | Use green-600+ |
-| `green-600` (#00b894) | `white` | 3.5:1 | ⚠️ Large text only | Success states |
-| `red-500` (#ef4444) | `white` | 4.3:1 | ⚠️ Large text only | Error states |
-| `red-600` (#dc2626) | `white` | 5.5:1 | ✅ Good | Error buttons |
+| Background             | Text Color | Contrast | Status             | Use Case                |
+| ---------------------- | ---------- | -------- | ------------------ | ----------------------- |
+| `orange-500` (#ff6b35) | `white`    | 3.8:1    | ⚠️ Large text only | Primary buttons (18px+) |
+| `orange-600` (#ea5a28) | `white`    | 4.6:1    | ✅ Good            | Primary buttons         |
+| `orange-700` (#c2410c) | `white`    | 6.3:1    | ✅ Excellent       | Strong CTAs             |
+| `green-500` (#00d4aa)  | `white`    | 2.8:1    | ❌ Too low         | Use green-600+          |
+| `green-600` (#00b894)  | `white`    | 3.5:1    | ⚠️ Large text only | Success states          |
+| `red-500` (#ef4444)    | `white`    | 4.3:1    | ⚠️ Large text only | Error states            |
+| `red-600` (#dc2626)    | `white`    | 5.5:1    | ✅ Good            | Error buttons           |
 
 ## Component-Level Rules
 
 ### Navigation Bar
+
 ```tsx
 // ✅ CORRECT
 <nav className="bg-slate-950">
@@ -85,6 +91,7 @@ BUT in practice, it looked nearly invisible because:
 ```
 
 ### Buttons
+
 ```tsx
 // ✅ CORRECT - High contrast on all states
 <Button className="bg-orange-600 text-white text-base font-semibold">
@@ -103,6 +110,7 @@ BUT in practice, it looked nearly invisible because:
 ```
 
 ### Status Badges
+
 ```tsx
 // ✅ CORRECT
 <Badge className="bg-green-600 text-white font-semibold">Active</Badge>
@@ -114,28 +122,31 @@ BUT in practice, it looked nearly invisible because:
 ```
 
 ### Form Inputs
+
 ```tsx
 // ✅ CORRECT
-<Input 
+<Input
   className="bg-white border-slate-300 text-slate-900 placeholder:text-slate-400"
   placeholder="Enter name..."
 />
 
 // ❌ FORBIDDEN
-<Input 
-  className="bg-slate-50 text-slate-400" 
-  placeholder="Enter name..." 
+<Input
+  className="bg-slate-50 text-slate-400"
+  placeholder="Enter name..."
 />
 ```
 
 ## Testing Tools
 
 ### Manual Testing
+
 1. **Contrast Checker**: https://webaim.org/resources/contrastchecker/
 2. **Browser DevTools**: Chrome/Firefox have built-in contrast checkers
 3. **Mobile Testing**: Always test on actual devices in various lighting
 
 ### Automated Tools
+
 ```bash
 # Install axe-core for accessibility testing
 npm install --save-dev @axe-core/cli
@@ -145,6 +156,7 @@ npx axe http://localhost:3000 --tags=wcag2aa,wcag21aa
 ```
 
 ### Browser Extensions
+
 - **axe DevTools** (Chrome/Firefox) - Free accessibility checker
 - **WAVE** (Chrome/Firefox) - Visual feedback for contrast issues
 - **Stark** (Figma/Browser) - Contrast checker with color blindness simulation
@@ -152,34 +164,42 @@ npx axe http://localhost:3000 --tags=wcag2aa,wcag21aa
 ## Enforcement Strategy
 
 ### 1. Linting Rules (TODO)
+
 Add to `eslint.config.mjs`:
+
 ```javascript
 // Future: Add contrast linting
 // 'tailwindcss/no-low-contrast': 'error'
 ```
 
 ### 2. Design Token Pairing (TODO)
+
 Create allowed combinations in `src/lib/design-tokens.ts`:
+
 ```typescript
 export const CONTRAST_SAFE_PAIRS = {
-  'bg-slate-950': ['text-white', 'text-slate-100'],
-  'bg-white': ['text-slate-950', 'text-slate-900'],
-  'bg-orange-600': ['text-white'],
+  "bg-slate-950": ["text-white", "text-slate-100"],
+  "bg-white": ["text-slate-950", "text-slate-900"],
+  "bg-orange-600": ["text-white"],
   // ... etc
 } as const;
 ```
 
 ### 3. Component Validation (TODO)
+
 Add runtime warnings in development:
+
 ```typescript
 // In Button component
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   validateContrast(bgColor, textColor);
 }
 ```
 
 ### 4. Pre-Commit Hooks (TODO)
+
 Add to `.husky/pre-commit`:
+
 ```bash
 # Run contrast checks before committing
 npm run test:contrast
@@ -188,6 +208,7 @@ npm run test:contrast
 ## Common Mistakes & Fixes
 
 ### Mistake #1: Using Gray Text on Dark Backgrounds
+
 ```tsx
 // ❌ BAD - Looks subtle but lacks impact
 <div className="bg-slate-900 text-slate-300">Content</div>
@@ -198,6 +219,7 @@ npm run test:contrast
 ```
 
 ### Mistake #2: Light Accent Colors on White
+
 ```tsx
 // ❌ BAD - Fails contrast check
 <Badge className="bg-orange-100 text-orange-500">New</Badge>
@@ -207,18 +229,20 @@ npm run test:contrast
 ```
 
 ### Mistake #3: Transparent Backgrounds Without Fallback
+
 ```tsx
 // ❌ BAD - May disappear on iOS Safari
 <nav className="bg-slate-900/95 backdrop-blur-md">
 
 // ✅ GOOD - Explicit fallback
-<nav 
+<nav
   className="bg-slate-950/98 backdrop-blur-md"
   style={{ backgroundColor: 'rgba(2, 6, 23, 0.98)' }}
 >
 ```
 
 ### Mistake #4: Small Text with Low Contrast
+
 ```tsx
 // ❌ BAD - 14px text needs 4.5:1 contrast
 <p className="text-sm text-slate-500">Small gray text</p>
@@ -231,6 +255,7 @@ npm run test:contrast
 ## Dark Mode Considerations
 
 When implementing dark mode:
+
 ```tsx
 // ✅ CORRECT - Both modes have high contrast
 <div className="bg-white dark:bg-slate-950 text-slate-950 dark:text-white">

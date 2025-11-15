@@ -15,22 +15,60 @@ const WCAG_AA_LARGE = 3.0; // For text >= 18px or >= 14px bold
 // Known problematic color combinations (contrast ratio too low)
 const LOW_CONTRAST_PATTERNS = [
   // Text colors that are too light on dark backgrounds (< 4.5:1)
-  { pattern: /text-slate-[2-4]00(?!\d)/, bg: "dark", description: "Light gray text on dark bg (slate-200 to slate-400)" },
-  { pattern: /text-gray-[2-4]00(?!\d)/, bg: "dark", description: "Light gray text on dark bg (gray-200 to gray-400)" },
-  { pattern: /text-zinc-[2-4]00(?!\d)/, bg: "dark", description: "Light zinc text on dark bg (zinc-200 to zinc-400)" },
-  
+  {
+    pattern: /text-slate-[2-4]00(?!\d)/,
+    bg: "dark",
+    description: "Light gray text on dark bg (slate-200 to slate-400)",
+  },
+  {
+    pattern: /text-gray-[2-4]00(?!\d)/,
+    bg: "dark",
+    description: "Light gray text on dark bg (gray-200 to gray-400)",
+  },
+  {
+    pattern: /text-zinc-[2-4]00(?!\d)/,
+    bg: "dark",
+    description: "Light zinc text on dark bg (zinc-200 to zinc-400)",
+  },
+
   // Text colors that are too light on light backgrounds (< 4.5:1)
-  { pattern: /text-slate-[5-6]00(?!\d)/, bg: "light", description: "Mid-gray text on light bg (slate-500 to slate-600)" },
-  { pattern: /text-gray-[5-6]00(?!\d)/, bg: "light", description: "Mid-gray text on light bg (gray-500 to gray-600)" },
-  
+  {
+    pattern: /text-slate-[5-6]00(?!\d)/,
+    bg: "light",
+    description: "Mid-gray text on light bg (slate-500 to slate-600)",
+  },
+  {
+    pattern: /text-gray-[5-6]00(?!\d)/,
+    bg: "light",
+    description: "Mid-gray text on light bg (gray-500 to gray-600)",
+  },
+
   // Accent colors with poor contrast on light backgrounds
-  { pattern: /text-orange-[3-4]00(?!\d)/, bg: "light", description: "Light orange text (insufficient contrast)" },
-  { pattern: /text-green-[3-4]00(?!\d)/, bg: "light", description: "Light green text (insufficient contrast)" },
-  { pattern: /text-blue-[3-4]00(?!\d)/, bg: "light", description: "Light blue text (insufficient contrast)" },
-  
+  {
+    pattern: /text-orange-[3-4]00(?!\d)/,
+    bg: "light",
+    description: "Light orange text (insufficient contrast)",
+  },
+  {
+    pattern: /text-green-[3-4]00(?!\d)/,
+    bg: "light",
+    description: "Light green text (insufficient contrast)",
+  },
+  {
+    pattern: /text-blue-[3-4]00(?!\d)/,
+    bg: "light",
+    description: "Light blue text (insufficient contrast)",
+  },
+
   // Background + text combinations that are clearly problematic
-  { pattern: /bg-slate-900.*text-slate-[2-4]00/, description: "Low contrast slate combo" },
-  { pattern: /bg-slate-800.*text-slate-[2-4]00/, description: "Low contrast slate combo" },
+  {
+    pattern: /bg-slate-900.*text-slate-[2-4]00/,
+    description: "Low contrast slate combo",
+  },
+  {
+    pattern: /bg-slate-800.*text-slate-[2-4]00/,
+    description: "Low contrast slate combo",
+  },
 ];
 
 // Good contrast patterns (approved combinations)
@@ -39,11 +77,11 @@ const GOOD_CONTRAST_PATTERNS = [
   /text-slate-950/,
   /text-slate-900/,
   /text-slate-100/,
-  /text-slate-200/,  // Good on dark backgrounds
-  /text-slate-700/,  // Good on light backgrounds
+  /text-slate-200/, // Good on dark backgrounds
+  /text-slate-700/, // Good on light backgrounds
   /text-gray-900/,
   /text-gray-800/,
-  /text-gray-700/,   // Good on light backgrounds (8.6:1)
+  /text-gray-700/, // Good on light backgrounds (8.6:1)
   /text-black/,
 ];
 
@@ -82,7 +120,9 @@ function analyzeFile(filePath) {
     LOW_CONTRAST_PATTERNS.forEach((pattern) => {
       if (pattern.pattern.test(line)) {
         // Check if it's not in a good context
-        const hasGoodPattern = GOOD_CONTRAST_PATTERNS.some((good) => good.test(line));
+        const hasGoodPattern = GOOD_CONTRAST_PATTERNS.some((good) =>
+          good.test(line)
+        );
         if (!hasGoodPattern) {
           violations.push({
             file: filePath,
@@ -96,7 +136,10 @@ function analyzeFile(filePath) {
     });
 
     // Check for specific bad combinations
-    if (line.includes("text-slate-300") && (line.includes("bg-slate-900") || line.includes("bg-slate-950"))) {
+    if (
+      line.includes("text-slate-300") &&
+      (line.includes("bg-slate-900") || line.includes("bg-slate-950"))
+    ) {
       violations.push({
         file: filePath,
         line: index + 1,
@@ -111,13 +154,17 @@ function analyzeFile(filePath) {
         file: filePath,
         line: index + 1,
         code: line.trim(),
-        issue: "text-slate-400 is too subtle - use text-slate-100 or text-white",
+        issue:
+          "text-slate-400 is too subtle - use text-slate-100 or text-white",
         severity: "high",
       });
     }
 
     // Check for small text with low contrast
-    if (line.includes("text-sm") && /text-(slate|gray|zinc)-[4-6]00/.test(line)) {
+    if (
+      line.includes("text-sm") &&
+      /text-(slate|gray|zinc)-[4-6]00/.test(line)
+    ) {
       violations.push({
         file: filePath,
         line: index + 1,
@@ -158,7 +205,7 @@ function main() {
   const high = allViolations.filter((v) => v.severity === "high");
   const medium = allViolations.filter((v) => v.severity === "medium");
 
-  console.log("=" .repeat(80));
+  console.log("=".repeat(80));
   console.log("AUDIT RESULTS");
   console.log("=".repeat(80));
   console.log(`\n📊 Summary:`);
@@ -185,9 +232,12 @@ function main() {
     console.log("-".repeat(80));
 
     violations.forEach((v) => {
-      const icon = v.severity === "critical" ? "🔴" : v.severity === "high" ? "🟠" : "🟡";
+      const icon =
+        v.severity === "critical" ? "🔴" : v.severity === "high" ? "🟠" : "🟡";
       console.log(`${icon} Line ${v.line}: ${v.issue}`);
-      console.log(`   ${v.code.substring(0, 100)}${v.code.length > 100 ? "..." : ""}`);
+      console.log(
+        `   ${v.code.substring(0, 100)}${v.code.length > 100 ? "..." : ""}`
+      );
       console.log();
     });
   });

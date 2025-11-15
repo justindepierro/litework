@@ -87,7 +87,7 @@ export default function NotificationBell() {
     if (!user) return;
 
     setHasError(false);
-    
+
     execute(async () => {
       try {
         const { data, error } = await apiClient.requestWithResponse<{
@@ -241,7 +241,7 @@ export default function NotificationBell() {
     <Dropdown
       trigger={
         <button
-          style={{ color: '#ffffff' }}
+          style={{ color: "#ffffff" }}
           className={`
             relative p-2 text-white rounded-lg transition-all duration-200
             hover:bg-white/10 hover:scale-110
@@ -250,7 +250,7 @@ export default function NotificationBell() {
           `}
           aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
         >
-          <Bell className="w-6 h-6" style={{ color: '#ffffff' }} />
+          <Bell className="w-6 h-6" style={{ color: "#ffffff" }} />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 min-w-5 px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200">
               {unreadCount > 9 ? "9+" : unreadCount}
@@ -298,11 +298,18 @@ export default function NotificationBell() {
           <div className="p-6 text-center">
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-error-lightest flex items-center justify-center">
-                <AlertCircle className="w-6 h-6" style={{ color: 'var(--color-error)' }} />
+                <AlertCircle
+                  className="w-6 h-6"
+                  style={{ color: "var(--color-error)" }}
+                />
               </div>
               <div>
-                <p className="font-semibold text-body-dark">Failed to load notifications</p>
-                <p className="text-sm text-body-light mt-1">Please try again later</p>
+                <p className="font-semibold text-body-dark">
+                  Failed to load notifications
+                </p>
+                <p className="text-sm text-body-light mt-1">
+                  Please try again later
+                </p>
               </div>
               <button
                 onClick={loadNotifications}
@@ -403,7 +410,9 @@ export default function NotificationBell() {
             className="text-sm text-primary hover:text-primary-dark font-semibold w-full text-center py-2 rounded-lg hover:bg-white transition-all duration-200 flex items-center justify-center gap-2 group"
           >
             View all notifications
-            <span className="transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+            <span className="transform group-hover:translate-x-1 transition-transform duration-200">
+              →
+            </span>
           </button>
         </div>
       )}

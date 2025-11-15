@@ -9,6 +9,7 @@ A comprehensive contrast audit was performed across the entire LiteWork codebase
 ## Audit Methodology
 
 ### Scanning Scope
+
 - **Files Scanned**: 276 TypeScript/TSX files
 - **Lines of Code**: ~50,000+
 - **Components Analyzed**: Navigation, Profile, Dashboard, Modals, Forms, Buttons, Badges
@@ -17,7 +18,9 @@ A comprehensive contrast audit was performed across the entire LiteWork codebase
   - Large text (≥ 18px): 3:1 minimum contrast
 
 ### Automated Tooling
+
 Created `scripts/analysis/contrast-audit.mjs`:
+
 - Pattern-based detection of low contrast combinations
 - Severity classification (critical, high, medium)
 - Line-by-line violation reporting
@@ -27,6 +30,7 @@ Created `scripts/analysis/contrast-audit.mjs`:
 ## Violations Found & Fixed
 
 ### Initial Audit Results
+
 - **Total Violations**: 10
 - **Critical**: 0
 - **High**: 10
@@ -37,6 +41,7 @@ Created `scripts/analysis/contrast-audit.mjs`:
 #### 1. Navigation Bar (6 violations)
 
 **Before Audit**:
+
 ```tsx
 // ❌ VIOLATIONS
 color: "text-orange-400 group-hover:text-orange-300"  // Too light
@@ -47,6 +52,7 @@ color: "text-purple-400 group-hover:text-purple-300"  // Too light
 ```
 
 **After Fix**:
+
 ```tsx
 // ✅ FIXED
 color: "text-orange-500"   // Improved contrast
@@ -57,6 +63,7 @@ color: "text-purple-500"   // Improved contrast
 ```
 
 **Contrast Improvements**:
+
 - Orange-400 on dark: ~3.2:1 → Orange-500: ~4.5:1 ✅
 - Blue-400 on dark: ~3.0:1 → Blue-500: ~4.2:1 ✅
 - Slate-400 on slate-900: ~4.0:1 → Slate-200: ~14:1 ✅
@@ -64,6 +71,7 @@ color: "text-purple-500"   // Improved contrast
 #### 2. Profile Page (4 violations)
 
 **Before Audit**:
+
 ```tsx
 // ❌ VIOLATIONS
 className="text-gray-600 hover:text-gray-900"  // Tabs - insufficient contrast
@@ -71,6 +79,7 @@ className="text-gray-600 hover:text-gray-900"  // Tabs - insufficient contrast
 ```
 
 **After Fix**:
+
 ```tsx
 // ✅ FIXED
 className="text-gray-700 hover:text-gray-900"  // Clear tab text
@@ -78,6 +87,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 ```
 
 **Contrast Improvements**:
+
 - Gray-600 on white: ~4.5:1 → Gray-700: ~8.6:1 ✅
 - Gray-600 icon: ~4.5:1 → Gray-900: ~17:1 ✅
 
@@ -85,38 +95,39 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 
 ### Dark Backgrounds (slate-950, slate-900, slate-800)
 
-| Text Color | Contrast Ratio | Status | Use Case |
-|------------|---------------|--------|----------|
-| `text-white` | 19:1 | ✅ Excellent | Primary text |
-| `text-slate-100` | 16:1 | ✅ Excellent | Secondary text |
-| `text-slate-200` | 14:1 | ✅ Excellent | Tertiary text, badges |
-| `text-orange-500` | 4.5:1 | ✅ Good | Icons, accents |
-| `text-blue-500` | 4.2:1 | ✅ Good | Icons, accents |
-| `text-purple-500` | 4.8:1 | ✅ Good | Icons, accents |
+| Text Color        | Contrast Ratio | Status       | Use Case              |
+| ----------------- | -------------- | ------------ | --------------------- |
+| `text-white`      | 19:1           | ✅ Excellent | Primary text          |
+| `text-slate-100`  | 16:1           | ✅ Excellent | Secondary text        |
+| `text-slate-200`  | 14:1           | ✅ Excellent | Tertiary text, badges |
+| `text-orange-500` | 4.5:1          | ✅ Good      | Icons, accents        |
+| `text-blue-500`   | 4.2:1          | ✅ Good      | Icons, accents        |
+| `text-purple-500` | 4.8:1          | ✅ Good      | Icons, accents        |
 
 ### Light Backgrounds (white, slate-50, slate-100)
 
-| Text Color | Contrast Ratio | Status | Use Case |
-|------------|---------------|--------|----------|
-| `text-slate-950` | 19:1 | ✅ Excellent | Headings |
-| `text-slate-900` | 17:1 | ✅ Excellent | Body text |
-| `text-gray-900` | 17:1 | ✅ Excellent | Strong text |
-| `text-gray-800` | 12:1 | ✅ Excellent | Emphasis |
-| `text-gray-700` | 8.6:1 | ✅ Good | Regular text |
+| Text Color       | Contrast Ratio | Status       | Use Case     |
+| ---------------- | -------------- | ------------ | ------------ |
+| `text-slate-950` | 19:1           | ✅ Excellent | Headings     |
+| `text-slate-900` | 17:1           | ✅ Excellent | Body text    |
+| `text-gray-900`  | 17:1           | ✅ Excellent | Strong text  |
+| `text-gray-800`  | 12:1           | ✅ Excellent | Emphasis     |
+| `text-gray-700`  | 8.6:1          | ✅ Good      | Regular text |
 
 ### ❌ Prohibited Combinations
 
-| Pattern | Reason | Fix |
-|---------|--------|-----|
-| `text-slate-300` on dark | Only 8.5:1 (psychologically weak) | Use `text-white` (19:1) |
-| `text-slate-400` on any | Too subtle, lacks impact | Use `text-slate-200` or `text-white` |
-| `text-slate-500` on light | 4.3:1 (fails for small text) | Use `text-slate-700` (8.6:1) |
-| `text-gray-600` on white | 4.5:1 (minimum, borderline) | Use `text-gray-700` (8.6:1) |
-| `text-orange-400` on light | 2.8:1 (fails) | Use `text-orange-600` |
+| Pattern                    | Reason                            | Fix                                  |
+| -------------------------- | --------------------------------- | ------------------------------------ |
+| `text-slate-300` on dark   | Only 8.5:1 (psychologically weak) | Use `text-white` (19:1)              |
+| `text-slate-400` on any    | Too subtle, lacks impact          | Use `text-slate-200` or `text-white` |
+| `text-slate-500` on light  | 4.3:1 (fails for small text)      | Use `text-slate-700` (8.6:1)         |
+| `text-gray-600` on white   | 4.5:1 (minimum, borderline)       | Use `text-gray-700` (8.6:1)          |
+| `text-orange-400` on light | 2.8:1 (fails)                     | Use `text-orange-600`                |
 
 ## Component-Level Standards
 
 ### Navigation Bar
+
 ```tsx
 ✅ APPROVED IMPLEMENTATION:
 - Background: slate-950 (nearly black)
@@ -128,6 +139,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 ```
 
 ### Buttons
+
 ```tsx
 ✅ PRIMARY BUTTONS:
 - Background: orange-600 or darker
@@ -141,6 +153,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 ```
 
 ### Form Inputs
+
 ```tsx
 ✅ INPUTS:
 - Background: white
@@ -151,6 +164,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 ```
 
 ### Badges & Status Indicators
+
 ```tsx
 ✅ STATUS BADGES:
 - Success: bg-green-600 text-white
@@ -163,6 +177,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 ## Testing Results
 
 ### Manual Testing
+
 - ✅ Desktop Chrome (macOS): All text clearly visible
 - ✅ Desktop Safari (macOS): All text clearly visible
 - ✅ Mobile Safari (iOS): No background disappearing issues
@@ -170,6 +185,7 @@ className="text-gray-700 hover:text-gray-900"  // Clear tab text
 - ✅ Bright sunlight (gym environment): Text remains readable
 
 ### Automated Testing
+
 ```bash
 $ node scripts/analysis/contrast-audit.mjs
 
@@ -183,7 +199,9 @@ $ node scripts/analysis/contrast-audit.mjs
 ```
 
 ### Color Blindness Simulation
+
 Tested with color blindness simulation tools:
+
 - ✅ Protanopia (red-blind): High contrast maintained
 - ✅ Deuteranopia (green-blind): High contrast maintained
 - ✅ Tritanopia (blue-blind): High contrast maintained
@@ -194,12 +212,14 @@ Tested with color blindness simulation tools:
 ### Navigation Bar
 
 **Before** (User reported: "can't see the text"):
+
 - Background: slate-900 (`#0f172a`)
 - Text: slate-300 (`#cbd5e1`)
 - Psychological perception: "Gray on dark gray"
 - Issues: Blended with page background, iOS Safari bugs
 
 **After** (Crystal clear):
+
 - Background: slate-950 (`#020617`) - nearly black
 - Text: white (`#ffffff`)
 - Contrast: 19:1 (WCAG AAA level)
@@ -209,10 +229,12 @@ Tested with color blindness simulation tools:
 ### Profile Page
 
 **Before**:
+
 - Tab text: gray-600 (4.5:1 - minimum)
 - Icons: gray-600 (borderline contrast)
 
 **After**:
+
 - Tab text: gray-700 (8.6:1 - excellent)
 - Icons: gray-900 (17:1 - exceptional)
 
@@ -221,6 +243,7 @@ Tested with color blindness simulation tools:
 ### For Developers
 
 **DO**:
+
 ```tsx
 // ✅ High contrast text on dark backgrounds
 <div className="bg-slate-950 text-white">Content</div>
@@ -239,6 +262,7 @@ Tested with color blindness simulation tools:
 ```
 
 **DON'T**:
+
 ```tsx
 // ❌ Subtle gray text
 <div className="bg-slate-900 text-slate-300">Content</div>
@@ -255,6 +279,7 @@ Tested with color blindness simulation tools:
 ### Pre-Commit Checklist
 
 Before committing UI changes:
+
 - [ ] Run `node scripts/analysis/contrast-audit.mjs`
 - [ ] Verify all text uses approved color combinations
 - [ ] Test in browser with actual page backgrounds
@@ -264,11 +289,13 @@ Before committing UI changes:
 ## Future Enhancements
 
 ### Phase 1 (Completed)
+
 - ✅ Automated contrast audit script
 - ✅ Fix all existing violations
 - ✅ Comprehensive documentation
 
 ### Phase 2 (Recommended)
+
 - [ ] Add contrast linting to ESLint configuration
 - [ ] Pre-commit hooks for automatic checks
 - [ ] CI/CD integration (fail builds on violations)
@@ -276,6 +303,7 @@ Before committing UI changes:
 - [ ] Component library with built-in contrast guarantees
 
 ### Phase 3 (Future)
+
 - [ ] Runtime contrast warnings in development
 - [ ] Visual regression testing for contrast
 - [ ] Automated color palette generation with guaranteed contrast
@@ -291,6 +319,7 @@ Standard: WCAG 2.1 Level AA
 Status: ✅ **FULLY COMPLIANT**
 
 All UI components meet or exceed WCAG 2.1 Level AA contrast requirements:
+
 - Normal text: 4.5:1 minimum (achieved: 8.6:1 to 19:1)
 - Large text: 3:1 minimum (achieved: 4.5:1 to 19:1)
 - UI components: 3:1 minimum (achieved: 4.2:1 to 19:1)
@@ -300,16 +329,19 @@ Automated tooling ensures ongoing compliance.
 ## Resources
 
 ### Internal Documentation
+
 - `docs/guides/CONTRAST_GUIDELINES.md` - Complete contrast reference
 - `scripts/analysis/contrast-audit.mjs` - Automated audit tool
 - `COMPONENT_USAGE_STANDARDS.md` - Component best practices
 
 ### External Standards
+
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [Color Contrast Analyzer](https://www.tpgi.com/color-contrast-checker/)
 
 ### Testing Tools
+
 - Chrome DevTools (Lighthouse)
 - Firefox Accessibility Inspector
 - axe DevTools Extension
@@ -318,6 +350,7 @@ Automated tooling ensures ongoing compliance.
 ## Contact
 
 For questions about contrast standards or violations:
+
 - Reference: `docs/guides/CONTRAST_GUIDELINES.md`
 - Audit Tool: `node scripts/analysis/contrast-audit.mjs`
 - Report Issues: Create GitHub issue with "contrast" label

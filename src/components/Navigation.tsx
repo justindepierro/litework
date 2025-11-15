@@ -70,55 +70,55 @@ const Navigation = memo(function Navigation() {
     if (!user) return [];
 
     const items = [
-      { 
-        href: "/dashboard", 
+      {
+        href: "/dashboard",
         label: "Dashboard",
         icon: BarChart3,
-        color: "text-emerald-400 group-hover:text-emerald-300"
-      }
+        color: "text-emerald-400 group-hover:text-emerald-300",
+      },
     ];
 
     if (isCoachOrAdmin) {
       items.push(
-        { 
-          href: "/workouts", 
+        {
+          href: "/workouts",
           label: "Workouts",
           icon: Dumbbell,
-          color: "text-orange-500"
+          color: "text-orange-500",
         },
-        { 
-          href: "/athletes", 
+        {
+          href: "/athletes",
           label: "Athletes",
           icon: Users,
-          color: "text-purple-500"
+          color: "text-purple-500",
         },
-        { 
-          href: "/schedule", 
+        {
+          href: "/schedule",
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-500"
-        },
+          color: "text-blue-500",
+        }
       );
     } else {
       items.push(
-        { 
-          href: "/workouts/history", 
+        {
+          href: "/workouts/history",
           label: "History",
           icon: TrendingUp,
-          color: "text-pink-500"
+          color: "text-pink-500",
         },
-        { 
-          href: "/progress", 
+        {
+          href: "/progress",
           label: "Progress",
           icon: TrendingUp,
-          color: "text-cyan-500"
+          color: "text-cyan-500",
         },
-        { 
-          href: "/schedule", 
+        {
+          href: "/schedule",
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-500"
-        },
+          color: "text-blue-500",
+        }
       );
     }
 
@@ -171,12 +171,15 @@ const Navigation = memo(function Navigation() {
   }, [isMobileMenuOpen]);
 
   // Check if link is active
-  const isActiveLink = useCallback((href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/" || pathname === "/dashboard";
-    }
-    return pathname?.startsWith(href);
-  }, [pathname]);
+  const isActiveLink = useCallback(
+    (href: string) => {
+      if (href === "/dashboard") {
+        return pathname === "/" || pathname === "/dashboard";
+      }
+      return pathname?.startsWith(href);
+    },
+    [pathname]
+  );
 
   return (
     <>
@@ -194,7 +197,9 @@ const Navigation = memo(function Navigation() {
         `}
         style={{
           // Explicit background for iOS Safari - DARKER for better contrast
-          backgroundColor: isScrolled ? "rgba(2, 6, 23, 0.98)" : "rgb(2, 6, 23)",
+          backgroundColor: isScrolled
+            ? "rgba(2, 6, 23, 0.98)"
+            : "rgb(2, 6, 23)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,10 +219,16 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-500 transition-colors" />
               </div>
-              <span style={{ color: '#ffffff' }} className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
+              <span
+                style={{ color: "#ffffff" }}
+                className="text-xl sm:text-2xl font-bold text-white hidden xs:block"
+              >
                 LiteWork
               </span>
-              <span style={{ color: '#ffffff' }} className="text-xl font-bold text-white xs:hidden">
+              <span
+                style={{ color: "#ffffff" }}
+                className="text-xl font-bold text-white xs:hidden"
+              >
                 LW
               </span>
             </Link>
@@ -234,7 +245,7 @@ const Navigation = memo(function Navigation() {
                         key={item.href}
                         href={item.href}
                         style={{
-                          color: isActive ? '#020617' : '#ffffff',
+                          color: isActive ? "#020617" : "#ffffff",
                         }}
                         className={`
                           group relative px-4 py-2 rounded-xl font-medium text-sm font-bold
@@ -247,7 +258,9 @@ const Navigation = memo(function Navigation() {
                           }
                         `}
                       >
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : item.color}`} />
+                        <Icon
+                          className={`w-4 h-4 ${isActive ? "text-slate-950" : item.color}`}
+                        />
                         <span>{item.label}</span>
                         {isActive && (
                           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent rounded-full" />
@@ -265,7 +278,7 @@ const Navigation = memo(function Navigation() {
                   <Link
                     href="/profile"
                     style={{
-                      color: pathname === "/profile" ? '#020617' : '#ffffff',
+                      color: pathname === "/profile" ? "#020617" : "#ffffff",
                     }}
                     className={`
                       group relative px-4 py-2 rounded-xl font-medium text-sm
@@ -278,14 +291,16 @@ const Navigation = memo(function Navigation() {
                       }
                     `}
                   >
-                    <User className={`w-4 h-4 ${pathname === "/profile" ? 'text-slate-950' : 'text-white'}`} />
+                    <User
+                      className={`w-4 h-4 ${pathname === "/profile" ? "text-slate-950" : "text-white"}`}
+                    />
                     <span className="hidden lg:inline">Profile</span>
                   </Link>
 
                   {/* Logout Button */}
                   <button
                     onClick={signOut}
-                    style={{ color: '#ffffff' }}
+                    style={{ color: "#ffffff" }}
                     className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
                     <LogOut className="w-4 h-4" />
@@ -325,7 +340,7 @@ const Navigation = memo(function Navigation() {
 
       {/* Mobile Menu Overlay - Modern Slide-in */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 md:hidden"
           style={{ marginTop: isScrolled ? "3.5rem" : "4rem" }}
         >
@@ -383,7 +398,9 @@ const Navigation = memo(function Navigation() {
                           }
                         `}
                       >
-                        <Icon className={`w-5 h-5 ${isActive ? 'text-slate-950' : item.color}`} />
+                        <Icon
+                          className={`w-5 h-5 ${isActive ? "text-slate-950" : item.color}`}
+                        />
                         <span className="flex-1">{item.label}</span>
                         {isActive && (
                           <div className="w-2 h-2 rounded-full bg-orange-400" />
@@ -410,7 +427,9 @@ const Navigation = memo(function Navigation() {
                     }
                   `}
                 >
-                  <User className={`w-5 h-5 ${pathname === "/profile" ? 'text-slate-950' : 'text-slate-300'}`} />
+                  <User
+                    className={`w-5 h-5 ${pathname === "/profile" ? "text-slate-950" : "text-slate-300"}`}
+                  />
                   <span className="flex-1">Profile & Settings</span>
                 </Link>
 
