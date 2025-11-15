@@ -214,10 +214,10 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-500 transition-colors" />
               </div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent hidden xs:block">
+              <span className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
                 LiteWork
               </span>
-              <span className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent xs:hidden">
+              <span className="text-xl font-bold text-white xs:hidden">
                 LW
               </span>
             </Link>
@@ -264,6 +264,9 @@ const Navigation = memo(function Navigation() {
                   {/* Profile Button */}
                   <Link
                     href="/profile"
+                    style={{
+                      color: pathname === "/profile" ? '#020617' : '#ffffff',
+                    }}
                     className={`
                       group relative px-4 py-2 rounded-xl font-medium text-sm
                       transition-all duration-200 ease-in-out
@@ -275,14 +278,15 @@ const Navigation = memo(function Navigation() {
                       }
                     `}
                   >
-                    <User className={`w-4 h-4 ${pathname === "/profile" ? 'text-slate-950' : 'text-slate-300'}`} />
+                    <User className={`w-4 h-4 ${pathname === "/profile" ? 'text-slate-950' : 'text-white'}`} />
                     <span className="hidden lg:inline">Profile</span>
                   </Link>
 
                   {/* Logout Button */}
                   <button
                     onClick={signOut}
-                    className="px-4 py-2 rounded-xl font-medium text-sm text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-all duration-200 flex items-center gap-2 ml-1"
+                    style={{ color: '#ffffff' }}
+                    className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="hidden lg:inline">Logout</span>
