@@ -18,6 +18,8 @@ import {
   BarChart3,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Heading, Body } from "@/components/ui/Typography";
 
 interface WebVitalDisplayProps {
   name: string;
@@ -39,13 +41,13 @@ const WebVitalCard: React.FC<WebVitalDisplayProps> = ({
   const getRatingColor = (rating: string) => {
     switch (rating) {
       case "good":
-        return "text-green-600 bg-green-50 border-green-200";
+        return "text-(--status-success) bg-(--status-success-light) border-(--status-success)";
       case "needs-improvement":
-        return "text-orange-600 bg-orange-50 border-orange-200";
+        return "text-(--status-warning) bg-(--status-warning-light) border-(--status-warning)";
       case "poor":
-        return "text-red-600 bg-red-50 border-red-200";
+        return "text-(--status-error) bg-(--status-error-light) border-(--status-error)";
       default:
-        return "text-gray-600 bg-gray-50 border-silver-300";
+        return "text-(--text-secondary) bg-(--bg-secondary) border-(--border-primary)";
     }
   };
 
@@ -102,22 +104,23 @@ const WebVitalCard: React.FC<WebVitalDisplayProps> = ({
 
 const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-green-600";
-    if (score >= 50) return "text-orange-600";
-    return "text-red-600";
+    if (score >= 90) return "text-(--status-success)";
+    if (score >= 50) return "text-(--status-warning)";
+    return "text-(--status-error)";
   };
 
   const getScoreGradient = (score: number) => {
-    if (score >= 90) return "from-green-500 to-green-600";
-    if (score >= 50) return "from-orange-500 to-orange-600";
-    return "from-red-500 to-red-600";
+    if (score >= 90) return "from-(--accent-green-500) to-(--accent-green-600)";
+    if (score >= 50)
+      return "from-(--accent-orange-500) to-(--accent-orange-600)";
+    return "from-(--accent-red-500) to-(--accent-red-600)";
   };
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
-        <Gauge className="w-6 h-6 text-gray-600" />
-        <h3 className="text-lg font-semibold text-gray-900">
+        <Gauge className="w-6 h-6 text-(--text-secondary)" />
+        <h3 className="text-lg font-semibold text-(--text-primary)">
           Performance Score
         </h3>
       </div>
@@ -131,7 +134,7 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
               cy="50"
               r="40"
               fill="none"
-              stroke="#f3f4f6"
+              stroke="rgb(var(--color-silver-200))"
               strokeWidth="8"
             />
             {/* Progress circle */}
@@ -165,14 +168,16 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
               <div className={`text-3xl font-bold ${getScoreColor(score)}`}>
                 {score}
               </div>
-              <div className="text-xs text-gray-500 font-medium">SCORE</div>
+              <div className="text-xs text-(--text-secondary) font-medium">
+                SCORE
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600 flex items-center gap-1">
+        <p className="text-sm text-(--text-secondary) flex items-center gap-1">
           {score >= 90 && (
             <>
               <Zap className="w-4 h-4" />
@@ -312,24 +317,24 @@ const PerformanceDashboard: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <Heading level="h1" className="mb-2">
               Performance Dashboard
-            </h1>
-            <p className="text-gray-600">
+            </Heading>
+            <Body variant="secondary">
               Monitor Core Web Vitals and application performance metrics
-            </p>
+            </Body>
           </div>
 
-          <button
+          <Button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            variant="primary"
+            isLoading={isRefreshing}
+            loadingText="Refreshing..."
+            leftIcon={<RefreshCw className="w-4 h-4" />}
           >
-            <RefreshCw
-              className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-            />
-            {isRefreshing ? "Refreshing..." : "Refresh"}
-          </button>
+            Refresh
+          </Button>
         </div>
 
         {/* Performance Score */}
@@ -337,10 +342,10 @@ const PerformanceDashboard: React.FC = () => {
 
         {/* Core Web Vitals */}
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Zap className="w-6 h-6 text-blue-600" />
+          <Heading level="h2" className="mb-4 flex items-center gap-2">
+            <Zap className="w-6 h-6 text-(--accent-blue-600)" />
             Core Web Vitals
-          </h2>
+          </Heading>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {getLatestWebVitals().map((vital) => {
@@ -365,15 +370,15 @@ const PerformanceDashboard: React.FC = () => {
           </div>
 
           {getLatestWebVitals().length === 0 && (
-            <div className="bg-gray-50 border border-silver-300 rounded-lg p-8 text-center">
-              <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <div className="bg-(--bg-secondary) border border-silver-300 rounded-lg p-8 text-center">
+              <Activity className="w-12 h-12 text-(--text-tertiary) mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-(--text-primary) mb-2">
                 No Web Vitals Data Yet
               </h3>
-              <p className="text-gray-600">
+              <Body variant="secondary">
                 Performance metrics will appear as you interact with the
                 application.
-              </p>
+              </Body>
             </div>
           )}
         </div>
@@ -381,35 +386,35 @@ const PerformanceDashboard: React.FC = () => {
         {/* Resource Performance */}
         {metrics && metrics.resourceTiming.length > 0 && (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-6 h-6 text-green-600" />
+            <Heading level="h2" className="mb-4 flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 text-(--status-success)" />
               Resource Performance
-            </h2>
+            </Heading>
 
             <div className="bg-white rounded-lg overflow-hidden shadow-sm">
               <div className="p-4 border-b border-silver-300">
-                <h3 className="font-medium text-gray-900">
+                <h3 className="font-medium text-(--text-primary)">
                   Resource Loading Times
                 </h3>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-(--bg-secondary)">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-(--text-secondary) uppercase">
                         Resource
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-(--text-secondary) uppercase">
                         Type
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-(--text-secondary) uppercase">
                         Duration
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-(--text-secondary) uppercase">
                         Size
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-(--text-secondary) uppercase">
                         Cached
                       </th>
                     </tr>
@@ -418,28 +423,31 @@ const PerformanceDashboard: React.FC = () => {
                     {metrics.resourceTiming
                       .slice(0, 10)
                       .map((resource, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-900 truncate max-w-xs">
+                        <tr
+                          key={index}
+                          className="hover:bg-(--interactive-hover)"
+                        >
+                          <td className="px-4 py-3 text-sm text-(--text-primary) truncate max-w-xs">
                             {resource.name.split("/").pop()}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">
+                          <td className="px-4 py-3 text-sm text-(--text-secondary)">
                             <Badge variant="info" size="sm">
                               {resource.type}
                             </Badge>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-900">
+                          <td className="px-4 py-3 text-sm text-(--text-primary)">
                             {Math.round(resource.duration)}ms
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-900">
+                          <td className="px-4 py-3 text-sm text-(--text-primary)">
                             {resource.size > 0
                               ? `${(resource.size / 1024).toFixed(1)}KB`
                               : "N/A"}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             {resource.cached ? (
-                              <CheckCircle className="w-4 h-4 text-green-500" />
+                              <CheckCircle className="w-4 h-4 text-(--status-success)" />
                             ) : (
-                              <span className="text-gray-400">No</span>
+                              <span className="text-(--text-tertiary)">No</span>
                             )}
                           </td>
                         </tr>
@@ -454,54 +462,56 @@ const PerformanceDashboard: React.FC = () => {
         {/* Navigation Timing */}
         {metrics && (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Clock className="w-6 h-6 text-purple-600" />
+            <Heading level="h2" className="mb-4 flex items-center gap-2">
+              <Clock className="w-6 h-6 text-(--accent-purple-600)" />
               Navigation Timing
-            </h2>
+            </Heading>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900">
+                  <div className="w-3 h-3 bg-(--accent-blue-500) rounded-full"></div>
+                  <span className="font-medium text-(--text-primary)">
                     DOM Content Loaded
                   </span>
                 </div>
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="text-2xl font-bold text-(--accent-blue-600)">
                   {Math.round(metrics.navigationTiming.domContentLoaded)}ms
                 </span>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900">
+                  <div className="w-3 h-3 bg-(--accent-green-500) rounded-full"></div>
+                  <span className="font-medium text-(--text-primary)">
                     Load Complete
                   </span>
                 </div>
-                <span className="text-2xl font-bold text-green-600">
+                <span className="text-2xl font-bold text-(--status-success)">
                   {Math.round(metrics.navigationTiming.loadComplete)}ms
                 </span>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900">First Paint</span>
+                  <div className="w-3 h-3 bg-(--accent-orange-500) rounded-full"></div>
+                  <span className="font-medium text-(--text-primary)">
+                    First Paint
+                  </span>
                 </div>
-                <span className="text-2xl font-bold text-orange-600">
+                <span className="text-2xl font-bold text-(--accent-orange-600)">
                   {Math.round(metrics.navigationTiming.firstPaint)}ms
                 </span>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900">
+                  <div className="w-3 h-3 bg-(--accent-purple-500) rounded-full"></div>
+                  <span className="font-medium text-(--text-primary)">
                     Time to Interactive
                   </span>
                 </div>
-                <span className="text-2xl font-bold text-purple-600">
+                <span className="text-2xl font-bold text-(--accent-purple-600)">
                   {Math.round(metrics.navigationTiming.timeToInteractive)}ms
                 </span>
               </div>
@@ -512,54 +522,60 @@ const PerformanceDashboard: React.FC = () => {
         {/* Memory Usage */}
         {metrics && metrics.memoryInfo && (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-red-600" />
+            <Heading level="h2" className="mb-4 flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-(--status-error)" />
               Memory Usage
-            </h2>
+            </Heading>
 
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600 mb-1">
+                  <div className="text-2xl font-bold text-(--status-error) mb-1">
                     {(metrics.memoryInfo.usedJSHeapSize / 1024 / 1024).toFixed(
                       1
                     )}
                     MB
                   </div>
-                  <div className="text-sm text-gray-600">Used Heap Size</div>
+                  <div className="text-sm text-(--text-secondary)">
+                    Used Heap Size
+                  </div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">
+                  <div className="text-2xl font-bold text-(--accent-blue-600) mb-1">
                     {(metrics.memoryInfo.totalJSHeapSize / 1024 / 1024).toFixed(
                       1
                     )}
                     MB
                   </div>
-                  <div className="text-sm text-gray-600">Total Heap Size</div>
+                  <div className="text-sm text-(--text-secondary)">
+                    Total Heap Size
+                  </div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600 mb-1">
+                  <div className="text-2xl font-bold text-(--status-success) mb-1">
                     {(metrics.memoryInfo.jsHeapSizeLimit / 1024 / 1024).toFixed(
                       1
                     )}
                     MB
                   </div>
-                  <div className="text-sm text-gray-600">Heap Size Limit</div>
+                  <div className="text-sm text-(--text-secondary)">
+                    Heap Size Limit
+                  </div>
                 </div>
               </div>
 
               <div className="mt-4">
-                <div className="bg-gray-200 rounded-full h-2">
+                <div className="bg-(--bg-tertiary) rounded-full h-2">
                   <div
-                    className="bg-red-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-(--status-error) h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${(metrics.memoryInfo.usedJSHeapSize / metrics.memoryInfo.jsHeapSizeLimit) * 100}%`,
                     }}
                   ></div>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-(--text-secondary) mt-1">
                   <span>0MB</span>
                   <span>
                     {(metrics.memoryInfo.jsHeapSizeLimit / 1024 / 1024).toFixed(
@@ -576,9 +592,9 @@ const PerformanceDashboard: React.FC = () => {
         {/* Recent Activity */}
         {webVitalsHistory.length > 0 && (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            <Heading level="h2" className="mb-4">
               Recent Activity
-            </h2>
+            </Heading>
 
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="space-y-3">
@@ -588,28 +604,28 @@ const PerformanceDashboard: React.FC = () => {
                     className="flex items-center justify-between py-2 border-b border-silver-300 last:border-b-0"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-(--text-primary)">
                         {vital.name}
                       </span>
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                           vital.rating === "good"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-(--status-success-light) text-(--status-success)"
                             : vital.rating === "needs-improvement"
-                              ? "bg-orange-100 text-orange-800"
-                              : "bg-red-100 text-red-800"
+                              ? "bg-(--status-warning-light) text-(--status-warning)"
+                              : "bg-(--status-error-light) text-(--status-error)"
                         }`}
                       >
                         {vital.rating}
                       </span>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-(--text-primary)">
                         {vital.name === "CLS"
                           ? vital.value.toFixed(3)
                           : `${Math.round(vital.value)}ms`}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-(--text-secondary)">
                         {formatTimestamp(vital.timestamp)}
                       </div>
                     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Label, Caption } from "@/components/ui/Typography";
 
 /**
  * KPITagBadge Component
@@ -179,11 +180,7 @@ export function KPITagSelector({
   return (
     <div className="relative">
       {/* Label */}
-      {label && (
-        <label className="block text-sm font-medium text-silver-700 mb-1">
-          {label}
-        </label>
-      )}
+      {label && <Label className="block mb-1">{label}</Label>}
 
       {/* Selected tags display */}
       <div className="min-h-[42px] p-2 border border-silver-300 rounded-lg bg-white">
@@ -263,9 +260,9 @@ export function KPITagSelector({
                       )}
                     </div>
                     {tag.description && (
-                      <p className="text-xs text-silver-600 mt-1">
+                      <Caption variant="default" className="mt-1">
                         {tag.description}
-                      </p>
+                      </Caption>
                     )}
                   </button>
                 );

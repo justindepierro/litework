@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { WifiOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Body } from "@/components/ui/Typography";
 
 export default function OfflinePage() {
   const [isOnline, setIsOnline] = useState(
@@ -38,10 +39,10 @@ export default function OfflinePage() {
           <h1 className="text-heading-primary text-2xl font-bold mb-4">
             You&apos;re Offline
           </h1>
-          <p className="text-body-secondary mb-6">
+          <Body variant="secondary" className="mb-6">
             It looks like you&apos;re not connected to the internet. Some
             features may not be available until you reconnect.
-          </p>
+          </Body>
           <Button
             onClick={handleRetry}
             variant="primary"
@@ -50,10 +51,10 @@ export default function OfflinePage() {
           >
             Try Again
           </Button>
-          <p className="text-body-secondary text-sm mt-4">
+          <Body variant="secondary" className="text-sm mt-4">
             Don&apos;t worry - your workout data is saved locally and will sync
             when you&apos;re back online.
-          </p>
+          </Body>
         </div>
       </div>
     </div>

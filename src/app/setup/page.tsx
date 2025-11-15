@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
+import { Body } from "@/components/ui/Typography";
 
 interface SyncStatus {
   profile: {
@@ -88,15 +89,15 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-(--accent-blue-100) mb-4">
               {syncStatus?.complete ? (
                 <svg
-                  className="h-10 w-10 text-blue-600"
+                  className="h-10 w-10 text-(--accent-blue-600)"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -110,7 +111,7 @@ export default function SetupPage() {
                 </svg>
               ) : (
                 <svg
-                  className="h-10 w-10 text-blue-600 animate-spin"
+                  className="h-10 w-10 text-(--accent-blue-600) animate-spin"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -130,12 +131,10 @@ export default function SetupPage() {
                 </svg>
               )}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              {syncStatus?.complete
-                ? "All Set!"
-                : "Setting Up Your Account"}
+            <h2 className="text-2xl sm:text-3xl font-bold text-(--text-primary) mb-2">
+              {syncStatus?.complete ? "All Set!" : "Setting Up Your Account"}
             </h2>
-            <p className="text-base sm:text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-(--text-secondary)">
               {syncStatus?.complete
                 ? "Taking you to your dashboard..."
                 : "Just a moment while we get everything ready..."}
@@ -144,8 +143,8 @@ export default function SetupPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-800">{error}</p>
+            <div className="mb-6 p-4 bg-(--status-warning-light) border border-yellow-200 rounded-lg">
+              <p className="text-sm text-(--status-warning)">{error}</p>
             </div>
           )}
 
@@ -157,13 +156,13 @@ export default function SetupPage() {
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     syncStatus.profile.synced
-                      ? "bg-green-100"
-                      : "bg-gray-100"
+                      ? "bg-(--status-success-light)"
+                      : "bg-(--bg-tertiary)"
                   }`}
                 >
                   {syncStatus.profile.synced ? (
                     <svg
-                      className="w-5 h-5 text-green-600"
+                      className="w-5 h-5 text-(--status-success)"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -176,17 +175,17 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-base font-medium text-(--text-primary)">
                     Profile
                   </p>
                   {syncStatus.profile.data && (
-                    <p className="text-sm text-gray-600">
+                    <Body className="text-sm" variant="secondary">
                       {syncStatus.profile.data.name}
-                    </p>
+                    </Body>
                   )}
                 </div>
               </div>
@@ -195,12 +194,14 @@ export default function SetupPage() {
               <div className="flex items-center gap-3">
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    syncStatus.groups.synced ? "bg-green-100" : "bg-gray-100"
+                    syncStatus.groups.synced
+                      ? "bg-(--status-success-light)"
+                      : "bg-(--bg-tertiary)"
                   }`}
                 >
                   {syncStatus.groups.synced ? (
                     <svg
-                      className="w-5 h-5 text-green-600"
+                      className="w-5 h-5 text-(--status-success)"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -213,19 +214,21 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-base font-medium text-(--text-primary)">
                     Team Groups
                   </p>
                   {syncStatus.groups.count > 0 ? (
-                    <p className="text-sm text-gray-600">
+                    <Body className="text-sm" variant="secondary">
                       {syncStatus.groups.names.join(", ")}
-                    </p>
+                    </Body>
                   ) : (
-                    <p className="text-sm text-gray-600">No groups yet</p>
+                    <Body className="text-sm" variant="secondary">
+                      No groups yet
+                    </Body>
                   )}
                 </div>
               </div>
@@ -234,12 +237,14 @@ export default function SetupPage() {
               <div className="flex items-center gap-3">
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    syncStatus.workouts.synced ? "bg-green-100" : "bg-gray-100"
+                    syncStatus.workouts.synced
+                      ? "bg-(--status-success-light)"
+                      : "bg-(--bg-tertiary)"
                   }`}
                 >
                   {syncStatus.workouts.synced ? (
                     <svg
-                      className="w-5 h-5 text-green-600"
+                      className="w-5 h-5 text-(--status-success)"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -252,22 +257,22 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-base font-medium text-(--text-primary)">
                     Workouts
                   </p>
                   {syncStatus.workouts.hasWorkouts ? (
-                    <p className="text-sm text-gray-600">
+                    <Body className="text-sm" variant="secondary">
                       {syncStatus.workouts.count} workout
                       {syncStatus.workouts.count !== 1 ? "s" : ""} assigned
-                    </p>
+                    </Body>
                   ) : (
-                    <p className="text-sm text-gray-600">
+                    <Body className="text-sm" variant="secondary">
                       Ready for assignments
-                    </p>
+                    </Body>
                   )}
                 </div>
               </div>
@@ -276,12 +281,14 @@ export default function SetupPage() {
               <div className="flex items-center gap-3">
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    syncStatus.kpis.synced ? "bg-green-100" : "bg-gray-100"
+                    syncStatus.kpis.synced
+                      ? "bg-(--status-success-light)"
+                      : "bg-(--bg-tertiary)"
                   }`}
                 >
                   {syncStatus.kpis.synced ? (
                     <svg
-                      className="w-5 h-5 text-green-600"
+                      className="w-5 h-5 text-(--status-success)"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -294,20 +301,22 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-(--text-tertiary) border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-base font-medium text-(--text-primary)">
                     Performance Tracking
                   </p>
                   {syncStatus.kpis.hasKPIs ? (
-                    <p className="text-sm text-gray-600">
+                    <Body className="text-sm" variant="secondary">
                       {syncStatus.kpis.count} metric
                       {syncStatus.kpis.count !== 1 ? "s" : ""} assigned
-                    </p>
+                    </Body>
                   ) : (
-                    <p className="text-sm text-gray-600">Ready to track</p>
+                    <Body className="text-sm" variant="secondary">
+                      Ready to track
+                    </Body>
                   )}
                 </div>
               </div>
@@ -317,9 +326,9 @@ export default function SetupPage() {
           {/* Progress Bar */}
           {syncStatus && !syncStatus.complete && (
             <div className="mt-6">
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-2 bg-(--bg-tertiary) rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-600 transition-all duration-500 ease-out"
+                  className="h-full bg-(--accent-blue-600) transition-all duration-500 ease-out"
                   style={{
                     width: `${
                       ((syncStatus.profile.synced ? 1 : 0) +

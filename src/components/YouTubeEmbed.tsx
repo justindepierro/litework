@@ -77,10 +77,12 @@ export default function YouTubeEmbed({
       {/* 16:9 aspect ratio container */}
       <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
         {!isLoaded && (
-          <div className="absolute inset-0 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="absolute inset-0 bg-(--bg-tertiary) rounded-lg flex items-center justify-center">
             <div className="text-center">
-              <Play className="w-16 h-16 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm text-gray-600">Loading video...</p>
+              <Play className="w-16 h-16 mx-auto mb-2 text-(--text-tertiary)" />
+              <p className="text-sm text-(--text-secondary)">
+                Loading video...
+              </p>
             </div>
           </div>
         )}
@@ -98,13 +100,13 @@ export default function YouTubeEmbed({
       </div>
 
       {/* Open in YouTube link */}
-      <div className="mt-2 flex items-center justify-between text-xs text-gray-600">
+      <div className="mt-2 flex items-center justify-between text-xs text-(--text-secondary)">
         <span>{title}</span>
         <a
           href={watchUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors"
+          className="flex items-center gap-1 text-(--accent-blue-600) hover:text-(--accent-blue-700) transition-colors"
         >
           <ExternalLink className="w-3 h-3" />
           Open in YouTube

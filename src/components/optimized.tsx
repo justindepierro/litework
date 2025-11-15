@@ -7,6 +7,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePrefetch } from "@/lib/prefetch";
+import { Label, Caption } from "@/components/ui/Typography";
 
 // ============================================================================
 // WORKOUT COMPONENTS
@@ -130,7 +131,11 @@ export const ExerciseDisplay = React.memo<ExerciseDisplayProps>(
           {reps && <span>{reps} reps</span>}
           {weight && <span>{weight}</span>}
         </div>
-        {notes && <p className="text-xs text-silver-600 mt-2">{notes}</p>}
+        {notes && (
+          <Caption variant="default" className="mt-2">
+            {notes}
+          </Caption>
+        )}
       </div>
     );
   }
@@ -388,11 +393,7 @@ export const Input = React.memo<InputProps>(
   ({ label, error, helperText, className = "", ...props }) => {
     return (
       <div className="space-y-1">
-        {label && (
-          <label className="block text-sm font-medium text-navy-700">
-            {label}
-          </label>
-        )}
+        {label && <Label className="block">{label}</Label>}
         <input
           className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-transparent ${
             error ? "border-accent-red-500" : "border-silver-400"

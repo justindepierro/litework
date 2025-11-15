@@ -40,12 +40,14 @@ STEP 7: First Workout Assignment
 ## 🔍 STEP 1: Coach Creates Invite
 
 ### Files Involved
+
 - **Frontend**: `src/app/athletes/page.tsx` (lines 289-397)
 - **Modal**: `src/app/athletes/components/modals/InviteAthleteModal.tsx`
 - **API**: `src/app/api/invites/route.ts` (POST)
 - **Client**: `src/lib/api-client.ts` (createAthleteInvite)
 
 ### User Actions
+
 1. Coach clicks "Invite Athlete" button on Athletes page
 2. Modal opens with form fields:
    - ✅ First Name (required)
@@ -64,7 +66,7 @@ if (!firstName || !lastName) return; // Block submission
 POST /api/invites
 Body: {
   firstName: "John",
-  lastName: "Doe", 
+  lastName: "Doe",
   email: "john@example.com", // Optional
   groupId: "group-uuid", // Optional
   notes: "Recovering from knee injury" // Optional
@@ -117,11 +119,13 @@ Body: {
 ```
 
 ### Performance Metrics
+
 - **API Response**: ~300ms ⚡ FAST
 - **Email Delivery**: 2-5 seconds ✅ GOOD
 - **Rate Limit**: 100/hour per coach ✅ GOOD
 
 ### ✅ Validations in Place
+
 1. ✅ Coach authentication required
 2. ✅ Role check (coach/admin only)
 3. ✅ Email format validation (if provided)
@@ -132,6 +136,7 @@ Body: {
 8. ✅ Group assignment before signup
 
 ### 🔒 Security Checks
+
 - ✅ Authentication required
 - ✅ Role-based access control (RBAC)
 - ✅ Rate limiting prevents abuse
@@ -139,6 +144,7 @@ Body: {
 - ✅ Invite expiration (7 days)
 
 ### Potential Issues
+
 - ⚠️ **No email preview** - Coach can't see what athlete receives
 - ⚠️ **No bulk invite** - Must invite one at a time
 - 🟡 **Draft invites** - If no email, athlete won't know they're invited
@@ -148,6 +154,7 @@ Body: {
 ## 🔍 STEP 2: Email Sent to Athlete
 
 ### Files Involved
+
 - **Email Service**: `src/lib/email-service.ts`
 - **Email Template**: Generated in `sendEmailNotification()`
 - **Email Provider**: Resend API
@@ -156,44 +163,50 @@ Body: {
 
 ```html
 <!-- Generated HTML Email -->
-From: LiteWork <noreply@liteworkapp.com>
-To: john@example.com
-Subject: You're invited to join LiteWork!
+From: LiteWork
+<noreply@liteworkapp.com>
+  To: john@example.com Subject: You're invited to join LiteWork!
 
-<!DOCTYPE html>
-<html>
-<body style="font-family: sans-serif; max-width: 600px;">
-  <h1>Join LiteWork</h1>
-  
-  <p>Hi John Doe,</p>
-  
-  <p>Your coach has invited you to join LiteWork, the complete 
-     workout tracking platform for weight lifting athletes.</p>
-  
-  <table>
-    <tr>
-      <td><strong>Invited By:</strong></td>
-      <td>coach@example.com</td>
-    </tr>
-    <tr>
-      <td><strong>Expires:</strong></td>
-      <td>November 21, 2025</td>
-    </tr>
-  </table>
-  
-  <a href="https://liteworkapp.com/signup?invite=uuid" 
-     style="display: inline-block; padding: 12px 24px; 
+  <!DOCTYPE html>
+  <html>
+    <body style="font-family: sans-serif; max-width: 600px;">
+      <h1>Join LiteWork</h1>
+
+      <p>Hi John Doe,</p>
+
+      <p>
+        Your coach has invited you to join LiteWork, the complete workout
+        tracking platform for weight lifting athletes.
+      </p>
+
+      <table>
+        <tr>
+          <td><strong>Invited By:</strong></td>
+          <td>coach@example.com</td>
+        </tr>
+        <tr>
+          <td><strong>Expires:</strong></td>
+          <td>November 21, 2025</td>
+        </tr>
+      </table>
+
+      <a
+        href="https://liteworkapp.com/signup?invite=uuid"
+        style="display: inline-block; padding: 12px 24px; 
             background: linear-gradient(to right, #ff6b35, #8b5cf6, #ec4899);
-            color: white; text-decoration: none; border-radius: 8px;">
-    Accept Invitation
-  </a>
-  
-  <p>This invitation will expire in 7 days.</p>
-</body>
-</html>
+            color: white; text-decoration: none; border-radius: 8px;"
+      >
+        Accept Invitation
+      </a>
+
+      <p>This invitation will expire in 7 days.</p>
+    </body>
+  </html></noreply@liteworkapp.com
+>
 ```
 
 ### ✅ Email Validations
+
 1. ✅ Valid FROM email (verified domain)
 2. ✅ Valid TO email (format checked)
 3. ✅ Professional HTML template
@@ -202,12 +215,14 @@ Subject: You're invited to join LiteWork!
 6. ✅ Coach attribution
 
 ### Potential Issues
+
 - ⚠️ **No app screenshots** - Athlete doesn't see what they're signing up for
 - ⚠️ **No benefit list** - Missing "why join" section
 - ⚠️ **No social proof** - No testimonials or team info
 - 🟡 **Email deliverability** - Depends on athlete's email provider
 
 ### Performance Metrics
+
 - **Delivery Time**: 2-5 seconds ✅ FAST
 - **Open Rate**: Unknown (no tracking)
 - **Click Rate**: Unknown (no tracking)
@@ -217,10 +232,12 @@ Subject: You're invited to join LiteWork!
 ## 🔍 STEP 3: Athlete Clicks Link
 
 ### Files Involved
+
 - **Signup Page**: `src/app/signup/page.tsx`
 - **API Route**: `src/app/api/invites/[id]/route.ts` (GET)
 
 ### URL Format
+
 ```
 https://liteworkapp.com/signup?invite=abc123-uuid-here
 ```
@@ -259,6 +276,7 @@ setEmail("john@example.com");
 ```
 
 ### ✅ Validations in Place
+
 1. ✅ Invite ID validation (UUID format)
 2. ✅ Invite exists in database
 3. ✅ Invite status is "pending"
@@ -269,19 +287,20 @@ setEmail("john@example.com");
 
 ```typescript
 // Invite not found (404)
-"Invitation not found. It may have expired or been cancelled."
+"Invitation not found. It may have expired or been cancelled.";
 
 // Invite expired (410)
-"This invitation has expired. Please contact your coach for a new invitation."
+"This invitation has expired. Please contact your coach for a new invitation.";
 
 // Invite already used (status !== "pending")
-"This invitation has already been used or cancelled."
+"This invitation has already been used or cancelled.";
 
 // Generic error
-"Failed to load invitation. Please try again."
+"Failed to load invitation. Please try again.";
 ```
 
 ### Potential Issues
+
 - ✅ **Error messages are clear** - User knows what to do
 - ✅ **Link to login** - If they already have account
 - ⚠️ **No "request new invite" button** - Must contact coach manually
@@ -292,6 +311,7 @@ setEmail("john@example.com");
 ## 🔍 STEP 4: Signup Form Completion
 
 ### Files Involved
+
 - **Signup Page**: `src/app/signup/page.tsx` (lines 44-534)
 - **Validation**: `src/lib/security.ts` (validateEmail, validatePassword)
 
@@ -351,6 +371,7 @@ Strong: ████████████████ (green)
 ```
 
 ### ✅ Validations in Place
+
 1. ✅ Email format validation
 2. ✅ Password strength requirements
 3. ✅ Password confirmation match
@@ -358,6 +379,7 @@ Strong: ████████████████ (green)
 5. ✅ Disabled submit until valid
 
 ### Potential Issues
+
 - ✅ **Strong security** - Good password requirements
 - ⚠️ **No password visibility toggle** - Can't see what they're typing
 - ⚠️ **No "paste password" support** - Makes it hard to use password managers
@@ -368,6 +390,7 @@ Strong: ████████████████ (green)
 ## 🔍 STEP 5: Account Creation
 
 ### Files Involved
+
 - **Frontend**: `src/app/signup/page.tsx` (handleSubmit)
 - **Auth Client**: `src/lib/auth-client.ts` (signUp)
 - **API Route**: `src/app/api/invites/accept/route.ts` (POST)
@@ -380,12 +403,12 @@ Strong: ████████████████ (green)
 handleSubmit(e) → {
   e.preventDefault();
   setIsLoading(true);
-  
+
   // Final validation
   if (!validateEmail(email)) return;
   if (!validatePassword(password)) return;
   if (password !== confirmPassword) return;
-  
+
   // Call signUp from AuthContext
   await signUp(email, password, firstName, lastName, inviteId);
 }
@@ -399,7 +422,7 @@ async signUp(email, password, firstName, lastName, inviteId) {
       body: JSON.stringify({ status: "accepted" })
     });
   }
-  
+
   // Create Supabase Auth account
   const { data, error } = await supabase.auth.signUp({
     email: email.toLowerCase(),
@@ -412,7 +435,7 @@ async signUp(email, password, firstName, lastName, inviteId) {
       }
     }
   });
-  
+
   // Create user profile
   await supabase.from("users").insert({
     id: data.user.id,
@@ -423,7 +446,7 @@ async signUp(email, password, firstName, lastName, inviteId) {
     created_at: now(),
     updated_at: now()
   });
-  
+
   // Add to groups (if invite had group_ids)
   if (inviteData.group_ids) {
     for (const groupId of inviteData.group_ids) {
@@ -433,7 +456,7 @@ async signUp(email, password, firstName, lastName, inviteId) {
         .select("athlete_ids")
         .eq("id", groupId)
         .single();
-      
+
       // Add athlete to group
       const updatedIds = [...group.athlete_ids, data.user.id];
       await supabase
@@ -448,7 +471,7 @@ async signUp(email, password, firstName, lastName, inviteId) {
 async PATCH(request, { params }) {
   const { id: inviteId } = await params;
   const body = await request.json();
-  
+
   // Update invite status
   await supabase
     .from("invites")
@@ -457,7 +480,7 @@ async PATCH(request, { params }) {
       accepted_at: new Date().toISOString()
     })
     .eq("id", inviteId);
-  
+
   return NextResponse.json({ success: true });
 }
 ```
@@ -486,6 +509,7 @@ WHERE id = 'group-uuid';
 ```
 
 ### ✅ Validations in Place
+
 1. ✅ Rate limiting (3 signup attempts per hour per IP)
 2. ✅ Invite validation (exists, pending, not expired)
 3. ✅ Duplicate email check
@@ -494,6 +518,7 @@ WHERE id = 'group-uuid';
 6. ✅ Group assignment automated
 
 ### 🔒 Security Checks
+
 - ✅ Password hashing (bcrypt via Supabase)
 - ✅ Rate limiting prevents brute force
 - ✅ Email verification (optional, but recommended)
@@ -504,27 +529,29 @@ WHERE id = 'group-uuid';
 
 ```typescript
 // Rate limit exceeded (429)
-"Too many signup attempts. Please try again later."
+"Too many signup attempts. Please try again later.";
 
 // Invalid/expired invite (404/410)
-"Invalid or expired invitation"
+"Invalid or expired invitation";
 
 // Duplicate email (400)
-"User with this email already exists"
+"User with this email already exists";
 
 // Weak password (400)
-"Password must be at least 8 characters with uppercase, lowercase, number, and special character"
+"Password must be at least 8 characters with uppercase, lowercase, number, and special character";
 
 // Server error (500)
-"Failed to create account. Please try again."
+"Failed to create account. Please try again.";
 ```
 
 ### Performance Metrics
+
 - **Account Creation**: ~500ms ✅ FAST
 - **Group Assignment**: +50ms per group ✅ FAST
 - **Total Signup Time**: ~600ms ✅ EXCELLENT
 
 ### Potential Issues
+
 - ✅ **Atomic operations** - Rollback on failure
 - ✅ **Error messages clear** - User knows what went wrong
 - ⚠️ **No progress indicator** - User doesn't see what's happening
@@ -536,6 +563,7 @@ WHERE id = 'group-uuid';
 ## 🔍 STEP 6: Auto-Login & Redirect
 
 ### Files Involved
+
 - **Auth Context**: `src/contexts/AuthContext.tsx` (signUp callback)
 - **Auth Guard**: `src/hooks/use-auth-guard.ts`
 - **Middleware**: `middleware.ts`
@@ -573,6 +601,7 @@ if (isPublicRoute(pathname)) {
 ```
 
 ### ✅ Validations in Place
+
 1. ✅ Session created automatically
 2. ✅ Token stored securely (httpOnly cookies via Supabase)
 3. ✅ Auto-redirect to dashboard
@@ -596,6 +625,7 @@ useEffect(() => {
 ```
 
 ### Potential Issues
+
 - ✅ **Smooth auto-login** - No extra steps
 - ⚠️ **No welcome message** - Feels abrupt
 - ⚠️ **No onboarding tour** - Athletes might be confused
@@ -607,11 +637,13 @@ useEffect(() => {
 ## 🔍 STEP 7: First Workout Assignment (Post-Signup)
 
 ### Coach Actions
+
 1. Coach sees athlete in Athletes list (status: "Active")
 2. Coach assigns workout to athlete or group
 3. Athlete receives notification (in-app + email)
 
 ### Athlete Experience
+
 1. Dashboard shows "You have 1 assigned workout"
 2. Click to view workout details
 3. Start workout session
@@ -623,6 +655,7 @@ useEffect(() => {
 ## 🎯 Critical Path Summary
 
 ### Happy Path (All Green ✅)
+
 ```
 1. ✅ Coach creates invite (300ms)
 2. ✅ Email delivered (2-5 sec)
@@ -638,38 +671,39 @@ Total Time: ~2-8 seconds (excluding user password entry)
 
 ### Failure Points & Recovery
 
-| Step | Failure | Recovery |
-|------|---------|----------|
-| 1. Invite Creation | Email already exists | Clear error message, check athlete list |
-| 1. Invite Creation | Rate limit exceeded | Wait 1 hour or contact support |
-| 2. Email Delivery | Email bounces | Edit athlete email, resend invite |
-| 3. Link Click | Invite expired | Coach creates new invite |
-| 4. Form Validation | Weak password | Real-time feedback, requirements shown |
-| 5. Account Creation | Duplicate email | Login instead link provided |
-| 5. Account Creation | Server error | Retry, or contact support |
-| 6. Auto-Login | Session failed | Manual login page, session recovered |
-| 7. Dashboard Load | API error | Retry button, fallback UI |
+| Step                | Failure              | Recovery                                |
+| ------------------- | -------------------- | --------------------------------------- |
+| 1. Invite Creation  | Email already exists | Clear error message, check athlete list |
+| 1. Invite Creation  | Rate limit exceeded  | Wait 1 hour or contact support          |
+| 2. Email Delivery   | Email bounces        | Edit athlete email, resend invite       |
+| 3. Link Click       | Invite expired       | Coach creates new invite                |
+| 4. Form Validation  | Weak password        | Real-time feedback, requirements shown  |
+| 5. Account Creation | Duplicate email      | Login instead link provided             |
+| 5. Account Creation | Server error         | Retry, or contact support               |
+| 6. Auto-Login       | Session failed       | Manual login page, session recovered    |
+| 7. Dashboard Load   | API error            | Retry button, fallback UI               |
 
 ---
 
 ## 📊 Performance Benchmarks
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Invite API Response | < 500ms | ~300ms | ✅ EXCELLENT |
-| Email Delivery | < 10 sec | 2-5 sec | ✅ EXCELLENT |
-| Signup API Response | < 1 sec | ~600ms | ✅ EXCELLENT |
-| Dashboard Load | < 2 sec | ~500ms | ✅ EXCELLENT |
-| Total Onboarding | < 30 sec | 5-10 sec | ✅ EXCELLENT |
+| Metric              | Target   | Actual   | Status       |
+| ------------------- | -------- | -------- | ------------ |
+| Invite API Response | < 500ms  | ~300ms   | ✅ EXCELLENT |
+| Email Delivery      | < 10 sec | 2-5 sec  | ✅ EXCELLENT |
+| Signup API Response | < 1 sec  | ~600ms   | ✅ EXCELLENT |
+| Dashboard Load      | < 2 sec  | ~500ms   | ✅ EXCELLENT |
+| Total Onboarding    | < 30 sec | 5-10 sec | ✅ EXCELLENT |
 
 ---
 
 ## 🔒 Security Audit
 
 ### ✅ Implemented Security Measures
+
 1. ✅ **Authentication**: Supabase Auth with bcrypt password hashing
 2. ✅ **Authorization**: Role-based access control (RBAC)
-3. ✅ **Rate Limiting**: 
+3. ✅ **Rate Limiting**:
    - Invite creation: 100/hour per coach
    - Signup: 3/hour per IP
 4. ✅ **Input Validation**:
@@ -688,6 +722,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
    - SPF/DKIM configured
 
 ### 🟡 Recommended Enhancements
+
 1. 🟡 **Email Verification**: Send confirmation email after signup
 2. 🟡 **Two-Factor Auth (2FA)**: Optional for coaches
 3. 🟡 **Audit Logging**: Track all account creation events
@@ -699,18 +734,21 @@ Total Time: ~2-8 seconds (excluding user password entry)
 ## 🎨 UX/UI Improvements Needed
 
 ### High Priority
+
 1. ⚠️ **Welcome Animation**: Add celebration after signup
 2. ⚠️ **Onboarding Tour**: Guide new athletes through dashboard
 3. ⚠️ **Email Preview**: Let coach see email before sending
 4. ⚠️ **Password Visibility**: Toggle to show/hide password
 
 ### Medium Priority
+
 5. 🟡 **Email Tracking**: Track open/click rates
 6. 🟡 **Bulk Invite**: Invite multiple athletes at once
 7. 🟡 **Custom Welcome Message**: Coach adds personal note
 8. 🟡 **App Screenshots in Email**: Show what they're signing up for
 
 ### Low Priority
+
 9. 🟢 **Social Signup**: Sign up with Google/Apple
 10. 🟢 **Biometric Login**: Face ID/Touch ID on mobile
 11. 🟢 **Referral Tracking**: Track who invited most athletes
@@ -721,6 +759,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 ## ✅ Final Validation Checklist
 
 ### Critical Path Tests
+
 - [x] Coach can create invite with email
 - [x] Coach can create invite without email (draft)
 - [x] Email is sent immediately with correct link
@@ -733,6 +772,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 - [x] Athlete appears in coach's athlete list
 
 ### Edge Cases
+
 - [x] Expired invite shows error
 - [x] Used invite shows error
 - [x] Duplicate email prevents signup
@@ -742,6 +782,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 - [x] Group assignment persists
 
 ### Security Tests
+
 - [x] Cannot signup without invite
 - [x] Cannot reuse invite
 - [x] Password is hashed
@@ -750,6 +791,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 - [x] Role permissions enforced
 
 ### Performance Tests
+
 - [x] Invite API < 500ms
 - [x] Email delivery < 10 sec
 - [x] Signup API < 1 sec
@@ -760,6 +802,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 ## 🚀 Production Readiness
 
 ### ✅ Ready for Production
+
 - ✅ All critical path tests pass
 - ✅ Security measures implemented
 - ✅ Performance benchmarks met
@@ -769,6 +812,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 - ✅ API endpoints tested
 
 ### 🎯 Next Steps (Optional Enhancements)
+
 1. Add welcome animation/celebration
 2. Implement onboarding tour
 3. Add email preview for coaches
@@ -782,6 +826,7 @@ Total Time: ~2-8 seconds (excluding user password entry)
 **Status**: ✅ **ROCK SOLID**
 
 The onboarding workflow is production-ready with:
+
 - Fast performance (< 10 sec total)
 - Strong security (rate limiting, validation, encryption)
 - Comprehensive error handling
@@ -790,6 +835,7 @@ The onboarding workflow is production-ready with:
 - Automated group assignment
 
 **Minor improvements recommended** for better UX:
+
 - Welcome animation after signup
 - Onboarding tour for new athletes
 - Email preview for coaches

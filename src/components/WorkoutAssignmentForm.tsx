@@ -2,12 +2,8 @@
 
 import { WorkoutPlan } from "@/types";
 import DateTimePicker from "./DateTimePicker";
-import { Select } from "@/components/ui/Input";
-import {
-  FloatingLabelInput,
-  FloatingLabelTextarea,
-} from "@/components/ui/FloatingLabelInput";
 import { Card } from "@/components/ui/Card";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 
 interface WorkoutAssignmentFormProps {
   // Workout selection
@@ -63,21 +59,33 @@ export default function WorkoutAssignmentForm({
     <div className="space-y-6">
       {/* Workout Selection */}
       <div>
-        <Select
-          label="Select Workout"
+        <label className="block text-body-primary font-medium mb-2">
+          Select Workout <span className="text-error">*</span>
+        </label>
+        <select
           value={selectedWorkoutId}
           onChange={(e) => onWorkoutChange(e.target.value)}
-          options={[
-            { value: "", label: "Choose a workout..." },
-            ...workoutPlans.map((workout) => ({
-              value: workout.id,
-              label: `${workout.name} (${workout.estimatedDuration} min)`,
-            })),
-          ]}
-          fullWidth
-        />
+          className="w-full px-3 py-2 border border-silver-400 rounded-md bg-white text-body-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          aria-required="true"
+          aria-invalid={!!workoutError}
+          aria-describedby={workoutError ? "workout-error" : undefined}
+        >
+          <option value="">Choose a workout...</option>
+          {workoutPlans.map((workout) => (
+            <option key={workout.id} value={workout.id}>
+              {workout.name} ({workout.estimatedDuration} min)
+            </option>
+          ))}
+        </select>
         {workoutError && (
-          <p className="text-red-500 text-sm mt-1">{workoutError}</p>
+          <Caption
+            id="workout-error"
+            variant="error"
+            className="mt-1"
+            role="alert"
+          >
+            {workoutError}
+          </Caption>
         )}
       </div>
 
@@ -92,54 +100,69 @@ export default function WorkoutAssignmentForm({
           onEndTimeChange={onEndTimeChange}
           showTimePicker={true}
         />
-        {timeError && <p className="text-red-500 text-sm mt-1">{timeError}</p>}
+        {timeError && (
+          <Caption variant="error" className="mt-1" role="alert">
+            {timeError}
+          </Caption>
+        )}
       </div>
 
       {/* Location */}
-      <FloatingLabelInput
-        label="Location (optional)"
-        type="text"
-        value={location}
-        onChange={(e) => onLocationChange(e.target.value)}
-        fullWidth
-      />
+      <div>
+        <label className="block text-body-primary font-medium mb-2">
+          Location (optional)
+        </label>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => onLocationChange(e.target.value)}
+          className="w-full px-3 py-2 border border-silver-400 rounded-md bg-white text-body-primary placeholder:text-silver-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="e.g., Weight Room, Field House"
+        />
+      </div>
 
       {/* Notes */}
-      <FloatingLabelTextarea
-        label="Session Notes (Optional)"
-        placeholder={notesPlaceholder}
-        value={notes}
-        onChange={(e) => onNotesChange(e.target.value)}
-        rows={notesRows}
-        fullWidth
-      />
+      <div>
+        <label className="block text-body-primary font-medium mb-2">
+          Session Notes (Optional)
+        </label>
+        <textarea
+          value={notes}
+          onChange={(e) => onNotesChange(e.target.value)}
+          rows={notesRows}
+          placeholder={notesPlaceholder}
+          className="w-full px-3 py-2 border border-silver-400 rounded-md bg-white text-body-primary placeholder:text-silver-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+        />
+      </div>
 
       {/* Workout Preview */}
       {showWorkoutPreview && selectedWorkout && (
         <Card variant="default" padding="md">
-          <h3 className="text-heading-secondary text-lg mb-3">
+          <Heading level="h3" className="mb-3">
             Workout Preview
-          </h3>
+          </Heading>
           <div className="space-y-2">
             {selectedWorkout.exercises.slice(0, 8).map((exercise, index) => (
               <div
                 key={exercise.id}
                 className="flex items-center gap-3 text-sm"
               >
-                <span className="text-body-small w-6">{index + 1}.</span>
-                <span className="flex-1">{exercise.exerciseName}</span>
-                <span className="text-body-small">
+                <Caption variant="muted" className="w-6">
+                  {index + 1}.
+                </Caption>
+                <Body className="flex-1">{exercise.exerciseName}</Body>
+                <Caption variant="muted">
                   {exercise.sets}×{exercise.reps}
                   {exercise.weightType === "percentage" &&
                     exercise.percentage &&
                     ` @ ${exercise.percentage}%`}
-                </span>
+                </Caption>
               </div>
             ))}
             {selectedWorkout.exercises.length > 8 && (
-              <div className="text-body-small text-silver-600 text-center pt-2">
+              <Body variant="secondary" className="text-center pt-2">
                 +{selectedWorkout.exercises.length - 8} more exercises
-              </div>
+              </Body>
             )}
           </div>
         </Card>

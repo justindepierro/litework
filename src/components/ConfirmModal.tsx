@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Body } from "@/components/ui/Typography";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -33,18 +34,18 @@ export default function ConfirmModal({
     switch (confirmVariant) {
       case "danger":
         return {
-          icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
-          buttonColor: "bg-red-600 hover:bg-red-700",
+          icon: <AlertTriangle className="w-6 h-6 text-(--status-error)" />,
+          buttonColor: "bg-(--status-error) hover:bg-(--status-error)",
         };
       case "warning":
         return {
-          icon: <AlertTriangle className="w-6 h-6 text-yellow-600" />,
-          buttonColor: "bg-yellow-600 hover:bg-yellow-700",
+          icon: <AlertTriangle className="w-6 h-6 text-(--status-warning)" />,
+          buttonColor: "bg-(--status-warning) hover:bg-(--status-warning)",
         };
       case "primary":
         return {
-          icon: <Info className="w-6 h-6 text-blue-600" />,
-          buttonColor: "bg-blue-600 hover:bg-blue-700",
+          icon: <Info className="w-6 h-6 text-(--accent-blue-600)" />,
+          buttonColor: "bg-(--accent-blue-600) hover:bg-(--accent-blue-700)",
         };
     }
   };
@@ -57,13 +58,13 @@ export default function ConfirmModal({
         <ModalHeader title={title} subtitle="" onClose={onCancel} icon={icon} />
 
         <ModalContent>
-          <p className="text-gray-700 leading-relaxed text-base">{message}</p>
+          <Body className="leading-relaxed text-base">{message}</Body>
         </ModalContent>
 
         <ModalFooter align="between">
           <button
             onClick={onCancel}
-            className="flex-1 px-5 py-3 rounded-xl font-semibold text-base text-gray-700 bg-white hover:bg-gray-100 transition-colors border-2 border-silver-400"
+            className="flex-1 px-5 py-3 rounded-xl font-semibold text-base text-(--text-secondary) bg-white hover:bg-(--interactive-hover) transition-colors border-2 border-silver-400"
           >
             {cancelText}
           </button>

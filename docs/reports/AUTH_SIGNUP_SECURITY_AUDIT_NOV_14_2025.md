@@ -1,4 +1,5 @@
 # 🔐 Login/Signup/Invite Security Audit & Enhancement Plan
+
 **Date**: November 14, 2025  
 **Focus**: Securing athlete onboarding and coach pre-creation workflow
 
@@ -22,6 +23,7 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 **File**: `src/app/athletes/components/modals/InviteAthleteModal.tsx`
 
 **Current Flow**:
+
 1. Coach enters: First Name, Last Name (required)
 2. Coach optionally adds: Email, Group, Notes
 3. API creates invite record with unique ID
@@ -29,6 +31,7 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 5. If no email: Create "draft" profile for later
 
 **✅ What's Already Secure**:
+
 - First/last name validation (2-50 chars)
 - Email validation (RFC 5322 compliant)
 - Duplicate email checking (prevents conflicts)
@@ -38,14 +41,12 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 - Expiration timestamp (7 days default)
 
 **🔴 Critical Gaps**:
+
 1. **No invite code entropy validation** - IDs are UUIDs (secure) but should verify
 2. **No email verification requirement** - Athletes can use invite with any email
 3. **Invite link exposed in email** - Should use short-lived tokens
 
-**🟡 Medium Gaps**:
-4. No invite resend throttling (can spam athlete inbox)
-5. No bulk invite rate limiting (could create 1000s of invites)
-6. No audit log for invite creation (compliance issue)
+**🟡 Medium Gaps**: 4. No invite resend throttling (can spam athlete inbox) 5. No bulk invite rate limiting (could create 1000s of invites) 6. No audit log for invite creation (compliance issue)
 
 ---
 
@@ -54,6 +55,7 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 **File**: `src/app/signup/page.tsx` + `/api/invites/accept/route.ts`
 
 **Current Flow**:
+
 1. Load invite data from URL (`?invite=<id>`)
 2. Validate invite (pending, not expired)
 3. Pre-fill: First name, last name, email
@@ -64,6 +66,7 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 8. Auto-login and redirect to dashboard
 
 **✅ What's Already Secure**:
+
 - Rate limiting (3 attempts per hour per IP) ✅ EXCELLENT
 - Password requirements enforced (8+ chars, complexity)
 - Password strength indicator (visual feedback)
@@ -74,19 +77,14 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 - Group assignment (automatic from invite)
 
 **🔴 Critical Gaps**:
+
 1. **Email change vulnerability** - Athlete can change email from invite to ANY email
 2. **No email verification** - Account active immediately without email confirmation
 3. **Password policy not enforced server-side** - Only client validation
 
-**🟡 High Gaps**:
-4. No CAPTCHA/bot prevention (could automate account creation)
-5. No invite usage audit (can't track who accepted when)
-6. No coach notification (coach doesn't know when athlete signs up)
+**🟡 High Gaps**: 4. No CAPTCHA/bot prevention (could automate account creation) 5. No invite usage audit (can't track who accepted when) 6. No coach notification (coach doesn't know when athlete signs up)
 
-**🟢 Medium Enhancements**:
-7. Add password breach checking (HaveIBeenPwned API)
-8. Add terms of service agreement checkbox
-9. Add welcome email after signup completion
+**🟢 Medium Enhancements**: 7. Add password breach checking (HaveIBeenPwned API) 8. Add terms of service agreement checkbox 9. Add welcome email after signup completion
 
 ---
 
@@ -99,18 +97,20 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
 **Problem**: Athlete can change email during signup, allowing them to use someone else's invite.
 
 **Current Code** (`src/app/signup/page.tsx` line ~100):
+
 ```tsx
 // ❌ VULNERABLE: Email is editable
 <FloatingLabelInput
   label="Email"
   type="email"
   value={email}
-  onChange={(value) => setEmail(value)}  // Can change to ANY email
+  onChange={(value) => setEmail(value)} // Can change to ANY email
   error={emailError}
 />
 ```
 
 **Fix**:
+
 ```tsx
 // ✅ SECURE: Email is locked to invite
 <FloatingLabelInput
@@ -118,23 +118,29 @@ Your coach-invite workflow is **already secure and functional**. This audit iden
   type="email"
   value={inviteData?.email || email}
   onChange={(value) => setEmail(value)}
-  disabled={!!inviteData?.email}  // Lock if from invite
-  helperText={inviteData?.email ? "Email from your coach's invitation" : undefined}
+  disabled={!!inviteData?.email} // Lock if from invite
+  helperText={
+    inviteData?.email ? "Email from your coach's invitation" : undefined
+  }
   error={emailError}
 />
 ```
 
 **API Validation** (`src/app/api/invites/accept/route.ts`):
+
 ```typescript
 // Add after line 50
 const { inviteCode, password, email: submittedEmail } = body;
 
 // ✅ CRITICAL: Verify email matches invite
-if (submittedEmail && submittedEmail.toLowerCase() !== invite.email.toLowerCase()) {
+if (
+  submittedEmail &&
+  submittedEmail.toLowerCase() !== invite.email.toLowerCase()
+) {
   return NextResponse.json(
-    { 
+    {
       error: "Email does not match invitation",
-      details: "You must use the email address your coach invited."
+      details: "You must use the email address your coach invited.",
     },
     { status: 400 }
   );
@@ -152,6 +158,7 @@ if (submittedEmail && submittedEmail.toLowerCase() !== invite.email.toLowerCase(
 **Problem**: Password requirements only enforced on client (can be bypassed with dev tools).
 
 **Current Code** (`src/app/api/invites/accept/route.ts`):
+
 ```typescript
 // ❌ NO PASSWORD VALIDATION ON SERVER
 const { inviteCode, password } = body;
@@ -159,6 +166,7 @@ const { inviteCode, password } = body;
 ```
 
 **Fix**:
+
 ```typescript
 import { validatePassword } from "@/lib/security";
 
@@ -168,7 +176,7 @@ const { inviteCode, password } = body;
 const passwordValidation = validatePassword(password);
 if (!passwordValidation.valid) {
   return NextResponse.json(
-    { 
+    {
       error: "Password does not meet requirements",
       details: passwordValidation.error,
       requirements: {
@@ -177,7 +185,7 @@ if (!passwordValidation.valid) {
         requireLowercase: true,
         requireNumber: true,
         requireSpecial: true,
-      }
+      },
     },
     { status: 400 }
   );
@@ -186,9 +194,9 @@ if (!passwordValidation.valid) {
 // Also check password strength
 if (passwordValidation.strength === "weak") {
   return NextResponse.json(
-    { 
+    {
       error: "Password is too weak",
-      details: "Please choose a stronger password"
+      details: "Please choose a stronger password",
     },
     { status: 400 }
   );
@@ -211,6 +219,7 @@ if (passwordValidation.strength === "weak") {
 **Implementation**:
 
 **Option A: Supabase Email Verification (Recommended)**
+
 ```typescript
 // In /api/invites/accept/route.ts
 const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -236,10 +245,11 @@ return NextResponse.json({
 ```
 
 **Frontend Update** (`src/app/signup/page.tsx`):
+
 ```tsx
 // After successful signup
 if (response.requiresVerification) {
-  setShowEmailConfirmation(true);  // Already exists!
+  setShowEmailConfirmation(true); // Already exists!
   // Show: "Check your email for verification link"
 } else {
   // Existing auto-login flow
@@ -247,6 +257,7 @@ if (response.requiresVerification) {
 ```
 
 **Option B: Custom Verification Code**
+
 - Generate 6-digit code
 - Store in `invites` table with expiry
 - Send via email
@@ -266,6 +277,7 @@ if (response.requiresVerification) {
 **Feature**: Notify coach when their invited athlete completes signup.
 
 **Implementation**:
+
 ```typescript
 // In /api/invites/accept/route.ts (after successful signup)
 
@@ -309,6 +321,7 @@ if (coach?.email) {
 **Feature**: Track who accepted invites, when, and from where.
 
 **Database Migration**:
+
 ```sql
 -- Add to invites table
 ALTER TABLE invites ADD COLUMN accepted_at TIMESTAMP;
@@ -332,17 +345,21 @@ CREATE INDEX idx_invite_audit_log_event ON invite_audit_log(event_type);
 ```
 
 **API Update**:
+
 ```typescript
 // In /api/invites/accept/route.ts
 const ip = getClientIP(request.headers);
 const userAgent = request.headers.get("user-agent");
 
 // After successful signup
-await supabase.from("invites").update({
-  accepted_at: new Date().toISOString(),
-  accepted_ip: ip,
-  accepted_user_agent: userAgent,
-}).eq("id", inviteCode);
+await supabase
+  .from("invites")
+  .update({
+    accepted_at: new Date().toISOString(),
+    accepted_ip: ip,
+    accepted_user_agent: userAgent,
+  })
+  .eq("id", inviteCode);
 
 // Log to audit trail
 await supabase.from("invite_audit_log").insert({
@@ -372,13 +389,15 @@ await supabase.from("invite_audit_log").insert({
 **Recommendation**: Use Cloudflare Turnstile (free, privacy-friendly)
 
 **Installation**:
+
 ```bash
 npm install @marsidev/react-turnstile
 ```
 
 **Frontend** (`src/app/signup/page.tsx`):
+
 ```tsx
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile } from "@marsidev/react-turnstile";
 
 function SignUpForm() {
   const [captchaToken, setCaptchaToken] = useState("");
@@ -386,7 +405,7 @@ function SignUpForm() {
   return (
     <form>
       {/* Existing fields */}
-      
+
       {/* Add before submit button */}
       <Turnstile
         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
@@ -396,10 +415,7 @@ function SignUpForm() {
         size="normal"
       />
 
-      <Button
-        disabled={!captchaToken || isLoading}
-        onClick={handleSubmit}
-      >
+      <Button disabled={!captchaToken || isLoading} onClick={handleSubmit}>
         Create Account
       </Button>
     </form>
@@ -408,6 +424,7 @@ function SignUpForm() {
 ```
 
 **API Verification** (`/api/invites/accept/route.ts`):
+
 ```typescript
 const { inviteCode, password, captchaToken } = body;
 
@@ -444,12 +461,14 @@ if (!captchaResult.success) {
 **Feature**: Prevent coach from spamming athlete with repeated invites.
 
 **Database**: Track resend count and last sent timestamp
+
 ```sql
 ALTER TABLE invites ADD COLUMN resend_count INTEGER DEFAULT 0;
 ALTER TABLE invites ADD COLUMN last_sent_at TIMESTAMP;
 ```
 
 **API Logic** (`/api/invites/resend/route.ts`):
+
 ```typescript
 // Check if recently sent
 const lastSent = new Date(invite.last_sent_at);
@@ -457,9 +476,9 @@ const hoursSinceLastSend = (Date.now() - lastSent.getTime()) / (1000 * 60 * 60);
 
 if (hoursSinceLastSend < 24) {
   return NextResponse.json(
-    { 
+    {
       error: "Invite recently sent",
-      details: "Please wait 24 hours before resending"
+      details: "Please wait 24 hours before resending",
     },
     { status: 429 }
   );
@@ -468,19 +487,22 @@ if (hoursSinceLastSend < 24) {
 // Check resend limit
 if (invite.resend_count >= 5) {
   return NextResponse.json(
-    { 
+    {
       error: "Resend limit reached",
-      details: "Maximum 5 resends per invite. Create a new invitation."
+      details: "Maximum 5 resends per invite. Create a new invitation.",
     },
     { status: 429 }
   );
 }
 
 // Update counters
-await supabase.from("invites").update({
-  resend_count: invite.resend_count + 1,
-  last_sent_at: new Date().toISOString(),
-}).eq("id", inviteId);
+await supabase
+  .from("invites")
+  .update({
+    resend_count: invite.resend_count + 1,
+    last_sent_at: new Date().toISOString(),
+  })
+  .eq("id", inviteId);
 ```
 
 **Impact**: Prevents email spam, better user experience  
@@ -498,18 +520,25 @@ await supabase.from("invites").update({
 **Service**: HaveIBeenPwned API (free, privacy-preserving)
 
 **Implementation**:
+
 ```typescript
 // src/lib/password-breach-check.ts
 import crypto from "crypto";
 
 export async function checkPasswordBreach(password: string): Promise<boolean> {
   // SHA-1 hash the password
-  const hash = crypto.createHash("sha1").update(password).digest("hex").toUpperCase();
+  const hash = crypto
+    .createHash("sha1")
+    .update(password)
+    .digest("hex")
+    .toUpperCase();
   const prefix = hash.substring(0, 5);
   const suffix = hash.substring(5);
 
   // Check against HIBP API (k-Anonymity model - only sends first 5 chars)
-  const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+  const response = await fetch(
+    `https://api.pwnedpasswords.com/range/${prefix}`
+  );
   const data = await response.text();
 
   // Check if our hash suffix appears in results
@@ -518,14 +547,16 @@ export async function checkPasswordBreach(password: string): Promise<boolean> {
 ```
 
 **Usage** (`/api/invites/accept/route.ts`):
+
 ```typescript
 // After password validation
 const isBreached = await checkPasswordBreach(password);
 if (isBreached) {
   return NextResponse.json(
-    { 
+    {
       error: "Password found in data breach",
-      details: "This password has been compromised. Please choose a different one."
+      details:
+        "This password has been compromised. Please choose a different one.",
     },
     { status: 400 }
   );
@@ -543,12 +574,14 @@ if (isBreached) {
 **Feature**: Require TOS acceptance during signup.
 
 **Database**:
+
 ```sql
 ALTER TABLE users ADD COLUMN tos_accepted_at TIMESTAMP;
 ALTER TABLE users ADD COLUMN tos_version TEXT DEFAULT '1.0';
 ```
 
 **Frontend**:
+
 ```tsx
 <div className="flex items-start gap-3">
   <input
@@ -576,6 +609,7 @@ ALTER TABLE users ADD COLUMN tos_version TEXT DEFAULT '1.0';
 ```
 
 **API**:
+
 ```typescript
 const { tosAccepted } = body;
 
@@ -587,10 +621,13 @@ if (!tosAccepted) {
 }
 
 // Store acceptance in profile
-await supabase.from("users").update({
-  tos_accepted_at: new Date().toISOString(),
-  tos_version: "1.0",
-}).eq("id", authData.user.id);
+await supabase
+  .from("users")
+  .update({
+    tos_accepted_at: new Date().toISOString(),
+    tos_version: "1.0",
+  })
+  .eq("id", authData.user.id);
 ```
 
 **Impact**: Legal compliance  
@@ -604,6 +641,7 @@ await supabase.from("users").update({
 **Feature**: Send confirmation email with next steps.
 
 **Implementation**:
+
 ```typescript
 // After successful signup in /api/invites/accept/route.ts
 await sendEmailNotification({
@@ -619,7 +657,10 @@ await sendEmailNotification({
     details: [
       { label: "Your Coach", value: coachName },
       { label: "Team", value: groupName || "Athletes" },
-      { label: "Next Steps", value: "Complete your profile and check your assigned workouts" },
+      {
+        label: "Next Steps",
+        value: "Complete your profile and check your assigned workouts",
+      },
     ],
   },
 });
@@ -633,18 +674,18 @@ await sendEmailNotification({
 
 ## 📊 Implementation Priority Matrix
 
-| Priority | Enhancement | Effort | Impact | Status |
-|----------|------------|--------|--------|--------|
-| 🔴 CRITICAL | Lock email to invite | 15 min | High | ⬜ Not Started |
-| 🔴 CRITICAL | Server-side password validation | 10 min | High | ⬜ Not Started |
-| 🔴 CRITICAL | Email verification | 30 min | High | ⬜ Not Started |
-| 🟡 HIGH | Coach notification on signup | 20 min | Medium | ⬜ Not Started |
-| 🟡 HIGH | Invite usage audit trail | 45 min | Medium | ⬜ Not Started |
-| 🟡 HIGH | CAPTCHA protection | 1 hour | Medium | ⬜ Not Started |
-| 🟡 HIGH | Invite resend throttling | 30 min | Medium | ⬜ Not Started |
-| 🟢 MEDIUM | Password breach checking | 30 min | Low | ⬜ Not Started |
-| 🟢 MEDIUM | Terms of Service agreement | 45 min | Low | ⬜ Not Started |
-| 🟢 MEDIUM | Welcome email | 20 min | Low | ⬜ Not Started |
+| Priority    | Enhancement                     | Effort | Impact | Status         |
+| ----------- | ------------------------------- | ------ | ------ | -------------- |
+| 🔴 CRITICAL | Lock email to invite            | 15 min | High   | ⬜ Not Started |
+| 🔴 CRITICAL | Server-side password validation | 10 min | High   | ⬜ Not Started |
+| 🔴 CRITICAL | Email verification              | 30 min | High   | ⬜ Not Started |
+| 🟡 HIGH     | Coach notification on signup    | 20 min | Medium | ⬜ Not Started |
+| 🟡 HIGH     | Invite usage audit trail        | 45 min | Medium | ⬜ Not Started |
+| 🟡 HIGH     | CAPTCHA protection              | 1 hour | Medium | ⬜ Not Started |
+| 🟡 HIGH     | Invite resend throttling        | 30 min | Medium | ⬜ Not Started |
+| 🟢 MEDIUM   | Password breach checking        | 30 min | Low    | ⬜ Not Started |
+| 🟢 MEDIUM   | Terms of Service agreement      | 45 min | Low    | ⬜ Not Started |
+| 🟢 MEDIUM   | Welcome email                   | 20 min | Low    | ⬜ Not Started |
 
 **Total Effort**: ~5 hours for all enhancements  
 **Minimum Viable**: Implement Critical + High = ~3 hours
@@ -654,17 +695,20 @@ await sendEmailNotification({
 ## 🎯 Recommended Implementation Order
 
 ### Phase 1: Critical Security (45 minutes)
+
 1. Lock email to invite (15 min)
 2. Server-side password validation (10 min)
 3. Email verification setup (20 min)
 
 ### Phase 2: High Priority Features (2.5 hours)
+
 4. Coach notification (20 min)
 5. Invite audit trail (45 min)
 6. Resend throttling (30 min)
 7. CAPTCHA setup (1 hour)
 
 ### Phase 3: Polish & Compliance (2 hours)
+
 8. Password breach checking (30 min)
 9. Terms of Service (45 min)
 10. Welcome email (20 min)
@@ -692,11 +736,13 @@ Your current implementation has **excellent fundamentals**:
 ## 🚨 Critical Reminder
 
 **Your current system is ALREADY SECURE for:**
+
 - Small gym/team use (20-200 athletes)
 - Controlled invite distribution (coach-only)
 - Trusted environment (your athletes)
 
 **You NEED enhancements if:**
+
 - Opening public signups
 - Scaling to 500+ users
 - Handling sensitive data (health records, payment info)
@@ -726,11 +772,12 @@ After implementing enhancements:
 ## 🎉 Summary
 
 **Current State**: 🟢 Secure and functional  
-**With Enhancements**: 🌟 Production-grade and bulletproof  
+**With Enhancements**: 🌟 Production-grade and bulletproof
 
 Your coach-invite workflow is well-designed. The recommended enhancements add defense-in-depth and compliance features, but **you can ship as-is for your initial users**.
 
 **Next Steps**:
+
 1. Review this report
 2. Decide which enhancements fit your timeline
 3. Implement Critical fixes first (45 minutes)

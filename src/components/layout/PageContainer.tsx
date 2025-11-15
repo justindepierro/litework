@@ -51,7 +51,7 @@ export function PageContainer({
 }: PageContainerProps) {
   const containerClasses = `
     min-h-screen 
-    bg-gray-50 
+    bg-(--bg-primary)
     ${paddingMap[padding]}
     ${className}
   `.trim();

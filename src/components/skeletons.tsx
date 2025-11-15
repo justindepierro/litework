@@ -22,7 +22,7 @@ export const SkeletonBox: React.FC<SkeletonProps> = ({
   animate = true,
 }) => (
   <div
-    className={`bg-gray-200 rounded ${
+    className={`bg-(--bg-tertiary) rounded ${
       animate ? "animate-pulse" : ""
     } ${className}`}
   />
@@ -35,7 +35,7 @@ export const SkeletonText: React.FC<
   SkeletonProps & { width?: string; height?: string }
 > = ({ className = "", width = "100%", height = "h-4", animate = true }) => (
   <div
-    className={`bg-gray-200 rounded ${height} ${
+    className={`bg-(--bg-tertiary) rounded ${height} ${
       animate ? "animate-pulse" : ""
     } ${className}`}
     style={{ width }}
@@ -51,7 +51,7 @@ export const SkeletonCircle: React.FC<SkeletonProps & { size?: string }> = ({
   animate = true,
 }) => (
   <div
-    className={`bg-gray-200 rounded-full ${size} ${
+    className={`bg-(--bg-tertiary) rounded-full ${size} ${
       animate ? "animate-pulse" : ""
     } ${className}`}
   />
@@ -102,7 +102,7 @@ export const WorkoutListSkeleton: React.FC<{ count?: number }> = ({
  * Skeleton for exercise item in workout
  */
 export const ExerciseItemSkeleton: React.FC = () => (
-  <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+  <div className="bg-(--bg-secondary) rounded-lg p-3 space-y-2">
     <div className="flex items-center gap-3">
       <SkeletonBox className="h-6 w-6" />
       <SkeletonText width="50%" height="h-5" />
@@ -290,7 +290,7 @@ export const TableSkeleton: React.FC<{ rows?: number; columns?: number }> = ({
 }) => (
   <div className="bg-white rounded-lg shadow-sm overflow-hidden">
     <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-gray-50">
+      <thead className="bg-(--bg-secondary)">
         <tr>
           {Array.from({ length: columns }).map((_, i) => (
             <th key={i} className="px-4 py-3">

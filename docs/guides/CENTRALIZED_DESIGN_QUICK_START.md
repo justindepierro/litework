@@ -7,7 +7,9 @@ A **single source of truth** for all gradient colors and page headers in LiteWor
 ## 🎯 Three Components Created
 
 ### 1. **PageHeader Component** (`src/components/ui/PageHeader.tsx`)
+
 Reusable header for all pages with:
+
 - Gradient accent bar (thin vertical bar on left side)
 - Title + subtitle support
 - Optional icon and action buttons
@@ -15,6 +17,7 @@ Reusable header for all pages with:
 - Three gradient variants
 
 **Usage**:
+
 ```tsx
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LayoutDashboard } from "lucide-react";
@@ -23,36 +26,42 @@ import { LayoutDashboard } from "lucide-react";
   title="Dashboard"
   subtitle="Your workout overview and statistics"
   icon={<LayoutDashboard className="w-6 h-6" />}
-  gradientVariant="primary"  // or "secondary", "tertiary"
+  gradientVariant="primary" // or "secondary", "tertiary"
   actions={<Button>Add Workout</Button>}
-/>
+/>;
 ```
 
 ### 2. **Gradient Utility Classes** (`src/app/globals.css`)
+
 Centralized gradient definitions:
 
 **For Page Headers** (vertical bars):
+
 - `.bg-gradient-accent-primary` → Orange → Purple → Green
-- `.bg-gradient-accent-secondary` → Orange → Purple → Pink  
+- `.bg-gradient-accent-secondary` → Orange → Purple → Pink
 - `.bg-gradient-accent-tertiary` → Blue → Purple → Pink
 
 **For Modal Headers** (horizontal backgrounds):
+
 - `.bg-gradient-header-primary`
 - `.bg-gradient-header-secondary` ← Used in all modals
 - `.bg-gradient-header-tertiary`
 
 **For Subtle Backgrounds**:
+
 - `.bg-gradient-subtle-primary`
 - `.bg-gradient-subtle-secondary`
 
 ### 3. **Updated Modal Component** (`src/components/ui/Modal.tsx`)
+
 Changed from hardcoded colors to centralized class:
+
 ```tsx
 // OLD (hardcoded):
-className="bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500"
+className = "bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500";
 
 // NEW (centralized):
-className="bg-gradient-header-secondary"
+className = "bg-gradient-header-secondary";
 ```
 
 ## 🚀 How to Use
@@ -72,7 +81,7 @@ export default function SettingsPage() {
         icon={<Settings className="w-6 h-6" />}
         gradientVariant="primary"
       />
-      
+
       {/* Your page content */}
     </div>
   );
@@ -84,11 +93,7 @@ export default function SettingsPage() {
 Modals automatically use the centralized gradient - no changes needed!
 
 ```tsx
-<ModalHeader 
-  title="Add Workout" 
-  icon={<Dumbbell />}
-  onClose={onClose}
-/>
+<ModalHeader title="Add Workout" icon={<Dumbbell />} onClose={onClose} />
 // ✅ Uses .bg-gradient-header-secondary automatically
 ```
 
@@ -102,10 +107,10 @@ Edit **`src/styles/tokens.css`** (lines 48-95):
 :root {
   /* Change orange to red */
   --accent-orange-500: #ef4444;
-  
+
   /* Change purple to indigo */
   --accent-purple-500: #6366f1;
-  
+
   /* Change green to teal */
   --accent-green-500: #14b8a6;
 }
@@ -123,8 +128,9 @@ Change which gradient is used:
 ```
 
 Or for modals, edit `Modal.tsx` line 204:
+
 ```tsx
-className="bg-gradient-header-primary"  // Changed from "secondary"
+className = "bg-gradient-header-primary"; // Changed from "secondary"
 ```
 
 ### Option 3: Create New Gradient
@@ -143,6 +149,7 @@ Add to `src/app/globals.css`:
 ```
 
 Then use:
+
 ```tsx
 <PageHeader gradientVariant="custom" />
 ```
@@ -159,6 +166,7 @@ To update existing pages to use the centralized system:
 - [ ] Settings page
 
 ### Before (Scattered):
+
 ```tsx
 <div className="relative">
   <div className="absolute -left-4 w-1.5 bg-gradient-to-b from-orange-500 via-purple-500 to-green-500" />
@@ -168,6 +176,7 @@ To update existing pages to use the centralized system:
 ```
 
 ### After (Centralized):
+
 ```tsx
 <PageHeader
   title="Dashboard"
@@ -178,12 +187,12 @@ To update existing pages to use the centralized system:
 
 ## 🔍 Where Everything Lives
 
-| What | File | Purpose |
-|------|------|---------|
-| Color values | `src/styles/tokens.css` | Define actual color hex codes |
-| Gradient classes | `src/app/globals.css` | Create gradient patterns |
-| PageHeader | `src/components/ui/PageHeader.tsx` | Reusable header component |
-| Modal | `src/components/ui/Modal.tsx` | Uses centralized gradients |
+| What             | File                               | Purpose                       |
+| ---------------- | ---------------------------------- | ----------------------------- |
+| Color values     | `src/styles/tokens.css`            | Define actual color hex codes |
+| Gradient classes | `src/app/globals.css`              | Create gradient patterns      |
+| PageHeader       | `src/components/ui/PageHeader.tsx` | Reusable header component     |
+| Modal            | `src/components/ui/Modal.tsx`      | Uses centralized gradients    |
 
 ## 💡 Key Benefits
 
@@ -196,6 +205,7 @@ To update existing pages to use the centralized system:
 ## 📚 Full Documentation
 
 See **`docs/guides/CENTRALIZED_DESIGN_SYSTEM.md`** (600+ lines) for:
+
 - Complete API reference
 - All gradient variants
 - Advanced examples
@@ -206,11 +216,13 @@ See **`docs/guides/CENTRALIZED_DESIGN_SYSTEM.md`** (600+ lines) for:
 ## 🎓 Quick Examples
 
 ### Basic Page Header
+
 ```tsx
 <PageHeader title="My Page" />
 ```
 
 ### With Icon and Subtitle
+
 ```tsx
 <PageHeader
   title="Athletes"
@@ -220,38 +232,38 @@ See **`docs/guides/CENTRALIZED_DESIGN_SYSTEM.md`** (600+ lines) for:
 ```
 
 ### With Actions
+
 ```tsx
 <PageHeader
   title="Workouts"
   subtitle="Training programs"
-  actions={
-    <Button variant="primary">
-      Create Workout
-    </Button>
-  }
+  actions={<Button variant="primary">Create Workout</Button>}
 />
 ```
 
 ### Different Gradient
+
 ```tsx
 <PageHeader
   title="Profile"
-  gradientVariant="tertiary"  // Blue-purple-pink
+  gradientVariant="tertiary" // Blue-purple-pink
 />
 ```
 
 ### Custom Styling
+
 ```tsx
 <PageHeader
   title="Dashboard"
-  className="mb-8"  // Add custom margin
-  mobileAlign="left"  // Left-aligned on mobile too
+  className="mb-8" // Add custom margin
+  mobileAlign="left" // Left-aligned on mobile too
 />
 ```
 
 ## 🚨 Important Rules
 
 ### DO ✅
+
 ```tsx
 // Use PageHeader component
 <PageHeader title="Dashboard" gradientVariant="primary" />
@@ -264,6 +276,7 @@ background: linear-gradient(to right, var(--accent-orange-500), ...);
 ```
 
 ### DON'T ❌
+
 ```tsx
 // Don't hardcode gradients
 <div className="bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500" />
@@ -281,6 +294,7 @@ background: linear-gradient(to right, var(--accent-orange-500), ...);
 **After**: 1 file (`tokens.css`) controls everything
 
 **Change gradients site-wide in 30 seconds:**
+
 1. Open `src/styles/tokens.css`
 2. Edit color hex values (lines 48-95)
 3. Save

@@ -62,39 +62,41 @@ export function WorkoutHeader({
       <div className="px-4 py-3">
         {/* Top Row: Title and Menu */}
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-lg font-bold text-gray-900 truncate flex-1">
+          <h1 className="text-lg font-bold text-(--text-primary) truncate flex-1">
             {workoutName}
           </h1>
           <button
             onClick={onMenuClick}
-            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-(--interactive-hover) active:bg-(--interactive-active) transition-colors"
             aria-label="Workout menu"
           >
-            <Menu className="w-6 h-6 text-gray-700" />
+            <Menu className="w-6 h-6 text-(--text-secondary)" />
           </button>
         </div>
 
         {/* Bottom Row: Timer and Progress */}
         <div className="flex items-center justify-between text-sm">
           {/* Elapsed Timer */}
-          <div className="flex items-center gap-1.5 text-gray-600">
+          <div className="flex items-center gap-1.5 text-(--text-secondary)">
             <Clock className="w-4 h-4" />
             <span className="font-semibold">{elapsedTime}</span>
           </div>
 
           {/* Progress */}
           <div className="flex items-center gap-2">
-            <span className="text-gray-600 font-medium">
+            <span className="text-(--text-secondary) font-medium">
               {completedExercises}/{totalExercises} exercises
             </span>
-            <span className="text-blue-600 font-bold">{progressPercent}%</span>
+            <span className="text-(--accent-blue-600) font-bold">
+              {progressPercent}%
+            </span>
           </div>
         </div>
 
         {/* Progress Bar - Enhanced */}
-        <div className="mt-3 w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+        <div className="mt-3 w-full bg-(--bg-tertiary) rounded-full h-2.5 overflow-hidden">
           <div
-            className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out shadow-sm"
+            className="h-2.5 rounded-full bg-gradient-to-r from-(--accent-blue-500) to-(--accent-purple-500) transition-all duration-500 ease-out shadow-sm"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

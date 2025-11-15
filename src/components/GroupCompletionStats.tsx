@@ -5,6 +5,7 @@ import { useAsyncState } from "@/hooks/use-async-state";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/components/ToastProvider";
 import { TrendingUp, Users, Award } from "lucide-react";
+import { Body } from "@/components/ui/Typography";
 
 interface GroupStats {
   id: string;
@@ -41,10 +42,10 @@ export default function GroupCompletionStats() {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+        <div className="h-6 bg-(--bg-tertiary) rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
-          <div className="h-16 bg-gray-200 rounded"></div>
-          <div className="h-16 bg-gray-200 rounded"></div>
+          <div className="h-16 bg-(--bg-tertiary) rounded"></div>
+          <div className="h-16 bg-(--bg-tertiary) rounded"></div>
         </div>
       </div>
     );
@@ -53,28 +54,30 @@ export default function GroupCompletionStats() {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
-        <TrendingUp className="w-6 h-6 text-green-600" />
-        <h2 className="text-xl font-bold text-gray-900">Group Performance</h2>
+        <TrendingUp className="w-6 h-6 text-(--status-success)" />
+        <h2 className="text-xl font-bold text-(--text-primary)">
+          Group Performance
+        </h2>
       </div>
 
       {groupStats.length === 0 ? (
         <div className="text-center py-8 flex-1 flex flex-col items-center justify-center">
-          <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-600">No group data available</p>
+          <Users className="w-12 h-12 text-(--text-tertiary) mx-auto mb-3" />
+          <Body variant="secondary">No group data available</Body>
         </div>
       ) : (
         <div className="space-y-4 flex-1 overflow-y-auto">
           {groupStats.map((group) => (
             <div
               key={group.id}
-              className="rounded-lg p-4 bg-gradient-to-br from-white to-green-50/30 border border-green-200 shadow-sm hover:shadow-lg hover:border-green-300 hover:scale-[1.02] transition-all cursor-pointer"
+              className="rounded-lg p-4 bg-gradient-to-br from-white to-green-50/30 border border-(--status-success-light) shadow-sm hover:shadow-lg hover:border-(--status-success-light) hover:scale-[1.02] transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
+                  <h3 className="font-semibold text-(--text-primary) mb-1">
                     {group.groupName}
                   </h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-(--text-secondary)">
                     <Users className="w-4 h-4" />
                     <span>{group.athleteCount} athletes</span>
                   </div>
@@ -83,13 +86,13 @@ export default function GroupCompletionStats() {
                   <Award
                     className={`w-5 h-5 ${
                       group.avgCompletionRate >= 90
-                        ? "text-green-500"
+                        ? "text-(--status-success)"
                         : group.avgCompletionRate >= 80
-                          ? "text-blue-500"
-                          : "text-amber-500"
+                          ? "text-(--accent-blue-500)"
+                          : "text-(--status-warning)"
                     }`}
                   />
-                  <span className="text-2xl font-bold text-gray-900">
+                  <span className="text-2xl font-bold text-(--text-primary)">
                     {group.avgCompletionRate}%
                   </span>
                 </div>
@@ -97,14 +100,14 @@ export default function GroupCompletionStats() {
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-600">Completed</p>
-                  <p className="font-semibold text-gray-900">
+                  <Body variant="secondary">Completed</Body>
+                  <p className="font-semibold text-(--text-primary)">
                     {group.completedWorkouts} workouts
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Total Assigned</p>
-                  <p className="font-semibold text-gray-900">
+                  <Body variant="secondary">Total Assigned</Body>
+                  <p className="font-semibold text-(--text-primary)">
                     {group.totalAssignments} workouts
                   </p>
                 </div>
@@ -112,14 +115,14 @@ export default function GroupCompletionStats() {
 
               {/* Progress bar */}
               <div className="mt-3">
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-(--bg-tertiary) rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all ${
                       group.avgCompletionRate >= 90
-                        ? "bg-green-500"
+                        ? "bg-(--status-success)"
                         : group.avgCompletionRate >= 80
-                          ? "bg-blue-500"
-                          : "bg-amber-500"
+                          ? "bg-(--accent-blue-500)"
+                          : "bg-(--status-warning)"
                     }`}
                     style={{ width: `${group.avgCompletionRate}%` }}
                   ></div>

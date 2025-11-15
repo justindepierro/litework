@@ -224,7 +224,7 @@ export default function NotificationPermission({
           <button
             onClick={requestPermission}
             disabled={isLoading}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-(--accent-blue-600) hover:bg-(--accent-blue-700) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--accent-blue-500) disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
@@ -268,7 +268,7 @@ export default function NotificationPermission({
           <button
             onClick={unsubscribe}
             disabled={isLoading}
-            className="inline-flex items-center px-3 py-1.5 border border-green-300 text-sm font-medium rounded text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-3 py-1.5 border border-(--status-success-light) text-sm font-medium rounded text-(--status-success) bg-white hover:bg-(--status-success-light) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--status-success) disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "Disabling..." : "Disable Notifications"}
           </button>
@@ -284,7 +284,9 @@ export default function NotificationPermission({
         </Alert>
       )}
 
-      {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
+      {error && (
+        <div className="mt-2 text-sm text-(--status-error)">{error}</div>
+      )}
     </div>
   );
 }

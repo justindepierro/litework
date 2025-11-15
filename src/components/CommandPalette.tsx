@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ModalBackdrop } from "@/components/ui/Modal";
 
 interface Exercise {
   id: string;
@@ -87,13 +88,17 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-start justify-center pt-[20vh] px-4">
+    <ModalBackdrop
+      isOpen={isOpen}
+      onClose={onClose}
+      className="flex items-start justify-center pt-[20vh] px-4"
+    >
       <Command
         className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden shadow-lg"
         shouldFilter={false} // We'll handle filtering ourselves for exercises
       >
         <div className="flex items-center border-b border-silver-300 px-4">
-          <Search className="w-5 h-5 text-gray-400 shrink-0" />
+          <Search className="w-5 h-5 text-(--text-tertiary) shrink-0" />
           <Command.Input
             placeholder="Type a command or search..."
             className="flex-1 px-3 py-4 text-base outline-none"
@@ -102,15 +107,15 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           />
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            className="p-2 hover:bg-(--interactive-hover) rounded-md transition-colors"
             aria-label="Close command palette"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-(--text-secondary)" />
           </button>
         </div>
 
         <Command.List className="max-h-96 overflow-y-auto p-2">
-          <Command.Empty className="py-6 text-center text-sm text-gray-500">
+          <Command.Empty className="py-6 text-center text-sm text-(--text-secondary)">
             No results found.
           </Command.Empty>
 
@@ -118,20 +123,20 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {!search && (
             <Command.Group
               heading="Quick Actions"
-              className="mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-1"
+              className="mb-2 text-xs font-semibold text-(--text-secondary) uppercase tracking-wider px-2 py-1"
             >
               <Command.Item
                 onSelect={() => navigate("/workouts/new")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Plus className="w-5 h-5 text-blue-600" />
+                <Plus className="w-5 h-5 text-(--accent-blue-600)" />
                 <span className="font-medium">Create New Workout</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/exercises/new")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Dumbbell className="w-5 h-5 text-blue-600" />
+                <Dumbbell className="w-5 h-5 text-(--accent-blue-600)" />
                 <span className="font-medium">Create New Exercise</span>
               </Command.Item>
             </Command.Group>
@@ -141,48 +146,48 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {!search && (
             <Command.Group
               heading="Navigation"
-              className="mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-1"
+              className="mb-2 text-xs font-semibold text-(--text-secondary) uppercase tracking-wider px-2 py-1"
             >
               <Command.Item
                 onSelect={() => navigate("/dashboard")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Home className="w-5 h-5 text-gray-600" />
+                <Home className="w-5 h-5 text-(--text-secondary)" />
                 <span>Dashboard</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/workouts")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Dumbbell className="w-5 h-5 text-gray-600" />
+                <Dumbbell className="w-5 h-5 text-(--text-secondary)" />
                 <span>Workouts</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/calendar")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Calendar className="w-5 h-5 text-gray-600" />
+                <Calendar className="w-5 h-5 text-(--text-secondary)" />
                 <span>Calendar</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/groups")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Users className="w-5 h-5 text-gray-600" />
+                <Users className="w-5 h-5 text-(--text-secondary)" />
                 <span>Groups</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/analytics")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <BarChart3 className="w-5 h-5 text-gray-600" />
+                <BarChart3 className="w-5 h-5 text-(--text-secondary)" />
                 <span>Analytics</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/settings")}
-                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
-                <Settings className="w-5 h-5 text-gray-600" />
+                <Settings className="w-5 h-5 text-(--text-secondary)" />
                 <span>Settings</span>
               </Command.Item>
             </Command.Group>
@@ -192,7 +197,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {search && exercises.length > 0 && (
             <Command.Group
               heading="Exercises"
-              className="mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-1"
+              className="mb-2 text-xs font-semibold text-(--text-secondary) uppercase tracking-wider px-2 py-1"
             >
               {exercises
                 .filter(
@@ -205,13 +210,13 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   <Command.Item
                     key={exercise.id}
                     onSelect={() => handleExerciseSelect(exercise.id)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-blue-50 data-[selected=true]:bg-blue-50 transition-colors"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
                   >
-                    <Dumbbell className="w-5 h-5 text-gray-400" />
+                    <Dumbbell className="w-5 h-5 text-(--text-tertiary)" />
                     <div className="flex-1">
                       <div className="font-medium">{exercise.name}</div>
                       {exercise.category && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-(--text-secondary)">
                           {exercise.category}
                         </div>
                       )}
@@ -223,7 +228,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         </Command.List>
 
         {/* Footer with keyboard hints */}
-        <div className="border-t border-gray-200 px-4 py-2 bg-gray-50 flex items-center justify-between text-xs text-gray-500">
+        <div className="border-t border-gray-200 px-4 py-2 bg-(--bg-secondary) flex items-center justify-between text-xs text-(--text-secondary)">
           <div className="flex items-center gap-4">
             <span>
               <kbd className="px-2 py-1 bg-white border border-silver-400 rounded text-xs font-mono">
@@ -246,7 +251,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           </span>
         </div>
       </Command>
-    </div>
+    </ModalBackdrop>
   );
 }
 

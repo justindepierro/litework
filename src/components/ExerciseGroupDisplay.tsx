@@ -57,27 +57,27 @@ export function ExerciseGroupDisplay({
     switch (type) {
       case "superset":
         return {
-          bg: "bg-gradient-to-r from-purple-50 to-pink-50",
-          border: "border-purple-300",
-          badge: "bg-purple-500",
-          text: "text-purple-900",
-          icon: "text-purple-600",
+          bg: "bg-gradient-to-r from-(--accent-purple-50) to-(--accent-pink-50)",
+          border: "border-(--accent-purple-300)",
+          badge: "bg-(--accent-purple-500)",
+          text: "text-(--accent-purple-900)",
+          icon: "text-(--accent-purple-600)",
         };
       case "circuit":
         return {
-          bg: "bg-gradient-to-r from-blue-50 to-cyan-50",
-          border: "border-blue-300",
-          badge: "bg-blue-500",
-          text: "text-blue-900",
-          icon: "text-blue-600",
+          bg: "bg-gradient-to-r from-(--accent-blue-50) to-cyan-50",
+          border: "border-(--accent-blue-300)",
+          badge: "bg-(--accent-blue-500)",
+          text: "text-(--accent-blue-900)",
+          icon: "text-(--accent-blue-600)",
         };
       case "section":
         return {
-          bg: "bg-gradient-to-r from-amber-50 to-orange-50",
-          border: "border-amber-300",
-          badge: "bg-amber-500",
-          text: "text-amber-900",
-          icon: "text-amber-600",
+          bg: "bg-gradient-to-r from-(--accent-amber-50) to-(--accent-orange-50)",
+          border: "border-(--accent-amber-300)",
+          badge: "bg-(--accent-amber-500)",
+          text: "text-(--accent-amber-900)",
+          icon: "text-(--accent-amber-600)",
         };
     }
   };
@@ -162,25 +162,38 @@ export function ExerciseGroupDisplay({
                     <div className="flex items-center justify-center gap-6">
                       {group.rounds && (
                         <div className="flex items-center gap-2">
-                          <div className={`${colors?.badge} text-white p-2 rounded-lg`}>
+                          <div
+                            className={`${colors?.badge} text-white p-2 rounded-lg`}
+                          >
                             <Repeat className="w-5 h-5" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-gray-600 uppercase">Complete</div>
-                            <div className={`text-2xl font-bold ${colors?.text}`}>
-                              {group.rounds} {group.rounds === 1 ? 'Round' : 'Rounds'}
+                            <div className="text-xs font-medium text-(--text-secondary) uppercase">
+                              Complete
+                            </div>
+                            <div
+                              className={`text-2xl font-bold ${colors?.text}`}
+                            >
+                              {group.rounds}{" "}
+                              {group.rounds === 1 ? "Round" : "Rounds"}
                             </div>
                           </div>
                         </div>
                       )}
                       {group.restBetweenRounds && (
                         <div className="flex items-center gap-2">
-                          <div className={`${colors?.badge} text-white p-2 rounded-lg`}>
+                          <div
+                            className={`${colors?.badge} text-white p-2 rounded-lg`}
+                          >
                             <Clock className="w-5 h-5" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-gray-600 uppercase">Rest Between Rounds</div>
-                            <div className={`text-2xl font-bold ${colors?.text}`}>
+                            <div className="text-xs font-medium text-(--text-secondary) uppercase">
+                              Rest Between Rounds
+                            </div>
+                            <div
+                              className={`text-2xl font-bold ${colors?.text}`}
+                            >
                               {formatRestTime(group.restBetweenRounds)}
                             </div>
                           </div>
@@ -200,7 +213,9 @@ export function ExerciseGroupDisplay({
                       key={exercise.id}
                       onClick={() => onExerciseClick?.(exercise)}
                       className={`bg-white border-2 ${
-                        isCompleted ? "border-green-300" : "border-silver-300"
+                        isCompleted
+                          ? "border-(--status-success-light)"
+                          : "border-silver-300"
                       } rounded-lg p-4 transition-all hover:shadow-md ${
                         onExerciseClick ? "cursor-pointer" : ""
                       }`}
@@ -210,7 +225,7 @@ export function ExerciseGroupDisplay({
                         <div
                           className={`shrink-0 w-8 h-8 ${
                             isCompleted
-                              ? "bg-green-500"
+                              ? "bg-(--status-success)"
                               : colors?.badge || "bg-primary"
                           } text-white rounded-full flex items-center justify-center font-bold text-sm`}
                         >
@@ -218,49 +233,49 @@ export function ExerciseGroupDisplay({
                         </div>
 
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 mb-2">
+                          <h4 className="font-semibold text-(--text-primary) mb-2">
                             {exercise.exerciseName}
                           </h4>
 
                           {/* Exercise details */}
                           <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                            <div className="flex items-center gap-1 text-gray-700">
+                            <div className="flex items-center gap-1 text-(--text-secondary)">
                               <span className="font-medium">Sets:</span>
-                              <span className="text-gray-900 font-semibold">
+                              <span className="text-(--text-primary) font-semibold">
                                 {exercise.sets}
                               </span>
                             </div>
 
-                            <div className="flex items-center gap-1 text-gray-700">
+                            <div className="flex items-center gap-1 text-(--text-secondary)">
                               <span className="font-medium">Reps:</span>
-                              <span className="text-gray-900 font-semibold">
+                              <span className="text-(--text-primary) font-semibold">
                                 {exercise.reps}
                                 {exercise.eachSide && " each side"}
                               </span>
                             </div>
 
                             {exercise.weight && (
-                              <div className="flex items-center gap-1 text-gray-700">
+                              <div className="flex items-center gap-1 text-(--text-secondary)">
                                 <span className="font-medium">Weight:</span>
-                                <span className="text-gray-900 font-semibold">
+                                <span className="text-(--text-primary) font-semibold">
                                   {formatWeight(exercise)}
                                 </span>
                               </div>
                             )}
 
                             {exercise.tempo && (
-                              <div className="flex items-center gap-1 text-gray-700">
+                              <div className="flex items-center gap-1 text-(--text-secondary)">
                                 <span className="font-medium">Tempo:</span>
-                                <span className="text-gray-900 font-semibold">
+                                <span className="text-(--text-primary) font-semibold">
                                   {exercise.tempo}
                                 </span>
                               </div>
                             )}
 
                             {exercise.restTime && (
-                              <div className="flex items-center gap-1 text-gray-700">
+                              <div className="flex items-center gap-1 text-(--text-secondary)">
                                 <Clock className="w-4 h-4" />
-                                <span className="text-gray-900 font-semibold">
+                                <span className="text-(--text-primary) font-semibold">
                                   {formatRestTime(exercise.restTime)}
                                 </span>
                               </div>
@@ -269,7 +284,7 @@ export function ExerciseGroupDisplay({
 
                           {/* Exercise notes */}
                           {exercise.notes && (
-                            <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-silver-400 pl-3">
+                            <p className="mt-2 text-sm text-(--text-secondary) italic border-l-2 border-silver-400 pl-3">
                               {exercise.notes}
                             </p>
                           )}
@@ -278,7 +293,7 @@ export function ExerciseGroupDisplay({
                         {/* Completion indicator */}
                         {showProgress && isCompleted && (
                           <div className="shrink-0">
-                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                            <div className="w-6 h-6 bg-(--status-success) rounded-full flex items-center justify-center">
                               <svg
                                 className="w-4 h-4 text-white"
                                 fill="none"
@@ -302,7 +317,9 @@ export function ExerciseGroupDisplay({
               {/* Group notes */}
               {group.notes && (
                 <div className="mt-3 p-3 bg-white bg-opacity-60 rounded-lg border border-silver-300">
-                  <p className="text-sm text-gray-700 italic">{group.notes}</p>
+                  <p className="text-sm text-(--text-secondary) italic">
+                    {group.notes}
+                  </p>
                 </div>
               )}
             </div>
@@ -317,7 +334,9 @@ export function ExerciseGroupDisplay({
               key={exercise.id}
               onClick={() => onExerciseClick?.(exercise)}
               className={`border-2 ${
-                isCompleted ? "border-green-300 bg-green-50" : "border-silver-300 bg-white"
+                isCompleted
+                  ? "border-(--status-success-light) bg-(--status-success-light)"
+                  : "border-silver-300 bg-white"
               } rounded-xl p-4 shadow-sm transition-all hover:shadow-md ${
                 onExerciseClick ? "cursor-pointer" : ""
               }`}
@@ -326,56 +345,58 @@ export function ExerciseGroupDisplay({
                 {/* Exercise number badge */}
                 <div
                   className={`shrink-0 w-10 h-10 ${
-                    isCompleted ? "bg-green-500" : "bg-gray-700"
+                    isCompleted
+                      ? "bg-(--status-success)"
+                      : "bg-(--text-primary)"
                   } text-white rounded-full flex items-center justify-center font-bold text-lg`}
                 >
                   {groupIndex + 1}
                 </div>
 
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-2">
+                  <h4 className="font-semibold text-(--text-primary) text-lg mb-2">
                     {exercise.exerciseName}
                   </h4>
 
                   {/* Exercise details */}
                   <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                    <div className="flex items-center gap-1 text-gray-700">
+                    <div className="flex items-center gap-1 text-(--text-secondary)">
                       <span className="font-medium">Sets:</span>
-                      <span className="text-gray-900 font-semibold">
+                      <span className="text-(--text-primary) font-semibold">
                         {exercise.sets}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-gray-700">
+                    <div className="flex items-center gap-1 text-(--text-secondary)">
                       <span className="font-medium">Reps:</span>
-                      <span className="text-gray-900 font-semibold">
+                      <span className="text-(--text-primary) font-semibold">
                         {exercise.reps}
                         {exercise.eachSide && " each side"}
                       </span>
                     </div>
 
                     {exercise.weight && (
-                      <div className="flex items-center gap-1 text-gray-700">
+                      <div className="flex items-center gap-1 text-(--text-secondary)">
                         <span className="font-medium">Weight:</span>
-                        <span className="text-gray-900 font-semibold">
+                        <span className="text-(--text-primary) font-semibold">
                           {formatWeight(exercise)}
                         </span>
                       </div>
                     )}
 
                     {exercise.tempo && (
-                      <div className="flex items-center gap-1 text-gray-700">
+                      <div className="flex items-center gap-1 text-(--text-secondary)">
                         <span className="font-medium">Tempo:</span>
-                        <span className="text-gray-900 font-semibold">
+                        <span className="text-(--text-primary) font-semibold">
                           {exercise.tempo}
                         </span>
                       </div>
                     )}
 
                     {exercise.restTime && (
-                      <div className="flex items-center gap-1 text-gray-700">
+                      <div className="flex items-center gap-1 text-(--text-secondary)">
                         <Clock className="w-4 h-4" />
-                        <span className="text-gray-900 font-semibold">
+                        <span className="text-(--text-primary) font-semibold">
                           {formatRestTime(exercise.restTime)}
                         </span>
                       </div>
@@ -384,7 +405,7 @@ export function ExerciseGroupDisplay({
 
                   {/* Exercise notes */}
                   {exercise.notes && (
-                    <p className="mt-2 text-sm text-gray-600 italic border-l-2 border-silver-400 pl-3">
+                    <p className="mt-2 text-sm text-(--text-secondary) italic border-l-2 border-silver-400 pl-3">
                       {exercise.notes}
                     </p>
                   )}
@@ -393,7 +414,7 @@ export function ExerciseGroupDisplay({
                 {/* Completion indicator */}
                 {showProgress && isCompleted && (
                   <div className="shrink-0">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-(--status-success) rounded-full flex items-center justify-center">
                       <svg
                         className="w-4 h-4 text-white"
                         fill="none"

@@ -8,6 +8,7 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Alert } from "@/components/ui/Alert";
+import { Heading, Body } from "@/components/ui/Typography";
 import {
   Dumbbell,
   Calendar,
@@ -113,14 +114,14 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
           <div className="w-16 h-16 bg-silver-300 rounded-full flex items-center justify-center mx-auto mb-4">
             <Dumbbell className="w-8 h-8 text-neutral" />
           </div>
-          <h3 className="text-xl font-semibold text-navy-900 mb-2">
+          <Heading level="h3" className="mb-2">
             Workout Not Found
-          </h3>
-          <p className="text-neutral-dark mb-6">
+          </Heading>
+          <Body variant="secondary" className="mb-6">
             {error || "The requested workout session could not be found."}
-          </p>
+          </Body>
           <Link href="/dashboard">
-            <Button variant="primary" className="px-6 py-3 rounded-xl">
+            <Button variant="primary" size="lg">
               Return to Dashboard
             </Button>
           </Link>
@@ -136,13 +137,19 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
           {/* Mobile-optimized header */}
           <div className="flex flex-col gap-6 mb-8">
             <div className="text-center sm:text-left">
-              <h1 className="text-heading-primary text-3xl sm:text-2xl flex items-center justify-center sm:justify-start gap-3 mb-3 font-bold">
+              <Heading
+                level="h1"
+                className="flex items-center justify-center sm:justify-start gap-3 mb-3"
+              >
                 <Dumbbell className="w-8 h-8 sm:w-7 sm:h-7 text-accent-orange" />
                 {workoutPlan.name}
-              </h1>
-              <p className="text-body-secondary text-lg sm:text-base leading-relaxed mb-4">
+              </Heading>
+              <Body
+                variant="secondary"
+                className="text-lg sm:text-base leading-relaxed mb-4"
+              >
                 {workoutPlan.description}
-              </p>
+              </Body>
 
               {/* Enhanced mobile workout info */}
               <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-gradient-to-br from-silver-200 to-info-lightest rounded-xl p-4 border border-info-lighter">
@@ -190,18 +197,16 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
                 <Package className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-xl font-bold text-navy-900">
-                Before You Start
-              </h2>
+              <Heading level="h2">Before You Start</Heading>
             </div>
 
             <div className="space-y-5">
               {/* Equipment Needed */}
               <div>
-                <h3 className="text-base font-semibold text-navy-900 mb-3 flex items-center gap-2">
+                <Heading level="h3" className="mb-3 flex items-center gap-2">
                   <Dumbbell className="w-5 h-5 text-primary" />
                   Equipment Needed
-                </h3>
+                </Heading>
                 <div className="flex flex-wrap gap-2">
                   {(() => {
                     const equipment = new Set<string>();
@@ -246,10 +251,10 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
 
               {/* Difficulty & Intensity */}
               <div>
-                <h3 className="text-base font-semibold text-navy-900 mb-3 flex items-center gap-2">
+                <Heading level="h3" className="mb-3 flex items-center gap-2">
                   <Flame className="w-5 h-5 text-accent-orange-600" />
                   Intensity Level
-                </h3>
+                </Heading>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 bg-white rounded-lg p-4 border-2 border-info-light">
                     <div className="flex items-center justify-between mb-2">
@@ -269,7 +274,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                       />
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg px-4 py-4 border-2 border-orange-300">
+                  <div className="bg-white rounded-lg px-4 py-4 border-2 border-(--accent-orange-300)">
                     <div className="text-2xl font-bold text-accent-orange-600">
                       {workoutPlan.exercises.reduce(
                         (acc, e) => acc + e.sets,
@@ -285,10 +290,10 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
 
               {/* Warmup Tips */}
               <div>
-                <h3 className="text-base font-semibold text-navy-900 mb-3 flex items-center gap-2">
+                <Heading level="h3" className="mb-3 flex items-center gap-2">
                   <Zap className="w-5 h-5 text-warning" />
                   Warmup Tips
-                </h3>
+                </Heading>
                 <div className="bg-white rounded-lg p-4 border-2 border-info-light space-y-2">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-info-lighter flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -329,9 +334,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
             className="mb-8 rounded-2xl border-2 border-silver-300"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h2 className="text-heading-secondary text-xl font-bold">
-                Progress Overview
-              </h2>
+              <Heading level="h2">Progress Overview</Heading>
               <span className="text-body-small px-4 py-2 bg-accent-green bg-opacity-10 text-accent-green rounded-xl font-bold border border-accent-green">
                 {workout.progressPercentage}% Complete
               </span>
@@ -374,11 +377,11 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                   Sets Done
                 </div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-xl shadow-sm">
-                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-orange-800">
+              <div className="text-center p-4 bg-(--accent-orange-50) rounded-xl shadow-sm">
+                <div className="text-heading-primary text-2xl sm:text-xl font-bold text-(--accent-orange-800)">
                   {workout.exercises.reduce((acc, e) => acc + e.targetSets, 0)}
                 </div>
-                <div className="text-body-small font-medium text-orange-600 mt-1">
+                <div className="text-body-small font-medium text-(--accent-orange-600) mt-1">
                   Total Sets
                 </div>
               </div>
@@ -387,9 +390,9 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
 
           {/* Mobile-optimized exercise list */}
           <div className="space-y-6">
-            <h2 className="text-heading-secondary text-2xl sm:text-xl font-bold text-center sm:text-left">
+            <Heading level="h2" className="text-center sm:text-left">
               Workout Exercises
-            </h2>
+            </Heading>
 
             {workoutPlan.exercises.map((exercise, index) => {
               const sessionExercise = workout.exercises.find(
@@ -425,9 +428,9 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                         )}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-heading-secondary text-xl sm:text-lg font-bold mb-2">
+                        <Heading level="h3" className="mb-2">
                           {exercise.exerciseName}
-                        </h3>
+                        </Heading>
 
                         {/* Mobile-friendly exercise details */}
                         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">

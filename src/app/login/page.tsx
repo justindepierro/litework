@@ -6,54 +6,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail } from "@/lib/security";
 import { RateLimitError } from "@/components/ui/RateLimitError";
-import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
-import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
-import { Display } from "@/components/ui/Typography";
+import { PageLoading } from "@/components/ui/LoadingSpinner";
+import { Display, Body, Label } from "@/components/ui/Typography";
+import { Form, FormField, FormSubmitButton } from "@/components/ui/Form";
+import { validationRules } from "@/lib/form-validation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [isRateLimited, setIsRateLimited] = useState(false);
   const { signIn } = useAuth();
 
   // Redirect to dashboard if already logged in
   const { isLoading: authLoading } = useRedirectIfAuthenticated();
 
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    setEmailError("");
-    setError("");
-
-    // Only validate if user has entered something and moved on
-    if (value && value.includes("@")) {
-      const validation = validateEmail(value);
-      if (!validation.valid) {
-        setEmailError(validation.error || "Invalid email");
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setEmailError("");
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitError("");
     setIsRateLimited(false);
 
-    // Final validation before submit
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.valid) {
-      setEmailError(emailValidation.error || "Invalid email");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      await signIn(email, password);
+      await signIn(values.email, values.password);
       // AuthContext will handle redirect to /dashboard
     } catch (err) {
       const errorMessage =
@@ -62,12 +34,10 @@ export default function LoginPage() {
       // Check if it's a rate limit error
       if (errorMessage.includes("Too many")) {
         setIsRateLimited(true);
-        setError(errorMessage);
+        setSubmitError(errorMessage);
       } else {
-        setError(errorMessage);
+        setSubmitError(errorMessage);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -83,84 +53,80 @@ export default function LoginPage() {
           <Display size="lg" className="mb-2">
             Welcome Back
           </Display>
-          <p className="mt-2 text-body-secondary text-base sm:text-sm">
+          <Body variant="secondary" className="mt-2">
             Sign in to track your workouts
-          </p>
+          </Body>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <FloatingLabelInput
-            id="email"
+        <Form
+          onSubmit={handleSubmit}
+          initialValues={{ email: "", password: "" }}
+          validation={{
+            email: {
+              required: "Email is required",
+              custom: (value: any) => {
+                const validation = validateEmail(value);
+                return validation.valid ? undefined : validation.error || "Invalid email";
+              },
+            },
+            password: validationRules.required("Password is required"),
+          }}
+          validateOnBlur={true}
+          className="space-y-6"
+        >
+          <FormField
             name="email"
+            label="Email address"
             type="email"
             required
-            label="Email address"
-            value={email}
-            onChange={(e) => handleEmailChange(e.target.value)}
-            disabled={isLoading || isRateLimited}
-            error={emailError}
-            inputSize="lg"
             fullWidth
+            inputSize="lg"
+            disabled={isRateLimited}
           />
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label
-                htmlFor="password"
-                className="text-body-primary block text-base sm:text-sm font-medium"
-              >
+              <Label htmlFor="password" className="block text-base sm:text-sm">
                 Password
-              </label>
+              </Label>
               <Link
                 href="/reset-password"
-                className="text-sm text-accent-blue hover:text-navy-700 font-medium touch-manipulation"
+                className="text-sm text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)] touch-manipulation"
               >
                 Forgot password?
               </Link>
             </div>
-            <FloatingLabelInput
-              id="password"
+            <FormField
               name="password"
+              label="Password"
               type="password"
               required
-              label="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-              disabled={isLoading || isRateLimited}
-              inputSize="lg"
               fullWidth
+              inputSize="lg"
+              disabled={isRateLimited}
             />
           </div>
 
-          {isRateLimited && error ? (
-            <RateLimitError error={error} />
-          ) : error ? (
-            <Alert variant="error">{error}</Alert>
+          {isRateLimited && submitError ? (
+            <RateLimitError error={submitError} />
+          ) : submitError ? (
+            <Alert variant="error">{submitError}</Alert>
           ) : null}
 
-          <button
-            type="submit"
-            disabled={isLoading || isRateLimited || !!emailError}
-            className="w-full py-4 px-6 bg-accent-blue hover:bg-navy-700 disabled:bg-silver-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
+          <FormSubmitButton
+            fullWidth
+            loadingText="Signing in..."
+            disabled={isRateLimited}
+            className="py-4 px-6 text-lg font-[var(--font-weight-bold)] rounded-xl shadow-lg hover:shadow-xl"
           >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <ButtonLoading className="text-white mr-2" />
-                Signing in...
-              </div>
-            ) : (
-              "Sign in"
-            )}
-          </button>
-        </form>
+            Sign in
+          </FormSubmitButton>
+        </Form>
 
         <div className="text-center">
           <Link
             href="/"
-            className="text-body-secondary text-base sm:text-sm hover:text-accent-blue transition-colors font-medium touch-manipulation inline-block py-2 px-4 rounded-lg"
+            className="text-(--text-secondary) text-base sm:text-sm hover:text-(--accent-blue-600) transition-colors font-[var(--font-weight-medium)] touch-manipulation inline-block py-2 px-4 rounded-lg"
           >
             ← Back to home
           </Link>

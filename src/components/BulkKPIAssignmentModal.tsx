@@ -15,6 +15,7 @@ import {
   FloatingLabelTextarea,
 } from "@/components/ui/FloatingLabelInput";
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { Body, Heading, Label } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
@@ -311,17 +312,15 @@ export default function BulkKPIAssignmentModal({
                   <Label>Groups</Label>
                   <div className="mt-2 space-y-2">
                     {availableGroups.map((group) => (
-                      <label
+                      <div
                         key={group.id}
-                        className="flex items-center p-3 border border-silver-300 rounded-lg cursor-pointer hover:bg-silver-50"
+                        className="flex items-center p-3 border border-silver-300 rounded-lg"
                       >
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={selectedGroupIds.includes(group.id!)}
                           onChange={() => toggleGroup(group.id!)}
-                          className="mr-3 h-4 w-4 text-primary"
                         />
-                        <div className="flex-1">
+                        <div className="flex-1 ml-3">
                           <Body className="font-medium">{group.name}</Body>
                           <Body variant="tertiary" className="text-sm">
                             {group.sport} • {group.athleteIds?.length || 0}{" "}
@@ -332,7 +331,7 @@ export default function BulkKPIAssignmentModal({
                           className="w-4 h-4 rounded-full"
                           style={{ backgroundColor: group.color }}
                         />
-                      </label>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -344,27 +343,23 @@ export default function BulkKPIAssignmentModal({
                   <Label>Individual Athletes</Label>
                   <div className="mt-2 max-h-64 overflow-y-auto space-y-1 border border-silver-300 rounded-lg p-2">
                     {availableAthletes.map((athlete) => (
-                      <label
+                      <div
                         key={athlete.id}
-                        className="flex items-center p-2 rounded hover:bg-silver-50 cursor-pointer"
+                        className="flex items-center p-2 rounded"
                       >
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={selectedAthleteIds.includes(athlete.id)}
                           onChange={() => toggleAthlete(athlete.id)}
-                          className="mr-3 h-4 w-4 text-primary"
+                          label={`${athlete.firstName} ${athlete.lastName}`}
                         />
-                        <Body>
-                          {athlete.firstName} {athlete.lastName}
-                        </Body>
-                      </label>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
               {totalAthletes > 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded p-3">
+                <div className="bg-(--accent-blue-50) border border-(--accent-blue-200) rounded p-3">
                   <Body>
                     <strong>{totalAthletes}</strong>{" "}
                     {totalAthletes === 1 ? "athlete" : "athletes"} selected
@@ -385,24 +380,22 @@ export default function BulkKPIAssignmentModal({
 
               <div className="grid grid-cols-2 gap-3">
                 {availableKPIs.map((kpi) => (
-                  <label
+                  <div
                     key={kpi.id}
                     className={`
-                      flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all
+                      flex items-center p-3 border-2 rounded-lg transition-all
                       ${
                         selectedKPIIds.includes(kpi.id)
-                          ? "border-primary bg-blue-50"
+                          ? "border-primary bg-(--accent-blue-50)"
                           : "border-silver-300 hover:border-silver-400"
                       }
                     `}
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={selectedKPIIds.includes(kpi.id)}
                       onChange={() => toggleKPI(kpi.id)}
-                      className="mr-3 h-4 w-4 text-primary"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 ml-3">
                       <span
                         className="inline-block px-2 py-1 rounded text-sm font-medium text-white"
                         style={{ backgroundColor: kpi.color }}
@@ -413,12 +406,12 @@ export default function BulkKPIAssignmentModal({
                         {kpi.kpiType.replace("_", " ")}
                       </Body>
                     </div>
-                  </label>
+                  </div>
                 ))}
               </div>
 
               {selectedKPIIds.length > 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded p-3">
+                <div className="bg-(--accent-blue-50) border border-(--accent-blue-200) rounded p-3">
                   <Body>
                     <strong>{selectedKPIIds.length}</strong>{" "}
                     {selectedKPIIds.length === 1 ? "KPI" : "KPIs"} selected
@@ -475,7 +468,10 @@ export default function BulkKPIAssignmentModal({
                 {totalAthletes === 0 &&
                   (selectedGroupIds.length > 0 ||
                     selectedAthleteIds.length > 0) && (
-                    <Body variant="tertiary" className="text-amber-600">
+                    <Body
+                      variant="tertiary"
+                      className="text-(--status-warning)"
+                    >
                       Selected groups contain only invited athletes. KPIs will
                       be assigned automatically when they accept their invites.
                     </Body>

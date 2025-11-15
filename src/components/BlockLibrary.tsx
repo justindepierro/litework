@@ -34,9 +34,9 @@ const CATEGORY_CONFIG = {
   warmup: {
     label: "Warm-up",
     icon: Flame,
-    color: "text-orange-500",
-    bgColor: "bg-orange-50",
-    borderColor: "border-orange-200",
+    color: "text-(--accent-orange-500)",
+    bgColor: "bg-(--accent-orange-50)",
+    borderColor: "border-(--accent-orange-200)",
   },
   main: {
     label: "Main Lifts",

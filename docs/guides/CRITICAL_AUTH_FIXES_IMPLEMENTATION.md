@@ -1,4 +1,5 @@
 # 🔧 Quick Implementation Guide - Critical Auth Fixes
+
 **Estimated Time**: 45 minutes  
 **Impact**: High security improvements  
 **Risk**: Low (additive changes only)
@@ -12,6 +13,7 @@
 **File**: `src/app/signup/page.tsx`
 
 **Find** (around line 200):
+
 ```tsx
 <FloatingLabelInput
   label="Email"
@@ -23,6 +25,7 @@
 ```
 
 **Replace with**:
+
 ```tsx
 <FloatingLabelInput
   label="Email"
@@ -44,12 +47,14 @@
 **File**: `src/app/api/invites/accept/route.ts`
 
 **Find** (around line 50):
+
 ```typescript
 const body = await request.json();
 const { inviteCode, password } = body;
 ```
 
 **Replace with**:
+
 ```typescript
 const body = await request.json();
 const { inviteCode, password, email: submittedEmail } = body;
@@ -58,7 +63,7 @@ const { inviteCode, password, email: submittedEmail } = body;
 if (submittedEmail && invite.email) {
   const inviteEmail = invite.email.toLowerCase().trim();
   const providedEmail = submittedEmail.toLowerCase().trim();
-  
+
   if (providedEmail !== inviteEmail) {
     console.warn(
       `[SECURITY] Email mismatch attempt - Invite: ${inviteEmail}, Provided: ${providedEmail}`
@@ -75,6 +80,7 @@ if (submittedEmail && invite.email) {
 ```
 
 **Test**:
+
 1. Create invite for `athlete@test.com`
 2. Try to sign up with different email
 3. Should see error: "Email does not match invitation"
@@ -88,11 +94,13 @@ if (submittedEmail && invite.email) {
 **File**: `src/app/api/invites/accept/route.ts`
 
 **Add import** (top of file):
+
 ```typescript
 import { validatePassword } from "@/lib/security";
 ```
 
 **Find** (around line 60):
+
 ```typescript
 if (!inviteCode || !password) {
   return NextResponse.json(
@@ -103,6 +111,7 @@ if (!inviteCode || !password) {
 ```
 
 **Add after this block**:
+
 ```typescript
 // CRITICAL: Enforce password requirements on server
 const passwordValidation = validatePassword(password);
@@ -132,6 +141,7 @@ if (passwordValidation.strength === "weak") {
 ```
 
 **Test**:
+
 1. Try to sign up with password "test" (bypass client validation in browser dev tools)
 2. Should be rejected by server with specific error
 3. Try with "Test123!" → Should succeed
@@ -145,6 +155,7 @@ if (passwordValidation.strength === "weak") {
 **File**: `src/app/api/invites/accept/route.ts`
 
 **Find** (around line 90):
+
 ```typescript
 const { data: authData, error: signUpError } = await supabase.auth.signUp({
   email: invite.email.toLowerCase(),
@@ -160,6 +171,7 @@ const { data: authData, error: signUpError } = await supabase.auth.signUp({
 ```
 
 **Replace with**:
+
 ```typescript
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -181,17 +193,18 @@ const { data: authData, error: signUpError } = await supabase.auth.signUp({
 const requiresVerification = !authData.session; // No session = needs verification
 
 if (requiresVerification) {
-  console.log(
-    `[AUTH] Email verification required for ${invite.email}`
-  );
-  
+  console.log(`[AUTH] Email verification required for ${invite.email}`);
+
   // Update invite status but don't mark as fully accepted yet
-  await supabase.from("invites").update(
-    transformToSnake({
-      status: "pending_verification",
-      updatedAt: new Date().toISOString(),
-    })
-  ).eq("id", inviteCode);
+  await supabase
+    .from("invites")
+    .update(
+      transformToSnake({
+        status: "pending_verification",
+        updatedAt: new Date().toISOString(),
+      })
+    )
+    .eq("id", inviteCode);
 
   return NextResponse.json({
     success: true,
@@ -207,6 +220,7 @@ if (requiresVerification) {
 **File**: `src/app/signup/page.tsx`
 
 **Find** (around line 180 in handleSubmit):
+
 ```typescript
 if (response.ok) {
   // Success - redirect to dashboard
@@ -217,10 +231,11 @@ if (response.ok) {
 ```
 
 **Replace with**:
+
 ```typescript
 if (response.ok) {
   const data = await response.json();
-  
+
   if (data.requiresVerification) {
     // Show email confirmation message
     setShowEmailConfirmation(true);
@@ -240,47 +255,50 @@ if (response.ok) {
 **File**: `src/app/signup/page.tsx`
 
 **Find the email confirmation block** (should already exist around line 400):
+
 ```tsx
-{showEmailConfirmation && (
-  <div className="rounded-md bg-blue-50 p-4">
-    {/* Existing content */}
-  </div>
-)}
+{
+  showEmailConfirmation && (
+    <div className="rounded-md bg-blue-50 p-4">{/* Existing content */}</div>
+  );
+}
 ```
 
 **Update the message**:
+
 ```tsx
-{showEmailConfirmation && (
-  <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
-    <div className="flex items-start">
-      <Mail className="h-6 w-6 text-blue-600 mr-3 mt-0.5" />
-      <div>
-        <h3 className="text-sm font-medium text-blue-800 mb-2">
-          Verify Your Email Address
-        </h3>
-        <div className="text-sm text-blue-700 space-y-2">
-          <p>
-            We've sent a verification link to{" "}
-            <strong>{email}</strong>
-          </p>
-          <p>
-            Click the link in the email to activate your account and start
-            tracking workouts!
-          </p>
-          <p className="text-xs text-blue-600 mt-3">
-            Didn't receive the email? Check your spam folder or{" "}
-            <button
-              onClick={handleResendVerification}
-              className="underline hover:text-blue-800"
-            >
-              resend verification email
-            </button>
-          </p>
+{
+  showEmailConfirmation && (
+    <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
+      <div className="flex items-start">
+        <Mail className="h-6 w-6 text-blue-600 mr-3 mt-0.5" />
+        <div>
+          <h3 className="text-sm font-medium text-blue-800 mb-2">
+            Verify Your Email Address
+          </h3>
+          <div className="text-sm text-blue-700 space-y-2">
+            <p>
+              We've sent a verification link to <strong>{email}</strong>
+            </p>
+            <p>
+              Click the link in the email to activate your account and start
+              tracking workouts!
+            </p>
+            <p className="text-xs text-blue-600 mt-3">
+              Didn't receive the email? Check your spam folder or{" "}
+              <button
+                onClick={handleResendVerification}
+                className="underline hover:text-blue-800"
+              >
+                resend verification email
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)}
+  );
+}
 ```
 
 ### Step 4: Create Auth Callback Handler
@@ -299,31 +317,36 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = createClient();
-    
+
     // Exchange code for session
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!error && data.user) {
       console.log(`[AUTH] Email verified for user: ${data.user.id}`);
-      
+
       // Mark invite as fully accepted
       const inviteId = data.user.user_metadata?.inviteId;
       if (inviteId) {
-        await supabase.from("invites").update(
-          transformToSnake({
-            status: "accepted",
-            acceptedAt: new Date().toISOString(),
-          })
-        ).eq("id", inviteId);
+        await supabase
+          .from("invites")
+          .update(
+            transformToSnake({
+              status: "accepted",
+              acceptedAt: new Date().toISOString(),
+            })
+          )
+          .eq("id", inviteId);
       }
-      
+
       // Redirect to dashboard
       return NextResponse.redirect(new URL(next, requestUrl.origin));
     }
   }
 
   // Something went wrong - redirect to login
-  return NextResponse.redirect(new URL("/login?error=verification_failed", requestUrl.origin));
+  return NextResponse.redirect(
+    new URL("/login?error=verification_failed", requestUrl.origin)
+  );
 }
 ```
 
@@ -334,6 +357,7 @@ export async function GET(request: NextRequest) {
 3. Update redirect URL to your domain
 
 **Test**:
+
 1. Create new invite
 2. Sign up with that invite
 3. Should see "Check your email" message
@@ -346,6 +370,7 @@ export async function GET(request: NextRequest) {
 ## Testing Checklist
 
 ### Test Fix 1: Email Lock
+
 - [ ] Create invite for `test@example.com`
 - [ ] Go to signup page with invite link
 - [ ] Try to change email field
@@ -353,6 +378,7 @@ export async function GET(request: NextRequest) {
 - [ ] Submit form → Should succeed
 
 ### Test Fix 2: Password Validation
+
 - [ ] Open browser dev tools
 - [ ] Disable password validation JavaScript
 - [ ] Try to submit with weak password
@@ -360,6 +386,7 @@ export async function GET(request: NextRequest) {
 - [ ] Check server logs for security warning
 
 ### Test Fix 3: Email Verification
+
 - [ ] Sign up with new account
 - [ ] Should see "Check your email" message
 - [ ] Check inbox for verification email
@@ -374,6 +401,7 @@ export async function GET(request: NextRequest) {
 If anything breaks:
 
 ### Revert Fix 1
+
 ```tsx
 // Remove disabled and helperText props from email input
 <FloatingLabelInput
@@ -386,6 +414,7 @@ If anything breaks:
 ```
 
 ### Revert Fix 2
+
 ```typescript
 // Remove password validation block from API
 // Keep only the existing null check
@@ -398,6 +427,7 @@ if (!inviteCode || !password) {
 ```
 
 ### Revert Fix 3
+
 ```typescript
 // Remove emailRedirectTo from signUp options
 const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -419,18 +449,20 @@ const { data: authData, error: signUpError } = await supabase.auth.signUp({
 ## Production Deployment
 
 1. **Commit changes**:
+
    ```bash
    git add .
    git commit -m "feat: Add critical auth security fixes
-   
+
    - Lock email to invite to prevent hijacking
    - Add server-side password validation
    - Enable email verification for new signups
-   
+
    Ref: AUTH_SIGNUP_SECURITY_AUDIT_NOV_14_2025.md"
    ```
 
 2. **Test locally**:
+
    ```bash
    npm run typecheck  # Should pass
    npm run build      # Should succeed
@@ -438,6 +470,7 @@ const { data: authData, error: signUpError } = await supabase.auth.signUp({
    ```
 
 3. **Deploy to production**:
+
    ```bash
    git push origin main
    # Vercel will auto-deploy
@@ -454,6 +487,7 @@ const { data: authData, error: signUpError } = await supabase.auth.signUp({
 ## Support
 
 **Issues?** Check:
+
 - Console logs for security warnings
 - Supabase logs for auth errors
 - Email delivery in Supabase dashboard

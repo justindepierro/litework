@@ -425,7 +425,7 @@ export default function WorkoutAssignmentDetailModal({
               {/* Workout Exercises with Groups */}
               {getExercises(assignment).length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
                     <CheckCircle className="w-5 h-5" />
                     Workout ({getExercises(assignment).length} exercises)
                   </h3>

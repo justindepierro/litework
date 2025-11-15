@@ -143,11 +143,11 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
               {process.env.NODE_ENV === "development" &&
                 this.state.errorInfo && (
                   <details className="mt-6">
-                    <summary className="text-sm text-gray-600 cursor-pointer hover:text-gray-900">
+                    <summary className="text-sm text-(--text-secondary) cursor-pointer hover:text-(--text-primary)">
                       Technical Details (Development Only)
                     </summary>
-                    <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-4">
-                      <pre className="text-xs text-gray-700 overflow-auto max-h-48">
+                    <div className="mt-3 bg-(--bg-secondary) border border-silver-300 rounded p-4">
+                      <pre className="text-xs text-(--text-secondary) overflow-auto max-h-48">
                         {this.state.errorInfo.componentStack}
                       </pre>
                     </div>
@@ -177,7 +177,7 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
 
               <button
                 onClick={this.handleClearRecovery}
-                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                className="flex-1 px-4 py-3 bg-(--bg-tertiary) text-(--text-secondary) rounded-lg hover:bg-(--interactive-hover) transition-colors font-medium"
               >
                 Start Fresh
               </button>

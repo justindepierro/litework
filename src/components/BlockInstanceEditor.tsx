@@ -11,6 +11,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Label, Caption } from "@/components/ui/Typography";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -238,9 +239,7 @@ export default function BlockInstanceEditor({
 
           {/* Instance Name */}
           <div>
-            <label className="block text-sm font-medium text-silver-700 mb-2">
-              Instance Name (Optional)
-            </label>
+            <Label className="block mb-2">Instance Name (Optional)</Label>
             <input
               type="text"
               value={instanceName}
@@ -248,17 +247,15 @@ export default function BlockInstanceEditor({
               placeholder={blockInstance.sourceBlockName}
               className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
-            <p className="text-xs text-silver-500 mt-1">
+            <Caption variant="muted" className="mt-1">
               Give this instance a custom name (e.g., &quot;Week 3
               Progression&quot; or &quot;Beginner Variation&quot;)
-            </p>
+            </Caption>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-silver-700 mb-2">
-              Instance Notes
-            </label>
+            <Label className="block mb-2">Instance Notes</Label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

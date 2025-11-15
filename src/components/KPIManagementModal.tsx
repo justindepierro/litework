@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { KPITag } from "@/types";
 import { Tag } from "lucide-react";
-import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
-import { Select } from "@/components/ui/Select";
-import { Button } from "@/components/ui/Button";
+import { Form, FormField, FormSelect, FormSubmitButton, useFormContext } from "@/components/ui/Form";
+import { validationRules } from "@/lib/form-validation";
 import { Body, Label } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
@@ -13,6 +11,8 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
+import { useState, useEffect } from "react";
 
 interface KPIManagementModalProps {
   isOpen: boolean;
@@ -41,85 +41,141 @@ const kpiTypeOptions = [
   { value: "best_time", label: "Best Time" },
 ];
 
+// Auto-generate database name from display name
+const generateDatabaseName = (displayName: string): string => {
+  return displayName
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+};
+
+function FormContent({
+  selectedColor,
+  setSelectedColor,
+  submitError,
+}: {
+  selectedColor: string;
+  setSelectedColor: (color: string) => void;
+  submitError: string;
+}) {
+  const { values } = useFormContext();
+  const displayName = values.displayName || "";
+  const databaseName = generateDatabaseName(displayName);
+
+  return (
+    <ModalContent>
+      {submitError && (
+        <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded mb-4">
+          <Body variant="secondary">{submitError}</Body>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {/* Display Name */}
+        <div>
+          <FormField
+            name="displayName"
+            label="KPI Name"
+            type="text"
+            required
+            fullWidth
+          />
+          <Body variant="tertiary" className="mt-1 text-sm">
+            Database name: {databaseName || "(enter name above)"}
+          </Body>
+        </div>
+
+        {/* KPI Type */}
+        <FormSelect
+          name="kpiType"
+          label="KPI Type"
+          options={kpiTypeOptions}
+          required
+          fullWidth
+        />
+
+        {/* Color */}
+        <div>
+          <Label>Badge Color</Label>
+          <div className="grid grid-cols-5 gap-2 mt-2">
+            {predefinedColors.map((color) => (
+              <button
+                key={color.value}
+                type="button"
+                className={`
+                  w-full aspect-square rounded-lg border-2 transition-all
+                  ${
+                    selectedColor === color.value
+                      ? "border-charcoal-900 shadow-md scale-110"
+                      : "border-silver-300 hover:border-silver-400"
+                  }
+                `}
+                style={{ backgroundColor: color.value }}
+                onClick={() => setSelectedColor(color.value)}
+                title={color.name}
+              />
+            ))}
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <Body variant="tertiary">Preview:</Body>
+            <span
+              className="px-3 py-1 rounded-full text-sm font-medium text-white"
+              style={{ backgroundColor: selectedColor }}
+            >
+              {displayName || "KPI Tag"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ModalContent>
+  );
+}
+
 export default function KPIManagementModal({
   isOpen,
   onClose,
   onSave,
   editingKPI,
 }: KPIManagementModalProps) {
-  const [formData, setFormData] = useState({
-    displayName: "",
-    color: predefinedColors[0].value,
-    kpiType: "one_rm" as "one_rm" | "max_reps" | "max_distance" | "best_time",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [selectedColor, setSelectedColor] = useState(
+    editingKPI?.color || predefinedColors[0].value
+  );
+  const [submitError, setSubmitError] = useState("");
 
-  // Auto-generate database name from display name
-  const generateDatabaseName = (displayName: string): string => {
-    return displayName
-      .trim()
-      .toUpperCase()
-      .replace(/[^A-Z0-9]+/g, "_") // Replace non-alphanumeric with underscore
-      .replace(/^_+|_+$/g, ""); // Remove leading/trailing underscores
-  };
-
-  const databaseName = generateDatabaseName(formData.displayName);
-
-  // Load form data when editing
+  // Update color when editingKPI changes
   useEffect(() => {
     if (editingKPI) {
-      setFormData({
-        displayName: editingKPI.displayName,
-        color: editingKPI.color,
-        kpiType: editingKPI.kpiType,
-      });
+      setSelectedColor(editingKPI.color);
     } else {
-      setFormData({
-        displayName: "",
-        color: predefinedColors[0].value,
-        kpiType: "one_rm",
-      });
+      setSelectedColor(predefinedColors[0].value);
     }
-    setError("");
-  }, [editingKPI, isOpen]);
+  }, [editingKPI]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitError("");
 
-    if (!formData.displayName.trim()) {
-      setError("Display name is required");
-      return;
-    }
-
-    // Auto-generate database name from display name
-    const databaseName = generateDatabaseName(formData.displayName);
+    const databaseName = generateDatabaseName(values.displayName);
 
     if (!databaseName) {
-      setError("Display name must contain letters or numbers");
+      setSubmitError("Display name must contain letters or numbers");
       return;
     }
-
-    setIsLoading(true);
-    setError("");
 
     try {
       const payload = {
         name: databaseName,
-        display_name: formData.displayName.trim(),
-        color: formData.color,
-        kpi_type: formData.kpiType,
-        description: null, // No longer exposed to user
-        primary_exercise_id: null, // No longer exposed to user
+        display_name: values.displayName.trim(),
+        color: selectedColor,
+        kpi_type: values.kpiType,
+        description: null,
+        primary_exercise_id: null,
       };
 
       if (editingKPI) {
-        // Update existing KPI (only display_name, color, kpi_type can change)
         const response = await fetch(`/api/kpi-tags?id=${editingKPI.id}`, {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: editingKPI.id,
             displayName: payload.display_name,
@@ -137,12 +193,9 @@ export default function KPIManagementModal({
         onSave(result.data);
         onClose();
       } else {
-        // Create new KPI
         const response = await fetch("/api/kpi-tags", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
 
@@ -156,132 +209,48 @@ export default function KPIManagementModal({
         onClose();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleClose = () => {
-    if (!isLoading) {
-      onClose();
+      setSubmitError(err instanceof Error ? err.message : "An error occurred");
+      throw err; // Re-throw to prevent form reset
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <ModalBackdrop isOpen={isOpen} onClose={handleClose}>
+    <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <ModalHeader
           title={editingKPI ? "Edit KPI Tag" : "Create New KPI Tag"}
           icon={<Tag className="w-6 h-6" />}
-          onClose={handleClose}
+          onClose={onClose}
         />
 
-        <form onSubmit={handleSubmit}>
-          <ModalContent>
-            {error && (
-              <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded mb-4">
-                <Body variant="secondary">{error}</Body>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {/* Display Name */}
-              <div>
-                <FloatingLabelInput
-                  label="KPI Name"
-                  value={formData.displayName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, displayName: e.target.value })
-                  }
-                  required
-                  disabled={isLoading}
-                  fullWidth
-                />
-                <Body variant="tertiary" className="mt-1 text-sm">
-                  Database name: {databaseName || "(enter name above)"}
-                </Body>
-              </div>
-
-              {/* KPI Type */}
-              <div>
-                <Select
-                  label="KPI Type"
-                  value={formData.kpiType}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      kpiType: e.target.value as
-                        | "one_rm"
-                        | "max_reps"
-                        | "max_distance"
-                        | "best_time",
-                    })
-                  }
-                  options={kpiTypeOptions}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              {/* Color */}
-              <div>
-                <Label>Badge Color</Label>
-                <div className="grid grid-cols-5 gap-2 mt-2">
-                  {predefinedColors.map((color) => (
-                    <button
-                      key={color.value}
-                      type="button"
-                      className={`
-                        w-full aspect-square rounded-lg border-2 transition-all
-                        ${
-                          formData.color === color.value
-                            ? "border-charcoal-900 shadow-md scale-110"
-                            : "border-silver-300 hover:border-silver-400"
-                        }
-                      `}
-                      style={{ backgroundColor: color.value }}
-                      onClick={() =>
-                        setFormData({ ...formData, color: color.value })
-                      }
-                      disabled={isLoading}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <Body variant="tertiary">Preview:</Body>
-                  <span
-                    className="px-3 py-1 rounded-full text-sm font-medium text-white"
-                    style={{ backgroundColor: formData.color }}
-                  >
-                    {formData.displayName || "KPI Tag"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </ModalContent>
+        <Form
+          onSubmit={handleSubmit}
+          initialValues={{
+            displayName: editingKPI?.displayName || "",
+            kpiType: editingKPI?.kpiType || "one_rm",
+          }}
+          validation={{
+            displayName: validationRules.required("KPI name is required"),
+            kpiType: validationRules.required("KPI type is required"),
+          }}
+        >
+          <FormContent
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+            submitError={submitError}
+          />
 
           <ModalFooter>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleClose}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" disabled={isLoading}>
-              {isLoading
-                ? "Saving..."
-                : editingKPI
-                  ? "Update KPI"
-                  : "Create KPI"}
-            </Button>
+            <FormSubmitButton variant="primary">
+              {editingKPI ? "Update KPI" : "Create KPI"}
+            </FormSubmitButton>
           </ModalFooter>
-        </form>
+        </Form>
       </div>
     </ModalBackdrop>
   );

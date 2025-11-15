@@ -12,7 +12,7 @@ import Navigation from "@/components/Navigation";
 import { EmptyNotifications } from "@/components/ui/EmptyState";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
-import { Display } from "@/components/ui/Typography";
+import { Display, Body } from "@/components/ui/Typography";
 
 interface InAppNotification {
   id: string;
@@ -170,11 +170,11 @@ export default function NotificationsPage() {
                 <Bell className="w-8 h-8 text-primary" />
                 <div>
                   <Display size="md">Notifications</Display>
-                  <p className="text-sm text-body-secondary mt-1">
+                  <Body className="text-sm mt-1" variant="secondary">
                     {unreadCount > 0
                       ? `${unreadCount} unread`
                       : "All caught up!"}
-                  </p>
+                  </Body>
                 </div>
               </div>
 
@@ -260,9 +260,9 @@ export default function NotificationsPage() {
                           </span>
                         </div>
                         {notification.body && (
-                          <p className="text-body-secondary mb-3">
+                          <Body variant="secondary" className="mb-3">
                             {notification.body}
-                          </p>
+                          </Body>
                         )}
                         <div className="flex items-center gap-2">
                           {!notification.read && (
@@ -299,10 +299,10 @@ export default function NotificationsPage() {
           {/* Load More (if needed) */}
           {notifications.length >= 50 && (
             <div className="text-center mt-6">
-              <p className="text-sm text-gray-600">
+              <Body className="text-sm" variant="secondary">
                 Showing {notifications.length} notifications. Older
                 notifications auto-expire after 7 days.
-              </p>
+              </Body>
             </div>
           )}
         </div>

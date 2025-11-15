@@ -34,23 +34,23 @@ const QuickActions = memo(function QuickActions() {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-700 shadow-sm hover:shadow-lg border border-blue-200",
+      blue: "bg-gradient-to-br from-(--accent-blue-50) to-(--accent-blue-100) hover:from-(--accent-blue-100) hover:to-(--accent-blue-200) text-(--accent-blue-700) shadow-sm hover:shadow-lg border border-(--accent-blue-200)",
       orange:
-        "bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 text-orange-700 shadow-sm hover:shadow-lg border border-orange-200",
+        "bg-gradient-to-br from-(--accent-orange-50) to-(--accent-orange-100) hover:from-(--accent-orange-100) hover:to-(--accent-orange-200) text-(--accent-orange-700) shadow-sm hover:shadow-lg border border-(--accent-orange-200)",
       purple:
-        "bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 text-purple-700 shadow-sm hover:shadow-lg border border-purple-200",
+        "bg-gradient-to-br from-(--accent-purple-50) to-(--accent-purple-100) hover:from-(--accent-purple-100) hover:to-(--accent-purple-200) text-(--accent-purple-700) shadow-sm hover:shadow-lg border border-(--accent-purple-200)",
       green:
-        "bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 text-green-700 shadow-sm hover:shadow-lg border border-green-200",
+        "bg-gradient-to-br from-(--status-success-light) to-(--accent-green-100) hover:from-(--accent-green-100) hover:to-(--accent-green-200) text-(--accent-green-700) shadow-sm hover:shadow-lg border border-(--status-success-light)",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
   const getIconColorClasses = (color: string) => {
     const colors = {
-      blue: "text-blue-600",
-      orange: "text-orange-600",
-      purple: "text-purple-600",
-      green: "text-green-600",
+      blue: "text-(--accent-blue-600)",
+      orange: "text-(--accent-orange-600)",
+      purple: "text-(--accent-purple-600)",
+      green: "text-(--status-success)",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
@@ -58,7 +58,7 @@ const QuickActions = memo(function QuickActions() {
   return (
     <div className="bg-white rounded-lg shadow-md p-5 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+        <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wide">
           Quick Actions
         </h2>
       </div>

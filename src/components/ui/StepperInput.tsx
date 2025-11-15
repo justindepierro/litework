@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Label } from "@/components/ui/Typography";
 
 interface StepperInputProps {
   label: string;
@@ -48,7 +49,7 @@ export function StepperInput({
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <Label>{label}</Label>
       <div className="flex items-center gap-2">
         {/* Decrement Button */}
         <button
@@ -68,11 +69,11 @@ export function StepperInput({
             value={value}
             onChange={handleInputChange}
             disabled={disabled}
-            className="w-full px-4 py-3 text-center text-lg font-semibold border-2 border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 text-center text-lg font-semibold border-2 border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-(--bg-tertiary) disabled:cursor-not-allowed"
             aria-label={label}
           />
           {unit && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-(--text-tertiary) pointer-events-none">
               {unit}
             </span>
           )}

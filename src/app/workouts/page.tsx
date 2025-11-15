@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
+import { Body } from "@/components/ui/Typography";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -251,9 +252,9 @@ export default withPageErrorBoundary(function WorkoutsPage() {
           <Card variant="default" padding="lg" className="text-center">
             <XCircle className="w-16 h-16 mx-auto mb-4 text-accent-red" />
             <h2 className="text-heading-primary text-xl mb-2">Access Denied</h2>
-            <p className="text-body-secondary mb-4">
+            <Body variant="secondary" className="mb-4">
               Only coaches and admins can manage workouts.
-            </p>
+            </Body>
           </Card>
         </div>
       </div>
@@ -362,11 +363,11 @@ export default withPageErrorBoundary(function WorkoutsPage() {
                       <h2 className="text-heading-primary text-xl font-bold mb-1">
                         {showArchived ? "Archived Workouts" : "Your Workouts"}
                       </h2>
-                      <p className="text-body-small text-steel-600">
+                      <Body className="text-sm" variant="secondary">
                         {showArchived
                           ? "Previously archived training plans"
                           : "Create and manage your training programs"}
-                      </p>
+                      </Body>
                     </div>
                     <Button
                       variant="primary"
@@ -425,174 +426,178 @@ export default withPageErrorBoundary(function WorkoutsPage() {
                       >
                         {/* Gradient Accent Bar - Inside Card */}
                         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-accent-primary" />
-                        
+
                         {/* Card Content with left padding to account for gradient bar */}
                         <div className="pl-6 pr-4 py-4">
                           {/* Header - Always visible, clickable to expand */}
                           <div
-                            className="flex justify-between items-start mb-3 cursor-pointer hover:bg-gray-50 -m-4 p-4 rounded-lg transition-colors"
+                            className="flex justify-between items-start mb-3 cursor-pointer hover:bg-(--interactive-hover) -m-4 p-4 rounded-lg transition-colors"
                             onClick={() =>
                               setExpandedWorkout(isExpanded ? null : workout.id)
                             }
                           >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-body-primary font-semibold">
-                                {workout.name}
-                                {isOptimistic && (
-                                  <span className="ml-2 text-xs text-accent-blue font-normal">
-                                    (Saving...)
-                                  </span>
-                                )}
-                              </h3>
-                              {isExpanded ? (
-                                <ChevronUp className="w-5 h-5 text-silver-600" />
-                              ) : (
-                                <ChevronDown className="w-5 h-5 text-silver-600" />
-                              )}
-                            </div>
-                            {workout.description && (
-                              <p className="text-body-small text-silver-700 mt-1">
-                                {workout.description}
-                              </p>
-                            )}
-                          </div>
-                          <Badge variant="neutral" size="sm" className="ml-4">
-                            {workout.estimatedDuration}min
-                          </Badge>
-                        </div>
-
-                        {/* Exercise Preview or Full List */}
-                        <div className="space-y-1 mb-4">
-                          {isExpanded ? (
-                            // Expanded view - show all exercises with grouping
-                            <>
-                              <div className="text-xs font-semibold text-silver-600 uppercase mb-3">
-                                Exercises ({workout.exercises.length})
-                                {workout.groups &&
-                                  workout.groups.length > 0 && (
-                                    <span className="ml-2 text-accent-blue">
-                                      • {workout.groups.length} group
-                                      {workout.groups.length !== 1 ? "s" : ""}
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-body-primary font-semibold">
+                                  {workout.name}
+                                  {isOptimistic && (
+                                    <span className="ml-2 text-xs text-accent-blue font-normal">
+                                      (Saving...)
                                     </span>
                                   )}
+                                </h3>
+                                {isExpanded ? (
+                                  <ChevronUp className="w-5 h-5 text-silver-600" />
+                                ) : (
+                                  <ChevronDown className="w-5 h-5 text-silver-600" />
+                                )}
                               </div>
-                              <ExerciseGroupDisplay
-                                exercises={workout.exercises}
-                                groups={workout.groups || []}
-                                showProgress={false}
-                              />
-                            </>
-                          ) : (
-                            // Collapsed view - show first 3 exercises with group indicators
-                            <>
-                              {workout.exercises
-                                .slice(0, 3)
-                                .map((exercise, index) => {
-                                  const group = workout.groups?.find(
-                                    (g) => g.id === exercise.groupId
-                                  );
-                                  return (
-                                    <div
-                                      key={exercise.id}
-                                      className="text-body-small flex items-center gap-2"
-                                    >
-                                      <span>
-                                        {index + 1}. {exercise.exerciseName} -{" "}
-                                        {exercise.sets}×{exercise.reps} @{" "}
-                                        {formatWeight(exercise)}
-                                      </span>
-                                      {group && (
-                                        <span
-                                          className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                                            group.type === "superset"
-                                              ? "bg-accent-lightest text-accent-dark"
-                                              : group.type === "circuit"
-                                                ? "bg-info-lighter text-accent-blue"
-                                                : "bg-warning-lightest text-warning-dark"
-                                          }`}
-                                        >
-                                          {group.type === "superset" && (
-                                            <Layers className="w-3 h-3 inline mr-1" />
-                                          )}
-                                          {group.type === "circuit" && (
-                                            <Repeat className="w-3 h-3 inline mr-1" />
-                                          )}
-                                          {group.type === "section" && (
-                                            <Dumbbell className="w-3 h-3 inline mr-1" />
-                                          )}
-                                          {group.type}
-                                        </span>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              {workout.exercises.length > 3 && (
-                                <div className="text-body-small text-silver-600">
-                                  +{workout.exercises.length - 3} more exercises
-                                </div>
+                              {workout.description && (
+                                <Body
+                                  className="text-sm mt-1"
+                                  variant="secondary"
+                                >
+                                  {workout.description}
+                                </Body>
                               )}
-                            </>
-                          )}
-                        </div>
+                            </div>
+                            <Badge variant="neutral" size="sm" className="ml-4">
+                              {workout.estimatedDuration}min
+                            </Badge>
+                          </div>
 
-                        <div className="flex gap-2">
-                          {!showArchived && (
-                            <>
-                              <Button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditingWorkout(workout);
-                                }}
-                                variant="secondary"
-                                className="flex-1"
-                                disabled={isOptimistic}
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedWorkout(workout);
-                                  setShowAssignForm(true);
-                                }}
-                                variant="primary"
-                                className="flex-1"
-                                disabled={isOptimistic}
-                                leftIcon={<Users className="w-4 h-4" />}
-                              >
-                                Assign
-                              </Button>
-                            </>
-                          )}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleArchiveToggle(
-                                workout.id,
-                                workout.archived || false
-                              );
-                            }}
-                            className={`${showArchived ? "btn-primary flex-1" : "btn-secondary"} flex items-center justify-center gap-1`}
-                            disabled={isOptimistic}
-                            title={
-                              workout.archived
-                                ? "Restore workout"
-                                : "Archive workout"
-                            }
-                          >
-                            {workout.archived ? (
+                          {/* Exercise Preview or Full List */}
+                          <div className="space-y-1 mb-4">
+                            {isExpanded ? (
+                              // Expanded view - show all exercises with grouping
                               <>
-                                <ArchiveRestore className="w-4 h-4" />
-                                {showArchived && "Restore"}
+                                <div className="text-xs font-semibold text-silver-600 uppercase mb-3">
+                                  Exercises ({workout.exercises.length})
+                                  {workout.groups &&
+                                    workout.groups.length > 0 && (
+                                      <span className="ml-2 text-accent-blue">
+                                        • {workout.groups.length} group
+                                        {workout.groups.length !== 1 ? "s" : ""}
+                                      </span>
+                                    )}
+                                </div>
+                                <ExerciseGroupDisplay
+                                  exercises={workout.exercises}
+                                  groups={workout.groups || []}
+                                  showProgress={false}
+                                />
                               </>
                             ) : (
+                              // Collapsed view - show first 3 exercises with group indicators
                               <>
-                                <Archive className="w-4 h-4" />
+                                {workout.exercises
+                                  .slice(0, 3)
+                                  .map((exercise, index) => {
+                                    const group = workout.groups?.find(
+                                      (g) => g.id === exercise.groupId
+                                    );
+                                    return (
+                                      <div
+                                        key={exercise.id}
+                                        className="text-body-small flex items-center gap-2"
+                                      >
+                                        <span>
+                                          {index + 1}. {exercise.exerciseName} -{" "}
+                                          {exercise.sets}×{exercise.reps} @{" "}
+                                          {formatWeight(exercise)}
+                                        </span>
+                                        {group && (
+                                          <span
+                                            className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                                              group.type === "superset"
+                                                ? "bg-accent-lightest text-accent-dark"
+                                                : group.type === "circuit"
+                                                  ? "bg-info-lighter text-accent-blue"
+                                                  : "bg-warning-lightest text-warning-dark"
+                                            }`}
+                                          >
+                                            {group.type === "superset" && (
+                                              <Layers className="w-3 h-3 inline mr-1" />
+                                            )}
+                                            {group.type === "circuit" && (
+                                              <Repeat className="w-3 h-3 inline mr-1" />
+                                            )}
+                                            {group.type === "section" && (
+                                              <Dumbbell className="w-3 h-3 inline mr-1" />
+                                            )}
+                                            {group.type}
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                {workout.exercises.length > 3 && (
+                                  <div className="text-body-small text-silver-600">
+                                    +{workout.exercises.length - 3} more
+                                    exercises
+                                  </div>
+                                )}
                               </>
                             )}
-                          </button>
-                        </div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            {!showArchived && (
+                              <>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingWorkout(workout);
+                                  }}
+                                  variant="secondary"
+                                  className="flex-1"
+                                  disabled={isOptimistic}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedWorkout(workout);
+                                    setShowAssignForm(true);
+                                  }}
+                                  variant="primary"
+                                  className="flex-1"
+                                  disabled={isOptimistic}
+                                  leftIcon={<Users className="w-4 h-4" />}
+                                >
+                                  Assign
+                                </Button>
+                              </>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleArchiveToggle(
+                                  workout.id,
+                                  workout.archived || false
+                                );
+                              }}
+                              className={`${showArchived ? "btn-primary flex-1" : "btn-secondary"} flex items-center justify-center gap-1`}
+                              disabled={isOptimistic}
+                              title={
+                                workout.archived
+                                  ? "Restore workout"
+                                  : "Archive workout"
+                              }
+                            >
+                              {workout.archived ? (
+                                <>
+                                  <ArchiveRestore className="w-4 h-4" />
+                                  {showArchived && "Restore"}
+                                </>
+                              ) : (
+                                <>
+                                  <Archive className="w-4 h-4" />
+                                </>
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </Card>
                     );
@@ -720,7 +725,9 @@ export default withPageErrorBoundary(function WorkoutsPage() {
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-gray-700">Loading...</div>
+                  <div className="text-lg text-(--text-secondary)">
+                    Loading...
+                  </div>
                 </div>
               </ModalBackdrop>
             }
@@ -746,7 +753,9 @@ export default withPageErrorBoundary(function WorkoutsPage() {
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-gray-700">Loading...</div>
+                  <div className="text-lg text-(--text-secondary)">
+                    Loading...
+                  </div>
                 </div>
               </ModalBackdrop>
             }
@@ -794,7 +803,7 @@ export default withPageErrorBoundary(function WorkoutsPage() {
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-gray-700">
+                  <div className="text-lg text-(--text-secondary)">
                     Loading workout editor...
                   </div>
                 </div>

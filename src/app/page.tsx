@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Display, Heading } from "@/components/ui/Typography";
+import { Display, Heading, Body } from "@/components/ui/Typography";
 import {
   BarChart3,
   TrendingUp,
@@ -87,10 +87,13 @@ export default function Home() {
               <Heading level="h3" className="text-center mb-3">
                 Track Progress
               </Heading>
-              <p className="text-body-secondary text-center text-sm leading-relaxed">
+              <Body
+                variant="secondary"
+                className="text-center text-sm leading-relaxed"
+              >
                 Monitor your strength gains and personal records over time with
                 detailed analytics and visual charts.
-              </p>
+              </Body>
               <div className="mt-3 text-center">
                 <span className="status-success inline-block px-2 py-1 text-xs rounded-full font-medium">
                   Analytics
@@ -106,10 +109,13 @@ export default function Home() {
               <Heading level="h3" className="text-center mb-3">
                 Smart Scheduling
               </Heading>
-              <p className="text-body-secondary text-center text-sm leading-relaxed">
+              <Body
+                variant="secondary"
+                className="text-center text-sm leading-relaxed"
+              >
                 View your workout schedule and get reminders so you never miss a
                 training session.
-              </p>
+              </Body>
               <div className="mt-3 text-center">
                 <span className="status-info inline-block px-2 py-1 text-xs rounded-full font-medium">
                   Never Miss
@@ -129,10 +135,13 @@ export default function Home() {
               <Heading level="h3" className="text-center mb-3">
                 Team Management
               </Heading>
-              <p className="text-body-secondary text-center text-sm leading-relaxed">
+              <Body
+                variant="secondary"
+                className="text-center text-sm leading-relaxed"
+              >
                 Coaches can create workouts and track member progress across the
                 entire team.
-              </p>
+              </Body>
               <div className="mt-3 text-center">
                 <Badge variant="primary">Coach Tools</Badge>
               </div>
@@ -143,7 +152,7 @@ export default function Home() {
 
       {/* Quick Actions - Mobile Focused */}
       {user && (
-        <div className="container-responsive py-8 bg-gray-50">
+        <div className="container-responsive py-8 bg-(--bg-secondary)">
           <div className="max-w-2xl mx-auto">
             <Heading level="h2" className="text-center mb-6">
               Quick Actions

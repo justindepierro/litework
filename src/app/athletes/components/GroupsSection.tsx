@@ -9,6 +9,12 @@ import {
   Plus,
 } from "lucide-react";
 import { AthleteGroup } from "@/types";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownDivider,
+} from "@/components/ui/Dropdown";
+import { Body } from "@/components/ui/Typography";
 
 interface GroupsSectionProps {
   groups: AthleteGroup[];
@@ -55,53 +61,46 @@ export default function GroupsSection({
             >
               {/* 3-dot menu */}
               <div className="absolute top-3 right-3">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenMenu(openGroupMenuId === group.id ? null : group.id);
-                  }}
-                  className="p-1 hover:bg-silver-300 rounded-full transition-colors"
-                  aria-label="Group menu"
+                <Dropdown
+                  trigger={
+                    <button
+                      className="p-1 hover:bg-silver-300 rounded-full transition-colors"
+                      aria-label="Group menu"
+                    >
+                      <MoreVertical className="w-5 h-5 text-silver-700" />
+                    </button>
+                  }
+                  align="right"
+                  width="sm"
+                  isOpen={openGroupMenuId === group.id}
+                  onOpenChange={(isOpen) =>
+                    onOpenMenu(isOpen ? group.id : null)
+                  }
                 >
-                  <MoreVertical className="w-5 h-5 text-silver-700" />
-                </button>
-
-                {/* Dropdown menu */}
-                {openGroupMenuId === group.id && (
-                  <div className="absolute right-0 top-8 w-48 bg-white border border-silver-400 rounded-lg shadow-lg z-10">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEditGroup(group);
-                        onOpenMenu(null);
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                      Edit Group
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onArchiveGroup(group);
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-silver-200 flex items-center gap-2 text-sm text-silver-800"
-                    >
-                      <Archive className="w-4 h-4" />
-                      Archive Group
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteGroup(group.id);
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-error-lighter flex items-center gap-2 text-sm text-error rounded-b-lg"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete Group
-                    </button>
-                  </div>
-                )}
+                  <DropdownItem
+                    icon={<Edit3 className="w-4 h-4" />}
+                    onClick={() => {
+                      onEditGroup(group);
+                      onOpenMenu(null);
+                    }}
+                  >
+                    Edit Group
+                  </DropdownItem>
+                  <DropdownItem
+                    icon={<Archive className="w-4 h-4" />}
+                    onClick={() => onArchiveGroup(group)}
+                  >
+                    Archive Group
+                  </DropdownItem>
+                  <DropdownDivider />
+                  <DropdownItem
+                    icon={<Trash2 className="w-4 h-4" />}
+                    variant="danger"
+                    onClick={() => onDeleteGroup(group.id)}
+                  >
+                    Delete Group
+                  </DropdownItem>
+                </Dropdown>
               </div>
 
               {/* Group content (clickable to manage members) */}
@@ -116,9 +115,12 @@ export default function GroupsSection({
                   )}
                 </div>
                 {group.description && (
-                  <p className="text-sm text-silver-700 mb-2 line-clamp-2">
+                  <Body
+                    className="text-sm mb-2 line-clamp-2"
+                    variant="secondary"
+                  >
                     {group.description}
-                  </p>
+                  </Body>
                 )}
                 <div className="flex items-center justify-between">
                   <button

@@ -1,9 +1,9 @@
 /**
  * PageHeader Component
- * 
+ *
  * Reusable page header with gradient accent bar and consistent styling.
  * Uses design tokens so colors can be changed in ONE place.
- * 
+ *
  * @example
  * ```tsx
  * <PageHeader
@@ -39,7 +39,7 @@ export interface PageHeaderProps {
 
 /**
  * PageHeader Component
- * 
+ *
  * Displays a page title with optional gradient accent bar, subtitle, icon, and actions.
  * All gradient colors are controlled via CSS custom properties in tokens.css.
  */
@@ -53,13 +53,14 @@ export function PageHeader({
   mobileAlign = "center",
   className = "",
 }: PageHeaderProps) {
-  const alignmentClass = mobileAlign === "center" ? "text-center sm:text-left" : "text-left";
-  
+  const alignmentClass =
+    mobileAlign === "center" ? "text-center sm:text-left" : "text-left";
+
   return (
     <div className={`relative ${alignmentClass} ${className}`}>
       {/* Gradient Accent Bar - Desktop Only */}
       {showGradient && (
-        <div 
+        <div
           className={`
             absolute -left-4 top-0 bottom-0 w-1.5 rounded-full hidden sm:block
             bg-gradient-accent-${gradientVariant}
@@ -67,35 +68,25 @@ export function PageHeader({
           aria-hidden="true"
         />
       )}
-      
+
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           {/* Icon + Title */}
           <div className="flex items-center gap-3 justify-center sm:justify-start mb-2">
-            {icon && (
-              <div className="shrink-0 text-accent-orange">
-                {icon}
-              </div>
-            )}
-            <Display 
-              size="lg" 
-              className="text-navy-900"
-            >
+            {icon && <div className="shrink-0 text-accent-orange">{icon}</div>}
+            <Display size="lg" className="text-navy-900">
               {title}
             </Display>
           </div>
-          
+
           {/* Subtitle */}
           {subtitle && (
-            <Body 
-              variant="secondary" 
-              className="text-sm sm:text-base"
-            >
+            <Body variant="secondary" className="text-sm sm:text-base">
               {subtitle}
             </Body>
           )}
         </div>
-        
+
         {/* Action Buttons */}
         {actions && (
           <div className="shrink-0 w-full sm:w-auto flex justify-center sm:justify-end">
@@ -130,16 +121,10 @@ export function PageHeaderCompact({
           {title}
         </h2>
         {subtitle && (
-          <p className="text-xs sm:text-sm text-steel-600 mt-0.5">
-            {subtitle}
-          </p>
+          <p className="text-xs sm:text-sm text-steel-600 mt-0.5">{subtitle}</p>
         )}
       </div>
-      {actions && (
-        <div className="shrink-0">
-          {actions}
-        </div>
-      )}
+      {actions && <div className="shrink-0">{actions}</div>}
     </div>
   );
 }

@@ -73,15 +73,17 @@ export function PageHeader({
               {crumb.href ? (
                 <Link
                   href={crumb.href}
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-(--text-secondary) hover:text-primary transition-colors"
                 >
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="text-gray-900 font-medium">{crumb.label}</span>
+                <span className="text-(--text-primary) font-medium">
+                  {crumb.label}
+                </span>
               )}
               {index < breadcrumbs.length - 1 && (
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 text-(--text-tertiary)" />
               )}
             </React.Fragment>
           ))}
@@ -159,7 +161,7 @@ export function SectionHeader({
   return (
     <div className={`flex items-center justify-between mb-4 ${className}`}>
       <div className="flex items-center gap-3 min-w-0 flex-1">
-        <h2 className="text-xl font-semibold text-gray-900 truncate">
+        <h2 className="text-xl font-semibold text-(--text-primary) truncate">
           {title}
         </h2>
         {badge && <div className="shrink-0">{badge}</div>}

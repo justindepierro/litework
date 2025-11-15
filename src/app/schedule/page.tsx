@@ -12,6 +12,7 @@ import { Alert } from "@/components/ui/Alert";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
+import { Body } from "@/components/ui/Typography";
 
 // Lazy load heavy modal components
 const GroupAssignmentModal = lazy(
@@ -244,11 +245,11 @@ export default withPageErrorBoundary(function SchedulePage() {
             title="Drag and Drop to Reschedule"
             className="mt-6"
           >
-            <p className="text-sm">
+            <Body className="text-sm">
               Click and drag workouts to different dates to reschedule them.
               Group assignments will prompt for confirmation before moving all
               athletes.
-            </p>
+            </Body>
           </Alert>
         )}
       </div>

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
 import { Heading, Body } from "@/components/ui/Typography";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 export interface MessageForm {
   recipientId: string;
@@ -72,14 +73,16 @@ export default function MessageModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="
+      <div
+        className="
         bg-white 
         w-full h-full
         sm:rounded-xl sm:max-w-2xl sm:h-auto sm:max-h-[85vh]
         flex flex-col 
         sm:shadow-2xl
         safe-area-inset
-      ">
+      "
+      >
         <ModalHeader
           title={`Message ${athlete.fullName || "Athlete"}`}
           icon={<MessageCircle className="w-6 h-6" />}
@@ -87,96 +90,88 @@ export default function MessageModal({
         />
         <div className="flex-1 overflow-y-auto">
           <ModalContent>
-          <div className="space-y-4">
-            {/* Subject Input */}
-            <FloatingLabelInput
-              label="Subject (Optional)"
-              type="text"
-              value={form.subject}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  subject: e.target.value,
-                })
-              }
-              fullWidth
-            />
-
-            {/* Message Textarea */}
-            <FloatingLabelTextarea
-              label="Message *"
-              value={form.message}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  message: e.target.value,
-                })
-              }
-              rows={6}
-              fullWidth
-              required
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* Priority Select */}
-              <Select
-                label="Priority"
-                value={form.priority}
+            <div className="space-y-4">
+              {/* Subject Input */}
+              <FloatingLabelInput
+                label="Subject (Optional)"
+                type="text"
+                value={form.subject}
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    priority: e.target.value as "low" | "normal" | "high",
+                    subject: e.target.value,
                   })
                 }
                 fullWidth
-                options={[
-                  { value: "low", label: "Low" },
-                  { value: "normal", label: "Normal" },
-                  { value: "high", label: "High" },
-                ]}
               />
 
-              <div className="flex items-end">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={form.notifyViaEmail}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        notifyViaEmail: e.target.checked,
-                      })
-                    }
-                    className="w-4 h-4 text-accent-blue bg-silver-100 border-silver-300 rounded focus:ring-accent-blue"
-                  />
-                  <Body variant="secondary" className="text-sm">
-                    Also send via email
-                  </Body>
-                </label>
-              </div>
-            </div>
+              {/* Message Textarea */}
+              <FloatingLabelTextarea
+                label="Message *"
+                value={form.message}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    message: e.target.value,
+                  })
+                }
+                rows={6}
+                fullWidth
+                required
+              />
 
-            {/* Communication Tip */}
-            <div className="bg-accent-green/10 p-4 rounded-lg border border-accent-green/20">
-              <div className="flex items-start gap-3">
-                <MessageCircle className="h-5 w-5 text-accent-green shrink-0 mt-0.5" />
-                <div>
-                  <Heading
-                    level="h4"
-                    className="text-sm mb-1 text-accent-green"
-                  >
-                    Communication Tip
-                  </Heading>
-                  <Body variant="secondary" className="text-sm">
-                    {athlete.communication?.preferredContact === "email"
-                      ? `${athlete.fullName || "This athlete"} prefers email communication. Consider checking the email option above.`
-                      : `${athlete.fullName || "This athlete"} prefers app notifications. They'll be notified in the app immediately.`}
-                  </Body>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Priority Select */}
+                <Select
+                  label="Priority"
+                  value={form.priority}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      priority: e.target.value as "low" | "normal" | "high",
+                    })
+                  }
+                  fullWidth
+                  options={[
+                    { value: "low", label: "Low" },
+                    { value: "normal", label: "Normal" },
+                    { value: "high", label: "High" },
+                  ]}
+                />
+
+                <Checkbox
+                  checked={form.notifyViaEmail}
+                  onChange={(checked) =>
+                    setForm({
+                      ...form,
+                      notifyViaEmail: checked,
+                    })
+                  }
+                  label="Also send via email"
+                />
+              </div>
+
+              {/* Communication Tip */}
+              <div className="bg-accent-green/10 p-4 rounded-lg border border-accent-green/20">
+                <div className="flex items-start gap-3">
+                  <MessageCircle className="h-5 w-5 text-accent-green shrink-0 mt-0.5" />
+                  <div>
+                    <Heading
+                      level="h4"
+                      className="text-sm mb-1 text-accent-green"
+                    >
+                      Communication Tip
+                    </Heading>
+                    <Body variant="secondary" className="text-sm">
+                      {athlete.communication?.preferredContact === "email"
+                        ? `${athlete.fullName || "This athlete"} prefers email communication. Consider checking the email option above.`
+                        : `${athlete.fullName || "This athlete"} prefers app notifications. They'll be notified in the app immediately.`}
+                    </Body>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </ModalContent>
+          </ModalContent>
         </div>
 
         <ModalFooter align="between">

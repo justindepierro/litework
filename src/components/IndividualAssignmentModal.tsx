@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { User, WorkoutPlan, WorkoutAssignment } from "@/types";
-import { useFormValidation } from "@/hooks/use-form-validation";
+import { useFormValidationLegacy } from "@/hooks/use-form-validation";
 import { Users, Search, Check, X } from "lucide-react";
 import WorkoutAssignmentForm from "./WorkoutAssignmentForm";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Label } from "@/components/ui/Typography";
 
 interface IndividualAssignmentModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export default function IndividualAssignmentModal({
     setFieldError,
     resetForm,
     isSubmitting,
-  } = useFormValidation({
+  } = useFormValidationLegacy({
     initialValues: {
       workoutId: "",
       date: new Date(),
@@ -197,12 +198,12 @@ export default function IndividualAssignmentModal({
             {/* Right Column - Athlete Selection */}
             <div>
               <div className="flex justify-between items-center mb-3">
-                <label className="text-body-primary font-medium">
+                <Label className="font-medium">
                   <Users className="w-4 h-4 inline mr-2" />
                   Select Athletes
                   {selectedAthleteIds.length > 0 &&
                     ` (${selectedAthleteIds.length} selected)`}
-                </label>
+                </Label>
                 {filteredAthletes.length > 0 && (
                   <button
                     type="button"

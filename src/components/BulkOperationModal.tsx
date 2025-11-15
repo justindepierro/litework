@@ -18,9 +18,12 @@ import {
   CheckCircle,
   Loader2,
 } from "lucide-react";
-import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Heading, Body, Label } from "@/components/ui/Typography";
 import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface EnhancedAthlete {
@@ -268,9 +271,7 @@ export default withErrorBoundary(function BulkOperationModal({
           <div className="space-y-6">
             {/* Operation Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-body-secondary mb-3">
-                Select Operation Type
-              </label>
+              <Label className="block mb-3">Select Operation Type</Label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setOperationType("bulk_invite")}
@@ -337,9 +338,9 @@ export default withErrorBoundary(function BulkOperationModal({
             {/* Target Selection */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="block text-sm font-medium text-body-secondary">
+                <Label>
                   Select Targets ({getTotalSelectedCount()} selected)
-                </label>
+                </Label>
                 <div className="flex gap-2">
                   <button
                     onClick={selectAllAthletes}
@@ -358,9 +359,9 @@ export default withErrorBoundary(function BulkOperationModal({
 
               {/* Groups Section */}
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-heading-primary mb-2">
+                <Heading level="h4" className="text-sm mb-2">
                   Groups
-                </h4>
+                </Heading>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {groups.map((group) => (
                     <div key={group.id} className="rounded-lg shadow-sm">
@@ -412,9 +413,9 @@ export default withErrorBoundary(function BulkOperationModal({
 
               {/* Individual Athletes Section */}
               <div>
-                <h4 className="text-sm font-medium text-heading-primary mb-2">
+                <Heading level="h4" className="text-sm mb-2">
                   Individual Athletes
-                </h4>
+                </Heading>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {athletes.map((athlete) => (
                     <div
@@ -465,28 +466,23 @@ export default withErrorBoundary(function BulkOperationModal({
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-body-secondary mb-2">
-                Assign to Groups (Optional)
-              </label>
+              <Label className="block mb-2">Assign to Groups (Optional)</Label>
               <div className="space-y-2">
                 {groups.map((group) => (
-                  <label key={group.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={inviteData.groupIds?.includes(group.id)}
-                      onChange={(e) => {
-                        const groupIds = inviteData.groupIds || [];
-                        setInviteData({
-                          ...inviteData,
-                          groupIds: e.target.checked
-                            ? [...groupIds, group.id]
-                            : groupIds.filter((id) => id !== group.id),
-                        });
-                      }}
-                      className="mr-3"
-                    />
-                    <span>{group.name}</span>
-                  </label>
+                  <Checkbox
+                    key={group.id}
+                    checked={inviteData.groupIds?.includes(group.id) ?? false}
+                    onChange={(checked) => {
+                      const groupIds = inviteData.groupIds || [];
+                      setInviteData({
+                        ...inviteData,
+                        groupIds: checked
+                          ? [...groupIds, group.id]
+                          : groupIds.filter((id) => id !== group.id),
+                      });
+                    }}
+                    label={group.name}
+                  />
                 ))}
               </div>
             </div>
@@ -549,20 +545,16 @@ export default withErrorBoundary(function BulkOperationModal({
               />
 
               <div className="flex items-end">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={messageData.notifyViaEmail}
-                    onChange={(e) =>
-                      setMessageData({
-                        ...messageData,
-                        notifyViaEmail: e.target.checked,
-                      })
-                    }
-                    className="mr-2"
-                  />
-                  <span className="text-sm">Also send via email</span>
-                </label>
+                <Checkbox
+                  checked={messageData.notifyViaEmail}
+                  onChange={(checked) =>
+                    setMessageData({
+                      ...messageData,
+                      notifyViaEmail: checked,
+                    })
+                  }
+                  label="Also send via email"
+                />
               </div>
             </div>
           </div>
@@ -669,16 +661,16 @@ export default withErrorBoundary(function BulkOperationModal({
         </Alert>
 
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <Heading level="h3" className="mb-4">
             {operationTitles[operationType]}
-          </h3>
+          </Heading>
 
-          <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+          <div className="bg-(--bg-secondary) rounded-lg p-4 space-y-3">
             <div>
               <span className="font-medium">Targets: </span>
               <span>{getTotalSelectedCount()} athletes</span>
               {selectedGroups.length > 0 && (
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-(--text-secondary)">
                   {" "}
                   ({selectedGroups.length} groups, {selectedAthletes.length}{" "}
                   individuals)
@@ -751,12 +743,12 @@ export default withErrorBoundary(function BulkOperationModal({
       return (
         <div className="text-center py-8">
           <Loader2 className="w-8 h-8 text-primary mx-auto mb-4 animate-spin" />
-          <h3 className="text-lg font-medium text-heading-primary mb-2">
+          <Heading level="h3" className="mb-2">
             Processing Operation
-          </h3>
-          <p className="text-body-secondary">
+          </Heading>
+          <Body variant="secondary">
             Please wait while we process your bulk operation...
-          </p>
+          </Body>
         </div>
       );
     }
@@ -767,22 +759,22 @@ export default withErrorBoundary(function BulkOperationModal({
           {executionResults.success ? (
             <>
               <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-heading-primary mb-2">
+              <Heading level="h3" className="mb-2">
                 Operation Completed
-              </h3>
-              <p className="text-body-secondary">
+              </Heading>
+              <Body variant="secondary">
                 Your bulk operation has been completed successfully.
-              </p>
+              </Body>
             </>
           ) : (
             <>
               <AlertCircle className="w-12 h-12 text-error mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-heading-primary mb-2">
+              <Heading level="h3" className="mb-2">
                 Operation Failed
-              </h3>
-              <p className="text-body-secondary mb-4">
+              </Heading>
+              <Body variant="secondary" className="mb-4">
                 There was an error processing your request:
-              </p>
+              </Body>
               <Alert variant="error">{executionResults.error}</Alert>
             </>
           )}

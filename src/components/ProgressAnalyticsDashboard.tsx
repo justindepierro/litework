@@ -14,6 +14,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { Select } from "@/components/ui/Select";
+import { Heading, Body } from "@/components/ui/Typography";
 
 // Progress data - will be loaded from API
 const mockProgressData: Array<{
@@ -108,12 +110,12 @@ export default function ProgressAnalyticsDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-heading-primary mb-2">
+          <Heading level="h1" className="mb-2">
             Progress Analytics
-          </h1>
-          <p className="text-body-secondary">
+          </Heading>
+          <Body variant="secondary">
             Track strength gains, volume, and performance trends
-          </p>
+          </Body>
         </div>
 
         <div className="flex items-center gap-3">
@@ -142,53 +144,41 @@ export default function ProgressAnalyticsDashboard() {
       {showFilters && (
         <div className="bg-silver-200 rounded-xl p-4 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-body-secondary mb-2">
-                Time Range
-              </label>
-              <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-              >
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="90d">Last 3 months</option>
-                <option value="365d">Last year</option>
-              </select>
-            </div>
+            <Select
+              label="Time Range"
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              options={[
+                { value: "7d", label: "Last 7 days" },
+                { value: "30d", label: "Last 30 days" },
+                { value: "90d", label: "Last 3 months" },
+                { value: "365d", label: "Last year" },
+              ]}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-body-secondary mb-2">
-                Athlete
-              </label>
-              <select
-                value={selectedAthlete}
-                onChange={(e) => setSelectedAthlete(e.target.value)}
-                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-              >
-                <option value="all">All Athletes</option>
-                <option value="john-doe">John Doe</option>
-                <option value="jane-smith">Jane Smith</option>
-                <option value="mike-wilson">Mike Wilson</option>
-              </select>
-            </div>
+            <Select
+              label="Athlete"
+              value={selectedAthlete}
+              onChange={(e) => setSelectedAthlete(e.target.value)}
+              options={[
+                { value: "all", label: "All Athletes" },
+                { value: "john-doe", label: "John Doe" },
+                { value: "jane-smith", label: "Jane Smith" },
+                { value: "mike-wilson", label: "Mike Wilson" },
+              ]}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-body-secondary mb-2">
-                Metric
-              </label>
-              <select
-                value={selectedMetric}
-                onChange={(e) => setSelectedMetric(e.target.value)}
-                className="w-full px-3 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-              >
-                <option value="strength">Strength (1RM)</option>
-                <option value="volume">Volume</option>
-                <option value="frequency">Frequency</option>
-                <option value="consistency">Consistency</option>
-              </select>
-            </div>
+            <Select
+              label="Metric"
+              value={selectedMetric}
+              onChange={(e) => setSelectedMetric(e.target.value)}
+              options={[
+                { value: "strength", label: "Strength (1RM)" },
+                { value: "volume", label: "Volume" },
+                { value: "frequency", label: "Frequency" },
+                { value: "consistency", label: "Consistency" },
+              ]}
+            />
           </div>
         </div>
       )}
@@ -201,9 +191,7 @@ export default function ProgressAnalyticsDashboard() {
               <BarChart3 className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-heading-primary">
-                Total Workouts
-              </h3>
+              <Heading level="h3">Total Workouts</Heading>
               <p className="text-sm text-body-secondary">This period</p>
             </div>
           </div>

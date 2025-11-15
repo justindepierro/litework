@@ -45,12 +45,12 @@ export function RateLimitError({ error, className = "" }: RateLimitErrorProps) {
 
   return (
     <div
-      className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}
+      className={`bg-(--status-error-light) border border-(--status-error) rounded-lg p-4 ${className}`}
       role="alert"
     >
       <div className="flex items-start">
         <svg
-          className="w-5 h-5 text-red-500 mr-3 mt-0.5 shrink-0"
+          className="w-5 h-5 text-(--status-error) mr-3 mt-0.5 shrink-0"
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -61,18 +61,18 @@ export function RateLimitError({ error, className = "" }: RateLimitErrorProps) {
           />
         </svg>
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-red-800">
+          <h3 className="text-sm font-medium text-(--status-error)">
             Too Many Attempts
           </h3>
-          <p className="mt-1 text-sm text-red-700">{error}</p>
+          <p className="mt-1 text-sm text-(--status-error)">{error}</p>
           {timeRemaining && (
             <div className="mt-3 flex items-center">
               <div className="flex-1">
-                <div className="h-2 bg-red-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 rounded-full animate-pulse" />
+                <div className="h-2 bg-(--status-error-light) rounded-full overflow-hidden">
+                  <div className="h-full bg-(--status-error) rounded-full animate-pulse" />
                 </div>
               </div>
-              <span className="ml-3 text-xs font-medium text-red-700 tabular-nums">
+              <span className="ml-3 text-xs font-medium text-(--status-error) tabular-nums">
                 {timeRemaining}
               </span>
             </div>

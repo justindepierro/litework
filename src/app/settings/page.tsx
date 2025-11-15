@@ -37,7 +37,7 @@ export default function SettingsPage() {
       <div className="space-y-8">
         {/* Push Notification Permission */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-xl font-semibold text-(--text-primary) mb-4">
             Browser Notifications
           </h2>
           <NotificationPermission />

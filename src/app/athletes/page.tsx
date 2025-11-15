@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
+import { Body } from "@/components/ui/Typography";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import {
   User as UserType,
@@ -754,7 +755,7 @@ export default withPageErrorBoundary(function AthletesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+    <div className="min-h-screen bg-(--bg-secondary) px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       <div className="max-w-7xl mx-auto">
         {/* Error Display */}
         {error && (
@@ -769,13 +770,16 @@ export default withPageErrorBoundary(function AthletesPage() {
             {/* Decorative gradient bar */}
             <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-accent-primary rounded-full hidden sm:block" />
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold text-(--text-primary)">
               Team Athletes
             </h1>
-            <p className="text-heading-secondary text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0">
+            <Body
+              variant="secondary"
+              className="text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0"
+            >
               Manage your athletes with invite-based onboarding, performance
               tracking, and seamless communication
-            </p>
+            </Body>
           </div>
 
           {/* Mobile-Optimized Communication Stats */}
@@ -886,12 +890,12 @@ export default withPageErrorBoundary(function AthletesPage() {
                 <Plus className="w-8 h-8 text-white" />
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                <h3 className="text-lg font-semibold text-(--text-primary) mb-1">
                   Add New Athlete
                 </h3>
-                <p className="text-sm text-gray-600">
+                <Body className="text-sm" variant="secondary">
                   Click to add athlete profile
-                </p>
+                </Body>
               </div>
             </div>
           </button>

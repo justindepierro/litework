@@ -1,4 +1,5 @@
 # 🔧 Authentication Timeout & Performance Fixes
+
 **Date**: November 14, 2025  
 **Issue**: Users getting logged out after a few minutes of idle time + slow login performance
 
@@ -7,18 +8,22 @@
 ## 🐛 Problems Identified
 
 ### 1. Session Timeout Issues
+
 **Symptom**: Users getting kicked out after 3-5 minutes of idle time
 
 **Root Causes**:
+
 - ❌ No heartbeat mechanism to keep connection alive
 - ❌ Session tokens expiring without proper refresh handling
 - ❌ Profile fetching on EVERY auth state change (including token refreshes)
 - ❌ Long timeout values (15 seconds) causing slow failure detection
 
 ### 2. Slow Login Performance
+
 **Symptom**: Login takes 5-10 seconds to complete
 
 **Root Causes**:
+
 - ❌ Multiple unnecessary profile fetches during sign-in process
 - ❌ Profile fetching with 15-second timeout on every auth state change
 - ❌ No optimization for TOKEN_REFRESHED events (happens every hour)
@@ -30,6 +35,7 @@
 ### 1. Added Realtime Heartbeat (`src/lib/supabase.ts`)
 
 **Before**:
+
 ```typescript
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
   auth: { ... },
@@ -40,6 +46,7 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 **After**:
+
 ```typescript
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
   auth: { ... },
@@ -57,11 +64,13 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey, {
 ### 2. Optimized Cookie Expiry
 
 **Before**:
+
 ```typescript
 const maxAge = options?.maxAge || 2592000; // 30 days
 ```
 
 **After**:
+
 ```typescript
 // 7 DAYS for better security (Supabase auto-refreshes tokens anyway)
 const maxAge = options?.maxAge || 604800; // 7 days in seconds
@@ -72,6 +81,7 @@ const maxAge = options?.maxAge || 604800; // 7 days in seconds
 ### 3. Skip Profile Fetch on Token Refresh (`src/lib/auth-client.ts`)
 
 **Before**:
+
 ```typescript
 export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
@@ -89,13 +99,14 @@ export function onAuthChange(callback: (user: User | null) => void) {
 ```
 
 **After**:
+
 ```typescript
 export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
     // Only fetch profile for significant auth events
     // Skip TOKEN_REFRESHED to avoid unnecessary database calls
-    const shouldFetchProfile = event !== 'TOKEN_REFRESHED';
-    
+    const shouldFetchProfile = event !== "TOKEN_REFRESHED";
+
     if (session?.user) {
       if (!shouldFetchProfile) {
         // Don't fetch profile on token refresh - keep existing user object
@@ -108,6 +119,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
 ```
 
 **Impact**:
+
 - **Before**: Profile fetch every 30 minutes (token refresh) = ~3 seconds each time
 - **After**: Profile fetch only on actual sign-in/sign-out = 90% fewer database calls
 - **Result**: App stays responsive, no lag spikes during idle time
@@ -115,6 +127,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
 ### 4. Reduced Profile Fetch Timeouts
 
 **Before**:
+
 ```typescript
 // 15 second timeout - accommodate slow mobile networks
 const timeoutPromise = new Promise<never>((_, reject) =>
@@ -123,6 +136,7 @@ const timeoutPromise = new Promise<never>((_, reject) =>
 ```
 
 **After**:
+
 ```typescript
 // 3 second timeout for faster failure detection
 const timeoutPromise = new Promise<never>((_, reject) =>
@@ -131,6 +145,7 @@ const timeoutPromise = new Promise<never>((_, reject) =>
 ```
 
 **Impact**:
+
 - **Login speed**: 3-5 seconds faster on timeouts/errors
 - **User experience**: Faster feedback if something is wrong
 - **Reasonable**: 3 seconds is plenty for a simple profile query
@@ -141,17 +156,24 @@ const timeoutPromise = new Promise<never>((_, reject) =>
 
 ```typescript
 // In AuthContext.tsx - already working!
-const refreshInterval = setInterval(async () => {
-  if (mountedRef.current && userRef.current && !authOperationInProgress.current) {
-    try {
-      console.log("[AUTH] Refreshing session...");
-      await authClient.refreshSession();
-      console.log("[AUTH] Session refreshed successfully");
-    } catch (error) {
-      console.error("[AUTH] Failed to refresh session:", error);
+const refreshInterval = setInterval(
+  async () => {
+    if (
+      mountedRef.current &&
+      userRef.current &&
+      !authOperationInProgress.current
+    ) {
+      try {
+        console.log("[AUTH] Refreshing session...");
+        await authClient.refreshSession();
+        console.log("[AUTH] Session refreshed successfully");
+      } catch (error) {
+        console.error("[AUTH] Failed to refresh session:", error);
+      }
     }
-  }
-}, 30 * 60 * 1000); // 30 minutes (half of token lifetime)
+  },
+  30 * 60 * 1000
+); // 30 minutes (half of token lifetime)
 ```
 
 **This was already working correctly!**
@@ -161,12 +183,14 @@ const refreshInterval = setInterval(async () => {
 ## 📊 Performance Improvements
 
 ### Before Fixes:
+
 - **Login time**: 8-12 seconds ⏱️
 - **Idle timeout**: 3-5 minutes ⏰
 - **Profile fetches per hour**: 6-8 (every token refresh + user actions)
 - **Database load**: High (unnecessary queries)
 
 ### After Fixes:
+
 - **Login time**: 2-4 seconds ⚡ (**60% faster**)
 - **Idle timeout**: No timeout (stays logged in) 🎉
 - **Profile fetches per hour**: 0-2 (only on actual sign-in/actions)
@@ -177,6 +201,7 @@ const refreshInterval = setInterval(async () => {
 ## 🧪 Testing Checklist
 
 ### Manual Testing Required:
+
 - [ ] **Idle Test**: Leave app open for 10+ minutes → Should stay logged in
 - [ ] **Login Speed**: Time from button click to dashboard → Should be < 5 seconds
 - [ ] **Token Refresh**: Wait 30 minutes while using app → Should not get kicked out
@@ -185,11 +210,12 @@ const refreshInterval = setInterval(async () => {
 - [ ] **Visibility Change**: Switch apps and come back → Should refresh session
 
 ### Expected Behavior:
+
 ✅ User stays logged in indefinitely (until explicit logout)  
 ✅ Login completes in 2-4 seconds  
 ✅ No lag spikes or freezes during idle time  
 ✅ Session refreshes automatically every 30 minutes  
-✅ App recovers from temporary network issues  
+✅ App recovers from temporary network issues
 
 ---
 
@@ -198,6 +224,7 @@ const refreshInterval = setInterval(async () => {
 ### Console Messages to Watch:
 
 **Good Signs** (should see these):
+
 ```
 [AUTH] Refreshing session...
 [AUTH] Session refreshed successfully
@@ -205,6 +232,7 @@ const refreshInterval = setInterval(async () => {
 ```
 
 **Warning Signs** (investigate if you see these):
+
 ```
 [AUTH] Profile fetch timeout - check network connection
 [AUTH] Failed to refresh session
@@ -226,6 +254,7 @@ const refreshInterval = setInterval(async () => {
 ## 📝 Technical Details
 
 ### Supabase Auth Flow:
+
 1. **Initial Login**: User signs in → Profile fetched (3 seconds)
 2. **Token Refresh** (every 60 minutes):
    - **Before**: Profile fetched from database (3 seconds) ❌
@@ -234,6 +263,7 @@ const refreshInterval = setInterval(async () => {
 4. **Visibility Change**: App regains focus → Refresh session + profile
 
 ### Why This Works:
+
 - **Heartbeat**: Prevents WebSocket disconnection (session stays alive)
 - **Skip TOKEN_REFRESHED**: Avoids 90% of unnecessary database calls
 - **Faster Timeouts**: Better UX, faster feedback on errors
@@ -246,7 +276,7 @@ const refreshInterval = setInterval(async () => {
 **Changes Ready**: ✅ All fixes applied and tested locally  
 **TypeScript**: ✅ Zero errors  
 **Breaking Changes**: ❌ None - fully backward compatible  
-**Rollback Risk**: 🟢 Low - can revert individual changes if needed  
+**Rollback Risk**: 🟢 Low - can revert individual changes if needed
 
 **Ready to Deploy!**
 
@@ -266,11 +296,13 @@ const refreshInterval = setInterval(async () => {
 ## 🎉 Expected User Experience
 
 ### Before:
+
 - 😤 "Why do I keep getting logged out?"
 - 😫 "Login takes forever!"
 - 😒 "App freezes randomly"
 
 ### After:
+
 - 😊 "I can leave the app open all day!"
 - ⚡ "Login is so fast now!"
 - 🚀 "App feels snappy and responsive!"

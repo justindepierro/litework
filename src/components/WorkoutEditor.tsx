@@ -36,7 +36,9 @@ import BlockLibrary from "./BlockLibrary";
 import BlockEditor from "./BlockEditor";
 import BlockInstanceEditor from "./BlockInstanceEditor";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { ExerciseItem } from "./workout-editor/ExerciseItem";
+import { Label } from "@/components/ui/Typography";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;
@@ -91,12 +93,12 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
     blockInstance.customizations.removedExercises.length > 0;
 
   return (
-    <div className="border-2 border-purple-300 rounded-lg bg-purple-50/30 p-4">
+    <div className="border-2 border-(--accent-purple-300) rounded-lg bg-(--accent-purple-50)/30 p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-silver-500 hover:text-purple-600"
+            className="p-1 text-silver-500 hover:text-(--accent-purple-600)"
           >
             {isCollapsed ? (
               <ChevronRight className="w-4 h-4" />
@@ -105,7 +107,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
             )}
           </button>
 
-          <Package className="w-4 h-4 text-purple-600" />
+          <Package className="w-4 h-4 text-(--accent-purple-600)" />
 
           <div className="flex-1">
             <div className="font-medium text-silver-900">
@@ -125,7 +127,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onCustomize(blockInstance)}
-            className="px-3 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-1"
+            className="px-3 py-1.5 text-sm bg-(--accent-purple-600) text-white rounded-lg hover:bg-(--accent-purple-700) transition-colors flex items-center space-x-1"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Customize</span>
@@ -134,7 +136,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
       </div>
 
       {!isCollapsed && (
-        <div className="ml-6 space-y-3 mt-3 border-l-2 border-purple-200 pl-4">
+        <div className="ml-6 space-y-3 mt-3 border-l-2 border-(--accent-purple-200) pl-4">
           {blockInstance.notes && (
             <div className="text-sm text-silver-600 italic bg-white/50 p-2 rounded">
               {blockInstance.notes}
@@ -284,7 +286,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                   inputSize="sm"
                   className="flex-1"
                 />
-                <select
+                <Select
                   value={editedGroup.type}
                   onChange={(e) =>
                     setEditedGroup({
@@ -295,12 +297,14 @@ const GroupItem: React.FC<GroupItemProps> = ({
                         | "section",
                     })
                   }
-                  className="p-1 border border-silver-300 rounded text-sm"
-                >
-                  <option value="section">Section</option>
-                  <option value="superset">Superset</option>
-                  <option value="circuit">Circuit</option>
-                </select>
+                  options={[
+                    { value: "section", label: "Section" },
+                    { value: "superset", label: "Superset" },
+                    { value: "circuit", label: "Circuit" },
+                  ]}
+                  selectSize="sm"
+                  className="w-auto"
+                />
               </div>
 
               {/* Rest Intervals */}
@@ -308,8 +312,8 @@ const GroupItem: React.FC<GroupItemProps> = ({
                 {(editedGroup.type === "circuit" ||
                   editedGroup.type === "superset") && (
                   <>
-                    <label className="flex items-center space-x-1">
-                      <span className="text-gray-600">
+                    <div className="flex items-center space-x-1">
+                      <span className="text-(--text-secondary)">
                         Rest between exercises:
                       </span>
                       <Input
@@ -327,11 +331,11 @@ const GroupItem: React.FC<GroupItemProps> = ({
                         inputSize="sm"
                         className="w-16"
                       />
-                      <span className="text-gray-600">sec</span>
-                    </label>
+                      <span className="text-(--text-secondary)">sec</span>
+                    </div>
 
-                    <label className="flex items-center space-x-1">
-                      <span className="text-gray-600">
+                    <div className="flex items-center space-x-1">
+                      <span className="text-(--text-secondary)">
                         Rest between rounds:
                       </span>
                       <Input
@@ -349,14 +353,14 @@ const GroupItem: React.FC<GroupItemProps> = ({
                         inputSize="sm"
                         className="w-16"
                       />
-                      <span className="text-gray-600">sec</span>
-                    </label>
+                      <span className="text-(--text-secondary)">sec</span>
+                    </div>
                   </>
                 )}
 
                 {editedGroup.type === "circuit" && (
-                  <label className="flex items-center space-x-1">
-                    <span className="text-gray-600">Rounds:</span>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-(--text-secondary)">Rounds:</span>
                     <Input
                       type="number"
                       value={editedGroup.rounds || ""}
@@ -371,7 +375,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                       inputSize="sm"
                       className="w-12"
                     />
-                  </label>
+                  </div>
                 )}
               </div>
 
@@ -409,7 +413,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
               {(group.restBetweenExercises ||
                 group.restBetweenRounds ||
                 group.rounds) && (
-                <div className="flex items-center space-x-3 text-xs text-gray-600">
+                <div className="flex items-center space-x-3 text-xs text-(--text-secondary)">
                   {group.restBetweenExercises !== undefined && (
                     <span>Rest between: {group.restBetweenExercises}s</span>
                   )}
@@ -434,7 +438,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
           </button>
           <button
             onClick={() => onDeleteGroup(group.id)}
-            className="p-1 text-silver-500 hover:text-red-500"
+            className="p-1 text-silver-500 hover:text-(--status-error)"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -518,9 +522,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
           <div className="space-y-6">
             {/* Group Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Group Type
-              </label>
+              <Label className="block mb-3">Group Type</Label>
               <div className="grid grid-cols-3 gap-3">
                 <button
                   onClick={() => setGroupType("superset")}
@@ -532,7 +534,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 >
                   <Zap className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Superset</div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-(--text-tertiary) mt-1">
                     2-4 exercises
                   </div>
                 </button>
@@ -547,7 +549,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 >
                   <RotateCcw className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Circuit</div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-(--text-tertiary) mt-1">
                     Multiple rounds
                   </div>
                 </button>
@@ -562,7 +564,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 >
                   <Target className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Section</div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-(--text-tertiary) mt-1">
                     Workout phase
                   </div>
                 </button>
@@ -571,9 +573,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
 
             {/* Rest Between Exercises */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Label className="block mb-2">
                 Rest Between Exercises (seconds)
-              </label>
+              </Label>
               <Input
                 type="number"
                 value={restBetweenExercises}
@@ -590,9 +592,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
             {groupType === "circuit" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Number of Rounds
-                  </label>
+                  <Label className="block mb-2">Number of Rounds</Label>
                   <Input
                     type="number"
                     value={rounds}
@@ -604,9 +604,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block mb-2">
                     Rest Between Rounds (seconds)
-                  </label>
+                  </Label>
                   <Input
                     type="number"
                     value={restBetweenRounds}
@@ -1131,7 +1131,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         {/* Main workout editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Enhanced mobile header */}
-          <div className="p-4 sm:p-6 border-b border-silver-200 bg-gray-50">
+          <div className="p-4 sm:p-6 border-b border-silver-200 bg-(--bg-secondary)">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-1 pr-4">
                 <Input
@@ -1150,7 +1150,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               </div>
               <button
                 onClick={onClose}
-                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-gray-200 transition-colors touch-manipulation shrink-0"
+                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-(--interactive-hover) transition-colors touch-manipulation shrink-0"
               >
                 ×
               </button>
@@ -1212,7 +1212,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                         onClick={() => setSelectionMode(true)}
                         variant="success"
                         leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
-                        className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-green-600 hover:bg-green-700 text-white border-green-700"
                       >
                         Group Exercises
                       </Button>
@@ -1220,7 +1219,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   </>
                 ) : (
                   <>
-                    <div className="col-span-full bg-blue-100 border-2 border-blue-400 rounded-lg p-3 text-sm text-blue-900 font-medium">
+                    <div className="col-span-full bg-(--accent-blue-100) border-2 border-(--accent-blue-400) rounded-lg p-3 text-sm text-(--accent-blue-900) font-medium">
                       {selectedExerciseIds.size === 0
                         ? "Select exercises to group together"
                         : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
@@ -1244,11 +1243,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       Create Group
                     </Button>
 
-                    <Button
-                      onClick={clearSelection}
-                      variant="danger"
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-red-600 hover:bg-red-700 text-white border-red-700"
-                    >
+                    <Button onClick={clearSelection} variant="danger">
                       Cancel
                     </Button>
                   </>
@@ -1262,7 +1257,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   disabled={isSaving || !workout.name?.trim()}
                   variant="primary"
                   fullWidth
-                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-2 border-green-700"
+                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-gradient-to-r from-(--status-success) to-(--accent-emerald-600) hover:from-(--status-success) hover:to-(--accent-emerald-700) border-2 border-(--status-success)"
                 >
                   {isSaving ? "Saving..." : "Save Workout"}
                 </Button>

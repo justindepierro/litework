@@ -67,7 +67,7 @@ export function SuccessAnimation({
     <>
       {/* Backdrop */}
       {position === "fixed" && (
-        <div className="fixed inset-0 bg-black/20 z-40 animate-in fade-in duration-200" />
+        <div className="fixed inset-0 bg-(--overlay-dark) z-40 animate-in fade-in duration-200" />
       )}
 
       {/* Success Icon */}
@@ -77,7 +77,7 @@ export function SuccessAnimation({
         <div
           className={`
             ${sizeClasses[size]}
-            bg-green-500 rounded-full
+            bg-(--status-success) rounded-full
             flex items-center justify-center
             shadow-lg
             animate-in zoom-in duration-300
@@ -90,7 +90,7 @@ export function SuccessAnimation({
         </div>
 
         {message && (
-          <p className="text-sm font-medium text-gray-900 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
+          <p className="text-sm font-medium text-(--text-primary) animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
             {message}
           </p>
         )}
@@ -141,8 +141,8 @@ export function SuccessBadge({
   if (!show) return null;
 
   return (
-    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium animate-in slide-in-from-top-2 fade-in duration-300">
-      <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center animate-in zoom-in duration-200">
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-(--status-success-light) border border-(--status-success) rounded-lg text-(--status-success) text-sm font-medium animate-in slide-in-from-top-2 fade-in duration-300">
+      <div className="w-4 h-4 bg-(--status-success) rounded-full flex items-center justify-center animate-in zoom-in duration-200">
         <Check className="w-3 h-3 text-white stroke-3" />
       </div>
       <span>{message}</span>

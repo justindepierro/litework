@@ -241,14 +241,14 @@ export default function WorkoutHistoryPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-(--bg-secondary)">
         <Navigation />
         <div className="max-w-4xl mx-auto p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-8 bg-(--bg-tertiary) rounded w-1/3"></div>
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded"></div>
+                <div key={i} className="h-32 bg-(--bg-tertiary) rounded"></div>
               ))}
             </div>
           </div>
@@ -259,14 +259,14 @@ export default function WorkoutHistoryPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-(--bg-secondary)">
         <Navigation />
         <div className="max-w-4xl mx-auto p-6">
           <Alert variant="error" title="Error loading history">
             <p className="text-sm mb-3">{error}</p>
             <button
               onClick={fetchHistory}
-              className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              className="mt-3 px-4 py-2 bg-(--status-error) text-white rounded-lg hover:bg-(--status-error)"
             >
               Try Again
             </button>
@@ -277,17 +277,17 @@ export default function WorkoutHistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-(--bg-secondary)">
       <Navigation />
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-(--text-primary)">
                 Workout History
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-(--text-secondary) mt-2">
                 Review your past workouts and track your progress
               </p>
             </div>
@@ -316,10 +316,10 @@ export default function WorkoutHistoryPage() {
           {showFilters && (
             <div className="mt-4 bg-white rounded-lg border border-silver-300 p-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900">Filters</h3>
+                <h3 className="font-semibold text-(--text-primary)">Filters</h3>
                 <button
                   onClick={() => setShowFilters(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-(--text-tertiary) hover:text-(--text-secondary)"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -337,7 +337,7 @@ export default function WorkoutHistoryPage() {
                 />
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
                     Status
                   </label>
                   <select
@@ -357,7 +357,7 @@ export default function WorkoutHistoryPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
                     <Calendar className="w-4 h-4 inline mr-1" />
                     From Date
                   </label>
@@ -373,7 +373,7 @@ export default function WorkoutHistoryPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
                     <Calendar className="w-4 h-4 inline mr-1" />
                     To Date
                   </label>
@@ -390,7 +390,7 @@ export default function WorkoutHistoryPage() {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-(--text-secondary)">
                   {filteredSessions.length} workout
                   {filteredSessions.length !== 1 ? "s" : ""} found
                 </p>
@@ -406,29 +406,31 @@ export default function WorkoutHistoryPage() {
         {history && history.sessions.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-gray-600 text-sm">Total Workouts</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-(--text-secondary) text-sm">Total Workouts</p>
+              <p className="text-2xl font-bold text-(--text-primary)">
                 {history.sessions.length}
               </p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-gray-600 text-sm">Completed</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-(--text-secondary) text-sm">Completed</p>
+              <p className="text-2xl font-bold text-(--status-success)">
                 {history.sessions.filter((s) => s.completed).length}
               </p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-gray-600 text-sm">Total Volume</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-(--text-secondary) text-sm">Total Volume</p>
+              <p className="text-2xl font-bold text-(--accent-blue-600)">
                 {history.sessions
                   .reduce((sum, s) => sum + s.stats.totalVolume, 0)
                   .toLocaleString()}
-                <span className="text-sm text-gray-600 ml-1">lbs</span>
+                <span className="text-sm text-(--text-secondary) ml-1">
+                  lbs
+                </span>
               </p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-gray-600 text-sm">Avg Duration</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-(--text-secondary) text-sm">Avg Duration</p>
+              <p className="text-2xl font-bold text-(--accent-purple-600)">
                 {formatDuration(
                   Math.round(
                     history.sessions
@@ -466,12 +468,12 @@ export default function WorkoutHistoryPage() {
                     {/* Session Header */}
                     <button
                       onClick={() => toggleSession(session.id)}
-                      className="w-full p-4 text-left hover:bg-gray-50 transition-colors"
+                      className="w-full p-4 text-left hover:bg-(--interactive-hover) transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-(--text-primary)">
                               {session.workoutPlanName}
                             </h3>
                             {session.completed ? (
@@ -484,10 +486,10 @@ export default function WorkoutHistoryPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-(--text-secondary) mt-1">
                             {formatDate(session.date)}
                           </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                          <div className="flex items-center gap-4 mt-2 text-sm text-(--text-secondary)">
                             <span>
                               {session.stats.completedExercises}/
                               {session.stats.totalExercises} exercises
@@ -507,7 +509,7 @@ export default function WorkoutHistoryPage() {
                           </div>
                         </div>
                         <svg
-                          className={`w-5 h-5 text-gray-400 transition-transform ${
+                          className={`w-5 h-5 text-(--text-tertiary) transition-transform ${
                             isExpanded ? "transform rotate-180" : ""
                           }`}
                           fill="none"
@@ -526,8 +528,8 @@ export default function WorkoutHistoryPage() {
 
                     {/* Expanded Details */}
                     {isExpanded && (
-                      <div className="border-t border-silver-300 p-4 bg-gray-50">
-                        <h4 className="font-semibold text-gray-900 mb-3">
+                      <div className="border-t border-silver-300 p-4 bg-(--bg-secondary)">
+                        <h4 className="font-semibold text-(--text-primary) mb-3">
                           Exercises
                         </h4>
                         <div className="space-y-4">
@@ -537,11 +539,11 @@ export default function WorkoutHistoryPage() {
                               className="bg-white rounded-lg p-3"
                             >
                               <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-medium text-gray-900">
+                                <h5 className="font-medium text-(--text-primary)">
                                   {exercise.exerciseName}
                                 </h5>
                                 {exercise.completed && (
-                                  <span className="text-green-600 text-sm flex items-center gap-1">
+                                  <span className="text-(--status-success) text-sm flex items-center gap-1">
                                     <Check className="w-4 h-4" />
                                     Completed
                                   </span>
@@ -554,16 +556,16 @@ export default function WorkoutHistoryPage() {
                                       key={set.id}
                                       className="flex items-center justify-between text-sm"
                                     >
-                                      <span className="text-gray-600">
+                                      <span className="text-(--text-secondary)">
                                         Set {set.setNumber}
                                       </span>
-                                      <span className="text-gray-900">
+                                      <span className="text-(--text-primary)">
                                         {set.actualWeight} lbs ×{" "}
                                         {set.actualReps} reps
                                         {set.actualWeight !==
                                           set.targetWeight ||
                                         set.actualReps !== set.targetReps ? (
-                                          <span className="text-gray-500 ml-2">
+                                          <span className="text-(--text-tertiary) ml-2">
                                             (target: {set.targetWeight} lbs ×{" "}
                                             {set.targetReps})
                                           </span>
@@ -586,7 +588,7 @@ export default function WorkoutHistoryPage() {
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between mt-6 p-4 bg-white rounded-lg border border-silver-300">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-(--text-secondary)">
                   Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                   {Math.min(
                     currentPage * itemsPerPage,
@@ -615,14 +617,16 @@ export default function WorkoutHistoryPage() {
                       .map((page, index, array) => (
                         <React.Fragment key={page}>
                           {index > 0 && array[index - 1] !== page - 1 && (
-                            <span className="px-2 text-gray-400">...</span>
+                            <span className="px-2 text-(--text-tertiary)">
+                              ...
+                            </span>
                           )}
                           <button
                             onClick={() => setCurrentPage(page)}
                             className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                               currentPage === page
                                 ? "bg-primary text-white"
-                                : "text-gray-700 hover:bg-gray-100"
+                                : "text-(--text-secondary) hover:bg-(--interactive-hover)"
                             }`}
                           >
                             {page}

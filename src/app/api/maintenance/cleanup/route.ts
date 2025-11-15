@@ -1,40 +1,46 @@
 /**
  * Cron Job: Database Cleanup
  * Runs daily at 2 AM to clean up old/expired data
- * 
+ *
  * External Cron: Daily at 2 AM
  * Manual Trigger: Admin only
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getAdminClient, getAuthenticatedUser, isAdmin } from '@/lib/auth-server';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getAdminClient,
+  getAuthenticatedUser,
+  isAdmin,
+} from "@/lib/auth-server";
 
 /**
  * GET /api/maintenance/cleanup
  * Clean up expired invites, old sessions, and orphaned data
- * 
+ *
  * Protected: Cron secret OR admin user required
  */
 export async function GET(request: NextRequest) {
   try {
     // Check for cron secret first (for automated runs)
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
-    
+
     const isCronRequest = cronSecret && authHeader === `Bearer ${cronSecret}`;
-    
+
     // If not a cron request, require admin authentication
     if (!isCronRequest) {
       const { user } = await getAuthenticatedUser();
-      
+
       if (!user || !isAdmin(user)) {
-        console.error('❌ Unauthorized maintenance request - admin access required');
+        console.error(
+          "❌ Unauthorized maintenance request - admin access required"
+        );
         return NextResponse.json(
-          { error: 'Unauthorized - Admin access required' },
+          { error: "Unauthorized - Admin access required" },
           { status: 401 }
         );
       }
-      
+
       console.log(`🔐 Manual cleanup triggered by admin: ${user.email}`);
     }
 
@@ -49,10 +55,10 @@ export async function GET(request: NextRequest) {
 
     // 1. Delete expired invites (older than expiry date)
     const { data: expiredInvites, error: invitesError } = await supabase
-      .from('invites')
+      .from("invites")
       .delete()
-      .lt('expires_at', new Date().toISOString())
-      .select('id');
+      .lt("expires_at", new Date().toISOString())
+      .select("id");
 
     if (!invitesError && expiredInvites) {
       results.expiredInvites = expiredInvites.length;
@@ -64,11 +70,11 @@ export async function GET(request: NextRequest) {
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
     const { data: oldSessions, error: sessionsError } = await supabase
-      .from('workout_sessions')
+      .from("workout_sessions")
       .delete()
-      .eq('status', 'completed')
-      .lt('completed_at', ninetyDaysAgo.toISOString())
-      .select('id');
+      .eq("status", "completed")
+      .lt("completed_at", ninetyDaysAgo.toISOString())
+      .select("id");
 
     if (!sessionsError && oldSessions) {
       results.oldSessions = oldSessions.length;
@@ -80,11 +86,11 @@ export async function GET(request: NextRequest) {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const { data: cancelledInvites, error: cancelledError } = await supabase
-      .from('invites')
+      .from("invites")
       .delete()
-      .eq('status', 'cancelled')
-      .lt('updated_at', thirtyDaysAgo.toISOString())
-      .select('id');
+      .eq("status", "cancelled")
+      .lt("updated_at", thirtyDaysAgo.toISOString())
+      .select("id");
 
     if (!cancelledError && cancelledInvites) {
       results.orphanedData = cancelledInvites.length;
@@ -95,17 +101,16 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Database cleanup completed',
+      message: "Database cleanup completed",
       results,
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('❌ Error during database cleanup:', error);
+    console.error("❌ Error during database cleanup:", error);
     return NextResponse.json(
-      { 
-        error: 'Cleanup failed', 
-        message: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: "Cleanup failed",
+        message: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

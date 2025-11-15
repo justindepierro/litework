@@ -89,17 +89,17 @@ function AthleteCard({
   return (
     <div
       onClick={() => onCardClick(athlete)}
-      className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer relative overflow-hidden border-2 border-transparent hover:border-orange-200"
+      className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer relative overflow-hidden border-2 border-transparent hover:border-(--accent-orange-200)"
     >
       {/* Colorful gradient accent bar at top */}
-      <div className="h-1.5 bg-gradient-to-r from-orange-500 via-purple-500 to-green-500" />
+      <div className="h-1.5 bg-gradient-to-r from-(--accent-orange-500) via-(--accent-purple-500) to-(--accent-green-500)" />
 
       {/* Mobile-Optimized Card Header */}
       <div className="p-4 sm:p-6 pb-3 sm:pb-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="relative shrink-0">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg shadow-lg">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-(--accent-orange-500) to-(--accent-pink-500) rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg shadow-lg">
                 {(athlete.fullName || "")
                   .split(" ")
                   .map((n: string) => n[0])
@@ -159,16 +159,16 @@ function AthleteCard({
 
         {/* Last Communication */}
         {athlete.communication?.lastMessage && (
-          <div className="mb-4 p-3 bg-purple-50 rounded-lg border-2 border-purple-200">
+          <div className="mb-4 p-3 bg-(--accent-purple-50) rounded-lg border-2 border-(--accent-purple-200)">
             <div className="flex items-start gap-2">
-              <MessageSquare className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+              <MessageSquare className="h-4 w-4 text-(--accent-purple-600) shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <Body variant="primary" className="text-sm line-clamp-2">
                   {athlete.communication.lastMessage}
                 </Body>
                 <Body
                   variant="secondary"
-                  className="text-xs mt-1 text-purple-700"
+                  className="text-xs mt-1 text-(--accent-purple-700)"
                 >
                   {athlete.communication.lastMessageTime?.toLocaleDateString()}{" "}
                   at{" "}
@@ -191,13 +191,13 @@ function AthleteCard({
 
         {/* Performance Stats */}
         {athlete.status === "active" && athlete.stats && (
-          <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-(--bg-secondary) rounded-lg border border-(--border-primary)">
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Dumbbell className="h-4 w-4 text-orange-500" />
+                <Dumbbell className="h-4 w-4 text-(--accent-orange-500)" />
                 <Body
                   variant="primary"
-                  className="font-semibold text-orange-600"
+                  className="font-semibold text-(--accent-orange-600)"
                 >
                   {athlete.stats.thisMonthWorkouts}
                 </Body>
@@ -208,10 +208,10 @@ function AthleteCard({
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Trophy className="h-4 w-4 text-purple-500" />
+                <Trophy className="h-4 w-4 text-(--accent-purple-500)" />
                 <Body
                   variant="primary"
-                  className="font-semibold text-purple-600"
+                  className="font-semibold text-(--accent-purple-600)"
                 >
                   {athlete.stats.recentPRs}
                 </Body>
@@ -225,12 +225,12 @@ function AthleteCard({
 
         {/* Personal Records Preview */}
         {athlete.personalRecords && athlete.personalRecords.length > 0 && (
-          <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+          <div className="mb-4 p-3 bg-(--status-success-light) rounded-lg border border-(--status-success)">
             <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-green-600" />
+              <Target className="h-4 w-4 text-(--status-success)" />
               <Body
                 variant="primary"
-                className="text-sm font-medium text-green-700"
+                className="text-sm font-medium text-(--status-success)"
               >
                 Top PRs
               </Body>
@@ -244,7 +244,7 @@ function AthleteCard({
                   <Body variant="secondary">{pr.exerciseName}:</Body>
                   <Body
                     variant="primary"
-                    className="font-medium text-green-700"
+                    className="font-medium text-(--status-success)"
                   >
                     {pr.currentPR} lbs
                   </Body>
@@ -253,7 +253,7 @@ function AthleteCard({
               {athlete.personalRecords.length > 2 && (
                 <Body
                   variant="secondary"
-                  className="text-xs text-green-600"
+                  className="text-xs text-(--status-success)"
                 >
                   +{athlete.personalRecords.length - 2} more
                 </Body>
@@ -264,19 +264,19 @@ function AthleteCard({
 
         {/* Email Missing Reminder */}
         {!athlete.email && athlete.status === "invited" && (
-          <div className="mb-4 p-3 bg-orange-50 rounded-lg border-2 border-orange-200">
+          <div className="mb-4 p-3 bg-(--accent-orange-50) rounded-lg border-2 border-(--accent-orange-200)">
             <div className="flex items-start gap-2">
-              <Mail className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+              <Mail className="h-4 w-4 text-(--accent-orange-600) shrink-0 mt-0.5" />
               <div>
                 <Body
                   variant="primary"
-                  className="text-sm font-medium text-orange-900"
+                  className="text-sm font-medium text-(--accent-orange-900)"
                 >
                   Email Required
                 </Body>
                 <Body
                   variant="secondary"
-                  className="text-xs text-orange-700 mt-0.5"
+                  className="text-xs text-(--accent-orange-700) mt-0.5"
                 >
                   Add an email address to send invitation
                 </Body>

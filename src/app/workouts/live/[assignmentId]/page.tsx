@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useWorkoutSession } from "@/contexts/WorkoutSessionContext";
 import WorkoutLive from "@/components/WorkoutLive";
 import { AlertCircle, Dumbbell } from "lucide-react";
+import { Body } from "@/components/ui/Typography";
 
 interface StartWorkoutPageProps {
   params: Promise<{ assignmentId: string }>;
@@ -86,11 +87,13 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
   // Loading state
   if (isLoading || sessionLoading || !assignmentId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary)">
         <div className="text-center">
-          <Dumbbell className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-bounce" />
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">Starting your workout...</p>
+          <Dumbbell className="w-16 h-16 text-(--accent-blue-600) mx-auto mb-4 animate-bounce" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent-blue-600) mx-auto mb-4" />
+          <p className="text-lg text-(--text-secondary)">
+            Starting your workout...
+          </p>
         </div>
       </div>
     );
@@ -99,23 +102,25 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <AlertCircle className="w-16 h-16 text-(--status-error) mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
             Failed to Start Workout
           </h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <Body variant="secondary" className="mb-6">
+            {error}
+          </Body>
           <div className="flex gap-3">
             <button
               onClick={() => router.push("/dashboard")}
-              className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg font-medium"
+              className="flex-1 px-6 py-3 bg-(--bg-tertiary) hover:bg-(--interactive-hover) text-(--text-primary) rounded-lg font-medium"
             >
               Back to Dashboard
             </button>
             <button
               onClick={() => window.location.reload()}
-              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+              className="flex-1 px-6 py-3 bg-(--accent-blue-600) hover:bg-(--accent-blue-700) text-white rounded-lg font-medium"
             >
               Try Again
             </button>
@@ -128,18 +133,18 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
   // Render WorkoutLive component
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
-          <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <AlertCircle className="w-16 h-16 text-(--status-warning) mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
             No Active Session
           </h2>
-          <p className="text-gray-600 mb-6">
+          <Body variant="secondary" className="mb-6">
             Unable to load workout session. Please try again.
-          </p>
+          </Body>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-3 bg-(--accent-blue-600) text-white rounded-lg hover:bg-(--accent-blue-700)"
           >
             Back to Dashboard
           </button>

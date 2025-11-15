@@ -7,6 +7,9 @@ import { GripVertical, Trash2, Edit3, MoreVertical, Check } from "lucide-react";
 import { WorkoutExercise, ExerciseGroup, KPITag } from "@/types";
 import ExerciseAutocomplete from "../ExerciseAutocomplete";
 import { SaveStatus, useSaveStatus } from "@/components/ui/SaveStatus";
+import { Dropdown, DropdownItem } from "@/components/ui/Dropdown";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Label, Caption } from "@/components/ui/Typography";
 
 export interface ExerciseItemProps {
   exercise: WorkoutExercise;
@@ -113,25 +116,20 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
   return (
     <div
       className={`bg-white border rounded-lg p-4 ${groupId ? "ml-4" : ""} ${
-        isSelected ? "border-blue-500 border-2 bg-blue-50" : "border-silver-300"
+        isSelected
+          ? "border-(--accent-blue-500) border-2 bg-(--accent-blue-50)"
+          : "border-silver-300"
       }`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3 flex-1">
           {/* Selection checkbox */}
           {selectionMode && !groupId && onToggleSelection && (
-            <input
-              type="checkbox"
-              checked={isSelected}
+            <Checkbox
+              checked={isSelected || false}
               onChange={() => onToggleSelection(exercise.id)}
-              onKeyDown={(e) => {
-                if (e.key === " " || e.key === "Enter") {
-                  e.preventDefault();
-                  onToggleSelection(exercise.id);
-                }
-              }}
+              label=""
               aria-label={`Select ${exercise.exerciseName}`}
-              className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
             />
           )}
 
@@ -170,9 +168,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
               <div className="space-y-4">
                 {/* Enhanced mobile exercise name input with autocomplete */}
                 <div>
-                  <label className="block text-sm font-medium text-silver-700 mb-1">
-                    Exercise Name
-                  </label>
+                  <Label className="block mb-1">Exercise Name</Label>
                   <ExerciseAutocomplete
                     value={editedExercise.exerciseName}
                     onChange={(name) =>
@@ -247,9 +243,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
                 {/* Weight Type Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-silver-700 mb-2">
-                    Weight Type
-                  </label>
+                  <Label className="block mb-2">Weight Type</Label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
@@ -262,7 +256,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       }
                       className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
                         editedExercise.weightType === "fixed"
-                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
                           : "border-silver-300 text-silver-600 hover:border-silver-400"
                       }`}
                     >
@@ -279,7 +273,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       }
                       className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
                         editedExercise.weightType === "percentage"
-                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
                           : "border-silver-300 text-silver-600 hover:border-silver-400"
                       }`}
                     >
@@ -297,7 +291,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       }
                       className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
                         editedExercise.weightType === "bodyweight"
-                          ? "border-accent-blue bg-blue-50 text-accent-blue"
+                          ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
                           : "border-silver-300 text-silver-600 hover:border-silver-400"
                       }`}
                     >
@@ -309,9 +303,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 {/* Weight/Percentage Input */}
                 {editedExercise.weightType === "fixed" && (
                   <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Weight (lbs)
-                    </label>
+                    <Label className="block mb-1">Weight (lbs)</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
@@ -349,18 +341,16 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         className="flex-1"
                       />
                     </div>
-                    <p className="text-xs text-silver-500 mt-1">
+                    <Caption variant="muted" className="mt-1">
                       Leave max empty for single weight, or fill for range
                       (e.g., 20-30 lbs)
-                    </p>
+                    </Caption>
                   </div>
                 )}
 
                 {editedExercise.weightType === "percentage" && (
                   <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-1">
-                      Percentage of 1RM
-                    </label>
+                    <Label className="block mb-1">Percentage of 1RM</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
@@ -400,10 +390,10 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         className="flex-1"
                       />
                     </div>
-                    <p className="text-xs text-silver-500 mt-1">
+                    <Caption variant="muted" className="mt-1">
                       Leave max empty for single %, or fill for range (e.g.,
                       70-80%)
-                    </p>
+                    </Caption>
                   </div>
                 )}
 
@@ -457,12 +447,12 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 {/* KPI Tags */}
                 {availableKPIs.length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-silver-700 mb-2">
+                    <Label className="block mb-2">
                       KPI Tags
                       <span className="text-xs text-silver-500 ml-2 font-normal">
                         (Which KPIs does this exercise develop?)
                       </span>
-                    </label>
+                    </Label>
                     <div className="flex flex-wrap gap-2">
                       {availableKPIs.map((kpi) => {
                         const isSelected = editedExercise.kpiTagIds?.includes(
@@ -505,13 +495,13 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     </div>
                     {editedExercise.kpiTagIds &&
                       editedExercise.kpiTagIds.length > 0 && (
-                        <p className="text-xs text-silver-600 mt-2">
+                        <Caption variant="default" className="mt-2">
                           {editedExercise.kpiTagIds.length} KPI
                           {editedExercise.kpiTagIds.length !== 1
                             ? "s"
                             : ""}{" "}
                           selected
-                        </p>
+                        </Caption>
                       )}
                   </div>
                 )}
@@ -584,7 +574,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           editedExercise.exerciseName
                         );
                       }}
-                      className="p-2 text-green-600 hover:bg-green-50 rounded"
+                      className="p-2 text-(--status-success) hover:bg-(--status-success-light) rounded"
                     >
                       <Check className="w-4 h-4" />
                     </button>
@@ -593,7 +583,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         setInlineEditField(null);
                         setEditedExercise(exercise);
                       }}
-                      className="p-2 text-silver-500 hover:bg-gray-50 rounded"
+                      className="p-2 text-silver-500 hover:bg-(--interactive-hover) rounded"
                     >
                       ✕
                     </button>
@@ -625,7 +615,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                             sets: parseInt(e.target.value) || 1,
                           })
                         }
-                        className="w-14 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                        className="w-14 p-1 border border-(--accent-blue-300) rounded focus:ring-2 focus:ring-(--accent-blue-500)"
                         min="1"
                         autoFocus
                         onFocus={(e) => e.target.select()}
@@ -642,7 +632,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     </div>
                   ) : (
                     <span
-                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-(--accent-blue-50)"
                       onClick={() => {
                         setInlineEditField("sets");
                         setEditedExercise(exercise);
@@ -667,7 +657,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                             reps: parseInt(e.target.value) || 1,
                           })
                         }
-                        className="w-14 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                        className="w-14 p-1 border border-(--accent-blue-300) rounded focus:ring-2 focus:ring-(--accent-blue-500)"
                         min="1"
                         autoFocus
                         onFocus={(e) => e.target.select()}
@@ -684,7 +674,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     </div>
                   ) : (
                     <span
-                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                      className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-(--accent-blue-50)"
                       onClick={() => {
                         setInlineEditField("reps");
                         setEditedExercise(exercise);
@@ -710,7 +700,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                                 weight: parseFloat(e.target.value) || undefined,
                               })
                             }
-                            className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                            className="w-16 p-1 border border-(--accent-blue-300) rounded focus:ring-2 focus:ring-(--accent-blue-500)"
                             min="0"
                             step="5"
                             autoFocus
@@ -731,7 +721,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         </div>
                       ) : (
                         <span
-                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-(--accent-blue-50)"
                           onClick={() => {
                             setInlineEditField("weight");
                             setEditedExercise(exercise);
@@ -763,7 +753,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                                     parseFloat(e.target.value) || undefined,
                                 })
                               }
-                              className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                              className="w-16 p-1 border border-(--accent-blue-300) rounded focus:ring-2 focus:ring-(--accent-blue-500)"
                               min="0"
                               max="100"
                               step="5"
@@ -789,7 +779,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                           </div>
                         ) : (
                           <span
-                            className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                            className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-(--accent-blue-50)"
                             onClick={() => {
                               setInlineEditField("percentage");
                               setEditedExercise(exercise);
@@ -821,7 +811,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                                 restTime: parseInt(e.target.value) || undefined,
                               })
                             }
-                            className="w-16 p-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                            className="w-16 p-1 border border-(--accent-blue-300) rounded focus:ring-2 focus:ring-(--accent-blue-500)"
                             min="0"
                             step="15"
                             autoFocus
@@ -845,7 +835,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         </div>
                       ) : (
                         <span
-                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-blue-50"
+                          className="cursor-pointer hover:text-accent-blue px-1 py-0.5 rounded hover:bg-(--accent-blue-50)"
                           onClick={() => {
                             setInlineEditField("restTime");
                             setEditedExercise(exercise);
@@ -888,9 +878,9 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   )}
 
                 {/* Edit button hint */}
-                <p className="text-xs text-silver-400 italic">
+                <Caption variant="muted" className="italic">
                   Click any value to edit • Click ✏️ for advanced options
-                </p>
+                </Caption>
               </div>
             )}
           </div>
@@ -898,51 +888,42 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
         {/* Enhanced mobile action buttons */}
         <div className="flex items-center gap-2">
-          <div className="relative">
-            <button
-              onClick={() => setShowMoveMenu(!showMoveMenu)}
-              className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
-              title="Move to group"
-            >
-              <MoreVertical className="w-5 h-5 sm:w-4 sm:h-4" />
-            </button>
-
-            {showMoveMenu && (
-              <div className="absolute right-0 top-12 sm:top-8 bg-white border-2 border-silver-300 rounded-xl shadow-lg z-10 min-w-48 sm:min-w-32">
-                <button
-                  onClick={() => {
-                    onMoveToGroup(undefined);
-                    setShowMoveMenu(false);
-                  }}
-                  className="block w-full text-left px-4 py-3 sm:px-3 sm:py-2 hover:bg-silver-100 rounded-t-xl touch-manipulation"
-                >
-                  Remove from group
-                </button>
-                {availableGroups.map((group) => (
-                  <button
-                    key={group.id}
-                    onClick={() => {
-                      onMoveToGroup(group.id);
-                      setShowMoveMenu(false);
-                    }}
-                    className="block w-full text-left px-4 py-3 sm:px-3 sm:py-2 hover:bg-silver-100 touch-manipulation"
-                  >
-                    Move to {group.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <Dropdown
+            trigger={
+              <button
+                className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-(--interactive-hover) transition-colors touch-manipulation"
+                title="Move to group"
+              >
+                <MoreVertical className="w-5 h-5 sm:w-4 sm:h-4" />
+              </button>
+            }
+            align="right"
+            width="sm"
+            isOpen={showMoveMenu}
+            onOpenChange={setShowMoveMenu}
+          >
+            <DropdownItem onClick={() => onMoveToGroup(undefined)}>
+              Remove from group
+            </DropdownItem>
+            {availableGroups.map((group) => (
+              <DropdownItem
+                key={group.id}
+                onClick={() => onMoveToGroup(group.id)}
+              >
+                Move to {group.name}
+              </DropdownItem>
+            ))}
+          </Dropdown>
 
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-gray-100 transition-colors touch-manipulation"
+            className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-(--interactive-hover) transition-colors touch-manipulation"
           >
             <Edit3 className="w-5 h-5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => onDelete(exercise.id)}
-            className="p-3 sm:p-2 text-silver-500 hover:text-red-500 rounded-xl sm:rounded-lg hover:bg-red-50 transition-colors touch-manipulation"
+            className="p-3 sm:p-2 text-silver-500 hover:text-(--status-error) rounded-xl sm:rounded-lg hover:bg-(--status-error-light) transition-colors touch-manipulation"
           >
             <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
           </button>

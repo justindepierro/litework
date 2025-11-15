@@ -14,6 +14,8 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Label } from "@/components/ui/Typography";
 
 import { WorkoutModification } from "@/types";
 
@@ -155,9 +157,7 @@ export default function GroupAssignmentModal({
               {/* Left Column - Assignment Details */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-body-primary font-medium block mb-3">
-                    Select Groups (Multiple)
-                  </label>
+                  <Label className="block mb-3">Select Groups (Multiple)</Label>
                   <div className="space-y-2 max-h-48 overflow-y-auto border border-silver-400 rounded-md p-3">
                     {groups.length === 0 ? (
                       <EmptyState
@@ -168,15 +168,14 @@ export default function GroupAssignmentModal({
                       />
                     ) : (
                       groups.map((group) => (
-                        <label
+                        <div
                           key={group.id}
-                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                          className="flex items-center gap-3 p-2 hover:bg-silver-100 rounded"
                         >
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={selectedGroupIds.includes(group.id)}
                             onChange={() => toggleGroup(group.id)}
-                            className="w-5 h-5 text-accent-blue rounded focus:ring-2 focus:ring-accent-blue"
+                            label=""
                           />
                           <span className="flex-1 text-body-primary">
                             {group.name}
@@ -184,7 +183,7 @@ export default function GroupAssignmentModal({
                           <span className="text-silver-600 text-sm">
                             {group.athleteIds.length} athletes
                           </span>
-                        </label>
+                        </div>
                       ))
                     )}
                   </div>

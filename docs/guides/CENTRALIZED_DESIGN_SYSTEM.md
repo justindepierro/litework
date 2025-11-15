@@ -28,7 +28,7 @@ All color values are defined as CSS custom properties:
   --accent-green-500: #00d4aa;
   --accent-pink-500: #ec4899;
   --accent-blue-500: #3b82f6;
-  
+
   /* Plus 50, 100, 200, 300, 400, 600, 700, 800, 900 shades for each */
 }
 ```
@@ -84,7 +84,7 @@ React component that uses the gradient utilities:
   title="Dashboard"
   subtitle="Your workout overview"
   icon={<LayoutDashboard />}
-  gradientVariant="primary"  // Uses .bg-gradient-accent-primary
+  gradientVariant="primary" // Uses .bg-gradient-accent-primary
   actions={<Button>Add Workout</Button>}
 />
 ```
@@ -92,25 +92,31 @@ React component that uses the gradient utilities:
 ## 📚 Available Gradient Variants
 
 ### Primary Gradient (Default)
+
 **Colors**: Orange → Purple → Green  
 **Best For**: Main pages, primary actions  
-**Classes**: 
+**Classes**:
+
 - `.bg-gradient-accent-primary` (vertical bar)
 - `.bg-gradient-header-primary` (horizontal header)
 - `.bg-gradient-subtle-primary` (subtle background)
 
 ### Secondary Gradient
+
 **Colors**: Orange → Purple → Pink  
 **Best For**: Modals, special features  
 **Classes**:
+
 - `.bg-gradient-accent-secondary`
 - `.bg-gradient-header-secondary` (currently used in all modals)
 - `.bg-gradient-subtle-secondary`
 
 ### Tertiary Gradient
+
 **Colors**: Blue → Purple → Pink  
 **Best For**: Alternative sections, variations  
 **Classes**:
+
 - `.bg-gradient-accent-tertiary`
 - `.bg-gradient-header-tertiary`
 
@@ -130,13 +136,9 @@ function DashboardPage() {
         subtitle="Your workout overview and statistics"
         icon={<LayoutDashboard className="w-6 h-6" />}
         gradientVariant="primary"
-        actions={
-          <Button variant="primary">
-            Add Workout
-          </Button>
-        }
+        actions={<Button variant="primary">Add Workout</Button>}
       />
-      
+
       {/* Page content */}
     </div>
   );
@@ -144,6 +146,7 @@ function DashboardPage() {
 ```
 
 **Result**:
+
 - Thin vertical gradient bar on left (desktop only)
 - Clean typography with icon
 - Optional action buttons on right
@@ -159,11 +162,7 @@ function MyModal({ isOpen, onClose }) {
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
       <div className="bg-white sm:rounded-xl sm:max-w-2xl">
-        <ModalHeader 
-          title="Send Message" 
-          icon={<Send />}
-          onClose={onClose}
-        />
+        <ModalHeader title="Send Message" icon={<Send />} onClose={onClose} />
         {/* Modal content */}
       </div>
     </ModalBackdrop>
@@ -172,6 +171,7 @@ function MyModal({ isOpen, onClose }) {
 ```
 
 **Result**:
+
 - Full gradient header background (uses `.bg-gradient-header-secondary`)
 - White text and icons
 - Consistent with all other modals
@@ -207,13 +207,13 @@ Edit `src/styles/tokens.css`:
 ```css
 :root {
   /* Change orange to red */
-  --accent-orange-500: #ef4444;  /* was #ff6b35 */
-  
+  --accent-orange-500: #ef4444; /* was #ff6b35 */
+
   /* Change purple to indigo */
-  --accent-purple-500: #6366f1;  /* was #8b5cf6 */
-  
+  --accent-purple-500: #6366f1; /* was #8b5cf6 */
+
   /* Change green to teal */
-  --accent-green-500: #14b8a6;  /* was #00d4aa */
+  --accent-green-500: #14b8a6; /* was #00d4aa */
 }
 ```
 
@@ -225,11 +225,11 @@ Change which gradient is used where by editing components:
 
 ```tsx
 // Change page headers from primary to tertiary
-<PageHeader gradientVariant="tertiary" />  // Was "primary"
+<PageHeader gradientVariant="tertiary" />; // Was "primary"
 
 // Change modals from secondary to primary
 // Edit Modal.tsx line 204:
-className="bg-gradient-header-primary"  // Was "bg-gradient-header-secondary"
+className = "bg-gradient-header-primary"; // Was "bg-gradient-header-secondary"
 ```
 
 ### Option 3: Create New Gradient Variant
@@ -241,19 +241,14 @@ Add to `src/app/globals.css`:
 .bg-gradient-accent-quaternary {
   background: linear-gradient(
     to bottom,
-    #ef4444,  /* red-500 */
-    #eab308,  /* yellow-500 */
-    #f97316   /* orange-500 */
+    #ef4444,
+    /* red-500 */ #eab308,
+    /* yellow-500 */ #f97316 /* orange-500 */
   );
 }
 
 .bg-gradient-header-quaternary {
-  background: linear-gradient(
-    to right,
-    #ef4444,
-    #eab308,
-    #f97316
-  );
+  background: linear-gradient(to right, #ef4444, #eab308, #f97316);
 }
 ```
 
@@ -275,6 +270,7 @@ Use it:
 **Shades**: `50`, `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`
 
 **Examples**:
+
 - `--accent-orange-500`: Primary orange
 - `--accent-purple-50`: Very light purple (for subtle backgrounds)
 - `--accent-green-900`: Very dark green
@@ -286,11 +282,13 @@ Use it:
 ```
 
 **Types**:
+
 - `accent`: Thin vertical bars (1-2px wide)
 - `header`: Full horizontal backgrounds
 - `subtle`: Light diagonal backgrounds
 
 **Variants**:
+
 - `primary`: Orange → Purple → Green
 - `secondary`: Orange → Purple → Pink
 - `tertiary`: Blue → Purple → Pink
@@ -335,7 +333,7 @@ export default function NewPage() {
 ✅ All modals use `<ModalHeader>` component  
 ✅ No hardcoded `from-orange-500 via-purple-500` classes  
 ✅ All gradients reference design tokens  
-✅ Custom gradients use utility classes from globals.css  
+✅ Custom gradients use utility classes from globals.css
 
 ## 🎯 Best Practices
 
@@ -402,6 +400,7 @@ background: linear-gradient(to right, var(--accent-orange-500), var(--accent-pur
 ### Converting Existing Components
 
 **Old Pattern**:
+
 ```tsx
 <div className="relative">
   <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-500 via-purple-500 to-green-500 rounded-full" />
@@ -411,6 +410,7 @@ background: linear-gradient(to right, var(--accent-orange-500), var(--accent-pur
 ```
 
 **New Pattern**:
+
 ```tsx
 <PageHeader
   title="Dashboard"
@@ -420,6 +420,7 @@ background: linear-gradient(to right, var(--accent-orange-500), var(--accent-pur
 ```
 
 **Benefits**:
+
 - ✅ 8 lines → 4 lines (50% reduction)
 - ✅ Centralized colors
 - ✅ Responsive built-in
@@ -467,7 +468,7 @@ background: linear-gradient(to right, var(--accent-orange-500), var(--accent-pur
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --accent-orange-500: #ff8c5a;  /* Lighter for dark backgrounds */
+    --accent-orange-500: #ff8c5a; /* Lighter for dark backgrounds */
   }
 }
 ```
@@ -501,8 +502,13 @@ background: linear-gradient(to right, var(--accent-orange-500), var(--accent-pur
 }
 
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 0%; }
-  50% { background-position: 0% 100%; }
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
 }
 ```
 
@@ -530,15 +536,15 @@ ALL PAGES & FEATURES
 
 ## 📞 Quick Reference
 
-| Need | Use |
-|------|-----|
+| Need                      | Use                                        |
+| ------------------------- | ------------------------------------------ |
 | Page header with gradient | `<PageHeader gradientVariant="primary" />` |
-| Modal header (automatic) | `<ModalHeader title="..." />` |
-| Custom vertical bar | `className="bg-gradient-accent-primary"` |
-| Custom horizontal header | `className="bg-gradient-header-secondary"` |
-| Subtle card background | `className="bg-gradient-subtle-primary"` |
-| Change colors site-wide | Edit `src/styles/tokens.css` |
-| Add new gradient variant | Add to `src/app/globals.css` |
+| Modal header (automatic)  | `<ModalHeader title="..." />`              |
+| Custom vertical bar       | `className="bg-gradient-accent-primary"`   |
+| Custom horizontal header  | `className="bg-gradient-header-secondary"` |
+| Subtle card background    | `className="bg-gradient-subtle-primary"`   |
+| Change colors site-wide   | Edit `src/styles/tokens.css`               |
+| Add new gradient variant  | Add to `src/app/globals.css`               |
 
 ---
 

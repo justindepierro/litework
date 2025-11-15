@@ -5,6 +5,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAsyncState } from "@/hooks/use-async-state";
 import type { NotificationPreferences, NotificationTiming } from "@/types";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Toggle } from "@/components/ui/Toggle";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Button } from "@/components/ui/Button";
+import { Heading, Body, Label } from "@/components/ui/Typography";
 
 export default function NotificationPreferencesSettings() {
   const { user } = useAuth();
@@ -129,7 +133,7 @@ export default function NotificationPreferencesSettings() {
 
   if (!preferences) {
     return (
-      <div className="text-center p-8 text-gray-500">
+      <div className="text-center p-8 text-(--text-tertiary)">
         Failed to load notification preferences
       </div>
     );
@@ -138,12 +142,12 @@ export default function NotificationPreferencesSettings() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <Heading level="h2" className="mb-2">
           Notification Preferences
-        </h2>
-        <p className="text-gray-600">
+        </Heading>
+        <Body variant="secondary">
           Customize when and how you receive notifications
-        </p>
+        </Body>
       </div>
 
       {/* Success/Error Message */}
@@ -151,8 +155,8 @@ export default function NotificationPreferencesSettings() {
         <div
           className={`p-4 rounded-lg ${
             message.type === "success"
-              ? "bg-green-50 text-green-800"
-              : "bg-red-50 text-red-800"
+              ? "bg-(--status-success-light) text-(--status-success)"
+              : "bg-(--status-error-light) text-(--status-error)"
           }`}
         >
           {message.text}
@@ -163,33 +167,24 @@ export default function NotificationPreferencesSettings() {
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Workout Reminders
-            </h3>
-            <p className="text-sm text-gray-600">
+            <Heading level="h3">Workout Reminders</Heading>
+            <p className="text-sm text-(--text-secondary)">
               Get notified about upcoming workouts
             </p>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={preferences.workoutReminders.enabled}
-              onChange={(e) =>
-                updateWorkoutReminders("enabled", e.target.checked)
-              }
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
+          <Toggle
+            checked={preferences.workoutReminders.enabled}
+            onChange={(checked) => updateWorkoutReminders("enabled", checked)}
+            label=""
+            size="md"
+          />
         </div>
 
         {preferences.workoutReminders.enabled && (
           <>
             {/* Timing Options */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reminder Timing
-              </label>
+              <Label className="block mb-2">Reminder Timing</Label>
               <select
                 value={preferences.workoutReminders.timing}
                 onChange={(e) =>
@@ -209,7 +204,7 @@ export default function NotificationPreferencesSettings() {
                 <option value="1hour">1 hour before workout</option>
                 <option value="30min">30 minutes before workout</option>
               </select>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-(--text-tertiary)">
                 {preferences.workoutReminders.timing === "smart" &&
                   "We'll calculate the best time based on your workout schedule"}
                 {preferences.workoutReminders.timing === "morning" &&
@@ -225,36 +220,23 @@ export default function NotificationPreferencesSettings() {
 
             {/* Channels */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Notification Channels
-              </label>
+              <Label className="block mb-2">Notification Channels</Label>
               <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={preferences.workoutReminders.channels.includes(
-                      "email"
-                    )}
-                    onChange={() => toggleChannel("workoutReminders", "email")}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">Email</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={preferences.workoutReminders.channels.includes(
-                      "push"
-                    )}
-                    onChange={() => toggleChannel("workoutReminders", "push")}
-                    disabled
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">
-                    Push Notifications{" "}
-                    <span className="text-xs text-gray-500">(Coming soon)</span>
-                  </span>
-                </label>
+                <Checkbox
+                  checked={preferences.workoutReminders.channels.includes(
+                    "email"
+                  )}
+                  onChange={() => toggleChannel("workoutReminders", "email")}
+                  label="Email"
+                />
+                <Checkbox
+                  checked={preferences.workoutReminders.channels.includes(
+                    "push"
+                  )}
+                  onChange={() => toggleChannel("workoutReminders", "push")}
+                  disabled
+                  label="Push Notifications (Coming soon)"
+                />
               </div>
             </div>
           </>
@@ -265,28 +247,23 @@ export default function NotificationPreferencesSettings() {
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Achievement Notifications
-            </h3>
-            <p className="text-sm text-gray-600">
+            <Heading level="h3">Achievement Notifications</Heading>
+            <p className="text-sm text-(--text-secondary)">
               Get notified when you hit a new PR or milestone
             </p>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={preferences.achievementNotifications.enabled}
-              onChange={(e) =>
-                updateNotificationSection(
-                  "achievementNotifications",
-                  "enabled",
-                  e.target.checked
-                )
-              }
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
+          <Toggle
+            checked={preferences.achievementNotifications.enabled}
+            onChange={(checked) =>
+              updateNotificationSection(
+                "achievementNotifications",
+                "enabled",
+                checked
+              )
+            }
+            label=""
+            size="md"
+          />
         </div>
       </div>
 
@@ -294,40 +271,37 @@ export default function NotificationPreferencesSettings() {
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              New Workout Assignments
-            </h3>
-            <p className="text-sm text-gray-600">
+            <Heading level="h3">New Workout Assignments</Heading>
+            <p className="text-sm text-(--text-secondary)">
               Get notified when your coach assigns a new workout
             </p>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={preferences.assignmentNotifications.enabled}
-              onChange={(e) =>
-                updateNotificationSection(
-                  "assignmentNotifications",
-                  "enabled",
-                  e.target.checked
-                )
-              }
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
+          <Toggle
+            checked={preferences.assignmentNotifications.enabled}
+            onChange={(checked) =>
+              updateNotificationSection(
+                "assignmentNotifications",
+                "enabled",
+                checked
+              )
+            }
+            label=""
+            size="md"
+          />
         </div>
       </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <button
+        <Button
           onClick={handleSave}
           disabled={isSaving}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="primary"
+          isLoading={isSaving}
+          loadingText="Saving..."
         >
-          {isSaving ? "Saving..." : "Save Preferences"}
-        </button>
+          Save Preferences
+        </Button>
       </div>
     </div>
   );

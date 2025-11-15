@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Search, Plus, Dumbbell, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
+import { Caption } from "@/components/ui/Typography";
 import Fuse from "fuse.js";
 import { highlightMatch } from "@/lib/highlight-match";
 import { useRecentExercises } from "@/hooks/use-recent-exercises";
@@ -301,9 +302,9 @@ export default function ExerciseAutocomplete({
       )}
 
       {/* Helper text */}
-      <p className="text-xs text-gray-500 mt-1">
+      <Caption variant="muted" className="mt-1">
         Start typing to search existing exercises or create a new one
-      </p>
+      </Caption>
     </div>
   );
 }

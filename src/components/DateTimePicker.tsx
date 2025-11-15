@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Typography";
 
 interface DateTimePickerProps {
   selectedDate?: Date;
@@ -125,10 +126,10 @@ export default function DateTimePicker({
   return (
     <div className="space-y-4">
       {/* Label */}
-      <label className="text-body-primary font-medium block">
+      <Label className="block">
         <Calendar className="w-4 h-4 inline mr-2" />
         {label}
-      </label>
+      </Label>
 
       {/* Calendar */}
       <div className="border border-silver-400 rounded-lg p-4 bg-white">
@@ -195,7 +196,7 @@ export default function DateTimePicker({
                     isSelected
                       ? "bg-primary text-white"
                       : isTodayDay
-                        ? "bg-blue-100 text-primary"
+                        ? "bg-(--accent-blue-100) text-primary"
                         : "hover:bg-silver-200"
                   }
                   ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
@@ -229,10 +230,10 @@ export default function DateTimePicker({
       {/* Time Picker */}
       {showTimePicker && (
         <div className="space-y-3">
-          <label className="text-body-primary font-medium block">
+          <Label className="block">
             <Clock className="w-4 h-4 inline mr-2" />
             Training Time
-          </label>
+          </Label>
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Start Time"

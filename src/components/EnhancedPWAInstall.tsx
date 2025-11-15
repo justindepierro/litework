@@ -10,6 +10,7 @@ import {
   Database,
 } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -248,16 +249,13 @@ const EnhancedPWAInstall: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setShowInstallBanner(false)}
-              className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
+              className="px-3 py-1 text-sm text-(--accent-blue-600) hover:text-(--accent-blue-800)"
             >
               Later
             </button>
-            <button
-              onClick={handleInstallClick}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
+            <Button onClick={handleInstallClick} variant="primary">
               Install
-            </button>
+            </Button>
           </div>
         </Alert>
       )}
@@ -266,8 +264,8 @@ const EnhancedPWAInstall: React.FC = () => {
       <div
         className={`flex items-center gap-2 p-3 rounded-lg ${
           isOnline
-            ? "bg-green-50 text-green-800 border border-green-200"
-            : "bg-orange-50 text-orange-800 border border-orange-200"
+            ? "bg-(--status-success-light) text-(--status-success) border border-(--status-success)"
+            : "bg-(--status-warning-light) text-(--status-warning) border border-(--status-warning)"
         }`}
       >
         {isOnline ? (
@@ -286,13 +284,15 @@ const EnhancedPWAInstall: React.FC = () => {
       </div>
 
       {/* Cache Status */}
-      <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+      <div className="bg-(--bg-secondary) rounded-lg p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
-          <Database className="w-5 h-5 text-gray-600" />
-          <h3 className="font-medium text-gray-900">Offline Cache Status</h3>
+          <Database className="w-5 h-5 text-(--text-secondary)" />
+          <h3 className="font-medium text-(--text-primary)">
+            Offline Cache Status
+          </h3>
           <button
             onClick={handleCacheRefresh}
-            className="ml-auto px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+            className="ml-auto px-3 py-1 text-sm bg-(--bg-tertiary) hover:bg-(--interactive-hover) rounded-lg transition-colors"
           >
             Refresh
           </button>
@@ -303,15 +303,15 @@ const EnhancedPWAInstall: React.FC = () => {
             <span>Static Resources</span>
             <div className="flex items-center gap-1">
               {cacheStatus.staticCached ? (
-                <CheckCircle className="w-4 h-4 text-green-600" />
+                <CheckCircle className="w-4 h-4 text-(--status-success)" />
               ) : (
-                <Clock className="w-4 h-4 text-orange-600" />
+                <Clock className="w-4 h-4 text-(--status-warning)" />
               )}
               <span
                 className={
                   cacheStatus.staticCached
-                    ? "text-green-600"
-                    : "text-orange-600"
+                    ? "text-(--status-success)"
+                    : "text-(--status-warning)"
                 }
               >
                 {cacheStatus.staticCached ? "Cached" : "Loading..."}
@@ -323,13 +323,15 @@ const EnhancedPWAInstall: React.FC = () => {
             <span>Exercise Library</span>
             <div className="flex items-center gap-1">
               {cacheStatus.apiCached ? (
-                <CheckCircle className="w-4 h-4 text-green-600" />
+                <CheckCircle className="w-4 h-4 text-(--status-success)" />
               ) : (
-                <Clock className="w-4 h-4 text-orange-600" />
+                <Clock className="w-4 h-4 text-(--status-warning)" />
               )}
               <span
                 className={
-                  cacheStatus.apiCached ? "text-green-600" : "text-orange-600"
+                  cacheStatus.apiCached
+                    ? "text-(--status-success)"
+                    : "text-(--status-warning)"
                 }
               >
                 {cacheStatus.apiCached ? "Cached" : "Loading..."}
@@ -341,11 +343,11 @@ const EnhancedPWAInstall: React.FC = () => {
             <span>Workout Data</span>
             <div className="flex items-center gap-1">
               {cacheStatus.workoutDataCached ? (
-                <CheckCircle className="w-4 h-4 text-green-600" />
+                <CheckCircle className="w-4 h-4 text-(--status-success)" />
               ) : (
                 <button
                   onClick={handlePreloadWorkouts}
-                  className="text-blue-600 hover:text-blue-800 underline"
+                  className="text-(--accent-blue-600) hover:text-(--accent-blue-800) underline"
                 >
                   Preload Now
                 </button>
@@ -356,7 +358,7 @@ const EnhancedPWAInstall: React.FC = () => {
           <div className="pt-2 border-t border-silver-400">
             <div className="flex items-center justify-between">
               <span className="font-medium">Total Cache Size</span>
-              <span className="text-gray-600">
+              <span className="text-(--text-secondary)">
                 {cacheStatus.totalCacheSize}
               </span>
             </div>
@@ -366,11 +368,11 @@ const EnhancedPWAInstall: React.FC = () => {
 
       {/* Installation Instructions */}
       {!deferredPrompt && !isInstalled && (
-        <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
-          <h3 className="font-medium text-gray-900 mb-2">
+        <div className="bg-(--bg-secondary) rounded-lg p-4 shadow-sm">
+          <h3 className="font-medium text-(--text-primary) mb-2">
             Manual Installation
           </h3>
-          <div className="text-sm text-gray-700 space-y-1">
+          <div className="text-sm text-(--text-secondary) space-y-1">
             <p>
               <strong>Chrome/Edge:</strong> Menu → Install LiteWork
             </p>

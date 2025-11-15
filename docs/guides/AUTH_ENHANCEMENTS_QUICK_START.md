@@ -14,12 +14,14 @@
 3. Click "New Query"
 
 **Migration 1: Audit Trail**
+
 ```sql
 -- Copy/paste contents of database/invite-audit-trail-schema.sql
 -- Click "Run"
 ```
 
 **Migration 2: Terms of Service**
+
 ```sql
 -- Copy/paste contents of database/tos-schema.sql
 -- Click "Run"
@@ -55,6 +57,7 @@ npm run dev
 ```
 
 **Test Signup Flow**:
+
 1. Go to `http://localhost:3000/athletes`
 2. Click "Invite Athlete"
 3. Enter name and email
@@ -69,6 +72,7 @@ npm run dev
 12. Click verification → Redirected to dashboard ✅
 
 **Check Database**:
+
 ```sql
 -- Should see audit log entry
 SELECT * FROM invite_audit_log ORDER BY created_at DESC LIMIT 1;
@@ -132,6 +136,7 @@ Once deployed:
    - Copy Site Key and Secret Key
 
 2. **Add to environment variables**:
+
 ```bash
 # .env.local
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
@@ -157,6 +162,7 @@ TURNSTILE_SECRET_KEY=your-secret-key
 **Security Score**: 60% → 95% 🎉
 
 **New Protections**:
+
 - ✅ Email hijacking prevention
 - ✅ Server-side password enforcement
 - ✅ Breached password detection (HaveIBeenPwned)
@@ -172,22 +178,26 @@ TURNSTILE_SECRET_KEY=your-secret-key
 ## 🆘 Troubleshooting
 
 ### "Migration failed"
+
 - Check if tables already exist
 - Add `IF NOT EXISTS` to CREATE TABLE statements
 - Run `DROP TABLE IF EXISTS invite_audit_log CASCADE;` first (if safe)
 
 ### "Email not sending"
+
 - Check Supabase email settings
 - Verify email domain is verified
 - Check spam folder
 - Look at Supabase logs
 
 ### "TypeScript errors"
+
 - Run `rm -rf .next node_modules/.cache`
 - Run `npm install`
 - Run `npm run typecheck`
 
 ### "Password breach check failing"
+
 - Check network connectivity
 - API might be temporarily down (non-blocking)
 - Check console for error messages

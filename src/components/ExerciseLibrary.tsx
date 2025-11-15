@@ -3,10 +3,12 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { Search, Filter, Plus, Star, Target, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Heading } from "@/components/ui/Typography";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Heading, Label } from "@/components/ui/Typography";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
@@ -87,7 +89,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
       <div
         className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
           isSelected
-            ? "border-blue-500 bg-blue-50"
+            ? "border-(--accent-blue-500) bg-(--accent-blue-50)"
             : "border-silver-300 hover:border-silver-400"
         }`}
         onClick={() => onSelect(exercise)}
@@ -113,7 +115,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
             </div>
           </div>
           {exercise.usage_count > 0 && (
-            <div className="flex items-center gap-1 text-xs text-gray-500">
+            <div className="flex items-center gap-1 text-xs text-(--text-tertiary)">
               <Star className="w-3 h-3" />
               {exercise.usage_count}
             </div>
@@ -121,7 +123,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
         </div>
 
         {/* Exercise Description */}
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+        <p className="text-sm text-(--text-secondary) mb-3 line-clamp-2">
           {exercise.description}
         </p>
 
@@ -144,7 +146,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
         {/* Muscle Groups */}
         {exercise.muscle_groups.length > 0 && (
           <div className="mb-3">
-            <div className="text-xs font-medium text-gray-700 mb-1">
+            <div className="text-xs font-medium text-(--text-secondary) mb-1">
               Target Muscles:
             </div>
             <div className="flex flex-wrap gap-1">
@@ -160,7 +162,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
                 </Badge>
               ))}
               {exercise.muscle_groups.length > 3 && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-(--text-tertiary)">
                   +{exercise.muscle_groups.length - 3} more
                 </span>
               )}
@@ -170,7 +172,7 @@ const ExerciseCard = memo<ExerciseCardProps>(
 
         {/* Equipment */}
         {exercise.equipment_needed.length > 0 && (
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-(--text-secondary)">
             <span className="font-medium">Equipment:</span>{" "}
             {exercise.equipment_needed.slice(0, 2).join(", ")}
             {exercise.equipment_needed.length > 2 && "..."}
@@ -365,13 +367,13 @@ function ExerciseLibrary({
 
   const getDifficultyColor = (level: number) => {
     const colors = [
-      "text-green-600",
-      "text-green-600",
-      "text-yellow-600",
-      "text-orange-600",
-      "text-red-600",
+      "text-(--status-success)",
+      "text-(--status-success)",
+      "text-(--status-warning)",
+      "text-(--accent-orange-600)",
+      "text-(--status-error)",
     ];
-    return colors[level] || "text-gray-600";
+    return colors[level] || "text-(--text-secondary)";
   };
 
   const handleExerciseSelect = (exercise: Exercise) => {
@@ -409,7 +411,7 @@ function ExerciseLibrary({
           />
 
           {error && (
-            <div className="mx-6 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="mx-6 mt-4 rounded-lg border border-(--status-error-light) bg-(--status-error-light) px-4 py-3 text-sm text-(--status-error)">
               {error}
             </div>
           )}
@@ -426,7 +428,7 @@ function ExerciseLibrary({
                   <Plus className="w-4 h-4 mr-2" />
                   Add Exercise
                 </Button>
-                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-(--text-tertiary)" />
                 <input
                   type="text"
                   placeholder="Search exercises..."
@@ -439,8 +441,8 @@ function ExerciseLibrary({
                 onClick={() => setShowFilters(!showFilters)}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                   showFilters
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-(--accent-blue-100) text-(--accent-blue-700)"
+                    : "bg-(--bg-tertiary) text-(--text-secondary)"
                 }`}
               >
                 <Filter className="w-4 h-4" />
@@ -452,7 +454,7 @@ function ExerciseLibrary({
                 selectedDifficulty) && (
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-(--text-secondary) hover:text-(--text-primary)"
                 >
                   Clear Filters
                 </button>
@@ -463,9 +465,7 @@ function ExerciseLibrary({
             {showFilters && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category
-                  </label>
+                  <Label className="block mb-1">Category</Label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -481,9 +481,7 @@ function ExerciseLibrary({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Muscle Group
-                  </label>
+                  <Label className="block mb-1">Muscle Group</Label>
                   <select
                     value={selectedMuscleGroup}
                     onChange={(e) => setSelectedMuscleGroup(e.target.value)}
@@ -499,9 +497,7 @@ function ExerciseLibrary({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Equipment
-                  </label>
+                  <Label className="block mb-1">Equipment</Label>
                   <select
                     value={selectedEquipment}
                     onChange={(e) => setSelectedEquipment(e.target.value)}
@@ -517,9 +513,7 @@ function ExerciseLibrary({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Difficulty
-                  </label>
+                  <Label className="block mb-1">Difficulty</Label>
                   <select
                     value={selectedDifficulty}
                     onChange={(e) => setSelectedDifficulty(e.target.value)}
@@ -540,7 +534,7 @@ function ExerciseLibrary({
           <div className="flex-1 overflow-auto p-6">
             {loading ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-lg text-gray-600">
+                <div className="text-lg text-(--text-secondary)">
                   Loading exercises...
                 </div>
               </div>
@@ -573,9 +567,9 @@ function ExerciseLibrary({
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-silver-300 bg-gray-50">
+          <div className="p-6 border-t border-silver-300 bg-(--bg-secondary)">
             <div className="flex justify-between items-center">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-(--text-secondary)">
                 {multiSelect && selectedExercises.length > 0 && (
                   <span>{selectedExercises.length} selected</span>
                 )}
@@ -583,7 +577,7 @@ function ExerciseLibrary({
               <div className="flex gap-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-(--text-secondary) hover:text-(--text-primary)"
                 >
                   {multiSelect ? "Done" : "Cancel"}
                 </button>
@@ -677,22 +671,19 @@ function ExerciseLibrary({
 
                 {/* Equipment */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Equipment Needed
-                  </label>
+                  <Label className="block mb-1">Equipment Needed</Label>
                   <div className="flex flex-wrap gap-2">
                     {equipmentTypes.map((equipment) => (
-                      <label
+                      <div
                         key={equipment.id}
-                        className="flex items-center gap-2 px-3 py-2 border border-silver-400 rounded-lg cursor-pointer hover:bg-gray-50"
+                        className="flex items-center gap-2 px-3 py-2 border border-silver-400 rounded-lg"
                       >
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={newExercise.equipmentNeeded.includes(
                             equipment.name
                           )}
-                          onChange={(e) => {
-                            if (e.target.checked) {
+                          onChange={(checked) => {
+                            if (checked) {
                               setNewExercise({
                                 ...newExercise,
                                 equipmentNeeded: [
@@ -710,55 +701,40 @@ function ExerciseLibrary({
                               });
                             }
                           }}
-                          className="rounded"
                         />
                         <span className="text-sm">{equipment.name}</span>
-                      </label>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Checkboxes */}
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={newExercise.isCompound}
-                      onChange={(e) =>
-                        setNewExercise({
-                          ...newExercise,
-                          isCompound: e.target.checked,
-                        })
-                      }
-                      className="rounded"
-                    />
-                    <span className="text-sm text-gray-700">
-                      Compound Exercise (works multiple muscle groups)
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={newExercise.isBodyweight}
-                      onChange={(e) =>
-                        setNewExercise({
-                          ...newExercise,
-                          isBodyweight: e.target.checked,
-                        })
-                      }
-                      className="rounded"
-                    />
-                    <span className="text-sm text-gray-700">
-                      Bodyweight Exercise
-                    </span>
-                  </label>
+                  <Checkbox
+                    checked={newExercise.isCompound}
+                    onChange={(checked) =>
+                      setNewExercise({
+                        ...newExercise,
+                        isCompound: checked,
+                      })
+                    }
+                    label="Compound Exercise (works multiple muscle groups)"
+                  />
+                  <Checkbox
+                    checked={newExercise.isBodyweight}
+                    onChange={(checked) =>
+                      setNewExercise({
+                        ...newExercise,
+                        isBodyweight: checked,
+                      })
+                    }
+                    label="Bodyweight Exercise"
+                  />
                 </div>
 
                 {/* Instructions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Instructions
-                  </label>
+                  <Label className="block mb-1">Instructions</Label>
                   {newExercise.instructions.map((instruction, index) => (
                     <div key={index} className="flex gap-2 mb-2">
                       <input
@@ -787,7 +763,7 @@ function ExerciseLibrary({
                               instructions: newInstructions,
                             });
                           }}
-                          className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                          className="px-3 py-2 text-(--status-error) hover:bg-(--status-error-light) rounded-lg"
                         >
                           Remove
                         </button>
@@ -801,7 +777,7 @@ function ExerciseLibrary({
                         instructions: [...newExercise.instructions, ""],
                       })
                     }
-                    className="text-sm text-blue-600 hover:text-blue-700"
+                    className="text-sm text-(--accent-blue-600) hover:text-(--accent-blue-700)"
                   >
                     + Add Step
                   </button>
@@ -823,23 +799,27 @@ function ExerciseLibrary({
                 />
               </div>
             </ModalContent>
-            <ModalFooter align="between">
-              <button
+            <ModalFooter>
+              <Button
                 onClick={() => setShowCreateForm(false)}
-                className="flex-1 px-4 py-3 border border-silver-400 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                variant="secondary"
                 disabled={creating}
+                fullWidth
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleCreateExercise}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="primary"
                 disabled={
                   creating || !newExercise.name || !newExercise.categoryId
                 }
+                isLoading={creating}
+                loadingText="Creating..."
+                fullWidth
               >
-                {creating ? "Creating..." : "Create Exercise"}
-              </button>
+                Create Exercise
+              </Button>
             </ModalFooter>
           </div>
         </ModalBackdrop>

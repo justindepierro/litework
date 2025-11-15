@@ -1,6 +1,6 @@
 /**
  * Skeleton Component - Loading placeholders
- * 
+ *
  * Usage:
  * <Skeleton className="h-8 w-32" />
  * <Skeleton variant="text" />
@@ -33,9 +33,9 @@ export function Skeleton({
   };
 
   const animationStyles = {
-    pulse: "animate-pulse bg-gray-200",
-    shimmer: "skeleton bg-gray-200",
-    none: "bg-gray-200",
+    pulse: "animate-pulse bg-(--bg-tertiary)",
+    shimmer: "skeleton bg-(--bg-tertiary)",
+    none: "bg-(--bg-tertiary)",
   };
 
   return (
@@ -53,7 +53,13 @@ export function Skeleton({
 
 // Specialized skeleton components for common patterns
 
-export function SkeletonText({ lines = 3, className = "" }: { lines?: number; className?: string }) {
+export function SkeletonText({
+  lines = 3,
+  className = "",
+}: {
+  lines?: number;
+  className?: string;
+}) {
   return (
     <div className={`space-y-2 ${className}`}>
       {Array.from({ length: lines }).map((_, i) => (
@@ -82,7 +88,11 @@ export function SkeletonCard({ className = "" }: { className?: string }) {
   );
 }
 
-export function SkeletonWorkoutCard({ className = "" }: { className?: string }) {
+export function SkeletonWorkoutCard({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
     <div className={`rounded-lg p-4 shadow-sm ${className}`}>
       {/* Header */}
@@ -117,7 +127,11 @@ export function SkeletonStatCard({ className = "" }: { className?: string }) {
   );
 }
 
-export function SkeletonCalendarDay({ className = "" }: { className?: string }) {
+export function SkeletonCalendarDay({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
     <div className={`rounded-lg p-3 shadow-sm ${className}`}>
       <Skeleton className="h-6 w-8 mb-2" />
@@ -129,9 +143,15 @@ export function SkeletonCalendarDay({ className = "" }: { className?: string }) 
   );
 }
 
-export function SkeletonExerciseItem({ className = "" }: { className?: string }) {
+export function SkeletonExerciseItem({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
-    <div className={`rounded-lg p-4 shadow-sm flex items-center gap-4 ${className}`}>
+    <div
+      className={`rounded-lg p-4 shadow-sm flex items-center gap-4 ${className}`}
+    >
       <Skeleton variant="circular" className="w-10 h-10" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-5 w-40" />
@@ -142,18 +162,33 @@ export function SkeletonExerciseItem({ className = "" }: { className?: string })
   );
 }
 
-export function SkeletonTable({ rows = 5, columns = 4, className = "" }: { rows?: number; columns?: number; className?: string }) {
+export function SkeletonTable({
+  rows = 5,
+  columns = 4,
+  className = "",
+}: {
+  rows?: number;
+  columns?: number;
+  className?: string;
+}) {
   return (
     <div className={`space-y-2 ${className}`}>
       {/* Header */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+      >
         {Array.from({ length: columns }).map((_, i) => (
           <Skeleton key={`header-${i}`} className="h-10" />
         ))}
       </div>
       {/* Rows */}
       {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div key={`row-${rowIndex}`} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+        <div
+          key={`row-${rowIndex}`}
+          className="grid gap-4"
+          style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
+        >
           {Array.from({ length: columns }).map((_, colIndex) => (
             <Skeleton key={`cell-${rowIndex}-${colIndex}`} className="h-12" />
           ))}

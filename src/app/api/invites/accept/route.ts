@@ -328,8 +328,7 @@ export async function POST(request: NextRequest) {
           details: [
             {
               label: "Next Steps",
-              value:
-                "Complete your profile and check your assigned workouts",
+              value: "Complete your profile and check your assigned workouts",
             },
           ],
         },
@@ -375,7 +374,10 @@ export async function POST(request: NextRequest) {
           );
         }
       } catch (notifyError) {
-        console.error("[EMAIL] Failed to send coach notification:", notifyError);
+        console.error(
+          "[EMAIL] Failed to send coach notification:",
+          notifyError
+        );
         // Don't fail signup if notification fails
       }
     }

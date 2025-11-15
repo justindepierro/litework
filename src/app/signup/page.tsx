@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 import { validateEmail, validatePassword } from "@/lib/security";
-import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
-import { PageLoading, ButtonLoading } from "@/components/ui/LoadingSpinner";
+import { PageLoading } from "@/components/ui/LoadingSpinner";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
+import { Form, FormField, FormCheckbox, FormSubmitButton } from "@/components/ui/Form";
+import { validationRules } from "@/lib/form-validation";
 
 interface InviteData {
   id: string;
@@ -27,27 +29,11 @@ function SignUpForm() {
   const [inviteData, setInviteData] = useState<InviteData | null>(null);
   const [inviteLoading, setInviteLoading] = useState(true);
   const [inviteError, setInviteError] = useState("");
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
-  const [tosAccepted, setTosAccepted] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState<
-    "weak" | "fair" | "good" | "strong" | null
-  >(null);
+  const [passwordStrength, setPasswordStrength] = useState<"weak" | "fair" | "good" | "strong" | null>(null);
 
   const { signUp } = useAuth();
-
-  // Redirect to dashboard if already logged in
   const { isLoading: authLoading } = useRedirectIfAuthenticated();
 
   // Load invite data if invite ID is provided
@@ -63,17 +49,11 @@ function SignUpForm() {
 
         if (!response.ok) {
           if (response.status === 404) {
-            setInviteError(
-              "Invitation not found. It may have expired or been cancelled."
-            );
+            setInviteError("Invitation not found. It may have expired or been cancelled.");
           } else if (response.status === 410) {
-            setInviteError(
-              "This invitation has expired. Please contact your coach for a new invitation."
-            );
+            setInviteError("This invitation has expired. Please contact your coach for a new invitation.");
           } else {
-            setInviteError(
-              "Failed to load invitation. Please contact your coach."
-            );
+            setInviteError("Failed to load invitation. Please contact your coach.");
           }
           setInviteLoading(false);
           return;
@@ -81,27 +61,19 @@ function SignUpForm() {
 
         const data = await response.json();
 
-        // Validate invite is still active
         if (data.status !== "pending") {
           setInviteError("This invitation has already been used or cancelled.");
           setInviteLoading(false);
           return;
         }
 
-        // Check expiration
         if (new Date(data.expiresAt) < new Date()) {
-          setInviteError(
-            "This invitation has expired. Please contact your coach for a new invitation."
-          );
+          setInviteError("This invitation has expired. Please contact your coach for a new invitation.");
           setInviteLoading(false);
           return;
         }
 
-        // Pre-fill form with invite data
         setInviteData(data);
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
         setInviteLoading(false);
       } catch (err) {
         console.error("Error loading invite:", err);
@@ -113,132 +85,44 @@ function SignUpForm() {
     loadInviteData();
   }, [inviteId]);
 
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    setEmailError("");
-    setError("");
+  const calculatePasswordStrength = (password: string) => {
+    if (!password) return null;
 
-    if (value && value.includes("@")) {
-      const validation = validateEmail(value);
-      if (!validation.valid) {
-        setEmailError(validation.error || "Invalid email");
-      }
+    if (
+      password.length >= 12 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[^A-Za-z0-9]/.test(password)
+    ) {
+      return "strong";
+    } else if (
+      password.length >= 10 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /[0-9]/.test(password)
+    ) {
+      return "good";
+    } else if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password)) {
+      return "fair";
     }
+    return "weak";
   };
 
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    setPasswordError("");
-    setError("");
-
-    if (value) {
-      const validation = validatePassword(value);
-      if (!validation.valid) {
-        setPasswordError(validation.error || "Invalid password");
-      }
-
-      // Calculate password strength
-      let strength: "weak" | "fair" | "good" | "strong" = "weak";
-      if (
-        value.length >= 12 &&
-        /[A-Z]/.test(value) &&
-        /[a-z]/.test(value) &&
-        /[0-9]/.test(value) &&
-        /[^A-Za-z0-9]/.test(value)
-      ) {
-        strength = "strong";
-      } else if (
-        value.length >= 10 &&
-        /[A-Z]/.test(value) &&
-        /[a-z]/.test(value) &&
-        /[0-9]/.test(value)
-      ) {
-        strength = "good";
-      } else if (
-        value.length >= 8 &&
-        /[A-Z]/.test(value) &&
-        /[a-z]/.test(value)
-      ) {
-        strength = "fair";
-      }
-      setPasswordStrength(strength);
-    } else {
-      setPasswordStrength(null);
-    }
-  };
-
-  const handleConfirmPasswordChange = (value: string) => {
-    setConfirmPassword(value);
-    setConfirmPasswordError("");
-    setError("");
-
-    if (value && value !== password) {
-      setConfirmPasswordError("Passwords do not match");
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-
-    // Validate TOS acceptance
-    if (!tosAccepted) {
-      setError("You must accept the Terms of Service to create an account");
-      setIsLoading(false);
-      return;
-    }
-
-    // Validate all fields
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.valid) {
-      setEmailError(emailValidation.error || "Invalid email");
-      setIsLoading(false);
-      return;
-    }
-
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-      setPasswordError(passwordValidation.error || "Invalid password");
-      setIsLoading(false);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!firstName.trim()) {
-      setError("First name is required");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!lastName.trim()) {
-      setError("Last name is required");
-      setIsLoading(false);
-      return;
-    }
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitError("");
 
     try {
-      // Call signUp with inviteId if available
       const result = await signUp(
-        email,
-        password,
-        firstName.trim(),
-        lastName.trim(),
+        values.email,
+        values.password,
+        values.firstName.trim(),
+        values.lastName.trim(),
         inviteId || undefined
       );
 
-      // Check if email confirmation is required
       if (result.needsEmailConfirmation) {
         setShowEmailConfirmation(true);
-        setIsLoading(false);
         return;
       }
 
@@ -251,316 +135,276 @@ function SignUpForm() {
             body: JSON.stringify({ status: "accepted" }),
           });
         } catch (err) {
-          console.error("Failed to mark invite as accepted:", err);
-          // Don't fail signup if this fails
+          console.error("Failed to update invite status:", err);
         }
       }
 
-      // Redirect to dashboard - signUp handles this automatically
-      // router.push("/dashboard"); is called by signUp in AuthContext
+      // AuthContext will handle redirect to /dashboard
     } catch (err) {
-      console.error("Sign up error:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "An unexpected error occurred. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
+      const errorMessage = err instanceof Error ? err.message : "An error occurred during sign up";
+      setSubmitError(errorMessage);
     }
   };
 
-  // Show loading state while checking auth or invite
   if (authLoading || inviteLoading) {
     return <PageLoading />;
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6">
-        {/* Show email confirmation message instead of form */}
-        {showEmailConfirmation ? (
-          <div>
-            <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                <svg
-                  className="h-10 w-10 text-green-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Check Your Email
-              </h2>
-              <p className="text-gray-600 mb-6">
-                We&apos;ve sent a confirmation link to <strong>{email}</strong>
-              </p>
-              <Alert
-                variant="info"
-                title="Please confirm your email address"
-                className="mb-6"
-              >
-                <p className="text-sm">
-                  Click the link we sent you. Once confirmed, you&apos;ll be
-                  able to log in and start using LiteWork.
-                </p>
-              </Alert>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p>• Check your spam folder if you don&apos;t see the email</p>
-                <p>• The link will expire in 24 hours</p>
-                <p>
-                  • After confirming, return to{" "}
-                  <Link
-                    href="/login"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                  >
-                    login
-                  </Link>
-                </p>
-              </div>
-            </div>
+  if (showEmailConfirmation) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
+        <div className="w-full max-w-md text-center space-y-6 bg-(--bg-surface) p-8 rounded-xl shadow-xl">
+          <div className="w-16 h-16 bg-(--status-success-light) text-(--status-success) rounded-full flex items-center justify-center mx-auto text-3xl">
+            ✓
           </div>
-        ) : (
-          <>
-            {/* Header */}
+          <Heading level="h2">Check Your Email</Heading>
+          <Body variant="secondary">
+            We&apos;ve sent a confirmation link to your email address. Please check your inbox and click the link to
+            verify your account.
+          </Body>
+          <Body variant="secondary" className="text-sm">
+            Didn&apos;t receive the email? Check your spam folder or{" "}
+            <Link href="/support" className="text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)]">
+              contact support
+            </Link>
+            .
+          </Body>
+          <Link
+            href="/"
+            className="inline-block text-(--text-secondary) hover:text-(--accent-blue-600) font-[var(--font-weight-medium)] transition-colors"
+          >
+            ← Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center">
+          <Heading level="h2" className="mb-2">
+            {inviteData ? `Welcome, ${inviteData.firstName}!` : "Create Your Account"}
+          </Heading>
+          <Body variant="secondary">
+            {inviteData
+              ? "Complete your profile to get started"
+              : "Join us to track your workouts and progress"}
+          </Body>
+        </div>
+
+        {inviteError && (
+          <Alert variant="error">
             <div>
-              <h2 className="mt-4 text-center text-3xl sm:text-4xl font-extrabold text-gray-900">
-                {inviteData ? "Accept Your Invitation" : "Create Your Account"}
-              </h2>
-              {inviteData && (
-                <p className="mt-3 text-center text-base sm:text-lg text-gray-600">
-                  Welcome to LiteWork! Your coach has invited you to join.
-                </p>
+              <Body className="font-[var(--font-weight-semibold)] mb-1">Invitation Error</Body>
+              <Caption>{inviteError}</Caption>
+              <Link
+                href="/"
+                className="inline-block mt-3 text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)]"
+              >
+                ← Return home
+              </Link>
+            </div>
+          </Alert>
+        )}
+
+        {!inviteError && (
+          <Form
+            onSubmit={handleSubmit}
+            initialValues={{
+              firstName: inviteData?.firstName || "",
+              lastName: inviteData?.lastName || "",
+              email: inviteData?.email || "",
+              password: "",
+              confirmPassword: "",
+              tosAccepted: false,
+            }}
+            validation={{
+              firstName: validationRules.required("First name is required"),
+              lastName: validationRules.required("Last name is required"),
+              email: {
+                required: "Email is required",
+                custom: (value: any) => {
+                  const validation = validateEmail(value);
+                  return validation.valid ? undefined : validation.error || "Invalid email";
+                },
+              },
+              password: {
+                required: "Password is required",
+                custom: (value: any) => {
+                  const validation = validatePassword(value);
+                  setPasswordStrength(calculatePasswordStrength(value));
+                  return validation.valid ? undefined : validation.error || "Invalid password";
+                },
+              },
+              confirmPassword: {
+                required: "Please confirm your password",
+                custom: (value: any, allValues: Record<string, any>) => {
+                  if (value !== allValues.password) {
+                    return "Passwords do not match";
+                  }
+                  return undefined;
+                },
+              },
+              tosAccepted: {
+                custom: (value: any) => {
+                  if (!value) {
+                    return "You must accept the Terms of Service";
+                  }
+                  return undefined;
+                },
+              },
+            }}
+            validateOnBlur={true}
+            className="space-y-6"
+          >
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                name="firstName"
+                label="First Name"
+                type="text"
+                required
+                fullWidth
+                inputSize="lg"
+                disabled={!!inviteData}
+              />
+              <FormField
+                name="lastName"
+                label="Last Name"
+                type="text"
+                required
+                fullWidth
+                inputSize="lg"
+                disabled={!!inviteData}
+              />
+            </div>
+
+            <FormField
+              name="email"
+              label="Email address"
+              type="email"
+              required
+              fullWidth
+              inputSize="lg"
+              disabled={!!inviteData}
+            />
+
+            <div>
+              <FormField
+                name="password"
+                label="Password"
+                type="password"
+                required
+                fullWidth
+                inputSize="lg"
+                helperText="Must be at least 8 characters with uppercase, lowercase, and number"
+              />
+              {passwordStrength && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <Caption variant="muted">Password Strength:</Caption>
+                    <Caption
+                      className={
+                        passwordStrength === "strong"
+                          ? "text-(--status-success) font-[var(--font-weight-semibold)]"
+                          : passwordStrength === "good"
+                            ? "text-(--accent-blue-600) font-[var(--font-weight-semibold)]"
+                            : passwordStrength === "fair"
+                              ? "text-(--status-warning) font-[var(--font-weight-semibold)]"
+                              : "text-(--status-error) font-[var(--font-weight-semibold)]"
+                      }
+                    >
+                      {passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}
+                    </Caption>
+                  </div>
+                  <div className="flex gap-1 h-1.5">
+                    <div
+                      className={`flex-1 rounded-full ${
+                        passwordStrength === "weak"
+                          ? "bg-(--status-error)"
+                          : passwordStrength === "fair"
+                            ? "bg-(--status-warning)"
+                            : passwordStrength === "good"
+                              ? "bg-(--accent-blue-500)"
+                              : "bg-(--status-success)"
+                      }`}
+                    />
+                    <div
+                      className={`flex-1 rounded-full ${
+                        passwordStrength === "fair" ||
+                        passwordStrength === "good" ||
+                        passwordStrength === "strong"
+                          ? passwordStrength === "fair"
+                            ? "bg-(--status-warning)"
+                            : passwordStrength === "good"
+                              ? "bg-(--accent-blue-500)"
+                              : "bg-(--status-success)"
+                          : "bg-(--bg-tertiary)"
+                      }`}
+                    />
+                    <div
+                      className={`flex-1 rounded-full ${
+                        passwordStrength === "good" || passwordStrength === "strong"
+                          ? passwordStrength === "good"
+                            ? "bg-(--accent-blue-500)"
+                            : "bg-(--status-success)"
+                          : "bg-(--bg-tertiary)"
+                      }`}
+                    />
+                    <div
+                      className={`flex-1 rounded-full ${
+                        passwordStrength === "strong" ? "bg-(--status-success)" : "bg-(--bg-tertiary)"
+                      }`}
+                    />
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* Invite Error */}
-            {inviteError && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">
-                      Invitation Error
-                    </h3>
-                    <div className="mt-2 text-sm text-red-700">
-                      <p>{inviteError}</p>
-                    </div>
-                    <div className="mt-4">
-                      <Link
-                        href="/login"
-                        className="text-sm font-medium text-red-800 hover:text-red-700"
-                      >
-                        Go to Login →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <FormField
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              required
+              fullWidth
+              inputSize="lg"
+            />
 
-            {/* Sign Up Form */}
-            {!inviteError && (
-              <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-                <div className="rounded-md space-y-5">
-                  {/* First Name */}
-                  <FloatingLabelInput
-                    id="first-name"
-                    name="first-name"
-                    type="text"
-                    autoComplete="given-name"
-                    required
-                    disabled={!!inviteData}
-                    label="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    inputSize="lg"
-                    fullWidth
-                  />
+            <FormCheckbox
+              name="tosAccepted"
+              label="I agree to the Terms of Service and Privacy Policy"
+            />
 
-                  {/* Last Name */}
-                  <FloatingLabelInput
-                    id="last-name"
-                    name="last-name"
-                    type="text"
-                    autoComplete="family-name"
-                    required
-                    disabled={!!inviteData}
-                    label="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    inputSize="lg"
-                    fullWidth
-                  />
+            {submitError && <Alert variant="error">{submitError}</Alert>}
 
-                  {/* Email */}
-                  <FloatingLabelInput
-                    id="email-address"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    disabled={!!inviteData?.email}
-                    label="Email Address"
-                    value={email}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                    error={emailError}
-                    helperText={
-                      inviteData?.email
-                        ? "Email from your coach's invitation (cannot be changed)"
-                        : undefined
-                    }
-                    inputSize="lg"
-                    fullWidth
-                  />
-
-                  {/* Password */}
-                  <div>
-                    <FloatingLabelInput
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      label="Password (min 8 characters)"
-                      value={password}
-                      onChange={(e) => handlePasswordChange(e.target.value)}
-                      error={passwordError}
-                      inputSize="lg"
-                      fullWidth
-                    />
-                    {passwordStrength && !passwordError && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full transition-all duration-300 ${
-                              passwordStrength === "weak"
-                                ? "w-1/4 bg-red-500"
-                                : passwordStrength === "fair"
-                                  ? "w-2/4 bg-yellow-500"
-                                  : passwordStrength === "good"
-                                    ? "w-3/4 bg-blue-500"
-                                    : "w-full bg-green-500"
-                            }`}
-                          />
-                        </div>
-                        <span
-                          className={`text-sm font-medium ${
-                            passwordStrength === "weak"
-                              ? "text-red-600"
-                              : passwordStrength === "fair"
-                                ? "text-yellow-600"
-                                : passwordStrength === "good"
-                                  ? "text-blue-600"
-                                  : "text-green-600"
-                          }`}
-                        >
-                          {passwordStrength.charAt(0).toUpperCase() +
-                            passwordStrength.slice(1)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Confirm Password */}
-                  <FloatingLabelInput
-                    id="confirm-password"
-                    name="confirm-password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    label="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) =>
-                      handleConfirmPasswordChange(e.target.value)
-                    }
-                    error={confirmPasswordError}
-                    inputSize="lg"
-                    fullWidth
-                  />
-                </div>
-
-                {/* Terms of Service */}
-                <div className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    id="tos"
-                    checked={tosAccepted}
-                    onChange={(e) => setTosAccepted(e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary border-silver-300 rounded focus:ring-primary"
-                  />
-                  <label htmlFor="tos" className="text-sm text-gray-700">
-                    I agree to the{" "}
-                    <Link
-                      href="/terms"
-                      target="_blank"
-                      className="text-primary hover:text-primary-dark underline"
-                    >
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      href="/privacy"
-                      target="_blank"
-                      className="text-primary hover:text-primary-dark underline"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </label>
-                </div>
-
-                {/* Error Message */}
-                {error && (
-                  <div className="rounded-md bg-red-50 p-4">
-                    <p className="text-sm text-red-800">{error}</p>
-                  </div>
-                )}
-
-                {/* Submit Button */}
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading || !tosAccepted}
-                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {isLoading ? (
-                      <>
-                        <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                          <ButtonLoading className="text-white" />
-                        </span>
-                        Creating account...
-                      </>
-                    ) : inviteData ? (
-                      "Accept Invitation & Create Account"
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                </div>
-
-                {/* Login Link */}
-                <div className="text-center">
-                  <p className="text-base text-gray-600">
-                    Already have an account?{" "}
-                    <Link
-                      href="/login"
-                      className="font-medium text-blue-600 hover:text-blue-500"
-                    >
-                      Log in
-                    </Link>
-                  </p>
-                </div>
-              </form>
-            )}
-          </>
+            <FormSubmitButton
+              fullWidth
+              loadingText="Creating account..."
+              className="py-4 px-6 text-lg font-[var(--font-weight-bold)] rounded-xl shadow-lg hover:shadow-xl"
+            >
+              Create Account
+            </FormSubmitButton>
+          </Form>
         )}
+
+        <div className="text-center">
+          <Body variant="secondary" className="mb-2">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)]"
+            >
+              Sign in
+            </Link>
+          </Body>
+          <Link
+            href="/"
+            className="inline-block text-(--text-secondary) hover:text-(--accent-blue-600) font-[var(--font-weight-medium)] transition-colors py-2 px-4 rounded-lg"
+          >
+            ← Back to home
+          </Link>
+        </div>
       </div>
     </div>
   );

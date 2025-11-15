@@ -15,9 +15,7 @@ export async function GET(request: NextRequest) {
 
   // Handle errors from Supabase
   if (error) {
-    console.error(
-      `[AUTH] Callback error: ${error} - ${errorDescription}`
-    );
+    console.error(`[AUTH] Callback error: ${error} - ${errorDescription}`);
     return NextResponse.redirect(
       new URL(
         `/login?error=${encodeURIComponent(errorDescription || error)}`,
@@ -40,15 +38,14 @@ export async function GET(request: NextRequest) {
           exchangeError
         );
         return NextResponse.redirect(
-          new URL(
-            "/login?error=verification_failed",
-            requestUrl.origin
-          )
+          new URL("/login?error=verification_failed", requestUrl.origin)
         );
       }
 
       if (data.user) {
-        console.log(`[AUTH] Email verified successfully for user: ${data.user.id}`);
+        console.log(
+          `[AUTH] Email verified successfully for user: ${data.user.id}`
+        );
 
         // Mark invite as fully accepted if inviteId exists in metadata
         const inviteId = data.user.user_metadata?.inviteId;
@@ -64,7 +61,10 @@ export async function GET(request: NextRequest) {
             .eq("id", inviteId);
 
           if (updateError) {
-            console.error("[AUTH] Failed to update invite status:", updateError);
+            console.error(
+              "[AUTH] Failed to update invite status:",
+              updateError
+            );
           } else {
             console.log(`[AUTH] Invite ${inviteId} marked as accepted`);
           }

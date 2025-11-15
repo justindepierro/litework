@@ -181,17 +181,26 @@ class ApiClient {
           errorText ||
           `Request failed: ${response.status} ${response.statusText}`;
 
+        // Log errors in development, but filter out expected failures
         if (process.env.NODE_ENV === "development") {
-          console.error("[API] Request failed:", {
-            url: `${this.baseUrl}${endpoint}`,
-            method: fetchOptions.method || "GET",
-            status: response.status,
-            statusText: response.statusText,
-            errorData,
-            rawResponse: errorText
-              ? errorText.substring(0, 500)
-              : "No response",
-          });
+          // Skip logging for expected auth/routing errors
+          const isExpectedError =
+            response.status === 401 || // Unauthenticated
+            response.status === 404 || // Not found
+            errorText?.includes("<!DOCTYPE"); // HTML response (404 page)
+
+          if (!isExpectedError) {
+            console.error("[API] Request failed:", {
+              url: `${this.baseUrl}${endpoint}`,
+              method: fetchOptions.method || "GET",
+              status: response.status,
+              statusText: response.statusText,
+              errorData,
+              rawResponse: errorText
+                ? errorText.substring(0, 500)
+                : "No response",
+            });
+          }
         }
 
         if (showErrorToast && toastError) {

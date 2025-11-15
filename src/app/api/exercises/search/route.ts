@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     // Require authentication
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return authenticationError(authError || undefined);
     }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   try {
     // Require authentication
     const { user, error: authError } = await getAuthenticatedUser();
-    
+
     if (!user) {
       return authenticationError(authError || undefined);
     }

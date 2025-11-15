@@ -10,7 +10,10 @@ import React, { useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { modalBackdrop, modalContent as modalContentVariants } from "@/lib/animation-variants";
+import {
+  modalBackdrop,
+  modalContent as modalContentVariants,
+} from "@/lib/animation-variants";
 import { trapFocus, focusFirstElement } from "@/lib/accessibility-utils";
 
 export interface ModalBackdropProps {
@@ -171,7 +174,7 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
   );
 
   // Render modal in a portal to document.body to avoid stacking context issues
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   return createPortal(modalElement, document.body);
 };
 
@@ -208,13 +211,9 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       <div className="flex items-center gap-3 flex-1">
         {icon && <div className="shrink-0 !text-white">{icon}</div>}
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold !text-white">
-            {title}
-          </h2>
+          <h2 className="text-2xl font-bold !text-white">{title}</h2>
           {subtitle && (
-            <p className="text-sm !text-white/90 mt-0.5">
-              {subtitle}
-            </p>
+            <p className="text-sm !text-white/90 mt-0.5">{subtitle}</p>
           )}
         </div>
       </div>

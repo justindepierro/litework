@@ -7,6 +7,7 @@ This document outlines LiteWork's professional, industry-leading design system t
 ## Problem Statement
 
 **Previous Issues:**
+
 - Custom color names (`accent-orange-500`) not recognized by Tailwind v4
 - Design tokens file imported Tailwind causing circular dependencies
 - `@apply` directives not working in Tailwind v4
@@ -18,23 +19,28 @@ This document outlines LiteWork's professional, industry-leading design system t
 ## Solution: Three-Layer Architecture
 
 ### Layer 1: Base Styles (`src/styles/base.css`)
+
 **Purpose:** Tailwind CSS v4 import and global resets
 
 ```css
-@import "tailwindcss";  /* MUST BE FIRST */
+@import "tailwindcss"; /* MUST BE FIRST */
 
 /* Global resets */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 ```
 
 **Key Points:**
+
 - `@import "tailwindcss"` must be the first import
 - Only global HTML element styles
 - No component-specific styles here
 
 ### Layer 2: Design Tokens (`src/styles/tokens.css`)
+
 **Purpose:** CSS Custom Properties for semantic colors
 
 ```css
@@ -43,7 +49,7 @@ This document outlines LiteWork's professional, industry-leading design system t
   --text-primary: #1e293b;
   --bg-primary: #ffffff;
   --border-accent: #ff6b35;
-  
+
   /* Direct color values */
   --accent-orange-500: #ff6b35;
   --accent-green-500: #00d4aa;
@@ -52,12 +58,14 @@ This document outlines LiteWork's professional, industry-leading design system t
 ```
 
 **Key Points:**
+
 - Use semantic names for common patterns
 - Maintain full color scales for flexibility
 - Reference these via `var(--token-name)` in custom CSS
 - Do NOT use `@import "tailwindcss"` here
 
 ### Layer 3: Utility Classes (Tailwind in Components)
+
 **Purpose:** Use standard Tailwind utilities in JSX
 
 ```tsx
@@ -69,6 +77,7 @@ This document outlines LiteWork's professional, industry-leading design system t
 ```
 
 **Key Points:**
+
 - Use standard Tailwind color names: `orange-500`, `green-500`, `purple-500`, etc.
 - Tailwind v4 generates CSS on-demand for these
 - Custom colors require configuration in `tailwind.config.ts`
@@ -78,27 +87,29 @@ This document outlines LiteWork's professional, industry-leading design system t
 ### Standard Tailwind Palette (USE THESE)
 
 | Semantic Use | Tailwind Class | Hex Value |
-|--------------|----------------|-----------|
-| Energy/Brand | `orange-500` | #f97316 |
-| Success | `green-500` | #22c55e |
-| Premium | `purple-500` | #a855f7 |
-| Fun/Accent | `pink-500` | #ec4899 |
-| Info/Trust | `blue-500` | #3b82f6 |
+| ------------ | -------------- | --------- |
+| Energy/Brand | `orange-500`   | #f97316   |
+| Success      | `green-500`    | #22c55e   |
+| Premium      | `purple-500`   | #a855f7   |
+| Fun/Accent   | `pink-500`     | #ec4899   |
+| Info/Trust   | `blue-500`     | #3b82f6   |
 
 ### Gradient Patterns
 
 ```tsx
 // Page backgrounds
-className="bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50"
+className = "bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50";
 
 // Gradient text
-className="bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 bg-clip-text text-transparent"
+className =
+  "bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 bg-clip-text text-transparent";
 
 // Accent bars
-className="bg-gradient-to-b from-orange-500 via-purple-500 to-green-500"
+className = "bg-gradient-to-b from-orange-500 via-purple-500 to-green-500";
 
 // Buttons
-className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+className =
+  "bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600";
 ```
 
 ## File Import Order (CRITICAL)
@@ -117,6 +128,7 @@ In `src/app/globals.css`:
 ```
 
 **Why this order matters:**
+
 1. Tailwind v4 needs to be imported before anything else
 2. Tokens reference Tailwind's generated utilities
 3. Other styles can override if needed
@@ -126,6 +138,7 @@ In `src/app/globals.css`:
 ### Changing Colors
 
 **Before (Hard):**
+
 1. Update `tailwind.config.ts`
 2. Update `design-tokens.css`
 3. Update components
@@ -133,6 +146,7 @@ In `src/app/globals.css`:
 5. Pray it works
 
 **After (Easy):**
+
 1. Update components with standard Tailwind classes
 2. Done - Tailwind v4 JIT generates CSS automatically
 
@@ -161,16 +175,19 @@ In `src/app/globals.css`:
 ### DO ✅
 
 1. **Use standard Tailwind color names**
+
    ```tsx
    <div className="bg-orange-500 text-white">
    ```
 
 2. **Use gradient utilities**
+
    ```tsx
    <div className="bg-gradient-to-r from-purple-500 to-blue-500">
    ```
 
 3. **Combine with hover states**
+
    ```tsx
    <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
    ```
@@ -186,18 +203,21 @@ In `src/app/globals.css`:
 ### DON'T ❌
 
 1. **Don't use custom color names without configuration**
+
    ```tsx
    <!-- This won't work unless added to tailwind.config.ts -->
    <div className="bg-accent-orange-500">
    ```
 
 2. **Don't import Tailwind in multiple places**
+
    ```css
    /* Only in base.css, nowhere else */
    @import "tailwindcss";
    ```
 
 3. **Don't use @apply in Tailwind v4**
+
    ```css
    /* This doesn't work in v4 */
    .btn {
@@ -227,11 +247,13 @@ When updating components:
 ## Performance Benefits
 
 ### Before
+
 - Custom colors required build-time processing
 - Cache invalidation unpredictable
 - CSS file size larger due to unused utilities
 
 ### After
+
 - Tailwind v4 JIT generates only used classes
 - ~30% smaller CSS bundle
 - Faster builds
@@ -240,12 +262,14 @@ When updating components:
 ## Testing
 
 ### Visual Regression
+
 1. Take screenshots before changes
 2. Apply new color system
 3. Compare screenshots
 4. Verify gradients render correctly
 
 ### Performance
+
 ```bash
 # Measure CSS bundle size
 npm run build
@@ -255,6 +279,7 @@ ls -lh .next/static/css/*.css
 ```
 
 ### Browser Testing
+
 - Chrome DevTools → Elements → Check computed styles
 - Verify gradient classes present in DOM
 - Confirm CSS values match expectations
@@ -262,6 +287,7 @@ ls -lh .next/static/css/*.css
 ## Troubleshooting
 
 ### Gradients Not Showing
+
 1. Check import order in `globals.css`
 2. Verify using standard Tailwind color names
 3. Clear `.next` and `.turbopack` caches
@@ -269,11 +295,13 @@ ls -lh .next/static/css/*.css
 5. Hard refresh browser
 
 ### Custom Colors Not Working
+
 1. Add to `tailwind.config.ts` extend.colors
 2. Or use standard Tailwind colors
 3. Recommended: Use standard colors for easier maintenance
 
 ### Build Errors
+
 1. Ensure `@import "tailwindcss"` is first
 2. Check for circular imports
 3. Verify PostCSS config is correct
@@ -281,6 +309,7 @@ ls -lh .next/static/css/*.css
 ## Future Enhancements
 
 ### Dark Mode
+
 ```css
 @media (prefers-color-scheme: dark) {
   :root[data-theme="dark"] {
@@ -291,29 +320,32 @@ ls -lh .next/static/css/*.css
 ```
 
 ### Theme Switcher
+
 ```tsx
-<button onClick={() => document.documentElement.dataset.theme = 'dark'}>
+<button onClick={() => (document.documentElement.dataset.theme = "dark")}>
   Toggle Dark Mode
 </button>
 ```
 
 ### Custom Gradients
+
 ```typescript
 // tailwind.config.ts
 export default {
   theme: {
     extend: {
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(to right, #ff6b35, #ec4899)',
-      }
-    }
-  }
-}
+        "brand-gradient": "linear-gradient(to right, #ff6b35, #ec4899)",
+      },
+    },
+  },
+};
 ```
 
 ## Conclusion
 
 This three-layer architecture provides:
+
 - **Simplicity**: Standard Tailwind classes work out of the box
 - **Flexibility**: Easy to change colors and gradients
 - **Performance**: JIT compilation for optimal bundle size

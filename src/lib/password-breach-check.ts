@@ -71,8 +71,7 @@ export async function checkPasswordBreach(password: string): Promise<{
     console.error("[PASSWORD_BREACH] Error checking password:", error);
     return {
       breached: false,
-      error:
-        "Unable to check password breach status due to network error",
+      error: "Unable to check password breach status due to network error",
     };
   }
 }

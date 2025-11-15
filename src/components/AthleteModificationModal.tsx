@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { WorkoutModification, AthleteGroup, User, WorkoutPlan } from "@/types";
 import { Weight, RotateCcw, Settings, X } from "lucide-react";
-import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Body } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -167,11 +169,11 @@ export default function AthleteModificationModal({
                           <h4 className="text-heading-secondary text-lg">
                             {exercise.exerciseName}
                           </h4>
-                          <p className="text-body-small">
+                          <Body className="text-sm" variant="secondary">
                             Original: {exercise.sets} sets × {exercise.reps}{" "}
                             reps
                             {exercise.weight && ` @ ${exercise.weight}`}
-                          </p>
+                          </Body>
                         </div>
                         <button
                           onClick={() => removeModification(modification.id)}

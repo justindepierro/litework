@@ -17,6 +17,7 @@ import { Select } from "@/components/ui/Select";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Alert } from "@/components/ui/Alert";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Body, Label, Caption } from "@/components/ui/Typography";
 import {
   User,
   Save,
@@ -353,7 +354,7 @@ export default function ProfilePage() {
 
   if (showSkeleton) {
     return (
-      <main className="min-h-screen bg-gray-50 pt-20">
+      <main className="min-h-screen bg-(--bg-secondary) pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="space-y-4">
             <SkeletonCard />
@@ -366,7 +367,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-20">
+    <main className="min-h-screen bg-(--bg-secondary) pt-20">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
@@ -384,7 +385,7 @@ export default function ProfilePage() {
 
         {/* Profile Picture Section */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
             <Camera className="w-5 h-5" />
             Profile Picture
           </h2>
@@ -399,8 +400,8 @@ export default function ProfilePage() {
                   className="w-32 h-32 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
-                  <User className="w-16 h-16 text-gray-400" />
+                <div className="w-32 h-32 rounded-full bg-(--bg-tertiary) flex items-center justify-center">
+                  <User className="w-16 h-16 text-(--text-tertiary)" />
                 </div>
               )}
             </div>
@@ -417,14 +418,14 @@ export default function ProfilePage() {
 
               {avatarPreview ? (
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-600">
+                  <Body className="text-sm" variant="secondary">
                     New picture selected. Click upload to save.
-                  </p>
+                  </Body>
                   <div className="flex gap-2">
                     <button
                       onClick={handleAvatarUpload}
                       disabled={isUploadingAvatar}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 bg-(--accent-blue-600) text-white rounded-lg hover:bg-(--accent-blue-700) disabled:opacity-50 flex items-center gap-2"
                     >
                       <Upload className="w-4 h-4" />
                       {isUploadingAvatar ? "Uploading..." : "Upload"}
@@ -434,7 +435,7 @@ export default function ProfilePage() {
                         setAvatarFile(null);
                         setAvatarPreview(null);
                       }}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                      className="px-4 py-2 bg-(--bg-tertiary) text-(--text-secondary) rounded-lg hover:bg-(--interactive-hover)"
                     >
                       Cancel
                     </button>
@@ -442,13 +443,13 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-600">
+                  <Body className="text-sm" variant="secondary">
                     JPG, PNG, WebP, or GIF. Max 2MB.
-                  </p>
+                  </Body>
                   <div className="flex gap-2">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                      className="px-4 py-2 bg-(--accent-blue-600) text-white rounded-lg hover:bg-(--accent-blue-700) flex items-center gap-2"
                     >
                       <Upload className="w-4 h-4" />
                       Choose Photo
@@ -457,7 +458,7 @@ export default function ProfilePage() {
                       <button
                         onClick={handleAvatarDelete}
                         disabled={isUploadingAvatar}
-                        className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 disabled:opacity-50 flex items-center gap-2"
+                        className="px-4 py-2 bg-(--status-error-light) text-(--status-error) rounded-lg hover:bg-(--status-error-light) disabled:opacity-50 flex items-center gap-2"
                       >
                         <X className="w-4 h-4" />
                         Remove
@@ -477,8 +478,8 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("profile")}
               className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === "profile"
-                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
+                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
               }`}
             >
               <User className="w-4 h-4 inline mr-2" />
@@ -488,8 +489,8 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("metrics")}
               className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === "metrics"
-                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
+                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
               }`}
             >
               <Activity className="w-4 h-4 inline mr-2" />
@@ -499,8 +500,8 @@ export default function ProfilePage() {
               onClick={() => setActiveTab("account")}
               className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === "account"
-                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
+                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
               }`}
             >
               <Lock className="w-4 h-4 inline mr-2" />
@@ -514,8 +515,8 @@ export default function ProfilePage() {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 {/* Basic Information Section */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <User className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
+                    <User className="w-5 h-5 text-(--accent-blue-600)" />
                     Basic Information
                   </h3>
 
@@ -564,7 +565,7 @@ export default function ProfilePage() {
 
                 {/* About Section */}
                 <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4">
                     About You
                   </h3>
 
@@ -578,11 +579,11 @@ export default function ProfilePage() {
                       fullWidth
                     />
 
-                    <div className="bg-amber-50 rounded-lg p-4">
-                      <label className="flex items-center gap-2 text-sm font-medium text-amber-900 mb-2">
+                    <div className="bg-(--accent-amber-50) rounded-lg p-4">
+                      <Label className="flex items-center gap-2 mb-2">
                         <AlertCircle className="w-4 h-4" />
                         Current Injury Status
-                      </label>
+                      </Label>
                       <FloatingLabelTextarea
                         label="Injury Status"
                         value={injuryStatus}
@@ -597,8 +598,8 @@ export default function ProfilePage() {
 
                 {/* Emergency Contact Section */}
                 <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-red-600" />
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
+                    <Phone className="w-5 h-5 text-(--status-error)" />
                     Emergency Contact
                   </h3>
 
@@ -639,8 +640,8 @@ export default function ProfilePage() {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 {/* Personal Details Section */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-(--accent-blue-600)" />
                     Personal Details
                   </h3>
 
@@ -681,17 +682,17 @@ export default function ProfilePage() {
 
                 {/* Physical Measurements Section */}
                 <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-green-600" />
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-(--status-success)" />
                     Physical Measurements
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                      <Label className="flex items-center gap-2 mb-2">
                         <Ruler className="w-4 h-4" />
                         Height
-                      </label>
+                      </Label>
                       <div className="grid grid-cols-2 gap-3">
                         <FloatingLabelInput
                           type="number"
@@ -714,22 +715,22 @@ export default function ProfilePage() {
                         />
                       </div>
                       {(heightFeet || heightInches) && (
-                        <p className="text-xs text-gray-600 mt-1">
+                        <Caption variant="default" className="mt-1">
                           Total:{" "}
                           {(
                             (parseFloat(heightFeet) || 0) * 12 +
                             (parseFloat(heightInches) || 0)
                           ).toFixed(1)}{" "}
                           inches
-                        </p>
+                        </Caption>
                       )}
                     </div>
 
                     <div>
-                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                      <Label className="flex items-center gap-2 mb-2">
                         <Scale className="w-4 h-4" />
                         Weight (lbs)
-                      </label>
+                      </Label>
                       <FloatingLabelInput
                         type="number"
                         step="0.1"
@@ -745,22 +746,22 @@ export default function ProfilePage() {
 
                   {/* BMI Display */}
                   {profile?.bmi && (
-                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mt-6">
-                      <h4 className="font-semibold text-gray-900 mb-2">
+                    <div className="bg-gradient-to-r from-(--accent-blue-50) to-cyan-50 rounded-lg p-4 mt-6">
+                      <h4 className="font-semibold text-(--text-primary) mb-2">
                         Body Mass Index (BMI)
                       </h4>
                       <div className="flex items-center justify-between">
-                        <span className="text-3xl font-bold text-blue-600">
+                        <span className="text-3xl font-bold text-(--accent-blue-600)">
                           {profile.bmi}
                         </span>
-                        <span className="px-3 py-1 bg-white text-blue-700 rounded-full text-sm font-medium capitalize">
+                        <span className="px-3 py-1 bg-white text-(--accent-blue-700) rounded-full text-sm font-medium capitalize">
                           {profile.bmiCategory}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-600 mt-2">
+                      <Caption variant="default" className="mt-2">
                         BMI is a general indicator and may not reflect athletic
                         body composition.
-                      </p>
+                      </Caption>
                     </div>
                   )}
                 </div>
@@ -769,7 +770,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    className="px-8 py-3 bg-gradient-to-r from-(--status-success) to-(--status-success) text-white rounded-lg hover:from-(--status-success) hover:to-(--status-success) disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
                   >
                     <Save className="w-5 h-5" />
                     {isSaving ? "Saving..." : "Save Metrics"}
@@ -782,12 +783,12 @@ export default function ProfilePage() {
             {activeTab === "account" && (
               <form onSubmit={handlePasswordChange} className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4">
                     Change Password
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <Body className="text-sm mb-4" variant="secondary">
                     Use a strong password with at least 6 characters.
-                  </p>
+                  </Body>
                 </div>
 
                 <FloatingLabelInput
@@ -813,7 +814,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full md:w-auto px-6 py-3 bg-(--accent-blue-600) text-white rounded-lg hover:bg-(--accent-blue-700) disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <Lock className="w-5 h-5" />
                   {isChangingPassword

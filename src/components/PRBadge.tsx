@@ -20,6 +20,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
 
 interface PRBadgeProps {
   comparison: PRComparison;
@@ -110,20 +111,22 @@ export function PRCelebrationModal({
           title="Personal Record!"
           subtitle={exerciseName}
           onClose={onClose}
-          icon={<Trophy className="w-6 h-6 text-yellow-500" />}
+          icon={<Trophy className="w-6 h-6 text-(--accent-yellow-500)" />}
         />
 
         <ModalContent>
           {/* PR details */}
-          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
+          <div className="bg-gradient-to-r from-(--accent-yellow-50) to-(--accent-orange-50) rounded-xl p-6 mb-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">
+              <div className="text-4xl font-bold text-(--text-primary) mb-2">
                 {currentPerformance.weight}lbs × {currentPerformance.reps}
               </div>
-              <div className="text-sm text-gray-600 mb-4">{message}</div>
+              <div className="text-sm text-(--text-secondary) mb-4">
+                {message}
+              </div>
 
               {previousBest && (
-                <div className="text-xs text-gray-500 pt-4 border-t border-silver-300">
+                <div className="text-xs text-(--text-tertiary) pt-4 border-t border-silver-300">
                   Previous Best: {previousBest.weight}lbs × {previousBest.reps}{" "}
                   ( Est. 1RM: {previousBest.estimatedOneRM}lbs)
                 </div>
@@ -133,15 +136,17 @@ export function PRCelebrationModal({
 
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-600 mb-1">Est. 1RM</div>
-              <div className="text-xl font-bold text-gray-900">
+            <div className="bg-(--bg-secondary) rounded-lg p-3 text-center">
+              <div className="text-xs text-(--text-secondary) mb-1">
+                Est. 1RM
+              </div>
+              <div className="text-xl font-bold text-(--text-primary)">
                 {currentPerformance.estimatedOneRM}lbs
               </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-600 mb-1">Volume</div>
-              <div className="text-xl font-bold text-gray-900">
+            <div className="bg-(--bg-secondary) rounded-lg p-3 text-center">
+              <div className="text-xs text-(--text-secondary) mb-1">Volume</div>
+              <div className="text-xl font-bold text-(--text-primary)">
                 {currentPerformance.volume}lbs
               </div>
             </div>
@@ -149,12 +154,9 @@ export function PRCelebrationModal({
         </ModalContent>
 
         <ModalFooter align="center">
-          <button
-            onClick={onClose}
-            className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-          >
+          <Button onClick={onClose} variant="primary" size="lg" fullWidth>
             Continue Workout
-          </button>
+          </Button>
         </ModalFooter>
       </div>
     </ModalBackdrop>

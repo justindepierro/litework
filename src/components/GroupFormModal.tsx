@@ -4,11 +4,7 @@ import { useState, useEffect } from "react";
 import { AthleteGroup, User } from "@/types";
 import { apiClient } from "@/lib/api-client";
 import { ApiResponse } from "@/lib/api-response";
-import { useFormValidation } from "@/hooks/use-form-validation";
 import { Users } from "lucide-react";
-import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
-import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
-import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import {
   ModalBackdrop,
@@ -16,6 +12,9 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Label, Caption } from "@/components/ui/Typography";
+import { Form, FormField, FormTextarea, FormSelect } from "@/components/ui/Form";
+import { validationRules, combineValidations } from "@/lib/form-validation";
 
 interface GroupFormModalProps {
   isOpen: boolean;
@@ -60,116 +59,17 @@ export default function GroupFormModal({
   existingGroups,
 }: GroupFormModalProps) {
   const [availableAthletes, setAvailableAthletes] = useState<User[]>([]);
-
-  const {
-    values,
-    errors,
-    handleChange,
-    handleSubmit,
-    setValues,
-    isSubmitting,
-  } = useFormValidation({
-    initialValues: {
-      name: editingGroup?.name || "",
-      description: editingGroup?.description || "",
-      sport: editingGroup?.sport || "",
-      category: editingGroup?.category || "",
-      color: editingGroup?.color || predefinedColors[0].value,
-      athleteIds: (editingGroup?.athleteIds || []) as string[],
-    },
-    validationRules: {
-      name: {
-        required: "Group name is required",
-        custom: (value, allValues) => {
-          const name = String(value).trim();
-          if (!name) return "Group name is required";
-
-          const duplicateName = existingGroups.some(
-            (group) =>
-              group.name.toLowerCase() === name.toLowerCase() &&
-              (!editingGroup || group.id !== editingGroup.id)
-          );
-
-          if (duplicateName) {
-            return "A group with this name already exists";
-          }
-
-          return undefined;
-        },
-      },
-      sport: { required: "Sport selection is required" },
-    },
-    onSubmit: async (values) => {
-      try {
-        if (editingGroup) {
-          const response = (await apiClient.updateGroup(
-            editingGroup.id,
-            values
-          )) as ApiResponse;
-          if (response.success && response.data) {
-            const data = response.data as { group?: AthleteGroup };
-            if (data.group) {
-              onSave(data.group);
-              onClose();
-            } else {
-              throw new Error("Failed to update group");
-            }
-          } else {
-            throw new Error(
-              typeof response.error === "string"
-                ? response.error
-                : "Failed to update group"
-            );
-          }
-        } else {
-          const response = (await apiClient.createGroup(values)) as ApiResponse;
-          if (response.success) {
-            const data = response as unknown as { group?: AthleteGroup };
-            if (data.group) {
-              onSave(data.group);
-              onClose();
-            } else {
-              console.error("No group in response:", data);
-              throw new Error("Failed to create group - no group returned");
-            }
-          } else {
-            console.error("API returned error:", response.error);
-            throw new Error(
-              typeof response.error === "string"
-                ? response.error
-                : "Failed to create group"
-            );
-          }
-        }
-      } catch (err) {
-        // Re-throw to let useFormValidation handle it
-        throw err;
-      }
-    },
-  });
+  const [selectedAthleteIds, setSelectedAthleteIds] = useState<string[]>([]);
+  const [submitError, setSubmitError] = useState("");
 
   // Load form data when editing
   useEffect(() => {
-    if (editingGroup) {
-      setValues({
-        name: editingGroup.name,
-        description: editingGroup.description || "",
-        sport: editingGroup.sport,
-        category: editingGroup.category || "",
-        color: editingGroup.color,
-        athleteIds: editingGroup.athleteIds || [],
-      });
+    if (editingGroup && isOpen) {
+      setSelectedAthleteIds(editingGroup.athleteIds || []);
     } else {
-      setValues({
-        name: "",
-        description: "",
-        sport: "",
-        category: "",
-        color: predefinedColors[0].value,
-        athleteIds: [],
-      });
+      setSelectedAthleteIds([]);
     }
-  }, [editingGroup, isOpen, setValues]);
+  }, [editingGroup, isOpen]);
 
   // Load available athletes
   useEffect(() => {
@@ -184,256 +84,232 @@ export default function GroupFormModal({
       }
     };
     loadAthletes();
-  }, [isOpen, existingGroups, editingGroup]);
+  }, [isOpen]);
 
-  const handleInputChange = (field: keyof typeof values, value: string) => {
-    handleChange(field, value as never); // Type assertion needed for generic constraint
+  const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitError("");
+
+    try {
+      // Add selected athletes to values
+      const submitData = {
+        ...values,
+        athleteIds: selectedAthleteIds,
+      };
+
+      if (editingGroup) {
+        const response = (await apiClient.updateGroup(
+          editingGroup.id,
+          submitData
+        )) as ApiResponse;
+        if (response.success && response.data) {
+          const data = response.data as { group?: AthleteGroup };
+          if (data.group) {
+            onSave(data.group);
+            onClose();
+          } else {
+            throw new Error("Failed to update group");
+          }
+        } else {
+          throw new Error(
+            typeof response.error === "string"
+              ? response.error
+              : "Failed to update group"
+          );
+        }
+      } else {
+        const response = (await apiClient.createGroup(submitData)) as ApiResponse;
+        if (response.success) {
+          const data = response as unknown as { group?: AthleteGroup };
+          if (data.group) {
+            onSave(data.group);
+            onClose();
+          } else {
+            console.error("No group in response:", data);
+            throw new Error("Failed to create group - no group returned");
+          }
+        } else {
+          console.error("API returned error:", response.error);
+          throw new Error(
+            typeof response.error === "string"
+              ? response.error
+              : "Failed to create group"
+          );
+        }
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save group";
+      setSubmitError(errorMessage);
+    }
   };
 
   const handleAthleteSelection = (athleteId: string, selected: boolean) => {
-    handleChange(
-      "athleteIds",
-      selected
-        ? [...values.athleteIds, athleteId]
-        : (values.athleteIds.filter((id) => id !== athleteId) as never)
+    setSelectedAthleteIds((prev) =>
+      selected ? [...prev, athleteId] : prev.filter((id) => id !== athleteId)
     );
   };
 
   if (!isOpen) return null;
 
-  const selectedAthletes = availableAthletes.filter((athlete) =>
-    values.athleteIds.includes(athlete.id)
-  );
-
-  const unselectedAthletes = availableAthletes.filter(
-    (athlete) => !values.athleteIds.includes(athlete.id)
-  );
-
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="
-        bg-white 
-        w-full h-full
-        sm:rounded-lg sm:max-w-4xl sm:h-auto sm:max-h-[85vh]
-        flex flex-col 
-        sm:shadow-2xl
-        safe-area-inset
-      ">
+      <div className="bg-(--bg-surface) rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         <ModalHeader
-          title={editingGroup ? "Edit Group" : "Create New Group"}
-          subtitle="Configure group details and member settings"
-          onClose={onClose}
+          title={editingGroup ? "Edit Group" : "Create Group"}
           icon={<Users className="w-6 h-6" />}
+          onClose={onClose}
         />
 
-        <div className="flex-1 overflow-y-auto">
+        <Form
+          onSubmit={handleSubmit}
+          initialValues={{
+            name: editingGroup?.name || "",
+            description: editingGroup?.description || "",
+            sport: editingGroup?.sport || "",
+            category: editingGroup?.category || "",
+            color: editingGroup?.color || predefinedColors[0].value,
+          }}
+          validation={{
+            name: {
+              required: "Group name is required",
+              custom: (value: any) => {
+                const name = String(value).trim();
+                if (!name) return "Group name is required";
+
+                const duplicateName = existingGroups.some(
+                  (group) =>
+                    group.name.toLowerCase() === name.toLowerCase() &&
+                    (!editingGroup || group.id !== editingGroup.id)
+                );
+
+                if (duplicateName) {
+                  return "A group with this name already exists";
+                }
+
+                return undefined;
+              },
+            },
+            sport: validationRules.required("Sport selection is required"),
+          }}
+          validateOnBlur={true}
+          className="flex flex-col flex-1 overflow-hidden"
+        >
           <ModalContent>
-            <form onSubmit={handleSubmit} id="group-form">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-heading-secondary text-lg mb-4">
-                  Group Details
-                </h3>
+            <div className="space-y-6">
+              {/* Group Name */}
+              <FormField
+                name="name"
+                label="Group Name"
+                placeholder="e.g., Varsity Football"
+                required
+                fullWidth
+              />
 
-                {/* Group Name */}
-                <FloatingLabelInput
-                  label="Group Name"
-                  type="text"
-                  value={values.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  disabled={isSubmitting}
+              {/* Sport Selection */}
+              <FormSelect
+                name="sport"
+                label="Sport"
+                options={[
+                  { value: "", label: "Select a sport..." },
+                  ...sportOptions.map((sport) => ({
+                    value: sport,
+                    label: sport,
+                  })),
+                ]}
+                required
+                fullWidth
+              />
+
+              {/* Category (Optional) */}
+              <FormField
+                name="category"
+                label="Category (Optional)"
+                placeholder="e.g., Varsity, JV, Freshmen"
+                helperText="Used to differentiate between skill levels or divisions"
+                fullWidth
+              />
+
+              {/* Description */}
+              <FormTextarea
+                name="description"
+                label="Description (Optional)"
+                placeholder="Add any notes about this group..."
+                rows={3}
+                fullWidth
+              />
+
+              {/* Color Selection */}
+              <div>
+                <Label className="block mb-2">Group Color</Label>
+                <Caption variant="muted" className="mb-3">
+                  Choose a color to help identify this group
+                </Caption>
+                <FormSelect
+                  name="color"
+                  options={predefinedColors.map((color) => ({
+                    value: color.value,
+                    label: color.name,
+                  }))}
                   fullWidth
-                  required
                 />
+              </div>
 
-                {/* Sport */}
-                <Select
-                  label="Sport *"
-                  value={values.sport}
-                  onChange={(e) => handleInputChange("sport", e.target.value)}
-                  disabled={isSubmitting}
-                  fullWidth
-                  required
-                  options={[
-                    { value: "", label: "Select a sport..." },
-                    ...sportOptions.map((sport) => ({
-                      value: sport,
-                      label: sport,
-                    })),
-                  ]}
-                />
-
-                {/* Category */}
-                <FloatingLabelInput
-                  label="Category"
-                  type="text"
-                  value={values.category}
-                  onChange={(e) =>
-                    handleInputChange("category", e.target.value)
-                  }
-                  disabled={isSubmitting}
-                  fullWidth
-                />
-
-                {/* Description */}
-                <FloatingLabelTextarea
-                  label="Description"
-                  value={values.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  rows={3}
-                  disabled={isSubmitting}
-                  fullWidth
-                />
-
+              {/* Athlete Selection */}
+              {availableAthletes.length > 0 && (
                 <div>
-                  <label className="text-body-primary font-medium block mb-2">
-                    Group Color
-                  </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {predefinedColors.map((color) => (
-                      <button
-                        key={color.value}
-                        type="button"
-                        onClick={() => handleInputChange("color", color.value)}
-                        className={`p-3 rounded-md border-2 transition-all ${
-                          values.color === color.value
-                            ? "border-navy-600 scale-105"
-                            : "border-silver-300 hover:border-silver-400"
-                        }`}
-                        style={{ backgroundColor: color.value }}
-                        disabled={isSubmitting}
-                        title={color.name}
-                      >
-                        <div className="w-full h-4"></div>
-                      </button>
-                    ))}
+                  <Label className="block mb-2">
+                    Athletes ({selectedAthleteIds.length} selected)
+                  </Label>
+                  <Caption variant="muted" className="mb-3">
+                    Select athletes to add to this group
+                  </Caption>
+                  <div className="border border-(--border-primary) rounded-lg max-h-60 overflow-y-auto">
+                    {availableAthletes.map((athlete) => {
+                      const isSelected = selectedAthleteIds.includes(athlete.id);
+                      return (
+                        <label
+                          key={athlete.id}
+                          className="flex items-center gap-3 p-3 hover:bg-(--interactive-hover) cursor-pointer border-b border-(--border-primary) last:border-b-0"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) =>
+                              handleAthleteSelection(athlete.id, e.target.checked)
+                            }
+                            className="w-5 h-5 rounded border-(--border-primary) text-(--accent-blue-600) focus:ring-2 focus:ring-(--accent-blue-500)"
+                          />
+                          <div className="flex-1">
+                            <div className="font-[var(--font-weight-medium)] text-(--text-primary)">
+                              {athlete.firstName} {athlete.lastName}
+                            </div>
+                            <div className="text-sm text-(--text-secondary)">
+                              {athlete.email}
+                            </div>
+                          </div>
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
-              </div>
+              )}
 
-              <div className="space-y-4">
-                <h3 className="text-heading-secondary text-lg mb-4">
-                  Select Athletes ({values.athleteIds?.length || 0} selected)
-                </h3>
-
-                {selectedAthletes.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-body-primary font-medium mb-2">
-                      Selected Athletes
-                    </h4>
-                    <div className="space-y-2 max-h-32 overflow-y-auto border border-silver-300 rounded-md p-2">
-                      {selectedAthletes.map((athlete) => (
-                        <div
-                          key={athlete.id}
-                          className="flex items-center justify-between bg-accent-green/10 p-2 rounded"
-                        >
-                          <div>
-                            <div className="text-body-primary font-medium">
-                              {athlete.fullName}
-                            </div>
-                            <div className="text-body-small">
-                              {athlete.email}
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleAthleteSelection(athlete.id, false)
-                            }
-                            className="text-red-600 hover:text-red-800 text-sm"
-                            disabled={isSubmitting}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {unselectedAthletes.length > 0 && (
-                  <div>
-                    <h4 className="text-body-primary font-medium mb-2">
-                      Available Athletes
-                    </h4>
-                    <div className="space-y-2 max-h-64 overflow-y-auto border border-silver-300 rounded-md p-2">
-                      {unselectedAthletes.map((athlete) => (
-                        <div
-                          key={athlete.id}
-                          className="flex items-center justify-between p-2 hover:bg-silver-50 rounded"
-                        >
-                          <div>
-                            <div className="text-body-primary font-medium">
-                              {athlete.fullName}
-                            </div>
-                            <div className="text-body-small">
-                              {athlete.email}
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={() =>
-                              handleAthleteSelection(athlete.id, true)
-                            }
-                            variant="secondary"
-                            size="sm"
-                            className="px-3 py-1"
-                            disabled={isSubmitting}
-                          >
-                            Add
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {availableAthletes.length === 0 && (
-                  <div className="text-center py-8 text-body-secondary">
-                    No available athletes found. Add athletes to assign them to
-                    groups.
-                  </div>
-                )}
-              </div>
+              {submitError && (
+                <div className="p-3 bg-(--status-error-light) border border-(--status-error) rounded-lg">
+                  <Caption className="text-(--status-error)">{submitError}</Caption>
+                </div>
+              )}
             </div>
+          </ModalContent>
 
-            {(errors.name || errors.sport || errors.submit) && (
-              <div className="mt-4 p-3 bg-error-light border border-error rounded-md">
-                <p className="text-error text-sm">
-                  {errors.name || errors.sport || errors.submit}
-                </p>
-              </div>
-            )}
-          </form>
-        </ModalContent>
-        </div>
-
-        <ModalFooter align="between">
-          <Button
-            type="button"
-            onClick={onClose}
-            variant="secondary"
-            className="flex-1"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            form="group-form"
-            variant="primary"
-            className="flex-1"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : editingGroup
-                ? "Update Group"
-                : "Create Group"}
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button variant="ghost" onClick={onClose} type="button">
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              {editingGroup ? "Save Changes" : "Create Group"}
+            </Button>
+          </ModalFooter>
+        </Form>
       </div>
     </ModalBackdrop>
   );

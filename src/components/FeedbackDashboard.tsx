@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Input, Select } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Heading, Body, Label } from "@/components/ui/Typography";
 import { useAsyncState } from "@/hooks/use-async-state";
 import {

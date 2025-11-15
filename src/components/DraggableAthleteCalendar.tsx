@@ -30,6 +30,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
+import { Badge } from "@/components/ui/Badge";
+import { Body } from "@/components/ui/Typography";
 
 interface DraggableAthleteCalendarProps {
   assignments: WorkoutAssignment[];
@@ -98,10 +100,10 @@ function DraggableAssignment({
         compact ? "p-1.5" : "p-2.5"
       } ${
         isCompleted
-          ? "bg-gradient-to-r from-green-50 to-emerald-50 text-green-900 shadow-sm hover:shadow-md"
+          ? "bg-gradient-to-r from-(--status-success-light) to-(--accent-emerald-50) text-(--status-success) shadow-sm hover:shadow-md"
           : isOverdue
-            ? "bg-gradient-to-r from-red-50 to-rose-50 text-red-900 shadow-sm hover:shadow-md"
-            : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-900 shadow-sm hover:shadow-md"
+            ? "bg-gradient-to-r from-(--status-error-light) to-(--accent-rose-50) text-(--status-error) shadow-sm hover:shadow-md"
+            : "bg-gradient-to-r from-(--accent-blue-50) to-(--accent-indigo-50) text-(--accent-blue-900) shadow-sm hover:shadow-md"
       } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
@@ -113,10 +115,10 @@ function DraggableAssignment({
           <div
             className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-sm ${
               isCompleted
-                ? "bg-green-500"
+                ? "bg-(--status-success)"
                 : isOverdue
-                  ? "bg-red-500"
-                  : "bg-blue-500"
+                  ? "bg-(--status-error)"
+                  : "bg-(--accent-blue-500)"
             }`}
           >
             {isCompleted ? (
@@ -458,7 +460,7 @@ export default function DraggableAthleteCalendar({
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className="text-center font-semibold text-xs text-gray-500 uppercase tracking-wider py-3"
+            className="text-center font-semibold text-xs text-(--text-secondary) uppercase tracking-wider py-3"
           >
             {day}
           </div>
@@ -480,8 +482,8 @@ export default function DraggableAthleteCalendar({
               className={`min-h-32 p-2 rounded-xl transition-all duration-200 flex flex-col ${
                 isCurrentMonth
                   ? "bg-white shadow-md hover:shadow-xl hover:scale-[1.01]"
-                  : "bg-gradient-to-br from-silver-100 to-silver-200 text-gray-400"
-              } ${isTodayDate ? "ring-2 ring-blue-500 ring-offset-2 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-xl" : ""} ${
+                  : "bg-gradient-to-br from-(--bg-secondary) to-(--bg-tertiary) text-(--text-tertiary)"
+              } ${isTodayDate ? "ring-2 ring-(--accent-blue-500) ring-offset-2 bg-gradient-to-br from-(--accent-blue-50) to-(--accent-indigo-50) shadow-xl" : ""} ${
                 isCoach ? "cursor-pointer" : ""
               }`}
             >
@@ -490,10 +492,10 @@ export default function DraggableAthleteCalendar({
                 <span
                   className={`text-sm font-bold ${
                     isTodayDate
-                      ? "text-blue-600"
+                      ? "text-(--accent-blue-600)"
                       : isCurrentMonth
-                        ? "text-gray-800"
-                        : "text-gray-400"
+                        ? "text-(--text-primary)"
+                        : "text-(--text-tertiary)"
                   }`}
                 >
                   {date.getDate()}
@@ -562,7 +564,7 @@ export default function DraggableAthleteCalendar({
                 onClick={() => isCoach && onDateClick?.(date)}
                 className={`rounded-xl p-3 transition-all duration-200 ${
                   isTodayDate
-                    ? "ring-2 ring-blue-500 ring-offset-2 bg-blue-50 shadow-lg"
+                    ? "ring-2 ring-(--accent-blue-500) ring-offset-2 bg-(--accent-blue-50) shadow-lg"
                     : "bg-white shadow-md hover:shadow-lg"
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
@@ -643,7 +645,7 @@ export default function DraggableAthleteCalendar({
                 onClick={() => isCoach && onDateClick?.(date)}
                 className={`rounded-xl p-4 transition-all duration-200 ${
                   isTodayDate
-                    ? "ring-2 ring-blue-500 bg-blue-50 shadow-lg"
+                    ? "ring-2 ring-(--accent-blue-500) bg-(--accent-blue-50) shadow-lg"
                     : "bg-white shadow-md"
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
@@ -658,10 +660,10 @@ export default function DraggableAthleteCalendar({
                       {date.getDate()}
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-gray-900">
+                      <div className="text-base font-semibold text-(--text-primary)">
                         {date.toLocaleDateString("en-US", { weekday: "long" })}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-(--text-secondary)">
                         {date.toLocaleDateString("en-US", {
                           month: "short",
                           year: "numeric",
@@ -690,13 +692,13 @@ export default function DraggableAthleteCalendar({
                       <div
                         key={assignment.id}
                         onClick={() => onAssignmentClick?.(assignment)}
-                        className="p-3 bg-silver-200 rounded-lg shadow-sm hover:shadow-md hover:bg-blue-50 transition-all touch-manipulation cursor-pointer"
+                        className="p-3 bg-(--bg-secondary) rounded-lg shadow-sm hover:shadow-md hover:bg-(--accent-blue-50) transition-all touch-manipulation cursor-pointer"
                       >
-                        <div className="font-semibold text-gray-900 mb-1">
+                        <div className="font-semibold text-(--text-primary) mb-1">
                           {assignment.workoutPlanName || "Workout"}
                         </div>
                         {assignment.startTime && (
-                          <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                          <div className="flex items-center gap-1.5 text-xs text-(--text-secondary)">
                             <Clock className="w-3.5 h-3.5" />
                             <span>
                               {formatTime12Hour(assignment.startTime)}
@@ -704,7 +706,7 @@ export default function DraggableAthleteCalendar({
                           </div>
                         )}
                         {assignment.location && (
-                          <div className="flex items-center gap-1.5 text-xs text-gray-600 mt-1">
+                          <div className="flex items-center gap-1.5 text-xs text-(--text-secondary) mt-1">
                             <MapPin className="w-3.5 h-3.5" />
                             <span>{assignment.location}</span>
                           </div>
@@ -715,25 +717,21 @@ export default function DraggableAthleteCalendar({
                           assignment.athleteNames.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
                               {assignment.athleteNames.map((name, idx) => (
-                                <span
+                                <Badge
                                   key={idx}
-                                  className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                                  style={{
-                                    backgroundColor: "#dbeafe",
-                                    color: "#1e40af",
-                                    border: "1.5px solid #3b82f6",
-                                  }}
+                                  variant="primary"
+                                  size="sm"
                                   title={name}
                                 >
                                   {name}
-                                </span>
+                                </Badge>
                               ))}
                             </div>
                           )}
                         {assignment.groupId && (
                           <div className="flex items-center gap-1 mt-2">
-                            <Users className="w-3 h-3 text-gray-500" />
-                            <span className="text-xs text-gray-600 font-medium">
+                            <Users className="w-3 h-3 text-(--text-secondary)" />
+                            <span className="text-xs text-(--text-secondary) font-medium">
                               Group
                             </span>
                           </div>
@@ -742,7 +740,7 @@ export default function DraggableAthleteCalendar({
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center text-gray-400 py-6">
+                  <div className="text-center text-(--text-tertiary) py-6">
                     <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No workouts scheduled</p>
                   </div>
@@ -925,12 +923,12 @@ export default function DraggableAthleteCalendar({
               onClose={handleCancelMove}
             />
             <ModalContent>
-              <p className="text-gray-600 mb-6">
+              <Body variant="secondary" className="mb-6">
                 This is a <strong>group assignment</strong>. Moving it will
                 reschedule the workout for{" "}
                 <strong>all athletes in the group</strong>.
-              </p>
-              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+              </Body>
+              <div className="bg-(--bg-secondary) p-4 rounded-lg space-y-2 text-sm">
                 <div>
                   <span className="font-medium">Workout:</span>{" "}
                   {pendingMove.assignment.workoutPlanName}

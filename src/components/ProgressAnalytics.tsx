@@ -24,7 +24,8 @@ import {
   Area,
 } from "recharts";
 import { Button } from "@/components/ui/Button";
-import { Select } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Heading, Body, Label } from "@/components/ui/Typography";
 import {
   Calendar,
   TrendingUp,
@@ -272,9 +273,12 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {/* Enhanced mobile header */}
       <div className="flex flex-col gap-6">
         <div className="text-center sm:text-left">
-          <h1 className="text-heading-primary text-3xl sm:text-2xl mb-3 font-bold flex items-center gap-3 justify-center sm:justify-start">
+          <Heading
+            level="h1"
+            className="mb-3 flex items-center gap-3 justify-center sm:justify-start"
+          >
             <BarChart3 className="w-8 h-8" /> Progress Analytics
-          </h1>
+          </Heading>
           <p className="text-heading-secondary leading-relaxed">
             Track progress, strength gains, and workout consistency
           </p>
@@ -283,7 +287,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
         {/* Mobile-optimized controls */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
           {/* Enhanced time range selector */}
-          <div className="flex bg-gray-100 rounded-xl p-1">
+          <div className="flex bg-(--bg-tertiary) rounded-xl p-1">
             {(["1m", "3m", "6m", "1y"] as const).map((timeframe) => (
               <button
                 key={timeframe}
@@ -310,13 +314,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       </div>
 
       {/* Enhanced mobile view mode tabs */}
-      <div className="grid grid-cols-2 sm:flex gap-1 p-1 bg-gray-100 rounded-xl">
+      <div className="grid grid-cols-2 sm:flex gap-1 p-1 bg-(--bg-tertiary) rounded-xl">
         <button
           onClick={() => setViewMode("overview")}
           className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "overview"
               ? "bg-white text-primary-600 shadow-md"
-              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
+              : "text-(--text-secondary) hover:text-primary-600 hover:bg-white/50"
           }`}
         >
           <TrendingUp className="w-4 h-4 inline mr-2" /> Overview
@@ -326,7 +330,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "strength"
               ? "bg-white text-primary-600 shadow-md"
-              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
+              : "text-(--text-secondary) hover:text-primary-600 hover:bg-white/50"
           }`}
         >
           <Dumbbell className="w-4 h-4 inline mr-2" /> Strength
@@ -336,7 +340,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "comparison"
               ? "bg-white text-primary-600 shadow-md"
-              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
+              : "text-(--text-secondary) hover:text-primary-600 hover:bg-white/50"
           }`}
         >
           <BarChart3 className="w-4 h-4 inline mr-2" /> Compare
@@ -346,7 +350,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           className={`px-4 py-3 sm:py-2 rounded-lg text-sm font-medium transition-all touch-manipulation ${
             viewMode === "goals"
               ? "bg-white text-primary-600 shadow-md"
-              : "text-gray-600 hover:text-primary-600 hover:bg-white/50"
+              : "text-(--text-secondary) hover:text-primary-600 hover:bg-white/50"
           }`}
         >
           <Trophy className="w-4 h-4 inline mr-2" /> Goals
@@ -357,71 +361,75 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
       {viewMode === "overview" && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-blue-500">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-blue-500)">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">
+                  <Body variant="secondary" className="text-sm font-medium">
                     Total Workouts
-                  </p>
-                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
+                  </Body>
+                  <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.totalWorkouts}
-                  </p>
+                  </Body>
                 </div>
-                <div className="p-3 rounded-xl text-blue-600 bg-gradient-to-br from-blue-50 to-blue-100">
+                <div className="p-3 rounded-xl text-(--accent-blue-600) bg-gradient-to-br from-(--accent-blue-50) to-(--accent-blue-100)">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-green-500">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--status-success)">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">
+                  <Body variant="secondary" className="text-sm font-medium">
                     Avg per Week
-                  </p>
-                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
+                  </Body>
+                  <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgWorkoutsPerWeek || 0}
-                  </p>
+                  </Body>
                 </div>
-                <div className="p-3 rounded-xl text-green-600 bg-gradient-to-br from-green-50 to-green-100">
+                <div className="p-3 rounded-xl text-(--status-success) bg-gradient-to-br from-(--status-success-light) to-green-100">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-orange-500">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-orange-500)">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">
+                  <Body variant="secondary" className="text-sm font-medium">
                     Consistency
-                  </p>
-                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
+                  </Body>
+                  <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.consistencyScore}
-                    <span className="text-lg text-gray-600 ml-1">%</span>
-                  </p>
+                    <span className="text-lg text-(--text-secondary) ml-1">
+                      %
+                    </span>
+                  </Body>
                 </div>
-                <div className="p-3 rounded-xl text-orange-600 bg-gradient-to-br from-orange-50 to-orange-100">
+                <div className="p-3 rounded-xl text-(--accent-orange-600) bg-gradient-to-br from-(--accent-orange-50) to-(--accent-orange-100)">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-purple-500">
+            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-purple-500)">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">
+                  <Body variant="secondary" className="text-sm font-medium">
                     Avg Improvement
-                  </p>
-                  <p className="text-gray-900 text-3xl sm:text-2xl font-bold mt-1">
+                  </Body>
+                  <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgImprovement}
-                    <span className="text-lg text-gray-600 ml-1">%</span>
-                  </p>
-                  <div className="flex items-center mt-2 text-sm text-green-600">
+                    <span className="text-lg text-(--text-secondary) ml-1">
+                      %
+                    </span>
+                  </Body>
+                  <div className="flex items-center mt-2 text-sm text-(--status-success)">
                     <TrendingUp className="w-4 h-4 mr-1" />
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-xl text-purple-600 bg-gradient-to-br from-purple-50 to-purple-100">
+                <div className="p-3 rounded-xl text-(--accent-purple-600) bg-gradient-to-br from-(--accent-purple-50) to-(--accent-purple-100)">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>
@@ -430,10 +438,10 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
 
           {/* Mobile-optimized Workout Frequency Chart */}
           <div className="bg-white rounded-xl shadow-sm p-6 sm:p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
+            <Heading level="h3" className="mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-(--accent-blue-600)" />
               Workout Frequency
-            </h3>
+            </Heading>
             <div className="w-full overflow-x-auto">
               <ResponsiveContainer
                 width="100%"
@@ -489,13 +497,13 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           {strengthProgressData.length > 0 && (
             <Card variant="default" padding="md">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <label
+                <Label
                   htmlFor="exercise-select"
-                  className="text-sm font-medium text-gray-700 flex items-center gap-2"
+                  className="flex items-center gap-2"
                 >
                   <Dumbbell className="h-4 w-4" />
                   Filter by Exercise:
-                </label>
+                </Label>
                 <Select
                   id="exercise-select"
                   value={selectedExercise}
@@ -520,10 +528,10 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
               className="bg-white rounded-xl shadow-sm p-6 sm:p-4"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <Dumbbell className="h-5 w-5 text-blue-600" />
+                <Heading level="h3" className="flex items-center gap-2">
+                  <Dumbbell className="h-5 w-5 text-(--accent-blue-600)" />
                   {exercise.exerciseName} Progress
-                </h3>
+                </Heading>
               </div>
 
               <div className="w-full overflow-x-auto">
@@ -582,9 +590,9 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
         <div className="space-y-6">
           {/* Exercise Distribution */}
           <Card variant="default" padding="md">
-            <h3 className="text-heading-primary text-lg font-semibold mb-4">
+            <Heading level="h3" className="mb-4">
               Workout Distribution
-            </h3>
+            </Heading>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -609,9 +617,9 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
 
           {/* Performance Radar */}
           <Card variant="default" padding="md">
-            <h3 className="text-heading-primary text-lg font-semibold mb-4">
+            <Heading level="h3" className="mb-4">
               Performance Profile
-            </h3>
+            </Heading>
             <ResponsiveContainer width="100%" height={400}>
               <RadarChart
                 data={[
@@ -639,9 +647,9 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
 
           {/* Training Volume Trend */}
           <Card variant="default" padding="md">
-            <h3 className="text-heading-primary text-lg font-semibold mb-4">
+            <Heading level="h3" className="mb-4">
               Training Volume Trend
-            </h3>
+            </Heading>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={volumeData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -669,9 +677,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <Target className="w-6 h-6 text-primary-600" />
-              <h3 className="text-heading-primary text-lg font-semibold">
-                Current Goals
-              </h3>
+              <Heading level="h3">Current Goals</Heading>
             </div>
             <div className="space-y-4">
               <div className="rounded-lg p-4 shadow-sm bg-white">
@@ -712,9 +718,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <Medal className="w-6 h-6 text-accent-orange" />
-              <h3 className="text-heading-primary text-lg font-semibold">
-                Recent Achievements
-              </h3>
+              <Heading level="h3">Recent Achievements</Heading>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-accent-orange/10 rounded-lg">
@@ -732,8 +736,8 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                 <p className="font-medium text-sm">Top 10% Lifter</p>
                 <p className="text-xs text-heading-secondary">This month</p>
               </div>
-              <div className="text-center p-4 bg-purple-100 rounded-lg">
-                <Activity className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-center p-4 bg-(--accent-purple-100) rounded-lg">
+                <Activity className="w-8 h-8 text-(--accent-purple-600) mx-auto mb-2" />
                 <p className="font-medium text-sm">Volume Leader</p>
                 <p className="text-xs text-heading-secondary">Last week</p>
               </div>
@@ -744,31 +748,29 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
           <Card variant="default" padding="md">
             <div className="flex items-center gap-3 mb-6">
               <TrendingDown className="w-6 h-6 text-primary-600" />
-              <h3 className="text-heading-primary text-lg font-semibold">
-                Performance Insights
-              </h3>
+              <Heading level="h3">Performance Insights</Heading>
             </div>
             <div className="space-y-4">
               <div className="border-l-4 border-accent-green pl-4">
                 <p className="font-medium text-accent-green">Strength Gains</p>
-                <p className="text-sm text-heading-secondary">
+                <Body className="text-sm" variant="secondary">
                   Your bench press has improved 12% this month. Keep focusing on
                   progressive overload.
-                </p>
+                </Body>
               </div>
               <div className="border-l-4 border-accent-orange pl-4">
                 <p className="font-medium text-accent-orange">Recovery Note</p>
-                <p className="text-sm text-heading-secondary">
+                <Body className="text-sm" variant="secondary">
                   Consider adding more rest days between heavy squat sessions
                   for optimal recovery.
-                </p>
+                </Body>
               </div>
               <div className="border-l-4 border-accent-blue pl-4">
                 <p className="font-medium text-accent-blue">Consistency Win</p>
-                <p className="text-sm text-heading-secondary">
+                <Body className="text-sm" variant="secondary">
                   You&apos;re in the top 15% for workout consistency this
                   quarter. Great work!
-                </p>
+                </Body>
               </div>
             </div>
           </Card>

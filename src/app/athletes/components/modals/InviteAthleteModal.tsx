@@ -78,14 +78,16 @@ export default function InviteAthleteModal({
 
   return (
     <ModalBackdrop isOpen={isOpen} onClose={onClose}>
-      <div className="
+      <div
+        className="
         bg-white 
         w-full h-full
         sm:rounded-xl sm:max-w-md sm:h-auto sm:max-h-[85vh]
         flex flex-col 
         sm:shadow-2xl
         safe-area-inset
-      ">
+      "
+      >
         <ModalHeader
           title="Invite New Athlete"
           icon={<Send className="w-6 h-6" />}
@@ -93,82 +95,84 @@ export default function InviteAthleteModal({
         />
         <div className="flex-1 overflow-y-auto">
           <ModalContent>
-          <div className="space-y-4">
-            {/* Name Inputs */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
+              {/* Name Inputs */}
+              <div className="grid grid-cols-2 gap-4">
+                <FloatingLabelInput
+                  label="First Name *"
+                  type="text"
+                  value={form.firstName}
+                  onChange={(e) =>
+                    setForm({ ...form, firstName: e.target.value })
+                  }
+                  fullWidth
+                  required
+                />
+                <FloatingLabelInput
+                  label="Last Name *"
+                  type="text"
+                  value={form.lastName}
+                  onChange={(e) =>
+                    setForm({ ...form, lastName: e.target.value })
+                  }
+                  fullWidth
+                  required
+                />
+              </div>
+
+              {/* Email Input */}
               <FloatingLabelInput
-                label="First Name *"
-                type="text"
-                value={form.firstName}
-                onChange={(e) =>
-                  setForm({ ...form, firstName: e.target.value })
-                }
+                label="Email Address (Optional)"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                helperText="Leave blank to add athlete profile without sending invite yet"
                 fullWidth
-                required
               />
-              <FloatingLabelInput
-                label="Last Name *"
-                type="text"
-                value={form.lastName}
-                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+
+              {/* Initial Group Select */}
+              <Select
+                label="Initial Group (Optional)"
+                value={form.groupId}
+                onChange={(e) => handleGroupChange(e.target.value)}
                 fullWidth
-                required
+                options={[
+                  { value: "", label: "No group assigned" },
+                  ...groups.map((group) => ({
+                    value: group.id,
+                    label: group.name,
+                  })),
+                  { value: "CREATE_NEW", label: "+ Create New Group" },
+                ]}
               />
-            </div>
 
-            {/* Email Input */}
-            <FloatingLabelInput
-              label="Email Address (Optional)"
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              helperText="Leave blank to add athlete profile without sending invite yet"
-              fullWidth
-            />
+              {/* Notes Textarea */}
+              <FloatingLabelTextarea
+                label="Notes (Optional)"
+                value={form.notes}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                rows={3}
+                fullWidth
+              />
 
-            {/* Initial Group Select */}
-            <Select
-              label="Initial Group (Optional)"
-              value={form.groupId}
-              onChange={(e) => handleGroupChange(e.target.value)}
-              fullWidth
-              options={[
-                { value: "", label: "No group assigned" },
-                ...groups.map((group) => ({
-                  value: group.id,
-                  label: group.name,
-                })),
-                { value: "CREATE_NEW", label: "+ Create New Group" },
-              ]}
-            />
-
-            {/* Notes Textarea */}
-            <FloatingLabelTextarea
-              label="Notes (Optional)"
-              value={form.notes}
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              rows={3}
-              fullWidth
-            />
-
-            {/* Info Box */}
-            <div className="bg-gradient-to-r from-orange-50 to-purple-50 p-4 rounded-lg border border-orange-200">
-              <div className="flex items-start gap-3">
-                <Send className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
-                <div>
-                  <Heading level="h4" className="mb-1">
-                    How It Works
-                  </Heading>
-                  <Body variant="secondary" size="sm">
-                    {form.email
-                      ? "The athlete will receive an email with a secure link to create their account."
-                      : "Add athlete profile now, then add email later to send the invite."}
-                  </Body>
+              {/* Info Box */}
+              <div className="bg-gradient-to-r from-(--accent-orange-50) to-(--accent-purple-50) p-4 rounded-lg border border-(--accent-orange-200)">
+                <div className="flex items-start gap-3">
+                  <Send className="h-5 w-5 text-(--accent-orange-500) shrink-0 mt-0.5" />
+                  <div>
+                    <Heading level="h4" className="mb-1">
+                      How It Works
+                    </Heading>
+                    <Body variant="secondary" size="sm">
+                      {form.email
+                        ? "The athlete will receive an email with a secure link to create their account."
+                        : "Add athlete profile now, then add email later to send the invite."}
+                    </Body>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </ModalContent>
+          </ModalContent>
         </div>
 
         <ModalFooter align="between">

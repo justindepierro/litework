@@ -14,7 +14,7 @@ const ModalLoadingFallback = () => (
   <ModalBackdrop isOpen={true} onClose={() => {}}>
     <div className="bg-white rounded-lg p-8">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-      <p className="mt-4 text-sm text-gray-600">Loading...</p>
+      <p className="mt-4 text-sm text-(--text-secondary)">Loading...</p>
     </div>
   </ModalBackdrop>
 );

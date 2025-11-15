@@ -520,10 +520,10 @@ export default function AthleteDetailModal({
                                   {kpi.tag.displayName}
                                 </span>
                                 {kpi.targetValue && (
-                                  <span className="text-xs font-medium text-gray-700">
+                                  <span className="text-xs font-medium text-(--text-secondary)">
                                     {kpi.targetValue}
                                     {kpi.targetDate && (
-                                      <span className="text-gray-500 ml-1">
+                                      <span className="text-(--text-tertiary) ml-1">
                                         by{" "}
                                         {new Date(
                                           kpi.targetDate
@@ -544,15 +544,15 @@ export default function AthleteDetailModal({
                       {/* Pending Group KPIs (for invited athletes) */}
                       {pendingGroupKPIs.length > 0 && isInvited && (
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+                          <div className="flex items-center gap-2 p-3 bg-(--status-warning-light) border border-amber-200 rounded-lg">
+                            <AlertCircle className="w-5 h-5 text-(--status-warning) shrink-0" />
                             <div>
-                              <p className="text-sm text-amber-800 font-medium">
+                              <p className="text-sm text-(--status-warning) font-medium">
                                 Will automatically receive these KPIs when
                                 invite is accepted
                               </p>
                               {groups.length > 0 && (
-                                <p className="text-xs text-amber-700 mt-1">
+                                <p className="text-xs text-(--status-warning) mt-1">
                                   From groups:{" "}
                                   {groups.map((g) => g.name).join(", ")}
                                 </p>
@@ -571,7 +571,7 @@ export default function AthleteDetailModal({
                                 >
                                   {tag.displayName}
                                 </span>
-                                <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                                <span className="text-xs text-(--text-tertiary) font-medium uppercase tracking-wide">
                                   Pending
                                 </span>
                               </div>

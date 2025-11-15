@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/Typography";
 
 export interface DeviceInfo {
   isMobile: boolean;
@@ -87,9 +88,12 @@ export function TouchButton({
     "transition-all duration-200 font-medium rounded-xl touch-manipulation active:scale-95";
 
   const variantClasses = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800",
-    secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300",
-    danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
+    primary:
+      "bg-(--accent-blue-600) text-white hover:bg-(--accent-blue-700) active:bg-(--accent-blue-800)",
+    secondary:
+      "bg-(--bg-tertiary) text-(--text-secondary) hover:bg-(--interactive-hover) active:bg-(--interactive-active)",
+    danger:
+      "bg-(--status-error) text-white hover:bg-(--status-error) active:bg-(--status-error)",
   };
 
   const sizeClasses = {
@@ -156,7 +160,7 @@ export function MobileModal({
         <div
           className={`flex justify-between items-center p-4 sm:p-6 border-b ${deviceInfo.isMobile ? "shrink-0" : ""}`}
         >
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+          <h2 className="text-lg sm:text-xl font-bold text-(--text-primary) truncate">
             {title}
           </h2>
           <TouchButton variant="secondary" size="sm" onClick={onClose}>
@@ -200,9 +204,9 @@ export function MobileInput({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
+        <Label className="block">
+          {label} {required && <span className="text-(--status-error)">*</span>}
+        </Label>
       )}
       <input
         type={type}

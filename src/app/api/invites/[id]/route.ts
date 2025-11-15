@@ -191,21 +191,27 @@ export async function PUT(
     const { email } = body;
 
     if (!email || !email.trim()) {
-      return NextResponse.json({ 
-        success: false,
-        error: "Email is required" 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Email is required",
+        },
+        { status: 400 }
+      );
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const trimmedEmail = email.trim().toLowerCase();
-    
+
     if (!emailRegex.test(trimmedEmail)) {
-      return NextResponse.json({ 
-        success: false,
-        error: "Please enter a valid email address" 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Please enter a valid email address",
+        },
+        { status: 400 }
+      );
     }
 
     const supabase = getAdminClient();

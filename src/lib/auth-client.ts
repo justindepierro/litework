@@ -652,8 +652,8 @@ export function onAuthChange(callback: (user: User | null) => void) {
   return supabase.auth.onAuthStateChange(async (event, session) => {
     // Only fetch profile for significant auth events
     // Skip TOKEN_REFRESHED to avoid unnecessary database calls
-    const shouldFetchProfile = event !== 'TOKEN_REFRESHED';
-    
+    const shouldFetchProfile = event !== "TOKEN_REFRESHED";
+
     // We already have the session from the event, no need to fetch it again
     if (session?.user) {
       const correlationId = generateCorrelationId();

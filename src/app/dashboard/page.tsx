@@ -12,6 +12,7 @@ import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailMo
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import { SkeletonStatCard, SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
+import { Body, Caption } from "@/components/ui/Typography";
 
 // Lazy load heavy components
 const DraggableAthleteCalendar = lazy(
@@ -393,9 +394,9 @@ export default withPageErrorBoundary(function DashboardPage() {
                   <h2 className="text-lg font-semibold text-navy-900">
                     Team Schedule
                   </h2>
-                  <p className="text-sm text-steel-600 mt-0.5">
+                  <Body className="text-sm mt-0.5" variant="secondary">
                     Manage workout assignments
-                  </p>
+                  </Body>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -560,9 +561,9 @@ export default withPageErrorBoundary(function DashboardPage() {
                             <h4 className="text-sm font-semibold text-navy-900 mb-1">
                               Message from Your Coach
                             </h4>
-                            <p className="text-sm text-navy-700 whitespace-pre-wrap">
+                            <Body className="text-sm whitespace-pre-wrap">
                               {coachWelcomeMessage}
-                            </p>
+                            </Body>
                           </div>
                         </div>
                       </div>
@@ -773,11 +774,11 @@ export default withPageErrorBoundary(function DashboardPage() {
                 <h3 className="text-base font-semibold text-navy-900 mb-1">
                   No Upcoming Workouts
                 </h3>
-                <p className="text-sm text-steel-600">
+                <Body className="text-sm" variant="secondary">
                   {assignments.length === 0
                     ? "Your training schedule will appear here once your coach assigns workouts."
                     : "All caught up! Your coach will add more workouts soon."}
-                </p>
+                </Body>
               </Card>
             ) : (
               <AnimatedList className="divide-y divide-silver-300 bg-white rounded-xl border border-silver-300 shadow-sm overflow-hidden">
@@ -809,10 +810,10 @@ export default withPageErrorBoundary(function DashboardPage() {
                               </div>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h3 className="text-sm font-semibold text-gray-900 truncate">
+                              <h3 className="text-sm font-semibold text-(--text-primary) truncate">
                                 {assignment.workoutPlanName || "Workout"}
                               </h3>
-                              <p className="text-xs text-gray-500">
+                              <Caption variant="muted">
                                 {assignmentDate.toLocaleDateString("en-US", {
                                   weekday: "short",
                                   month: "short",
@@ -820,10 +821,10 @@ export default withPageErrorBoundary(function DashboardPage() {
                                 })}
                                 {assignment.startTime &&
                                   ` • ${formatTime12Hour(assignment.startTime)}`}
-                              </p>
+                              </Caption>
                             </div>
                           </div>
-                          <Eye className="w-5 h-5 text-gray-400 shrink-0" />
+                          <Eye className="w-5 h-5 text-(--text-tertiary) shrink-0" />
                         </button>
                       </AnimatedListItem>
                     );
@@ -883,10 +884,12 @@ function StatCard({ icon, value, label, loading, color }: StatCardProps) {
       >
         {icon}
       </div>
-      <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
+      <div className="text-3xl sm:text-4xl font-bold text-(--text-primary) tabular-nums">
         {count}
       </div>
-      <div className="text-sm text-gray-600 mt-2 font-medium">{label}</div>
+      <div className="text-sm text-(--text-secondary) mt-2 font-medium">
+        {label}
+      </div>
     </Card>
   );
 }

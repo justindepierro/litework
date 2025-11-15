@@ -9,7 +9,7 @@ import {
   Ruler,
   Weight,
 } from "lucide-react";
-import { useFormValidation } from "@/hooks/use-form-validation";
+import { useFormValidationLegacy } from "@/hooks/use-form-validation";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -44,7 +44,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
   onSuccess,
 }) => {
   const { values, errors, handleChange, handleSubmit, isSubmitting } =
-    useFormValidation({
+    useFormValidationLegacy({
       initialValues: {
         firstName: athlete.firstName || "",
         lastName: athlete.lastName || "",
@@ -141,7 +141,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Contact Information */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
                 Contact Information
               </h3>
               <FloatingLabelInput
@@ -166,7 +166,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Emergency Contact */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
                 Emergency Contact
               </h3>
               <FloatingLabelInput
@@ -190,7 +190,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Physical Information */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
                 Physical Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -235,7 +235,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Injury Status */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
                 Health Status
               </h3>
               <FloatingLabelInput
@@ -250,7 +250,7 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Bio */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
                 About
               </h3>
               <FloatingLabelTextarea

@@ -1,4 +1,5 @@
 # 🎉 Auth Security Enhancements - Implementation Complete!
+
 **Date**: November 14, 2025  
 **Status**: 8/10 Complete (2 require additional setup)
 
@@ -7,12 +8,15 @@
 ## ✅ Completed Enhancements (8/10)
 
 ### Fix 1: Lock Email to Invite ✅ COMPLETE
-**Implementation**: 
+
+**Implementation**:
+
 - Email field disabled when from invite
 - Server-side validation prevents email mismatch
 - Suspicious activity logged to audit trail
 
 **Files Modified**:
+
 - `src/app/signup/page.tsx` - Disabled email input with helper text
 - `src/app/api/invites/accept/route.ts` - Email validation + audit logging
 
@@ -21,12 +25,15 @@
 ---
 
 ### Fix 2: Server-Side Password Validation ✅ COMPLETE
+
 **Implementation**:
+
 - Password requirements enforced on server (8+ chars, complexity)
 - Cannot be bypassed via browser dev tools
 - Weak passwords logged but allowed (user was warned)
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Added `validatePassword()` check
 
 **Security Impact**: HIGH - Prevents weak passwords via bypass
@@ -34,15 +41,19 @@
 ---
 
 ### Fix 3: Email Verification System ✅ COMPLETE
+
 **Implementation**:
+
 - Supabase email verification enabled
 - Auth callback handler processes verification
 - Invite status tracks verification state
 
 **Files Created**:
+
 - `src/app/auth/callback/route.ts` - Email verification callback handler
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Added `emailRedirectTo` and verification logic
 - `src/app/signup/page.tsx` - Already had email confirmation UI
 
@@ -53,12 +64,15 @@
 ---
 
 ### Fix 4: Coach Notification on Signup ✅ COMPLETE
+
 **Implementation**:
+
 - Welcome email sent to athlete
 - Notification email sent to coach
 - Non-blocking (doesn't fail signup if email fails)
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Added `sendEmailNotification()` calls
 
 **Impact**: Improves coach awareness and onboarding
@@ -66,17 +80,21 @@
 ---
 
 ### Fix 5: Invite Audit Trail ✅ COMPLETE
+
 **Implementation**:
+
 - Database schema created with `invite_audit_log` table
 - Helper functions for logging events
 - Tracks: created, sent, resent, accepted, verified, expired, cancelled, suspicious_activity
 - RLS policies protect audit data
 
 **Files Created**:
+
 - `database/invite-audit-trail-schema.sql` - Database schema
 - `src/lib/invite-audit.ts` - Audit logging helpers
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Audit logging on accept + email mismatch
 
 **Security Impact**: HIGH - Compliance and fraud detection
@@ -86,16 +104,20 @@
 ---
 
 ### Fix 8: Password Breach Checking ✅ COMPLETE
+
 **Implementation**:
+
 - HaveIBeenPwned API integration
 - k-Anonymity model (only sends first 5 chars of hash)
 - Non-blocking on API errors
 - Rejects passwords found in breaches
 
 **Files Created**:
+
 - `src/lib/password-breach-check.ts` - Breach checking implementation
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Added breach check before account creation
 
 **Security Impact**: MEDIUM - Prevents compromised passwords
@@ -103,34 +125,42 @@
 ---
 
 ### Fix 9: Terms of Service Agreement ✅ COMPLETE
+
 **Implementation**:
+
 - TOS checkbox required for signup
 - Database tracks acceptance timestamp and version
 - Checkbox disables submit button until accepted
 - Client and server-side validation
 
 **Files Created**:
+
 - `database/tos-schema.sql` - Database schema for TOS tracking
 
 **Files Modified**:
+
 - `src/app/signup/page.tsx` - Added TOS checkbox
 - `src/app/api/invites/accept/route.ts` - Store TOS acceptance in database
 
 **Impact**: Legal compliance
 
-**TODO**: 
+**TODO**:
+
 - Run migration to create TOS columns
 - Create `/terms` and `/privacy` pages
 
 ---
 
 ### Fix 10: Welcome Email ✅ COMPLETE
+
 **Implementation**:
+
 - Automatic welcome email on signup
 - Includes next steps and dashboard link
 - Non-blocking email sending
 
 **Files Modified**:
+
 - `src/app/api/invites/accept/route.ts` - Added welcome email
 
 **Impact**: Better user experience
@@ -140,12 +170,15 @@
 ## 🚧 Partially Complete (2/10)
 
 ### Fix 6: CAPTCHA Protection 🟡 PARTIAL
+
 **Status**: Package installed, needs configuration
 
 **What's Done**:
+
 - ✅ Installed `@marsidev/react-turnstile` package
 
 **What's Needed**:
+
 1. **Get Cloudflare Turnstile Keys** (Free):
    - Go to https://dash.cloudflare.com/
    - Select "Turnstile" from left sidebar
@@ -153,6 +186,7 @@
    - Copy Site Key and Secret Key
 
 2. **Add Environment Variables**:
+
 ```bash
 # .env.local
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key-here
@@ -160,6 +194,7 @@ TURNSTILE_SECRET_KEY=your-secret-key-here
 ```
 
 3. **Add to Signup Form** (`src/app/signup/page.tsx`):
+
 ```tsx
 import { Turnstile } from '@marsidev/react-turnstile';
 
@@ -182,6 +217,7 @@ const [captchaToken, setCaptchaToken] = useState("");
 ```
 
 4. **Verify in API** (`src/app/api/invites/accept/route.ts`):
+
 ```typescript
 const { inviteCode, password, captchaToken } = body;
 
@@ -213,13 +249,17 @@ if (!captchaResult.success) {
 ---
 
 ### Fix 7: Invite Resend Throttling 🟡 PARTIAL
+
 **Status**: Database schema created, needs API implementation
 
 **What's Done**:
+
 - ✅ Database columns added in audit trail migration (`resend_count`, `last_sent_at`)
 
 **What's Needed**:
+
 1. **Create Resend API Route** (`src/app/api/invites/[id]/resend/route.ts`):
+
 ```typescript
 import { NextRequest, NextResponse } from "next/server";
 import { withPermission } from "@/lib/auth-utils";
@@ -243,23 +283,20 @@ export async function POST(
       .single();
 
     if (error || !invite) {
-      return NextResponse.json(
-        { error: "Invite not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Invite not found" }, { status: 404 });
     }
 
     // Check if recently sent
     if (invite.last_sent_at) {
       const lastSent = new Date(invite.last_sent_at);
       const hoursSince = (Date.now() - lastSent.getTime()) / (1000 * 60 * 60);
-      
+
       if (hoursSince < 24) {
         return NextResponse.json(
-          { 
+          {
             error: "Invite recently sent",
             details: "Please wait 24 hours before resending",
-            retryAfter: new Date(lastSent.getTime() + 24 * 60 * 60 * 1000)
+            retryAfter: new Date(lastSent.getTime() + 24 * 60 * 60 * 1000),
           },
           { status: 429 }
         );
@@ -269,9 +306,9 @@ export async function POST(
     // Check resend limit
     if (invite.resend_count >= 5) {
       return NextResponse.json(
-        { 
+        {
           error: "Resend limit reached",
-          details: "Maximum 5 resends per invite. Create a new invitation."
+          details: "Maximum 5 resends per invite. Create a new invitation.",
         },
         { status: 429 }
       );
@@ -323,6 +360,7 @@ export async function POST(
 ```
 
 2. **Add Resend Button to UI** (`src/app/athletes/page.tsx`):
+
 ```tsx
 // For invited athletes
 <Button
@@ -341,21 +379,21 @@ export async function POST(
 
 ## 📊 Implementation Summary
 
-| Fix | Status | Files | Impact | Time |
-|-----|--------|-------|--------|------|
-| 1. Lock Email | ✅ Complete | 2 | HIGH | 15min |
-| 2. Password Validation | ✅ Complete | 1 | HIGH | 10min |
-| 3. Email Verification | ✅ Complete | 3 | CRITICAL | 20min |
-| 4. Coach Notification | ✅ Complete | 1 | MEDIUM | 20min |
-| 5. Audit Trail | ✅ Complete | 3 | HIGH | 45min |
-| 6. CAPTCHA | 🟡 Partial | - | MEDIUM | 15min |
-| 7. Resend Throttling | 🟡 Partial | - | MEDIUM | 30min |
-| 8. Password Breach | ✅ Complete | 2 | MEDIUM | 30min |
-| 9. TOS Agreement | ✅ Complete | 3 | LOW | 45min |
-| 10. Welcome Email | ✅ Complete | 1 | LOW | 20min |
+| Fix                    | Status      | Files | Impact   | Time  |
+| ---------------------- | ----------- | ----- | -------- | ----- |
+| 1. Lock Email          | ✅ Complete | 2     | HIGH     | 15min |
+| 2. Password Validation | ✅ Complete | 1     | HIGH     | 10min |
+| 3. Email Verification  | ✅ Complete | 3     | CRITICAL | 20min |
+| 4. Coach Notification  | ✅ Complete | 1     | MEDIUM   | 20min |
+| 5. Audit Trail         | ✅ Complete | 3     | HIGH     | 45min |
+| 6. CAPTCHA             | 🟡 Partial  | -     | MEDIUM   | 15min |
+| 7. Resend Throttling   | 🟡 Partial  | -     | MEDIUM   | 30min |
+| 8. Password Breach     | ✅ Complete | 2     | MEDIUM   | 30min |
+| 9. TOS Agreement       | ✅ Complete | 3     | LOW      | 45min |
+| 10. Welcome Email      | ✅ Complete | 1     | LOW      | 20min |
 
 **Total Time Invested**: ~4 hours  
-**Remaining Work**: ~45 minutes  
+**Remaining Work**: ~45 minutes
 
 ---
 
@@ -364,16 +402,19 @@ export async function POST(
 Run these migrations in order:
 
 1. **Invite Audit Trail**:
+
 ```bash
 psql $DATABASE_URL < database/invite-audit-trail-schema.sql
 ```
 
 2. **Terms of Service**:
+
 ```bash
 psql $DATABASE_URL < database/tos-schema.sql
 ```
 
 **Or via Supabase Dashboard**:
+
 1. Go to SQL Editor
 2. Copy/paste contents of each file
 3. Run query
@@ -442,6 +483,7 @@ psql $DATABASE_URL < database/tos-schema.sql
 ## 🚀 Deployment Steps
 
 ### 1. Commit Changes
+
 ```bash
 git add .
 git commit -m "feat: Implement 8/10 auth security enhancements
@@ -463,6 +505,7 @@ Ref: AUTH_SIGNUP_SECURITY_AUDIT_NOV_14_2025.md"
 ```
 
 ### 2. Run Database Migrations
+
 ```bash
 # Connect to production database
 psql $PRODUCTION_DATABASE_URL
@@ -473,17 +516,20 @@ psql $PRODUCTION_DATABASE_URL
 ```
 
 ### 3. Configure Supabase Email Templates
+
 1. Go to Supabase Dashboard → Authentication → Email Templates
 2. Customize "Confirm signup" template
 3. Test email delivery
 
 ### 4. Deploy to Production
+
 ```bash
 git push origin main
 # Vercel auto-deploys
 ```
 
 ### 5. Post-Deployment Testing
+
 - Test invite creation → signup → verification flow
 - Check email delivery
 - Verify audit logs are writing
@@ -495,6 +541,7 @@ git push origin main
 ## 📈 Security Improvements Achieved
 
 **Before**:
+
 - ❌ Emails could be changed during signup
 - ❌ Password validation only on client
 - ❌ No email verification
@@ -504,6 +551,7 @@ git push origin main
 - ❌ No coach notifications
 
 **After**:
+
 - ✅ Email locked to invitation
 - ✅ Server-side password enforcement
 - ✅ Email verification required
@@ -546,6 +594,7 @@ git push origin main
 ## 🏆 Conclusion
 
 You now have a **production-grade authentication system** with:
+
 - Multiple layers of security
 - Compliance-ready audit trails
 - Password breach protection

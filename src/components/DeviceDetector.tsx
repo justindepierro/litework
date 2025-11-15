@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Smartphone, Monitor, Tablet } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Smartphone, Tablet, Monitor } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 
 export default function DeviceDetector() {
   const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">(
@@ -62,7 +63,9 @@ export default function DeviceDetector() {
         {getIcon()}
         <span>{deviceType}</span>
         {isStandalone && (
-          <span className="bg-accent-green px-2 py-1 rounded text-xs">PWA</span>
+          <Badge variant="success" size="sm">
+            PWA
+          </Badge>
         )}
       </div>
     </div>

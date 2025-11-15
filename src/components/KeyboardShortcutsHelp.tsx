@@ -127,10 +127,10 @@ export function KeyboardShortcutsHelp() {
           </div>
 
           {/* Footer tip */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
+          <div className="mt-6 p-4 bg-(--accent-blue-50) border border-(--accent-blue-200) rounded-lg">
+            <p className="text-sm text-(--accent-blue-800)">
               <strong>Pro tip:</strong> Press{" "}
-              <kbd className="px-2 py-0.5 bg-white border border-blue-300 rounded text-xs font-mono">
+              <kbd className="px-2 py-0.5 bg-white border border-(--accent-blue-300) rounded text-xs font-mono">
                 {modKey}+K
               </kbd>{" "}
               to open the command palette for quick access to all actions and

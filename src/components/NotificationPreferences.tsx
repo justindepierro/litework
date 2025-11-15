@@ -12,6 +12,9 @@ import { useToast } from "@/components/ToastProvider";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAsyncState } from "@/hooks/use-async-state";
+import { Toggle } from "@/components/ui/Toggle";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Label } from "@/components/ui/Typography";
 
 interface NotificationPreferencesData {
   user_id: string;
@@ -146,72 +149,38 @@ export default function NotificationPreferences() {
           {/* Push Notifications */}
           <div className="flex items-center justify-between">
             <div>
-              <label
-                htmlFor="push_enabled"
-                className="text-sm font-medium text-navy-900"
-              >
-                Push Notifications
-              </label>
+              <Label htmlFor="push_enabled">Push Notifications</Label>
               <p className="text-sm text-neutral">
                 Receive instant notifications in your browser
               </p>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={preferences.push_enabled}
-              onClick={() =>
-                updatePreference("push_enabled", !preferences.push_enabled)
-              }
-              className={`${
-                preferences.push_enabled ? "bg-primary" : "bg-silver-400"
-              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
-            >
-              <span
-                className={`${
-                  preferences.push_enabled ? "translate-x-5" : "translate-x-0"
-                } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
+            <Toggle
+              checked={preferences.push_enabled}
+              onChange={(checked) => updatePreference("push_enabled", checked)}
+              label=""
+              size="md"
+            />
           </div>
 
           {/* Email Notifications */}
           <div className="flex items-center justify-between">
             <div>
-              <label
-                htmlFor="email_enabled"
-                className="text-sm font-medium text-navy-900"
-              >
-                Email Notifications
-              </label>
+              <Label htmlFor="email_enabled">Email Notifications</Label>
               <p className="text-sm text-neutral">
                 Receive notifications via email
               </p>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={preferences.email_enabled}
-              onClick={() =>
-                updatePreference("email_enabled", !preferences.email_enabled)
-              }
-              className={`${
-                preferences.email_enabled ? "bg-primary" : "bg-silver-400"
-              } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
-            >
-              <span
-                className={`${
-                  preferences.email_enabled ? "translate-x-5" : "translate-x-0"
-                } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
+            <Toggle
+              checked={preferences.email_enabled}
+              onChange={(checked) => updatePreference("email_enabled", checked)}
+              label=""
+              size="md"
+            />
           </div>
 
           {/* Preferred Contact Method */}
           <div className="pt-4 border-t border-silver-300">
-            <label className="text-sm font-medium text-navy-900 block mb-2">
-              Preferred Contact Method
-            </label>
+            <Label className="block mb-2">Preferred Contact Method</Label>
             <div className="flex gap-4">
               {(["push", "email", "both"] as const).map((method) => (
                 <button
@@ -242,137 +211,59 @@ export default function NotificationPreferences() {
 
         <div className="space-y-4">
           {/* Workout Reminders */}
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="workout_reminders"
-                type="checkbox"
-                checked={preferences.workout_reminders}
-                onChange={(e) =>
-                  updatePreference("workout_reminders", e.target.checked)
-                }
-                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
-              />
-            </div>
-            <div className="ml-3">
-              <label
-                htmlFor="workout_reminders"
-                className="text-sm font-medium text-navy-900"
-              >
-                ⏰ Workout Reminders
-              </label>
-              <p className="text-sm text-neutral">
-                Get reminded about scheduled workouts
-              </p>
-            </div>
-          </div>
+          <Checkbox
+            id="workout_reminders"
+            checked={preferences.workout_reminders}
+            onChange={(checked) =>
+              updatePreference("workout_reminders", checked)
+            }
+            label="⏰ Workout Reminders"
+            helperText="Get reminded about scheduled workouts"
+          />
 
           {/* Assignment Notifications */}
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="assignment_notifications"
-                type="checkbox"
-                checked={preferences.assignment_notifications}
-                onChange={(e) =>
-                  updatePreference("assignment_notifications", e.target.checked)
-                }
-                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
-              />
-            </div>
-            <div className="ml-3">
-              <label
-                htmlFor="assignment_notifications"
-                className="text-sm font-medium text-navy-900"
-              >
-                New Assignments
-              </label>
-              <p className="text-sm text-neutral">
-                Get notified when new workouts are assigned to you
-              </p>
-            </div>
-          </div>
+          <Checkbox
+            id="assignment_notifications"
+            checked={preferences.assignment_notifications}
+            onChange={(checked) =>
+              updatePreference("assignment_notifications", checked)
+            }
+            label="New Assignments"
+            helperText="Get notified when new workouts are assigned to you"
+          />
 
           {/* Coach Messages */}
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="message_notifications"
-                type="checkbox"
-                checked={preferences.message_notifications}
-                onChange={(e) =>
-                  updatePreference("message_notifications", e.target.checked)
-                }
-                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
-              />
-            </div>
-            <div className="ml-3">
-              <label
-                htmlFor="message_notifications"
-                className="text-sm font-medium text-navy-900"
-              >
-                💬 Coach Messages
-              </label>
-              <p className="text-sm text-neutral">
-                Get notified when your coach sends you a message
-              </p>
-            </div>
-          </div>
+          <Checkbox
+            id="message_notifications"
+            checked={preferences.message_notifications}
+            onChange={(checked) =>
+              updatePreference("message_notifications", checked)
+            }
+            label="💬 Coach Messages"
+            helperText="Get notified when your coach sends you a message"
+          />
 
           {/* Progress Updates */}
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="progress_updates"
-                type="checkbox"
-                checked={preferences.progress_updates}
-                onChange={(e) =>
-                  updatePreference("progress_updates", e.target.checked)
-                }
-                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
-              />
-            </div>
-            <div className="ml-3">
-              <label
-                htmlFor="progress_updates"
-                className="text-sm font-medium text-navy-900"
-              >
-                Weekly Progress Reports
-              </label>
-              <p className="text-sm text-neutral">
-                Receive weekly summaries of your training progress
-              </p>
-            </div>
-          </div>
+          <Checkbox
+            id="progress_updates"
+            checked={preferences.progress_updates}
+            onChange={(checked) =>
+              updatePreference("progress_updates", checked)
+            }
+            label="Weekly Progress Reports"
+            helperText="Receive weekly summaries of your training progress"
+          />
 
           {/* Achievements */}
-          <div className="flex items-start">
-            <div className="flex items-center h-5">
-              <input
-                id="achievement_notifications"
-                type="checkbox"
-                checked={preferences.achievement_notifications}
-                onChange={(e) =>
-                  updatePreference(
-                    "achievement_notifications",
-                    e.target.checked
-                  )
-                }
-                className="h-4 w-4 rounded border-silver-400 text-primary focus:ring-primary"
-              />
-            </div>
-            <div className="ml-3">
-              <label
-                htmlFor="achievement_notifications"
-                className="text-sm font-medium text-navy-900"
-              >
-                Achievements & PRs
-              </label>
-              <p className="text-sm text-neutral">
-                Celebrate when you hit new personal records
-              </p>
-            </div>
-          </div>
+          <Checkbox
+            id="achievement_notifications"
+            checked={preferences.achievement_notifications}
+            onChange={(checked) =>
+              updatePreference("achievement_notifications", checked)
+            }
+            label="Achievements & PRs"
+            helperText="Celebrate when you hit new personal records"
+          />
         </div>
       </div>
 

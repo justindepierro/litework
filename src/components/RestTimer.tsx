@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Play, Pause, SkipForward, Volume2, Clock } from "lucide-react";
 import { ModalBackdrop } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
+import { Heading } from "@/components/ui/Typography";
 
 interface RestTimerProps {
   duration: number; // seconds
@@ -79,8 +81,8 @@ export default function RestTimer({
       <div className="bg-white rounded-3xl p-8 w-full max-w-md mx-4 text-center">
         {/* Header */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <Clock className="w-6 h-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Rest Timer</h2>
+          <Clock className="w-6 h-6 text-(--accent-blue-600)" />
+          <Heading level="h2">Rest Timer</Heading>
         </div>
 
         {/* Circular Progress */}
@@ -91,7 +93,7 @@ export default function RestTimer({
               cx="128"
               cy="128"
               r="120"
-              stroke="#E5E7EB"
+              stroke="rgb(var(--color-silver-300))"
               strokeWidth="16"
               fill="none"
             />
@@ -100,7 +102,11 @@ export default function RestTimer({
               cx="128"
               cy="128"
               r="120"
-              stroke={hasCompleted ? "#10B981" : "#3B82F6"}
+              stroke={
+                hasCompleted
+                  ? "rgb(var(--color-status-success))"
+                  : "rgb(var(--color-accent-blue-500))"
+              }
               strokeWidth="16"
               fill="none"
               strokeDasharray={`${2 * Math.PI * 120}`}
@@ -113,10 +119,10 @@ export default function RestTimer({
           {/* Timer text */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div>
-              <div className="text-6xl font-bold text-gray-900">
+              <div className="text-6xl font-bold text-(--text-primary)">
                 {minutes}:{seconds.toString().padStart(2, "0")}
               </div>
-              <div className="text-sm text-gray-500 mt-2">
+              <div className="text-sm text-(--text-secondary) mt-2">
                 {hasCompleted ? "Rest Complete!" : "Remaining"}
               </div>
             </div>
@@ -128,7 +134,7 @@ export default function RestTimer({
           {/* Pause/Resume */}
           <button
             onClick={togglePause}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium transition-colors"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-(--bg-secondary) hover:bg-(--interactive-hover) text-(--text-primary) rounded-xl font-medium transition-colors"
             disabled={hasCompleted}
           >
             {isRunning ? (
@@ -145,18 +151,19 @@ export default function RestTimer({
           </button>
 
           {/* Skip */}
-          <button
+          <Button
             onClick={handleSkip}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors"
+            variant="primary"
+            size="lg"
+            rightIcon={<SkipForward className="w-5 h-5" />}
           >
-            <SkipForward className="w-5 h-5" />
             {hasCompleted ? "Continue" : "Skip Rest"}
-          </button>
+          </Button>
         </div>
 
         {/* Sound indicator */}
         {hasCompleted && (
-          <div className="flex items-center justify-center gap-2 mt-4 text-green-600">
+          <div className="flex items-center justify-center gap-2 mt-4 text-(--status-success)">
             <Volume2 className="w-4 h-4" />
             <span className="text-sm font-medium">Rest period complete!</span>
           </div>

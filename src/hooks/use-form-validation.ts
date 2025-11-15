@@ -1,5 +1,13 @@
 /**
- * useFormValidation Hook
+ * useFormValidationLegacy Hook (DEPRECATED - Use new Form system instead)
+ * 
+ * ⚠️ DEPRECATED: This hook is being replaced by the new Form component system.
+ * For new forms, use: import { Form, FormField } from "@/components/ui/Form"
+ * 
+ * This is kept for backward compatibility with existing forms:
+ * - GroupFormModal
+ * - AthleteEditModal  
+ * - IndividualAssignmentModal
  * 
  * Centralized form validation logic with reusable validation rules,
  * error state management, and form submission handling.
@@ -15,7 +23,7 @@
  * @example
  * ```tsx
  * const { values, errors, handleChange, handleSubmit, isValid, isSubmitting } = 
- *   useFormValidation({
+ *   useFormValidationLegacy({
  *     initialValues: { email: '', password: '' },
  *     validationRules: {
  *       email: { required: true, email: true },
@@ -182,10 +190,13 @@ const validatePattern = (value: string, pattern: RegExp, message?: string): stri
 };
 
 // ============================================================================
-// Main Hook
+// Main Hook (LEGACY)
 // ============================================================================
 
-export function useFormValidation<T extends Record<string, unknown>>({
+/**
+ * @deprecated Use new Form component system instead: import { Form, FormField } from "@/components/ui/Form"
+ */
+export function useFormValidationLegacy<T extends Record<string, unknown>>({
   initialValues,
   validationRules,
   onSubmit,

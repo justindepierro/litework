@@ -14,6 +14,8 @@ import {
 import { WorkoutBlock, WorkoutExercise } from "@/types";
 import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Body, Label } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -34,26 +36,36 @@ interface BlockEditorProps {
 }
 
 const CATEGORY_OPTIONS = [
-  { value: "warmup", label: "Warm-up", icon: Flame, color: "text-orange-500" },
+  {
+    value: "warmup",
+    label: "Warm-up",
+    icon: Flame,
+    color: "text-(--accent-orange-500)",
+  },
   {
     value: "main",
     label: "Main Lifts",
     icon: Dumbbell,
-    color: "text-blue-600",
+    color: "text-(--accent-blue-600)",
   },
   {
     value: "accessory",
     label: "Accessory",
     icon: Zap,
-    color: "text-purple-500",
+    color: "text-(--accent-purple-500)",
   },
   {
     value: "cooldown",
     label: "Cool Down",
     icon: Wind,
-    color: "text-green-500",
+    color: "text-(--status-success)",
   },
-  { value: "custom", label: "Custom", icon: Star, color: "text-gray-500" },
+  {
+    value: "custom",
+    label: "Custom",
+    icon: Star,
+    color: "text-(--text-tertiary)",
+  },
 ] as const;
 
 export default function BlockEditor({
@@ -194,9 +206,7 @@ export default function BlockEditor({
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Block Name *
-                </label>
+                <Label className="block mb-2">Block Name *</Label>
                 <input
                   type="text"
                   value={name}
@@ -207,9 +217,7 @@ export default function BlockEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category *
-                </label>
+                <Label className="block mb-2">Category *</Label>
                 <select
                   value={category}
                   onChange={(e) =>
@@ -227,9 +235,7 @@ export default function BlockEditor({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
+              <Label className="block mb-2">Description</Label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -241,9 +247,7 @@ export default function BlockEditor({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags (comma separated)
-                </label>
+                <Label className="block mb-2">Tags (comma separated)</Label>
                 <input
                   type="text"
                   value={tags}
@@ -254,9 +258,9 @@ export default function BlockEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Label className="block mb-2">
                   Estimated Duration (minutes)
-                </label>
+                </Label>
                 <input
                   type="number"
                   value={estimatedDuration}
@@ -271,12 +275,10 @@ export default function BlockEditor({
             {/* Exercises */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-medium text-gray-700">
-                  Exercises *
-                </label>
+                <Label>Exercises *</Label>
                 <button
                   onClick={addExercise}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 text-sm font-medium"
+                  className="px-4 py-2 bg-(--accent-purple-600) text-white rounded-lg hover:bg-(--accent-purple-700) transition-colors flex items-center gap-2 text-sm font-medium"
                 >
                   <Plus className="w-4 h-4" />
                   Add Exercise
@@ -285,11 +287,11 @@ export default function BlockEditor({
 
               {exercises.length === 0 ? (
                 <div className="text-center py-8 bg-silver-200 rounded-lg border-2 border-dashed border-silver-400">
-                  <Dumbbell className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600">No exercises yet</p>
-                  <p className="text-sm text-gray-500">
+                  <Dumbbell className="w-12 h-12 text-(--text-tertiary) mx-auto mb-2" />
+                  <Body variant="secondary">No exercises yet</Body>
+                  <Body className="text-sm" variant="tertiary">
                     Click &quot;Add Exercise&quot; to start building your block
-                  </p>
+                  </Body>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -299,7 +301,7 @@ export default function BlockEditor({
                       className="p-4 bg-silver-200 rounded-lg shadow-sm"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        <div className="shrink-0 w-8 h-8 bg-(--accent-purple-600) text-white rounded-full flex items-center justify-center font-bold text-sm">
                           {index + 1}
                         </div>
 
@@ -320,9 +322,7 @@ export default function BlockEditor({
                           {/* Sets, Reps, Tempo */}
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">
-                                Sets
-                              </label>
+                              <Label className="block text-xs mb-1">Sets</Label>
                               <input
                                 type="number"
                                 value={exercise.sets}
@@ -338,9 +338,7 @@ export default function BlockEditor({
                             </div>
 
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">
-                                Reps
-                              </label>
+                              <Label className="block text-xs mb-1">Reps</Label>
                               <input
                                 type="number"
                                 value={exercise.reps}
@@ -356,15 +354,15 @@ export default function BlockEditor({
                             </div>
 
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">
+                              <Label className="block text-xs mb-1">
                                 Tempo
                                 <span
-                                  className="text-gray-400 ml-1"
+                                  className="text-(--text-tertiary) ml-1"
                                   title="e.g., 3-1-1-0 (down-pause-up-top)"
                                 >
                                   ⓘ
                                 </span>
-                              </label>
+                              </Label>
                               <input
                                 type="text"
                                 value={exercise.tempo || ""}
@@ -379,9 +377,9 @@ export default function BlockEditor({
                             </div>
 
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">
+                              <Label className="block text-xs mb-1">
                                 Rest (sec)
-                              </label>
+                              </Label>
                               <input
                                 type="number"
                                 value={exercise.restTime || ""}
@@ -401,9 +399,9 @@ export default function BlockEditor({
                           {/* Weight Type and Load */}
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             <div>
-                              <label className="block text-xs text-gray-600 mb-1">
+                              <Label className="block text-xs mb-1">
                                 Load Type
-                              </label>
+                              </Label>
                               <select
                                 value={exercise.weightType}
                                 onChange={(e) =>
@@ -426,9 +424,9 @@ export default function BlockEditor({
 
                             {exercise.weightType === "fixed" && (
                               <div>
-                                <label className="block text-xs text-gray-600 mb-1">
+                                <Label className="block text-xs mb-1">
                                   Weight (lbs)
-                                </label>
+                                </Label>
                                 <input
                                   type="number"
                                   value={exercise.weight || ""}
@@ -448,9 +446,9 @@ export default function BlockEditor({
 
                             {exercise.weightType === "percentage" && (
                               <div>
-                                <label className="block text-xs text-gray-600 mb-1">
+                                <Label className="block text-xs mb-1">
                                   Percentage
-                                </label>
+                                </Label>
                                 <input
                                   type="number"
                                   value={exercise.percentage || ""}
@@ -470,29 +468,23 @@ export default function BlockEditor({
                             )}
 
                             <div className="flex items-end">
-                              <label className="flex items-center gap-2 px-3 py-2 cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  checked={exercise.eachSide || false}
-                                  onChange={(e) =>
-                                    updateExercise(index, {
-                                      eachSide: e.target.checked,
-                                    })
-                                  }
-                                  className="w-4 h-4 text-purple-600 border-silver-400 rounded focus:ring-2 focus:ring-purple-500"
-                                />
-                                <span className="text-xs text-gray-700">
-                                  Each Side
-                                </span>
-                              </label>
+                              <Checkbox
+                                checked={exercise.eachSide || false}
+                                onChange={(checked) =>
+                                  updateExercise(index, {
+                                    eachSide: checked,
+                                  })
+                                }
+                                label="Each Side"
+                              />
                             </div>
                           </div>
 
                           {/* Notes */}
                           <div>
-                            <label className="block text-xs text-gray-600 mb-1">
+                            <Label className="block text-xs mb-1">
                               Notes (equipment, cues, etc.)
-                            </label>
+                            </Label>
                             <textarea
                               value={exercise.notes || ""}
                               onChange={(e) =>
@@ -507,7 +499,7 @@ export default function BlockEditor({
 
                         <button
                           onClick={() => removeExercise(index)}
-                          className="shrink-0 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="shrink-0 p-2 text-(--status-error) hover:bg-(--status-error-light) rounded-lg transition-colors"
                           aria-label="Remove exercise"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -524,7 +516,7 @@ export default function BlockEditor({
         <ModalFooter align="between">
           <button
             onClick={onClose}
-            className="px-6 py-3 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors font-medium"
+            className="px-6 py-3 text-(--text-secondary) hover:bg-(--interactive-hover) rounded-lg transition-colors font-medium"
           >
             Cancel
           </button>
@@ -532,7 +524,7 @@ export default function BlockEditor({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-(--accent-purple-600) text-white rounded-lg hover:bg-(--accent-purple-700) transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? (
               <>
