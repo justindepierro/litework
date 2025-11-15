@@ -1,41 +1,42 @@
-/**
- * Form System Migration Example
- * 
- * This file demonstrates how to migrate from manual form handling
- * to the new Form component system with validation and accessibility.
- * 
- * Example: GroupFormModal Migration
- */
+/\*\*
+
+- Form System Migration Example
+-
+- This file demonstrates how to migrate from manual form handling
+- to the new Form component system with validation and accessibility.
+-
+- Example: GroupFormModal Migration
+  \*/
 
 // ============================================================================
 // BEFORE - Manual Form Handling (OLD WAY)
 // ============================================================================
 
-/*
+/\*
 const GroupFormModalOld = () => {
-  const [values, setValues] = useState({
-    name: "",
-    description: "",
-    sport: "",
-    color: "#ff6b35",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const [values, setValues] = useState({
+name: "",
+description: "",
+sport: "",
+color: "#ff6b35",
+});
+const [errors, setErrors] = useState<Record<string, string>>({});
+const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (field: string, value: any) => {
-    setValues(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-  };
+const handleChange = (field: string, value: any) => {
+setValues(prev => ({ ...prev, [field]: value }));
+// Clear error when user starts typing
+if (errors[field]) {
+setErrors(prev => {
+const newErrors = { ...prev };
+delete newErrors[field];
+return newErrors;
+});
+}
+};
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+const validateForm = () => {
+const newErrors: Record<string, string> = {};
 
     if (!values.name.trim()) {
       newErrors.name = "Group name is required";
@@ -47,11 +48,12 @@ const GroupFormModalOld = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+};
+
+const handleSubmit = async (e: React.FormEvent) => {
+e.preventDefault();
+
     if (!validateForm()) {
       return;
     }
@@ -66,19 +68,20 @@ const GroupFormModalOld = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Group Name</label>
-        <input
-          type="text"
-          value={values.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-        />
-        {errors.name && <span>{errors.name}</span>}
-      </div>
+};
+
+return (
+<form onSubmit={handleSubmit}>
+<div>
+<label>Group Name</label>
+<input
+type="text"
+value={values.name}
+onChange={(e) => handleChange("name", e.target.value)}
+/>
+{errors.name && <span>{errors.name}</span>}
+</div>
 
       <div>
         <label>Sport</label>
@@ -97,9 +100,10 @@ const GroupFormModalOld = () => {
         {isSubmitting ? "Creating..." : "Create Group"}
       </button>
     </form>
-  );
+
+);
 };
-*/
+\*/
 
 // ============================================================================
 // AFTER - New Form System (NEW WAY)
@@ -109,27 +113,26 @@ import { Form, FormField, FormSelect, FormSubmitButton } from "@/components/ui/F
 import { validationRules } from "@/lib/form-validation";
 
 const GroupFormModalNew = () => {
-  const handleSubmit = async (values: Record<string, any>) => {
-    await apiClient.createGroup(values);
-    onSave();
-    onClose();
-  };
+const handleSubmit = async (values: Record<string, any>) => {
+await apiClient.createGroup(values);
+onSave();
+onClose();
+};
 
-  return (
-    <Form
-      onSubmit={handleSubmit}
-      initialValues={{
+return (
+<Form
+onSubmit={handleSubmit}
+initialValues={{
         name: "",
         description: "",
         sport: "",
         color: "#ff6b35",
       }}
-      validation={{
+validation={{
         name: validationRules.required("Group name is required"),
         sport: validationRules.required("Sport selection is required"),
-      }}
-    >
-      <FormField
+      }} >
+<FormField
         name="name"
         label="Group Name"
         placeholder="Enter group name..."
@@ -153,43 +156,49 @@ const GroupFormModalNew = () => {
         Create Group
       </FormSubmitButton>
     </Form>
-  );
+
+);
 };
 
 // ============================================================================
 // BENEFITS OF NEW SYSTEM
 // ============================================================================
 
-/*
+/\*
 ✅ LESS CODE
+
 - 80+ lines reduced to ~40 lines
 - No manual state management
 - No manual error handling
 
 ✅ BETTER ACCESSIBILITY
+
 - Automatic ARIA attributes (aria-invalid, aria-describedby)
 - ARIA live region for error announcements
 - Focus management on first error
 - Screen reader friendly
 
 ✅ CONSISTENT VALIDATION
+
 - Reusable validation rules
 - Type-safe validation schema
 - Async validation support
 - Custom validators
 
 ✅ BETTER UX
+
 - Validate on blur (configurable)
 - Clear errors on type
 - Loading states handled automatically
 - Keyboard navigation built-in
 
 ✅ EASIER MAINTENANCE
+
 - Single source of truth for validation
 - Consistent error display
 - Easier to test
 - Less prone to bugs
-*/
+  \*/
 
 // ============================================================================
 // ADVANCED FEATURES
@@ -199,6 +208,7 @@ const GroupFormModalNew = () => {
 import { asyncValidators } from "@/lib/form-validation";
 
 const SignupFormExample = () => (
+
   <Form onSubmit={handleSignup}>
     <FormField
       name="email"
@@ -215,6 +225,7 @@ const SignupFormExample = () => (
 
 // 2. CUSTOM VALIDATION (Password confirmation)
 const PasswordFormExample = () => (
+
   <Form onSubmit={handlePasswordChange}>
     <FormField
       name="password"
@@ -237,6 +248,7 @@ const PasswordFormExample = () => (
 import { transformers } from "@/lib/form-validation";
 
 const PhoneFormExample = () => (
+
   <Form onSubmit={handleSubmit}>
     <FormField
       name="phone"
@@ -249,6 +261,7 @@ const PhoneFormExample = () => (
 
 // 4. CONDITIONAL VALIDATION (Field depends on another)
 const ConditionalFormExample = () => (
+
   <Form
     onSubmit={handleSubmit}
     validation={{
@@ -273,6 +286,7 @@ const ConditionalFormExample = () => (
 import { FormErrorSummary } from "@/components/ui/Form";
 
 const ErrorSummaryExample = () => (
+
   <Form onSubmit={handleSubmit}>
     <FormErrorSummary />
     {/* Form fields */}
@@ -283,7 +297,7 @@ const ErrorSummaryExample = () => (
 // MIGRATION CHECKLIST
 // ============================================================================
 
-/*
+/\*
 📋 MIGRATION STEPS:
 
 1. Replace form state management:
@@ -317,7 +331,7 @@ const ErrorSummaryExample = () => (
    ✅ Screen reader (VoiceOver/NVDA)
    ✅ Error states
    ✅ Validation logic
-*/
+   \*/
 
 // ============================================================================
 // COMMON PATTERNS
@@ -325,6 +339,7 @@ const ErrorSummaryExample = () => (
 
 // Pattern 1: Login Form
 export const LoginFormExample = () => (
+
   <Form
     onSubmit={async (values) => {
       await signIn(values.email, values.password);
@@ -352,6 +367,7 @@ export const LoginFormExample = () => (
 
 // Pattern 2: Edit Form (with initial values)
 export const EditProfileExample = ({ user }: { user: User }) => (
+
   <Form
     onSubmit={async (values) => {
       await updateProfile(user.id, values);
@@ -383,6 +399,7 @@ export const EditProfileExample = ({ user }: { user: User }) => (
 
 // Pattern 3: Multi-field validation
 export const DateRangeFormExample = () => (
+
   <Form
     onSubmit={handleSubmit}
     validation={{

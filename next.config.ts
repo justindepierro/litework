@@ -17,6 +17,16 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000, // 1 year cache for production
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "**.supabase.in",
+      },
+    ],
   },
 
   // Advanced development and production optimizations

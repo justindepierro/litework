@@ -205,9 +205,26 @@ import { Button } from "@/components/ui/Button";
   Save Changes
 </Button>
 
-// Secondary action
+// Secondary action (default gray)
 <Button variant="secondary" onClick={handleCancel}>
   Cancel
+</Button>
+
+// Secondary with color scheme (adds visual interest!)
+<Button variant="secondary" colorScheme="blue" onClick={handleView}>
+  View Profile
+</Button>
+
+<Button variant="secondary" colorScheme="purple" onClick={handleAthlete}>
+  Athlete
+</Button>
+
+<Button variant="secondary" colorScheme="green" onClick={handleAssign}>
+  Assign Workout
+</Button>
+
+<Button variant="secondary" colorScheme="orange" onClick={handleCreate}>
+  Create Exercise
 </Button>
 
 // Destructive action
@@ -225,16 +242,165 @@ import { Button } from "@/components/ui/Button";
 </Button>
 
 // Loading state
-<Button variant="primary" loading disabled>
-  Saving...
+<Button variant="primary" isLoading loadingText="Saving...">
+  Save
 </Button>
 ```
 
 **Variants**: `primary | secondary | success | danger | ghost`  
 **Sizes**: `sm | md | lg`  
-**Props**: `loading`, `disabled`, `fullWidth`, `leftIcon`, `rightIcon`
+**Color Schemes** (for secondary variant): `default | blue | purple | orange | green`  
+**Props**: `isLoading`, `loadingText`, `disabled`, `fullWidth`, `leftIcon`, `rightIcon`, `colorScheme`
 
 **NEVER create custom styled buttons. ALWAYS use Button component.**
+
+---
+
+#### 🎨 MANDATORY: Button Border & Style Standards
+
+**LiteWork buttons follow strict design patterns. NO custom button styling.**
+
+**❌ FORBIDDEN - Custom button markup**:
+
+```tsx
+// NEVER do this - custom button elements with inline styles
+<button className="px-4 py-2 border-2 border-silver-400 rounded-lg bg-white hover:bg-silver-100">
+  Click Me
+</button>
+
+<button className="inline-flex items-center px-4 py-2 border border-transparent bg-blue-600 text-white rounded-md">
+  Submit
+</button>
+
+<div onClick={handleClick} className="cursor-pointer px-4 py-2 border border-gray-300 rounded-md">
+  Clickable Div (bad practice)
+</div>
+```
+
+**✅ REQUIRED - Use Button component**:
+
+```tsx
+// ALWAYS use our Button component
+import { Button } from "@/components/ui/Button";
+
+<Button variant="secondary" onClick={handleClick}>
+  Click Me
+</Button>
+
+<Button variant="primary" onClick={handleSubmit}>
+  Submit
+</Button>
+
+<Button variant="ghost" onClick={handleClick}>
+  Subtle Action
+</Button>
+```
+
+#### Button Border Design Rules
+
+The Button component automatically handles borders and shadows based on variant:
+
+| Variant                     | Style                                             | Use Case                                      |
+| --------------------------- | ------------------------------------------------- | --------------------------------------------- |
+| **primary**                 | `border` (1px solid, matches bg) + `shadow-sm`    | Primary actions (Save, Submit, Create)        |
+| **secondary**               | `shadow-sm` (no border) + gray/colored background | Secondary actions (Cancel, Back)              |
+| **secondary + colorScheme** | `shadow-sm` + gradient (blue/purple/orange/green) | Colored secondary actions for visual interest |
+| **danger**                  | `border` (1px solid, matches bg) + `shadow-sm`    | Destructive actions (Delete, Remove)          |
+| **success**                 | `border` (1px solid, matches bg) + `shadow-sm`    | Confirmation actions (Approve, Complete)      |
+| **ghost**                   | `border border-transparent` (borderless)          | Tertiary actions (Close, Dismiss)             |
+
+**Design Philosophy**:
+
+- **Filled buttons** (primary, danger, success): Subtle 1px border + shadow for depth
+- **Secondary button**: Shadow-only (matches card design language) with gray or colored background
+- **Color schemes**: Add visual hierarchy and personality without borders
+- **Ghost button**: Transparent, minimal - background color changes on hover
+
+**Color Scheme Usage:**
+
+```tsx
+// Default gray secondary (subtle)
+<Button variant="secondary">Cancel</Button>
+
+// Blue - Profile, settings, view actions
+<Button variant="secondary" colorScheme="blue">View Profile</Button>
+
+// Purple - Athlete-related actions
+<Button variant="secondary" colorScheme="purple">Athlete</Button>
+
+// Green - Assignment, approval actions
+<Button variant="secondary" colorScheme="green">Assign</Button>
+
+// Orange - Creation, workout actions
+<Button variant="secondary" colorScheme="orange">Create</Button>
+```
+
+**Why This Works:**
+
+- Consistency with shadow-only card design system
+- Color adds meaning without borders (blue = info, green = action, purple = people, orange = create)
+- Gradients create depth and visual interest
+- Hover states use shadow growth (matches cards!)
+- Modern, clean appearance matching industry standards
+
+#### Custom Button Exceptions (RARE)
+
+If you MUST create a custom button (e.g., ConfirmModal with specific design):
+
+**✅ Allowed pattern**:
+
+```tsx
+// Modal footer with custom button (documented exception)
+<button
+  onClick={onCancel}
+  className="flex-1 px-5 py-3 rounded-xl font-semibold text-base text-(--text-secondary) bg-white hover:bg-(--interactive-hover) transition-colors shadow-sm hover:shadow-md"
+>
+  Cancel
+</button>
+```
+
+**Requirements for custom buttons**:
+
+1. Must use design tokens (`border-silver-400`, not `border-gray-300`)
+2. Must have proper hover states
+3. Must have focus states (`focus:outline-none focus:ring-2`)
+4. Must have disabled states if applicable
+5. Must be semantically a `<button>` element (not `<div>` with onClick)
+6. Document why Button component cannot be used
+
+#### Visual Consistency Checklist
+
+When you see a button in code, verify:
+
+- [ ] Uses `<Button>` component from `@/components/ui/Button`
+- [ ] Has appropriate `variant` prop
+- [ ] Has appropriate `size` prop if not default
+- [ ] Does NOT have custom `className` overriding borders
+- [ ] If custom button, follows exception requirements above
+
+#### Common Anti-Patterns to Avoid
+
+```tsx
+// ❌ WRONG - Mixing Button component with border overrides
+<Button className="border-4 border-red-500">Bad</Button>
+
+// ❌ WRONG - Using div as button
+<div onClick={handleClick} className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">
+  Not Accessible
+</div>
+
+// ❌ WRONG - Inconsistent border styles
+<button className="border border-blue-500">Button 1</button>
+<button className="border-2 border-green-500">Button 2</button>
+<button className="border-3 border-red-500">Button 3</button>
+
+// ✅ CORRECT - Consistent Button components
+<Button variant="primary">Button 1</Button>
+<Button variant="success">Button 2</Button>
+<Button variant="danger">Button 3</Button>
+```
+
+**This is the official LiteWork button design language. All buttons MUST follow these patterns.**
 
 ---
 
@@ -296,6 +462,127 @@ import {
 ```
 
 **NEVER create custom modals. ALWAYS use Modal component structure.**
+
+---
+
+### Card & Layout Design Standards
+
+#### 🎨 MANDATORY: Shadow-Only Card Design
+
+**LiteWork uses modern, clean card design with shadows ONLY. NO BORDERS on cards.**
+
+**❌ FORBIDDEN - Cards with borders**:
+
+```tsx
+// NEVER do this
+<div className="bg-white rounded-lg border border-gray-300 p-4">
+<div className="bg-white rounded-lg border border-DEFAULT p-4">
+<div className="bg-white rounded-lg border border-silver-400 p-4">
+```
+
+**✅ REQUIRED - Shadow-only cards**:
+
+```tsx
+// Cards MUST use shadows, NOT borders
+<div className="bg-white rounded-lg shadow-sm p-4">
+<div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
+<div className="bg-white rounded-xl shadow-md p-6">
+```
+
+#### Card Design Rules (ENFORCE STRICTLY)
+
+1. **Default Cards**: `shadow-sm` for subtle elevation
+2. **Interactive Cards**: `shadow-sm hover:shadow-md transition-shadow` for depth on hover
+3. **Elevated Cards**: `shadow-md` for more prominent sections
+4. **Modals**: `shadow-2xl` for maximum depth and focus
+
+#### Where Borders ARE Allowed
+
+**Borders are ONLY for:**
+
+1. **Form Inputs** - Functional necessity (Input, Textarea, Select)
+2. **Section Dividers** - `border-t border-subtle` between content sections
+3. **Focus States** - `focus:border-focus` for form elements
+4. **Table Cells** - `border-b border-subtle` for row separation
+
+**NEVER use borders for:**
+
+- ❌ Cards
+- ❌ Panels
+- ❌ Containers
+- ❌ Modals
+- ❌ Dashboard widgets
+
+#### Shadow Scale Reference
+
+```tsx
+// Subtle elevation - default cards
+className = "shadow-sm";
+
+// Medium elevation - interactive elements
+className = "shadow-md";
+
+// Strong elevation - modals, popovers
+className = "shadow-lg";
+
+// Maximum elevation - overlays, important modals
+className = "shadow-xl";
+className = "shadow-2xl";
+```
+
+#### Hover Effects Pattern
+
+```tsx
+// Standard interactive card
+<div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer p-4">
+  {content}
+</div>
+
+// Card with scale effect
+<div className="bg-white rounded-lg shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer p-4">
+  {content}
+</div>
+```
+
+**This is the official LiteWork design language. All future components MUST follow this pattern.**
+
+#### Visual Comparison: Before & After
+
+**BEFORE (Old Design with Borders)**:
+
+```tsx
+// ❌ Old pattern - borders create visual clutter
+<div className="bg-white rounded-lg border border-gray-300 p-4">
+  <h3 className="text-lg font-semibold">Workout Card</h3>
+  <p>3 exercises • 45 min</p>
+</div>
+
+<div className="bg-white rounded-lg border-2 border-silver-400 hover:border-accent p-4">
+  <h3>Interactive Card</h3>
+</div>
+```
+
+**AFTER (Modern Shadow-Only Design)**:
+
+```tsx
+// ✅ New pattern - shadows create depth without clutter
+<div className="bg-white rounded-lg shadow-sm p-4">
+  <h3 className="text-lg font-semibold">Workout Card</h3>
+  <p>3 exercises • 45 min</p>
+</div>
+
+<div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
+  <h3>Interactive Card</h3>
+</div>
+```
+
+**Why This Works Better:**
+
+- ✅ Cleaner, more modern appearance
+- ✅ Better visual hierarchy (shadows indicate elevation)
+- ✅ Hover effects feel more natural (shadow growth vs border color change)
+- ✅ Matches industry standards (Stripe, Linear, Notion, etc.)
+- ✅ Better accessibility (shadows don't rely on color perception)
 
 ---
 

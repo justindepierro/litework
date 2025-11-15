@@ -12,48 +12,56 @@ We've spruced up the dropdown components with modern design enhancements, smooth
 ### Select Component Enhancements
 
 #### 1. **Animated Interactions**
+
 - ✅ Rotating chevron icon on focus (180° rotation)
 - ✅ Smooth scale animation on focus (1.01x)
 - ✅ Active state with scale down effect (0.99x)
 - ✅ Subtle gradient overlay on hover
 
 #### 2. **Enhanced Visual States**
+
 - ✅ Dynamic background color on hover
 - ✅ Enhanced shadow on focus
 - ✅ Larger focus ring (4px instead of 2px)
 - ✅ Improved border radius (lg/xl based on size)
 
 #### 3. **Improved Accessibility**
+
 - ✅ `aria-invalid` attribute for error states
 - ✅ `aria-describedby` linking to helper/error text
 - ✅ `role="alert"` and `aria-live="polite"` for errors
 - ✅ Icon in error messages for screen readers
 
 #### 4. **New Props**
+
 - ✅ `description` field in `SelectOption` for tooltips
 - ✅ Better padding adjustments for icons
 
 ### Dropdown Component Enhancements
 
 #### 1. **Beautiful Animations**
+
 - ✅ Smooth slide-in with scale and opacity
 - ✅ 200ms transition duration with ease-out timing
 - ✅ Origin-based animations (top-left, top-right, top-center)
 - ✅ Graceful exit animations
 
 #### 2. **Enhanced Visual Design**
+
 - ✅ Backdrop blur effect on dropdown
 - ✅ Improved shadow (multi-layer for depth)
 - ✅ Subtle gradient border overlay
 - ✅ Better spacing and padding
 
 #### 3. **Advanced Keyboard Navigation**
+
 - ✅ Focus trap within dropdown
 - ✅ Tab/Shift+Tab cycling through items
 - ✅ Escape key to close and return focus
 - ✅ Enter/Space to trigger from keyboard
 
 #### 4. **Improved Accessibility**
+
 - ✅ `role="menu"` and `role="menuitem"` attributes
 - ✅ `aria-expanded` and `aria-haspopup` on trigger
 - ✅ `role="separator"` for dividers
@@ -62,6 +70,7 @@ We've spruced up the dropdown components with modern design enhancements, smooth
 #### 5. **New Component Features**
 
 **DropdownItem**:
+
 - ✅ New variants: `success`, `primary` (in addition to default, danger)
 - ✅ Keyboard shortcut display (e.g., "⌘K", "Ctrl+S")
 - ✅ Animated hover indicator (left border grows on hover)
@@ -69,17 +78,21 @@ We've spruced up the dropdown components with modern design enhancements, smooth
 - ✅ Focus ring for keyboard navigation
 
 **DropdownDivider**:
+
 - ✅ Optional label prop for section headers
 - ✅ Styled divider with label in center
 
 **DropdownContent**:
+
 - ✅ `maxHeight` prop for scrollable dropdowns
 - ✅ Styled scrollbar (thin, themed)
 
 **DropdownHeader**:
+
 - ✅ Gradient background for visual interest
 
 #### 6. **New Props**
+
 - ✅ `offset` - Custom spacing from trigger (default: 8px)
 - ✅ `disableAnimation` - Disable animations if needed
 - ✅ `shortcut` - Display keyboard shortcuts in items
@@ -190,11 +203,13 @@ import {
 ### Select Component
 
 **Before:**
+
 - Static chevron icon
 - Simple hover states
 - Basic border transitions
 
 **After:**
+
 - ✨ Animated chevron rotation (180° on focus)
 - ✨ Micro scale animation (1.01x on focus, 0.99x on click)
 - ✨ Dynamic background color changes
@@ -205,11 +220,13 @@ import {
 ### Dropdown Component
 
 **Before:**
+
 - Instant show/hide
 - Simple shadow
 - Basic styling
 
 **After:**
+
 - ✨ Smooth slide-in animation (scale + opacity + translate)
 - ✨ Multi-layer shadow for depth
 - ✨ Backdrop blur effect
@@ -222,12 +239,14 @@ import {
 ## ♿ Accessibility Improvements
 
 ### Select Component
+
 - **ARIA Attributes**: `aria-invalid`, `aria-describedby`
 - **Live Regions**: Error messages announced to screen readers
 - **Visual Indicators**: Icons + text for all states
 - **Focus Management**: Clear focus ring and states
 
 ### Dropdown Component
+
 - **Keyboard Navigation**: Full Tab/Shift+Tab support with focus trap
 - **ARIA Roles**: `menu`, `menuitem`, `separator`
 - **ARIA States**: `aria-expanded`, `aria-haspopup`
@@ -281,13 +300,13 @@ All existing code continues to work. New features are opt-in:
 <Select options={opts} />
 
 // Add new features incrementally
-<Select 
+<Select
   options={opts}
   selectSize="lg"        // ✨ Enjoy animations automatically
 />
 
 // Use new Dropdown features
-<DropdownItem 
+<DropdownItem
   shortcut="⌘K"          // ✨ New prop
   variant="primary"      // ✨ New variant
 >
@@ -333,6 +352,7 @@ All existing code continues to work. New features are opt-in:
 ## 🧪 Testing Checklist
 
 ### Select Component
+
 - [ ] Chevron rotates on focus
 - [ ] Component scales slightly on focus
 - [ ] Background changes on hover
@@ -342,6 +362,7 @@ All existing code continues to work. New features are opt-in:
 - [ ] Keyboard navigation works smoothly
 
 ### Dropdown Component
+
 - [ ] Smooth slide-in animation
 - [ ] Click outside closes dropdown
 - [ ] Escape key closes and returns focus
@@ -356,6 +377,7 @@ All existing code continues to work. New features are opt-in:
 ## 📚 Related Components
 
 These enhancements complement our form system:
+
 - `Form` component (from FORM_COMPONENT_STANDARDS.md)
 - `Input` component (similar enhancements)
 - `Button` component (consistent interactions)

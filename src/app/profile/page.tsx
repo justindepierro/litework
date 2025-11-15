@@ -5,14 +5,14 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ToastProvider";
 import ConfirmModal from "@/components/ConfirmModal";
-import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
-import { FloatingLabelTextarea } from "@/components/ui/FloatingLabelInput";
+import { Input, Textarea } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Alert } from "@/components/ui/Alert";
@@ -384,24 +384,29 @@ export default function ProfilePage() {
         {error && <Alert variant="error">{error}</Alert>}
 
         {/* Profile Picture Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
-            <Camera className="w-5 h-5" />
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Camera className="w-5 h-5 text-blue-600" />
             Profile Picture
           </h2>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
             {/* Avatar Display */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               {avatarPreview || profile?.avatarUrl ? (
-                <img
-                  src={avatarPreview || profile?.avatarUrl}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover"
-                />
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32">
+                  <Image
+                    src={avatarPreview || profile?.avatarUrl || ""}
+                    alt="Profile"
+                    fill
+                    className="rounded-full object-cover"
+                    sizes="(max-width: 640px) 96px, 128px"
+                    priority
+                  />
+                </div>
               ) : (
-                <div className="w-32 h-32 rounded-full bg-(--bg-tertiary) flex items-center justify-center">
-                  <User className="w-16 h-16 text-(--text-tertiary)" />
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-silver-200 flex items-center justify-center">
+                  <User className="w-12 h-12 sm:w-16 sm:h-16 text-silver-400" />
                 </div>
               )}
             </div>
@@ -476,32 +481,34 @@ export default function ProfilePage() {
           <div className="flex">
             <button
               onClick={() => setActiveTab("profile")}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "profile"
-                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
-                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
+                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
-              <User className="w-4 h-4 inline mr-2" />
-              Personal Info
+              <User className="w-4 h-4 inline mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Personal Info</span>
+              <span className="inline sm:hidden">Info</span>
             </button>
             <button
               onClick={() => setActiveTab("metrics")}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "metrics"
-                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
-                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
+                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
-              <Activity className="w-4 h-4 inline mr-2" />
-              Physical Metrics
+              <Activity className="w-4 h-4 inline mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Physical Metrics</span>
+              <span className="inline sm:hidden">Metrics</span>
             </button>
             <button
               onClick={() => setActiveTab("account")}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
+              className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "account"
-                  ? "border-b-2 border-(--accent-blue-600) text-(--accent-blue-600) bg-(--accent-blue-50)"
-                  : "text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--interactive-hover)"
+                  ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               <Lock className="w-4 h-4 inline mr-2" />
@@ -509,116 +516,135 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {/* Personal Info Tab */}
             {activeTab === "profile" && (
-              <form onSubmit={handleProfileUpdate} className="space-y-6">
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
                 {/* Basic Information Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
-                    <User className="w-5 h-5 text-(--accent-blue-600)" />
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <User className="w-5 h-5 text-blue-600" />
                     Basic Information
                   </h3>
 
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FloatingLabelInput
-                        type="text"
-                        label="First Name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                        fullWidth
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label>First Name *</Label>
+                        <Input
+                          type="text"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          required
+                        />
+                      </div>
 
-                      <FloatingLabelInput
-                        type="text"
-                        label="Last Name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                        fullWidth
-                      />
+                      <div>
+                        <Label>Last Name *</Label>
+                        <Input
+                          type="text"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          required
+                        />
+                      </div>
                     </div>
 
-                    <FloatingLabelInput
-                      type="email"
-                      label="Email"
-                      value={profile?.email || ""}
-                      disabled
-                      leftIcon={<Mail className="w-5 h-5" />}
-                      helperText="Contact support to change your email"
-                      fullWidth
-                    />
+                    <div>
+                      <Label className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email
+                      </Label>
+                      <Input
+                        type="email"
+                        value={profile?.email || ""}
+                        disabled
+                      />
+                      <Caption variant="muted" className="mt-1">
+                        Contact support to change your email
+                      </Caption>
+                    </div>
 
-                    <FloatingLabelInput
-                      type="tel"
-                      label="Phone Number"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      leftIcon={<Phone className="w-5 h-5" />}
-                      helperText="Your personal phone number"
-                      fullWidth
-                    />
+                    <div>
+                      <Label className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        Phone Number
+                      </Label>
+                      <Input
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                      <Caption variant="muted" className="mt-1">
+                        Your personal phone number
+                      </Caption>
+                    </div>
                   </div>
                 </div>
 
                 {/* About Section */}
-                <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4">
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 sm:p-6 border border-purple-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     About You
                   </h3>
 
                   <div className="space-y-4">
-                    <FloatingLabelTextarea
-                      label="Bio"
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      rows={4}
-                      helperText="Tell us about yourself, your fitness goals, experience level, etc."
-                      fullWidth
-                    />
+                    <div>
+                      <Label>Bio</Label>
+                      <Textarea
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        rows={4}
+                      />
+                      <Caption variant="muted" className="mt-1">
+                        Tell us about yourself, your fitness goals, experience
+                        level, etc.
+                      </Caption>
+                    </div>
 
-                    <div className="bg-(--accent-amber-50) rounded-lg p-4">
+                    <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
                       <Label className="flex items-center gap-2 mb-2">
-                        <AlertCircle className="w-4 h-4" />
+                        <AlertCircle className="w-4 h-4 text-amber-600" />
                         Current Injury Status
                       </Label>
-                      <FloatingLabelTextarea
-                        label="Injury Status"
+                      <Textarea
                         value={injuryStatus}
                         onChange={(e) => setInjuryStatus(e.target.value)}
                         rows={2}
-                        helperText="List any current injuries, limitations, or areas to avoid during training"
-                        fullWidth
                       />
+                      <Caption variant="muted" className="mt-1">
+                        List any current injuries, limitations, or areas to
+                        avoid during training
+                      </Caption>
                     </div>
                   </div>
                 </div>
 
                 {/* Emergency Contact Section */}
-                <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-(--status-error)" />
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 sm:p-6 border border-red-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Phone className="w-5 h-5 text-red-600" />
                     Emergency Contact
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FloatingLabelInput
-                      type="text"
-                      label="Emergency Contact Name"
-                      value={emergencyName}
-                      onChange={(e) => setEmergencyName(e.target.value)}
-                      fullWidth
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Emergency Contact Name</Label>
+                      <Input
+                        type="text"
+                        value={emergencyName}
+                        onChange={(e) => setEmergencyName(e.target.value)}
+                      />
+                    </div>
 
-                    <FloatingLabelInput
-                      type="tel"
-                      label="Emergency Contact Phone"
-                      value={emergencyPhone}
-                      onChange={(e) => setEmergencyPhone(e.target.value)}
-                      fullWidth
-                    />
+                    <div>
+                      <Label>Emergency Contact Phone</Label>
+                      <Input
+                        type="tel"
+                        value={emergencyPhone}
+                        onChange={(e) => setEmergencyPhone(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -637,28 +663,27 @@ export default function ProfilePage() {
 
             {/* Physical Metrics Tab */}
             {activeTab === "metrics" && (
-              <form onSubmit={handleProfileUpdate} className="space-y-6">
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
                 {/* Personal Details Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-(--accent-blue-600)" />
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 sm:p-6 border border-green-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-green-600" />
                     Personal Details
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <FloatingLabelInput
+                      <Label>Date of Birth</Label>
+                      <Input
                         type="date"
-                        label="Date of Birth"
                         value={dateOfBirth}
                         onChange={(e) => setDateOfBirth(e.target.value)}
-                        helperText={
-                          profile?.age
-                            ? `Current age: ${profile.age} years`
-                            : ""
-                        }
-                        fullWidth
                       />
+                      {profile?.age && (
+                        <Caption variant="muted" className="mt-1">
+                          Current age: {profile.age} years
+                        </Caption>
+                      )}
                     </div>
 
                     <Select
@@ -681,41 +706,43 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Physical Measurements Section */}
-                <div className="pt-6">
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-(--status-success)" />
+                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-4 sm:p-6 border border-cyan-100">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-cyan-600" />
                     Physical Measurements
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label className="flex items-center gap-2 mb-2">
                         <Ruler className="w-4 h-4" />
                         Height
                       </Label>
                       <div className="grid grid-cols-2 gap-3">
-                        <FloatingLabelInput
-                          type="number"
-                          min="3"
-                          max="8"
-                          label="Feet"
-                          value={heightFeet}
-                          onChange={(e) => setHeightFeet(e.target.value)}
-                          fullWidth
-                        />
-                        <FloatingLabelInput
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          max="11.5"
-                          label="Inches"
-                          value={heightInches}
-                          onChange={(e) => setHeightInches(e.target.value)}
-                          fullWidth
-                        />
+                        <div>
+                          <Label>Feet</Label>
+                          <Input
+                            type="number"
+                            min="3"
+                            max="8"
+                            value={heightFeet}
+                            onChange={(e) => setHeightFeet(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label>Inches</Label>
+                          <Input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            max="11.5"
+                            value={heightInches}
+                            onChange={(e) => setHeightInches(e.target.value)}
+                          />
+                        </div>
                       </div>
                       {(heightFeet || heightInches) && (
-                        <Caption variant="default" className="mt-1">
+                        <Caption variant="muted" className="mt-1">
                           Total:{" "}
                           {(
                             (parseFloat(heightFeet) || 0) * 12 +
@@ -731,46 +758,44 @@ export default function ProfilePage() {
                         <Scale className="w-4 h-4" />
                         Weight (lbs)
                       </Label>
-                      <FloatingLabelInput
+                      <Input
                         type="number"
                         step="0.1"
                         min="50"
                         max="500"
-                        label="Weight in lbs"
                         value={weightLbs}
                         onChange={(e) => setWeightLbs(e.target.value)}
-                        fullWidth
                       />
                     </div>
                   </div>
-
-                  {/* BMI Display */}
-                  {profile?.bmi && (
-                    <div className="bg-gradient-to-r from-(--accent-blue-50) to-cyan-50 rounded-lg p-4 mt-6">
-                      <h4 className="font-semibold text-(--text-primary) mb-2">
-                        Body Mass Index (BMI)
-                      </h4>
-                      <div className="flex items-center justify-between">
-                        <span className="text-3xl font-bold text-(--accent-blue-600)">
-                          {profile.bmi}
-                        </span>
-                        <span className="px-3 py-1 bg-white text-(--accent-blue-700) rounded-full text-sm font-medium capitalize">
-                          {profile.bmiCategory}
-                        </span>
-                      </div>
-                      <Caption variant="default" className="mt-2">
-                        BMI is a general indicator and may not reflect athletic
-                        body composition.
-                      </Caption>
-                    </div>
-                  )}
                 </div>
+
+                {/* BMI Display */}
+                {profile?.bmi && (
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 border border-blue-100">
+                    <h4 className="font-semibold text-gray-900 mb-2">
+                      Body Mass Index (BMI)
+                    </h4>
+                    <div className="flex items-center justify-between">
+                      <span className="text-3xl font-bold text-blue-600">
+                        {profile.bmi}
+                      </span>
+                      <span className="px-3 py-1 bg-white text-blue-700 rounded-full text-sm font-medium capitalize">
+                        {profile.bmiCategory}
+                      </span>
+                    </div>
+                    <Caption variant="muted" className="mt-2">
+                      BMI is a general indicator and may not reflect athletic
+                      body composition.
+                    </Caption>
+                  </div>
+                )}
 
                 <div className="flex justify-end pt-4">
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-8 py-3 bg-gradient-to-r from-(--status-success) to-(--status-success) text-white rounded-lg hover:from-(--status-success) hover:to-(--status-success) disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
                   >
                     <Save className="w-5 h-5" />
                     {isSaving ? "Saving..." : "Save Metrics"}
@@ -781,46 +806,53 @@ export default function ProfilePage() {
 
             {/* Account Security Tab */}
             {activeTab === "account" && (
-              <form onSubmit={handlePasswordChange} className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4">
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-xl p-4 sm:p-6 border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-gray-600" />
                     Change Password
                   </h3>
                   <Body className="text-sm mb-4" variant="secondary">
                     Use a strong password with at least 6 characters.
                   </Body>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label>New Password *</Label>
+                      <Input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        minLength={6}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Confirm New Password *</Label>
+                      <Input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        minLength={6}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <FloatingLabelInput
-                  type="password"
-                  label="New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  minLength={6}
-                  required
-                  fullWidth
-                />
-
-                <FloatingLabelInput
-                  type="password"
-                  label="Confirm New Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  minLength={6}
-                  required
-                  fullWidth
-                />
-
-                <button
-                  type="submit"
-                  disabled={isChangingPassword}
-                  className="w-full md:w-auto px-6 py-3 bg-(--accent-blue-600) text-white rounded-lg hover:bg-(--accent-blue-700) disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  <Lock className="w-5 h-5" />
-                  {isChangingPassword
-                    ? "Changing Password..."
-                    : "Change Password"}
-                </button>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="px-8 py-3 bg-gradient-to-r from-gray-600 to-slate-600 text-white rounded-lg hover:from-gray-700 hover:to-slate-700 disabled:opacity-50 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                  >
+                    <Lock className="w-5 h-5" />
+                    {isChangingPassword
+                      ? "Changing Password..."
+                      : "Change Password"}
+                  </button>
+                </div>
               </form>
             )}
           </div>

@@ -5,6 +5,9 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "!./docs/**/*", // Exclude documentation files
+    "!./scripts/**/*", // Exclude scripts
+    "!./database/**/*", // Exclude database files
   ],
   theme: {
     extend: {
@@ -268,6 +271,36 @@ const config: Config = {
           DEFAULT: "#ff6b35", // brand orange
           dark: "#c2410c", // orange-700
         },
+      },
+      // Standardized Border System
+      borderColor: {
+        DEFAULT: "var(--border-default)", // e5e7eb
+        subtle: "var(--border-subtle)", // f3f4f6
+        strong: "var(--border-strong)", // 94a3b8
+        accent: "var(--border-accent)", // ff6b35
+        focus: "var(--border-focus)", // 3b82f6
+        error: "var(--border-error)", // ef4444
+        success: "var(--border-success)", // 00d4aa
+        warning: "var(--border-warning)", // f59e0b
+      },
+      borderWidth: {
+        DEFAULT: "var(--border-width-default)", // 1px
+        0: "0",
+        2: "var(--border-width-medium)", // 2px
+        3: "var(--border-width-thick)", // 3px
+        4: "4px",
+        8: "8px",
+      },
+      borderRadius: {
+        none: "0",
+        sm: "var(--radius-sm)", // 0.375rem / 6px
+        DEFAULT: "var(--radius-md)", // 0.5rem / 8px
+        md: "var(--radius-md)", // 0.5rem / 8px
+        lg: "var(--radius-lg)", // 0.75rem / 12px
+        xl: "var(--radius-xl)", // 1rem / 16px
+        "2xl": "var(--radius-2xl)", // 1.5rem / 24px
+        "3xl": "1.875rem", // 30px
+        full: "var(--radius-full)", // 9999px
       },
       backgroundImage: {
         "gradient-primary":

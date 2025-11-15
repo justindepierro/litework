@@ -29,18 +29,18 @@
 ✅ **Error Handling** - Field-level and form-level error display  
 ✅ **Loading States** - Automatic submit button disable during submission  
 ✅ **Touch Tracking** - Show errors only after user interaction  
-✅ **Type Safety** - Full TypeScript support  
+✅ **Type Safety** - Full TypeScript support
 
 ### Migrated Components (6 of 6)
 
-| Component | Before | After | Change | Status |
-|-----------|--------|-------|--------|--------|
-| Login Page | 180 lines | 137 lines | -43 (-24%) | ✅ |
-| Signup Page | 578 lines | 419 lines | -159 (-27%) | ✅ |
-| GroupFormModal | 443 lines | 316 lines | -127 (-29%) | ✅ |
-| WorkoutAssignmentForm | 151 lines | 172 lines | +21 (quality) | ✅ |
-| KPIModal | 189 lines | 196 lines | +7 (quality) | ✅ |
-| KPIManagementModal | 288 lines | 257 lines | -31 (-11%) | ✅ |
+| Component             | Before    | After     | Change        | Status |
+| --------------------- | --------- | --------- | ------------- | ------ |
+| Login Page            | 180 lines | 137 lines | -43 (-24%)    | ✅     |
+| Signup Page           | 578 lines | 419 lines | -159 (-27%)   | ✅     |
+| GroupFormModal        | 443 lines | 316 lines | -127 (-29%)   | ✅     |
+| WorkoutAssignmentForm | 151 lines | 172 lines | +21 (quality) | ✅     |
+| KPIModal              | 189 lines | 196 lines | +7 (quality)  | ✅     |
+| KPIManagementModal    | 288 lines | 257 lines | -31 (-11%)    | ✅     |
 
 **Net Result**: 337 lines saved, 100% improved accessibility
 
@@ -51,16 +51,20 @@
 ### 1. All Forms Must Use Form System
 
 ❌ **FORBIDDEN** - Manual state management:
+
 ```tsx
 const [email, setEmail] = useState("");
 const [error, setError] = useState("");
 const [isLoading, setIsLoading] = useState(false);
 
-<input value={email} onChange={(e) => setEmail(e.target.value)} />
-{error && <span>{error}</span>}
+<input value={email} onChange={(e) => setEmail(e.target.value)} />;
+{
+  error && <span>{error}</span>;
+}
 ```
 
 ✅ **REQUIRED** - Form system:
+
 ```tsx
 <Form
   onSubmit={handleSubmit}
@@ -75,6 +79,7 @@ const [isLoading, setIsLoading] = useState(false);
 ### 2. No FloatingLabelInput
 
 ❌ **FORBIDDEN**:
+
 ```tsx
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 
@@ -82,21 +87,24 @@ import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 ```
 
 ✅ **REQUIRED**:
+
 ```tsx
 import { FormField } from "@/components/ui/Form";
 
-<FormField name="name" label="Name" type="text" required />
+<FormField name="name" label="Name" type="text" required />;
 ```
 
 ### 3. Use Typography Components
 
 ❌ **FORBIDDEN** - Raw text elements:
+
 ```tsx
 <p className="text-gray-600">Description</p>
 <span className="text-sm text-red-500">{error}</span>
 ```
 
 ✅ **REQUIRED** - Typography components:
+
 ```tsx
 import { Body, Caption } from "@/components/ui/Typography";
 
@@ -126,7 +134,7 @@ import { validationRules } from "@/lib/form-validation";
   <FormField name="name" label="Name" type="text" required />
   <FormField name="email" label="Email" type="email" required />
   <FormSubmitButton>Submit</FormSubmitButton>
-</Form>
+</Form>;
 ```
 
 ### Form Props
@@ -136,13 +144,13 @@ interface FormProps {
   // Required
   children: React.ReactNode;
   onSubmit: (values: Record<string, any>) => void | Promise<void>;
-  
+
   // Optional
   initialValues?: Record<string, any>;
   validation?: ValidationSchema;
   onChange?: (values: Record<string, any>) => void;
-  validateOnMount?: boolean;  // Show all errors immediately
-  validateOnBlur?: boolean;   // Validate when field loses focus (default: true)
+  validateOnMount?: boolean; // Show all errors immediately
+  validateOnBlur?: boolean; // Validate when field loses focus (default: true)
   validateOnChange?: boolean; // Validate on every keystroke
   className?: string;
 }
@@ -152,9 +160,9 @@ interface FormProps {
 
 ```tsx
 // Text Input
-<FormField 
-  name="fieldName" 
-  label="Label" 
+<FormField
+  name="fieldName"
+  label="Label"
   type="text" | "email" | "password" | "number" | "date"
   placeholder="Optional placeholder"
   required
@@ -162,8 +170,8 @@ interface FormProps {
 />
 
 // Textarea
-<FormTextarea 
-  name="description" 
+<FormTextarea
+  name="description"
   label="Description"
   placeholder="Optional placeholder"
   rows={4}
@@ -172,8 +180,8 @@ interface FormProps {
 />
 
 // Select Dropdown
-<FormSelect 
-  name="category" 
+<FormSelect
+  name="category"
   label="Category"
   options={[
     { value: "opt1", label: "Option 1" },
@@ -184,14 +192,14 @@ interface FormProps {
 />
 
 // Checkbox
-<FormCheckbox 
-  name="agree" 
+<FormCheckbox
+  name="agree"
   label="I agree to terms"
   required
 />
 
 // Submit Button
-<FormSubmitButton 
+<FormSubmitButton
   variant="primary" | "secondary"
   fullWidth
   className="custom-class"
@@ -215,36 +223,36 @@ From `src/lib/form-validation.ts`:
 import { validationRules } from "@/lib/form-validation";
 
 // Required field
-validationRules.required("Custom error message")
+validationRules.required("Custom error message");
 
 // Email validation
-validationRules.email()
+validationRules.email();
 
 // Password validation
-validationRules.password(8, true) // minLength, requireStrength
+validationRules.password(8, true); // minLength, requireStrength
 
 // Confirm password (matches another field)
-validationRules.confirmPassword("password")
+validationRules.confirmPassword("password");
 
 // Phone number
-validationRules.phone()
+validationRules.phone();
 
 // URL
-validationRules.url()
+validationRules.url();
 
 // Number range
-validationRules.min(1, "Must be at least 1")
-validationRules.max(100, "Must be at most 100")
-validationRules.range(1, 100, "Must be between 1 and 100")
+validationRules.min(1, "Must be at least 1");
+validationRules.max(100, "Must be at most 100");
+validationRules.range(1, 100, "Must be between 1 and 100");
 
 // String length
-validationRules.minLength(3, "Must be at least 3 characters")
-validationRules.maxLength(50, "Must be at most 50 characters")
+validationRules.minLength(3, "Must be at least 3 characters");
+validationRules.maxLength(50, "Must be at most 50 characters");
 
 // Date validation
-validationRules.date()
-validationRules.futureDate("Must be in the future")
-validationRules.pastDate("Must be in the past")
+validationRules.date();
+validationRules.futureDate("Must be in the future");
+validationRules.pastDate("Must be in the past");
 ```
 
 ### Custom Validation
@@ -321,6 +329,7 @@ validation={{
 ### Example 1: Simple Login Form
 
 **BEFORE** (180 lines):
+
 ```tsx
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
@@ -344,7 +353,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setError("");
   setEmailError("");
-  
+
   if (!email) {
     setEmailError("Email is required");
     return;
@@ -353,7 +362,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     setError("Password is required");
     return;
   }
-  
+
   setIsLoading(true);
   // ... submit logic
 };
@@ -369,6 +378,7 @@ return (
 ```
 
 **AFTER** (137 lines):
+
 ```tsx
 import { Form, FormField, FormSubmitButton } from "@/components/ui/Form";
 import { validationRules } from "@/lib/form-validation";
@@ -395,13 +405,20 @@ return (
     validateOnBlur={true}
   >
     <FormField name="email" label="Email" type="email" required fullWidth />
-    <FormField name="password" label="Password" type="password" required fullWidth />
+    <FormField
+      name="password"
+      label="Password"
+      type="password"
+      required
+      fullWidth
+    />
     <FormSubmitButton fullWidth>Sign in</FormSubmitButton>
   </Form>
 );
 ```
 
 **Improvements**:
+
 - ✅ 43 lines saved (24% reduction)
 - ✅ No manual state management
 - ✅ Automatic ARIA attributes
@@ -452,14 +469,23 @@ return (
   <FormField name="lastName" label="Last Name" required />
   <FormField name="email" label="Email" type="email" required />
   <FormField name="password" label="Password" type="password" required />
-  <FormField name="confirmPassword" label="Confirm Password" type="password" required />
-  
+  <FormField
+    name="confirmPassword"
+    label="Confirm Password"
+    type="password"
+    required
+  />
+
   {/* Password strength indicator (external state) */}
   {passwordStrength && (
     <PasswordStrengthIndicator strength={passwordStrength} />
   )}
-  
-  <FormCheckbox name="tosAccepted" label="I accept the Terms of Service" required />
+
+  <FormCheckbox
+    name="tosAccepted"
+    label="I accept the Terms of Service"
+    required
+  />
   <FormSubmitButton fullWidth>Sign Up</FormSubmitButton>
 </Form>
 ```
@@ -501,7 +527,7 @@ function GroupFormModal() {
     >
       <FormField name="name" label="Group Name" required />
       <FormSelect name="sport" label="Sport" options={sports} required />
-      
+
       {/* Custom athlete selection outside Form */}
       <div>
         <label>Athletes</label>
@@ -514,7 +540,7 @@ function GroupFormModal() {
           />
         ))}
       </div>
-      
+
       {submitError && <Caption variant="error">{submitError}</Caption>}
       <FormSubmitButton>Save</FormSubmitButton>
     </Form>
@@ -531,7 +557,7 @@ import { Form, FormField, useFormContext } from "@/components/ui/Form";
 
 function FormContent() {
   const { values } = useFormContext();
-  
+
   // React to form values
   const displayName = values.displayName || "";
   const generatedSlug = generateSlug(displayName);
@@ -539,7 +565,7 @@ function FormContent() {
   return (
     <div>
       <FormField name="displayName" label="Display Name" required />
-      
+
       {/* Show computed value based on form state */}
       <Body variant="tertiary">
         Slug: {generatedSlug || "(enter name above)"}
@@ -582,8 +608,8 @@ function ParentComponent() {
 function WorkoutAssignmentForm({ selectedWorkoutId, onWorkoutChange }) {
   return (
     <div>
-      <select 
-        value={selectedWorkoutId} 
+      <select
+        value={selectedWorkoutId}
         onChange={(e) => onWorkoutChange(e.target.value)}
       >
         {/* options */}
@@ -610,9 +636,7 @@ Pre-fill form when editing:
 >
   <FormField name="name" label="Name" required />
   <FormField name="description" label="Description" />
-  <FormSubmitButton>
-    {editingItem ? "Update" : "Create"}
-  </FormSubmitButton>
+  <FormSubmitButton>{editingItem ? "Update" : "Create"}</FormSubmitButton>
 </Form>
 ```
 
@@ -694,8 +718,8 @@ The Form system automatically adds:
 />
 
 // Error messages automatically get:
-<span 
-  id="field-error" 
+<span
+  id="field-error"
   role="alert"                   // Announces to screen readers
 >
   Error message
@@ -705,6 +729,7 @@ The Form system automatically adds:
 ### Focus Management
 
 When form submission fails:
+
 ```tsx
 // Form automatically focuses first error field
 // User is immediately placed at problematic field
@@ -725,11 +750,12 @@ When form submission fails:
 ✅ All form fields support Tab/Shift+Tab  
 ✅ Enter submits form  
 ✅ Escape closes modals  
-✅ Space toggles checkboxes  
+✅ Space toggles checkboxes
 
 ### Screen Reader Best Practices
 
 1. **Use semantic HTML**:
+
    ```tsx
    <form> {/* Not <div> */}
    <label> {/* Not <span> */}
@@ -737,10 +763,11 @@ When form submission fails:
    ```
 
 2. **Provide context**:
+
    ```tsx
-   <FormField 
-     name="email" 
-     label="Email Address"  // Clear label
+   <FormField
+     name="email"
+     label="Email Address" // Clear label
      placeholder="john@example.com" // Example format
      required
    />
@@ -762,13 +789,13 @@ When form submission fails:
 ### Issue: FormSubmitButton doesn't accept leftIcon prop
 
 ❌ **Wrong**:
+
 ```tsx
-<FormSubmitButton leftIcon={<Icon />}>
-  Submit
-</FormSubmitButton>
+<FormSubmitButton leftIcon={<Icon />}>Submit</FormSubmitButton>
 ```
 
 ✅ **Correct**:
+
 ```tsx
 <FormSubmitButton>
   <Icon className="w-4 h-4 inline-block mr-2" />
@@ -779,11 +806,13 @@ When form submission fails:
 ### Issue: Heading doesn't accept size prop
 
 ❌ **Wrong**:
+
 ```tsx
 <Heading size="lg">Title</Heading>
 ```
 
 ✅ **Correct**:
+
 ```tsx
 <Heading level="h2">Title</Heading>
 ```
@@ -795,7 +824,7 @@ When form submission fails:
 ```tsx
 function ChildComponent() {
   const { values, errors } = useFormContext();
-  
+
   return <div>Current email: {values.email}</div>;
 }
 
@@ -847,7 +876,7 @@ const [customValue, setCustomValue] = useState("");
 
 <Form onSubmit={(values) => handleSubmit({ ...values, customValue })}>
   {/* Form fields */}
-</Form>
+</Form>;
 ```
 
 ✅ **Solution 2**: Use controlled FormField with onChange wrapper:
