@@ -180,7 +180,7 @@ const Navigation = memo(function Navigation() {
 
   return (
     <>
-      {/* Modern Navigation Bar with Glassmorphism */}
+      {/* Modern Navigation Bar with High Contrast */}
       <nav
         className={`
           fixed top-0 left-0 right-0 z-50
@@ -188,13 +188,13 @@ const Navigation = memo(function Navigation() {
           ${isVisible ? "translate-y-0" : "-translate-y-full"}
           ${
             isScrolled
-              ? "bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-700/50"
-              : "bg-slate-900 border-b border-slate-800"
+              ? "bg-slate-950/98 backdrop-blur-md shadow-xl border-b border-slate-700"
+              : "bg-slate-950 border-b border-slate-800"
           }
         `}
         style={{
-          // Explicit background for iOS Safari
-          backgroundColor: isScrolled ? "rgba(15, 23, 42, 0.95)" : "rgb(15, 23, 42)",
+          // Explicit background for iOS Safari - DARKER for better contrast
+          backgroundColor: isScrolled ? "rgba(2, 6, 23, 0.98)" : "rgb(2, 6, 23)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -222,7 +222,7 @@ const Navigation = memo(function Navigation() {
               </span>
             </Link>
 
-            {/* Desktop Navigation - Modern Pills */}
+            {/* Desktop Navigation - Modern Pills with High Contrast */}
             <div className="hidden md:flex items-center gap-2">
               {user && (
                 <>
@@ -239,12 +239,12 @@ const Navigation = memo(function Navigation() {
                           flex items-center gap-2
                           ${
                             isActive
-                              ? "bg-slate-800 text-white shadow-lg"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                              ? "bg-white text-slate-950 shadow-lg shadow-white/20"
+                              : "text-white hover:text-white hover:bg-white/10 active:bg-white/20"
                           }
                         `}
                       >
-                        <Icon className={`w-4 h-4 ${item.color}`} />
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : item.color}`} />
                         <span>{item.label}</span>
                         {isActive && (
                           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent rounded-full" />
@@ -267,12 +267,12 @@ const Navigation = memo(function Navigation() {
                       flex items-center gap-2
                       ${
                         pathname === "/profile"
-                          ? "bg-slate-800 text-white shadow-lg"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                          ? "bg-white text-slate-950 shadow-lg shadow-white/20"
+                          : "text-white hover:text-white hover:bg-white/10 active:bg-white/20"
                       }
                     `}
                   >
-                    <User className="w-4 h-4 text-slate-400 group-hover:text-slate-300" />
+                    <User className={`w-4 h-4 ${pathname === "/profile" ? 'text-slate-950' : 'text-slate-300'}`} />
                     <span className="hidden lg:inline">Profile</span>
                   </Link>
 
@@ -301,7 +301,7 @@ const Navigation = memo(function Navigation() {
             {/* Mobile Menu Button - Enhanced */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95"
+              className="md:hidden p-2.5 rounded-xl text-white hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95"
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -371,12 +371,12 @@ const Navigation = memo(function Navigation() {
                           transition-all duration-200 active:scale-95
                           ${
                             isActive
-                              ? "bg-slate-800 text-white shadow-lg"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                              ? "bg-white text-slate-950 shadow-lg"
+                              : "text-white hover:text-white hover:bg-white/10"
                           }
                         `}
                       >
-                        <Icon className={`w-5 h-5 ${item.color}`} />
+                        <Icon className={`w-5 h-5 ${isActive ? 'text-slate-950' : item.color}`} />
                         <span className="flex-1">{item.label}</span>
                         {isActive && (
                           <div className="w-2 h-2 rounded-full bg-orange-400" />
@@ -387,7 +387,7 @@ const Navigation = memo(function Navigation() {
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-slate-800 my-4" />
+                <div className="border-t border-slate-700 my-4" />
 
                 {/* Profile Link */}
                 <Link
@@ -398,12 +398,12 @@ const Navigation = memo(function Navigation() {
                     transition-all duration-200 active:scale-95
                     ${
                       pathname === "/profile"
-                        ? "bg-slate-800 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                        ? "bg-white text-slate-950 shadow-lg"
+                        : "text-white hover:text-white hover:bg-white/10"
                     }
                   `}
                 >
-                  <User className="w-5 h-5 text-slate-400" />
+                  <User className={`w-5 h-5 ${pathname === "/profile" ? 'text-slate-950' : 'text-slate-300'}`} />
                   <span className="flex-1">Profile & Settings</span>
                 </Link>
 
