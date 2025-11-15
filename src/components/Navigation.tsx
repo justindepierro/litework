@@ -233,8 +233,11 @@ const Navigation = memo(function Navigation() {
                       <Link
                         key={item.href}
                         href={item.href}
+                        style={{
+                          color: isActive ? '#020617' : '#ffffff',
+                        }}
                         className={`
-                          group relative px-4 py-2 rounded-xl font-medium text-sm
+                          group relative px-4 py-2 rounded-xl font-medium text-sm font-bold
                           transition-all duration-200 ease-in-out
                           flex items-center gap-2
                           ${
