@@ -241,15 +241,16 @@ export default function NotificationBell() {
     <Dropdown
       trigger={
         <button
+          style={{ color: '#ffffff' }}
           className={`
             relative p-2 text-white rounded-lg transition-all duration-200
-            hover:text-accent-green hover:bg-navy-700 hover:scale-110
+            hover:bg-white/10 hover:scale-110
             active:scale-95
             ${unreadCount > 0 ? "animate-pulse" : ""}
           `}
           aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
         >
-          <Bell className="w-6 h-6" />
+          <Bell className="w-6 h-6" style={{ color: '#ffffff' }} />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 min-w-5 px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200">
               {unreadCount > 9 ? "9+" : unreadCount}

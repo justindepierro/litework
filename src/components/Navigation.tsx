@@ -214,10 +214,10 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-500 transition-colors" />
               </div>
-              <span className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
+              <span style={{ color: '#ffffff' }} className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
                 LiteWork
               </span>
-              <span className="text-xl font-bold text-white xs:hidden">
+              <span style={{ color: '#ffffff' }} className="text-xl font-bold text-white xs:hidden">
                 LW
               </span>
             </Link>
