@@ -84,19 +84,19 @@ const Navigation = memo(function Navigation() {
           href: "/workouts", 
           label: "Workouts",
           icon: Dumbbell,
-          color: "text-orange-400 group-hover:text-orange-300"
+          color: "text-orange-500"
         },
         { 
           href: "/athletes", 
           label: "Athletes",
           icon: Users,
-          color: "text-purple-400 group-hover:text-purple-300"
+          color: "text-purple-500"
         },
         { 
           href: "/schedule", 
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-400 group-hover:text-blue-300"
+          color: "text-blue-500"
         },
       );
     } else {
@@ -105,19 +105,19 @@ const Navigation = memo(function Navigation() {
           href: "/workouts/history", 
           label: "History",
           icon: TrendingUp,
-          color: "text-pink-400 group-hover:text-pink-300"
+          color: "text-pink-500"
         },
         { 
           href: "/progress", 
           label: "Progress",
           icon: TrendingUp,
-          color: "text-cyan-400 group-hover:text-cyan-300"
+          color: "text-cyan-500"
         },
         { 
           href: "/schedule", 
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-400 group-hover:text-blue-300"
+          color: "text-blue-500"
         },
       );
     }
@@ -212,7 +212,7 @@ const Navigation = memo(function Navigation() {
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
-                <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-500 transition-colors" />
               </div>
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent hidden xs:block">
                 LiteWork
@@ -346,10 +346,10 @@ const Navigation = memo(function Navigation() {
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-white font-semibold truncate">
+                      <div className="text-white font-semibold text-sm">
                         {user.fullName || user.email}
                       </div>
-                      <div className="text-slate-400 text-xs capitalize">
+                      <div className="text-slate-200 text-xs capitalize">
                         {user.role}
                       </div>
                     </div>

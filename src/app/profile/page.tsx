@@ -484,7 +484,7 @@ export default function ProfilePage() {
               className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "profile"
                   ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               <User className="w-4 h-4 inline mr-1 sm:mr-2" />
@@ -496,7 +496,7 @@ export default function ProfilePage() {
               className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "metrics"
                   ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               <Activity className="w-4 h-4 inline mr-1 sm:mr-2" />
@@ -508,7 +508,7 @@ export default function ProfilePage() {
               className={`flex-1 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === "account"
                   ? "border-b-2 border-blue-600 text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               <Lock className="w-4 h-4 inline mr-2" />
@@ -809,7 +809,7 @@ export default function ProfilePage() {
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-xl p-4 sm:p-6 border border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Lock className="w-5 h-5 text-gray-600" />
+                    <Lock className="w-5 h-5 text-gray-900" />
                     Change Password
                   </h3>
                   <Body className="text-sm mb-4" variant="secondary">
