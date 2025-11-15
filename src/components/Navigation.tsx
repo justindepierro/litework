@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useCallback, useMemo, memo, useEffect, useRef } from "react";
 import {
@@ -11,44 +12,52 @@ import {
   TrendingUp,
   LogOut,
   LogIn,
+  User,
+  X,
+  Menu,
 } from "lucide-react";
 import NotificationBell from "@/components/NotificationBell";
 
-// Memoized navigation link component for better performance
-const NavigationLink = memo(function NavigationLink({
-  href,
-  children,
-  className = "",
-  onClick,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`hover:text-accent-green px-3 py-2 rounded-lg transition-colors text-white font-medium touch-manipulation ${className}`}
-      onClick={onClick}
-    >
-      {children}
-    </Link>
-  );
-});
-
 const Navigation = memo(function Navigation() {
   const { user, signOut } = useAuth();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // Optimize toggle function with useCallback
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
   }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMobileMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
   // Memoize user role checks
   const isCoachOrAdmin = useMemo(
@@ -60,20 +69,56 @@ const Navigation = memo(function Navigation() {
   const navigationItems = useMemo(() => {
     if (!user) return [];
 
-    const items = [{ href: "/dashboard", label: "Dashboard" }];
+    const items = [
+      { 
+        href: "/dashboard", 
+        label: "Dashboard",
+        icon: BarChart3,
+        color: "text-emerald-400 group-hover:text-emerald-300"
+      }
+    ];
 
     if (isCoachOrAdmin) {
       items.push(
-        { href: "/workouts", label: "Workouts" },
-        { href: "/athletes", label: "Athletes" },
-        { href: "/schedule", label: "Schedule" },
-        { href: "/profile", label: "Profile" }
+        { 
+          href: "/workouts", 
+          label: "Workouts",
+          icon: Dumbbell,
+          color: "text-orange-400 group-hover:text-orange-300"
+        },
+        { 
+          href: "/athletes", 
+          label: "Athletes",
+          icon: Users,
+          color: "text-purple-400 group-hover:text-purple-300"
+        },
+        { 
+          href: "/schedule", 
+          label: "Schedule",
+          icon: Calendar,
+          color: "text-blue-400 group-hover:text-blue-300"
+        },
       );
     } else {
       items.push(
-        { href: "/workouts/history", label: "History" },
-        { href: "/progress", label: "Progress" },
-        { href: "/schedule", label: "Schedule" }
+        { 
+          href: "/workouts/history", 
+          label: "History",
+          icon: TrendingUp,
+          color: "text-pink-400 group-hover:text-pink-300"
+        },
+        { 
+          href: "/progress", 
+          label: "Progress",
+          icon: TrendingUp,
+          color: "text-cyan-400 group-hover:text-cyan-300"
+        },
+        { 
+          href: "/schedule", 
+          label: "Schedule",
+          icon: Calendar,
+          color: "text-blue-400 group-hover:text-blue-300"
+        },
       );
     }
 
@@ -125,252 +170,271 @@ const Navigation = memo(function Navigation() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isMobileMenuOpen]);
 
+  // Check if link is active
+  const isActiveLink = useCallback((href: string) => {
+    if (href === "/dashboard") {
+      return pathname === "/" || pathname === "/dashboard";
+    }
+    return pathname?.startsWith(href);
+  }, [pathname]);
+
   return (
-    <nav
-      className={`
-        bg-color-navy-800 border-b border-color-navy-600 shadow-sm 
-        fixed top-0 left-0 right-0 z-40
-        transition-all duration-300 ease-in-out
-        ${isVisible ? "translate-y-0" : "-translate-y-full"}
-        ${isScrolled ? "shadow-lg backdrop-blur-sm bg-navy-800/95" : ""}
-      `}
-    >
-      <div className="container-responsive">
-        <div
-          className={`
-          flex justify-between items-center 
+    <>
+      {/* Modern Navigation Bar with Glassmorphism */}
+      <nav
+        className={`
+          fixed top-0 left-0 right-0 z-50
           transition-all duration-300 ease-in-out
-          ${isScrolled ? "h-14 sm:h-16" : "h-16 sm:h-18"}
+          ${isVisible ? "translate-y-0" : "-translate-y-full"}
+          ${
+            isScrolled
+              ? "bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-700/50"
+              : "bg-slate-900 border-b border-slate-800"
+          }
         `}
-        >
-          {/* Logo/Brand - Enhanced for mobile */}
-          <Link
-            href="/"
-            className="text-xl sm:text-2xl font-bold text-navy-700 flex items-center gap-2 touch-manipulation py-2 px-1"
-          >
-            <Dumbbell className="w-7 h-7 sm:w-6 sm:h-6 text-accent-orange" />
-            <span className="hidden xs:block">LiteWork</span>
-            <span className="xs:hidden">LW</span>
-          </Link>
-
-          {/* Desktop Navigation - Enhanced spacing */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-            {user ? (
-              <>
-                <span className="text-body-small hidden lg:block text-silver-200 mr-2">
-                  Welcome, {user.fullName}
-                </span>
-                {navigationItems.map((item) => (
-                  <NavigationLink
-                    key={item.href}
-                    href={item.href}
-                    className={
-                      item.label === "Dashboard"
-                        ? "hover:text-accent-green"
-                        : item.label === "Workouts"
-                          ? "hover:text-accent-orange"
-                          : item.label === "Athletes"
-                            ? "hover:text-accent-purple"
-                            : item.label === "Schedule"
-                              ? "hover:text-accent-blue"
-                              : "hover:text-accent-pink"
-                    }
-                  >
-                    {item.label}
-                  </NavigationLink>
-                ))}
-                <NotificationBell />
-                <Link
-                  href="/profile"
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-700 hover:bg-navy-600 border border-navy-600 touch-manipulation"
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={signOut}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-white bg-navy-800 hover:bg-navy-700 border border-navy-600 touch-manipulation"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="hover:text-accent-green px-4 py-2 rounded-lg transition-colors font-medium touch-manipulation"
-              >
-                Login
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile menu button - Enhanced touch target */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-3 rounded-xl text-silver-200 hover:text-white hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-all touch-manipulation"
-              aria-expanded={isMobileMenuOpen}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              {/* Hamburger icon */}
-              <svg
-                className={`${isMobileMenuOpen ? "hidden" : "block"} h-7 w-7 sm:h-6 sm:w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-              {/* Close icon */}
-              <svg
-                className={`${isMobileMenuOpen ? "block" : "hidden"} h-7 w-7 sm:h-6 sm:w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Mobile menu with better UX - Explicit background for iOS */}
-      <div
-        className={`${
-          isMobileMenuOpen ? "block" : "hidden"
-        } md:hidden border-t border-navy-600 shadow-lg`}
         style={{
-          backgroundColor: "#1e293b", // Explicit navy-800 color for iOS
-          position: "relative",
-          zIndex: 999,
+          // Explicit background for iOS Safari
+          backgroundColor: isScrolled ? "rgba(15, 23, 42, 0.95)" : "rgb(15, 23, 42)",
         }}
       >
-        <div
-          className="px-4 pt-4 pb-6 space-y-2"
-          style={{ backgroundColor: "#1e293b" }}
-        >
-          {user ? (
-            <>
-              <div className="px-4 py-3 text-sm text-silver-200 border-b border-navy-600 mb-4 bg-navy-900 rounded-lg">
-                <div className="font-medium">Welcome back!</div>
-                <div className="text-xs text-silver-300 mt-1">
-                  {user.fullName}
-                </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            className={`
+            flex justify-between items-center 
+            transition-all duration-300 ease-in-out
+            ${isScrolled ? "h-14 sm:h-16" : "h-16 sm:h-18"}
+          `}
+          >
+            {/* Logo/Brand - Modern Design */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 sm:gap-3 group transition-all hover:scale-105 active:scale-95"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
+                <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-400 group-hover:text-orange-300 transition-colors" />
               </div>
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent hidden xs:block">
+                LiteWork
+              </span>
+              <span className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent xs:hidden">
+                LW
+              </span>
+            </Link>
 
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <BarChart3 className="w-5 h-5 text-accent-green" />
-                <span className="text-white">Dashboard</span>
-              </Link>
-
-              {(user.role === "admin" || user.role === "coach") && (
+            {/* Desktop Navigation - Modern Pills */}
+            <div className="hidden md:flex items-center gap-2">
+              {user && (
                 <>
+                  {navigationItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = isActiveLink(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`
+                          group relative px-4 py-2 rounded-xl font-medium text-sm
+                          transition-all duration-200 ease-in-out
+                          flex items-center gap-2
+                          ${
+                            isActive
+                              ? "bg-slate-800 text-white shadow-lg"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                          }
+                        `}
+                      >
+                        <Icon className={`w-4 h-4 ${item.color}`} />
+                        <span>{item.label}</span>
+                        {isActive && (
+                          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent rounded-full" />
+                        )}
+                      </Link>
+                    );
+                  })}
+
+                  {/* Notification Bell */}
+                  <div className="ml-2">
+                    <NotificationBell />
+                  </div>
+
+                  {/* Profile Button */}
                   <Link
-                    href="/workouts"
-                    className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    href="/profile"
+                    className={`
+                      group relative px-4 py-2 rounded-xl font-medium text-sm
+                      transition-all duration-200 ease-in-out
+                      flex items-center gap-2
+                      ${
+                        pathname === "/profile"
+                          ? "bg-slate-800 text-white shadow-lg"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      }
+                    `}
                   >
-                    <Dumbbell className="w-5 h-5 text-accent-orange" />
-                    <span className="text-white">Workouts</span>
+                    <User className="w-4 h-4 text-slate-400 group-hover:text-slate-300" />
+                    <span className="hidden lg:inline">Profile</span>
                   </Link>
 
-                  <Link
-                    href="/athletes"
-                    className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  {/* Logout Button */}
+                  <button
+                    onClick={signOut}
+                    className="px-4 py-2 rounded-xl font-medium text-sm text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
-                    <Users className="w-5 h-5 text-accent-purple" />
-                    <span className="text-white">Athletes</span>
-                  </Link>
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden lg:inline">Logout</span>
+                  </button>
                 </>
               )}
 
-              <Link
-                href="/schedule"
-                className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Calendar className="w-5 h-5 text-accent-blue" />
-                <span className="text-white">Schedule</span>
-              </Link>
-
-              <Link
-                href="/progress"
-                className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <TrendingUp className="w-5 h-5 text-accent-pink" />
-                <span className="text-white">Progress</span>
-              </Link>
-
-              {/* Separator */}
-              <div className="border-t border-navy-600 my-4"></div>
-
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <svg
-                  className="w-5 h-5 text-[var(--color-semantic-info-base)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {!user && (
+                <Link
+                  href="/login"
+                  className="px-6 py-2 rounded-xl font-semibold text-sm bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                <span className="text-white">Profile</span>
-              </Link>
+                  <LogIn className="w-4 h-4" />
+                  Login
+                </Link>
+              )}
+            </div>
 
-              <button
-                onClick={() => {
-                  signOut();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="flex items-center gap-3 w-full text-left px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-[var(--color-interactive-danger-hover)] transition-all touch-manipulation active:bg-[var(--color-interactive-danger-active)] bg-[var(--color-interactive-danger-base)]"
-              >
-                <LogOut className="w-5 h-5 text-[var(--color-semantic-error-base)]" />
-                <span className="text-[var(--color-semantic-error-light)]">
-                  Logout
-                </span>
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium hover:text-white hover:bg-navy-700 transition-all touch-manipulation active:bg-navy-600"
-              onClick={() => setIsMobileMenuOpen(false)}
+            {/* Mobile Menu Button - Enhanced */}
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95"
+              aria-expanded={isMobileMenuOpen}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              <LogIn className="w-5 h-5 text-accent-green" />
-              <span className="text-white">Login</span>
-            </Link>
-          )}
+              <Menu
+                className={`w-6 h-6 transition-all duration-200 ${isMobileMenuOpen ? "rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"}`}
+              />
+              <X
+                className={`w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${isMobileMenuOpen ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"}`}
+              />
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile Menu Overlay - Modern Slide-in */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ marginTop: isScrolled ? "3.5rem" : "4rem" }}
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Menu Panel */}
+          <div
+            ref={mobileMenuRef}
+            className="relative h-full w-full max-w-sm ml-auto bg-slate-900 shadow-2xl overflow-y-auto"
+            style={{
+              // Explicit background for iOS Safari
+              backgroundColor: "rgb(15, 23, 42)",
+            }}
+          >
+            {user ? (
+              <div className="p-4 space-y-2">
+                {/* User Info Card */}
+                <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-4 mb-4 border border-slate-700">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                      <User className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-white font-semibold truncate">
+                        {user.fullName || user.email}
+                      </div>
+                      <div className="text-slate-400 text-xs capitalize">
+                        {user.role}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation Links */}
+                <div className="space-y-1">
+                  {navigationItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = isActiveLink(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`
+                          flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
+                          transition-all duration-200 active:scale-95
+                          ${
+                            isActive
+                              ? "bg-slate-800 text-white shadow-lg"
+                              : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                          }
+                        `}
+                      >
+                        <Icon className={`w-5 h-5 ${item.color}`} />
+                        <span className="flex-1">{item.label}</span>
+                        {isActive && (
+                          <div className="w-2 h-2 rounded-full bg-orange-400" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-slate-800 my-4" />
+
+                {/* Profile Link */}
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
+                    transition-all duration-200 active:scale-95
+                    ${
+                      pathname === "/profile"
+                        ? "bg-slate-800 text-white shadow-lg"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                    }
+                  `}
+                >
+                  <User className="w-5 h-5 text-slate-400" />
+                  <span className="flex-1">Profile & Settings</span>
+                </Link>
+
+                {/* Logout Button */}
+                <button
+                  onClick={() => {
+                    signOut();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-red-400 hover:text-red-300 bg-red-950/20 hover:bg-red-950/40 transition-all duration-200 active:scale-95 mt-2"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="flex-1 text-left">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="p-4">
+                <Link
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold text-base bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all duration-200 active:scale-95 shadow-lg"
+                >
+                  <LogIn className="w-5 h-5" />
+                  Login to Your Account
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 });
 
