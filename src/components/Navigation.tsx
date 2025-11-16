@@ -388,6 +388,9 @@ const Navigation = memo(function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
+                        style={{
+                          color: isActive ? "#020617" : "#ffffff",
+                        }}
                         className={`
                           flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
                           transition-all duration-200 active:scale-95
@@ -417,6 +420,9 @@ const Navigation = memo(function Navigation() {
                 <Link
                   href="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{
+                    color: pathname === "/profile" ? "#020617" : "#ffffff",
+                  }}
                   className={`
                     flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
                     transition-all duration-200 active:scale-95
