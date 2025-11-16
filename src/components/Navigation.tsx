@@ -445,7 +445,8 @@ const Navigation = memo(function Navigation() {
                     signOut();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-red-400 hover:text-red-300 bg-red-950/20 hover:bg-red-950/40 transition-all duration-200 active:scale-95 mt-2"
+                  style={{ color: "#f87171" }}
+                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-red-400 hover:text-red-300 bg-red-500/20 hover:bg-red-500/30 transition-all duration-200 active:scale-95 mt-2"
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="flex-1 text-left">Logout</span>
