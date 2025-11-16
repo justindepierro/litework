@@ -756,30 +756,52 @@ export const createWorkoutPlanTransaction = async (
 ): Promise<WorkoutPlan | null> => {
   try {
     // Prepare exercises data for JSONB
-    const exercisesJson = (workoutData.exercises || []).map((ex, index) => ({
-      exercise_id: ex.exerciseId || null,
-      exercise_name: ex.exerciseName,
-      sets: ex.sets,
-      reps: ex.reps,
-      weight_type: ex.weightType,
-      weight: ex.weight,
-      weight_max: ex.weightMax,
-      percentage: ex.percentage,
-      percentage_max: ex.percentageMax,
-      percentage_base_kpi: ex.percentageBaseKPI,
-      tempo: ex.tempo,
-      each_side: ex.eachSide,
-      rest_time: ex.restTime,
-      notes: ex.notes,
-      video_url: ex.videoUrl,
-      order_index: index,
-      group_id: ex.groupId || null,
-      block_instance_id: ex.blockInstanceId || null,
-      substitution_reason: ex.substitutionReason,
-      original_exercise: ex.originalExercise,
-      progression_notes: ex.progressionNotes,
-      kpi_tag_ids: ex.kpiTagIds || [],
-    }));
+    const exercisesJson = (workoutData.exercises || []).map((ex, index) => {
+      // Ensure exerciseId is a valid UUID or null, not an exercise name
+      let exerciseId = ex.exerciseId || null;
+      if (exerciseId && typeof exerciseId === 'string') {
+        // Check if it's a valid UUID format (8-4-4-4-12 hex characters)
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(exerciseId)) {
+          // Not a valid UUID, set to null (exercise name will be in exercise_name field)
+          exerciseId = null;
+        }
+      }
+
+      // Ensure reps is a number
+      let repsValue = ex.reps;
+      if (typeof repsValue === 'string') {
+        // Parse string to number (handles "8" → 8)
+        // If it's a range like "8-12", take the first number
+        const match = repsValue.match(/^\d+/);
+        repsValue = match ? parseInt(match[0], 10) : 8; // Default to 8 if can't parse
+      }
+
+      return {
+        exercise_id: exerciseId,
+        exercise_name: ex.exerciseName,
+        sets: ex.sets,
+        reps: repsValue, // Now always a number
+        weight_type: ex.weightType,
+        weight: ex.weight,
+        weight_max: ex.weightMax,
+        percentage: ex.percentage,
+        percentage_max: ex.percentageMax,
+        percentage_base_kpi: ex.percentageBaseKPI,
+        tempo: ex.tempo,
+        each_side: ex.eachSide,
+        rest_time: ex.restTime,
+        notes: ex.notes,
+        video_url: ex.videoUrl,
+        order_index: index,
+        group_id: ex.groupId || null,
+        block_instance_id: ex.blockInstanceId || null,
+        substitution_reason: ex.substitutionReason,
+        original_exercise: ex.originalExercise,
+        progression_notes: ex.progressionNotes,
+        kpi_tag_ids: ex.kpiTagIds || [],
+      };
+    });
 
     // Prepare groups data for JSONB
     const groupsJson = (workoutData.groups || []).map((group, index) => ({

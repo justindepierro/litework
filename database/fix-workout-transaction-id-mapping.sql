@@ -218,7 +218,7 @@ BEGIN
         NULLIF(v_exercise->>'exercise_id', '')::UUID,
         v_exercise->>'exercise_name',
         (v_exercise->>'sets')::INTEGER,
-        v_exercise->>'reps',
+        (v_exercise->>'reps')::INTEGER,
         v_exercise->>'weight_type',
         (v_exercise->>'weight')::NUMERIC,
         (v_exercise->>'weight_max')::NUMERIC,
