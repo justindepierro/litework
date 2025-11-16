@@ -144,8 +144,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (!newWorkout) {
+      console.error("[API] Failed to create workout - transaction returned null");
       return NextResponse.json(
-        { error: "Failed to create workout plan" },
+        { success: false, error: "Failed to create workout plan" },
         { status: 500 }
       );
     }
@@ -155,9 +156,10 @@ export async function POST(request: NextRequest) {
       data: { workout: newWorkout },
     });
   } catch (error) {
-    console.error("Workouts POST error:", error);
+    console.error("[API] Workouts POST error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json(
-      { error: "Internal server error" },
+      { success: false, error: errorMessage },
       { status: 500 }
     );
   }

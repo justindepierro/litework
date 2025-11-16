@@ -783,6 +783,7 @@ export const createWorkoutPlanTransaction = async (
 
     // Prepare groups data for JSONB
     const groupsJson = (workoutData.groups || []).map((group, index) => ({
+      id: group.id, // Include the temporary ID for mapping
       name: group.name,
       type: group.type,
       description: group.description,
@@ -796,6 +797,7 @@ export const createWorkoutPlanTransaction = async (
 
     // Prepare block instances data for JSONB
     const blockInstancesJson = (workoutData.blockInstances || []).map((bi) => ({
+      id: bi.id, // Include the temporary ID for mapping
       source_block_id: bi.sourceBlockId,
       source_block_name: bi.sourceBlockName,
       instance_name: bi.instanceName,
@@ -826,7 +828,13 @@ export const createWorkoutPlanTransaction = async (
     );
 
     if (error) {
-      console.error("Error creating workout plan (transaction):", error);
+      console.error("[DB] Error creating workout plan (transaction):", {
+        error,
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
       return null;
     }
 
@@ -835,6 +843,7 @@ export const createWorkoutPlanTransaction = async (
       return await getWorkoutPlanById(planId);
     }
 
+    console.error("[DB] No planId returned from create_workout_plan_transaction");
     return null;
   } catch (error) {
     console.error("Error in createWorkoutPlanTransaction:", error);
