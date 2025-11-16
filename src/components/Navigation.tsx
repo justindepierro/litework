@@ -368,10 +368,10 @@ const Navigation = memo(function Navigation() {
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-white font-semibold text-sm">
+                      <div style={{ color: "#ffffff" }} className="text-white font-semibold text-sm">
                         {user.fullName || user.email}
                       </div>
-                      <div className="text-slate-200 text-xs capitalize">
+                      <div style={{ color: "#e2e8f0" }} className="text-slate-200 text-xs capitalize">
                         {user.role}
                       </div>
                     </div>
