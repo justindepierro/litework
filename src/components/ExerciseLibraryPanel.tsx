@@ -62,9 +62,9 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
   }, [searchQuery, execute, setExercises, setError]);
 
   return (
-    <div className="w-80 bg-silver-200 border-l border-silver-400 flex flex-col h-full">
+    <div className="hidden lg:flex w-80 bg-silver-200 border-l border-silver-400 flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-silver-400 bg-white">
+      <div className="p-4 border-b border-silver-400">
         <Heading level="h3" className="mb-3 flex items-center gap-2">
           <Dumbbell className="w-5 h-5" />
           Exercise Library

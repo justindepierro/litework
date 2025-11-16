@@ -1127,7 +1127,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
   return (
     <ModalBackdrop isOpen={true} onClose={onClose}>
-      <div className="bg-white rounded-2xl sm:rounded-lg w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex shadow-2xl">
+      <div className="bg-white rounded-2xl sm:rounded-lg w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col lg:flex-row shadow-2xl">
         {/* Main workout editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Enhanced mobile header */}
