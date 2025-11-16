@@ -194,7 +194,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   <Input
                     label="Sets"
                     type="number"
-                    value={editedExercise.sets}
+                    value={editedExercise.sets || ''}
                     onChange={(e) => {
                       const value = e.target.value;
                       setEditedExercise({
@@ -210,35 +210,51 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         });
                       }
                     }}
-                    placeholder="Sets"
+                    placeholder="3"
                     min={1}
                     fullWidth
                     inputSize="lg"
+                    selectOnFocus
                   />
-                  <Input
-                    label="Reps"
-                    type="number"
-                    value={editedExercise.reps}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setEditedExercise({
-                        ...editedExercise,
-                        reps: value === "" ? 0 : parseInt(value) || 0,
-                      });
-                    }}
-                    onBlur={() => {
-                      if (!editedExercise.reps || editedExercise.reps < 1) {
+                  <div>
+                    <Input
+                      label="Reps"
+                      type="number"
+                      value={editedExercise.reps || ''}
+                      onChange={(e) => {
+                        const value = e.target.value;
                         setEditedExercise({
                           ...editedExercise,
-                          reps: 1,
+                          reps: value === "" ? 0 : parseInt(value) || 0,
                         });
-                      }
-                    }}
-                    placeholder="Reps"
-                    min={1}
-                    fullWidth
-                    inputSize="lg"
-                  />
+                      }}
+                      onBlur={() => {
+                        if (!editedExercise.reps || editedExercise.reps < 1) {
+                          setEditedExercise({
+                            ...editedExercise,
+                            reps: 1,
+                          });
+                        }
+                      }}
+                      placeholder="10"
+                      min={1}
+                      fullWidth
+                      inputSize="lg"
+                      selectOnFocus
+                    />
+                    <div className="mt-2">
+                      <Checkbox
+                        checked={editedExercise.eachSide || false}
+                        onChange={(checked) =>
+                          setEditedExercise({
+                            ...editedExercise,
+                            eachSide: checked,
+                          })
+                        }
+                        label="Each side"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Weight Type Selection */}
@@ -307,7 +323,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
-                        value={editedExercise.weight || ""}
+                        value={editedExercise.weight ?? ""}
                         onChange={(e) => {
                           const value = e.target.value;
                           setEditedExercise({
@@ -316,16 +332,17 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        placeholder="Min"
+                        placeholder="135"
                         min={0}
                         step={5}
                         inputSize="lg"
                         className="flex-1"
+                        selectOnFocus
                       />
                       <span className="text-silver-600 font-medium">-</span>
                       <Input
                         type="number"
-                        value={editedExercise.weightMax || ""}
+                        value={editedExercise.weightMax ?? ""}
                         onChange={(e) => {
                           const value = e.target.value;
                           setEditedExercise({
@@ -334,11 +351,12 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        placeholder="Max (optional)"
+                        placeholder="Max"
                         min={0}
                         step={5}
                         inputSize="lg"
                         className="flex-1"
+                        selectOnFocus
                       />
                     </div>
                     <Caption variant="muted" className="mt-1">
@@ -354,7 +372,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
-                        value={editedExercise.percentage || ""}
+                        value={editedExercise.percentage ?? ""}
                         onChange={(e) => {
                           const value = e.target.value;
                           setEditedExercise({
@@ -363,17 +381,18 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        placeholder="Min %"
+                        placeholder="75"
                         min={0}
                         max={100}
                         step={5}
                         inputSize="lg"
                         className="flex-1"
+                        selectOnFocus
                       />
                       <span className="text-silver-600 font-medium">-</span>
                       <Input
                         type="number"
-                        value={editedExercise.percentageMax || ""}
+                        value={editedExercise.percentageMax ?? ""}
                         onChange={(e) => {
                           const value = e.target.value;
                           setEditedExercise({
@@ -382,12 +401,13 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                               value === "" ? undefined : parseFloat(value),
                           });
                         }}
-                        placeholder="Max % (optional)"
+                        placeholder="Max %"
                         min={0}
                         max={100}
                         step={5}
                         inputSize="lg"
                         className="flex-1"
+                        selectOnFocus
                       />
                     </div>
                     <Caption variant="muted" className="mt-1">
@@ -402,43 +422,48 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   <Input
                     label="Rest (seconds)"
                     type="number"
-                    value={editedExercise.restTime || ""}
-                    onChange={(e) =>
+                    value={editedExercise.restTime ?? ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
                       setEditedExercise({
                         ...editedExercise,
-                        restTime: parseInt(e.target.value) || undefined,
-                      })
-                    }
-                    placeholder="Rest (sec)"
+                        restTime: value === "" ? undefined : parseInt(value),
+                      });
+                    }}
+                    placeholder="60"
                     min={0}
                     step={15}
                     inputSize="lg"
+                    selectOnFocus
                   />
                   <Input
                     label="Tempo"
                     type="text"
-                    value={editedExercise.tempo || ""}
-                    onChange={(e) =>
+                    value={editedExercise.tempo ?? ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
                       setEditedExercise({
                         ...editedExercise,
-                        tempo: e.target.value || undefined,
-                      })
-                    }
-                    placeholder="e.g. 3-1-1-0"
+                        tempo: value === "" ? undefined : value,
+                      });
+                    }}
+                    placeholder="3-1-1-0"
                     inputSize="lg"
+                    selectOnFocus
                   />
                 </div>
 
                 {/* Notes */}
                 <Textarea
                   label="Notes"
-                  value={editedExercise.notes || ""}
-                  onChange={(e) =>
+                  value={editedExercise.notes ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setEditedExercise({
                       ...editedExercise,
-                      notes: e.target.value || undefined,
-                    })
-                  }
+                      notes: value === "" ? undefined : value,
+                    });
+                  }}
                   placeholder="Add notes about this exercise..."
                   rows={2}
                   fullWidth
@@ -507,20 +532,22 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 )}
 
                 {/* YouTube Video URL */}
+                {/* Video URL */}
                 <Input
-                  label="Demo Video (YouTube URL)"
+                  label="Video URL"
                   type="url"
-                  value={editedExercise.videoUrl || ""}
-                  onChange={(e) =>
+                  value={editedExercise.videoUrl ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setEditedExercise({
                       ...editedExercise,
-                      videoUrl: e.target.value || undefined,
-                    } as WorkoutExercise)
-                  }
-                  placeholder="https://youtu.be/VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID"
-                  helperText="Paste a YouTube link to show athletes how to perform this exercise"
-                  inputSize="lg"
+                      videoUrl: value === "" ? undefined : value,
+                    });
+                  }}
+                  placeholder="https://youtu.be/abc123"
                   fullWidth
+                  inputSize="lg"
+                  selectOnFocus
                 />
 
                 {/* Enhanced mobile action buttons */}

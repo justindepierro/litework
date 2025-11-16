@@ -857,7 +857,17 @@ export const createWorkoutPlanTransaction = async (
         details: error.details,
         hint: error.hint,
       });
-      return null;
+      console.error("[DB] Full error object:", JSON.stringify(error, null, 2));
+      console.error("[DB] Input data:", {
+        name: workoutData.name,
+        exerciseCount: exercisesJson.length,
+        groupCount: groupsJson.length,
+        blockInstanceCount: blockInstancesJson.length,
+        firstExercise: exercisesJson[0],
+        firstGroup: groupsJson[0],
+      });
+      // Throw the error so it gets passed up
+      throw new Error(`Database error: ${error.message || "Unknown error"} (${error.code || "NO_CODE"})`);
     }
 
     // Fetch and return the created workout
