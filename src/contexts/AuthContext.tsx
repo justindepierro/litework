@@ -191,9 +191,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         // If user logged out elsewhere, redirect to login
+        // Add delay to prevent premature redirects during session refresh
         if (!newUser && !initializingRef.current) {
-          // [REMOVED] console.log("[AUTH] Redirecting to login page");
-          router.push("/login");
+          // Wait a moment to see if this is just a temporary state during refresh
+          setTimeout(() => {
+            if (!userRef.current && mountedRef.current) {
+              console.log("[AUTH] Session lost, redirecting to login");
+              router.push("/login");
+            }
+          }, 1000); // 1 second grace period
         }
       }
     });
