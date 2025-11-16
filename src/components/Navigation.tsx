@@ -323,14 +323,16 @@ const Navigation = memo(function Navigation() {
             {/* Mobile Menu Button - Enhanced */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2.5 rounded-xl text-white hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95"
+              className="md:hidden p-2.5 rounded-xl text-white hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all active:scale-95 relative"
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               <Menu
+                style={{ color: "#ffffff" }}
                 className={`w-6 h-6 transition-all duration-200 ${isMobileMenuOpen ? "rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"}`}
               />
               <X
+                style={{ color: "#ffffff" }}
                 className={`w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${isMobileMenuOpen ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"}`}
               />
             </button>
