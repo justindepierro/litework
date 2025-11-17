@@ -178,12 +178,16 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       })
                     }
                     onExerciseSelect={(exercise) => {
-                      setEditedExercise({
+                      const updated = {
                         ...editedExercise,
                         exerciseId: exercise.id,
                         exerciseName: exercise.name,
                         videoUrl: exercise.video_url,
-                      } as WorkoutExercise);
+                      } as WorkoutExercise;
+                      setEditedExercise(updated);
+                      // Auto-save when exercise is selected from library
+                      onUpdate(updated);
+                      setIsEditing(false);
                     }}
                     placeholder="Search or create exercise..."
                   />
@@ -194,7 +198,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                   <Input
                     label="Sets"
                     type="number"
-                    value={editedExercise.sets || ''}
+                    value={editedExercise.sets || ""}
                     onChange={(e) => {
                       const value = e.target.value;
                       setEditedExercise({
@@ -220,7 +224,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                     <Input
                       label="Reps"
                       type="number"
-                      value={editedExercise.reps || ''}
+                      value={editedExercise.reps || ""}
                       onChange={(e) => {
                         const value = e.target.value;
                         setEditedExercise({
