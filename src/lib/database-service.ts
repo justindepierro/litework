@@ -12,7 +12,7 @@ import {
 } from "@/types";
 import { transformToCamel, transformToSnake } from "./case-transform";
 import { devValidate, logValidationResults } from "./db-validation";
-import { parseDate } from "./date-utils";
+import { parseDate, formatDateOnly } from "./date-utils";
 
 // ===========================
 // USERS & ATHLETES
@@ -1592,7 +1592,8 @@ export const createAssignment = async (
     assigned_by: assignmentData.assignedBy,
     assigned_to_user_id: assignmentData.athleteId || null,
     assigned_to_group_id: assignmentData.groupId || null,
-    scheduled_date: assignmentData.scheduledDate,
+    // Format as date-only string to avoid timezone issues
+    scheduled_date: formatDateOnly(assignmentData.scheduledDate),
     notes: assignmentData.notes || null,
     completed: assignmentData.status === "completed" || false,
   };
