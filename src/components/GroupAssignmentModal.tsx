@@ -57,6 +57,9 @@ export default function GroupAssignmentModal({
 
   if (!isOpen) return null;
 
+  // Ensure athletes is an array (defensive programming)
+  const athletesList = Array.isArray(athletes) ? athletes : [];
+
   // Support both single and multi-select
   const selectedGroups = groups.filter((g) => selectedGroupIds.includes(g.id));
   const selectedWorkout = workoutPlans.find((w) => w.id === selectedWorkoutId);
@@ -66,7 +69,7 @@ export default function GroupAssignmentModal({
   selectedGroups.forEach((group) => {
     group.athleteIds.forEach((id) => allAthleteIds.add(id));
   });
-  const groupAthletes = athletes.filter((a) => allAthleteIds.has(a.id));
+  const groupAthletes = athletesList.filter((a) => allAthleteIds.has(a.id));
 
   const toggleGroup = (groupId: string) => {
     setSelectedGroupIds((prev) =>
