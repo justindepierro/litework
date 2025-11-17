@@ -94,7 +94,7 @@ BEGIN
       
       -- Store mapping of temporary ID to real UUID
       IF v_temp_block_id IS NOT NULL THEN
-        v_block_id_map := jsonb_set(v_block_id_map, ARRAY[v_temp_block_id], to_jsonb(v_block_instance_id));
+        v_block_id_map := jsonb_set(v_block_id_map, ARRAY[v_temp_block_id], to_jsonb(v_block_instance_id::text));
       END IF;
     END LOOP;
   END IF;
@@ -109,7 +109,7 @@ BEGIN
       v_block_instance_id := NULL;
       IF v_group->>'block_instance_id' IS NOT NULL THEN
         IF v_block_id_map ? (v_group->>'block_instance_id') THEN
-          v_block_instance_id := (v_block_id_map->(v_group->>'block_instance_id'))::UUID;
+          v_block_instance_id := (v_block_id_map->>(v_group->>'block_instance_id'))::UUID;
         ELSE
           -- Try to cast as UUID (for already-existing block instances)
           BEGIN
@@ -149,7 +149,7 @@ BEGIN
       
       -- Store mapping of temporary ID to real UUID
       IF v_temp_group_id IS NOT NULL THEN
-        v_group_id_map := jsonb_set(v_group_id_map, ARRAY[v_temp_group_id], to_jsonb(v_group_id));
+        v_group_id_map := jsonb_set(v_group_id_map, ARRAY[v_temp_group_id], to_jsonb(v_group_id::text));
       END IF;
     END LOOP;
   END IF;
@@ -162,7 +162,7 @@ BEGIN
       v_group_id := NULL;
       IF v_exercise->>'group_id' IS NOT NULL THEN
         IF v_group_id_map ? (v_exercise->>'group_id') THEN
-          v_group_id := (v_group_id_map->(v_exercise->>'group_id'))::UUID;
+          v_group_id := (v_group_id_map->>(v_exercise->>'group_id'))::UUID;
         ELSE
           -- Try to cast as UUID (for already-existing groups)
           BEGIN
@@ -177,7 +177,7 @@ BEGIN
       v_block_instance_id := NULL;
       IF v_exercise->>'block_instance_id' IS NOT NULL THEN
         IF v_block_id_map ? (v_exercise->>'block_instance_id') THEN
-          v_block_instance_id := (v_block_id_map->(v_exercise->>'block_instance_id'))::UUID;
+          v_block_instance_id := (v_block_id_map->>(v_exercise->>'block_instance_id'))::UUID;
         ELSE
           -- Try to cast as UUID (for already-existing block instances)
           BEGIN
