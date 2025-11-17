@@ -759,9 +759,10 @@ export const createWorkoutPlanTransaction = async (
     const exercisesJson = (workoutData.exercises || []).map((ex, index) => {
       // Ensure exerciseId is a valid UUID or null, not an exercise name
       let exerciseId = ex.exerciseId || null;
-      if (exerciseId && typeof exerciseId === 'string') {
+      if (exerciseId && typeof exerciseId === "string") {
         // Check if it's a valid UUID format (8-4-4-4-12 hex characters)
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        const uuidRegex =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(exerciseId)) {
           // Not a valid UUID, set to null (exercise name will be in exercise_name field)
           exerciseId = null;
@@ -770,7 +771,7 @@ export const createWorkoutPlanTransaction = async (
 
       // Ensure reps is a number
       let repsValue = ex.reps;
-      if (typeof repsValue === 'string') {
+      if (typeof repsValue === "string") {
         // Parse string to number (handles "8" → 8)
         // If it's a range like "8-12", take the first number
         const match = repsValue.match(/^\d+/);
@@ -867,7 +868,9 @@ export const createWorkoutPlanTransaction = async (
         firstGroup: groupsJson[0],
       });
       // Throw the error so it gets passed up
-      throw new Error(`Database error: ${error.message || "Unknown error"} (${error.code || "NO_CODE"})`);
+      throw new Error(
+        `Database error: ${error.message || "Unknown error"} (${error.code || "NO_CODE"})`
+      );
     }
 
     // Fetch and return the created workout
@@ -875,11 +878,14 @@ export const createWorkoutPlanTransaction = async (
       return await getWorkoutPlanById(planId);
     }
 
-    console.error("[DB] No planId returned from create_workout_plan_transaction");
+    console.error(
+      "[DB] No planId returned from create_workout_plan_transaction"
+    );
     return null;
   } catch (error) {
-    console.error("Error in createWorkoutPlanTransaction:", error);
-    return null;
+    console.error("[DB] Exception in createWorkoutPlanTransaction:", error);
+    // Re-throw the error to propagate it up
+    throw error;
   }
 };
 
