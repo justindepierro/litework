@@ -59,26 +59,38 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
 
     setSaving();
 
-    // [REMOVED] console.log("[ExerciseItem] saveExercise called:", { original: exercise.exerciseName, edited: editedExercise.exerciseName, exerciseId: exercise.id });
-
     try {
-      // If exercise name changed and we have the callback, add to library
+      // If exerciseId is missing or placeholder, create exercise in library
       if (
-        onExerciseNameChange &&
-        editedExercise.exerciseName !== exercise.exerciseName &&
-        editedExercise.exerciseName.trim().length > 0
+        !editedExercise.exerciseId ||
+        editedExercise.exerciseId === "new-exercise" ||
+        editedExercise.exerciseId.trim() === ""
       ) {
-        const libraryExerciseId = await onExerciseNameChange(
-          editedExercise.exerciseName
-        );
-        // Update the exerciseId with the one from the library
-        updatedExercise = {
-          ...editedExercise,
-          exerciseId: libraryExerciseId,
-        };
+        if (editedExercise.exerciseName.trim().length > 0) {
+          // Create new exercise in library
+          const response = await fetch("/api/exercises/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: editedExercise.exerciseName.trim(),
+              category: "strength",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.data) {
+            updatedExercise = {
+              ...editedExercise,
+              exerciseId: data.data.id,
+              exerciseName: data.data.name,
+            };
+          } else {
+            throw new Error(data.error || "Failed to create exercise");
+          }
+        }
       }
 
-      // [REMOVED] console.log("[ExerciseItem] Calling onUpdate with:", updatedExercise);
       onUpdate(updatedExercise);
       setSaved();
       setIsEditing(false);
@@ -177,7 +189,7 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                         exerciseName: name,
                       })
                     }
-                    onExerciseSelect={(exercise) => {
+                    onExerciseSelect={async (exercise) => {
                       const updated = {
                         ...editedExercise,
                         exerciseId: exercise.id,
@@ -186,11 +198,22 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
                       } as WorkoutExercise;
                       setEditedExercise(updated);
                       // Auto-save when exercise is selected from library
-                      onUpdate(updated);
-                      setIsEditing(false);
+                      setSaving();
+                      try {
+                        onUpdate(updated);
+                        setSaved();
+                        setIsEditing(false);
+                      } catch (error) {
+                        console.error("Error saving exercise:", error);
+                        setError();
+                      }
                     }}
-                    placeholder="Search or create exercise..."
+                    placeholder="Type exercise name..."
                   />
+                  <Caption variant="muted" className="mt-1">
+                    Type any exercise name - it will be added to your library
+                    when saved
+                  </Caption>
                 </div>
 
                 {/* Sets and Reps Grid */}
