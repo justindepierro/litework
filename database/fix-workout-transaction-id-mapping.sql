@@ -219,7 +219,7 @@ BEGIN
         v_exercise->>'exercise_name',
         (v_exercise->>'sets')::INTEGER,
         (v_exercise->>'reps')::INTEGER,
-        v_exercise->>'weight_type',
+        (v_exercise->>'weight_type')::weight_type,
         (v_exercise->>'weight')::NUMERIC,
         (v_exercise->>'weight_max')::NUMERIC,
         (v_exercise->>'percentage')::NUMERIC,
