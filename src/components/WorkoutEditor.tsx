@@ -1099,26 +1099,55 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       return;
     }
 
-    // Validate that all exercises have an exercise selected
-    const invalidExercises = workout.exercises.filter(
-      (ex) =>
-        !ex.exerciseId ||
-        ex.exerciseId.trim() === "" ||
-        ex.exerciseId === "new-exercise"
+    setIsSaving(true);
+
+    // Auto-create any exercises that still have placeholder IDs
+    const updatedExercises = await Promise.all(
+      workout.exercises.map(async (ex) => {
+        if (
+          !ex.exerciseId ||
+          ex.exerciseId.trim() === "" ||
+          ex.exerciseId === "new-exercise"
+        ) {
+          // Create exercise in library
+          try {
+            const response = await fetch("/api/exercises/search", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: ex.exerciseName.trim(),
+                category: "strength",
+              }),
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.data) {
+              return {
+                ...ex,
+                exerciseId: data.data.id,
+                exerciseName: data.data.name,
+              };
+            }
+          } catch (error) {
+            console.error("Error creating exercise:", error);
+          }
+        }
+        return ex;
+      })
     );
 
-    if (invalidExercises.length > 0) {
-      alert(
-        `Please select an exercise from the library for all exercises.\n\n${invalidExercises.length} exercise(s) need to be edited:\n1. Click the edit button on each exercise\n2. Select an exercise from the dropdown\n3. Click Save on the exercise\n\nThen try saving the workout again.`
-      );
-      return;
-    }
+    // Update workout with new exercise IDs
+    const workoutToSave = {
+      ...workout,
+      exercises: updatedExercises,
+    };
 
     setIsSaving(true);
     try {
       const workoutData = {
-        ...workout,
-        name: workout.name.trim(),
+        ...workoutToSave,
+        name: workoutToSave.name.trim(),
         updatedAt: new Date(),
         _shouldSave: true, // Flag to tell parent to save to API
       } as WorkoutPlan & { _shouldSave: boolean };
