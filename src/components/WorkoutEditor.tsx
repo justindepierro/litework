@@ -497,9 +497,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
   const [groupType, setGroupType] = useState<
     "superset" | "circuit" | "section"
   >("superset");
-  const [rounds, setRounds] = useState<number>(3);
-  const [restBetweenExercises, setRestBetweenExercises] = useState<number>(30);
-  const [restBetweenRounds, setRestBetweenRounds] = useState<number>(90);
+  const [rounds, setRounds] = useState<number | undefined>(undefined);
+  const [restBetweenExercises, setRestBetweenExercises] = useState<number | undefined>(undefined);
+  const [restBetweenRounds, setRestBetweenRounds] = useState<number | undefined>(undefined);
 
   const handleSubmit = () => {
     onCreateGroup(
@@ -578,13 +578,16 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
               </Label>
               <Input
                 type="number"
-                value={restBetweenExercises}
-                onChange={(e) =>
-                  setRestBetweenExercises(parseInt(e.target.value) || 0)
-                }
+                value={restBetweenExercises ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setRestBetweenExercises(value === "" ? undefined : parseInt(value));
+                }}
+                placeholder="30"
                 min="0"
                 step="15"
                 fullWidth
+                selectOnFocus
               />
             </div>
 
@@ -595,11 +598,16 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   <Label className="block mb-2">Number of Rounds</Label>
                   <Input
                     type="number"
-                    value={rounds}
-                    onChange={(e) => setRounds(parseInt(e.target.value) || 1)}
+                    value={rounds ?? ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setRounds(value === "" ? undefined : parseInt(value));
+                    }}
+                    placeholder="3"
                     min="1"
                     max="10"
                     fullWidth
+                    selectOnFocus
                   />
                 </div>
 
@@ -609,13 +617,16 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   </Label>
                   <Input
                     type="number"
-                    value={restBetweenRounds}
-                    onChange={(e) =>
-                      setRestBetweenRounds(parseInt(e.target.value) || 0)
-                    }
+                    value={restBetweenRounds ?? ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setRestBetweenRounds(value === "" ? undefined : parseInt(value));
+                    }}
+                    placeholder="90"
                     min="0"
                     step="15"
                     fullWidth
+                    selectOnFocus
                   />
                 </div>
               </>
@@ -778,22 +789,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     });
   };
 
-  // Add new group
-  const addGroup = (type: "superset" | "circuit" | "section") => {
-    const newGroup: ExerciseGroup = {
-      id: Date.now().toString(),
-      name: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-      type,
-      order: (workout.groups?.length || 0) + 1,
-      ...(type === "circuit" && { rounds: 3, restBetweenRounds: 60 }),
-    };
-
-    updateWorkout({
-      ...workout,
-      groups: [...(workout.groups || []), newGroup],
-    });
-  };
-
   // Update exercise
   const updateExercise = (updatedExercise: WorkoutExercise) => {
     console.log("[WorkoutEditor] updateExercise called:", {
@@ -896,11 +891,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     if (selectedExerciseIds.size === 0) return;
 
     const newGroupId = Date.now().toString();
+    const groupNumber = (workout.groups?.length || 0) + 1;
     const newGroup: ExerciseGroup = {
       id: newGroupId,
-      name: `New ${groupType.charAt(0).toUpperCase() + groupType.slice(1)}`,
+      name: `Group ${groupNumber}`,
       type: groupType,
-      order: (workout.groups?.length || 0) + 1,
+      order: groupNumber,
       rounds: rounds,
       restBetweenExercises: restBetweenExercises,
       restBetweenRounds: restBetweenRounds,
@@ -1177,33 +1173,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
                       Add Exercise
-                    </Button>
-
-                    <Button
-                      onClick={() => addGroup("superset")}
-                      variant="secondary"
-                      leftIcon={<Zap className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Add Superset
-                    </Button>
-
-                    <Button
-                      onClick={() => addGroup("circuit")}
-                      variant="secondary"
-                      leftIcon={<RotateCcw className="w-4 h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Add Circuit
-                    </Button>
-
-                    <Button
-                      onClick={() => addGroup("section")}
-                      variant="secondary"
-                      leftIcon={<Target className="w-4 h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Add Section
                     </Button>
 
                     {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
