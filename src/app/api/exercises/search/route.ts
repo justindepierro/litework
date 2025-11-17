@@ -75,33 +75,26 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
 
-    // Generate ID from name (slug format)
-    const id = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-
-    // Check if exercise already exists
+    // Check if exercise already exists by name (case-insensitive)
     const { data: existing } = await supabase
       .from("exercises")
-      .select("id")
-      .eq("id", id)
+      .select("id, name")
+      .ilike("name", name)
       .single();
 
     if (existing) {
       // Exercise already exists - return it
       return NextResponse.json({
         success: true,
-        data: { id, name, alreadyExists: true },
+        data: { id: existing.id, name: existing.name, alreadyExists: true },
         message: "Exercise already exists in library",
       });
     }
 
-    // Create new exercise
+    // Create new exercise (let database generate UUID)
     const { data: newExercise, error } = await supabase
       .from("exercises")
       .insert({
-        id,
         name,
         description,
         video_url: videoUrl,
