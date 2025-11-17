@@ -1101,60 +1101,63 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
     setIsSaving(true);
 
-    // Auto-create any exercises that still have placeholder IDs
-    const updatedExercises = await Promise.all(
-      workout.exercises.map(async (ex) => {
-        if (
-          !ex.exerciseId ||
-          ex.exerciseId.trim() === "" ||
-          ex.exerciseId === "new-exercise"
-        ) {
-          // Create exercise in library
-          try {
-            const response = await fetch("/api/exercises/search", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: ex.exerciseName.trim(),
-                category: "strength",
-              }),
-            });
-
-            const data = await response.json();
-
-            if (data.success && data.data) {
-              return {
-                ...ex,
-                exerciseId: data.data.id,
-                exerciseName: data.data.name,
-              };
-            }
-          } catch (error) {
-            console.error("Error creating exercise:", error);
-          }
-        }
-        return ex;
-      })
-    );
-
-    // Update workout with new exercise IDs
-    const workoutToSave = {
-      ...workout,
-      exercises: updatedExercises,
-    };
-
-    setIsSaving(true);
     try {
-      const workoutData = {
-        ...workoutToSave,
-        name: workoutToSave.name.trim(),
+      // Auto-create any exercises that still have placeholder IDs
+      const updatedExercises = await Promise.all(
+        workout.exercises.map(async (ex) => {
+          if (
+            !ex.exerciseId ||
+            ex.exerciseId.trim() === "" ||
+            ex.exerciseId === "new-exercise"
+          ) {
+            // Create exercise in library
+            console.log(`[WorkoutEditor] Creating exercise in library: ${ex.exerciseName}`);
+            try {
+              const response = await fetch("/api/exercises/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name: ex.exerciseName.trim(),
+                  category: "strength",
+                }),
+              });
+
+              const data = await response.json();
+
+              if (data.success && data.data) {
+                console.log(`[WorkoutEditor] Exercise created with ID: ${data.data.id}`);
+                return {
+                  ...ex,
+                  exerciseId: data.data.id,
+                  exerciseName: data.data.name,
+                };
+              } else {
+                console.error(`[WorkoutEditor] Failed to create exercise: ${data.error}`);
+                throw new Error(data.error || "Failed to create exercise");
+              }
+            } catch (error) {
+              console.error("[WorkoutEditor] Error creating exercise:", error);
+              throw error;
+            }
+          }
+          return ex;
+        })
+      );
+
+      console.log(`[WorkoutEditor] All exercises processed. Saving workout with ${updatedExercises.length} exercises`);
+
+      // Update workout with new exercise IDs
+      const workoutToSave = {
+        ...workout,
+        exercises: updatedExercises,
+        name: workout.name.trim(),
         updatedAt: new Date(),
         _shouldSave: true, // Flag to tell parent to save to API
       } as WorkoutPlan & { _shouldSave: boolean };
 
       // Update the parent component's workout
       // This will trigger the parent's onChange which should handle the save
-      onChange(workoutData);
+      onChange(workoutToSave);
 
       // DON'T close here - let the parent handle closing after successful save
       // onClose();
