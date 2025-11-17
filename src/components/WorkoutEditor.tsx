@@ -1099,6 +1099,18 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       return;
     }
 
+    // Validate that all exercises have an exercise selected
+    const invalidExercises = workout.exercises.filter(
+      (ex) => !ex.exerciseId || ex.exerciseId.trim() === ""
+    );
+
+    if (invalidExercises.length > 0) {
+      alert(
+        `Please select an exercise from the library for all exercises. ${invalidExercises.length} exercise(s) are missing a selection.`
+      );
+      return;
+    }
+
     setIsSaving(true);
     try {
       const workoutData = {
