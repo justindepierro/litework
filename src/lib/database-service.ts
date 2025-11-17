@@ -769,13 +769,16 @@ export const createWorkoutPlanTransaction = async (
         }
       }
 
-      // Ensure reps is a number
-      let repsValue = ex.reps;
-      if (typeof repsValue === "string") {
+      // Ensure reps is a number (handle both number and string inputs from runtime data)
+      let repsValue: number;
+      const reps = ex.reps as string | number | undefined;
+      if (typeof reps === "string") {
         // Parse string to number (handles "8" → 8)
         // If it's a range like "8-12", take the first number
-        const match = repsValue.match(/^\d+/);
+        const match = reps.match(/^\d+/);
         repsValue = match ? parseInt(match[0], 10) : 8; // Default to 8 if can't parse
+      } else {
+        repsValue = reps || 8; // Use the number or default to 8
       }
 
       return {
