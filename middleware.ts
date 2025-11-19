@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { updateSession } from "@/lib/middleware-utils";
 
 /**
  * Get security headers for responses
@@ -76,13 +77,13 @@ function shouldCompress(pathname: string): boolean {
   return compressibleExtensions.some((ext) => pathname.endsWith(ext));
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // Update session first to handle auth cookies
+  const response = await updateSession(request);
   const { pathname } = request.nextUrl;
 
   // Handle CORS for API routes
   if (pathname.startsWith("/api/")) {
-    const response = NextResponse.next();
-
     // Add security headers
     const securityHeaders = getSecurityHeaders();
     securityHeaders.forEach((value, key) => {
@@ -115,7 +116,6 @@ export function middleware(request: NextRequest) {
   }
 
   // Add security headers to all responses
-  const response = NextResponse.next();
   const securityHeaders = getSecurityHeaders();
   securityHeaders.forEach((value, key) => {
     response.headers.set(key, value);

@@ -314,7 +314,7 @@ export interface DisplayProps extends React.HTMLAttributes<HTMLElement> {
   size?: DisplaySize;
   variant?: DisplayVariant;
   children: React.ReactNode;
-  as?: "h1" | "h2" | "div" | "span";
+  as?: "h1" | "h2" | "div" | "span" | "p";
 }
 
 export const Display: React.FC<DisplayProps> = ({
