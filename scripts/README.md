@@ -12,6 +12,7 @@ Database management scripts for schema setup, migrations, and data seeding.
 - `create-*.mjs` - User/profile creation scripts
 - `migrate-*.mjs` - Database migration scripts
 - `check-*.mjs` - Schema validation scripts
+- `smoke-test-workouts.mjs` - Supabase workout/athlete-group smoke tests
 
 ### `/dev`
 

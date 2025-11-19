@@ -23,45 +23,57 @@ if [ ! -f .env.local ]; then
     exit 1
 fi
 
-echo "📋 Adding variables from .env.local..."
+set -o allexport
+source .env.local
+set +o allexport
 
-# Extract values from .env.local
-SUPABASE_URL=$(grep NEXT_PUBLIC_SUPABASE_URL .env.local | cut -d '=' -f2)
-SUPABASE_ANON=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env.local | cut -d '=' -f2)
-SERVICE_ROLE=$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d '=' -f2)
-RESEND_KEY=$(grep RESEND_API_KEY .env.local | cut -d '=' -f2)
-FROM_EMAIL=$(grep FROM_EMAIL .env.local | cut -d '=' -f2-)
+required_vars=(
+    NEXT_PUBLIC_SUPABASE_URL
+    NEXT_PUBLIC_SUPABASE_ANON_KEY
+    SUPABASE_SERVICE_ROLE_KEY
+    RESEND_API_KEY
+    FROM_EMAIL
+)
+
+for var in "${required_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+        echo "❌ Missing required variable: $var"
+        exit 1
+    fi
+done
+
+echo "📋 Adding variables from .env.local..."
 
 # Add each variable (one environment at a time)
 echo ""
 echo "Adding NEXT_PUBLIC_SUPABASE_URL..."
-echo "$SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL production
-echo "$SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL preview
-echo "$SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL development
+printf '%s' "$NEXT_PUBLIC_SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL production
+printf '%s' "$NEXT_PUBLIC_SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL preview
+printf '%s' "$NEXT_PUBLIC_SUPABASE_URL" | vercel env add NEXT_PUBLIC_SUPABASE_URL development
 
 echo ""
 echo "Adding NEXT_PUBLIC_SUPABASE_ANON_KEY..."
-echo "$SUPABASE_ANON" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
-echo "$SUPABASE_ANON" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview
-echo "$SUPABASE_ANON" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY development
+printf '%s' "$NEXT_PUBLIC_SUPABASE_ANON_KEY" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+printf '%s' "$NEXT_PUBLIC_SUPABASE_ANON_KEY" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview
+printf '%s' "$NEXT_PUBLIC_SUPABASE_ANON_KEY" | vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY development
 
 echo ""
 echo "Adding SUPABASE_SERVICE_ROLE_KEY..."
-echo "$SERVICE_ROLE" | vercel env add SUPABASE_SERVICE_ROLE_KEY production
-echo "$SERVICE_ROLE" | vercel env add SUPABASE_SERVICE_ROLE_KEY preview
-echo "$SERVICE_ROLE" | vercel env add SUPABASE_SERVICE_ROLE_KEY development
+printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | vercel env add SUPABASE_SERVICE_ROLE_KEY production
+printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | vercel env add SUPABASE_SERVICE_ROLE_KEY preview
+printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | vercel env add SUPABASE_SERVICE_ROLE_KEY development
 
 echo ""
 echo "Adding RESEND_API_KEY..."
-echo "$RESEND_KEY" | vercel env add RESEND_API_KEY production
-echo "$RESEND_KEY" | vercel env add RESEND_API_KEY preview
-echo "$RESEND_KEY" | vercel env add RESEND_API_KEY development
+printf '%s' "$RESEND_API_KEY" | vercel env add RESEND_API_KEY production
+printf '%s' "$RESEND_API_KEY" | vercel env add RESEND_API_KEY preview
+printf '%s' "$RESEND_API_KEY" | vercel env add RESEND_API_KEY development
 
 echo ""
 echo "Adding FROM_EMAIL..."
-echo "$FROM_EMAIL" | vercel env add FROM_EMAIL production
-echo "$FROM_EMAIL" | vercel env add FROM_EMAIL preview
-echo "$FROM_EMAIL" | vercel env add FROM_EMAIL development
+printf '%s' "$FROM_EMAIL" | vercel env add FROM_EMAIL production
+printf '%s' "$FROM_EMAIL" | vercel env add FROM_EMAIL preview
+printf '%s' "$FROM_EMAIL" | vercel env add FROM_EMAIL development
 
 echo ""
 echo "Adding NEXT_PUBLIC_APP_URL..."

@@ -228,7 +228,7 @@ npm run typecheck
 # Open DevTools → Console → Filter: "error"
 
 # Check database
-node scripts/database/test-workout-groups.mjs
+node scripts/database/smoke-test-workouts.mjs --workouts
 
 # Export current schema
 ./scripts/database/export-schema.sh

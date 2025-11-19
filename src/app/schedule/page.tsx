@@ -4,7 +4,7 @@ import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { WorkoutAssignment, AthleteGroup, WorkoutPlan, User } from "@/types";
-import DraggableAthleteCalendar from "@/components/DraggableAthleteCalendar";
+import Calendar from "@/components/Calendar";
 import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
@@ -226,7 +226,7 @@ export default withPageErrorBoundary(function SchedulePage() {
               <LoadingSpinner size="lg" message="Loading schedule..." />
             </div>
           ) : (
-            <DraggableAthleteCalendar
+            <Calendar
               assignments={assignments}
               onAssignmentClick={handleAssignmentClick}
               onDateClick={handleDateClick}

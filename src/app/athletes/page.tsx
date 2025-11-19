@@ -30,6 +30,7 @@ import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
 import { Body } from "@/components/ui/Typography";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   User as UserType,
   AthleteKPI,
@@ -766,21 +767,12 @@ export default withPageErrorBoundary(function AthletesPage() {
 
         {/* Enhanced Mobile-Optimized Header */}
         <div className="flex flex-col gap-6 mb-8">
-          <div className="text-center sm:text-left relative">
-            {/* Decorative gradient bar */}
-            <div className="absolute -left-4 top-0 bottom-0 w-1.5 bg-gradient-accent-primary rounded-full hidden sm:block" />
-
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-3 font-bold text-(--text-primary)">
-              Team Athletes
-            </h1>
-            <Body
-              variant="secondary"
-              className="text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mx-auto sm:mx-0"
-            >
-              Manage your athletes with invite-based onboarding, performance
-              tracking, and seamless communication
-            </Body>
-          </div>
+          <PageHeader
+            title="Team Athletes"
+            subtitle="Manage your athletes with invite-based onboarding, performance tracking, and seamless communication"
+            icon={<Users className="w-6 h-6" />}
+            gradientVariant="primary"
+          />
 
           {/* Mobile-Optimized Communication Stats */}
           <AthleteStats athleteCounts={athleteCounts} athletes={athletes} />

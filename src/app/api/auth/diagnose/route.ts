@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getAdminClient, getAuthenticatedUser } from "@/lib/auth-server";
 
 /**
  * Diagnostic endpoint to help troubleshoot login issues
@@ -55,6 +55,8 @@ export async function GET() {
     };
   }
 
+  const supabase = getAdminClient();
+
   // 2. Test Supabase connection
   try {
     const { data, error } = await supabase
@@ -75,23 +77,19 @@ export async function GET() {
   }
 
   // 3. Test Supabase Auth
-  try {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-
-    diagnostics.checks.supabaseAuth = {
-      status: error ? "❌ FAILED" : "✅ WORKING",
-      error: error?.message,
-      hasSession: !!session,
-    };
-  } catch (error) {
-    diagnostics.checks.supabaseAuth = {
-      status: "❌ FAILED",
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
-  }
+  const { user, error: authError } = await getAuthenticatedUser();
+  diagnostics.checks.supabaseAuth = {
+    status: authError ? "❌ FAILED" : "✅ WORKING",
+    error: authError,
+    hasSession: !!user,
+    user: user
+      ? {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        }
+      : null,
+  };
 
   // 4. Check deployed URL
   diagnostics.checks.deployment = {

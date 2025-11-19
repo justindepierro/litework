@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { WorkoutSessionProvider } from "@/contexts/WorkoutSessionContext";
@@ -22,17 +22,38 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   initializeDevelopmentEnvironment();
 }
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: [
+    {
+      path: "./fonts/Inter-Variable.woff2",
+      weight: "100 900",
+      style: "normal",
+    },
+  ],
   variable: "--font-inter",
   display: "swap",
   preload: true,
 });
 
-const poppins = Poppins({
-  subsets: ["latin"],
+const poppins = localFont({
+  src: [
+    {
+      path: "./fonts/Poppins-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Poppins-SemiBold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Poppins-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-poppins",
-  weight: ["400", "600", "700"], // Reduced weights to only essential ones
   display: "swap",
   preload: true,
 });
@@ -52,10 +73,7 @@ export const metadata: Metadata = {
   },
 
   // Performance: Preconnect to critical external domains
-  other: {
-    preconnect: "https://fonts.googleapis.com",
-    "dns-prefetch": "https://fonts.gstatic.com",
-  },
+  other: {},
 };
 
 export const viewport = {
@@ -78,15 +96,6 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        {/* Preconnect to Google Fonts for faster loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-
         {/* Preconnect to Supabase for faster API calls */}
         <link
           rel="preconnect"

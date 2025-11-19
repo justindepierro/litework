@@ -8,11 +8,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { EmptyNotifications } from "@/components/ui/EmptyState";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
-import { Display, Body } from "@/components/ui/Typography";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { Body, Heading, Caption } from "@/components/ui/Typography";
 
 interface InAppNotification {
   id: string;
@@ -145,168 +146,156 @@ export default function NotificationsPage() {
 
   if (!user) {
     return (
-      <>
-        <Navigation />
-        <main className="min-h-screen bg-silver-100 pt-20">
-          <div className="max-w-4xl mx-auto px-4 py-8">
-            <p className="text-center text-body-secondary">
-              Please log in to view notifications.
-            </p>
-          </div>
-        </main>
-      </>
+      <main className="min-h-screen bg-silver-100 py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          <PageHeader
+            title="Notifications"
+            subtitle="Please sign in to view your in-app updates."
+            icon={<Bell className="w-6 h-6" />}
+          />
+        </div>
+      </main>
     );
   }
 
   return (
-    <>
-      <Navigation />
-      <main className="min-h-screen bg-silver-100 pt-20">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <Bell className="w-8 h-8 text-primary" />
-                <div>
-                  <Display size="md">Notifications</Display>
-                  <Body className="text-sm mt-1" variant="secondary">
-                    {unreadCount > 0
-                      ? `${unreadCount} unread`
-                      : "All caught up!"}
-                  </Body>
-                </div>
-              </div>
+    <main className="min-h-screen bg-silver-100 py-12">
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Header */}
+        <div className="mb-6 space-y-4">
+          <PageHeader
+            title="Notifications"
+            subtitle={
+              unreadCount > 0 ? `${unreadCount} unread` : "All caught up!"
+            }
+            icon={<Bell className="w-6 h-6" />}
+            actions={
+              unreadCount > 0 ? (
+                <Button
+                  variant="success"
+                  size="sm"
+                  leftIcon={<CheckCheck className="w-4 h-4" />}
+                  onClick={markAllAsRead}
+                >
+                  Mark all read
+                </Button>
+              ) : undefined
+            }
+          />
 
-              <div className="flex items-center gap-2">
-                {/* Filter Buttons */}
-                <div className="flex bg-silver-200 rounded-lg p-1">
-                  <button
-                    onClick={() => setFilter("all")}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      filter === "all"
-                        ? "bg-white text-heading-primary shadow-sm"
-                        : "text-body-secondary hover:text-heading-primary"
-                    }`}
-                  >
-                    <Filter className="w-4 h-4 inline mr-1" />
-                    All
-                  </button>
-                  <button
-                    onClick={() => setFilter("unread")}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      filter === "unread"
-                        ? "bg-white text-heading-primary shadow-sm"
-                        : "text-body-secondary hover:text-heading-primary"
-                    }`}
-                  >
-                    Unread ({unreadCount})
-                  </button>
-                </div>
-
-                {unreadCount > 0 && (
-                  <button
-                    onClick={markAllAsRead}
-                    className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
-                  >
-                    <CheckCheck className="w-4 h-4" />
-                    Mark all read
-                  </button>
-                )}
-              </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex gap-2">
+              <Button
+                variant={filter === "all" ? "primary" : "secondary"}
+                size="sm"
+                leftIcon={<Filter className="w-4 h-4" />}
+                onClick={() => setFilter("all")}
+              >
+                All
+              </Button>
+              <Button
+                variant={filter === "unread" ? "primary" : "secondary"}
+                size="sm"
+                onClick={() => setFilter("unread")}
+              >
+                Unread ({unreadCount})
+              </Button>
             </div>
           </div>
+        </div>
 
-          {/* Notifications List */}
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            {showSkeleton ? (
-              <div className="p-6 space-y-4">
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-              </div>
-            ) : notifications.length === 0 ? (
-              <EmptyNotifications />
-            ) : (
-              <div className="divide-y divide-silver-300">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-6 hover:bg-silver-200 transition-colors cursor-pointer ${
-                      !notification.read ? "bg-primary-lighter" : ""
-                    }`}
-                    onClick={() => handleNotificationClick(notification)}
-                  >
-                    <div className="flex items-start gap-4">
-                      {/* Icon */}
-                      <div className="text-3xl shrink-0">
-                        {notification.icon || "🔔"}
+        {/* Notifications List */}
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          {showSkeleton ? (
+            <div className="p-6 space-y-4">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : notifications.length === 0 ? (
+            <EmptyNotifications />
+          ) : (
+            <div className="divide-y divide-silver-300">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`p-6 hover:bg-silver-200 transition-colors cursor-pointer ${
+                    !notification.read ? "bg-primary-lighter" : ""
+                  }`}
+                  onClick={() => handleNotificationClick(notification)}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Icon */}
+                    <div className="text-3xl shrink-0">
+                      {notification.icon || "🔔"}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="mb-2 flex items-start justify-between gap-4">
+                        <Heading
+                          level="h4"
+                          className={`text-base ${
+                            !notification.read ? "font-semibold" : ""
+                          }`}
+                        >
+                          {notification.title}
+                        </Heading>
+                        <Caption className="shrink-0">
+                          {formatTime(notification.createdAt)}
+                        </Caption>
                       </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-4 mb-2">
-                          <h3
-                            className={`text-base font-medium text-heading-primary ${
-                              !notification.read ? "font-semibold" : ""
-                            }`}
-                          >
-                            {notification.title}
-                          </h3>
-                          <span className="text-sm text-caption-muted shrink-0">
-                            {formatTime(notification.createdAt)}
-                          </span>
-                        </div>
-                        {notification.body && (
-                          <Body variant="secondary" className="mb-3">
-                            {notification.body}
-                          </Body>
-                        )}
-                        <div className="flex items-center gap-2">
-                          {!notification.read && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                markAsRead(notification.id);
-                              }}
-                              className="px-3 py-1.5 text-sm text-primary hover:text-primary-dark font-medium bg-primary-lighter hover:bg-primary-light rounded-md transition-colors flex items-center gap-1"
-                            >
-                              <Check className="w-4 h-4" />
-                              Mark read
-                            </button>
-                          )}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteNotification(notification.id);
+                      {notification.body && (
+                        <Body variant="secondary" className="mb-3">
+                          {notification.body}
+                        </Body>
+                      )}
+                      <div className="flex items-center gap-2">
+                        {!notification.read && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              markAsRead(notification.id);
                             }}
-                            className="px-3 py-1.5 text-sm text-error hover:text-error-dark font-medium bg-error-lighter hover:bg-error-light rounded-md transition-colors flex items-center gap-1"
+                            leftIcon={<Check className="w-4 h-4" />}
                           >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
-                          </button>
-                        </div>
+                            Mark read
+                          </Button>
+                        )}
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            deleteNotification(notification.id);
+                          }}
+                          leftIcon={<Trash2 className="w-4 h-4" />}
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Load More (if needed) */}
-          {notifications.length >= 50 && (
-            <div className="text-center mt-6">
-              <Body className="text-sm" variant="secondary">
-                Showing {notifications.length} notifications. Older
-                notifications auto-expire after 7 days.
-              </Body>
+                </div>
+              ))}
             </div>
           )}
         </div>
-      </main>
-    </>
+
+        {/* Load More (if needed) */}
+        {notifications.length >= 50 && (
+          <div className="mt-6 text-center">
+            <Body className="text-sm" variant="secondary">
+              Showing {notifications.length} notifications. Older notifications
+              auto-expire after 7 days.
+            </Body>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

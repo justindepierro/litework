@@ -11,6 +11,13 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Check } from "lucide-react";
 
+const cx = (...classes: Array<string | undefined | false>) =>
+  classes.filter(Boolean).join(" ");
+
+const mergeStyles = (
+  ...styles: Array<React.CSSProperties | undefined>
+): React.CSSProperties => Object.assign({}, ...styles.filter(Boolean));
+
 export type ButtonVariant =
   | "primary"
   | "secondary"
@@ -57,6 +64,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       type,
       form,
+      style,
       ...restProps
     },
     ref
@@ -100,90 +108,123 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     };
 
-    // Base styles using design tokens
-    const baseStyles = `
-      relative
-      inline-flex items-center justify-center gap-2
-      font-medium
-      rounded-lg
-      focus-ring
-      smooth-transition
-      overflow-hidden
-      touch-manipulation
-      ${fullWidth ? "w-full" : ""}
-      ${disabled || isLoading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}
-    `;
+    const sizeMetrics: Record<
+      ButtonSize,
+      {
+        fontSize: string;
+        paddingInline: string;
+        paddingBlock: string;
+        minHeight: string;
+      }
+    > = {
+      sm: {
+        fontSize: "var(--font-size-sm)",
+        paddingInline: "var(--spacing-4)",
+        paddingBlock: "var(--spacing-2)",
+        minHeight: "2.25rem",
+      },
+      md: {
+        fontSize: "var(--font-size-base)",
+        paddingInline: "var(--spacing-5)",
+        paddingBlock: "var(--spacing-2-5)",
+        minHeight: "2.75rem",
+      },
+      lg: {
+        fontSize: "var(--font-size-lg)",
+        paddingInline: "var(--spacing-6)",
+        paddingBlock: "var(--spacing-3)",
+        minHeight: "3.25rem",
+      },
+    };
+
+    const baseClasses = cx(
+      "relative inline-flex items-center justify-center gap-2 focus-ring smooth-transition overflow-hidden touch-manipulation",
+      fullWidth && "w-full",
+      disabled || isLoading
+        ? "cursor-not-allowed opacity-60"
+        : "cursor-pointer",
+      className
+    );
 
     // Variant styles using interactive state tokens
     const variantStyles: Record<ButtonVariant, string> = {
       primary: `
-        bg-[var(--color-interactive-primary-base)]
-        text-[var(--color-text-inverse)]
-        border border-[var(--color-interactive-primary-base)]
+        bg-(--color-interactive-primary-base)
+        text-(--color-text-inverse)
+        border border-(--color-interactive-primary-base)
         shadow-[var(--elevation-1)]
         ${
           disabled || isLoading
-            ? "bg-[var(--color-interactive-primary-disabled)] border-[var(--color-interactive-primary-disabled)]"
-            : "hover:bg-[var(--color-interactive-primary-hover)] hover:border-[var(--color-interactive-primary-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-primary-active)] active:border-[var(--color-interactive-primary-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-primary-focus)] focus:ring-offset-2"
+            ? "bg-(--color-interactive-primary-disabled) border-(--color-interactive-primary-disabled)"
+            : "hover:bg-(--color-interactive-primary-hover) hover:border-(--color-interactive-primary-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-primary-active) active:border-(--color-interactive-primary-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-primary-focus) focus:ring-offset-2"
         }
       `,
       secondary: `
-        bg-[var(--color-silver-200)]
-        text-[var(--color-navy-800)]
-        border-2 border-[var(--color-border-secondary)]
+        bg-(--color-bg-secondary)
+        text-(--color-text-primary)
+        border-2 border-(--color-border-secondary)
         ${
           disabled || isLoading
-            ? "bg-[var(--color-silver-300)] border-[var(--color-silver-400)]"
-            : "hover:bg-[var(--color-silver-300)] hover:border-[var(--color-navy-400)] hover:-translate-y-0.5 active:bg-[var(--color-silver-400)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-navy-400)] focus:ring-offset-2"
+            ? "bg-(--color-bg-tertiary) border-(--color-border-primary)"
+            : "hover:bg-(--color-bg-tertiary) hover:border-(--color-text-tertiary) hover:-translate-y-0.5 active:bg-(--color-border-secondary) active:text-(--color-text-inverse) active:translate-y-0 focus:ring-2 focus:ring-(--color-text-tertiary) focus:ring-offset-2"
         }
       `,
       danger: `
-        bg-[var(--color-interactive-danger-base)]
-        text-[var(--color-text-inverse)]
-        border border-[var(--color-interactive-danger-base)]
+        bg-(--color-interactive-danger-base)
+        text-(--color-text-inverse)
+        border border-(--color-interactive-danger-base)
         shadow-[var(--elevation-1)]
         ${
           disabled || isLoading
-            ? "bg-[var(--color-interactive-danger-disabled)] border-[var(--color-interactive-danger-disabled)]"
-            : "hover:bg-[var(--color-interactive-danger-hover)] hover:border-[var(--color-interactive-danger-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-danger-active)] active:border-[var(--color-interactive-danger-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-danger-focus)] focus:ring-offset-2"
+            ? "bg-(--color-interactive-danger-disabled) border-(--color-interactive-danger-disabled)"
+            : "hover:bg-(--color-interactive-danger-hover) hover:border-(--color-interactive-danger-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-danger-active) active:border-(--color-interactive-danger-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-danger-focus) focus:ring-offset-2"
         }
       `,
       ghost: `
-        bg-[var(--color-interactive-ghost-base)]
-        text-[var(--color-text-primary)]
+        bg-(--color-interactive-ghost-base)
+        text-(--color-text-primary)
         border border-transparent
         ${
           disabled || isLoading
-            ? "text-[var(--color-text-tertiary)]"
-            : "hover:bg-[var(--color-interactive-ghost-hover)] hover:text-[var(--color-navy-900)] active:bg-[var(--color-interactive-ghost-active)] focus:ring-2 focus:ring-[var(--color-interactive-ghost-focus)] focus:ring-offset-2"
+            ? "text-(--color-text-tertiary)"
+            : "hover:bg-(--color-interactive-ghost-hover) hover:text-(--color-text-primary) active:bg-(--color-interactive-ghost-active) focus:ring-2 focus:ring-(--color-interactive-ghost-focus) focus:ring-offset-2"
         }
       `,
       success: `
-        bg-[var(--color-interactive-success-base)]
-        text-[var(--color-text-inverse)]
-        border border-[var(--color-interactive-success-base)]
+        bg-(--color-interactive-success-base)
+        text-(--color-text-inverse)
+        border border-(--color-interactive-success-base)
         shadow-[var(--elevation-1)]
         ${
           disabled || isLoading
-            ? "bg-[var(--color-interactive-success-disabled)] border-[var(--color-interactive-success-disabled)]"
-            : "hover:bg-[var(--color-interactive-success-hover)] hover:border-[var(--color-interactive-success-hover)] hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-[var(--color-interactive-success-active)] active:border-[var(--color-interactive-success-active)] active:translate-y-0 focus:ring-2 focus:ring-[var(--color-interactive-success-focus)] focus:ring-offset-2"
+            ? "bg-(--color-interactive-success-disabled) border-(--color-interactive-success-disabled)"
+            : "hover:bg-(--color-interactive-success-hover) hover:border-(--color-interactive-success-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-success-active) active:border-(--color-interactive-success-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-success-focus) focus:ring-offset-2"
         }
       `,
     };
 
-    // Size styles using design tokens
-    const sizeStyles: Record<ButtonSize, string> = {
-      sm: "px-3 py-1.5 text-sm min-h-[36px]",
-      md: "px-4 py-2.5 text-base min-h-[44px]",
-      lg: "px-6 py-3 text-lg min-h-[52px]",
-    };
+    const buttonStyle = mergeStyles(
+      {
+        borderRadius: "var(--radius-xl)",
+        fontFamily: "var(--font-family-primary)",
+        fontWeight: "var(--font-weight-semibold)",
+        letterSpacing: "var(--letter-spacing-normal)",
+        transition: "var(--transition-transform-spring)",
+        paddingInline: sizeMetrics[size].paddingInline,
+        paddingBlock: sizeMetrics[size].paddingBlock,
+        fontSize: sizeMetrics[size].fontSize,
+        minHeight: sizeMetrics[size].minHeight,
+      },
+      style
+    );
 
     // Success state content
     if (showSuccessState) {
       return (
         <motion.button
           ref={buttonRef as React.Ref<HTMLButtonElement>}
-          className={`${baseStyles} ${variantStyles.success} ${sizeStyles[size]} ${className}`}
+          className={`${baseClasses} ${variantStyles.success}`}
+          style={buttonStyle}
           disabled={true}
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -212,7 +253,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={buttonRef as React.Ref<HTMLButtonElement>}
-        className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        className={`${baseClasses} ${variantStyles[variant]}`}
+        style={buttonStyle}
         disabled={disabled || isLoading}
         onClick={handleClick}
         type={type}
@@ -263,18 +305,27 @@ export interface IconButtonProps
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, size = "md", className = "", ...props }, ref) => {
-    const sizeClasses: Record<ButtonSize, string> = {
-      sm: "w-9 h-9 p-2",
-      md: "w-11 h-11 p-2.5",
-      lg: "w-13 h-13 p-3",
+  ({ icon, size = "md", className = "", style, ...props }, ref) => {
+    const dimensionMap: Record<ButtonSize, string> = {
+      sm: "2.25rem",
+      md: "2.75rem",
+      lg: "3.25rem",
     };
 
     return (
       <Button
         ref={ref}
         size={size}
-        className={`${sizeClasses[size]} min-h-0! rounded-full ${className}`}
+        className={cx("rounded-full", className)}
+        style={mergeStyles(
+          {
+            width: dimensionMap[size],
+            height: dimensionMap[size],
+            paddingInline: 0,
+            paddingBlock: 0,
+          },
+          style
+        )}
         {...props}
       >
         {icon}

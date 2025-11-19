@@ -219,33 +219,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log("[AUTH] Session refreshed successfully");
           } catch (error) {
             console.error("[AUTH] Failed to refresh session:", error);
-            
+
             // Multiple verification attempts before redirecting
             // This prevents false positives from temporary network issues
             let verificationAttempts = 0;
             const maxAttempts = 3;
-            
+
             while (verificationAttempts < maxAttempts && mountedRef.current) {
               try {
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between attempts
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second between attempts
                 const currentUser = await authClient.getCurrentUser();
-                
+
                 if (currentUser) {
-                  console.log("[AUTH] Session verification succeeded on attempt", verificationAttempts + 1);
+                  console.log(
+                    "[AUTH] Session verification succeeded on attempt",
+                    verificationAttempts + 1
+                  );
                   // User still exists, refresh just had temporary issue
                   return;
                 }
-                
+
                 verificationAttempts++;
               } catch (e) {
-                console.error(`[AUTH] Verification attempt ${verificationAttempts + 1} failed:`, e);
+                console.error(
+                  `[AUTH] Verification attempt ${verificationAttempts + 1} failed:`,
+                  e
+                );
                 verificationAttempts++;
               }
             }
-            
+
             // Only redirect if all attempts failed and we're still mounted
-            if (verificationAttempts >= maxAttempts && mountedRef.current && !userRef.current) {
-              console.error("[AUTH] Session expired after multiple verification attempts, redirecting to login");
+            if (
+              verificationAttempts >= maxAttempts &&
+              mountedRef.current &&
+              !userRef.current
+            ) {
+              console.error(
+                "[AUTH] Session expired after multiple verification attempts, redirecting to login"
+              );
               router.push("/login");
             }
           }

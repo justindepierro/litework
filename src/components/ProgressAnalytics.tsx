@@ -76,9 +76,13 @@ interface AnalyticsData {
 
 interface AnalyticsDashboardProps {
   athleteId?: string;
+  showHeader?: boolean;
 }
 
-function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
+function AnalyticsDashboard({
+  athleteId,
+  showHeader = true,
+}: AnalyticsDashboardProps) {
   const [selectedTimeframe, setSelectedTimeframe] = useState<
     "1m" | "3m" | "6m" | "1y"
   >("3m");
@@ -97,20 +101,11 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
         // Only run on client side
         if (typeof window === "undefined") return;
 
-        const authToken = localStorage.getItem("authToken");
-        if (!authToken) {
-          console.error("No auth token available");
-          return;
-        }
-
         // Load overview data
         const overviewResponse = await fetch(
           `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ""}&type=overview`,
           {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
+            credentials: "include",
           }
         );
 
@@ -139,10 +134,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
         const strengthResponse = await fetch(
           `/api/analytics?timeframe=${selectedTimeframe}${athleteId ? `&athleteId=${athleteId}` : ""}&type=strength`,
           {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
+            credentials: "include",
           }
         );
 
@@ -271,47 +263,49 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
   return (
     <div className="space-y-6 p-4 sm:p-0">
       {/* Enhanced mobile header */}
-      <div className="flex flex-col gap-6">
-        <div className="text-center sm:text-left">
-          <Heading
-            level="h1"
-            className="mb-3 flex items-center gap-3 justify-center sm:justify-start"
-          >
-            <BarChart3 className="w-8 h-8" /> Progress Analytics
-          </Heading>
-          <p className="text-heading-secondary leading-relaxed">
-            Track progress, strength gains, and workout consistency
-          </p>
-        </div>
-
-        {/* Mobile-optimized controls */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-          {/* Enhanced time range selector */}
-          <div className="flex bg-(--bg-tertiary) rounded-xl p-1">
-            {(["1m", "3m", "6m", "1y"] as const).map((timeframe) => (
-              <button
-                key={timeframe}
-                onClick={() => setSelectedTimeframe(timeframe)}
-                className={`flex-1 px-4 py-3 sm:px-3 sm:py-2 rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
-                  selectedTimeframe === timeframe
-                    ? "bg-white text-accent-blue shadow-md"
-                    : "text-heading-secondary hover:text-heading-primary"
-                }`}
-              >
-                {timeframe.toUpperCase()}
-              </button>
-            ))}
+      {showHeader && (
+        <div className="flex flex-col gap-6">
+          <div className="text-center sm:text-left">
+            <Heading
+              level="h1"
+              className="mb-3 flex items-center gap-3 justify-center sm:justify-start"
+            >
+              <BarChart3 className="w-8 h-8" /> Progress Analytics
+            </Heading>
+            <p className="text-heading-secondary leading-relaxed">
+              Track progress, strength gains, and workout consistency
+            </p>
           </div>
 
-          <Button
-            variant="secondary"
-            leftIcon={<Download className="w-5 h-5 sm:w-4 sm:h-4" />}
-            className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-          >
-            Export Data
-          </Button>
+          {/* Mobile-optimized controls */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            {/* Enhanced time range selector */}
+            <div className="flex bg-(--bg-tertiary) rounded-xl p-1">
+              {(["1m", "3m", "6m", "1y"] as const).map((timeframe) => (
+                <button
+                  key={timeframe}
+                  onClick={() => setSelectedTimeframe(timeframe)}
+                  className={`flex-1 px-4 py-3 sm:px-3 sm:py-2 rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
+                    selectedTimeframe === timeframe
+                      ? "bg-white text-accent-blue shadow-md"
+                      : "text-heading-secondary hover:text-heading-primary"
+                  }`}
+                >
+                  {timeframe.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              variant="secondary"
+              leftIcon={<Download className="w-5 h-5 sm:w-4 sm:h-4" />}
+              className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
+            >
+              Export Data
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Enhanced mobile view mode tabs */}
       <div className="grid grid-cols-2 sm:flex gap-1 p-1 bg-(--bg-tertiary) rounded-xl">
@@ -371,7 +365,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.totalWorkouts}
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-blue-600) bg-gradient-to-br from-(--accent-blue-50) to-(--accent-blue-100)">
+                <div className="p-3 rounded-xl text-(--accent-blue-600) bg-linear-to-br from-(--accent-blue-50) to-(--accent-blue-100)">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
@@ -387,7 +381,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     {overviewStats.avgWorkoutsPerWeek || 0}
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--status-success) bg-gradient-to-br from-(--status-success-light) to-green-100">
+                <div className="p-3 rounded-xl text-(--status-success) bg-linear-to-br from-(--status-success-light) to-green-100">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
@@ -406,7 +400,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     </span>
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-orange-600) bg-gradient-to-br from-(--accent-orange-50) to-(--accent-orange-100)">
+                <div className="p-3 rounded-xl text-(--accent-orange-600) bg-linear-to-br from-(--accent-orange-50) to-(--accent-orange-100)">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
@@ -429,7 +423,7 @@ function AnalyticsDashboard({ athleteId }: AnalyticsDashboardProps) {
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-purple-600) bg-gradient-to-br from-(--accent-purple-50) to-(--accent-purple-100)">
+                <div className="p-3 rounded-xl text-(--accent-purple-600) bg-linear-to-br from-(--accent-purple-50) to-(--accent-purple-100)">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>

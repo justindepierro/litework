@@ -9,8 +9,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { getAuthenticatedUser } from "@/lib/auth-server";
-import { supabase } from "@/lib/supabase";
+import { getAuthenticatedUser, getAdminClient } from "@/lib/auth-server";
 import { calculateWorkoutStreak } from "@/lib/analytics-utils";
 
 // Cache dashboard stats for 1 minute (frequently changing data)
@@ -27,6 +26,7 @@ export async function GET() {
   }
 
   try {
+    const supabase = getAdminClient();
     const now = new Date();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
@@ -50,11 +50,6 @@ export async function GET() {
       .not("completed_at", "is", null);
 
     if (streakError) throw streakError;
-
-    // Get personal records count
-    // TODO: Implement PR tracking system with athlete_kpis table
-    // For now, return 0 as PRs aren't being tracked yet
-    const personalRecords = 0;
 
     const completedDates = allWorkouts?.map((w) => w.completed_at!) || [];
     const currentStreak = calculateWorkoutStreak(completedDates);

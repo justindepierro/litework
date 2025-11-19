@@ -29,6 +29,7 @@ export default function ProgressPage() {
         </div>
         <ProgressAnalytics
           athleteId={user!.role === "athlete" ? user!.id : undefined}
+          showHeader={false}
         />
       </div>
     </div>

@@ -13,7 +13,9 @@ import {
   LogOut,
 } from "lucide-react";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
-import { Body } from "@/components/ui/Typography";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { Body, Heading } from "@/components/ui/Typography";
 
 interface DiagnosticResult {
   timestamp: string;
@@ -143,39 +145,50 @@ export default function DiagnosePage() {
   return (
     <div className="min-h-screen bg-(--bg-primary) py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        <PageHeader
+          title="Authentication Diagnostics"
+          subtitle="Run Supabase client + server health checks to debug login issues."
+          icon={<TestTube className="w-6 h-6" />}
+          actions={
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <Button
+                variant="primary"
+                leftIcon={<RefreshCw className="w-4 h-4" />}
+                onClick={runDiagnostics}
+                disabled={isLoading}
+                fullWidth
+              >
+                Refresh Diagnostics
+              </Button>
+              <Button
+                variant="secondary"
+                leftIcon={<TestTube className="w-4 h-4" />}
+                onClick={testLogin}
+                fullWidth
+              >
+                Test Login
+              </Button>
+            </div>
+          }
+        />
+
         <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-2xl font-bold mb-4">
-            Authentication Diagnostics
-          </h1>
-          <Body variant="secondary" className="mb-4">
-            This page helps diagnose login issues. Check for any ❌ marks below.
+          <Heading level="h4" className="mb-2">
+            How to use this page
+          </Heading>
+          <Body variant="secondary">
+            This dashboard walks through every layer that can block Supabase
+            auth. Refresh diagnostics anytime you tweak environment variables or
+            credentials, and review each section for ❌ indicators.
           </Body>
-
-          <div className="flex gap-4">
-            <button
-              onClick={runDiagnostics}
-              className="px-4 py-2 bg-(--accent-blue-600) text-white rounded hover:bg-(--accent-blue-700) flex items-center gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh Diagnostics
-            </button>
-
-            <button
-              onClick={testLogin}
-              className="px-4 py-2 bg-(--status-success) text-white rounded hover:bg-(--accent-green-700) flex items-center gap-2"
-            >
-              <TestTube className="w-4 h-4" />
-              Test Login
-            </button>
-          </div>
         </div>
 
         {/* CLIENT-SIDE DIAGNOSTICS */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Heading level="h3" className="mb-4 flex items-center gap-2">
             <Smartphone className="w-5 h-5" />
             Client-Side Checks
-          </h2>
+          </Heading>
           <pre className="bg-(--bg-secondary) p-4 rounded overflow-auto text-sm">
             {JSON.stringify(clientDiagnostics, null, 2)}
           </pre>
@@ -184,18 +197,18 @@ export default function DiagnosePage() {
         {/* SERVER-SIDE DIAGNOSTICS */}
         {serverDiagnostics && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Heading level="h3" className="mb-4 flex items-center gap-2">
               <Monitor className="w-5 h-5" />
               Server-Side Checks
-            </h2>
+            </Heading>
 
-            <div className="mb-4 p-4 bg-(--accent-blue-50) rounded border-l-4 border-(--accent-blue-500)">
-              <div className="font-bold text-lg mb-2">
+            <div className="mb-4 rounded border-l-4 border-(--accent-blue-500) bg-(--accent-blue-50) p-4">
+              <Heading level="h4" className="mb-1">
                 {serverDiagnostics.summary.status}
-              </div>
-              <div className="text-(--text-secondary)">
+              </Heading>
+              <Body variant="secondary">
                 {serverDiagnostics.summary.recommendation}
-              </div>
+              </Body>
             </div>
 
             <pre className="bg-(--bg-secondary) p-4 rounded overflow-auto text-sm">
@@ -206,14 +219,16 @@ export default function DiagnosePage() {
 
         {/* COMMON ISSUES */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Heading level="h3" className="mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5" />
             Common Issues & Solutions
-          </h2>
+          </Heading>
 
           <div className="space-y-4">
             <div className="border-l-4 border-(--status-warning) pl-4">
-              <h3 className="font-bold">Missing Environment Variables</h3>
+              <Heading level="h4" className="mb-1">
+                Missing Environment Variables
+              </Heading>
               <Body variant="secondary">
                 If you see &ldquo;MISSING&rdquo; for any environment variables,
                 add them in Vercel:
@@ -225,7 +240,9 @@ export default function DiagnosePage() {
             </div>
 
             <div className="border-l-4 border-(--status-error) pl-4">
-              <h3 className="font-bold">Cookies Not Working</h3>
+              <Heading level="h4" className="mb-1">
+                Cookies Not Working
+              </Heading>
               <Body variant="secondary">
                 Supabase auth requires cookies. Check that:
                 <br />
@@ -237,7 +254,9 @@ export default function DiagnosePage() {
             </div>
 
             <div className="border-l-4 border-(--accent-blue-500) pl-4">
-              <h3 className="font-bold">CORS / Network Errors</h3>
+              <Heading level="h4" className="mb-1">
+                CORS / Network Errors
+              </Heading>
               <Body variant="secondary">
                 If Supabase connection fails:
                 <br />
@@ -250,7 +269,9 @@ export default function DiagnosePage() {
             </div>
 
             <div className="border-l-4 border-(--status-success) pl-4">
-              <h3 className="font-bold">Test Credentials</h3>
+              <Heading level="h4" className="mb-1">
+                Test Credentials
+              </Heading>
               <Body variant="secondary">
                 Coach account:{" "}
                 <code className="bg-(--bg-secondary) px-2 py-1 rounded text-sm">
@@ -268,21 +289,26 @@ export default function DiagnosePage() {
 
         {/* QUICK FIXES */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4">Quick Fixes</h2>
+          <Heading level="h3" className="mb-4">
+            Quick Fixes
+          </Heading>
 
           <div className="space-y-3">
-            <button
+            <Button
+              variant="secondary"
               onClick={() => {
                 localStorage.clear();
                 alert("✅ LocalStorage cleared. Try logging in again.");
               }}
-              className="w-full px-4 py-2 bg-(--status-warning) text-white rounded hover:bg-(--accent-yellow-700) text-left flex items-center gap-2"
+              fullWidth
+              className="justify-start"
+              leftIcon={<Trash2 className="w-4 h-4" />}
             >
-              <Trash2 className="w-4 h-4" />
               Clear LocalStorage (fixes stale session data)
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="secondary"
               onClick={async () => {
                 document.cookie.split(";").forEach((c) => {
                   document.cookie =
@@ -291,22 +317,25 @@ export default function DiagnosePage() {
                 });
                 alert("✅ All cookies cleared. Try logging in again.");
               }}
-              className="w-full px-4 py-2 bg-(--accent-orange-600) text-white rounded hover:bg-(--accent-orange-700) text-left flex items-center gap-2"
+              fullWidth
+              className="justify-start"
+              leftIcon={<Cookie className="w-4 h-4" />}
             >
-              <Cookie className="w-4 h-4" />
               Clear All Cookies (fixes cookie corruption)
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="danger"
               onClick={async () => {
                 await supabase.auth.signOut();
                 alert("✅ Signed out. Try logging in again.");
               }}
-              className="w-full px-4 py-2 bg-(--status-error) text-white rounded hover:bg-(--accent-red-700) text-left flex items-center gap-2"
+              fullWidth
+              className="justify-start"
+              leftIcon={<LogOut className="w-4 h-4" />}
             >
-              <LogOut className="w-4 h-4" />
               Force Sign Out (clears Supabase session)
-            </button>
+            </Button>
           </div>
         </div>
       </div>

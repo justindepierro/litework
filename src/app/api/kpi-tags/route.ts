@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
 import { withAuth } from "@/lib/auth-server";
+import { cachedResponse, CacheDurations } from "@/lib/api-cache-headers";
 
 /**
  * GET /api/kpi-tags
@@ -39,7 +40,12 @@ export async function GET(request: NextRequest) {
         updatedAt: new Date(tag.updated_at),
       }));
 
-      return NextResponse.json({ success: true, data: tags });
+      // KPI metadata is identical for every authenticated user, so cache aggressively
+      return cachedResponse(
+        { success: true, data: tags },
+        CacheDurations.LONG,
+        CacheDurations.VERY_LONG
+      );
     } catch (error) {
       console.error("[KPI_TAGS] Unexpected error:", error);
       return NextResponse.json(

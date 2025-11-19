@@ -18,61 +18,8 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# Step 1: Environment Check
-echo "📋 Step 1: Checking environment..."
-if [ ! -f .env.local ]; then
-    echo -e "${RED}❌ Error: .env.local file not found${NC}"
-    echo "Please create .env.local with required environment variables"
-    exit 1
-fi
-
-# Check for required environment variables
-required_vars=("NEXT_PUBLIC_SUPABASE_URL" "NEXT_PUBLIC_SUPABASE_ANON_KEY" "SUPABASE_SERVICE_ROLE_KEY")
-for var in "${required_vars[@]}"; do
-    if ! grep -q "^$var=" .env.local; then
-        echo -e "${RED}❌ Error: Missing required variable: $var${NC}"
-        exit 1
-    fi
-done
-echo -e "${GREEN}✅ Environment variables validated${NC}"
-echo ""
-
-# Step 2: Dependency Check
-echo "📦 Step 2: Checking dependencies..."
-if [ ! -d "node_modules" ]; then
-    echo "Installing dependencies..."
-    npm install
-else
-    echo -e "${GREEN}✅ Dependencies installed${NC}"
-fi
-echo ""
-
-# Step 3: TypeScript Check
-echo "🔍 Step 3: Running TypeScript check..."
-if npm run typecheck > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ TypeScript check passed${NC}"
-else
-    echo -e "${YELLOW}⚠️  Warning: TypeScript errors detected${NC}"
-    echo "Continue anyway? (y/N)"
-    read -r response
-    if [[ ! "$response" =~ ^[Yy]$ ]]; then
-        echo "Deployment cancelled"
-        exit 1
-    fi
-fi
-echo ""
-
-# Step 4: Build Test
-echo "🏗️  Step 4: Testing production build..."
-echo "This may take a minute..."
-if npm run build > build.log 2>&1; then
-    echo -e "${GREEN}✅ Build successful${NC}"
-    rm build.log
-else
-    echo -e "${RED}❌ Build failed. Check build.log for details${NC}"
-    exit 1
-fi
-echo ""
+# Step 1-4: Unified verification
+node ./scripts/deployment/deploy-verify.mjs "$@"
 
 # Step 5: Git Status
 echo "📝 Step 5: Checking git status..."

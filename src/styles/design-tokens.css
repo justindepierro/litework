@@ -3,8 +3,6 @@
  * This file generates CSS custom properties from our design tokens
  */
 
-@import "tailwindcss";
-
 :root {
   /* ===========================
      COLOR TOKENS
@@ -538,6 +536,62 @@
     var(--color-navy-800) 0%,
     var(--color-navy-700) 100%
   );
+
+  /* ===========================
+     ENERGY SURFACE TOKENS
+     =========================== */
+
+  --page-gradient-energetic:
+    radial-gradient(circle at 0% 0%, rgba(255, 107, 53, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(6, 182, 212, 0.2), transparent 45%),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(99, 102, 241, 0.25),
+      transparent 50%
+    ),
+    linear-gradient(135deg, #f8fafc 0%, #f1f5f9 35%, #ffffff 100%);
+
+  --surface-strength-bg: linear-gradient(
+    135deg,
+    rgba(255, 107, 53, 0.96),
+    rgba(236, 72, 153, 0.92)
+  );
+  --surface-strength-foreground: #ffffff;
+  --surface-strength-ring: rgba(255, 255, 255, 0.45);
+
+  --surface-recovery-bg: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.95),
+    rgba(59, 130, 246, 0.9)
+  );
+  --surface-recovery-foreground: #f0fdfa;
+  --surface-recovery-ring: rgba(255, 255, 255, 0.35);
+
+  --surface-speed-bg: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.95),
+    rgba(139, 92, 246, 0.92)
+  );
+  --surface-speed-foreground: #f5f3ff;
+  --surface-speed-ring: rgba(255, 255, 255, 0.4);
+
+  --surface-mobility-bg: linear-gradient(
+    135deg,
+    rgba(132, 204, 22, 0.92),
+    rgba(16, 185, 129, 0.92)
+  );
+  --surface-mobility-foreground: #032b14;
+  --surface-mobility-ring: rgba(255, 255, 255, 0.3);
+
+  --surface-focus-bg: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.96),
+    rgba(30, 41, 59, 0.9)
+  );
+  --surface-focus-foreground: #f8fafc;
+  --surface-focus-ring: rgba(255, 255, 255, 0.35);
+
+  --surface-card-overlay: rgba(255, 255, 255, 0.08);
 }
 
 /* ===========================

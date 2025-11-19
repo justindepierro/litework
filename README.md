@@ -301,6 +301,8 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run test` - Run Vitest unit tests once (headless)
+- `npm run test:watch` - Watch-mode Vitest (great while editing helpers)
 
 ## 📱 PWA Features
 

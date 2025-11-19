@@ -16,7 +16,18 @@
  */
 
 import React from "react";
-import { Display, Body } from "./Typography";
+import { Display, Body, Heading } from "./Typography";
+
+const cx = (...classes: Array<string | undefined | false>) =>
+  classes.filter(Boolean).join(" ");
+
+type GradientVariant = "primary" | "secondary" | "tertiary";
+
+const gradientBackgrounds: Record<GradientVariant, string> = {
+  primary: "var(--page-gradient-energetic)",
+  secondary: "var(--bg-gradient-primary)",
+  tertiary: "var(--bg-gradient-secondary)",
+};
 
 export interface PageHeaderProps {
   /** Main page title */
@@ -30,7 +41,7 @@ export interface PageHeaderProps {
   /** Show gradient accent bar (default: true) */
   showGradient?: boolean;
   /** Gradient variant - determines color combination */
-  gradientVariant?: "primary" | "secondary" | "tertiary";
+  gradientVariant?: GradientVariant;
   /** Alignment for mobile (default: center) */
   mobileAlign?: "left" | "center";
   /** Additional CSS classes */
@@ -55,16 +66,15 @@ export function PageHeader({
 }: PageHeaderProps) {
   const alignmentClass =
     mobileAlign === "center" ? "text-center sm:text-left" : "text-left";
+  const barBackground = gradientBackgrounds[gradientVariant];
 
   return (
-    <div className={`relative ${alignmentClass} ${className}`}>
+    <div className={cx("relative", alignmentClass, className)}>
       {/* Gradient Accent Bar - Desktop Only */}
       {showGradient && (
         <div
-          className={`
-            absolute -left-4 top-0 bottom-0 w-1.5 rounded-full hidden sm:block
-            bg-gradient-accent-${gradientVariant}
-          `}
+          className="absolute -left-4 top-0 bottom-0 w-1.5 rounded-full hidden sm:block"
+          style={{ background: barBackground }}
           aria-hidden="true"
         />
       )}
@@ -73,8 +83,10 @@ export function PageHeader({
         <div className="flex-1 min-w-0">
           {/* Icon + Title */}
           <div className="flex items-center gap-3 justify-center sm:justify-start mb-2">
-            {icon && <div className="shrink-0 text-accent-orange">{icon}</div>}
-            <Display size="lg" className="text-navy-900">
+            {icon && (
+              <div className="shrink-0 text-(--color-text-accent)">{icon}</div>
+            )}
+            <Display size="lg" variant="primary">
               {title}
             </Display>
           </div>
@@ -115,13 +127,15 @@ export function PageHeaderCompact({
   className = "",
 }: PageHeaderCompactProps) {
   return (
-    <div className={`flex items-center justify-between gap-4 ${className}`}>
+    <div className={cx("flex items-center justify-between gap-4", className)}>
       <div className="flex-1 min-w-0">
-        <h2 className="text-lg sm:text-xl font-bold text-navy-900 truncate">
+        <Heading level="h4" className="truncate">
           {title}
-        </h2>
+        </Heading>
         {subtitle && (
-          <p className="text-xs sm:text-sm text-steel-600 mt-0.5">{subtitle}</p>
+          <Body size="sm" variant="secondary" className="mt-0.5">
+            {subtitle}
+          </Body>
         )}
       </div>
       {actions && <div className="shrink-0">{actions}</div>}

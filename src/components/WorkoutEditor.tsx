@@ -498,8 +498,12 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
     "superset" | "circuit" | "section"
   >("superset");
   const [rounds, setRounds] = useState<number | undefined>(undefined);
-  const [restBetweenExercises, setRestBetweenExercises] = useState<number | undefined>(undefined);
-  const [restBetweenRounds, setRestBetweenRounds] = useState<number | undefined>(undefined);
+  const [restBetweenExercises, setRestBetweenExercises] = useState<
+    number | undefined
+  >(undefined);
+  const [restBetweenRounds, setRestBetweenRounds] = useState<
+    number | undefined
+  >(undefined);
 
   const handleSubmit = () => {
     onCreateGroup(
@@ -581,7 +585,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                 value={restBetweenExercises ?? ""}
                 onChange={(e) => {
                   const value = e.target.value;
-                  setRestBetweenExercises(value === "" ? undefined : parseInt(value));
+                  setRestBetweenExercises(
+                    value === "" ? undefined : parseInt(value)
+                  );
                 }}
                 placeholder="30"
                 min="0"
@@ -620,7 +626,9 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                     value={restBetweenRounds ?? ""}
                     onChange={(e) => {
                       const value = e.target.value;
-                      setRestBetweenRounds(value === "" ? undefined : parseInt(value));
+                      setRestBetweenRounds(
+                        value === "" ? undefined : parseInt(value)
+                      );
                     }}
                     placeholder="90"
                     min="0"
@@ -1111,7 +1119,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
             ex.exerciseId === "new-exercise"
           ) {
             // Create exercise in library
-            console.log(`[WorkoutEditor] Creating exercise in library: ${ex.exerciseName}`);
+            console.log(
+              `[WorkoutEditor] Creating exercise in library: ${ex.exerciseName}`
+            );
             try {
               const response = await fetch("/api/exercises/search", {
                 method: "POST",
@@ -1125,14 +1135,18 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               const data = await response.json();
 
               if (data.success && data.data) {
-                console.log(`[WorkoutEditor] Exercise created with ID: ${data.data.id}`);
+                console.log(
+                  `[WorkoutEditor] Exercise created with ID: ${data.data.id}`
+                );
                 return {
                   ...ex,
                   exerciseId: data.data.id,
                   exerciseName: data.data.name,
                 };
               } else {
-                console.error(`[WorkoutEditor] Failed to create exercise: ${data.error}`);
+                console.error(
+                  `[WorkoutEditor] Failed to create exercise: ${data.error}`
+                );
                 throw new Error(data.error || "Failed to create exercise");
               }
             } catch (error) {
@@ -1144,7 +1158,9 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         })
       );
 
-      console.log(`[WorkoutEditor] All exercises processed. Saving workout with ${updatedExercises.length} exercises`);
+      console.log(
+        `[WorkoutEditor] All exercises processed. Saving workout with ${updatedExercises.length} exercises`
+      );
 
       // Update workout with new exercise IDs
       const workoutToSave = {

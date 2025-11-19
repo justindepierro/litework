@@ -109,7 +109,7 @@ export async function GET() {
         const { data: sessions } = await supabase
           .from("workout_sessions")
           .select("id")
-          .eq("assignment_id", assignment.id)
+          .eq("workout_assignment_id", assignment.id)
           .not("completed_at", "is", null);
 
         const completedCount = sessions?.length || 0;

@@ -7,8 +7,11 @@
  */
 
 import { NextResponse } from "next/server";
-import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
-import { supabase } from "@/lib/supabase";
+import {
+  getAuthenticatedUser,
+  getAdminClient,
+  isCoach,
+} from "@/lib/auth-server";
 
 export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
@@ -28,10 +31,11 @@ export async function GET() {
   }
 
   try {
+    const supabase = getAdminClient();
     // Fetch all groups
     const { data: groups, error: groupError } = await supabase
       .from("athlete_groups")
-      .select("id, name")
+      .select("id, name, athlete_ids")
       .order("name", { ascending: true });
 
     if (groupError) throw groupError;
@@ -44,60 +48,59 @@ export async function GET() {
     }
 
     // Batch fetch all data for all groups at once (avoid N+1)
-    const groupIds = groups.map(g => g.id);
-    
-    // Get all group members in one query
-    const { data: allMembers, error: memberError } = await supabase
-      .from("group_members")
-      .select("group_id, user_id")
-      .in("group_id", groupIds);
-
-    if (memberError) throw memberError;
+    const groupIds = groups.map((g) => g.id);
 
     // Get all assignments in one query
     const { data: allAssignments, error: assignmentError } = await supabase
       .from("workout_assignments")
-      .select("id, group_id")
-      .in("group_id", groupIds);
+      .select("id, assigned_to_group_id")
+      .in("assigned_to_group_id", groupIds);
 
     if (assignmentError) throw assignmentError;
 
     // Get all completed sessions in one query
-    const assignmentIds = (allAssignments || []).map(a => a.id);
-    const { data: allCompletedSessions, error: sessionError } = assignmentIds.length > 0
-      ? await supabase
-          .from("workout_sessions")
-          .select("id, assignment_id")
-          .in("assignment_id", assignmentIds)
-          .not("completed_at", "is", null)
-      : { data: [], error: null };
+    const assignmentIds = (allAssignments || []).map((a) => a.id);
+    const { data: allCompletedSessions, error: sessionError } =
+      assignmentIds.length > 0
+        ? await supabase
+            .from("workout_sessions")
+            .select("id, workout_assignment_id")
+            .in("workout_assignment_id", assignmentIds)
+            .not("completed_at", "is", null)
+        : { data: [], error: null };
 
     if (sessionError) throw sessionError;
 
     // Build lookup maps for O(1) access
-    const membersByGroup = new Map();
     const assignmentsByGroup = new Map();
     const sessionsByAssignment = new Map();
 
-    (allMembers || []).forEach(m => {
-      if (!membersByGroup.has(m.group_id)) membersByGroup.set(m.group_id, []);
-      membersByGroup.get(m.group_id).push(m);
+    (allAssignments || []).forEach((a) => {
+      if (!a.assigned_to_group_id) {
+        return;
+      }
+      if (!assignmentsByGroup.has(a.assigned_to_group_id)) {
+        assignmentsByGroup.set(a.assigned_to_group_id, []);
+      }
+      assignmentsByGroup.get(a.assigned_to_group_id).push(a);
     });
 
-    (allAssignments || []).forEach(a => {
-      if (!assignmentsByGroup.has(a.group_id)) assignmentsByGroup.set(a.group_id, []);
-      assignmentsByGroup.get(a.group_id).push(a);
-    });
-
-    (allCompletedSessions || []).forEach(s => {
-      if (!sessionsByAssignment.has(s.assignment_id)) sessionsByAssignment.set(s.assignment_id, []);
-      sessionsByAssignment.get(s.assignment_id).push(s);
+    (allCompletedSessions || []).forEach((s) => {
+      if (!s.workout_assignment_id) {
+        return;
+      }
+      if (!sessionsByAssignment.has(s.workout_assignment_id)) {
+        sessionsByAssignment.set(s.workout_assignment_id, []);
+      }
+      sessionsByAssignment.get(s.workout_assignment_id).push(s);
     });
 
     // Calculate stats for each group using cached data
     const groupStatsPromises = groups.map(async (group) => {
-      const members = membersByGroup.get(group.id) || [];
-      const athleteCount = members.length;
+      const athleteIds = Array.isArray(group.athlete_ids)
+        ? group.athlete_ids
+        : [];
+      const athleteCount = athleteIds.length;
 
       const assignments = assignmentsByGroup.get(group.id) || [];
       const totalAssignments = assignments.length;
@@ -114,7 +117,9 @@ export async function GET() {
       }
 
       // Count completed sessions for this group's assignments
-      const assignmentIdsForGroup = assignments.map((a: { id: string }) => a.id);
+      const assignmentIdsForGroup = assignments.map(
+        (a: { id: string }) => a.id
+      );
       let completedWorkouts = 0;
       assignmentIdsForGroup.forEach((aid: string) => {
         const sessions = sessionsByAssignment.get(aid) || [];

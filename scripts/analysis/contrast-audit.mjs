@@ -5,7 +5,7 @@
  * Scans codebase for WCAG contrast violations
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join } from "path";
 
 // WCAG 2.1 Level AA Contrast Requirements
@@ -84,6 +84,248 @@ const GOOD_CONTRAST_PATTERNS = [
   /text-gray-700/, // Good on light backgrounds (8.6:1)
   /text-black/,
 ];
+
+const TOKEN_FILES = [
+  join(process.cwd(), "src/styles/design-tokens.css"),
+  join(process.cwd(), "src/styles/tokens.css"),
+];
+
+const NAMED_COLORS = {
+  white: "#ffffff",
+  black: "#000000",
+  transparent: "rgba(0,0,0,0)",
+};
+
+const tokenValueMap = loadTokenValues();
+const resolvedTokenCache = new Map();
+
+function loadTokenValues() {
+  const map = {};
+  TOKEN_FILES.forEach((filePath) => {
+    if (existsSync(filePath)) {
+      Object.assign(map, parseCssVariables(filePath));
+    }
+  });
+  return map;
+}
+
+function parseCssVariables(filePath) {
+  const content = readFileSync(filePath, "utf-8");
+  const regex = /--([a-z0-9-]+)\s*:\s*([^;]+);/gi;
+  const vars = {};
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    const [, name, value] = match;
+    vars[`--${name}`] = value.replace(/!important/g, "").trim();
+  }
+  return vars;
+}
+
+function normalizeTokenName(tokenName) {
+  if (!tokenName) return tokenName;
+  return tokenName.startsWith("--") ? tokenName : `--${tokenName}`;
+}
+
+function resolveTokenColor(tokenName, stack = []) {
+  const normalized = normalizeTokenName(tokenName);
+  if (!normalized) return null;
+
+  if (stack.includes(normalized)) {
+    resolvedTokenCache.set(normalized, null);
+    return null;
+  }
+
+  if (resolvedTokenCache.has(normalized)) {
+    return resolvedTokenCache.get(normalized);
+  }
+
+  const rawValue = tokenValueMap[normalized];
+  if (!rawValue) {
+    resolvedTokenCache.set(normalized, null);
+    return null;
+  }
+
+  if (rawValue.startsWith("var(")) {
+    const innerMatch = rawValue.match(
+      /var\((--[a-z0-9-]+)(?:,\s*([^\)]+))?\)/i
+    );
+    if (innerMatch) {
+      const [, innerToken, fallback] = innerMatch;
+      const resolved =
+        resolveTokenColor(innerToken, [...stack, normalized]) ||
+        parseColorValue(fallback);
+      resolvedTokenCache.set(normalized, resolved);
+      return resolved;
+    }
+  }
+
+  const parsed = parseColorValue(rawValue);
+  resolvedTokenCache.set(normalized, parsed);
+  return parsed;
+}
+
+function parseColorValue(value) {
+  if (!value) return null;
+  const trimmed = value.trim().toLowerCase();
+
+  if (trimmed.startsWith("var(")) {
+    const refMatch = trimmed.match(/var\((--[a-z0-9-]+)/i);
+    if (refMatch) {
+      return resolveTokenColor(refMatch[1]);
+    }
+  }
+
+  if (trimmed.startsWith("#")) {
+    return hexToRgb(trimmed);
+  }
+
+  if (trimmed.startsWith("rgb")) {
+    const rgbaMatch = trimmed.match(/rgba?\(([^)]+)\)/i);
+    if (rgbaMatch) {
+      const [r, g, b, a] = rgbaMatch[1]
+        .split(",")
+        .map((component) => component.trim())
+        .map((component, index) =>
+          index < 3 ? Number(component) : Number(component)
+        );
+      if ([r, g, b].every((channel) => Number.isFinite(channel))) {
+        return { r, g, b, a: Number.isFinite(a) ? a : 1 };
+      }
+    }
+  }
+
+  if (NAMED_COLORS[trimmed]) {
+    return hexToRgb(NAMED_COLORS[trimmed]);
+  }
+
+  return null;
+}
+
+function hexToRgb(hex) {
+  if (!hex) return null;
+  let normalized = hex.replace("#", "");
+  if (normalized.length === 3) {
+    normalized = normalized
+      .split("")
+      .map((char) => char + char)
+      .join("");
+  }
+  const r = parseInt(normalized.substring(0, 2), 16);
+  const g = parseInt(normalized.substring(2, 4), 16);
+  const b = parseInt(normalized.substring(4, 6), 16);
+  if ([r, g, b].some((channel) => Number.isNaN(channel))) {
+    return null;
+  }
+  return { r, g, b, a: 1 };
+}
+
+function rgbToHex({ r, g, b }) {
+  const toHex = (value) => value.toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function applyAlpha(color) {
+  if (!color) return null;
+  if (color.a === undefined || color.a === 1) {
+    return { r: color.r, g: color.g, b: color.b };
+  }
+  const alpha = Math.max(0, Math.min(1, color.a));
+  const blendChannel = (channel) =>
+    Math.round(channel * alpha + 255 * (1 - alpha));
+  return {
+    r: blendChannel(color.r),
+    g: blendChannel(color.g),
+    b: blendChannel(color.b),
+  };
+}
+
+function relativeLuminance({ r, g, b }) {
+  const transform = (channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+  };
+
+  const R = transform(r);
+  const G = transform(g);
+  const B = transform(b);
+  return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+}
+
+function contrastRatio(colorA, colorB) {
+  if (!colorA || !colorB) return null;
+  const lumA = relativeLuminance(colorA);
+  const lumB = relativeLuminance(colorB);
+  const lighter = Math.max(lumA, lumB);
+  const darker = Math.min(lumA, lumB);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function getTokenColorInfo(tokenName, source) {
+  const resolved = resolveTokenColor(tokenName);
+  if (!resolved) return null;
+  const rgb = applyAlpha(resolved);
+  if (!rgb) return null;
+  return {
+    token: normalizeTokenName(tokenName),
+    source,
+    rgb,
+    hex: rgbToHex(rgb),
+  };
+}
+
+function extractTokenColors(line, type) {
+  const results = [];
+  const parenRegex = new RegExp(`${type}-\\((--[a-z0-9-]+)\\)`, "gi");
+  const bracketRegex = new RegExp(
+    `${type}-\\[var\\((--[a-z0-9-]+)\\)\\]`,
+    "gi"
+  );
+
+  let match;
+  while ((match = parenRegex.exec(line)) !== null) {
+    const token = match[1];
+    const info = getTokenColorInfo(token, match[0]);
+    if (info) results.push(info);
+  }
+
+  while ((match = bracketRegex.exec(line)) !== null) {
+    const token = match[1];
+    const info = getTokenColorInfo(token, match[0]);
+    if (info) results.push(info);
+  }
+
+  return results;
+}
+
+function analyzeTokenContrast(line, lineNumber) {
+  const textColors = extractTokenColors(line, "text");
+  const bgColors = extractTokenColors(line, "bg");
+  const issues = [];
+
+  if (textColors.length === 0 || bgColors.length === 0) {
+    return issues;
+  }
+
+  textColors.forEach((textColor) => {
+    bgColors.forEach((bgColor) => {
+      const ratio = contrastRatio(textColor.rgb, bgColor.rgb);
+      if (!ratio) return;
+      if (ratio < WCAG_AA_NORMAL) {
+        const severity = ratio < WCAG_AA_LARGE ? "critical" : "high";
+        issues.push({
+          line: lineNumber,
+          code: line.trim(),
+          issue: `Low contrast between ${textColor.source} (${textColor.hex}) and ${bgColor.source} (${bgColor.hex}) - ${ratio.toFixed(2)}:1`,
+          severity,
+        });
+      }
+    });
+  });
+
+  return issues;
+}
 
 function findFiles(dir, ext = [".tsx", ".ts"]) {
   let results = [];
@@ -172,6 +414,19 @@ function analyzeFile(filePath) {
         issue: "Small text with insufficient contrast",
         severity: "high",
       });
+    }
+
+    const tokenViolations = analyzeTokenContrast(line, index + 1);
+    if (tokenViolations.length > 0) {
+      tokenViolations.forEach((violation) =>
+        violations.push({
+          file: filePath,
+          line: violation.line,
+          code: violation.code,
+          issue: violation.issue,
+          severity: violation.severity,
+        })
+      );
     }
   });
 

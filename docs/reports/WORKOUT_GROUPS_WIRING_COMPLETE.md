@@ -169,8 +169,8 @@ These components were already correctly implemented:
 Run test script:
 
 ```bash
-chmod +x scripts/database/test-workout-groups.mjs
-node scripts/database/test-workout-groups.mjs
+chmod +x scripts/database/smoke-test-workouts.mjs
+node scripts/database/smoke-test-workouts.mjs --workouts
 ```
 
 Expected output:

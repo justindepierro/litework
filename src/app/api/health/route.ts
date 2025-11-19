@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
 import { transformToCamel } from "@/lib/case-transform";
+import { getAdminClient } from "@/lib/auth-server";
 
 interface HealthCheck {
   status: "healthy" | "unhealthy" | "degraded";
@@ -29,6 +29,7 @@ const startTime = Date.now();
 async function checkDatabase(): Promise<HealthCheckResult> {
   try {
     const start = Date.now();
+    const supabase = getAdminClient();
 
     // Simple query to test database connectivity
     const { error } = await supabase.from("users").select("count").limit(1);

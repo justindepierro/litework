@@ -1,66 +1,165 @@
 /**
  * Typography Component System
- * Semantic typography components using design tokens
- * Replaces direct Tailwind classes for consistent text styling
+ * Semantic typography components powered by design tokens
  */
 
 "use client";
 
 import React from "react";
 
+const cx = (...classes: Array<string | undefined | false>) =>
+  classes.filter(Boolean).join(" ");
+
+const mergeStyles = (
+  ...styles: Array<React.CSSProperties | undefined>
+): React.CSSProperties => Object.assign({}, ...styles.filter(Boolean));
+
+export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeadingVariant = "primary" | "secondary" | "accent" | "inverse";
+export type BodySize = "xs" | "sm" | "base" | "lg" | "xl";
+export type BodyVariant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "error"
+  | "success"
+  | "accent"
+  | "inverse";
+export type BodyWeight = "normal" | "medium" | "semibold" | "bold";
+export type LabelVariant = "default" | "required" | "disabled" | "error";
+export type CaptionVariant = "default" | "muted" | "error" | "success";
+export type DisplaySize = "sm" | "md" | "lg" | "xl";
+export type DisplayVariant = "primary" | "secondary" | "accent" | "inverse";
+export type LinkVariant = "primary" | "secondary" | "accent" | "muted";
+
+const headingSizeTokens: Record<HeadingLevel, string> = {
+  h1: "--font-size-fluid-5xl",
+  h2: "--font-size-fluid-4xl",
+  h3: "--font-size-fluid-3xl",
+  h4: "--font-size-fluid-2xl",
+  h5: "--font-size-fluid-xl",
+  h6: "--font-size-fluid-lg",
+};
+
+const headingLineHeights: Record<HeadingLevel, string> = {
+  h1: "var(--line-height-tight)",
+  h2: "var(--line-height-tight)",
+  h3: "var(--line-height-snug)",
+  h4: "var(--line-height-normal)",
+  h5: "var(--line-height-normal)",
+  h6: "var(--line-height-relaxed)",
+};
+
+const headingLetterSpacing: Record<HeadingLevel, string | undefined> = {
+  h1: "var(--letter-spacing-tight)",
+  h2: "var(--letter-spacing-tight)",
+  h3: "var(--letter-spacing-normal)",
+  h4: undefined,
+  h5: undefined,
+  h6: undefined,
+};
+
+const headingVariantColors: Record<HeadingVariant, string> = {
+  primary: "var(--color-text-primary)",
+  secondary: "var(--color-text-secondary)",
+  accent: "var(--color-text-accent)",
+  inverse: "var(--color-text-inverse)",
+};
+
+const bodySizeTokens: Record<BodySize, string> = {
+  xs: "--font-size-xs",
+  sm: "--font-size-sm",
+  base: "--font-size-fluid-base",
+  lg: "--font-size-fluid-lg",
+  xl: "--font-size-fluid-xl",
+};
+
+const bodyLineHeights: Record<BodySize, string> = {
+  xs: "var(--line-height-normal)",
+  sm: "var(--line-height-normal)",
+  base: "var(--line-height-relaxed)",
+  lg: "var(--line-height-relaxed)",
+  xl: "var(--line-height-loose)",
+};
+
+const bodyVariantColors: Record<BodyVariant, string> = {
+  primary: "var(--color-text-primary)",
+  secondary: "var(--color-text-secondary)",
+  tertiary: "var(--color-text-tertiary)",
+  error: "var(--color-error)",
+  success: "var(--color-success)",
+  accent: "var(--color-text-accent)",
+  inverse: "var(--color-text-inverse)",
+};
+
+const weightScale: Record<BodyWeight, string> = {
+  normal: "var(--font-weight-normal)",
+  medium: "var(--font-weight-medium)",
+  semibold: "var(--font-weight-semibold)",
+  bold: "var(--font-weight-bold)",
+};
+
+const displaySizeTokens: Record<DisplaySize, string> = {
+  sm: "--font-size-fluid-2xl",
+  md: "--font-size-fluid-3xl",
+  lg: "--font-size-fluid-4xl",
+  xl: "--font-size-fluid-5xl",
+};
+
+const displayVariantColors: Record<DisplayVariant, string> = {
+  primary: "var(--color-text-primary)",
+  secondary: "var(--color-text-secondary)",
+  accent: "var(--color-text-accent)",
+  inverse: "var(--color-text-inverse)",
+};
+
+const labelColors: Record<LabelVariant, string> = {
+  default: "var(--color-text-primary)",
+  required: "var(--color-text-primary)",
+  disabled: "var(--color-text-tertiary)",
+  error: "var(--color-error)",
+};
+
+const captionColors: Record<CaptionVariant, string> = {
+  default: "var(--color-text-secondary)",
+  muted: "var(--color-text-tertiary)",
+  error: "var(--color-error)",
+  success: "var(--color-success)",
+};
 // ============================================================================
 // HEADING COMPONENT
 // ============================================================================
 
-export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-export type HeadingVariant = "primary" | "secondary" | "accent";
-
 export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  /** Heading level (h1-h6) */
   level?: HeadingLevel;
-  /** Visual variant */
   variant?: HeadingVariant;
-  /** Content */
   children: React.ReactNode;
-  /** Custom className */
-  className?: string;
 }
 
 export const Heading: React.FC<HeadingProps> = ({
   level = "h2",
   variant = "primary",
   children,
-  className = "",
+  className,
+  style,
   ...props
 }) => {
   const Component = level;
 
-  // Size mapping for semantic hierarchy
-  const sizeClasses = {
-    h1: "text-3xl sm:text-4xl",
-    h2: "text-2xl sm:text-3xl",
-    h3: "text-xl sm:text-2xl",
-    h4: "text-lg sm:text-xl",
-    h5: "text-base sm:text-lg",
-    h6: "text-sm sm:text-base",
-  };
-
-  // Variant colors using design tokens
-  const variantClasses = {
-    primary: "text-[var(--color-text-primary)]",
-    secondary: "text-[var(--color-text-secondary)]",
-    accent: "text-[var(--color-accent-orange)]",
-  };
-
   return (
     <Component
-      className={`
-        ${sizeClasses[level]}
-        ${variantClasses[variant]}
-        font-heading
-        font-semibold
-        ${className}
-      `}
+      className={cx("tracking-tight", className)}
+      style={mergeStyles(
+        {
+          fontFamily: "var(--font-family-heading)",
+          fontWeight: "var(--font-weight-semibold)",
+          fontSize: `var(${headingSizeTokens[level]})`,
+          lineHeight: headingLineHeights[level],
+          letterSpacing: headingLetterSpacing[level],
+          color: headingVariantColors[variant],
+        },
+        style
+      )}
       {...props}
     >
       {children}
@@ -74,27 +173,12 @@ Heading.displayName = "Heading";
 // BODY TEXT COMPONENT
 // ============================================================================
 
-export type BodySize = "xs" | "sm" | "base" | "lg" | "xl";
-export type BodyVariant =
-  | "primary"
-  | "secondary"
-  | "tertiary"
-  | "error"
-  | "success";
-
 export interface BodyProps extends React.HTMLAttributes<HTMLElement> {
-  /** Text size */
   size?: BodySize;
-  /** Visual variant (color) */
   variant?: BodyVariant;
-  /** Font weight */
-  weight?: "normal" | "medium" | "semibold" | "bold";
-  /** Content */
+  weight?: BodyWeight;
   children: React.ReactNode;
-  /** Render as specific element */
   as?: "p" | "span" | "div";
-  /** Custom className */
-  className?: string;
 }
 
 export const Body: React.FC<BodyProps> = ({
@@ -103,46 +187,25 @@ export const Body: React.FC<BodyProps> = ({
   weight = "normal",
   children,
   as = "p",
-  className = "",
+  className,
+  style,
   ...props
 }) => {
   const Component = as;
 
-  // Size classes
-  const sizeClasses = {
-    xs: "text-xs",
-    sm: "text-sm",
-    base: "text-base",
-    lg: "text-lg",
-    xl: "text-xl",
-  };
-
-  // Variant colors using design tokens
-  const variantClasses = {
-    primary: "text-[var(--color-text-primary)]",
-    secondary: "text-[var(--color-text-secondary)]",
-    tertiary: "text-[var(--color-text-tertiary)]",
-    error: "text-[var(--color-error)]",
-    success: "text-[var(--color-success)]",
-  };
-
-  // Weight classes
-  const weightClasses = {
-    normal: "font-normal",
-    medium: "font-medium",
-    semibold: "font-semibold",
-    bold: "font-bold",
-  };
-
   return (
     <Component
-      className={`
-        ${sizeClasses[size]}
-        ${variantClasses[variant]}
-        ${weightClasses[weight]}
-        font-primary
-        ${className}
-      `}
+      className={cx(className)}
+      style={mergeStyles(
+        {
+          fontFamily: "var(--font-family-primary)",
+          fontSize: `var(${bodySizeTokens[size]})`,
+          lineHeight: bodyLineHeights[size],
+          fontWeight: weightScale[weight],
+          color: bodyVariantColors[variant],
+        },
+        style
+      )}
       {...props}
     >
       {children}
@@ -156,47 +219,46 @@ Body.displayName = "Body";
 // LABEL COMPONENT (Form Labels, Captions)
 // ============================================================================
 
-export type LabelVariant = "default" | "required" | "disabled" | "error";
-
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  /** Label variant */
   variant?: LabelVariant;
-  /** Content */
   children: React.ReactNode;
-  /** HTML for attribute (for form labels) */
-  htmlFor?: string;
-  /** Custom className */
-  className?: string;
 }
 
 export const Label: React.FC<LabelProps> = ({
   variant = "default",
   children,
-  htmlFor,
-  className = "",
+  className,
+  style,
   ...props
 }) => {
-  // Variant classes
-  const variantClasses = {
-    default: "text-[var(--color-text-primary)]",
-    required:
-      "text-[var(--color-text-primary)] after:content-['*'] after:ml-0.5 after:text-[var(--color-error)]",
-    disabled: "text-[var(--color-text-tertiary)] opacity-60",
-    error: "text-[var(--color-error)]",
-  };
+  const isRequired = variant === "required";
 
   return (
     <label
-      htmlFor={htmlFor}
-      className={`
-        block text-sm font-medium
-        ${variantClasses[variant]}
-        ${className}
-      `}
+      className={cx("inline-flex items-center gap-0.5 text-left", className)}
+      style={mergeStyles(
+        {
+          fontFamily: "var(--font-family-primary)",
+          fontSize: "var(--font-size-sm)",
+          fontWeight: "var(--font-weight-medium)",
+          color: labelColors[variant],
+          opacity: variant === "disabled" ? 0.6 : 1,
+        },
+        style
+      )}
       {...props}
     >
-      {children}
+      <span>{children}</span>
+      {isRequired && (
+        <span
+          aria-hidden="true"
+          className="ml-0.5"
+          style={{ color: "var(--color-error)" }}
+        >
+          *
+        </span>
+      )}
     </label>
   );
 };
@@ -207,43 +269,34 @@ Label.displayName = "Label";
 // CAPTION COMPONENT (Helper Text, Metadata)
 // ============================================================================
 
-export type CaptionVariant = "default" | "muted" | "error" | "success";
-
 export interface CaptionProps extends React.HTMLAttributes<HTMLElement> {
-  /** Caption variant */
   variant?: CaptionVariant;
-  /** Content */
   children: React.ReactNode;
-  /** Render as specific element */
   as?: "p" | "span" | "div";
-  /** Custom className */
-  className?: string;
 }
 
 export const Caption: React.FC<CaptionProps> = ({
   variant = "default",
   children,
   as = "p",
-  className = "",
+  className,
+  style,
   ...props
 }) => {
   const Component = as;
 
-  // Variant classes
-  const variantClasses = {
-    default: "text-[var(--color-text-secondary)]",
-    muted: "text-[var(--color-text-tertiary)]",
-    error: "text-[var(--color-error)]",
-    success: "text-[var(--color-success)]",
-  };
-
   return (
     <Component
-      className={`
-        text-xs
-        ${variantClasses[variant]}
-        ${className}
-      `}
+      className={cx(className)}
+      style={mergeStyles(
+        {
+          fontFamily: "var(--font-family-primary)",
+          fontSize: "var(--font-size-xs)",
+          lineHeight: "var(--line-height-normal)",
+          color: captionColors[variant],
+        },
+        style
+      )}
       {...props}
     >
       {children}
@@ -257,45 +310,38 @@ Caption.displayName = "Caption";
 // DISPLAY TEXT COMPONENT (Hero Text, Large Numbers)
 // ============================================================================
 
-export type DisplaySize = "sm" | "md" | "lg" | "xl";
-
 export interface DisplayProps extends React.HTMLAttributes<HTMLElement> {
-  /** Display size */
   size?: DisplaySize;
-  /** Content */
+  variant?: DisplayVariant;
   children: React.ReactNode;
-  /** Render as specific element */
   as?: "h1" | "h2" | "div" | "span";
-  /** Custom className */
-  className?: string;
 }
 
 export const Display: React.FC<DisplayProps> = ({
   size = "lg",
+  variant = "primary",
   children,
   as = "h1",
-  className = "",
+  className,
+  style,
   ...props
 }) => {
   const Component = as;
 
-  // Size classes for large display text
-  const sizeClasses = {
-    sm: "text-2xl sm:text-3xl",
-    md: "text-3xl sm:text-4xl",
-    lg: "text-4xl sm:text-5xl",
-    xl: "text-5xl sm:text-6xl",
-  };
-
   return (
     <Component
-      className={`
-        ${sizeClasses[size]}
-        font-display
-        font-bold
-        text-[var(--color-text-primary)]
-        ${className}
-      `}
+      className={cx("tracking-tight", className)}
+      style={mergeStyles(
+        {
+          fontFamily: "var(--font-family-display)",
+          fontWeight: "var(--font-weight-bold)",
+          fontSize: `var(${displaySizeTokens[size]})`,
+          lineHeight: "var(--line-height-tight)",
+          letterSpacing: "var(--letter-spacing-tight)",
+          color: displayVariantColors[variant],
+        },
+        style
+      )}
       {...props}
     >
       {children}
@@ -309,20 +355,12 @@ Display.displayName = "Display";
 // LINK COMPONENT (Semantic Links)
 // ============================================================================
 
-export type LinkVariant = "primary" | "secondary" | "accent" | "muted";
-
 export interface LinkProps {
-  /** Link variant */
   variant?: LinkVariant;
-  /** Content */
   children: React.ReactNode;
-  /** Link href */
   href?: string;
-  /** Click handler (for button-like links) */
   onClick?: () => void;
-  /** Open in new tab */
   external?: boolean;
-  /** Custom className */
   className?: string;
 }
 
@@ -332,29 +370,22 @@ export const Link: React.FC<LinkProps> = ({
   href,
   onClick,
   external = false,
-  className = "",
+  className,
   ...props
 }) => {
-  // Variant classes
-  const variantClasses = {
-    primary:
-      "text-[var(--color-accent-blue)] hover:text-[var(--color-accent-blue)]/80",
+  const variantClasses: Record<LinkVariant, string> = {
+    primary: "text-(--color-accent-blue) hover:opacity-80",
     secondary:
-      "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
-    accent:
-      "text-[var(--color-accent-orange)] hover:text-[var(--color-accent-orange)]/80",
-    muted:
-      "text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]",
+      "text-(--color-text-secondary) hover:text-(--color-text-primary)",
+    accent: "text-(--color-accent-orange) hover:opacity-85",
+    muted: "text-(--color-text-tertiary) hover:text-(--color-text-secondary)",
   };
 
-  const baseClasses = `
-    ${variantClasses[variant]}
-    font-medium
-    transition-colors
-    underline-offset-4
-    hover:underline
-    ${className}
-  `;
+  const baseClasses = cx(
+    variantClasses[variant],
+    "font-medium transition-colors underline-offset-4 hover:underline",
+    className
+  );
 
   if (href) {
     return (

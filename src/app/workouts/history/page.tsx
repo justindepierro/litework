@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useAthleteGuard } from "@/hooks/use-auth-guard";
-import Navigation from "@/components/Navigation";
 import {
   Check,
   Download,
@@ -17,6 +16,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 interface SetRecord {
   id: string;
@@ -242,7 +242,6 @@ export default function WorkoutHistoryPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-(--bg-secondary)">
-        <Navigation />
         <div className="max-w-4xl mx-auto p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-(--bg-tertiary) rounded w-1/3"></div>
@@ -260,7 +259,6 @@ export default function WorkoutHistoryPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-(--bg-secondary)">
-        <Navigation />
         <div className="max-w-4xl mx-auto p-6">
           <Alert variant="error" title="Error loading history">
             <p className="text-sm mb-3">{error}</p>
@@ -278,40 +276,35 @@ export default function WorkoutHistoryPage() {
 
   return (
     <div className="min-h-screen bg-(--bg-secondary)">
-      <Navigation />
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-(--text-primary)">
-                Workout History
-              </h1>
-              <p className="text-(--text-secondary) mt-2">
-                Review your past workouts and track your progress
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant={showFilters ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={exportToCSV}
-                disabled={filteredSessions.length === 0}
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
-          </div>
-
+          <PageHeader
+            title="Workout History"
+            subtitle="Review your past workouts and track your progress"
+            icon={<Calendar className="w-6 h-6" />}
+            actions={
+              <div className="flex gap-2">
+                <Button
+                  variant={showFilters ? "secondary" : "ghost"}
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  leftIcon={<Filter className="w-4 h-4" />}
+                >
+                  Filters
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={exportToCSV}
+                  disabled={filteredSessions.length === 0}
+                  leftIcon={<Download className="w-4 h-4" />}
+                >
+                  Export
+                </Button>
+              </div>
+            }
+          />
           {/* Filter Panel */}
           {showFilters && (
             <div className="mt-4 bg-white rounded-lg border border-silver-300 p-4">

@@ -28,6 +28,46 @@ import { Display, Body } from "@/components/ui/Typography";
 
 ---
 
+## 📐 Page Layout Standards (MANDATORY)
+
+### Single Page Header Rule
+
+- Every route-level page MUST render its hero content with the `PageHeader` component from `@/components/ui/PageHeader`.
+- Only ONE `PageHeader` may appear per screen. If a shared component also renders a hero (e.g., analytics widgets), add a `showHeader` prop so consuming pages can disable it.
+- `PageHeader` controls gradients, titles, subtitles, icons, and actions—never rebuild this layout with custom `<div>` + `<h1>` markup.
+
+```tsx
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { Bell } from "lucide-react";
+
+<PageHeader
+  title="Notifications"
+  subtitle="Stay up to date with workout changes"
+  icon={<Bell className="w-6 h-6" />}
+  actions={<Button variant="primary">Mark all read</Button>}
+/>;
+```
+
+### Section Headings & Typography
+
+- After the hero, all additional headings must use the Typography components (`Heading`, `Body`, `Label`, `Caption`).
+- **NEVER** render raw `<h1>`, `<h2>`, `<p>`, etc.—Typography keeps colors, spacing, and responsive sizes in sync with design tokens.
+
+```tsx
+import { Heading, Body } from "@/components/ui/Typography";
+
+<Heading level="h3" className="mb-2">Client-Side Diagnostics</Heading>
+<Body variant="secondary">Checks performed directly in the browser.</Body>
+```
+
+### Navigation Placement
+
+- The root `app/layout.tsx` already mounts `<Navigation />`. **Do not** import or render `Navigation` inside individual pages; duplicate nav bars confuse users and break accessibility.
+- Guarded states (unauthenticated, empty data, etc.) should still follow the single-navigation rule. Use `PageHeader` copy + Typography to communicate what the user should do next.
+
+---
+
 ## 📦 Required Component Library
 
 ### Typography Components (`src/components/ui/Typography.tsx`)
