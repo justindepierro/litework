@@ -225,7 +225,7 @@ export default function BlockInstanceEditor({
           title="Customize Block Instance"
           subtitle={`Template: ${blockInstance.sourceBlockName}`}
           onClose={onClose}
-          icon={<Package className="w-5 h-5 text-primary-600" />}
+          icon={<Package className="w-5 h-5 text-blue-600" />}
         />
 
         <ModalContent>

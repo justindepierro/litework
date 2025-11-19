@@ -63,7 +63,7 @@ const calendarText = {
   gridSubtle: "text-(--calendar-grid-subtle)",
 };
 
-const calendarThemeVars: CSSProperties = {
+const calendarThemeVars: CSSProperties & { [key: string]: string } = {
   color: "var(--color-text-primary)",
   "--calendar-header-text": "var(--color-text-primary)",
   "--calendar-header-muted": "var(--color-text-secondary)",
@@ -786,7 +786,7 @@ export default function Calendar({
                   <div
                     className={`text-center ${calendarText.gridSubtle} py-6`}
                   >
-                    <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No workouts scheduled</p>
                   </div>
                 )}

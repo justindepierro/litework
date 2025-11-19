@@ -111,7 +111,7 @@ const TodayOverview = memo(function TodayOverview() {
             return (
               <div
                 key={workout.id}
-                className="rounded-lg p-4 bg-gradient-to-br from-white to-primary-lighter/30 border border-primary-light hover:border-primary hover:shadow-lg hover:scale-[1.01] transition-all"
+                className="rounded-lg p-4 bg-gradient-to-br from-white to-blue-50/30 border border-blue-200 hover:border-blue-500 hover:shadow-lg hover:scale-[1.01] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">

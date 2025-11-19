@@ -217,8 +217,8 @@ export function FeedbackDashboard({ athleteId }: FeedbackDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <div className="p-4 flex items-center gap-4">
-            <div className="p-3 bg-primary-50 rounded-lg">
-              <TrendingUp className="text-primary" size={24} />
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <TrendingUp className="text-blue-500" size={24} />
             </div>
             <div>
               <Body variant="tertiary" size="sm">

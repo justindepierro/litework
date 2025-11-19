@@ -317,7 +317,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </Body>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
             Back to Dashboard
           </button>
@@ -339,7 +339,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </Body>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
             Go to Dashboard
           </button>
@@ -386,7 +386,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </div>
           <button
             onClick={() => router.push("/dashboard")}
-            className="w-full px-6 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark font-medium text-lg"
+            className="w-full px-6 py-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 font-medium text-lg"
           >
             Back to Dashboard
           </button>
@@ -498,11 +498,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               if (group) {
                 if (group.type === "circuit") {
                   colorClasses = {
-                    border: "border-primary-light",
-                    bg: "bg-primary-light",
-                    text: "text-primary",
-                    badge: "bg-primary-lighter text-primary-dark",
-                    glow: "shadow-primary-light",
+                    border: "border-blue-200",
+                    bg: "bg-blue-100",
+                    text: "text-blue-500",
+                    badge: "bg-blue-50 text-blue-700",
+                    glow: "shadow-blue-200",
                   };
                 } else if (group.type === "superset") {
                   colorClasses = {
@@ -607,7 +607,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               {isActive && (
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
+                                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0" />
                               )}
                               <h3
                                 className={`text-xl font-semibold ${colorClasses.text}`}
@@ -640,13 +640,13 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                             {/* Coach's Notes - Show for active exercise */}
                             {isActive && exercise.notes && (
-                              <div className="mt-3 p-3 bg-primary-lighter rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+                              <div className="mt-3 p-3 bg-blue-50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
                                 <div className="flex items-start gap-2">
-                                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                                  <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                                   <div className="flex-1">
                                     <Heading
                                       level="h4"
-                                      className="text-xs font-bold text-primary-dark uppercase tracking-wide mb-1"
+                                      className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1"
                                     >
                                       Coach&apos;s Tips
                                     </Heading>
@@ -675,7 +675,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                             <div className="w-full bg-(--bg-tertiary) rounded-full h-1.5">
                               <div
                                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                                  isActive ? "bg-primary" : "bg-success"
+                                  isActive ? "bg-blue-500" : "bg-success"
                                 }`}
                                 style={{
                                   width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
@@ -824,7 +824,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         setReps(lastSet.reps);
                         if (lastSet.rpe) setRpe(lastSet.rpe);
                       }}
-                      className="w-full py-2 bg-white hover:bg-primary-lighter active:bg-primary-light border-2 border-primary-light text-primary-dark rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                      className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
                     >
                       <span className="text-base">↻</span>
                       <span>Copy to Inputs</span>

@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 px-6 bg-primary hover:bg-primary-dark disabled:bg-steel-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
+              className="w-full py-4 px-6 bg-blue-500 hover:bg-blue-700 disabled:bg-steel-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all touch-manipulation"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">

@@ -235,7 +235,7 @@ const config: Config = {
         },
 
         // Semantic Color Mappings for Consistent UI
-        primary: {
+        brand: {
           light: "#dbeafe", // blue-100
           lighter: "#eff6ff", // blue-50
           DEFAULT: "#3b82f6", // blue-500
@@ -265,15 +265,26 @@ const config: Config = {
           DEFAULT: "#06b6d4", // cyan-500
           dark: "#0e7490", // cyan-700
         },
-        brand: {
-          light: "#fed7aa", // orange-200
-          lighter: "#ffedd5", // orange-100
-          DEFAULT: "#ff6b35", // brand orange
-          dark: "#c2410c", // orange-700
-        },
+      },
+      // Standardized Text Colors
+      textColor: {
+        primary: "var(--color-text-primary)", // navy-900
+        secondary: "var(--color-text-secondary)", // navy-600
+        tertiary: "var(--color-text-tertiary)", // navy-500
+        inverse: "var(--color-text-inverse)", // white
+        accent: "var(--color-text-accent)", // orange
+      },
+      // Standardized Background Colors
+      backgroundColor: {
+        primary: "var(--color-bg-primary)", // white
+        secondary: "var(--color-bg-secondary)", // silver-50
+        tertiary: "var(--color-bg-tertiary)", // silver-100
+        surface: "var(--color-bg-surface)", // silver-50
       },
       // Standardized Border System
       borderColor: {
+        primary: "var(--color-border-primary)", // silver-200
+        secondary: "var(--color-border-secondary)", // silver-300
         DEFAULT: "var(--border-default)", // e5e7eb
         subtle: "var(--border-subtle)", // f3f4f6
         strong: "var(--border-strong)", // 94a3b8

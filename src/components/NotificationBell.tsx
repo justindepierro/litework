@@ -313,7 +313,7 @@ export default function NotificationBell() {
               </div>
               <button
                 onClick={loadNotifications}
-                className="mt-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Retry
               </button>
@@ -378,7 +378,7 @@ export default function NotificationBell() {
                             e.stopPropagation();
                             markAsRead(notification.id);
                           }}
-                          className="text-xs text-primary hover:text-primary-dark flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-primary-lightest transition-all duration-200"
+                          className="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-blue-50 transition-all duration-200"
                           title="Mark as read (Enter)"
                         >
                           <Check className="w-3 h-3" />
@@ -390,7 +390,7 @@ export default function NotificationBell() {
 
                   {/* Unread indicator dot */}
                   {!notification.read && (
-                    <div className="shrink-0 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                    <div className="shrink-0 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                   )}
                 </div>
               </div>

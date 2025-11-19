@@ -226,7 +226,7 @@ export function ExerciseGroupDisplay({
                           className={`shrink-0 w-8 h-8 ${
                             isCompleted
                               ? "bg-(--status-success)"
-                              : colors?.badge || "bg-primary"
+                              : colors?.badge || "bg-blue-500"
                           } text-white rounded-full flex items-center justify-center font-bold text-sm`}
                         >
                           {String.fromCharCode(65 + exerciseIndex)}

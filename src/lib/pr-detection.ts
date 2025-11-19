@@ -258,7 +258,7 @@ export async function checkForPR(
 export function getPRBadgeColor(improvement: number): string {
   if (improvement >= 20) return "text-accent bg-accent-light";
   if (improvement >= 10) return "text-warning bg-warning-light";
-  if (improvement >= 5) return "text-primary bg-primary-lighter";
+  if (improvement >= 5) return "text-blue-500 bg-blue-50";
   return "text-success bg-success-light";
 }
 

@@ -277,11 +277,11 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_invite")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_invite"
-                      ? "border-primary bg-primary-lighter"
-                      : "border-silver-400 hover:border-primary"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-silver-400 hover:border-blue-500"
                   }`}
                 >
-                  <Send className="w-5 h-5 text-primary mb-2" />
+                  <Send className="w-5 h-5 text-blue-500 mb-2" />
                   <div className="font-medium">Bulk Invite</div>
                   <div className="text-sm text-body-secondary">
                     Send invites to multiple people
@@ -292,8 +292,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_message")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_message"
-                      ? "border-primary bg-primary-lighter"
-                      : "border-silver-400 hover:border-primary"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-silver-400 hover:border-blue-500"
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 text-success mb-2" />
@@ -307,8 +307,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_update_status")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_update_status"
-                      ? "border-primary bg-primary-lighter"
-                      : "border-silver-400 hover:border-primary"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-silver-400 hover:border-blue-500"
                   }`}
                 >
                   <UserCheck className="w-5 h-5 text-warning mb-2" />
@@ -322,8 +322,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_assign_workout")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_assign_workout"
-                      ? "border-primary bg-primary-lighter"
-                      : "border-silver-400 hover:border-primary"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-silver-400 hover:border-blue-500"
                   }`}
                 >
                   <Calendar className="w-5 h-5 text-accent mb-2" />
@@ -344,7 +344,7 @@ export default withErrorBoundary(function BulkOperationModal({
                 <div className="flex gap-2">
                   <button
                     onClick={selectAllAthletes}
-                    className="text-sm text-primary hover:text-primary-dark"
+                    className="text-sm text-blue-500 hover:text-blue-700"
                   >
                     Select All
                   </button>
@@ -381,7 +381,7 @@ export default withErrorBoundary(function BulkOperationModal({
                           className="flex items-center flex-1"
                         >
                           {selectedGroups.includes(group.id) ? (
-                            <CheckSquare className="w-5 h-5 text-primary mr-3" />
+                            <CheckSquare className="w-5 h-5 text-blue-500 mr-3" />
                           ) : (
                             <Square className="w-5 h-5 text-steel-400 mr-3" />
                           )}
@@ -848,7 +848,7 @@ export default withErrorBoundary(function BulkOperationModal({
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                         currentStep === step
-                          ? "bg-primary text-white"
+                          ? "bg-blue-500 text-white"
                           : index <
                               [
                                 "select",

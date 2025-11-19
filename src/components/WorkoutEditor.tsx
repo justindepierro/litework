@@ -532,7 +532,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("superset")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "superset"
-                      ? "border-primary bg-primary-light text-primary"
+                      ? "border-blue-500 bg-blue-50 text-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
@@ -547,7 +547,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("circuit")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "circuit"
-                      ? "border-primary bg-primary-light text-primary"
+                      ? "border-blue-500 bg-blue-50 text-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
@@ -562,7 +562,7 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("section")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "section"
-                      ? "border-primary bg-primary-light text-primary"
+                      ? "border-blue-500 bg-blue-50 text-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >

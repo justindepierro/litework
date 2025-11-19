@@ -132,7 +132,7 @@ export default function ProgressAnalyticsDashboard() {
 
           <button
             onClick={exportData}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-700 transition-colors"
           >
             <Download className="w-4 h-4" />
             Export
@@ -187,8 +187,8 @@ export default function ProgressAnalyticsDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-primary-lighter rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-blue-500" />
             </div>
             <div>
               <Heading level="h3">Total Workouts</Heading>
@@ -386,7 +386,7 @@ export default function ProgressAnalyticsDashboard() {
               key={index}
               className="flex items-center gap-4 p-3 bg-silver-100 rounded-lg"
             >
-              <div className="w-10 h-10 bg-primary-lighter rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
                 <Target className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">

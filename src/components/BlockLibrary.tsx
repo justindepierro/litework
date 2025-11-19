@@ -240,7 +240,7 @@ export default function BlockLibrary({
             onClick={() => setSelectedCategory("all")}
             className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
               selectedCategory === "all"
-                ? "bg-primary text-white"
+                ? "bg-blue-500 text-white"
                 : "bg-white text-neutral-darker hover:bg-silver-300"
             }`}
           >
@@ -300,7 +300,7 @@ export default function BlockLibrary({
               <p className="text-error-dark text-lg font-semibold">{error}</p>
               <button
                 onClick={fetchBlocks}
-                className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
               >
                 Try Again
               </button>

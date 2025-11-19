@@ -273,7 +273,7 @@ export default function BulkKPIAssignmentModal({
             <div
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 currentStep === "select-athletes"
-                  ? "bg-primary text-white"
+                  ? "bg-blue-500 text-white"
                   : "bg-silver-200 text-charcoal-700"
               }`}
             >
@@ -283,7 +283,7 @@ export default function BulkKPIAssignmentModal({
             <div
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 currentStep === "select-kpis"
-                  ? "bg-primary text-white"
+                  ? "bg-blue-500 text-white"
                   : "bg-silver-200 text-charcoal-700"
               }`}
             >
@@ -293,7 +293,7 @@ export default function BulkKPIAssignmentModal({
             <div
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 currentStep === "set-targets"
-                  ? "bg-primary text-white"
+                  ? "bg-blue-500 text-white"
                   : "bg-silver-200 text-charcoal-700"
               }`}
             >
