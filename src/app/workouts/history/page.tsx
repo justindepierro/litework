@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/Typography";
 
 interface SetRecord {
   id: string;
@@ -400,30 +401,40 @@ export default function WorkoutHistoryPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <p className="text-(--text-secondary) text-sm">Total Workouts</p>
-              <p className="text-2xl font-bold text-(--text-primary)">
-                {history.sessions.length}
-              </p>
+              <Heading level="h4">{history.sessions.length}</Heading>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <p className="text-(--text-secondary) text-sm">Completed</p>
-              <p className="text-2xl font-bold text-(--status-success)">
+              <Heading
+                level="h4"
+                variant="accent"
+                className="text-accent-green-600"
+              >
                 {history.sessions.filter((s) => s.completed).length}
-              </p>
+              </Heading>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <p className="text-(--text-secondary) text-sm">Total Volume</p>
-              <p className="text-2xl font-bold text-(--accent-blue-600)">
+              <Heading
+                level="h4"
+                variant="accent"
+                className="text-accent-blue-600"
+              >
                 {history.sessions
                   .reduce((sum, s) => sum + s.stats.totalVolume, 0)
                   .toLocaleString()}
                 <span className="text-sm text-(--text-secondary) ml-1">
                   lbs
                 </span>
-              </p>
+              </Heading>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <p className="text-(--text-secondary) text-sm">Avg Duration</p>
-              <p className="text-2xl font-bold text-(--accent-purple-600)">
+              <Heading
+                level="h4"
+                variant="accent"
+                className="text-accent-purple-600"
+              >
                 {formatDuration(
                   Math.round(
                     history.sessions
@@ -432,7 +443,7 @@ export default function WorkoutHistoryPage() {
                       history.sessions.filter((s) => s.stats.duration).length
                   )
                 )}
-              </p>
+              </Heading>
             </div>
           </div>
         )}

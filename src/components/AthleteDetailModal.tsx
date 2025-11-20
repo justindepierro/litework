@@ -205,13 +205,12 @@ export default function AthleteDetailModal({
           {/* Profile Avatar & Status Badges */}
           <div className="flex items-center gap-4 mb-6">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-3xl font-bold shrink-0 relative">
+            <div className="w-24 h-24 rounded-full bg-gradient-button-purple flex items-center justify-center text-white text-3xl font-bold shrink-0 relative">
               {athlete.firstName?.[0]}
               {athlete.lastName?.[0]}
               {/* Status Indicator Dot */}
               <div
-                className="absolute bottom-1 right-1 w-5 h-5 rounded-full border-4 border-white shadow-lg"
-                style={{ backgroundColor: isInvited ? "#9CA3AF" : "#10B981" }}
+                className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-4 border-white shadow-lg ${isInvited ? "bg-silver-400" : "bg-accent-green-500"}`}
                 title={isInvited ? "Invited - Pending acceptance" : "Active"}
                 aria-label={
                   isInvited ? "Invited - Pending acceptance" : "Active"
@@ -520,10 +519,16 @@ export default function AthleteDetailModal({
                                   {kpi.tag.displayName}
                                 </span>
                                 {kpi.targetValue && (
-                                  <span className="text-xs font-medium text-(--text-secondary)">
+                                  <Caption
+                                    variant="muted"
+                                    className="font-medium"
+                                  >
                                     {kpi.targetValue}
                                     {kpi.targetDate && (
-                                      <span className="text-(--text-tertiary) ml-1">
+                                      <Caption
+                                        variant="muted"
+                                        className="ml-1 inline"
+                                      >
                                         by{" "}
                                         {new Date(
                                           kpi.targetDate
@@ -531,9 +536,9 @@ export default function AthleteDetailModal({
                                           month: "short",
                                           day: "numeric",
                                         })}
-                                      </span>
+                                      </Caption>
                                     )}
-                                  </span>
+                                  </Caption>
                                 )}
                               </div>
                             ))}
@@ -544,18 +549,21 @@ export default function AthleteDetailModal({
                       {/* Pending Group KPIs (for invited athletes) */}
                       {pendingGroupKPIs.length > 0 && isInvited && (
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2 p-3 bg-(--status-warning-light) border border-amber-200 rounded-lg">
-                            <AlertCircle className="w-5 h-5 text-(--status-warning) shrink-0" />
+                          <div className="flex items-center gap-2 p-3 bg-accent-amber-50 border border-accent-amber-200 rounded-lg">
+                            <AlertCircle className="w-5 h-5 text-accent-amber-600 shrink-0" />
                             <div>
-                              <p className="text-sm text-(--status-warning) font-medium">
+                              <Body
+                                size="sm"
+                                className="text-accent-amber-700 font-medium"
+                              >
                                 Will automatically receive these KPIs when
                                 invite is accepted
-                              </p>
+                              </Body>
                               {groups.length > 0 && (
-                                <p className="text-xs text-(--status-warning) mt-1">
+                                <Caption className="text-accent-amber-600 mt-1">
                                   From groups:{" "}
                                   {groups.map((g) => g.name).join(", ")}
-                                </p>
+                                </Caption>
                               )}
                             </div>
                           </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
-import { Body } from "@/components/ui/Typography";
+import { Display, Body } from "@/components/ui/Typography";
 
 interface SyncStatus {
   profile: {
@@ -89,15 +89,15 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) px-4">
+    <div className="min-h-screen flex items-center justify-center bg-silver-100 px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-(--accent-blue-100) mb-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-accent-blue-100 mb-4">
               {syncStatus?.complete ? (
                 <svg
-                  className="h-10 w-10 text-(--accent-blue-600)"
+                  className="h-10 w-10 text-accent-blue-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -111,7 +111,7 @@ export default function SetupPage() {
                 </svg>
               ) : (
                 <svg
-                  className="h-10 w-10 text-(--accent-blue-600) animate-spin"
+                  className="h-10 w-10 text-accent-blue-600 animate-spin"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -131,20 +131,22 @@ export default function SetupPage() {
                 </svg>
               )}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-(--text-primary) mb-2">
+            <Display size="sm" className="mb-2">
               {syncStatus?.complete ? "All Set!" : "Setting Up Your Account"}
-            </h2>
-            <p className="text-base sm:text-lg text-(--text-secondary)">
+            </Display>
+            <Body size="lg" variant="secondary">
               {syncStatus?.complete
                 ? "Taking you to your dashboard..."
                 : "Just a moment while we get everything ready..."}
-            </p>
+            </Body>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-(--status-warning-light) border border-yellow-200 rounded-lg">
-              <p className="text-sm text-(--status-warning)">{error}</p>
+            <div className="mb-6 p-4 bg-warning-lighter border border-warning-light rounded-lg">
+              <Body size="sm" className="text-warning-dark">
+                {error}
+              </Body>
             </div>
           )}
 
@@ -156,13 +158,13 @@ export default function SetupPage() {
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     syncStatus.profile.synced
-                      ? "bg-(--status-success-light)"
-                      : "bg-(--bg-tertiary)"
+                      ? "bg-success-lighter"
+                      : "bg-silver-200"
                   }`}
                 >
                   {syncStatus.profile.synced ? (
                     <svg
-                      className="w-5 h-5 text-(--status-success)"
+                      className="w-5 h-5 text-success"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -175,13 +177,13 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-silver-300 border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-(--text-primary)">
+                  <Body size="base" className="font-medium">
                     Profile
-                  </p>
+                  </Body>
                   {syncStatus.profile.data && (
                     <Body className="text-sm" variant="secondary">
                       {syncStatus.profile.data.name}
@@ -195,13 +197,13 @@ export default function SetupPage() {
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     syncStatus.groups.synced
-                      ? "bg-(--status-success-light)"
-                      : "bg-(--bg-tertiary)"
+                      ? "bg-success-lighter"
+                      : "bg-silver-200"
                   }`}
                 >
                   {syncStatus.groups.synced ? (
                     <svg
-                      className="w-5 h-5 text-(--status-success)"
+                      className="w-5 h-5 text-success"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -214,13 +216,13 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-silver-300 border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-(--text-primary)">
+                  <Body size="base" className="font-medium">
                     Team Groups
-                  </p>
+                  </Body>
                   {syncStatus.groups.count > 0 ? (
                     <Body className="text-sm" variant="secondary">
                       {syncStatus.groups.names.join(", ")}
@@ -238,13 +240,13 @@ export default function SetupPage() {
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     syncStatus.workouts.synced
-                      ? "bg-(--status-success-light)"
-                      : "bg-(--bg-tertiary)"
+                      ? "bg-success-lighter"
+                      : "bg-silver-200"
                   }`}
                 >
                   {syncStatus.workouts.synced ? (
                     <svg
-                      className="w-5 h-5 text-(--status-success)"
+                      className="w-5 h-5 text-success"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -257,13 +259,13 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-(--border-default) border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-silver-300 border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-(--text-primary)">
+                  <Body size="base" className="font-medium">
                     Workouts
-                  </p>
+                  </Body>
                   {syncStatus.workouts.hasWorkouts ? (
                     <Body className="text-sm" variant="secondary">
                       {syncStatus.workouts.count} workout
@@ -282,13 +284,13 @@ export default function SetupPage() {
                 <div
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                     syncStatus.kpis.synced
-                      ? "bg-(--status-success-light)"
-                      : "bg-(--bg-tertiary)"
+                      ? "bg-success-lighter"
+                      : "bg-silver-200"
                   }`}
                 >
                   {syncStatus.kpis.synced ? (
                     <svg
-                      className="w-5 h-5 text-(--status-success)"
+                      className="w-5 h-5 text-success"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -301,13 +303,13 @@ export default function SetupPage() {
                       />
                     </svg>
                   ) : (
-                    <div className="w-4 h-4 border-2 border-(--text-tertiary) border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-silver-300 border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-(--text-primary)">
+                  <Body size="base" className="font-medium">
                     Performance Tracking
-                  </p>
+                  </Body>
                   {syncStatus.kpis.hasKPIs ? (
                     <Body className="text-sm" variant="secondary">
                       {syncStatus.kpis.count} metric
@@ -326,9 +328,9 @@ export default function SetupPage() {
           {/* Progress Bar */}
           {syncStatus && !syncStatus.complete && (
             <div className="mt-6">
-              <div className="h-2 bg-(--bg-tertiary) rounded-full overflow-hidden">
+              <div className="h-2 bg-silver-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-(--accent-blue-600) transition-all duration-500 ease-out"
+                  className="h-full bg-accent-blue-600 transition-all duration-500 ease-out"
                   style={{
                     width: `${
                       ((syncStatus.profile.synced ? 1 : 0) +

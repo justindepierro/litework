@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: ["class", '[data-theme="dark"]'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -15,10 +16,30 @@ const config: Config = {
         xs: "480px",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-        heading: ["var(--font-poppins)", "Poppins", "system-ui", "sans-serif"],
-        display: ["var(--font-poppins)", "Poppins", "system-ui", "sans-serif"],
-        primary: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        sans: [
+          "var(--font-family-primary)",
+          "Inter",
+          "system-ui",
+          "sans-serif",
+        ],
+        heading: [
+          "var(--font-family-heading)",
+          "Poppins",
+          "system-ui",
+          "sans-serif",
+        ],
+        display: [
+          "var(--font-family-display)",
+          "Poppins",
+          "system-ui",
+          "sans-serif",
+        ],
+        primary: [
+          "var(--font-family-primary)",
+          "Inter",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       fontWeight: {
         thin: "100",
@@ -50,220 +71,224 @@ const config: Config = {
       colors: {
         // Navy Scale
         navy: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
-          DEFAULT: "#334155",
+          50: "var(--color-navy-50)",
+          100: "var(--color-navy-100)",
+          200: "var(--color-navy-200)",
+          300: "var(--color-navy-300)",
+          400: "var(--color-navy-400)",
+          500: "var(--color-navy-500)",
+          600: "var(--color-navy-600)",
+          700: "var(--color-navy-700)",
+          800: "var(--color-navy-800)",
+          900: "var(--color-navy-900)",
+          DEFAULT: "var(--color-navy)",
         },
         // Silver Scale
         silver: {
-          100: "#ffffff",
-          200: "#f9fafb",
-          300: "#f3f4f6",
-          400: "#e5e7eb",
-          500: "#d1d5db",
-          600: "#9ca3af",
-          700: "#6b7280",
-          800: "#4b5563",
-          900: "#374151",
-          DEFAULT: "#e5e7eb",
+          100: "var(--color-silver-100)",
+          200: "var(--color-silver-200)",
+          300: "var(--color-silver-300)",
+          400: "var(--color-silver-400)",
+          500: "var(--color-silver-500)",
+          600: "var(--color-silver-600)",
+          700: "var(--color-silver-700)",
+          800: "var(--color-silver-800)",
+          900: "var(--color-silver-900)",
+          DEFAULT: "var(--color-silver)",
         },
         // Off-white
-        "off-white": "#fefefe",
+        "off-white": "var(--color-off-white)",
 
         // Enhanced Accent Colors with Full Scales
         accent: {
           // Orange - Energy/Strength (brand primary)
           orange: {
-            50: "#fff7ed",
-            100: "#ffedd5",
-            200: "#fed7aa",
-            300: "#fdba74",
-            400: "#fb923c",
-            500: "#ff6b35",
-            600: "#ea5a28",
-            700: "#c2410c",
-            800: "#9a3412",
-            900: "#7c2d12",
-            950: "#431407",
-            DEFAULT: "#ff6b35",
+            50: "var(--color-accent-orange-50)",
+            100: "var(--color-accent-orange-100)",
+            200: "var(--color-accent-orange-200)",
+            300: "var(--color-accent-orange-300)",
+            400: "var(--color-accent-orange-400)",
+            500: "var(--color-accent-orange-500)",
+            600: "var(--color-accent-orange-600)",
+            700: "var(--color-accent-orange-700)",
+            800: "var(--color-accent-orange-800)",
+            900: "var(--color-accent-orange-900)",
+            950: "var(--color-accent-orange-950)",
+            DEFAULT: "var(--color-accent-orange)",
           },
           // Green - Success/Progress
           green: {
-            50: "#ecfdf5",
-            100: "#d1fae5",
-            200: "#a7f3d0",
-            300: "#6ee7b7",
-            400: "#34d399",
-            500: "#00d4aa",
-            600: "#00b894",
-            700: "#059669",
-            800: "#047857",
-            900: "#065f46",
-            950: "#064e3b",
-            DEFAULT: "#00d4aa",
+            50: "var(--color-accent-green-50)",
+            100: "var(--color-accent-green-100)",
+            200: "var(--color-accent-green-200)",
+            300: "var(--color-accent-green-300)",
+            400: "var(--color-accent-green-400)",
+            500: "var(--color-accent-green-500)",
+            600: "var(--color-accent-green-600)",
+            700: "var(--color-accent-green-700)",
+            800: "var(--color-accent-green-800)",
+            900: "var(--color-accent-green-900)",
+            950: "var(--color-accent-green-950)",
+            DEFAULT: "var(--color-accent-green)",
           },
           // Purple - Premium/Achievement
           purple: {
-            50: "#faf5ff",
-            100: "#f3e8ff",
-            200: "#e9d5ff",
-            300: "#d8b4fe",
-            400: "#c084fc",
-            500: "#8b5cf6",
-            600: "#7c3aed",
-            700: "#6d28d9",
-            800: "#5b21b6",
-            900: "#4c1d95",
-            950: "#2e1065",
-            DEFAULT: "#8b5cf6",
+            50: "var(--color-accent-purple-50)",
+            100: "var(--color-accent-purple-100)",
+            200: "var(--color-accent-purple-200)",
+            300: "var(--color-accent-purple-300)",
+            400: "var(--color-accent-purple-400)",
+            500: "var(--color-accent-purple-500)",
+            600: "var(--color-accent-purple-600)",
+            700: "var(--color-accent-purple-700)",
+            800: "var(--color-accent-purple-800)",
+            900: "var(--color-accent-purple-900)",
+            950: "var(--color-accent-purple-950)",
+            DEFAULT: "var(--color-accent-purple)",
           },
           // Pink - Fun/Motivation
           pink: {
-            50: "#fdf2f8",
-            100: "#fce7f3",
-            200: "#fbcfe8",
-            300: "#f9a8d4",
-            400: "#f472b6",
-            500: "#ec4899",
-            600: "#db2777",
-            700: "#be185d",
-            800: "#9d174d",
-            900: "#831843",
-            950: "#500724",
-            DEFAULT: "#ec4899",
+            50: "var(--color-accent-pink-50)",
+            100: "var(--color-accent-pink-100)",
+            200: "var(--color-accent-pink-200)",
+            300: "var(--color-accent-pink-300)",
+            400: "var(--color-accent-pink-400)",
+            500: "var(--color-accent-pink-500)",
+            600: "var(--color-accent-pink-600)",
+            700: "var(--color-accent-pink-700)",
+            800: "var(--color-accent-pink-800)",
+            900: "var(--color-accent-pink-900)",
+            950: "var(--color-accent-pink-950)",
+            DEFAULT: "var(--color-accent-pink)",
           },
           // Amber - Warning (replaces yellow for WCAG AA)
           amber: {
-            50: "#fffbeb",
-            100: "#fef3c7",
-            200: "#fde68a",
-            300: "#fcd34d",
-            400: "#fbbf24",
-            500: "#f59e0b",
-            600: "#d97706",
-            700: "#b45309",
-            800: "#92400e",
-            900: "#78350f",
-            950: "#451a03",
-            DEFAULT: "#f59e0b",
+            50: "var(--color-accent-amber-50)",
+            100: "var(--color-accent-amber-100)",
+            200: "var(--color-accent-amber-200)",
+            300: "var(--color-accent-amber-300)",
+            400: "var(--color-accent-amber-400)",
+            500: "var(--color-accent-amber-500)",
+            600: "var(--color-accent-amber-600)",
+            700: "var(--color-accent-amber-700)",
+            800: "var(--color-accent-amber-800)",
+            900: "var(--color-accent-amber-900)",
+            950: "var(--color-accent-amber-950)",
+            DEFAULT: "var(--color-accent-amber)",
           },
           // Yellow alias for amber (backwards compatibility)
-          yellow: "#f59e0b",
+          yellow: "var(--color-accent-yellow)",
           // Red - Alert/High Intensity
           red: {
-            50: "#fef2f2",
-            100: "#fee2e2",
-            200: "#fecaca",
-            300: "#fca5a5",
-            400: "#f87171",
-            500: "#ef4444",
-            600: "#dc2626",
-            700: "#b91c1c",
-            800: "#991b1b",
-            900: "#7f1d1d",
-            950: "#450a0a",
-            DEFAULT: "#ef4444",
+            50: "var(--color-accent-red-50)",
+            100: "var(--color-accent-red-100)",
+            200: "var(--color-accent-red-200)",
+            300: "var(--color-accent-red-300)",
+            400: "var(--color-accent-red-400)",
+            500: "var(--color-accent-red-500)",
+            600: "var(--color-accent-red-600)",
+            700: "var(--color-accent-red-700)",
+            800: "var(--color-accent-red-800)",
+            900: "var(--color-accent-red-900)",
+            950: "var(--color-accent-red-950)",
+            DEFAULT: "var(--color-accent-red)",
           },
           // Blue - Info/Cool Down
           blue: {
-            50: "#eff6ff",
-            100: "#dbeafe",
-            200: "#bfdbfe",
-            300: "#93c5fd",
-            400: "#60a5fa",
-            500: "#3b82f6",
-            600: "#2563eb",
-            700: "#1d4ed8",
-            800: "#1e40af",
-            900: "#1e3a8a",
-            950: "#172554",
-            DEFAULT: "#3b82f6",
+            50: "var(--color-accent-blue-50)",
+            100: "var(--color-accent-blue-100)",
+            200: "var(--color-accent-blue-200)",
+            300: "var(--color-accent-blue-300)",
+            400: "var(--color-accent-blue-400)",
+            500: "var(--color-accent-blue-500)",
+            600: "var(--color-accent-blue-600)",
+            700: "var(--color-accent-blue-700)",
+            800: "var(--color-accent-blue-800)",
+            900: "var(--color-accent-blue-900)",
+            950: "var(--color-accent-blue-950)",
+            DEFAULT: "var(--color-accent-blue)",
           },
           // NEW: Cyan - Tech/Modern
           cyan: {
-            50: "#ecfeff",
-            100: "#cffafe",
-            200: "#a5f3fc",
-            300: "#67e8f9",
-            400: "#22d3ee",
-            500: "#06b6d4",
-            600: "#0891b2",
-            700: "#0e7490",
-            800: "#155e75",
-            900: "#164e63",
-            950: "#083344",
-            DEFAULT: "#06b6d4",
+            50: "var(--color-accent-cyan-50)",
+            100: "var(--color-accent-cyan-100)",
+            200: "var(--color-accent-cyan-200)",
+            300: "var(--color-accent-cyan-300)",
+            400: "var(--color-accent-cyan-400)",
+            500: "var(--color-accent-cyan-500)",
+            600: "var(--color-accent-cyan-600)",
+            700: "var(--color-accent-cyan-700)",
+            800: "var(--color-accent-cyan-800)",
+            900: "var(--color-accent-cyan-900)",
+            950: "var(--color-accent-cyan-950)",
+            DEFAULT: "var(--color-accent-cyan)",
           },
           // NEW: Lime - Fresh/Active
           lime: {
-            50: "#f7fee7",
-            100: "#ecfccb",
-            200: "#d9f99d",
-            300: "#bef264",
-            400: "#a3e635",
-            500: "#84cc16",
-            600: "#65a30d",
-            700: "#4d7c0f",
-            800: "#3f6212",
-            900: "#365314",
-            950: "#1a2e05",
-            DEFAULT: "#84cc16",
+            50: "var(--color-accent-lime-50)",
+            100: "var(--color-accent-lime-100)",
+            200: "var(--color-accent-lime-200)",
+            300: "var(--color-accent-lime-300)",
+            400: "var(--color-accent-lime-400)",
+            500: "var(--color-accent-lime-500)",
+            600: "var(--color-accent-lime-600)",
+            700: "var(--color-accent-lime-700)",
+            800: "var(--color-accent-lime-800)",
+            900: "var(--color-accent-lime-900)",
+            950: "var(--color-accent-lime-950)",
+            DEFAULT: "var(--color-accent-lime)",
           },
           // NEW: Indigo - Focus/Clarity
           indigo: {
-            50: "#eef2ff",
-            100: "#e0e7ff",
-            200: "#c7d2fe",
-            300: "#a5b4fc",
-            400: "#818cf8",
-            500: "#6366f1",
-            600: "#4f46e5",
-            700: "#4338ca",
-            800: "#3730a6",
-            900: "#312e81",
-            950: "#1e1b4b",
-            DEFAULT: "#6366f1",
+            50: "var(--color-accent-indigo-50)",
+            100: "var(--color-accent-indigo-100)",
+            200: "var(--color-accent-indigo-200)",
+            300: "var(--color-accent-indigo-300)",
+            400: "var(--color-accent-indigo-400)",
+            500: "var(--color-accent-indigo-500)",
+            600: "var(--color-accent-indigo-600)",
+            700: "var(--color-accent-indigo-700)",
+            800: "var(--color-accent-indigo-800)",
+            900: "var(--color-accent-indigo-900)",
+            950: "var(--color-accent-indigo-950)",
+            DEFAULT: "var(--color-accent-indigo)",
           },
         },
 
         // Semantic Color Mappings for Consistent UI
         brand: {
-          light: "#dbeafe", // blue-100
-          lighter: "#eff6ff", // blue-50
-          DEFAULT: "#3b82f6", // blue-500
-          dark: "#1d4ed8", // blue-700
+          light: "var(--color-accent-orange-100)",
+          lighter: "var(--color-accent-orange-50)",
+          DEFAULT: "var(--color-accent-orange)",
+          dark: "var(--color-accent-orange-700)",
         },
         success: {
-          light: "#d1fae5", // green-100
-          lighter: "#ecfdf5", // green-50
-          DEFAULT: "#00d4aa", // accent-green
-          dark: "#047857", // green-800
+          light: "var(--color-success-lighter)",
+          lighter: "var(--color-success-lightest)",
+          DEFAULT: "var(--color-success)",
+          dark: "var(--color-success-dark)",
+          darkest: "var(--color-success-darkest)",
         },
         error: {
-          light: "#fee2e2", // red-100
-          lighter: "#fef2f2", // red-50
-          DEFAULT: "#ef4444", // red-500
-          dark: "#b91c1c", // red-700
+          light: "var(--color-error-lighter)",
+          lighter: "var(--color-error-lightest)",
+          DEFAULT: "var(--color-error)",
+          dark: "var(--color-error-dark)",
+          darkest: "var(--color-error-darkest)",
         },
         warning: {
-          light: "#fef3c7", // amber-100
-          lighter: "#fffbeb", // amber-50
-          DEFAULT: "#f59e0b", // amber-500
-          dark: "#b45309", // amber-700
+          light: "var(--color-warning-lighter)",
+          lighter: "var(--color-warning-lightest)",
+          DEFAULT: "var(--color-warning)",
+          dark: "var(--color-warning-dark)",
+          darkest: "var(--color-warning-darkest)",
         },
         info: {
-          light: "#cffafe", // cyan-100
-          lighter: "#ecfeff", // cyan-50
-          DEFAULT: "#06b6d4", // cyan-500
-          dark: "#0e7490", // cyan-700
+          light: "var(--color-info-lighter)",
+          lighter: "var(--color-info-lightest)",
+          DEFAULT: "var(--color-info)",
+          dark: "var(--color-info-dark)",
+          darkest: "var(--color-info-darkest)",
         },
       },
       // Standardized Text Colors
@@ -280,19 +305,28 @@ const config: Config = {
         secondary: "var(--color-bg-secondary)", // silver-50
         tertiary: "var(--color-bg-tertiary)", // silver-100
         surface: "var(--color-bg-surface)", // silver-50
+        // Glass Materials
+        "glass-thin": "var(--material-glass-thin)",
+        "glass-regular": "var(--material-glass-regular)",
+        "glass-thick": "var(--material-glass-thick)",
+      },
+      backdropBlur: {
+        sm: "var(--material-glass-blur-sm)",
+        md: "var(--material-glass-blur-md)",
+        lg: "var(--material-glass-blur-lg)",
       },
       // Standardized Border System
       borderColor: {
         primary: "var(--color-border-primary)", // silver-200
         secondary: "var(--color-border-secondary)", // silver-300
-        DEFAULT: "var(--border-default)", // e5e7eb
-        subtle: "var(--border-subtle)", // f3f4f6
-        strong: "var(--border-strong)", // 94a3b8
-        accent: "var(--border-accent)", // ff6b35
-        focus: "var(--border-focus)", // 3b82f6
-        error: "var(--border-error)", // ef4444
-        success: "var(--border-success)", // 00d4aa
-        warning: "var(--border-warning)", // f59e0b
+        DEFAULT: "var(--color-border-primary)", // e5e7eb
+        subtle: "var(--color-border-secondary)", // f3f4f6
+        strong: "var(--color-border-secondary)", // 94a3b8
+        accent: "var(--color-border-accent)", // ff6b35
+        focus: "var(--color-border-focus)", // 3b82f6
+        error: "var(--color-error)", // ef4444
+        success: "var(--color-success)", // 00d4aa
+        warning: "var(--color-warning)", // f59e0b
       },
       borderWidth: {
         DEFAULT: "var(--border-width-default)", // 1px
@@ -314,14 +348,10 @@ const config: Config = {
         full: "var(--radius-full)", // 9999px
       },
       backgroundImage: {
-        "gradient-primary":
-          "linear-gradient(135deg, #ffffff 0%, #f9fafb 30%, #ffffff 100%)",
-        "gradient-secondary":
-          "linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f3f4f6 100%)",
-        "gradient-navy":
-          "linear-gradient(135deg, #f1f5f9 0%, #fefefe 50%, #e2e8f0 100%)",
-        "gradient-silver":
-          "linear-gradient(135deg, #f9fafb 0%, #fefefe 50%, #f1f5f9 100%)",
+        "gradient-primary": "var(--bg-gradient-primary)",
+        "gradient-secondary": "var(--bg-gradient-secondary)",
+        "gradient-navy": "var(--bg-gradient-dark)",
+        "gradient-silver": "var(--bg-gradient-primary)",
       },
       zIndex: {
         "60": "60",
@@ -340,6 +370,20 @@ const config: Config = {
         in: "fade-in 150ms ease-out",
         "fade-in-0": "fade-in 150ms ease-out",
         "zoom-in-95": "zoom-in 150ms ease-out",
+      },
+      spacing: {
+        "fluid-xs": "var(--space-fluid-xs)",
+        "fluid-sm": "var(--space-fluid-sm)",
+        "fluid-md": "var(--space-fluid-md)",
+        "fluid-lg": "var(--space-fluid-lg)",
+        "fluid-xl": "var(--space-fluid-xl)",
+        "fluid-2xl": "var(--space-fluid-2xl)",
+        "fluid-3xl": "var(--space-fluid-3xl)",
+        "container-xs": "var(--space-container-xs)",
+        "container-sm": "var(--space-container-sm)",
+        "container-md": "var(--space-container-md)",
+        "container-lg": "var(--space-container-lg)",
+        "container-xl": "var(--space-container-xl)",
       },
     },
   },

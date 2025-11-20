@@ -290,7 +290,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
   if (showSkeleton) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-lighter p-4">
         <div className="w-full max-w-4xl space-y-4">
           <SkeletonCard />
           <div className="space-y-3">
@@ -306,7 +306,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-lighter p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
           <Heading level="h2" className="mb-2">
@@ -317,7 +317,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </Body>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-6 py-3 bg-accent-blue-500 text-white rounded-lg hover:bg-accent-blue-600"
           >
             Back to Dashboard
           </button>
@@ -328,7 +328,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-lighter p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
           <Info className="w-16 h-16 text-info mx-auto mb-4" />
           <Heading level="h2" className="mb-2">
@@ -339,7 +339,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
           </Body>
           <button
             onClick={() => router.push("/dashboard")}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-6 py-3 bg-accent-blue-500 text-white rounded-lg hover:bg-accent-blue-600"
           >
             Go to Dashboard
           </button>
@@ -357,7 +357,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       0
     );
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-subtle-green p-4">
         <div className="bg-white rounded-2xl p-8 max-w-lg w-full text-center">
           <Trophy className="w-24 h-24 text-warning mx-auto mb-4 animate-bounce" />
           <Heading level="h1" className="mb-2">
@@ -367,26 +367,26 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
             Great job!
           </Body>
           <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-(--bg-secondary) rounded-xl p-4">
-              <div className="text-3xl font-bold text-primary">
+            <div className="bg-neutral-lighter rounded-xl p-4">
+              <div className="text-3xl font-bold text-navy-700">
                 {completedExercises}
               </div>
-              <div className="text-sm text-(--text-secondary)">Exercises</div>
+              <div className="text-sm text-navy-600">Exercises</div>
             </div>
-            <div className="bg-(--bg-secondary) rounded-xl p-4">
+            <div className="bg-neutral-lighter rounded-xl p-4">
               <div className="text-3xl font-bold text-success">{totalSets}</div>
-              <div className="text-sm text-(--text-secondary)">Total Sets</div>
+              <div className="text-sm text-navy-600">Total Sets</div>
             </div>
-            <div className="bg-(--bg-secondary) rounded-xl p-4">
+            <div className="bg-neutral-lighter rounded-xl p-4">
               <div className="text-3xl font-bold text-brand">
                 {Math.floor(session.total_duration_seconds / 60)}m
               </div>
-              <div className="text-sm text-(--text-secondary)">Duration</div>
+              <div className="text-sm text-navy-600">Duration</div>
             </div>
           </div>
           <button
             onClick={() => router.push("/dashboard")}
-            className="w-full px-6 py-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 font-medium text-lg"
+            className="w-full px-6 py-4 bg-accent-blue-500 text-white rounded-xl hover:bg-accent-blue-600 font-medium text-lg"
           >
             Back to Dashboard
           </button>
@@ -396,7 +396,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col overflow-hidden">
+    <div className="h-screen bg-gradient-subtle-neutral flex flex-col overflow-hidden">
       {/* Offline Status Banner */}
       <OfflineStatusBanner />
 
@@ -452,11 +452,11 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 flex-1">
                               <CheckCircle className="w-4 h-4 text-success shrink-0" />
-                              <span className="font-medium text-(--text-primary)">
+                              <span className="font-medium text-navy-700">
                                 {exercise.exercise_name}
                               </span>
                             </div>
-                            <span className="text-sm text-(--text-tertiary)">
+                            <span className="text-sm text-navy-500">
                               {exercise.set_records.length} sets
                             </span>
                           </div>
@@ -498,41 +498,40 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               if (group) {
                 if (group.type === "circuit") {
                   colorClasses = {
-                    border: "border-blue-200",
-                    bg: "bg-blue-100",
-                    text: "text-blue-500",
-                    badge: "bg-blue-50 text-blue-700",
-                    glow: "shadow-blue-200",
+                    border: "border-accent-blue-200",
+                    bg: "bg-accent-blue-100",
+                    text: "text-accent-blue-500",
+                    badge: "bg-accent-blue-50 text-accent-blue-700",
+                    glow: "shadow-accent-blue-200",
                   };
                 } else if (group.type === "superset") {
                   colorClasses = {
-                    border: "border-(--accent-purple-300)",
-                    bg: "bg-(--accent-purple-50)",
-                    text: "text-(--accent-purple-700)",
-                    badge:
-                      "bg-(--accent-purple-100) text-(--accent-purple-800)",
-                    glow: "shadow-purple-200",
+                    border: "border-accent-purple-300",
+                    bg: "bg-accent-purple-50",
+                    text: "text-accent-purple-700",
+                    badge: "bg-accent-purple-100 text-accent-purple-800",
+                    glow: "shadow-accent-purple-200",
                   };
                 } else if (group.type === "section") {
                   colorClasses = {
-                    border: "border-cyan-300",
-                    bg: "bg-cyan-50",
-                    text: "text-cyan-700",
-                    badge: "bg-cyan-100 text-cyan-800",
-                    glow: "shadow-cyan-200",
+                    border: "border-accent-cyan-300",
+                    bg: "bg-accent-cyan-50",
+                    text: "text-accent-cyan-700",
+                    badge: "bg-accent-cyan-100 text-accent-cyan-800",
+                    glow: "shadow-accent-cyan-200",
                   };
                 }
               }
 
               if (isActive) {
-                colorClasses.glow = "shadow-lg shadow-blue-200";
-                colorClasses.border = "border-(--accent-blue-400)";
+                colorClasses.glow = "shadow-lg shadow-accent-blue-200";
+                colorClasses.border = "border-accent-blue-400";
               } else if (isPending) {
                 colorClasses = {
-                  border: "border-(--border-default)",
+                  border: "border-neutral-light",
                   bg: "bg-white",
-                  text: "text-(--text-secondary)",
-                  badge: "bg-(--bg-tertiary) text-(--text-secondary)",
+                  text: "text-navy-600",
+                  badge: "bg-neutral-lighter text-navy-600",
                   glow: "shadow-sm",
                 };
               }
@@ -596,7 +595,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       }}
                       className={`w-full text-left rounded-xl border-2 transition-all duration-200 ${colorClasses.border} ${colorClasses.bg} ${colorClasses.glow} ${
                         isActive
-                          ? "scale-[1.02] shadow-lg ring-2 ring-blue-400 ring-opacity-50"
+                          ? "scale-[1.02] shadow-lg ring-2 ring-accent-blue-400 ring-opacity-50"
                           : "hover:scale-[1.01] hover:shadow-md active:scale-[0.99]"
                       } ${isPending ? "opacity-75" : "opacity-100"} ${group ? "ml-4" : ""} mb-3`}
                       style={{ minHeight: "56px" }}
@@ -607,7 +606,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               {isActive && (
-                                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0" />
+                                <div className="w-2 h-2 rounded-full bg-accent-blue-500 animate-pulse shrink-0" />
                               )}
                               <h3
                                 className={`text-xl font-semibold ${colorClasses.text}`}
@@ -640,13 +639,13 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                             {/* Coach's Notes - Show for active exercise */}
                             {isActive && exercise.notes && (
-                              <div className="mt-3 p-3 bg-blue-50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+                              <div className="mt-3 p-3 bg-accent-blue-50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
                                 <div className="flex items-start gap-2">
-                                  <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                                  <Info className="w-4 h-4 text-accent-blue-500 shrink-0 mt-0.5" />
                                   <div className="flex-1">
                                     <Heading
                                       level="h4"
-                                      className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1"
+                                      className="text-xs font-bold text-accent-blue-700 uppercase tracking-wide mb-1"
                                     >
                                       Coach&apos;s Tips
                                     </Heading>
@@ -672,10 +671,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         {/* Progress Bar (if in progress) */}
                         {exercise.sets_completed > 0 && (
                           <div className="mt-2">
-                            <div className="w-full bg-(--bg-tertiary) rounded-full h-1.5">
+                            <div className="w-full bg-neutral-lighter rounded-full h-1.5">
                               <div
                                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                                  isActive ? "bg-blue-500" : "bg-success"
+                                  isActive ? "bg-accent-blue-500" : "bg-success"
                                 }`}
                                 style={{
                                   width: `${(exercise.sets_completed / exercise.sets_target) * 100}%`,
@@ -687,29 +686,29 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                         {/* Active Exercise: Show ALL set records */}
                         {isActive && exercise.set_records.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-(--accent-blue-200) animate-in fade-in duration-300">
-                            <div className="text-xs font-semibold text-(--text-secondary) mb-2 uppercase tracking-wide">
+                          <div className="mt-3 pt-3 border-t border-accent-blue-200 animate-in fade-in duration-300">
+                            <div className="text-xs font-semibold text-navy-600 mb-2 uppercase tracking-wide">
                               Completed Sets
                             </div>
                             <div className="space-y-1.5">
                               {exercise.set_records.map((set, setIndex) => (
                                 <div
                                   key={setIndex}
-                                  className="flex items-center justify-between text-sm bg-white/70 rounded-lg px-3 py-2 animate-in slide-in-from-right-2 duration-200 border border-(--accent-blue-100)"
+                                  className="flex items-center justify-between text-sm bg-white/70 rounded-lg px-3 py-2 animate-in slide-in-from-right-2 duration-200 border border-accent-blue-100"
                                   style={{
                                     animationDelay: `${setIndex * 50}ms`,
                                   }}
                                 >
-                                  <span className="text-(--text-secondary) font-semibold">
+                                  <span className="text-navy-600 font-semibold">
                                     Set {set.set_number}
                                   </span>
                                   <div className="flex items-center gap-3">
                                     {set.weight && (
-                                      <span className="text-primary font-bold">
+                                      <span className="text-navy-700 font-bold">
                                         {set.weight} lbs
                                       </span>
                                     )}
-                                    <span className="text-(--text-primary) font-semibold">
+                                    <span className="text-navy-700 font-semibold">
                                       × {set.reps}
                                     </span>
                                     {set.rpe && (
@@ -735,10 +734,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* BOTTOM SECTION: Fixed Input Area - Always Visible, No Scroll */}
         {currentExercise && !currentExercise.completed && (
-          <div className="shrink-0 bg-white border-t-2 border-silver-300 shadow-2xl">
+          <div className="shrink-0 bg-surface border-t-2 border-neutral-light shadow-2xl">
             <div className="px-4 py-4 pb-safe">
               {/* Active Exercise Summary Card */}
-              <div className="mb-4 p-4 bg-gradient-to-br from-(--accent-blue-50) to-(--accent-purple-50) border-2 border-(--accent-blue-200) rounded-xl">
+              <div className="mb-4 p-4 bg-gradient-subtle-blue border-2 border-accent-blue-200 rounded-xl">
                 <div className="flex items-center justify-between mb-2">
                   <Heading level="h3" className="flex-1 pr-2">
                     {currentExercise.exercise_name}
@@ -747,7 +746,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                     <div className="text-2xl font-bold text-primary">
                       {currentExercise.sets_completed + 1}
                     </div>
-                    <div className="text-xs text-(--text-secondary) font-medium">
+                    <div className="text-xs text-secondary font-medium">
                       of {currentExercise.sets_target}
                     </div>
                   </div>
@@ -756,8 +755,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 {/* Target and Progress */}
                 <div className="flex items-center gap-3 text-sm">
                   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
-                    <span className="text-(--text-secondary)">Target:</span>
-                    <span className="font-semibold text-(--text-primary)">
+                    <span className="text-navy-600">Target:</span>
+                    <span className="font-semibold text-navy-700">
                       {currentExercise.sets_target} ×{" "}
                       {currentExercise.reps_target}
                       {currentExercise.weight_target &&
@@ -766,8 +765,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   </div>
                   {currentExercise.rest_seconds > 0 && (
                     <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
-                      <Clock className="w-3.5 h-3.5 text-(--text-secondary)" />
-                      <span className="font-medium text-(--text-secondary)">
+                      <Clock className="w-3.5 h-3.5 text-navy-600" />
+                      <span className="font-medium text-navy-600">
                         {currentExercise.rest_seconds}s
                       </span>
                     </div>
@@ -779,18 +778,18 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   <div className="mt-3">
                     {/* Last Set Info */}
                     <div className="flex items-center justify-between mb-2 px-1">
-                      <span className="text-xs font-semibold text-(--text-secondary) uppercase tracking-wide">
+                      <span className="text-xs font-semibold text-navy-600 uppercase tracking-wide">
                         Last Set
                       </span>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="font-bold text-(--accent-blue-500)">
+                        <span className="font-bold text-accent-blue-500">
                           {currentExercise.set_records[
                             currentExercise.set_records.length - 1
                           ].weight || 0}{" "}
                           lbs
                         </span>
-                        <span className="text-(--text-tertiary)">×</span>
-                        <span className="font-bold text-(--text-primary)">
+                        <span className="text-navy-500">×</span>
+                        <span className="font-bold text-navy-700">
                           {
                             currentExercise.set_records[
                               currentExercise.set_records.length - 1
@@ -824,7 +823,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                         setReps(lastSet.reps);
                         if (lastSet.rpe) setRpe(lastSet.rpe);
                       }}
-                      className="w-full py-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-2 border-blue-200 text-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+                      className="w-full py-2 bg-white hover:bg-accent-blue-50 active:bg-accent-blue-100 border-2 border-accent-blue-200 text-accent-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
                     >
                       <span className="text-base">↻</span>
                       <span>Copy to Inputs</span>
@@ -868,7 +867,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               {/* Complete Set Button - Larger */}
               <button
                 onClick={handleCompleteSet}
-                className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                className="w-full py-5 bg-gradient-cta-blue text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                 style={{ minHeight: "64px" }}
               >
                 <CheckCircle className="w-7 h-7" />
@@ -880,12 +879,12 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* Finished all sets but workout not complete - show finish button */}
         {currentExercise && currentExercise.completed && (
-          <div className="shrink-0 bg-white border-t-2 border-silver-300 shadow-2xl">
+          <div className="shrink-0 bg-white border-t-2 border-neutral-light shadow-2xl">
             <div className="px-4 py-5">
               {isLastExercise ? (
                 <button
                   onClick={handleCompleteWorkout}
-                  className="w-full py-5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  className="w-full py-5 bg-gradient-cta-green text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                   style={{ minHeight: "64px" }}
                 >
                   <Trophy className="w-7 h-7" />
@@ -894,7 +893,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               ) : (
                 <button
                   onClick={handleNext}
-                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                  className="w-full py-5 bg-gradient-cta-blue text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
                   style={{ minHeight: "64px" }}
                 >
                   Next Exercise
@@ -934,10 +933,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   (set, setIndex) => (
                     <div
                       key={setIndex}
-                      className="p-4 bg-silver-200 hover:bg-silver-300 rounded-xl shadow-sm transition-colors"
+                      className="p-4 bg-neutral-lighter hover:bg-neutral-light rounded-xl shadow-sm transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-(--text-primary)">
+                        <span className="font-semibold text-navy-700">
                           Set {set.set_number}
                         </span>
                         <button
@@ -1016,7 +1015,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                   }
                                 }
                               }}
-                              className="w-full px-2 py-1.5 border-2 border-silver-400 rounded-lg font-semibold text-(--text-primary) focus:border-(--accent-blue-500) focus:outline-none"
+                              className="w-full px-2 py-1.5 border-2 border-neutral-light rounded-lg font-semibold text-navy-700 focus:border-accent-blue-500 focus:outline-none"
                             />
                           </div>
                         )}
@@ -1057,16 +1056,16 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                 }
                               }
                             }}
-                            className="w-full px-2 py-1.5 border-2 border-silver-400 rounded-lg font-semibold text-(--text-primary) focus:border-(--accent-blue-500) focus:outline-none"
+                            className="w-full px-2 py-1.5 border-2 border-neutral-light rounded-lg font-semibold text-navy-700 focus:border-accent-blue-500 focus:outline-none"
                           />
                         </div>
                         {set.rpe !== undefined && set.rpe !== null && (
                           <div>
                             <Label className="text-xs block mb-1">RPE</Label>
-                            <div className="px-2 py-1.5 bg-(--bg-tertiary) rounded-lg font-semibold text-(--text-primary)">
+                            <div className="px-2 py-1.5 bg-neutral-lighter rounded-lg font-semibold text-navy-700">
                               {set.rpe}
                             </div>
-                            <span className="text-[10px] text-(--text-tertiary)">
+                            <span className="text-[10px] text-navy-500">
                               Not editable yet
                             </span>
                           </div>
@@ -1081,7 +1080,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
               <div className="mt-4">
                 <button
                   onClick={() => setEditingExerciseIndex(null)}
-                  className="w-full py-3 bg-(--bg-tertiary) hover:bg-(--interactive-hover) active:bg-(--interactive-active) text-(--text-primary) rounded-xl font-medium active:scale-95 transition-all duration-150"
+                  className="w-full py-3 bg-neutral-lighter hover:bg-neutral-light active:bg-neutral text-navy-700 rounded-xl font-medium active:scale-95 transition-all duration-150"
                 >
                   Done
                 </button>
@@ -1139,7 +1138,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
                 <button
                   onClick={() => setShowExitConfirm(false)}
-                  className="w-full px-4 py-3 bg-(--bg-tertiary) hover:bg-(--interactive-hover) active:bg-(--interactive-active) text-(--text-primary) rounded-xl font-medium active:scale-95 transition-all duration-150"
+                  className="w-full px-4 py-3 bg-neutral-lighter hover:bg-neutral-light active:bg-neutral text-navy-700 rounded-xl font-medium active:scale-95 transition-all duration-150"
                 >
                   Cancel
                 </button>

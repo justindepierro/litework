@@ -44,7 +44,7 @@ export default function GroupsSection({
   }
 
   return (
-    <div className="mb-6 bg-white rounded-xl shadow-sm border border-silver-400 p-4">
+    <div className="mb-6 bg-white rounded-xl shadow-sm border border-subtle p-4">
       <h3 className="text-lg font-semibold text-heading-primary mb-4 flex items-center gap-2">
         <Users className="w-5 h-5 text-accent" />
         Groups ({groups.length})
@@ -57,17 +57,17 @@ export default function GroupsSection({
           return (
             <div
               key={group.id}
-              className="p-4 bg-silver-200 border-2 border-silver-400 rounded-lg relative"
+              className="p-4 bg-secondary border-2 border-subtle rounded-lg relative"
             >
               {/* 3-dot menu */}
               <div className="absolute top-3 right-3">
                 <Dropdown
                   trigger={
                     <button
-                      className="p-1 hover:bg-silver-300 rounded-full transition-colors"
+                      className="p-1 hover:bg-surface-hover rounded-full transition-colors"
                       aria-label="Group menu"
                     >
-                      <MoreVertical className="w-5 h-5 text-silver-700" />
+                      <MoreVertical className="w-5 h-5 text-secondary" />
                     </button>
                   }
                   align="right"
@@ -106,7 +106,7 @@ export default function GroupsSection({
               {/* Group content (clickable to manage members) */}
               <div className="w-full">
                 <div className="flex items-center justify-between mb-2 pr-8">
-                  <h4 className="font-semibold text-navy-900">{group.name}</h4>
+                  <h4 className="font-semibold text-primary">{group.name}</h4>
                   {group.color && (
                     <div
                       className="w-4 h-4 rounded-full"
@@ -125,7 +125,7 @@ export default function GroupsSection({
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => onManageMembers(group)}
-                    className="flex items-center gap-2 text-sm text-silver-600 hover:text-silver-800 transition-colors"
+                    className="flex items-center gap-2 text-sm text-secondary hover:text-primary transition-colors"
                     aria-label={`Manage ${group.name} members`}
                   >
                     <Users className="w-4 h-4" />

@@ -43,7 +43,7 @@ export const ACHIEVEMENTS: Record<
     name: "First Workout",
     description: "Completed your first workout session",
     icon: "Target",
-    color: "bg-blue-500",
+    color: "bg-accent-blue-500",
   },
   first_pr: {
     type: "first_pr",

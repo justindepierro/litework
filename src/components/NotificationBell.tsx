@@ -252,7 +252,7 @@ export default function NotificationBell() {
         >
           <Bell className="w-6 h-6" style={{ color: "#ffffff" }} />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 min-w-5 px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200">
+            <span className="absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200 z-10">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
@@ -313,7 +313,7 @@ export default function NotificationBell() {
               </div>
               <button
                 onClick={loadNotifications}
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="mt-2 px-4 py-2 bg-accent-blue-500 text-white rounded-lg hover:bg-accent-blue-700 transition-colors"
               >
                 Retry
               </button>
@@ -378,7 +378,7 @@ export default function NotificationBell() {
                             e.stopPropagation();
                             markAsRead(notification.id);
                           }}
-                          className="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-blue-50 transition-all duration-200"
+                          className="text-xs text-accent-blue-500 hover:text-accent-blue-700 flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-accent-blue-50 transition-all duration-200"
                           title="Mark as read (Enter)"
                         >
                           <Check className="w-3 h-3" />
@@ -390,7 +390,7 @@ export default function NotificationBell() {
 
                   {/* Unread indicator dot */}
                   {!notification.read && (
-                    <div className="shrink-0 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                    <div className="shrink-0 w-2 h-2 bg-accent-blue-500 rounded-full animate-pulse" />
                   )}
                 </div>
               </div>

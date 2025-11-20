@@ -121,19 +121,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         fontSize: "var(--font-size-sm)",
         paddingInline: "var(--spacing-4)",
         paddingBlock: "var(--spacing-2)",
-        minHeight: "2.25rem",
+        minHeight: "2.25rem", // 36px - below WCAG minimum, use for secondary actions only
       },
       md: {
         fontSize: "var(--font-size-base)",
         paddingInline: "var(--spacing-5)",
         paddingBlock: "var(--spacing-2-5)",
-        minHeight: "2.75rem",
+        minHeight: "3rem", // 48px - WCAG 2.1 compliant touch target (was 2.75rem)
       },
       lg: {
         fontSize: "var(--font-size-lg)",
         paddingInline: "var(--spacing-6)",
         paddingBlock: "var(--spacing-3)",
-        minHeight: "3.25rem",
+        minHeight: "3.5rem", // 56px - optimal for workout/gym context (was 3.25rem)
       },
     };
 
@@ -146,59 +146,65 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
-    // Variant styles using interactive state tokens
+    // Variant styles with VIBRANT OKLCH gradients!
     const variantStyles: Record<ButtonVariant, string> = {
       primary: `
-        bg-(--color-interactive-primary-base)
-        text-(--color-text-inverse)
-        border border-(--color-interactive-primary-base)
-        shadow-[var(--elevation-1)]
+        bg-linear-to-br from-accent-orange-500 to-accent-orange-600
+        text-white
+        border border-white/20
+        shadow-lg shadow-accent-orange-500/30
+        font-semibold
         ${
           disabled || isLoading
-            ? "bg-(--color-interactive-primary-disabled) border-(--color-interactive-primary-disabled)"
-            : "hover:bg-(--color-interactive-primary-hover) hover:border-(--color-interactive-primary-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-primary-active) active:border-(--color-interactive-primary-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-primary-focus) focus:ring-offset-2"
+            ? "opacity-50 from-accent-orange-300 to-accent-orange-400"
+            : "hover:from-accent-orange-600 hover:to-accent-orange-700 hover:shadow-xl hover:shadow-accent-orange-600/40 hover:scale-105 active:scale-100 active:from-accent-orange-700 active:to-accent-orange-800 focus:ring-2 focus:ring-accent-orange-400 focus:ring-offset-2"
         }
       `,
       secondary: `
-        bg-(--color-bg-secondary)
-        text-(--color-text-primary)
-        border-2 border-(--color-border-secondary)
+        glass backdrop-blur-lg
+        bg-white/80
+        text-navy-700
+        border border-white/40
+        shadow-md
+        font-medium
         ${
           disabled || isLoading
-            ? "bg-(--color-bg-tertiary) border-(--color-border-primary)"
-            : "hover:bg-(--color-bg-tertiary) hover:border-(--color-text-tertiary) hover:-translate-y-0.5 active:bg-(--color-border-secondary) active:text-(--color-text-inverse) active:translate-y-0 focus:ring-2 focus:ring-(--color-text-tertiary) focus:ring-offset-2"
+            ? "opacity-50 bg-neutral-lighter/50"
+            : "hover:bg-white/90 hover:border-white/60 hover:shadow-lg hover:scale-105 active:scale-100 active:bg-white active:shadow-inner focus:ring-2 focus:ring-accent-blue-300 focus:ring-offset-2"
         }
       `,
       danger: `
-        bg-(--color-interactive-danger-base)
-        text-(--color-text-inverse)
-        border border-(--color-interactive-danger-base)
-        shadow-[var(--elevation-1)]
+        bg-linear-to-br from-accent-red-500 to-accent-red-600
+        text-white
+        border border-white/20
+        shadow-lg shadow-accent-red-500/30
+        font-semibold
         ${
           disabled || isLoading
-            ? "bg-(--color-interactive-danger-disabled) border-(--color-interactive-danger-disabled)"
-            : "hover:bg-(--color-interactive-danger-hover) hover:border-(--color-interactive-danger-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-danger-active) active:border-(--color-interactive-danger-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-danger-focus) focus:ring-offset-2"
+            ? "opacity-50 from-accent-red-300 to-accent-red-400"
+            : "hover:from-accent-red-600 hover:to-accent-red-700 hover:shadow-xl hover:shadow-accent-red-600/40 hover:scale-105 active:scale-100 active:from-accent-red-700 active:to-accent-red-800 focus:ring-2 focus:ring-accent-red-400 focus:ring-offset-2"
         }
       `,
       ghost: `
-        bg-(--color-interactive-ghost-base)
-        text-(--color-text-primary)
+        bg-transparent
+        text-navy-700
         border border-transparent
         ${
           disabled || isLoading
-            ? "text-(--color-text-tertiary)"
-            : "hover:bg-(--color-interactive-ghost-hover) hover:text-(--color-text-primary) active:bg-(--color-interactive-ghost-active) focus:ring-2 focus:ring-(--color-interactive-ghost-focus) focus:ring-offset-2"
+            ? "opacity-50 text-navy-400"
+            : "hover:bg-accent-blue-50 hover:text-accent-blue-700 active:bg-accent-blue-100 focus:ring-2 focus:ring-accent-blue-300 focus:ring-offset-2"
         }
       `,
       success: `
-        bg-(--color-interactive-success-base)
-        text-(--color-text-inverse)
-        border border-(--color-interactive-success-base)
-        shadow-[var(--elevation-1)]
+        bg-linear-to-br from-accent-green-500 to-accent-green-600
+        text-white
+        border border-white/20
+        shadow-lg shadow-accent-green-500/30
+        font-semibold
         ${
           disabled || isLoading
-            ? "bg-(--color-interactive-success-disabled) border-(--color-interactive-success-disabled)"
-            : "hover:bg-(--color-interactive-success-hover) hover:border-(--color-interactive-success-hover) hover:shadow-[var(--elevation-2)] hover:-translate-y-0.5 active:bg-(--color-interactive-success-active) active:border-(--color-interactive-success-active) active:translate-y-0 focus:ring-2 focus:ring-(--color-interactive-success-focus) focus:ring-offset-2"
+            ? "opacity-50 from-accent-green-300 to-accent-green-400"
+            : "hover:from-accent-green-600 hover:to-accent-green-700 hover:shadow-xl hover:shadow-accent-green-600/40 hover:scale-105 active:scale-100 active:from-accent-green-700 active:to-accent-green-800 focus:ring-2 focus:ring-accent-green-400 focus:ring-offset-2"
         }
       `,
     };

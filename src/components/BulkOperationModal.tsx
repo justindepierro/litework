@@ -277,11 +277,11 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_invite")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_invite"
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-silver-400 hover:border-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50"
+                      : "border-neutral-light hover:border-accent-blue-500"
                   }`}
                 >
-                  <Send className="w-5 h-5 text-blue-500 mb-2" />
+                  <Send className="w-5 h-5 text-accent-blue-500 mb-2" />
                   <div className="font-medium">Bulk Invite</div>
                   <div className="text-sm text-body-secondary">
                     Send invites to multiple people
@@ -292,8 +292,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_message")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_message"
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-silver-400 hover:border-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50"
+                      : "border-neutral-light hover:border-accent-blue-500"
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 text-success mb-2" />
@@ -307,8 +307,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_update_status")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_update_status"
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-silver-400 hover:border-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50"
+                      : "border-neutral-light hover:border-accent-blue-500"
                   }`}
                 >
                   <UserCheck className="w-5 h-5 text-warning mb-2" />
@@ -322,8 +322,8 @@ export default withErrorBoundary(function BulkOperationModal({
                   onClick={() => setOperationType("bulk_assign_workout")}
                   className={`p-4 border rounded-lg text-left transition-colors ${
                     operationType === "bulk_assign_workout"
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-silver-400 hover:border-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50"
+                      : "border-neutral-light hover:border-accent-blue-500"
                   }`}
                 >
                   <Calendar className="w-5 h-5 text-accent mb-2" />
@@ -344,7 +344,7 @@ export default withErrorBoundary(function BulkOperationModal({
                 <div className="flex gap-2">
                   <button
                     onClick={selectAllAthletes}
-                    className="text-sm text-blue-500 hover:text-blue-700"
+                    className="text-sm text-accent-blue-500 hover:text-accent-blue-700"
                   >
                     Select All
                   </button>
@@ -381,7 +381,7 @@ export default withErrorBoundary(function BulkOperationModal({
                           className="flex items-center flex-1"
                         >
                           {selectedGroups.includes(group.id) ? (
-                            <CheckSquare className="w-5 h-5 text-blue-500 mr-3" />
+                            <CheckSquare className="w-5 h-5 text-accent-blue-500 mr-3" />
                           ) : (
                             <Square className="w-5 h-5 text-steel-400 mr-3" />
                           )}
@@ -420,7 +420,7 @@ export default withErrorBoundary(function BulkOperationModal({
                   {athletes.map((athlete) => (
                     <div
                       key={athlete.id}
-                      className="flex items-center p-2 hover:bg-silver-100 rounded-lg"
+                      className="flex items-center p-2 hover:bg-neutral-lightest rounded-lg"
                     >
                       <button
                         onClick={() => toggleAthleteSelection(athlete.id)}
@@ -840,7 +840,7 @@ export default withErrorBoundary(function BulkOperationModal({
         />
         <ModalContent>
           {/* Progress Indicator */}
-          <div className="px-6 py-4 bg-silver-200 border-b border-silver-300">
+          <div className="px-6 py-4 bg-neutral-lighter border-b border-neutral-light">
             <div className="flex items-center space-x-4">
               {["select", "configure", "confirm", "executing"].map(
                 (step, index) => (
@@ -848,7 +848,7 @@ export default withErrorBoundary(function BulkOperationModal({
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                         currentStep === step
-                          ? "bg-blue-500 text-white"
+                          ? "bg-accent-blue-500 text-white"
                           : index <
                               [
                                 "select",
@@ -857,7 +857,7 @@ export default withErrorBoundary(function BulkOperationModal({
                                 "executing",
                               ].indexOf(currentStep)
                             ? "bg-success text-white"
-                            : "bg-steel-300 text-body-secondary"
+                            : "bg-neutral text-body-secondary"
                       }`}
                     >
                       {index + 1}

@@ -57,27 +57,27 @@ export function ExerciseGroupDisplay({
     switch (type) {
       case "superset":
         return {
-          bg: "bg-gradient-to-r from-(--accent-purple-50) to-(--accent-pink-50)",
-          border: "border-(--accent-purple-300)",
-          badge: "bg-(--accent-purple-500)",
-          text: "text-(--accent-purple-900)",
-          icon: "text-(--accent-purple-600)",
+          bg: "bg-linear-to-r from-accent-purple-50 to-accent-purple-100",
+          border: "border-accent-purple-300",
+          badge: "bg-accent-purple-500",
+          text: "text-accent-purple-900",
+          icon: "text-accent-purple-600",
         };
       case "circuit":
         return {
-          bg: "bg-gradient-to-r from-(--accent-blue-50) to-cyan-50",
-          border: "border-(--accent-blue-300)",
-          badge: "bg-(--accent-blue-500)",
-          text: "text-(--accent-blue-900)",
-          icon: "text-(--accent-blue-600)",
+          bg: "bg-linear-to-r from-accent-blue-50 to-accent-cyan-50",
+          border: "border-accent-blue-300",
+          badge: "bg-accent-blue-500",
+          text: "text-accent-blue-900",
+          icon: "text-accent-blue-600",
         };
       case "section":
         return {
-          bg: "bg-gradient-to-r from-(--accent-amber-50) to-(--accent-orange-50)",
-          border: "border-(--accent-amber-300)",
-          badge: "bg-(--accent-amber-500)",
-          text: "text-(--accent-amber-900)",
-          icon: "text-(--accent-amber-600)",
+          bg: "bg-linear-to-r from-accent-amber-50 to-accent-orange-50",
+          border: "border-accent-amber-300",
+          badge: "bg-accent-amber-500",
+          text: "text-accent-amber-900",
+          icon: "text-accent-amber-600",
         };
     }
   };
@@ -226,7 +226,7 @@ export function ExerciseGroupDisplay({
                           className={`shrink-0 w-8 h-8 ${
                             isCompleted
                               ? "bg-(--status-success)"
-                              : colors?.badge || "bg-blue-500"
+                              : colors?.badge || "bg-accent-blue-500"
                           } text-white rounded-full flex items-center justify-center font-bold text-sm`}
                         >
                           {String.fromCharCode(65 + exerciseIndex)}

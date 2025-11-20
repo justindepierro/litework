@@ -62,9 +62,9 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
   }, [searchQuery, execute, setExercises, setError]);
 
   return (
-    <div className="hidden lg:flex w-80 bg-silver-200 border-l border-silver-400 flex-col h-full">
+    <div className="hidden lg:flex w-80 bg-neutral-lighter border-l border-neutral-light flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-silver-400">
+      <div className="p-4 border-b border-neutral-light">
         <Heading level="h3" className="mb-3 flex items-center gap-2">
           <Dumbbell className="w-5 h-5" />
           Exercise Library
@@ -78,7 +78,7 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search exercises..."
-            className="w-full pl-10 pr-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-accent-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-accent-blue-500"
           />
         </div>
       </div>
@@ -137,7 +137,7 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
                 e.dataTransfer.setData("exercise", JSON.stringify(exercise));
                 onDragStart(exercise);
               }}
-              className="bg-white border border-silver-400 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-accent-blue-400 transition-all"
+              className="bg-white border border-neutral-light rounded-lg p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-accent-blue-400 transition-all"
             >
               <div className="font-medium text-sm">{exercise.name}</div>
               {exercise.description && (
@@ -151,7 +151,7 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
       </div>
 
       {/* Footer Hint */}
-      <div className="p-3 border-t border-silver-400 bg-white text-xs text-navy-600">
+      <div className="p-3 border-t border-neutral-light bg-white text-xs text-navy-600">
         <p className="font-medium mb-1">💡 Quick Tips:</p>
         <ul className="space-y-1 text-navy-500">
           <li>• Drag exercises into your workout</li>

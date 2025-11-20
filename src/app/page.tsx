@@ -19,7 +19,7 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className="min-h-screen">
       {/* Hero Section - Mobile First */}
       <div className="container-responsive section-spacing">
         <div className="max-w-4xl mx-auto">

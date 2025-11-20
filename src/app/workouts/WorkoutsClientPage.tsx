@@ -12,7 +12,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
-import { Body } from "@/components/ui/Typography";
+import { Body, Heading, Caption } from "@/components/ui/Typography";
 import {
   WorkoutPlan,
   WorkoutExercise,
@@ -267,7 +267,9 @@ function WorkoutsPage({
         <div className="max-w-md mx-auto mt-20">
           <Card variant="default" padding="lg" className="text-center">
             <XCircle className="w-16 h-16 mx-auto mb-4 text-accent-red" />
-            <h2 className="text-heading-primary text-xl mb-2">Access Denied</h2>
+            <Heading level="h2" className="mb-2">
+              Access Denied
+            </Heading>
             <Body variant="secondary" className="mb-4">
               Only coaches and admins can manage workouts.
             </Body>
@@ -322,28 +324,24 @@ function WorkoutsPage({
             gradientVariant="primary"
             actions={
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
-                    currentView === "workouts"
-                      ? "bg-accent-blue text-white shadow-md"
-                      : "bg-silver-200 text-navy-900 hover:bg-silver-300"
-                  }`}
+                <Button
+                  variant={currentView === "workouts" ? "primary" : "secondary"}
+                  size="sm"
                   onClick={() => setCurrentView("workouts")}
+                  leftIcon={<Dumbbell className="w-4 h-4" />}
+                  className="flex-1 sm:flex-none"
                 >
-                  <Dumbbell className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
                   Workouts
-                </button>
-                <button
-                  className={`flex-1 sm:flex-none px-4 py-3 sm:px-3 sm:py-2 rounded-xl sm:rounded-lg text-base sm:text-sm font-medium transition-all touch-manipulation ${
-                    currentView === "library"
-                      ? "bg-accent-blue text-white shadow-md"
-                      : "bg-silver-200 text-navy-900 hover:bg-silver-300"
-                  }`}
+                </Button>
+                <Button
+                  variant={currentView === "library" ? "primary" : "secondary"}
+                  size="sm"
                   onClick={() => setCurrentView("library")}
+                  leftIcon={<Library className="w-4 h-4" />}
+                  className="flex-1 sm:flex-none"
                 >
-                  <Library className="w-5 h-5 sm:w-4 sm:h-4 inline mr-2" />
                   Exercise Library
-                </button>
+                </Button>
               </div>
             }
           />
@@ -376,9 +374,9 @@ function WorkoutsPage({
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h2 className="text-heading-primary text-xl font-bold mb-1">
+                      <Heading level="h2" className="mb-1">
                         {showArchived ? "Archived Workouts" : "Your Workouts"}
-                      </h2>
+                      </Heading>
                       <Body className="text-sm" variant="secondary">
                         {showArchived
                           ? "Previously archived training plans"
@@ -454,18 +452,18 @@ function WorkoutsPage({
                           >
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <h3 className="text-body-primary font-semibold">
+                                <Heading level="h4" className="inline">
                                   {workout.name}
                                   {isOptimistic && (
-                                    <span className="ml-2 text-xs text-accent-blue font-normal">
+                                    <Caption className="ml-2 text-accent-blue-600 font-normal inline">
                                       (Saving...)
-                                    </span>
+                                    </Caption>
                                   )}
-                                </h3>
+                                </Heading>
                                 {isExpanded ? (
-                                  <ChevronUp className="w-5 h-5 text-silver-600" />
+                                  <ChevronUp className="w-5 h-5 text-navy-600" />
                                 ) : (
-                                  <ChevronDown className="w-5 h-5 text-silver-600" />
+                                  <ChevronDown className="w-5 h-5 text-navy-600" />
                                 )}
                               </div>
                               {workout.description && (
@@ -487,16 +485,19 @@ function WorkoutsPage({
                             {isExpanded ? (
                               // Expanded view - show all exercises with grouping
                               <>
-                                <div className="text-xs font-semibold text-silver-600 uppercase mb-3">
+                                <Caption
+                                  variant="muted"
+                                  className="font-bold uppercase mb-3"
+                                >
                                   Exercises ({workout.exercises.length})
                                   {workout.groups &&
                                     workout.groups.length > 0 && (
-                                      <span className="ml-2 text-accent-blue">
+                                      <span className="ml-2 text-accent-blue-600">
                                         • {workout.groups.length} group
                                         {workout.groups.length !== 1 ? "s" : ""}
                                       </span>
                                     )}
-                                </div>
+                                </Caption>
                                 <ExerciseGroupDisplay
                                   exercises={workout.exercises}
                                   groups={workout.groups || []}
@@ -513,9 +514,10 @@ function WorkoutsPage({
                                       (g) => g.id === exercise.groupId
                                     );
                                     return (
-                                      <div
+                                      <Body
                                         key={exercise.id}
-                                        className="text-body-small flex items-center gap-2"
+                                        size="sm"
+                                        className="flex items-center gap-2"
                                       >
                                         <span>
                                           {index + 1}. {exercise.exerciseName} -{" "}
@@ -523,14 +525,15 @@ function WorkoutsPage({
                                           {formatWeight(exercise)}
                                         </span>
                                         {group && (
-                                          <span
-                                            className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                                          <Badge
+                                            size="sm"
+                                            variant={
                                               group.type === "superset"
-                                                ? "bg-accent-lightest text-accent-dark"
+                                                ? "primary"
                                                 : group.type === "circuit"
-                                                  ? "bg-info-lighter text-accent-blue"
-                                                  : "bg-warning-lightest text-warning-dark"
-                                            }`}
+                                                  ? "info"
+                                                  : "warning"
+                                            }
                                           >
                                             {group.type === "superset" && (
                                               <Layers className="w-3 h-3 inline mr-1" />
@@ -542,16 +545,16 @@ function WorkoutsPage({
                                               <Dumbbell className="w-3 h-3 inline mr-1" />
                                             )}
                                             {group.type}
-                                          </span>
+                                          </Badge>
                                         )}
-                                      </div>
+                                      </Body>
                                     );
                                   })}
                                 {workout.exercises.length > 3 && (
-                                  <div className="text-body-small text-silver-600">
+                                  <Body size="sm" variant="secondary">
                                     +{workout.exercises.length - 3} more
                                     exercises
-                                  </div>
+                                  </Body>
                                 )}
                               </>
                             )}
@@ -741,9 +744,9 @@ function WorkoutsPage({
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-(--text-secondary)">
+                  <Body size="lg" variant="secondary">
                     Loading...
-                  </div>
+                  </Body>
                 </div>
               </ModalBackdrop>
             }
@@ -769,9 +772,9 @@ function WorkoutsPage({
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-(--text-secondary)">
+                  <Body size="lg" variant="secondary">
                     Loading...
-                  </div>
+                  </Body>
                 </div>
               </ModalBackdrop>
             }
@@ -819,9 +822,9 @@ function WorkoutsPage({
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
                 <div className="bg-white rounded-lg p-8">
-                  <div className="text-lg text-(--text-secondary)">
+                  <Body size="lg" variant="secondary">
                     Loading workout editor...
-                  </div>
+                  </Body>
                 </div>
               </ModalBackdrop>
             }

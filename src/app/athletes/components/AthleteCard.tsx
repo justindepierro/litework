@@ -151,8 +151,8 @@ function AthleteCard({
           </div>
 
           <div className="relative">
-            <button className="p-2 hover:bg-silver-200 rounded-lg transition-colors">
-              <MoreVertical className="h-4 w-4 text-silver-600" />
+            <button className="p-2 hover:bg-surface-hover rounded-lg transition-colors">
+              <MoreVertical className="h-4 w-4 text-secondary" />
             </button>
           </div>
         </div>

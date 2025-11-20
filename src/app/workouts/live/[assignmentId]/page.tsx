@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useWorkoutSession } from "@/contexts/WorkoutSessionContext";
 import WorkoutLive from "@/components/WorkoutLive";
 import { AlertCircle, Dumbbell } from "lucide-react";
-import { Body } from "@/components/ui/Typography";
+import { Heading, Body } from "@/components/ui/Typography";
 
 interface StartWorkoutPageProps {
   params: Promise<{ assignmentId: string }>;
@@ -105,9 +105,9 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
       <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-(--status-error) mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
+          <Heading level="h3" className="mb-2">
             Failed to Start Workout
-          </h2>
+          </Heading>
           <Body variant="secondary" className="mb-6">
             {error}
           </Body>
@@ -136,9 +136,9 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
       <div className="min-h-screen flex items-center justify-center bg-(--bg-secondary) p-4">
         <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-(--status-warning) mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
+          <Heading level="h3" className="mb-2">
             No Active Session
-          </h2>
+          </Heading>
           <Body variant="secondary" className="mb-6">
             Unable to load workout session. Please try again.
           </Body>

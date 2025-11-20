@@ -83,15 +83,11 @@ export function HoverCard({
 }: HoverCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(typeof window !== "undefined");
   const triggerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const openTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current || !cardRef.current) return;
@@ -186,10 +182,10 @@ export function HoverCard({
   useEffect(() => {
     if (!isOpen) return;
 
-    calculatePosition();
+    requestAnimationFrame(() => calculatePosition());
 
-    const handleScroll = () => calculatePosition();
-    const handleResize = () => calculatePosition();
+    const handleScroll = () => requestAnimationFrame(() => calculatePosition());
+    const handleResize = () => requestAnimationFrame(() => calculatePosition());
 
     window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", handleResize);
@@ -224,46 +220,19 @@ export function HoverCard({
     isOpen && mounted ? (
       <div
         ref={cardRef}
+        className={`
+          fixed z-99999 bg-surface rounded-xl shadow-xl border border-primary overflow-hidden pointer-events-auto animate-in fade-in duration-150
+          ${className}
+        `}
         style={{
-          position: "fixed",
           top: position.top + "px",
           left: position.left + "px",
           maxWidth: maxWidth + "px",
-          zIndex: 99999,
-          backgroundColor: "white",
-          borderRadius: "0.75rem",
-          boxShadow:
-            "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-          border: "1px solid #e5e7eb",
-          overflow: "hidden",
-          pointerEvents: "auto",
-          animation: "fadeIn 0.15s ease-out",
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={className}
       >
         {content}
-        <style>{`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-          @keyframes pulse {
-            0%, 100% {
-              opacity: 0.4;
-            }
-            50% {
-              opacity: 0.6;
-            }
-          }
-        `}</style>
       </div>
     ) : null;
 
@@ -291,10 +260,10 @@ export function WorkoutPreviewCard({
   assignedGroups = [],
   athleteNames = [],
 }: WorkoutPreviewCardProps) {
-  const [loading, setLoading] = useState(true);
   const [workoutDetails, setWorkoutDetails] = useState<WorkoutDetails | null>(
     null
   );
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   // Debug log
   useEffect(() => {
@@ -308,13 +277,19 @@ export function WorkoutPreviewCard({
   useEffect(() => {
     if (!workoutPlanId) return;
 
-    setLoading(true);
+    let isMounted = true;
 
-    Promise.all([
-      fetch("/api/workouts/" + workoutPlanId).then((r) => r.json()),
-      fetch("/api/kpi-tags").then((r) => r.json()),
-    ])
+    // Start loading in promise chain to avoid setState in effect
+    Promise.resolve()
+      .then(() => {
+        if (isMounted) setIsLoadingData(true);
+        return Promise.all([
+          fetch("/api/workouts/" + workoutPlanId).then((r) => r.json()),
+          fetch("/api/kpi-tags").then((r) => r.json()),
+        ]);
+      })
       .then(([workoutData, kpiData]) => {
+        if (!isMounted) return;
         // FIX: API returns { workout: {...} } not { success: true, data: {...} }
         if (workoutData.workout) {
           setWorkoutDetails({
@@ -325,8 +300,16 @@ export function WorkoutPreviewCard({
         }
       })
       .catch((err) => console.error("Failed to fetch workout details:", err))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (isMounted) setIsLoadingData(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [workoutPlanId]);
+
+  const loading = isLoadingData || !workoutDetails;
 
   const exercises = workoutDetails?.exercises || [];
   const groups = workoutDetails?.groups || [];

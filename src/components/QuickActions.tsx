@@ -3,6 +3,7 @@
 import { Dumbbell, Users, Calendar, Plus, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
+import { Body } from "@/components/ui/Typography";
 
 const QuickActions = memo(function QuickActions() {
   const actions = [
@@ -34,33 +35,35 @@ const QuickActions = memo(function QuickActions() {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-gradient-to-br from-(--accent-blue-50) to-(--accent-blue-100) hover:from-(--accent-blue-100) hover:to-(--accent-blue-200) text-(--accent-blue-700) shadow-sm hover:shadow-lg border border-(--accent-blue-200)",
+      blue: "bg-gradient-button-blue text-white shadow-lg hover:shadow-2xl hover:shadow-accent-blue-500/40 border-2 border-accent-blue-400/30 hover:border-accent-blue-300/50",
       orange:
-        "bg-gradient-to-br from-(--accent-orange-50) to-(--accent-orange-100) hover:from-(--accent-orange-100) hover:to-(--accent-orange-200) text-(--accent-orange-700) shadow-sm hover:shadow-lg border border-(--accent-orange-200)",
+        "bg-gradient-button-orange text-white shadow-lg hover:shadow-2xl hover:shadow-accent-orange-500/40 border-2 border-accent-orange-400/30 hover:border-accent-orange-300/50",
       purple:
-        "bg-gradient-to-br from-(--accent-purple-50) to-(--accent-purple-100) hover:from-(--accent-purple-100) hover:to-(--accent-purple-200) text-(--accent-purple-700) shadow-sm hover:shadow-lg border border-(--accent-purple-200)",
+        "bg-gradient-button-purple text-white shadow-lg hover:shadow-2xl hover:shadow-accent-purple-500/40 border-2 border-accent-purple-400/30 hover:border-accent-purple-300/50",
       green:
-        "bg-gradient-to-br from-(--status-success-light) to-(--accent-green-100) hover:from-(--accent-green-100) hover:to-(--accent-green-200) text-(--accent-green-700) shadow-sm hover:shadow-lg border border-(--status-success-light)",
+        "bg-gradient-button-green text-white shadow-lg hover:shadow-2xl hover:shadow-accent-green-500/40 border-2 border-accent-green-400/30 hover:border-accent-green-300/50",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
   const getIconColorClasses = (color: string) => {
-    const colors = {
-      blue: "text-(--accent-blue-600)",
-      orange: "text-(--accent-orange-600)",
-      purple: "text-(--accent-purple-600)",
-      green: "text-(--status-success)",
-    };
-    return colors[color as keyof typeof colors] || colors.blue;
+    // All white now since we have gradient backgrounds
+    return "text-white drop-shadow-md";
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-5 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wide">
+    <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-6 mb-6 relative overflow-hidden">
+      {/* Gradient accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-header-tertiary" />
+
+      <div className="flex items-center justify-between mb-5">
+        <Body
+          size="xs"
+          weight="bold"
+          className="text-navy-700 uppercase tracking-[0.35em]"
+        >
           Quick Actions
-        </h2>
+        </Body>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -70,13 +73,18 @@ const QuickActions = memo(function QuickActions() {
             <Link
               key={action.label}
               href={action.href}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98] ${getColorClasses(action.color)}`}
+              className={`group relative inline-flex items-center gap-2.5 px-5 py-3.5 rounded-xl transition-all duration-300 hover:scale-[1.05] active:scale-[0.98] overflow-hidden ${getColorClasses(action.color)}`}
             >
+              {/* Shine effect on hover */}
+              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
+
               <Icon
-                className={`w-4 h-4 ${getIconColorClasses(action.color)}`}
+                className={`w-5 h-5 ${getIconColorClasses(action.color)} relative z-10 group-hover:scale-110 transition-transform duration-300`}
               />
-              <span className="font-medium text-sm">{action.label}</span>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+              <span className="font-semibold text-sm relative z-10">
+                {action.label}
+              </span>
+              <ChevronRight className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 relative z-10 transition-all duration-300" />
             </Link>
           );
         })}

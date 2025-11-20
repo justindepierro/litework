@@ -355,7 +355,7 @@ function AnalyticsDashboard({
       {viewMode === "overview" && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-blue-500)">
+            <div className="bg-surface rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-accent-blue-500">
               <div className="flex items-start justify-between">
                 <div>
                   <Body variant="secondary" className="text-sm font-medium">
@@ -365,13 +365,13 @@ function AnalyticsDashboard({
                     {overviewStats.totalWorkouts}
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-blue-600) bg-linear-to-br from-(--accent-blue-50) to-(--accent-blue-100)">
+                <div className="p-3 rounded-xl text-accent-blue-600 bg-linear-to-br from-accent-blue-50 to-accent-blue-100">
                   <Dumbbell className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--status-success)">
+            <div className="bg-surface rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-success">
               <div className="flex items-start justify-between">
                 <div>
                   <Body variant="secondary" className="text-sm font-medium">
@@ -381,13 +381,13 @@ function AnalyticsDashboard({
                     {overviewStats.avgWorkoutsPerWeek || 0}
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--status-success) bg-linear-to-br from-(--status-success-light) to-green-100">
+                <div className="p-3 rounded-xl text-success bg-linear-to-br from-success-lighter to-accent-green-100">
                   <Calendar className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-orange-500)">
+            <div className="bg-surface rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-accent-orange-500">
               <div className="flex items-start justify-between">
                 <div>
                   <Body variant="secondary" className="text-sm font-medium">
@@ -395,18 +395,16 @@ function AnalyticsDashboard({
                   </Body>
                   <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.consistencyScore}
-                    <span className="text-lg text-(--text-secondary) ml-1">
-                      %
-                    </span>
+                    <span className="text-lg text-secondary ml-1">%</span>
                   </Body>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-orange-600) bg-linear-to-br from-(--accent-orange-50) to-(--accent-orange-100)">
+                <div className="p-3 rounded-xl text-accent-orange-600 bg-linear-to-br from-accent-orange-50 to-accent-orange-100">
                   <Target className="w-6 h-6" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-(--accent-purple-500)">
+            <div className="bg-surface rounded-xl shadow-sm p-6 hover:shadow-lg hover:scale-[1.02] transition-all touch-manipulation border-l-4 border-accent-purple-500">
               <div className="flex items-start justify-between">
                 <div>
                   <Body variant="secondary" className="text-sm font-medium">
@@ -414,16 +412,14 @@ function AnalyticsDashboard({
                   </Body>
                   <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgImprovement}
-                    <span className="text-lg text-(--text-secondary) ml-1">
-                      %
-                    </span>
+                    <span className="text-lg text-secondary ml-1">%</span>
                   </Body>
-                  <div className="flex items-center mt-2 text-sm text-(--status-success)">
+                  <div className="flex items-center mt-2 text-sm text-success">
                     <TrendingUp className="w-4 h-4 mr-1" />
                     +2.3%
                   </div>
                 </div>
-                <div className="p-3 rounded-xl text-(--accent-purple-600) bg-linear-to-br from-(--accent-purple-50) to-(--accent-purple-100)">
+                <div className="p-3 rounded-xl text-accent-purple-600 bg-linear-to-br from-accent-purple-50 to-accent-purple-100">
                   <Trophy className="w-6 h-6" />
                 </div>
               </div>

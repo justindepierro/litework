@@ -225,7 +225,7 @@ export default function BlockInstanceEditor({
           title="Customize Block Instance"
           subtitle={`Template: ${blockInstance.sourceBlockName}`}
           onClose={onClose}
-          icon={<Package className="w-5 h-5 text-blue-600" />}
+          icon={<Package className="w-5 h-5 text-accent-blue-600" />}
         />
 
         <ModalContent>
@@ -245,7 +245,7 @@ export default function BlockInstanceEditor({
               value={instanceName}
               onChange={(e) => setInstanceName(e.target.value)}
               placeholder={blockInstance.sourceBlockName}
-              className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
             <Caption variant="muted" className="mt-1">
               Give this instance a custom name (e.g., &quot;Week 3
@@ -261,7 +261,7 @@ export default function BlockInstanceEditor({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this specific instance..."
               rows={3}
-              className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
             />
           </div>
 

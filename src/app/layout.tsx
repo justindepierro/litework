@@ -73,15 +73,18 @@ export const metadata: Metadata = {
   },
 
   // Performance: Preconnect to critical external domains
-  other: {},
+  other: {
+    "dns-prefetch": process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    preconnect: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+  },
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
+  maximumScale: 5, // Allow zooming for accessibility (WCAG 2.1 - 1.4.4)
+  userScalable: true, // Enable user scaling for better accessibility
+  viewportFit: "cover", // Support for iOS notch/Dynamic Island
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#334155" }, // Navy-700 from design tokens
     { media: "(prefers-color-scheme: dark)", color: "#0f172a" }, // Navy-900 from design tokens
@@ -94,7 +97,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${inter.variable} ${poppins.variable}`}
+    >
       <head>
         {/* Preconnect to Supabase for faster API calls */}
         <link
@@ -106,9 +113,7 @@ export default function RootLayout({
           href="https://lzsjaqkhdoqsafptqpnt.supabase.co"
         />
       </head>
-      <body
-        className={`${inter.variable} ${poppins.variable} font-sans antialiased bg-white`}
-      >
+      <body>
         <GlobalErrorBoundary>
           <AuthProvider>
             <WorkoutSessionProvider>
@@ -122,7 +127,7 @@ export default function RootLayout({
                   <main
                     id="main-content"
                     tabIndex={-1}
-                    className="bg-white pt-16 sm:pt-18"
+                    className="pt-16 sm:pt-18"
                   >
                     <PageTransition>{children}</PageTransition>
                   </main>

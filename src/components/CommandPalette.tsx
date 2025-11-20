@@ -228,7 +228,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         </Command.List>
 
         {/* Footer with keyboard hints */}
-        <div className="border-t border-gray-200 px-4 py-2 bg-(--bg-secondary) flex items-center justify-between text-xs text-(--text-secondary)">
+        <div className="border-t border-neutral-200 px-4 py-2 bg-(--bg-secondary) flex items-center justify-between text-xs text-(--text-secondary)">
           <div className="flex items-center gap-4">
             <span>
               <kbd className="px-2 py-1 bg-white border border-silver-400 rounded text-xs font-mono">

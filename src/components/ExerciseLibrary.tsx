@@ -411,7 +411,7 @@ function ExerciseLibrary({
           />
 
           {error && (
-            <div className="mx-6 mt-4 rounded-lg border border-(--status-error-light) bg-(--status-error-light) px-4 py-3 text-sm text-(--status-error)">
+            <div className="mx-6 mt-4 rounded-lg border border-accent-red-200 bg-accent-red-50 px-4 py-3 text-sm text-accent-red-700">
               {error}
             </div>
           )}
@@ -428,7 +428,7 @@ function ExerciseLibrary({
                   <Plus className="w-4 h-4 mr-2" />
                   Add Exercise
                 </Button>
-                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-(--text-tertiary)" />
+                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-silver-400" />
                 <input
                   type="text"
                   placeholder="Search exercises..."
@@ -439,10 +439,10 @@ function ExerciseLibrary({
               </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
                   showFilters
-                    ? "bg-(--accent-blue-100) text-(--accent-blue-700)"
-                    : "bg-(--bg-tertiary) text-(--text-secondary)"
+                    ? "bg-accent-blue-100 text-accent-blue-700 border border-accent-blue-200"
+                    : "bg-silver-100 text-navy-600 border border-silver-300 hover:bg-silver-200"
                 }`}
               >
                 <Filter className="w-4 h-4" />

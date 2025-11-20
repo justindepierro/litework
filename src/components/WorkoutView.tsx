@@ -343,7 +343,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
             {/* Enhanced progress bar */}
             <div className="w-full bg-silver-300 rounded-full h-4 mb-6 shadow-inner">
               <div
-                className="bg-gradient-to-r from-accent-green to-green-600 h-4 rounded-full transition-all duration-500 shadow-sm"
+                className="bg-gradient-to-r from-accent-green-500 to-accent-green-600 h-4 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${workout.progressPercentage}%` }}
               ></div>
             </div>

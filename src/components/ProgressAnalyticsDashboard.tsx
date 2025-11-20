@@ -121,7 +121,7 @@ export default function ProgressAnalyticsDashboard() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-silver-200 transition-colors shadow-sm hover:shadow-md"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-neutral-lighter transition-colors shadow-sm hover:shadow-md"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -132,7 +132,7 @@ export default function ProgressAnalyticsDashboard() {
 
           <button
             onClick={exportData}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent-blue-500 text-white rounded-xl hover:bg-accent-blue-700 transition-colors"
           >
             <Download className="w-4 h-4" />
             Export
@@ -142,7 +142,7 @@ export default function ProgressAnalyticsDashboard() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-silver-200 rounded-xl p-4 shadow-sm">
+        <div className="bg-neutral-lighter rounded-xl p-4 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Select
               label="Time Range"
@@ -185,10 +185,10 @@ export default function ProgressAnalyticsDashboard() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-blue-500" />
+            <div className="w-10 h-10 bg-accent-blue-50 rounded-xl flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-accent-blue-500" />
             </div>
             <div>
               <Heading level="h3">Total Workouts</Heading>
@@ -205,7 +205,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-success-light rounded-xl flex items-center justify-center">
               <Zap className="w-5 h-5 text-success" />
@@ -227,7 +227,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-accent-light rounded-xl flex items-center justify-center">
               <Target className="w-5 h-5 text-accent" />
@@ -251,7 +251,7 @@ export default function ProgressAnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-warning-light rounded-xl flex items-center justify-center">
               <Calendar className="w-5 h-5 text-warning" />
@@ -277,11 +277,11 @@ export default function ProgressAnalyticsDashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Strength Progression Chart */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-bold text-heading-primary mb-4">
             Strength Progression
           </h3>
-          <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-neutral-lighter rounded-lg flex items-center justify-center">
             <div className="text-center">
               <BarChart3 className="w-12 h-12 text-steel-400 mx-auto mb-2" />
               <p className="text-caption-muted">
@@ -295,11 +295,11 @@ export default function ProgressAnalyticsDashboard() {
         </div>
 
         {/* Volume Trends */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-surface rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-bold text-heading-primary mb-4">
             Volume Trends
           </h3>
-          <div className="h-64 bg-silver-200 rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-neutral-lighter rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-steel-400 mx-auto mb-2" />
               <p className="text-caption-muted">
@@ -325,7 +325,7 @@ export default function ProgressAnalyticsDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-silver-300">
+              <tr className="border-b border-neutral-light">
                 <th className="text-left py-3 px-4 font-semibold text-body-secondary">
                   Exercise
                 </th>
@@ -344,7 +344,7 @@ export default function ProgressAnalyticsDashboard() {
               {analyticsSummary.topExercises.map((exercise, index) => (
                 <tr
                   key={index}
-                  className="border-b border-silver-300 hover:bg-silver-200 transition-colors"
+                  className="border-b border-neutral-light hover:bg-neutral-lighter transition-colors"
                 >
                   <td className="py-4 px-4">
                     <div className="font-medium text-heading-primary">
@@ -386,7 +386,7 @@ export default function ProgressAnalyticsDashboard() {
               key={index}
               className="flex items-center gap-4 p-3 bg-silver-100 rounded-lg"
             >
-              <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-accent-blue-50 rounded-full flex items-center justify-center">
                 <Target className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">

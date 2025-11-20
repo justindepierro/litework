@@ -111,7 +111,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           ${styles.icon}
           text-[var(--color-text-tertiary)]
           flex items-center justify-center
-          bg-[var(--color-silver-200)]
+          bg-neutral-200
           rounded-full
         `}
         >

@@ -55,7 +55,10 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
       // Default fallback UI with animations
       return (
-        <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+        <div
+          className="min-h-screen flex items-center justify-center p-4"
+          style={{ background: "var(--page-gradient-energetic)" }}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -151,7 +154,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 bg-[var(--color-silver-200)] hover:bg-[var(--color-silver-300)] text-[var(--color-text-primary)] font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-6 py-3 bg-neutral-200 hover:bg-neutral-300 text-navy-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <Home className="w-4 h-4" />
                   Go Home

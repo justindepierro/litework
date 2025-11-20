@@ -1,0 +1,35 @@
+:root {
+  /* ===========================
+     FLUID SPACING TOKENS
+     =========================== */
+
+  /* 
+     Fluid spacing scales from a minimum value (mobile) to a maximum value (desktop).
+     Formula: clamp(min, preferred, max)
+     Viewport range: 375px (mobile) -> 1440px (desktop)
+  */
+
+  /* Small spacing (gaps, padding inside small components) */
+  --space-fluid-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.375rem); /* 4px -> 6px */
+  --space-fluid-sm: clamp(0.5rem, 0.42rem + 0.4vw, 0.75rem); /* 8px -> 12px */
+
+  /* Medium spacing (card padding, section gaps) */
+  --space-fluid-md: clamp(1rem, 0.8rem + 1vw, 1.5rem); /* 16px -> 24px */
+  --space-fluid-lg: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); /* 24px -> 36px */
+
+  /* Large spacing (section padding, layout gaps) */
+  --space-fluid-xl: clamp(2rem, 1.6rem + 2vw, 3rem); /* 32px -> 48px */
+  --space-fluid-2xl: clamp(3rem, 2.4rem + 3vw, 4.5rem); /* 48px -> 72px */
+  --space-fluid-3xl: clamp(4rem, 3.2rem + 4vw, 6rem); /* 64px -> 96px */
+
+  /* ===========================
+     CONTAINER QUERY TOKENS
+     =========================== */
+
+  /* Spacing relative to container width (cqw) */
+  --space-container-xs: 1cqw;
+  --space-container-sm: 2cqw;
+  --space-container-md: 4cqw;
+  --space-container-lg: 6cqw;
+  --space-container-xl: 8cqw;
+}

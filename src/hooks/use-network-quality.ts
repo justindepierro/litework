@@ -128,7 +128,10 @@ export function NetworkQualityIndicator() {
 
   return React.createElement(
     "div",
-    { className: "bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4" },
+    {
+      className:
+        "bg-accent-yellow-50 border-l-4 border-accent-yellow-400 p-4 mb-4",
+    },
     React.createElement(
       "div",
       { className: "flex" },
@@ -138,7 +141,7 @@ export function NetworkQualityIndicator() {
         React.createElement(
           "svg",
           {
-            className: "h-5 w-5 text-yellow-400",
+            className: "h-5 w-5 text-accent-yellow-400",
             viewBox: "0 0 20 20",
             fill: "currentColor",
           },
@@ -154,7 +157,7 @@ export function NetworkQualityIndicator() {
         { className: "ml-3" },
         React.createElement(
           "p",
-          { className: "text-sm text-yellow-700" },
+          { className: "text-sm text-accent-yellow-700" },
           connectionQuality === "poor"
             ? "Slow connection detected. App optimized for minimal data usage."
             : "Connection quality is limited. Some features may load slowly."

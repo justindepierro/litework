@@ -1,0 +1,16 @@
+:root {
+  /* ===========================
+     GLASS MATERIAL TOKENS
+     =========================== */
+  --material-glass-thin: rgba(255, 255, 255, 0.4);
+  --material-glass-regular: rgba(255, 255, 255, 0.65);
+  --material-glass-thick: rgba(255, 255, 255, 0.85);
+  --material-glass-blur-sm: 4px;
+  --material-glass-blur-md: 12px;
+  --material-glass-blur-lg: 20px;
+  --material-glass-border: rgba(255, 255, 255, 0.5);
+
+  /* Surface Raised (Material System) */
+  --material-surface-raised:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}

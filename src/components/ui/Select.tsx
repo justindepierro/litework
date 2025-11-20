@@ -67,34 +67,26 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 
     // Enhanced state colors with smooth transitions
     const stateStyles = error
-      ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-[var(--color-error)]/20"
+      ? "border-error focus:border-error focus:ring-error/20"
       : success
-        ? "border-[var(--color-success)] focus:border-[var(--color-success)] focus:ring-[var(--color-success)]/20"
-        : "border-[var(--color-border-primary)] focus:border-[var(--color-border-focus)] focus:ring-[var(--color-border-focus)]/20 hover:border-[var(--color-border-strong)]";
+        ? "border-success focus:border-success focus:ring-success/20"
+        : "border-primary focus:border-focus focus:ring-focus/20 hover:border-strong";
 
     // Dynamic background with subtle hover effect
     const backgroundStyles = disabled
-      ? "bg-[var(--color-bg-disabled)]"
+      ? "bg-silver-200"
       : isHovered && !isFocused
-        ? "bg-[var(--color-bg-secondary)]"
-        : "bg-[var(--color-bg-surface)]";
+        ? "bg-secondary"
+        : "bg-surface";
 
     return (
       <div className={`${fullWidth ? "w-full" : ""}`}>
         {/* Label with improved typography */}
         {label && (
-          <label 
-            className="block text-sm font-semibold mb-2 transition-colors"
-            style={{ color: 'var(--color-text-primary)' }}
-          >
+          <label className="block text-sm font-semibold mb-2 transition-colors text-primary">
             {label}
             {props.required && (
-              <span 
-                className="ml-1 font-medium"
-                style={{ color: 'var(--color-error)' }}
-              >
-                *
-              </span>
+              <span className="ml-1 font-medium text-error">*</span>
             )}
           </label>
         )}
@@ -128,10 +120,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               disabled:cursor-not-allowed
               cursor-pointer
               hover:shadow-md
+              text-primary
               ${!disabled && "active:scale-[0.99]"}
               ${className}
             `}
-            style={{ color: 'var(--color-text-primary)' }}
             disabled={disabled}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -168,15 +160,8 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               absolute right-3 top-1/2 -translate-y-1/2
               pointer-events-none
               transition-all duration-300 ease-out
-              ${isFocused ? "rotate-180" : ""}
+              ${isFocused ? "rotate-180 text-info" : isHovered && !disabled ? "text-secondary" : "text-tertiary"}
             `}
-            style={{ 
-              color: isFocused 
-                ? 'var(--color-border-focus)' 
-                : isHovered && !disabled 
-                  ? 'var(--color-text-secondary)' 
-                  : 'var(--color-text-tertiary)' 
-            }}
           >
             <ChevronDown className="w-5 h-5" />
           </div>
@@ -184,10 +169,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           {/* Error/Success icon with animation */}
           {(error || success) && (
             <div
-              className="absolute right-10 top-1/2 -translate-y-1/2 transition-all duration-200 animate-in fade-in zoom-in-95"
-              style={{ 
-                color: error ? 'var(--color-error)' : 'var(--color-success)' 
-              }}
+              className={`
+                absolute right-10 top-1/2 -translate-y-1/2 transition-all duration-200 animate-in fade-in zoom-in-95
+                ${error ? "text-error" : "text-success"}
+              `}
             >
               {error ? (
                 <AlertCircle className="w-5 h-5" />
@@ -216,15 +201,15 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               transition-colors duration-200
               ${error ? "font-medium" : ""}
             `}
-            style={{ 
-              color: error ? 'var(--color-error)' : 'var(--color-text-secondary)' 
+            style={{
+              color: error
+                ? "var(--color-error)"
+                : "var(--color-text-secondary)",
             }}
             role={error ? "alert" : undefined}
             aria-live={error ? "polite" : undefined}
           >
-            {error && (
-              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-            )}
+            {error && <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />}
             <span>{error || helperText}</span>
           </p>
         )}

@@ -24,7 +24,7 @@ export default function SearchAndFilters({
   return (
     <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:gap-4">
       <div className="relative flex-1">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-silver-600 w-5 h-5" />
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary w-5 h-5" />
         <input
           type="text"
           placeholder="Search athletes..."
@@ -41,7 +41,7 @@ export default function SearchAndFilters({
             className={`px-4 py-4 sm:py-3 text-sm font-medium rounded-xl transition-all touch-manipulation ${
               statusFilter === status
                 ? "bg-accent-blue text-white shadow-md"
-                : "bg-silver-300 text-silver-800 hover:bg-silver-400"
+                : "bg-tertiary text-primary hover:bg-surface-active"
             }`}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}

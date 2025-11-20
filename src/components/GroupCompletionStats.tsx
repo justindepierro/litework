@@ -5,7 +5,7 @@ import { useAsyncState } from "@/hooks/use-async-state";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/components/ToastProvider";
 import { TrendingUp, Users, Award } from "lucide-react";
-import { Body } from "@/components/ui/Typography";
+import { Body, Heading } from "@/components/ui/Typography";
 
 interface GroupStats {
   id: string;
@@ -41,95 +41,156 @@ export default function GroupCompletionStats() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-        <div className="h-6 bg-(--bg-tertiary) rounded w-1/3 mb-4"></div>
+      <div className="bg-surface rounded-lg shadow-sm p-6 animate-pulse border border-primary">
+        <div className="h-6 bg-secondary rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
-          <div className="h-16 bg-(--bg-tertiary) rounded"></div>
-          <div className="h-16 bg-(--bg-tertiary) rounded"></div>
+          <div className="h-16 bg-secondary rounded"></div>
+          <div className="h-16 bg-secondary rounded"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
-      <div className="flex items-center gap-3 mb-6">
-        <TrendingUp className="w-6 h-6 text-(--status-success)" />
-        <h2 className="text-xl font-bold text-(--text-primary)">
+    <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-4 h-full flex flex-col relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-green" />
+      <div className="flex items-center gap-2 mb-3">
+        <TrendingUp className="w-5 h-5 text-accent-green-600 shrink-0" />
+        <Heading level="h4" className="text-navy-700">
           Group Performance
-        </h2>
+        </Heading>
       </div>
 
       {groupStats.length === 0 ? (
         <div className="text-center py-8 flex-1 flex flex-col items-center justify-center">
-          <Users className="w-12 h-12 text-(--text-tertiary) mx-auto mb-3" />
+          <Users className="w-12 h-12 text-navy-400 mx-auto mb-3" />
           <Body variant="secondary">No group data available</Body>
         </div>
       ) : (
-        <div className="space-y-4 flex-1 overflow-y-auto">
-          {groupStats.map((group) => (
-            <div
-              key={group.id}
-              className="rounded-lg p-4 bg-gradient-to-br from-white to-green-50/30 border border-(--status-success-light) shadow-sm hover:shadow-lg hover:border-(--status-success-light) hover:scale-[1.02] transition-all cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-(--text-primary) mb-1">
-                    {group.groupName}
-                  </h3>
-                  <div className="flex items-center gap-2 text-sm text-(--text-secondary)">
-                    <Users className="w-4 h-4" />
-                    <span>{group.athleteCount} athletes</span>
+        <div className="space-y-3 flex-1 overflow-y-auto overflow-x-hidden pr-1">
+          {groupStats.map((group, index) => {
+            // Colorful accent for each card based on index
+            const accentColors = [
+              {
+                border: "border-accent-purple-200",
+                bg: "bg-accent-purple-50/30",
+                glow: "shadow-accent-purple-500/10",
+              },
+              {
+                border: "border-accent-blue-200",
+                bg: "bg-accent-blue-50/30",
+                glow: "shadow-accent-blue-500/10",
+              },
+              {
+                border: "border-accent-pink-200",
+                bg: "bg-accent-pink-50/30",
+                glow: "shadow-accent-pink-500/10",
+              },
+              {
+                border: "border-accent-cyan-200",
+                bg: "bg-accent-cyan-50/30",
+                glow: "shadow-accent-cyan-500/10",
+              },
+              {
+                border: "border-accent-orange-200",
+                bg: "bg-accent-orange-50/30",
+                glow: "shadow-accent-orange-500/10",
+              },
+            ];
+            const accent = accentColors[index % accentColors.length];
+
+            return (
+              <div
+                key={group.id}
+                className={`rounded-xl p-3 glass backdrop-blur-lg bg-white/60 border-2 ${accent.border} hover:border-accent-green-400 hover:shadow-xl hover:${accent.glow} hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden`}
+              >
+                {/* Colorful accent dot in top-left */}
+                <div
+                  className={`absolute top-2 left-2 w-2 h-2 rounded-full ${accent.bg} border ${accent.border} shadow-sm`}
+                />
+
+                {/* Header with group name and completion rate */}
+                <div className="flex items-center justify-between mb-2 gap-2 pl-3">
+                  <div className="flex-1 min-w-0">
+                    <Heading
+                      level="h4"
+                      className="text-navy-700 text-sm truncate"
+                    >
+                      {group.groupName}
+                    </Heading>
+                    <div className="flex items-center gap-1.5 text-xs text-navy-600 mt-0.5">
+                      <Users className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">
+                        {group.athleteCount} athletes
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Award
+                      className={`w-5 h-5 drop-shadow-md shrink-0 ${
+                        group.avgCompletionRate >= 90
+                          ? "text-accent-green-500"
+                          : group.avgCompletionRate >= 80
+                            ? "text-accent-blue-500"
+                            : "text-accent-amber-500"
+                      }`}
+                    />
+                    <span className="text-lg font-bold text-navy-700 tabular-nums">
+                      {group.avgCompletionRate}%
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Award
-                    className={`w-5 h-5 ${
-                      group.avgCompletionRate >= 90
-                        ? "text-(--status-success)"
-                        : group.avgCompletionRate >= 80
-                          ? "text-(--accent-blue-500)"
-                          : "text-(--status-warning)"
-                    }`}
-                  />
-                  <span className="text-2xl font-bold text-(--text-primary)">
-                    {group.avgCompletionRate}%
-                  </span>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <Body variant="secondary">Completed</Body>
-                  <p className="font-semibold text-(--text-primary)">
-                    {group.completedWorkouts} workouts
-                  </p>
-                </div>
-                <div>
-                  <Body variant="secondary">Total Assigned</Body>
-                  <p className="font-semibold text-(--text-primary)">
-                    {group.totalAssignments} workouts
-                  </p>
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="mt-3">
-                <div className="w-full bg-(--bg-tertiary) rounded-full h-2">
+                {/* Stats row with colorful accent backgrounds */}
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                   <div
-                    className={`h-2 rounded-full transition-all ${
-                      group.avgCompletionRate >= 90
-                        ? "bg-(--status-success)"
-                        : group.avgCompletionRate >= 80
-                          ? "bg-(--accent-blue-500)"
-                          : "bg-(--status-warning)"
-                    }`}
-                    style={{ width: `${group.avgCompletionRate}%` }}
-                  ></div>
+                    className={`min-w-0 rounded-lg p-2 ${accent.bg} border ${accent.border}`}
+                  >
+                    <Body
+                      variant="secondary"
+                      size="xs"
+                      className="text-navy-600"
+                    >
+                      Completed
+                    </Body>
+                    <p className="font-semibold text-navy-700 truncate">
+                      {group.completedWorkouts} workouts
+                    </p>
+                  </div>
+                  <div
+                    className={`min-w-0 rounded-lg p-2 ${accent.bg} border ${accent.border}`}
+                  >
+                    <Body
+                      variant="secondary"
+                      size="xs"
+                      className="text-navy-600"
+                    >
+                      Total Assigned
+                    </Body>
+                    <p className="font-semibold text-navy-700 truncate">
+                      {group.totalAssignments} workouts
+                    </p>
+                  </div>
+                </div>
+
+                {/* Vibrant progress bar with gradient */}
+                <div className="w-full">
+                  <div className="w-full bg-neutral-200 rounded-full h-2 shadow-inner overflow-hidden">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-500 shadow-sm ${
+                        group.avgCompletionRate >= 90
+                          ? "bg-gradient-progress-green"
+                          : group.avgCompletionRate >= 80
+                            ? "bg-gradient-progress-blue"
+                            : "bg-gradient-progress-amber"
+                      }`}
+                      style={{ width: `${group.avgCompletionRate}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -228,7 +228,7 @@ export default function NotificationsPage() {
                 >
                   <div className="flex items-start gap-4">
                     {/* Icon */}
-                    <div className="text-3xl shrink-0">
+                    <div className="text-2xl shrink-0">
                       {notification.icon || "🔔"}
                     </div>
 

@@ -74,7 +74,7 @@ const Navigation = memo(function Navigation() {
         href: "/dashboard",
         label: "Dashboard",
         icon: BarChart3,
-        color: "text-emerald-400 group-hover:text-emerald-300",
+        color: "text-accent-emerald-400 group-hover:text-accent-emerald-300",
       },
     ];
 
@@ -84,19 +84,19 @@ const Navigation = memo(function Navigation() {
           href: "/workouts",
           label: "Workouts",
           icon: Dumbbell,
-          color: "text-orange-500",
+          color: "text-accent-orange-500",
         },
         {
           href: "/athletes",
           label: "Athletes",
           icon: Users,
-          color: "text-purple-500",
+          color: "text-accent-purple-500",
         },
         {
           href: "/schedule",
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-500",
+          color: "text-accent-blue-500",
         }
       );
     } else {
@@ -105,21 +105,31 @@ const Navigation = memo(function Navigation() {
           href: "/workouts/history",
           label: "History",
           icon: TrendingUp,
-          color: "text-pink-500",
+          color: "text-accent-pink-500",
         },
         {
           href: "/progress",
           label: "Progress",
           icon: TrendingUp,
-          color: "text-cyan-500",
+          color: "text-accent-cyan-500",
         },
         {
           href: "/schedule",
           label: "Schedule",
           icon: Calendar,
-          color: "text-blue-500",
+          color: "text-accent-blue-500",
         }
       );
+    }
+
+    // Add Design System link for admins only (dev tool)
+    if (user?.role === "admin") {
+      items.push({
+        href: "/design-system",
+        label: "Design System",
+        icon: BarChart3, // Will use Palette if available
+        color: "text-accent-indigo-500",
+      });
     }
 
     return items;
@@ -191,8 +201,8 @@ const Navigation = memo(function Navigation() {
           ${isVisible ? "translate-y-0" : "-translate-y-full"}
           ${
             isScrolled
-              ? "bg-slate-950/98 backdrop-blur-md shadow-xl border-b border-slate-700"
-              : "bg-slate-950 border-b border-slate-800"
+              ? "bg-neutral-950/98 backdrop-blur-md shadow-xl border-b border-neutral-700"
+              : "bg-neutral-950 border-b border-neutral-800"
           }
         `}
         style={{
@@ -216,8 +226,8 @@ const Navigation = memo(function Navigation() {
               className="flex items-center gap-2 sm:gap-3 group transition-all hover:scale-105 active:scale-95"
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
-                <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-orange-500 transition-colors" />
+                <div className="absolute inset-0 bg-gradient-button-orange rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
+                <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-accent-orange-500 transition-colors" />
               </div>
               <span
                 style={{ color: "#ffffff" }}
@@ -253,17 +263,17 @@ const Navigation = memo(function Navigation() {
                           flex items-center gap-2
                           ${
                             isActive
-                              ? "bg-white text-slate-950 shadow-lg shadow-white/20"
+                              ? "bg-white text-neutral-950 shadow-lg shadow-white/20"
                               : "text-white hover:text-white hover:bg-white/10 active:bg-white/20"
                           }
                         `}
                       >
                         <Icon
-                          className={`w-4 h-4 ${isActive ? "text-slate-950" : item.color}`}
+                          className={`w-4 h-4 ${isActive ? "text-neutral-950" : item.color}`}
                         />
                         <span>{item.label}</span>
                         {isActive && (
-                          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent rounded-full" />
+                          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-accent-orange-400 to-transparent rounded-full" />
                         )}
                       </Link>
                     );
@@ -286,13 +296,13 @@ const Navigation = memo(function Navigation() {
                       flex items-center gap-2
                       ${
                         pathname === "/profile"
-                          ? "bg-white text-slate-950 shadow-lg shadow-white/20"
+                          ? "bg-white text-neutral-950 shadow-lg shadow-white/20"
                           : "text-white hover:text-white hover:bg-white/10 active:bg-white/20"
                       }
                     `}
                   >
                     <User
-                      className={`w-4 h-4 ${pathname === "/profile" ? "text-slate-950" : "text-white"}`}
+                      className={`w-4 h-4 ${pathname === "/profile" ? "text-neutral-950" : "text-white"}`}
                     />
                     <span className="hidden lg:inline">Profile</span>
                   </Link>
@@ -301,7 +311,7 @@ const Navigation = memo(function Navigation() {
                   <button
                     onClick={signOut}
                     style={{ color: "#ffffff" }}
-                    className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
+                    className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-accent-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="hidden lg:inline">Logout</span>
@@ -312,7 +322,7 @@ const Navigation = memo(function Navigation() {
               {!user && (
                 <Link
                   href="/login"
-                  className="px-6 py-2 rounded-xl font-semibold text-sm bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+                  className="px-6 py-2 rounded-xl font-semibold text-sm bg-gradient-button-orange text-white transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
                 >
                   <LogIn className="w-4 h-4" />
                   Login
@@ -348,14 +358,14 @@ const Navigation = memo(function Navigation() {
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
           {/* Menu Panel */}
           <div
             ref={mobileMenuRef}
-            className="relative h-full w-full max-w-sm ml-auto bg-slate-900 shadow-2xl overflow-y-auto"
+            className="relative h-full w-full max-w-sm ml-auto bg-neutral-900 shadow-2xl overflow-y-auto"
             style={{
               // Explicit background for iOS Safari
               backgroundColor: "rgb(15, 23, 42)",
@@ -364,9 +374,9 @@ const Navigation = memo(function Navigation() {
             {user ? (
               <div className="p-4 space-y-2">
                 {/* User Info Card */}
-                <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-4 mb-4 border border-slate-700">
+                <div className="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-2xl p-4 mb-4 border border-neutral-700">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-gradient-button-orange flex items-center justify-center">
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -378,7 +388,7 @@ const Navigation = memo(function Navigation() {
                       </div>
                       <div
                         style={{ color: "#e2e8f0" }}
-                        className="text-slate-200 text-xs capitalize"
+                        className="text-neutral-200 text-xs capitalize"
                       >
                         {user.role}
                       </div>
@@ -404,17 +414,17 @@ const Navigation = memo(function Navigation() {
                           transition-all duration-200 active:scale-95
                           ${
                             isActive
-                              ? "bg-white text-slate-950 shadow-lg"
+                              ? "bg-white text-neutral-950 shadow-lg"
                               : "text-white hover:text-white hover:bg-white/10"
                           }
                         `}
                       >
                         <Icon
-                          className={`w-5 h-5 ${isActive ? "text-slate-950" : item.color}`}
+                          className={`w-5 h-5 ${isActive ? "text-neutral-950" : item.color}`}
                         />
                         <span className="flex-1">{item.label}</span>
                         {isActive && (
-                          <div className="w-2 h-2 rounded-full bg-orange-400" />
+                          <div className="w-2 h-2 rounded-full bg-accent-orange-400" />
                         )}
                       </Link>
                     );
@@ -422,7 +432,7 @@ const Navigation = memo(function Navigation() {
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-slate-700 my-4" />
+                <div className="border-t border-neutral-700 my-4" />
 
                 {/* Profile Link */}
                 <Link
@@ -436,13 +446,13 @@ const Navigation = memo(function Navigation() {
                     transition-all duration-200 active:scale-95
                     ${
                       pathname === "/profile"
-                        ? "bg-white text-slate-950 shadow-lg"
+                        ? "bg-white text-neutral-950 shadow-lg"
                         : "text-white hover:text-white hover:bg-white/10"
                     }
                   `}
                 >
                   <User
-                    className={`w-5 h-5 ${pathname === "/profile" ? "text-slate-950" : "text-slate-300"}`}
+                    className={`w-5 h-5 ${pathname === "/profile" ? "text-neutral-950" : "text-neutral-300"}`}
                   />
                   <span className="flex-1">Profile & Settings</span>
                 </Link>
@@ -454,7 +464,7 @@ const Navigation = memo(function Navigation() {
                     setIsMobileMenuOpen(false);
                   }}
                   style={{ color: "#f87171" }}
-                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-red-400 hover:text-red-300 bg-red-500/20 hover:bg-red-500/30 transition-all duration-200 active:scale-95 mt-2"
+                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-accent-red-400 hover:text-accent-red-300 bg-accent-red-500/20 hover:bg-accent-red-500/30 transition-all duration-200 active:scale-95 mt-2"
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="flex-1 text-left">Logout</span>
@@ -465,7 +475,7 @@ const Navigation = memo(function Navigation() {
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold text-base bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all duration-200 active:scale-95 shadow-lg"
+                  className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold text-base bg-gradient-button-orange text-white transition-all duration-200 active:scale-95 shadow-lg"
                 >
                   <LogIn className="w-5 h-5" />
                   Login to Your Account

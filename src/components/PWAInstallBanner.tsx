@@ -101,7 +101,7 @@ export default function PWAInstallBanner() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-silver-200 p-4 shadow-lg z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-silver-200 p-4 shadow-lg z-50 safe-bottom">
       <div className="flex items-center justify-between max-w-sm mx-auto">
         <div className="flex items-center space-x-3">
           <div className="bg-accent-blue p-2 rounded-lg">

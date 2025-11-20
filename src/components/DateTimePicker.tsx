@@ -132,7 +132,7 @@ export default function DateTimePicker({
       </Label>
 
       {/* Calendar */}
-      <div className="border border-silver-400 rounded-lg p-4 bg-white">
+      <div className="border border-neutral-light rounded-lg p-4 bg-white">
         {/* Month Navigation */}
         <div className="flex justify-between items-center mb-4">
           <Button
@@ -211,7 +211,7 @@ export default function DateTimePicker({
 
         {/* Selected Date Display */}
         {selectedDate && (
-          <div className="mt-4 pt-4 border-t border-silver-300">
+          <div className="mt-4 pt-4 border-t border-neutral-light">
             <div className="text-body-small text-silver-600">
               Selected Date:
             </div>

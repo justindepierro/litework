@@ -60,10 +60,10 @@ const headingLetterSpacing: Record<HeadingLevel, string | undefined> = {
 };
 
 const headingVariantColors: Record<HeadingVariant, string> = {
-  primary: "var(--color-text-primary)",
-  secondary: "var(--color-text-secondary)",
-  accent: "var(--color-text-accent)",
-  inverse: "var(--color-text-inverse)",
+  primary: "text-primary",
+  secondary: "text-secondary",
+  accent: "text-accent",
+  inverse: "text-inverse",
 };
 
 const bodySizeTokens: Record<BodySize, string> = {
@@ -83,13 +83,13 @@ const bodyLineHeights: Record<BodySize, string> = {
 };
 
 const bodyVariantColors: Record<BodyVariant, string> = {
-  primary: "var(--color-text-primary)",
-  secondary: "var(--color-text-secondary)",
-  tertiary: "var(--color-text-tertiary)",
-  error: "var(--color-error)",
-  success: "var(--color-success)",
-  accent: "var(--color-text-accent)",
-  inverse: "var(--color-text-inverse)",
+  primary: "text-primary",
+  secondary: "text-secondary",
+  tertiary: "text-tertiary",
+  error: "text-error",
+  success: "text-success",
+  accent: "text-accent",
+  inverse: "text-inverse",
 };
 
 const weightScale: Record<BodyWeight, string> = {
@@ -107,24 +107,24 @@ const displaySizeTokens: Record<DisplaySize, string> = {
 };
 
 const displayVariantColors: Record<DisplayVariant, string> = {
-  primary: "var(--color-text-primary)",
-  secondary: "var(--color-text-secondary)",
-  accent: "var(--color-text-accent)",
-  inverse: "var(--color-text-inverse)",
+  primary: "text-primary",
+  secondary: "text-secondary",
+  accent: "text-accent",
+  inverse: "text-inverse",
 };
 
 const labelColors: Record<LabelVariant, string> = {
-  default: "var(--color-text-primary)",
-  required: "var(--color-text-primary)",
-  disabled: "var(--color-text-tertiary)",
-  error: "var(--color-error)",
+  default: "text-primary",
+  required: "text-primary",
+  disabled: "text-tertiary",
+  error: "text-error",
 };
 
 const captionColors: Record<CaptionVariant, string> = {
-  default: "var(--color-text-secondary)",
-  muted: "var(--color-text-tertiary)",
-  error: "var(--color-error)",
-  success: "var(--color-success)",
+  default: "text-secondary",
+  muted: "text-tertiary",
+  error: "text-error",
+  success: "text-success",
 };
 // ============================================================================
 // HEADING COMPONENT
@@ -148,7 +148,7 @@ export const Heading: React.FC<HeadingProps> = ({
 
   return (
     <Component
-      className={cx("tracking-tight", className)}
+      className={cx("tracking-tight", headingVariantColors[variant], className)}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-heading)",
@@ -156,7 +156,6 @@ export const Heading: React.FC<HeadingProps> = ({
           fontSize: `var(${headingSizeTokens[level]})`,
           lineHeight: headingLineHeights[level],
           letterSpacing: headingLetterSpacing[level],
-          color: headingVariantColors[variant],
         },
         style
       )}
@@ -195,14 +194,13 @@ export const Body: React.FC<BodyProps> = ({
 
   return (
     <Component
-      className={cx(className)}
+      className={cx(bodyVariantColors[variant], className)}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-primary)",
           fontSize: `var(${bodySizeTokens[size]})`,
           lineHeight: bodyLineHeights[size],
           fontWeight: weightScale[weight],
-          color: bodyVariantColors[variant],
         },
         style
       )}
@@ -236,13 +234,16 @@ export const Label: React.FC<LabelProps> = ({
 
   return (
     <label
-      className={cx("inline-flex items-center gap-0.5 text-left", className)}
+      className={cx(
+        "inline-flex items-center gap-0.5 text-left",
+        labelColors[variant],
+        className
+      )}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-primary)",
           fontSize: "var(--font-size-sm)",
           fontWeight: "var(--font-weight-medium)",
-          color: labelColors[variant],
           opacity: variant === "disabled" ? 0.6 : 1,
         },
         style
@@ -251,11 +252,7 @@ export const Label: React.FC<LabelProps> = ({
     >
       <span>{children}</span>
       {isRequired && (
-        <span
-          aria-hidden="true"
-          className="ml-0.5"
-          style={{ color: "var(--color-error)" }}
-        >
+        <span aria-hidden="true" className="ml-0.5 text-error">
           *
         </span>
       )}
@@ -287,13 +284,12 @@ export const Caption: React.FC<CaptionProps> = ({
 
   return (
     <Component
-      className={cx(className)}
+      className={cx(captionColors[variant], className)}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-primary)",
           fontSize: "var(--font-size-xs)",
           lineHeight: "var(--line-height-normal)",
-          color: captionColors[variant],
         },
         style
       )}
@@ -330,7 +326,7 @@ export const Display: React.FC<DisplayProps> = ({
 
   return (
     <Component
-      className={cx("tracking-tight", className)}
+      className={cx("tracking-tight", displayVariantColors[variant], className)}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-display)",
@@ -338,7 +334,6 @@ export const Display: React.FC<DisplayProps> = ({
           fontSize: `var(${displaySizeTokens[size]})`,
           lineHeight: "var(--line-height-tight)",
           letterSpacing: "var(--letter-spacing-tight)",
-          color: displayVariantColors[variant],
         },
         style
       )}
@@ -374,11 +369,10 @@ export const Link: React.FC<LinkProps> = ({
   ...props
 }) => {
   const variantClasses: Record<LinkVariant, string> = {
-    primary: "text-(--color-accent-blue) hover:opacity-80",
-    secondary:
-      "text-(--color-text-secondary) hover:text-(--color-text-primary)",
-    accent: "text-(--color-accent-orange) hover:opacity-85",
-    muted: "text-(--color-text-tertiary) hover:text-(--color-text-secondary)",
+    primary: "text-accent-blue-600 hover:opacity-80",
+    secondary: "text-navy-600 hover:text-navy-700",
+    accent: "text-accent-orange-600 hover:opacity-85",
+    muted: "text-navy-500 hover:text-navy-600",
   };
 
   const baseClasses = cx(

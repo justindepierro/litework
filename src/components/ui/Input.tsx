@@ -73,20 +73,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     // State colors
     const stateStyles = error
-      ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+      ? "border-error focus:border-error"
       : success
-        ? "border-[var(--color-success)] focus:border-[var(--color-success)]"
-        : "border-[var(--color-border-primary)] focus:border-[var(--color-border-focus)]";
+        ? "border-success focus:border-success"
+        : "border-primary focus:border-focus";
 
     return (
       <div className={`${fullWidth ? "w-full" : ""}`}>
         {/* Label */}
         {label && (
-          <label className="block text-sm font-[var(--font-weight-medium)] text-[var(--color-text-primary)] mb-2">
+          <label className="block text-sm font-medium text-primary mb-2">
             {label}
-            {props.required && (
-              <span className="text-[var(--color-error)] ml-1">*</span>
-            )}
+            {props.required && <span className="text-error ml-1">*</span>}
           </label>
         )}
 
@@ -94,7 +92,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <div className="relative">
           {/* Left icon */}
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)] pointer-events-none">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none">
               {leftIcon}
             </div>
           )}
@@ -109,16 +107,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               ${leftIcon ? "pl-10" : ""}
               ${rightIcon || isPassword || error || success ? "pr-10" : ""}
               ${stateStyles}
-              bg-[var(--color-bg-surface)]
+              bg-surface
               border
-              rounded-[var(--radius-md)]
-              text-[var(--color-text-primary)]
-              placeholder:text-[var(--color-text-tertiary)]
+              rounded-md
+              text-primary
+              placeholder:text-tertiary
               focus-ring
               smooth-transition
               disabled:opacity-60
               disabled:cursor-not-allowed
-              disabled:bg-[var(--color-silver-200)]
+              disabled:bg-silver-200
               ${className}
             `}
             disabled={disabled}
@@ -128,22 +126,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
           {/* Right icon / state indicator */}
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            {error && (
-              <AlertCircle className="w-5 h-5 text-[var(--color-error)]" />
-            )}
-            {success && !error && (
-              <Check className="w-5 h-5 text-[var(--color-success)]" />
-            )}
+            {error && <AlertCircle className="w-5 h-5 text-error" />}
+            {success && !error && <Check className="w-5 h-5 text-success" />}
             {rightIcon && !isPassword && !error && !success && (
-              <div className="text-[var(--color-text-tertiary)]">
-                {rightIcon}
-              </div>
+              <div className="text-tertiary">{rightIcon}</div>
             )}
             {isPassword && (
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] smooth-transition focus:outline-none"
+                className="text-tertiary hover:text-primary smooth-transition focus:outline-none"
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -161,7 +153,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <p
             className={`
             text-sm mt-2
-            ${error ? "text-[var(--color-error)]" : "text-[var(--color-text-secondary)]"}
+            ${error ? "text-error" : "text-secondary"}
           `}
           >
             {error || helperText}
@@ -228,17 +220,15 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     }, [autoResize, props.value]);
 
     const stateStyles = error
-      ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
-      : "border-[var(--color-border-primary)] focus:border-[var(--color-border-focus)]";
+      ? "border-error focus:border-error"
+      : "border-primary focus:border-focus";
 
     return (
       <div className={`${fullWidth ? "w-full" : ""}`}>
         {label && (
-          <label className="block text-sm font-[var(--font-weight-medium)] text-[var(--color-text-primary)] mb-2">
+          <label className="block text-sm font-medium text-primary mb-2">
             {label}
-            {props.required && (
-              <span className="text-[var(--color-error)] ml-1">*</span>
-            )}
+            {props.required && <span className="text-error ml-1">*</span>}
           </label>
         )}
 
@@ -249,16 +239,16 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             ${stateStyles}
             min-h-[100px]
             px-4 py-3
-            bg-[var(--color-bg-surface)]
+            bg-surface
             border
-            rounded-[var(--radius-md)]
-            text-[var(--color-text-primary)]
-            placeholder:text-[var(--color-text-tertiary)]
+            rounded-md
+            text-primary
+            placeholder:text-tertiary
             focus-ring
             smooth-transition
             disabled:opacity-60
             disabled:cursor-not-allowed
-            disabled:bg-[var(--color-silver-200)]
+            disabled:bg-silver-200
             resize-${autoResize ? "none" : "vertical"}
             ${className}
           `}
@@ -271,7 +261,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           <p
             className={`
             text-sm mt-2
-            ${error ? "text-[var(--color-error)]" : "text-[var(--color-text-secondary)]"}
+            ${error ? "text-error" : "text-secondary"}
           `}
           >
             {error || helperText}

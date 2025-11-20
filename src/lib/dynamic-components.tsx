@@ -13,8 +13,8 @@ import { ModalBackdrop } from "@/components/ui/Modal";
 const ModalLoadingFallback = () => (
   <ModalBackdrop isOpen={true} onClose={() => {}}>
     <div className="bg-white rounded-lg p-8">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto" />
-      <p className="mt-4 text-sm text-(--text-secondary)">Loading...</p>
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-info mx-auto" />
+      <p className="mt-4 text-sm text-secondary">Loading...</p>
     </div>
   </ModalBackdrop>
 );
@@ -24,7 +24,7 @@ const ModalLoadingFallback = () => (
  */
 const PanelLoadingFallback = () => (
   <div className="flex items-center justify-center p-8">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-info" />
   </div>
 );
 
@@ -151,7 +151,7 @@ export const WorkoutLive = dynamic(() => import("@/components/WorkoutLive"), {
   loading: () => (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto" />
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-accent-blue-500 mx-auto" />
         <p className="mt-4 text-lg font-semibold">Starting Workout...</p>
       </div>
     </div>

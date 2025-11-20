@@ -64,7 +64,7 @@ export default function ConfirmModal({
         <ModalFooter align="between">
           <button
             onClick={onCancel}
-            className="flex-1 px-5 py-3 rounded-xl font-semibold text-base text-(--text-secondary) bg-white hover:bg-(--interactive-hover) transition-colors border-2 border-silver-400"
+            className="flex-1 px-5 py-3 rounded-xl font-semibold text-base text-navy-600 bg-white hover:bg-neutral-lighter transition-colors border-2 border-neutral-light"
           >
             {cancelText}
           </button>

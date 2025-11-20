@@ -94,16 +94,16 @@ export const FloatingLabelInput = React.forwardRef<
 
     // State colors
     const stateStyles = error
-      ? "border-[var(--color-error)] focus:border-[var(--color-error)]"
+      ? "border-error focus:border-error"
       : success
-        ? "border-[var(--color-success)] focus:border-[var(--color-success)]"
-        : "border-[var(--color-border-primary)] focus:border-[var(--color-border-focus)]";
+        ? "border-success focus:border-success"
+        : "border-primary focus:border-focus";
 
     const labelColor = error
-      ? "text-[var(--color-error)]"
+      ? "text-error"
       : isFocused
-        ? "text-[var(--color-primary)]"
-        : "text-[var(--color-text-tertiary)]";
+        ? "text-primary"
+        : "text-tertiary";
 
     return (
       <div className={`${fullWidth ? "w-full" : ""}`}>
@@ -111,7 +111,7 @@ export const FloatingLabelInput = React.forwardRef<
         <div className="relative">
           {/* Left icon */}
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)] pointer-events-none z-10">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-tertiary pointer-events-none z-10">
               {leftIcon}
             </div>
           )}
@@ -128,15 +128,15 @@ export const FloatingLabelInput = React.forwardRef<
               ${leftIcon ? "pl-10" : ""}
               ${rightIcon || isPassword || error || success ? "pr-10" : ""}
               ${stateStyles}
-              bg-[var(--color-bg-surface)]
+              bg-surface
               border
-              rounded-[var(--radius-md)]
-              text-[var(--color-text-primary)]
+              rounded-md
+              text-primary
               focus-ring
               smooth-transition
               disabled:opacity-60
               disabled:cursor-not-allowed
-              disabled:bg-[var(--color-silver-200)]
+              disabled:bg-silver-200
               ${className}
             `}
             disabled={disabled}
@@ -156,7 +156,7 @@ export const FloatingLabelInput = React.forwardRef<
               origin-left
               ${labelColor}
               smooth-transition
-              font-[var(--font-weight-medium)]
+              font-medium
             `}
             animate={{
               y: isFloating ? -8 : 0,
@@ -174,9 +174,7 @@ export const FloatingLabelInput = React.forwardRef<
             }}
           >
             {label}
-            {props.required && (
-              <span className="text-[var(--color-error)] ml-1">*</span>
-            )}
+            {props.required && <span className="text-error ml-1">*</span>}
           </motion.label>
 
           {/* Right icon / state indicator */}
@@ -339,7 +337,7 @@ export const FloatingLabelTextarea = React.forwardRef<
               smooth-transition
               disabled:opacity-60
               disabled:cursor-not-allowed
-              disabled:bg-[var(--color-silver-200)]
+              disabled:bg-neutral-200
               resize-${autoResize ? "none" : "vertical"}
               ${className}
             `}

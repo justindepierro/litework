@@ -1,0 +1,17 @@
+/* Primitives */
+@import "./primitives/colors.css";
+@import "./primitives/typography.css";
+@import "./primitives/spacing.css";
+@import "./primitives/spacing-fluid.css";
+@import "./primitives/shadows.css";
+@import "./primitives/radius.css";
+
+/* Animations */
+@import "./animations/motion.css";
+
+/* Semantics */
+@import "./semantics/theme.css";
+@import "./semantics/theme-dark.css";
+
+/* Components */
+@import "./components/glass.css";

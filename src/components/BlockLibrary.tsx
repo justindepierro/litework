@@ -34,9 +34,9 @@ const CATEGORY_CONFIG = {
   warmup: {
     label: "Warm-up",
     icon: Flame,
-    color: "text-(--accent-orange-500)",
-    bgColor: "bg-(--accent-orange-50)",
-    borderColor: "border-(--accent-orange-200)",
+    color: "text-accent-orange-500",
+    bgColor: "bg-accent-orange-50",
+    borderColor: "border-accent-orange-200",
   },
   main: {
     label: "Main Lifts",
@@ -185,7 +185,7 @@ export default function BlockLibrary({
           subtitle="Add reusable workout blocks to build your training session"
           onClose={onClose}
           icon={<TrendingUp className="w-7 h-7 text-primary" />}
-          headerClassName="bg-gradient-to-r from-blue-600 to-blue-700 text-white border-b-0"
+          headerClassName="bg-gradient-to-r from-accent-blue-600 to-accent-blue-700 text-white border-b-0"
         />
 
         {/* Search and Filters */}
@@ -240,7 +240,7 @@ export default function BlockLibrary({
             onClick={() => setSelectedCategory("all")}
             className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
               selectedCategory === "all"
-                ? "bg-blue-500 text-white"
+                ? "bg-accent-blue-500 text-white"
                 : "bg-white text-neutral-darker hover:bg-silver-300"
             }`}
           >
@@ -300,7 +300,7 @@ export default function BlockLibrary({
               <p className="text-error-dark text-lg font-semibold">{error}</p>
               <button
                 onClick={fetchBlocks}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="mt-4 px-4 py-2 bg-accent-blue-500 text-white rounded-lg hover:bg-accent-blue-600 transition-colors"
               >
                 Try Again
               </button>

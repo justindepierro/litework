@@ -56,21 +56,14 @@ interface DragItem {
 const DRAG_TYPE = "WORKOUT_ASSIGNMENT";
 
 const calendarText = {
-  headerPrimary: "text-(--calendar-header-text)",
-  headerMuted: "text-(--calendar-header-muted)",
-  gridPrimary: "text-(--calendar-grid-text)",
-  gridMuted: "text-(--calendar-grid-muted)",
-  gridSubtle: "text-(--calendar-grid-subtle)",
+  headerPrimary: "text-primary",
+  headerMuted: "text-secondary",
+  gridPrimary: "text-primary",
+  gridMuted: "text-secondary",
+  gridSubtle: "text-tertiary",
 };
 
-const calendarThemeVars: CSSProperties & { [key: string]: string } = {
-  color: "var(--color-text-primary)",
-  "--calendar-header-text": "var(--color-text-primary)",
-  "--calendar-header-muted": "var(--color-text-secondary)",
-  "--calendar-grid-text": "var(--color-text-primary)",
-  "--calendar-grid-muted": "var(--color-text-secondary)",
-  "--calendar-grid-subtle": "var(--color-text-tertiary)",
-};
+// Theme vars removed in favor of utility classes
 
 // Draggable Assignment Component
 function DraggableAssignment({
@@ -117,10 +110,10 @@ function DraggableAssignment({
         compact ? "p-1.5" : "p-2.5"
       } ${
         isCompleted
-          ? "bg-(--color-success-light) border-(--status-success) text-(--color-success-darkest) shadow-sm hover:shadow-md"
+          ? "bg-success-light border-success text-success-darkest shadow-sm hover:shadow-md"
           : isOverdue
-            ? "bg-(--color-error-light) border-(--status-error) text-(--color-error-darkest) shadow-sm hover:shadow-md"
-            : "bg-(--color-info-lightest) border-(--accent-blue-200) text-(--color-info-dark) shadow-sm hover:shadow-md"
+            ? "bg-error-light border-error text-error-darkest shadow-sm hover:shadow-md"
+            : "bg-info-light border-accent-blue-200 text-info-dark shadow-sm hover:shadow-md"
       } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
@@ -132,19 +125,19 @@ function DraggableAssignment({
           <div
             className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-sm ${
               isCompleted
-                ? "bg-(--status-success)"
+                ? "bg-success"
                 : isOverdue
-                  ? "bg-(--status-error)"
-                  : "bg-(--accent-blue-500)"
+                  ? "bg-error"
+                  : "bg-accent-blue-500"
             }`}
           >
             {isCompleted ? (
               <CheckCircle
-                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-(--text-inverse)`}
+                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-inverse`}
               />
             ) : (
               <Dumbbell
-                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-(--text-inverse)`}
+                className={`${compact ? "w-2 h-2" : "w-3.5 h-3.5"} text-inverse`}
               />
             )}
           </div>
@@ -182,9 +175,9 @@ function DraggableAssignment({
           )}
           {assignment.groupId && (
             <div className="flex items-center gap-1.5 mt-1.5">
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-(--bg-secondary) border border-(--border-subtle)">
-                <Users className="w-3 h-3 text-(--text-secondary)" />
-                <span className="text-xs font-semibold text-(--text-secondary)">
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary border border-subtle">
+                <Users className="w-3 h-3 text-secondary" />
+                <span className="text-xs font-semibold text-secondary">
                   Group
                 </span>
               </div>
@@ -205,7 +198,7 @@ function DraggableAssignment({
                   return (
                     <span
                       key={idx}
-                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-(--bg-secondary) border border-(--border-subtle) text-(--text-secondary)"
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-secondary border border-subtle text-secondary"
                       title={name}
                     >
                       {displayName}
@@ -213,7 +206,7 @@ function DraggableAssignment({
                   );
                 })}
                 {assignment.athleteNames.length > 3 && (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-(--bg-secondary) border border-(--border-subtle) text-(--text-secondary)">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-secondary border border-subtle text-secondary">
                     +{assignment.athleteNames.length - 3}
                   </span>
                 )}
@@ -256,9 +249,9 @@ function DroppableDay({
 
   const dropClassName = isCoach
     ? isOver && canDrop
-      ? "ring-2 ring-(--accent-blue-500) bg-(--color-info-lighter)"
+      ? "ring-2 ring-accent-blue-500 bg-info-light"
       : canDrop
-        ? "hover:ring-1 hover:ring-(--color-info-light)"
+        ? "hover:ring-1 hover:ring-info-light"
         : ""
     : "";
 
@@ -500,11 +493,11 @@ export default function Calendar({
               onClick={() => isCoach && onDateClick?.(date)}
               className={`min-h-32 p-2 rounded-xl transition-all duration-200 flex flex-col border ${
                 isCurrentMonth
-                  ? `bg-(--bg-secondary) border-(--border-subtle) ${calendarText.gridPrimary} shadow-sm hover:shadow-md hover:scale-[1.01]`
-                  : `bg-(--bg-tertiary) border-(--border-subtle) ${calendarText.gridMuted}`
+                  ? `bg-secondary border-subtle ${calendarText.gridPrimary} shadow-sm hover:shadow-md hover:scale-[1.01]`
+                  : `bg-tertiary border-subtle ${calendarText.gridMuted}`
               } ${
                 isTodayDate
-                  ? "border-(--accent-blue-400) ring-2 ring-(--accent-blue-200) ring-offset-1 bg-(--accent-blue-50) shadow-lg"
+                  ? "border-accent-blue-400 ring-2 ring-accent-blue-200 ring-offset-1 bg-accent-blue-50 shadow-lg"
                   : ""
               } ${isCoach ? "cursor-pointer" : ""}`}
             >
@@ -513,7 +506,7 @@ export default function Calendar({
                 <span
                   className={`text-sm font-bold ${
                     isTodayDate
-                      ? "text-(--accent-blue-600)"
+                      ? "text-accent-blue-600"
                       : isCurrentMonth
                         ? calendarText.gridPrimary
                         : calendarText.gridMuted
@@ -587,8 +580,8 @@ export default function Calendar({
                 onClick={() => isCoach && onDateClick?.(date)}
                 className={`rounded-xl p-3 transition-all duration-200 border ${
                   isTodayDate
-                    ? `bg-(--accent-blue-50) border-(--accent-blue-300) ring-2 ring-(--accent-blue-200) ring-offset-1 shadow-lg ${calendarText.gridPrimary}`
-                    : `bg-(--bg-secondary) border-(--border-subtle) ${calendarText.gridPrimary} shadow-sm hover:shadow-md`
+                    ? `bg-accent-blue-50 border-accent-blue-300 ring-2 ring-accent-blue-200 ring-offset-1 shadow-lg ${calendarText.gridPrimary}`
+                    : `bg-secondary border-subtle ${calendarText.gridPrimary} shadow-sm hover:shadow-md`
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
                 <div className="text-center mb-3">
@@ -604,7 +597,7 @@ export default function Calendar({
                           e.stopPropagation();
                           onDateClick?.(date);
                         }}
-                        className="text-xs text-(--accent-blue-600) hover:text-(--accent-blue-700) p-1 hover:bg-(--accent-blue-50) rounded transition-colors"
+                        className="text-xs text-accent-blue-600 hover:text-accent-blue-700 p-1 hover:bg-accent-blue-50 rounded transition-colors"
                         title="Assign workout"
                       >
                         <span className="text-lg leading-none">+</span>
@@ -614,7 +607,7 @@ export default function Calendar({
                   <div
                     className={`text-2xl font-bold ${
                       isTodayDate
-                        ? "text-(--accent-blue-600)"
+                        ? "text-accent-blue-600"
                         : calendarText.gridPrimary
                     }`}
                   >
@@ -674,17 +667,17 @@ export default function Calendar({
                 onClick={() => isCoach && onDateClick?.(date)}
                 className={`rounded-xl p-4 transition-all duration-200 border ${
                   isTodayDate
-                    ? `bg-(--accent-blue-50) border-(--accent-blue-300) ring-2 ring-(--accent-blue-200) ring-offset-1 shadow-lg ${calendarText.gridPrimary}`
-                    : `bg-(--bg-secondary) border-(--border-subtle) ${calendarText.gridPrimary} shadow-sm`
+                    ? `bg-accent-blue-50 border-accent-blue-300 ring-2 ring-accent-blue-200 ring-offset-1 shadow-lg ${calendarText.gridPrimary}`
+                    : `bg-secondary border-subtle ${calendarText.gridPrimary} shadow-sm`
                 } ${isCoach ? "cursor-pointer" : ""}`}
               >
                 {/* Mobile day header */}
-                <div className="flex items-center justify-between mb-3 pb-3 border-b border-(--border-subtle)">
+                <div className="flex items-center justify-between mb-3 pb-3 border-b border-subtle">
                   <div className="flex items-center gap-3">
                     <div
                       className={`text-3xl font-bold ${
                         isTodayDate
-                          ? "text-(--accent-blue-600)"
+                          ? "text-accent-blue-600"
                           : calendarText.gridPrimary
                       }`}
                     >
@@ -710,7 +703,7 @@ export default function Calendar({
                         e.stopPropagation();
                         onDateClick?.(date);
                       }}
-                      className="flex items-center justify-center w-10 h-10 rounded-full bg-(--accent-blue-600) text-(--text-inverse) hover:bg-(--accent-blue-700) transition-colors touch-manipulation"
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-blue-600 text-inverse hover:bg-accent-blue-700 transition-colors touch-manipulation"
                       title="Assign workout"
                     >
                       <span className="text-xl font-bold">+</span>
@@ -725,7 +718,7 @@ export default function Calendar({
                       <div
                         key={assignment.id}
                         onClick={() => onAssignmentClick?.(assignment)}
-                        className="p-3 bg-(--bg-secondary) rounded-lg shadow-sm hover:shadow-md hover:bg-(--bg-tertiary) transition-all touch-manipulation cursor-pointer"
+                        className="p-3 bg-secondary rounded-lg shadow-sm hover:shadow-md hover:bg-tertiary transition-all touch-manipulation cursor-pointer"
                       >
                         <div
                           className={`font-semibold ${calendarText.gridPrimary} mb-1`}
@@ -835,7 +828,7 @@ export default function Calendar({
               />
               {assignment.notes && (
                 <div
-                  className={`mt-3 p-2 rounded text-sm bg-(--bg-secondary) ${calendarText.gridMuted}`}
+                  className={`mt-3 p-2 rounded text-sm bg-secondary ${calendarText.gridMuted}`}
                 >
                   <span className={`font-medium ${calendarText.gridPrimary}`}>
                     Notes:
@@ -857,16 +850,13 @@ export default function Calendar({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div
-        className="rounded-xl shadow-lg p-4 border border-(--border-subtle) bg-(--bg-primary)"
-        style={calendarThemeVars}
-      >
+      <div className="rounded-xl shadow-lg p-4 border border-subtle bg-primary">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <button
               onClick={goToPreviousPeriod}
-              className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-(--bg-tertiary) focus-visible:ring-2 focus-visible:ring-(--accent-blue-500) focus-visible:ring-offset-2`}
+              className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-tertiary focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2`}
               aria-label="Previous period"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -878,7 +868,7 @@ export default function Calendar({
             </h2>
             <button
               onClick={goToNextPeriod}
-              className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-(--bg-tertiary) focus-visible:ring-2 focus-visible:ring-(--accent-blue-500) focus-visible:ring-offset-2`}
+              className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-tertiary focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2`}
               aria-label="Next period"
             >
               <ChevronRight className="w-5 h-5" />
@@ -887,33 +877,33 @@ export default function Calendar({
 
           <div className="flex items-center gap-2">
             {/* View mode selector */}
-            <div className="flex items-center rounded-lg border border-(--border-subtle) bg-(--bg-tertiary) p-1 shadow-sm">
+            <div className="flex items-center rounded-lg border border-subtle bg-tertiary p-1 shadow-sm">
               <button
                 onClick={() => setViewMode("month")}
-                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-(--accent-blue-500) focus-visible:ring-offset-2 ${
+                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2 ${
                   viewMode === "month"
-                    ? "bg-(--accent-blue-50) text-(--accent-blue-700) font-medium shadow-sm border border-(--accent-blue-200)"
-                    : `${calendarText.headerMuted} hover:text-(--calendar-header-text) border border-transparent`
+                    ? "bg-accent-blue-50 text-accent-blue-700 font-medium shadow-sm border border-accent-blue-200"
+                    : `${calendarText.headerMuted} hover:text-primary border border-transparent`
                 }`}
               >
                 Month
               </button>
               <button
                 onClick={() => setViewMode("week")}
-                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-(--accent-blue-500) focus-visible:ring-offset-2 ${
+                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2 ${
                   viewMode === "week"
-                    ? "bg-(--accent-blue-50) text-(--accent-blue-700) font-medium shadow-sm border border-(--accent-blue-200)"
-                    : `${calendarText.headerMuted} hover:text-(--calendar-header-text) border border-transparent`
+                    ? "bg-accent-blue-50 text-accent-blue-700 font-medium shadow-sm border border-accent-blue-200"
+                    : `${calendarText.headerMuted} hover:text-primary border border-transparent`
                 }`}
               >
                 Week
               </button>
               <button
                 onClick={() => setViewMode("day")}
-                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-(--accent-blue-500) focus-visible:ring-offset-2 ${
+                className={`px-3 py-1 rounded text-sm transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2 ${
                   viewMode === "day"
-                    ? "bg-(--accent-blue-50) text-(--accent-blue-700) font-medium shadow-sm border border-(--accent-blue-200)"
-                    : `${calendarText.headerMuted} hover:text-(--calendar-header-text) border border-transparent`
+                    ? "bg-accent-blue-50 text-accent-blue-700 font-medium shadow-sm border border-accent-blue-200"
+                    : `${calendarText.headerMuted} hover:text-primary border border-transparent`
                 }`}
               >
                 Day
@@ -933,7 +923,7 @@ export default function Calendar({
 
         {/* Info banner for coaches */}
         {isCoach && (
-          <div className="mb-4 p-3 bg-linear-to-br from-(--accent-blue-50) to-(--accent-indigo-50) border border-(--accent-blue-200) rounded-lg text-sm text-(--accent-blue-700) shadow-sm">
+          <div className="mb-4 p-3 bg-linear-to-br from-accent-blue-50 to-accent-indigo-50 border border-accent-blue-200 rounded-lg text-sm text-accent-blue-700 shadow-sm">
             <div className="flex items-center gap-2">
               <MoveIcon className="w-4 h-4" />
               <span>
@@ -952,17 +942,17 @@ export default function Calendar({
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-4 mt-6 pt-4 border-t border-(--border-subtle) text-sm">
+        <div className="flex items-center gap-4 mt-6 pt-4 border-t border-subtle text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-(--accent-blue-50) to-(--accent-blue-100) shadow-sm border border-(--accent-blue-200)" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-accent-blue-50 to-accent-blue-100 shadow-sm border border-accent-blue-200" />
             <span className={calendarText.gridMuted}>Assigned</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-(--status-success-light) to-(--accent-green-100) shadow-sm border border-(--status-success-light)" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-success-lighter to-accent-green-100 shadow-sm border border-success-light" />
             <span className={calendarText.gridMuted}>Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-(--status-error-light) to-(--accent-red-50) shadow-sm border border-(--status-error-light)" />
+            <div className="w-4 h-4 rounded bg-linear-to-br from-error-lighter to-accent-red-50 shadow-sm border border-error-light" />
             <span className={calendarText.gridMuted}>Overdue</span>
           </div>
         </div>
@@ -971,7 +961,7 @@ export default function Calendar({
       {/* Group Move Confirmation Modal */}
       {showMoveConfirmation && pendingMove && (
         <ModalBackdrop isOpen={showMoveConfirmation} onClose={handleCancelMove}>
-          <div className="bg-(--bg-primary) rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-primary rounded-lg shadow-xl max-w-md w-full">
             <ModalHeader
               title="Move Group Assignment?"
               icon={<Users className="w-6 h-6" />}
@@ -983,7 +973,7 @@ export default function Calendar({
                 reschedule the workout for{" "}
                 <strong>all athletes in the group</strong>.
               </Body>
-              <div className="bg-(--bg-secondary) p-4 rounded-lg space-y-2 text-sm">
+              <div className="bg-secondary p-4 rounded-lg space-y-2 text-sm">
                 <div>
                   <span className="font-medium">Workout:</span>{" "}
                   {pendingMove.assignment.workoutPlanName}

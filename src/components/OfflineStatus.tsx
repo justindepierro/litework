@@ -23,7 +23,7 @@ export function OfflineStatusBanner() {
   // Offline banner
   if (!isOnline) {
     return (
-      <div className="fixed top-0 left-0 right-0 z-50 bg-warning text-warning-foreground px-4 py-2 text-center text-sm font-medium shadow-md">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-warning text-warning-foreground px-4 py-3 text-center text-sm font-medium shadow-md safe-top">
         <div className="flex items-center justify-center gap-2">
           <svg
             className="w-4 h-4"

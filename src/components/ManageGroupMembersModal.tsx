@@ -179,7 +179,7 @@ export default function ManageGroupMembersModal({
                       className={`w-full p-4 rounded-lg border-2 transition-all flex items-center justify-between ${
                         isInGroup
                           ? "border-info-light bg-info-lighter"
-                          : "border-silver-400 hover:border-silver-500 hover:bg-silver-200"
+                          : "border-neutral-light hover:border-neutral hover:bg-neutral-lighter"
                       } ${isSaving ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       <div className="flex items-center gap-3">

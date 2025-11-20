@@ -8,6 +8,8 @@ import { formatTimeRange } from "@/lib/date-utils";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Heading } from "@/components/ui/Typography";
+import { Badge } from "@/components/ui/Badge";
 
 interface TodayWorkout {
   id: string;
@@ -69,10 +71,11 @@ const TodayOverview = memo(function TodayOverview() {
 
   if (showSkeleton) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
+      <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-6 h-full flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-cyan" />
         <div className="flex items-center gap-3 mb-6">
-          <Calendar className="w-6 h-6 text-[var(--color-accent-orange)]" />
-          <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+          <Calendar className="w-6 h-6 text-accent-cyan-600" />
+          <h2 className="text-xl font-bold text-navy-700">
             Today&apos;s Schedule
           </h2>
         </div>
@@ -86,12 +89,13 @@ const TodayOverview = memo(function TodayOverview() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
+    <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-6 h-full flex flex-col relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-cyan" />
       <div className="flex items-center gap-3 mb-6">
-        <Calendar className="w-6 h-6 text-[var(--color-accent-orange)]" />
-        <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+        <Calendar className="w-6 h-6 text-accent-cyan-600" />
+        <Heading level="h2" className="text-navy-700">
           Today&apos;s Schedule
-        </h2>
+        </Heading>
       </div>
 
       {todayWorkouts.length === 0 ? (
@@ -111,11 +115,11 @@ const TodayOverview = memo(function TodayOverview() {
             return (
               <div
                 key={workout.id}
-                className="rounded-lg p-4 bg-gradient-to-br from-white to-blue-50/30 border border-blue-200 hover:border-blue-500 hover:shadow-lg hover:scale-[1.01] transition-all"
+                className="rounded-xl p-4 glass backdrop-blur-lg bg-white/60 border border-white/30 hover:border-accent-cyan-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">
+                    <h3 className="font-semibold text-primary mb-1">
                       {workout.workoutName}
                     </h3>
                     {/* Show athlete badges for individual assignments OR group name for group assignments */}
@@ -132,22 +136,9 @@ const TodayOverview = memo(function TodayOverview() {
                           const displayName = `${initial}. ${lastName}`;
 
                           return (
-                            <span
-                              key={idx}
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                padding: "0.25rem 0.625rem",
-                                borderRadius: "9999px",
-                                fontSize: "0.75rem",
-                                fontWeight: "600",
-                                backgroundColor: "#dbeafe",
-                                color: "#1e40af",
-                                border: "1.5px solid #3b82f6",
-                              }}
-                            >
+                            <Badge key={idx} variant="info" size="sm">
                               {displayName}
-                            </span>
+                            </Badge>
                           );
                         })}
                       </div>
@@ -176,7 +167,7 @@ const TodayOverview = memo(function TodayOverview() {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
+                  <div className="flex items-center gap-2 text-sm text-secondary">
                     <Clock className="w-4 h-4" />
                     <span>
                       {formatTimeRange(workout.startTime, workout.endTime)}
@@ -187,22 +178,20 @@ const TodayOverview = memo(function TodayOverview() {
                 {/* Progress bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[var(--color-text-secondary)]">
-                      Completion
-                    </span>
-                    <span className="font-medium text-[var(--color-text-primary)]">
+                    <span className="text-secondary">Completion</span>
+                    <span className="font-medium text-primary">
                       {workout.completedCount}/{workout.athleteCount} athletes (
                       {rate}%)
                     </span>
                   </div>
-                  <div className="w-full bg-[var(--color-silver-300)] rounded-full h-2">
+                  <div className="w-full bg-secondary rounded-full h-2">
                     <div
                       className={`h-2 rounded-full transition-all ${
                         rate === 100
-                          ? "bg-[var(--color-semantic-success-base)]"
+                          ? "bg-success"
                           : rate >= 50
-                            ? "bg-[var(--color-semantic-info-base)]"
-                            : "bg-[var(--color-semantic-warning-base)]"
+                            ? "bg-info"
+                            : "bg-warning"
                       }`}
                       style={{ width: `${rate}%` }}
                     ></div>
@@ -210,7 +199,7 @@ const TodayOverview = memo(function TodayOverview() {
                 </div>
 
                 {rate === 100 && (
-                  <div className="mt-3 flex items-center gap-2 text-sm text-[var(--color-semantic-success-dark)]">
+                  <div className="mt-3 flex items-center gap-2 text-sm text-success">
                     <CheckCircle className="w-4 h-4" />
                     <span className="font-medium">All athletes completed!</span>
                   </div>

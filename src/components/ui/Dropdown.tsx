@@ -80,21 +80,27 @@ export function Dropdown({
           event.preventDefault();
           setIsOpen(false);
           // Return focus to trigger
-          triggerRef.current?.querySelector<HTMLElement>("[role='button'], button")?.focus();
+          triggerRef.current
+            ?.querySelector<HTMLElement>("[role='button'], button")
+            ?.focus();
           break;
         case "Tab":
           // Keep focus within dropdown
           if (dropdownRef.current) {
-            const focusableElements = dropdownRef.current.querySelectorAll<HTMLElement>(
-              'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-            );
+            const focusableElements =
+              dropdownRef.current.querySelectorAll<HTMLElement>(
+                'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+              );
             const firstElement = focusableElements[0];
             const lastElement = focusableElements[focusableElements.length - 1];
 
             if (event.shiftKey && document.activeElement === firstElement) {
               event.preventDefault();
               lastElement?.focus();
-            } else if (!event.shiftKey && document.activeElement === lastElement) {
+            } else if (
+              !event.shiftKey &&
+              document.activeElement === lastElement
+            ) {
               event.preventDefault();
               firstElement?.focus();
             }
@@ -123,7 +129,7 @@ export function Dropdown({
 
   return (
     <div ref={triggerRef} className={`relative inline-block ${className}`}>
-      <div 
+      <div
         onClick={() => setIsOpen(!isOpen)}
         role="button"
         tabIndex={0}
@@ -144,7 +150,7 @@ export function Dropdown({
           ref={dropdownRef}
           className={`
             absolute ${alignClasses[align]} ${widthClasses[width]}
-            bg-white border-2 border-silver-300 rounded-xl shadow-xl
+            bg-surface border-2 border-primary rounded-xl shadow-xl
             z-50 overflow-hidden backdrop-blur-sm
             transition-all duration-200 ease-out
             ${
@@ -154,16 +160,15 @@ export function Dropdown({
             }
             ${disableAnimation && isOpen ? "opacity-100" : ""}
           `}
-          style={{ 
+          style={{
             marginTop: `${offset}px`,
-            boxShadow: "0 10px 40px -12px rgba(0, 0, 0, 0.15), 0 4px 12px -4px rgba(0, 0, 0, 0.1)"
           }}
           role="menu"
           aria-orientation="vertical"
         >
           {/* Subtle gradient border effect */}
           <div className="absolute inset-0 rounded-xl bg-linear-to-br from-white/50 via-transparent to-transparent pointer-events-none" />
-          
+
           {children}
         </div>
       )}
@@ -192,7 +197,9 @@ export function DropdownHeader({
       `}
       role="presentation"
     >
-      <Heading level="h6" className="text-body-dark">{title}</Heading>
+      <Heading level="h6" className="text-body-dark">
+        {title}
+      </Heading>
       {action}
     </div>
   );
@@ -210,11 +217,11 @@ export function DropdownContent({
   maxHeight = "max-h-96",
 }: DropdownContentProps) {
   return (
-    <div 
+    <div
       className={`py-2 ${maxHeight} overflow-y-auto ${className}`}
       style={{
         scrollbarWidth: "thin",
-        scrollbarColor: "rgb(203 213 225) transparent"
+        scrollbarColor: "rgb(203 213 225) transparent",
       }}
     >
       {children}
@@ -242,10 +249,14 @@ export function DropdownItem({
   shortcut,
 }: DropdownItemProps) {
   const variantClasses = {
-    default: "hover:bg-silver-100 text-body focus:bg-silver-100 active:bg-silver-200",
-    danger: "hover:bg-error-lightest text-error focus:bg-error-lightest active:bg-error-light",
-    success: "hover:bg-success-lightest text-success focus:bg-success-lightest active:bg-success-light",
-    primary: "hover:bg-primary-lightest text-primary focus:bg-primary-lightest active:bg-primary-light",
+    default:
+      "hover:bg-silver-100 text-body focus:bg-silver-100 active:bg-silver-200",
+    danger:
+      "hover:bg-error-lightest text-error focus:bg-error-lightest active:bg-error-light",
+    success:
+      "hover:bg-success-lightest text-success focus:bg-success-lightest active:bg-success-light",
+    primary:
+      "hover:bg-primary-lightest text-primary focus:bg-primary-lightest active:bg-primary-light",
   };
 
   return (
@@ -257,31 +268,34 @@ export function DropdownItem({
         w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left
         transition-all duration-150 ease-out
         group relative
-        ${disabled 
-          ? "opacity-50 cursor-not-allowed" 
-          : `${variantClasses[variant]} cursor-pointer focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/20`
+        ${
+          disabled
+            ? "opacity-50 cursor-not-allowed"
+            : `${variantClasses[variant]} cursor-pointer focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary/20`
         }
         ${className}
       `}
     >
       <div className="flex items-center gap-3 flex-1">
         {icon && (
-          <span className={`
+          <span
+            className={`
             w-5 h-5 shrink-0 transition-transform duration-200
             ${!disabled && "group-hover:scale-110 group-active:scale-95"}
-          `}>
+          `}
+          >
             {icon}
           </span>
         )}
         <Body className="font-medium">{children}</Body>
       </div>
-      
+
       {shortcut && (
         <span className="text-xs text-silver-500 font-medium px-2 py-0.5 bg-silver-100 rounded group-hover:bg-silver-200 transition-colors">
           {shortcut}
         </span>
       )}
-      
+
       {/* Hover indicator */}
       {!disabled && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary rounded-r transition-all duration-200 group-hover:h-8" />
@@ -295,7 +309,10 @@ interface DropdownDividerProps {
   label?: string;
 }
 
-export function DropdownDivider({ className = "", label }: DropdownDividerProps) {
+export function DropdownDivider({
+  className = "",
+  label,
+}: DropdownDividerProps) {
   if (label) {
     return (
       <div className={`my-2 px-4 ${className}`}>
@@ -309,6 +326,11 @@ export function DropdownDivider({ className = "", label }: DropdownDividerProps)
       </div>
     );
   }
-  
-  return <div className={`my-1 border-t border-silver-200 ${className}`} role="separator" />;
+
+  return (
+    <div
+      className={`my-1 border-t border-silver-200 ${className}`}
+      role="separator"
+    />
+  );
 }

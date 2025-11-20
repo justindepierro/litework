@@ -110,14 +110,13 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
   };
 
   const getScoreGradient = (score: number) => {
-    if (score >= 90) return "from-(--accent-green-500) to-(--accent-green-600)";
-    if (score >= 50)
-      return "from-(--accent-orange-500) to-(--accent-orange-600)";
-    return "from-(--accent-red-500) to-(--accent-red-600)";
+    if (score >= 90) return "from-accent-green-500 to-accent-green-600";
+    if (score >= 50) return "from-accent-orange-500 to-accent-orange-600";
+    return "from-error to-error-dark";
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-surface rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <Gauge className="w-6 h-6 text-(--text-secondary)" />
         <h3 className="text-lg font-semibold text-(--text-primary)">

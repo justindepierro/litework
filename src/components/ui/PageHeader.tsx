@@ -83,10 +83,8 @@ export function PageHeader({
         <div className="flex-1 min-w-0">
           {/* Icon + Title */}
           <div className="flex items-center gap-3 justify-center sm:justify-start mb-2">
-            {icon && (
-              <div className="shrink-0 text-(--color-text-accent)">{icon}</div>
-            )}
-            <Display size="lg" variant="primary">
+            {icon && <div className="shrink-0 text-accent">{icon}</div>}
+            <Display size="md" variant="primary">
               {title}
             </Display>
           </div>

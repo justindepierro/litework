@@ -122,9 +122,9 @@ export const ModalBackdrop: React.FC<ModalBackdropProps> = ({
 
   // Backdrop opacity variants
   const backdropVariants = {
-    default: "bg-[rgba(15,23,42,0.75)]", // --color-bg-overlay equivalent
-    dark: "bg-[rgba(0,0,0,0.8)]",
-    light: "bg-[rgba(0,0,0,0.5)]",
+    default: "bg-navy-900/75", // --color-bg-overlay equivalent
+    dark: "bg-black/80",
+    light: "bg-black/50",
   };
 
   const backdropClass = backdropVariants[backdropVariant];

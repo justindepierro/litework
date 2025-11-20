@@ -6,6 +6,7 @@ import Link from "next/link";
 import { completePasswordReset, getSession } from "@/lib/auth-client";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
+import { Display, Body } from "@/components/ui/Typography";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
@@ -92,12 +93,12 @@ export default function UpdatePasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h2 className="text-heading-primary text-3xl sm:text-2xl font-bold mb-2">
+          <Display size="sm" className="mb-2">
             Create New Password
-          </h2>
-          <p className="mt-2 text-body-secondary text-base sm:text-sm">
+          </Display>
+          <Body variant="secondary" size="sm" className="mt-2">
             Choose a strong password for your account
-          </p>
+          </Body>
         </div>
 
         {success ? (

@@ -39,17 +39,13 @@ const OptimizedListItem = memo(function OptimizedListItem({
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all ${
         isSelected
-          ? "bg-[var(--color-semantic-info-lightest)] border-[var(--color-semantic-info-light)]"
-          : "bg-white border-[var(--color-silver-300)] hover:border-[var(--color-silver-400)]"
+          ? "bg-info-lighter border-info-light"
+          : "bg-white border-silver-300 hover:border-silver-400"
       }`}
       onClick={handleToggle}
     >
-      <h3 className="font-medium text-[var(--color-text-primary)]">
-        {item.name}
-      </h3>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-        {item.description}
-      </p>
+      <h3 className="font-medium text-primary">{item.name}</h3>
+      <p className="text-sm text-secondary mt-1">{item.description}</p>
     </div>
   );
 });
@@ -155,7 +151,7 @@ const OptimizedSearch = memo(function OptimizedSearch({
       value={query}
       onChange={handleInputChange}
       placeholder={placeholder}
-      className="w-full px-4 py-2 border border-[var(--color-silver-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-semantic-info-base)] focus:border-[var(--color-semantic-info-base)]"
+      className="w-full px-4 py-2 border border-silver-300 rounded-lg focus:ring-2 focus:ring-info focus:border-info"
     />
   );
 });
@@ -230,15 +226,15 @@ const ReactPerformanceDemo = memo(function ReactPerformanceDemo() {
             onSearch={handleSearch}
             placeholder="Search workouts..."
           />
-          <p className="text-sm text-[var(--color-text-secondary)] mt-2">
+          <p className="text-sm text-secondary mt-2">
             Search queries are debounced by 300ms to reduce unnecessary
             re-renders
           </p>
         </div>
 
         {/* Selected Items Counter */}
-        <div className="bg-[var(--color-semantic-info-lightest)] p-4 rounded-lg">
-          <p className="text-[var(--color-semantic-info-dark)]">
+        <div className="bg-info-lighter p-4 rounded-lg">
+          <p className="text-info-dark">
             Selected: {selectedItems.size} items | Showing:{" "}
             {filteredData.length} / {sampleData.length} items
           </p>

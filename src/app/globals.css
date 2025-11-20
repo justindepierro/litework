@@ -3,14 +3,23 @@
  * Professional Design System Architecture
  */
 
-/* 1. Import Tailwind CSS v4 - MUST BE FIRST */
+/* 1. Import Tailwind CSS v4 - MUST BE FIRST for correct processing */
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
-/* 2. Import Design Tokens */
-@import "../styles/tokens.css";
+/* 2. Import Design Tokens - SINGLE SOURCE OF TRUTH */
+@import "../styles/design-tokens-unified.css";
 
-/* 3. Import Celebrations */
+/* 3. Import Utilities */
+@import "../styles/utilities.css";
+
+/* 4. Import Celebrations */
 @import "../styles/celebrations.css";
+
+/* Debug: Ensure CSS is loading */
+:root {
+  --css-loaded: true;
+}
 
 /* Force light mode - consistent experience */
 :root {
@@ -18,9 +27,10 @@
 }
 
 body {
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-  font-family: var(--font-primary);
+  color: var(--color-text-primary);
+  background: var(--page-gradient-energetic);
+  background-attachment: fixed; /* Ensures gradient covers full scroll height */
+  font-family: var(--font-family-primary);
   /* Mobile optimizations */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -47,6 +57,34 @@ body {
 }
 
 /* ============================================ */
+/* TOUCH TARGET UTILITIES (WCAG 2.1 - 2.5.5) */
+/* ============================================ */
+
+/* Minimum 48x48px touch targets for mobile devices */
+.btn-touch {
+  min-height: 48px;
+  min-width: 48px;
+  touch-action: manipulation; /* Disable double-tap zoom on button */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Large touch targets for gym/workout context (56px) */
+.btn-touch-lg {
+  min-height: 56px;
+  min-width: 56px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Extra large for primary actions in workout mode */
+.btn-touch-xl {
+  min-height: 64px;
+  min-width: 64px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================ */
 /* GRADIENT DESIGN SYSTEM - SINGLE SOURCE OF TRUTH */
 /* ============================================ */
 
@@ -63,27 +101,27 @@ body {
 .bg-gradient-accent-primary {
   background: linear-gradient(
     to bottom,
-    var(--accent-orange-500),
-    var(--accent-purple-500),
-    var(--accent-green-500)
+    var(--color-accent-orange-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-green-500)
   );
 }
 
 .bg-gradient-accent-secondary {
   background: linear-gradient(
     to bottom,
-    var(--accent-orange-500),
-    var(--accent-purple-500),
-    var(--accent-pink-500)
+    var(--color-accent-orange-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-pink-500)
   );
 }
 
 .bg-gradient-accent-tertiary {
   background: linear-gradient(
     to bottom,
-    var(--accent-blue-500),
-    var(--accent-purple-500),
-    var(--accent-pink-500)
+    var(--color-accent-blue-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-pink-500)
   );
 }
 
@@ -91,27 +129,27 @@ body {
 .bg-gradient-header-primary {
   background: linear-gradient(
     to right,
-    var(--accent-orange-500),
-    var(--accent-purple-500),
-    var(--accent-green-500)
+    var(--color-accent-orange-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-green-500)
   );
 }
 
 .bg-gradient-header-secondary {
   background: linear-gradient(
     to right,
-    var(--accent-orange-500),
-    var(--accent-purple-500),
-    var(--accent-pink-500)
+    var(--color-accent-orange-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-pink-500)
   );
 }
 
 .bg-gradient-header-tertiary {
   background: linear-gradient(
     to right,
-    var(--accent-blue-500),
-    var(--accent-purple-500),
-    var(--accent-pink-500)
+    var(--color-accent-blue-500),
+    var(--color-accent-purple-500),
+    var(--color-accent-pink-500)
   );
 }
 
@@ -119,18 +157,125 @@ body {
 .bg-gradient-subtle-primary {
   background: linear-gradient(
     135deg,
-    var(--accent-orange-50),
-    var(--accent-purple-50),
-    var(--accent-green-50)
+    var(--color-accent-orange-50),
+    var(--color-accent-purple-50),
+    var(--color-accent-green-50)
   );
 }
 
 .bg-gradient-subtle-secondary {
   background: linear-gradient(
     135deg,
-    var(--accent-orange-50),
-    var(--accent-purple-50),
-    var(--accent-pink-50)
+    var(--color-accent-orange-50),
+    var(--color-accent-purple-50),
+    var(--color-accent-pink-50)
+  );
+}
+
+.bg-gradient-subtle-blue {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-blue-50),
+    var(--color-accent-purple-50)
+  );
+}
+
+.bg-gradient-subtle-green {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-green-50),
+    var(--color-accent-blue-50)
+  );
+}
+
+.bg-gradient-subtle-neutral {
+  background: linear-gradient(
+    135deg,
+    var(--color-silver-200),
+    var(--color-accent-blue-50)
+  );
+}
+
+/* Gradient Buttons (diagonal, vibrant for CTAs) */
+.bg-gradient-button-blue {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-accent-blue-500),
+    var(--color-accent-cyan-600)
+  );
+}
+
+.bg-gradient-button-orange {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-accent-orange-500),
+    var(--color-accent-red-500)
+  );
+}
+
+.bg-gradient-button-purple {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-accent-purple-500),
+    var(--color-accent-pink-600)
+  );
+}
+
+.bg-gradient-button-green {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-accent-green-500),
+    var(--color-accent-lime-600)
+  );
+}
+
+/* Gradient CTA Buttons (horizontal, for large action buttons) */
+.bg-gradient-cta-blue {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-blue-600),
+    var(--color-accent-purple-600)
+  );
+}
+
+.bg-gradient-cta-green {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-green-600),
+    var(--color-accent-lime-600)
+  );
+}
+
+/* Gradient Progress Bars (horizontal, for progress indicators) */
+.bg-gradient-progress-green {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-green-500),
+    var(--color-accent-lime-500)
+  );
+}
+
+.bg-gradient-progress-blue {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-blue-500),
+    var(--color-accent-cyan-500)
+  );
+}
+
+.bg-gradient-progress-cyan {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-cyan-500),
+    var(--color-accent-blue-500)
+  );
+}
+
+.bg-gradient-progress-amber {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-amber-500),
+    var(--color-accent-orange-500)
   );
 }
 
@@ -340,31 +485,6 @@ div,
 button,
 a {
   color: inherit;
-}
-
-/* Ensure specific heading styles are visible */
-.text-heading-primary {
-  color: #334155 !important; /* Navy-700 */
-}
-
-.text-heading-secondary {
-  color: #475569 !important; /* Navy-600 */
-}
-
-.text-heading-accent {
-  color: #ff6b35 !important; /* Orange accent */
-}
-
-.text-body-primary {
-  color: #334155 !important; /* Navy-700 */
-}
-
-.text-body-secondary {
-  color: #475569 !important; /* Navy-600 */
-}
-
-.text-body-small {
-  color: #64748b !important; /* Navy-500 */
 }
 
 /* Typography Classes */

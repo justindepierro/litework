@@ -116,14 +116,12 @@ export function PRCelebrationModal({
 
         <ModalContent>
           {/* PR details */}
-          <div className="bg-gradient-to-r from-(--accent-yellow-50) to-(--accent-orange-50) rounded-xl p-6 mb-6">
+          <div className="bg-linear-to-r from-accent-amber-50 to-accent-orange-50 rounded-xl p-6 mb-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-(--text-primary) mb-2">
+              <div className="text-4xl font-bold text-primary mb-2">
                 {currentPerformance.weight}lbs × {currentPerformance.reps}
               </div>
-              <div className="text-sm text-(--text-secondary) mb-4">
-                {message}
-              </div>
+              <div className="text-sm text-secondary mb-4">{message}</div>
 
               {previousBest && (
                 <div className="text-xs text-(--text-tertiary) pt-4 border-t border-silver-300">

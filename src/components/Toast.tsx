@@ -41,55 +41,39 @@ export default function Toast({
     const iconClasses = "w-6 h-6";
     switch (type) {
       case "success":
-        return (
-          <CheckCircle
-            className={`${iconClasses} text-[var(--color-semantic-success-dark)]`}
-          />
-        );
+        return <CheckCircle className={`${iconClasses} text-success-dark`} />;
       case "error":
-        return (
-          <XCircle
-            className={`${iconClasses} text-[var(--color-semantic-error-dark)]`}
-          />
-        );
+        return <XCircle className={`${iconClasses} text-error-dark`} />;
       case "warning":
-        return (
-          <AlertCircle
-            className={`${iconClasses} text-[var(--color-semantic-warning-dark)]`}
-          />
-        );
+        return <AlertCircle className={`${iconClasses} text-warning-dark`} />;
       case "info":
-        return (
-          <Info
-            className={`${iconClasses} text-[var(--color-semantic-info-dark)]`}
-          />
-        );
+        return <Info className={`${iconClasses} text-info-dark`} />;
     }
   };
 
   const getStyles = () => {
     switch (type) {
       case "success":
-        return "bg-[var(--color-semantic-success-lightest)] border-[var(--color-semantic-success-light)] text-[var(--color-semantic-success-darkest)]";
+        return "bg-success-lighter border-success-light text-success-darkest";
       case "error":
-        return "bg-[var(--color-semantic-error-lightest)] border-[var(--color-semantic-error-light)] text-[var(--color-semantic-error-darkest)]";
+        return "bg-error-lighter border-error-light text-error-darkest";
       case "warning":
-        return "bg-[var(--color-semantic-warning-lightest)] border-[var(--color-semantic-warning-light)] text-[var(--color-semantic-warning-darkest)]";
+        return "bg-warning-lighter border-warning-light text-warning-darkest";
       case "info":
-        return "bg-[var(--color-semantic-info-lightest)] border-[var(--color-semantic-info-light)] text-[var(--color-semantic-info-darkest)]";
+        return "bg-info-lighter border-info-light text-info-darkest";
     }
   };
 
   const getActionButtonStyles = () => {
     switch (type) {
       case "success":
-        return "text-[var(--color-semantic-success-dark)] hover:bg-[var(--color-semantic-success-light)]";
+        return "text-success-dark hover:bg-success-light";
       case "error":
-        return "text-[var(--color-semantic-error-dark)] hover:bg-[var(--color-semantic-error-light)]";
+        return "text-error-dark hover:bg-error-light";
       case "warning":
-        return "text-[var(--color-semantic-warning-dark)] hover:bg-[var(--color-semantic-warning-light)]";
+        return "text-warning-dark hover:bg-warning-light";
       case "info":
-        return "text-[var(--color-semantic-info-dark)] hover:bg-[var(--color-semantic-info-light)]";
+        return "text-info-dark hover:bg-info-light";
     }
   };
 
@@ -101,7 +85,7 @@ export default function Toast({
       exit="exit"
       className={`
         flex items-start gap-3 px-5 py-4 rounded-xl border-2 shadow-lg
-        min-w-[320px] max-w-[90vw] sm:max-w-md
+        min-w-[280px] max-w-[calc(100vw-2rem)] sm:max-w-md
         ${getStyles()}
         touch-manipulation
       `}
@@ -113,7 +97,7 @@ export default function Toast({
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-base font-medium leading-relaxed break-words">
+        <p className="text-base font-medium leading-relaxed wrap-break-word">
           {message}
         </p>
 

@@ -1,0 +1,13 @@
+/**
+ * Design Tokens CSS Variables
+ * This file generates CSS custom properties from our design tokens
+ * 
+ * NOTE: This file is now a facade that imports modularized tokens.
+ * See src/styles/tokens/ for the actual definitions.
+ */
+
+/* Import all tokens */
+@import "./tokens/index.css";
+
+/* Import utility classes */
+@import "./utilities.css";

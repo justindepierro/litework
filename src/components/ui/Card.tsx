@@ -61,80 +61,78 @@ const variantVisuals: Record<
   { className: string; style?: React.CSSProperties }
 > = {
   default: {
-    className: "border shadow-[var(--elevation-1)]",
-    style: {
-      background: "var(--color-bg-surface)",
-      borderColor: "var(--color-border-primary)",
-    },
+    className: "border shadow-[var(--elevation-1)] bg-surface border-primary",
+    style: {},
   },
   elevated: {
-    className: "border shadow-[var(--elevation-2)]",
-    style: {
-      background: "var(--color-bg-surface)",
-      borderColor: "var(--color-border-primary)",
-    },
+    className: "border shadow-[var(--elevation-2)] bg-surface border-primary",
+    style: {},
   },
   flat: {
-    className: "border-0 shadow-none",
-    style: {
-      background: "var(--color-bg-surface)",
-    },
+    className: "border-0 shadow-none bg-surface",
+    style: {},
   },
   bordered: {
-    className: "border-2",
-    style: {
-      background: "var(--color-bg-surface)",
-      borderColor: "var(--color-border-secondary)",
-    },
+    className: "border-2 bg-surface border-secondary",
+    style: {},
   },
   interactive: {
     className:
-      "border shadow-[var(--elevation-1)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)] focus-within:ring-1 focus-within:ring-(--color-border-accent)",
-    style: {
-      background: "var(--color-bg-surface)",
-      borderColor: "var(--color-border-primary)",
-    },
+      "border shadow-[var(--elevation-1)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--elevation-2)] focus-within:ring-1 focus-within:ring-(--color-border-accent) bg-surface border-primary",
+    style: {},
   },
   hero: {
-    className: "border shadow-[var(--elevation-2)]",
+    className: "border shadow-xl",
     style: {
-      background: "var(--surface-strength-bg)",
-      color: "var(--surface-strength-foreground)",
+      background:
+        "linear-gradient(135deg, var(--color-accent-green-500), var(--color-accent-emerald-600))",
+      color: "white",
       borderColor: "transparent",
     },
   },
 };
 
+// Modern gradient surface visuals - using OKLCH accent colors
 const surfaceVisuals: Record<EnergySurface, React.CSSProperties> = {
   strength: {
-    background: "var(--surface-strength-bg)",
-    color: "var(--surface-strength-foreground)",
+    background:
+      "linear-gradient(135deg, var(--color-accent-green-500), var(--color-accent-emerald-600))",
+    color: "white",
     borderColor: "transparent",
-    boxShadow: "var(--elevation-3)",
+    boxShadow:
+      "0 10px 25px -5px rgba(var(--color-accent-green-500-rgb, 34, 197, 94), 0.3)",
   },
   recovery: {
-    background: "var(--surface-recovery-bg)",
-    color: "var(--surface-recovery-foreground)",
+    background:
+      "linear-gradient(135deg, var(--color-accent-purple-500), var(--color-accent-pink-600))",
+    color: "white",
     borderColor: "transparent",
-    boxShadow: "var(--elevation-3)",
+    boxShadow:
+      "0 10px 25px -5px rgba(var(--color-accent-purple-500-rgb, 168, 85, 247), 0.3)",
   },
   speed: {
-    background: "var(--surface-speed-bg)",
-    color: "var(--surface-speed-foreground)",
+    background:
+      "linear-gradient(135deg, var(--color-accent-red-500), var(--color-accent-orange-600))",
+    color: "white",
     borderColor: "transparent",
-    boxShadow: "var(--elevation-3)",
+    boxShadow:
+      "0 10px 25px -5px rgba(var(--color-accent-red-500-rgb, 239, 68, 68), 0.3)",
   },
   mobility: {
-    background: "var(--surface-mobility-bg)",
-    color: "var(--surface-mobility-foreground)",
+    background:
+      "linear-gradient(135deg, var(--color-accent-cyan-500), var(--color-accent-blue-600))",
+    color: "white",
     borderColor: "transparent",
-    boxShadow: "var(--elevation-3)",
+    boxShadow:
+      "0 10px 25px -5px rgba(var(--color-accent-cyan-500-rgb, 6, 182, 212), 0.3)",
   },
   focus: {
-    background: "var(--surface-focus-bg)",
-    color: "var(--surface-focus-foreground)",
+    background:
+      "linear-gradient(135deg, var(--color-accent-blue-500), var(--color-accent-indigo-600))",
+    color: "white",
     borderColor: "transparent",
-    boxShadow: "var(--elevation-3)",
+    boxShadow:
+      "0 10px 25px -5px rgba(var(--color-accent-blue-500-rgb, 59, 130, 246), 0.3)",
   },
 };
 
@@ -261,14 +259,16 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
     <div
       className={cx("flex items-start justify-between gap-4 mb-4", className)}
     >
-      <div className="flex items-start gap-3 flex-1">
-        {icon && <div className="text-(--color-text-accent)">{icon}</div>}
+      <div className="flex items-start gap-3 flex-1 min-w-0">
+        {icon && (
+          <div className="text-(--color-text-accent) shrink-0">{icon}</div>
+        )}
         <div className="flex-1 min-w-0">
           <Heading level="h4" className="truncate">
             {title}
           </Heading>
           {subtitle && (
-            <Body size="sm" variant="secondary" className="mt-0.5">
+            <Body size="sm" variant="secondary" className="mt-0.5 line-clamp-2">
               {subtitle}
             </Body>
           )}
@@ -339,7 +339,15 @@ export const StatCard: React.FC<StatCardProps> = ({
     neutral: "recovery",
   };
 
+  // Vibrant gradient backgrounds for each trend
+  const trendGradientMap = {
+    up: "bg-linear-to-br from-accent-green-500 to-accent-emerald-600",
+    down: "bg-linear-to-br from-accent-blue-500 to-accent-indigo-600",
+    neutral: "bg-linear-to-br from-accent-purple-500 to-accent-pink-600",
+  };
+
   const surface = trend ? trendSurfaceMap[trend] : undefined;
+  const gradient = trend ? trendGradientMap[trend] : undefined;
   const textVariant = surface ? "inverse" : ("primary" as const);
   const secondaryVariant = surface ? "inverse" : ("secondary" as const);
   const changeColorTokens = {
@@ -358,18 +366,27 @@ export const StatCard: React.FC<StatCardProps> = ({
       interactive={!!onClick}
       onClick={onClick}
       surface={surface}
-      className={className}
+      className={`relative overflow-hidden glass-thick backdrop-blur-xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${className}`}
     >
-      <div className="flex items-start justify-between">
+      {/* Gradient Accent Overlay */}
+      {gradient && (
+        <div className={`absolute inset-0 ${gradient} opacity-90`} />
+      )}
+      <div className="relative z-10 flex items-start justify-between">
         <div className="flex-1">
           <Body
             size="sm"
             variant={secondaryVariant as BodyVariant}
-            className="mb-1"
+            className="mb-1 opacity-90"
           >
             {label}
           </Body>
-          <Display size="md" variant={textVariant as DisplayVariant} as="p">
+          <Display
+            size="md"
+            variant={textVariant as DisplayVariant}
+            as="p"
+            className="font-bold"
+          >
             {value}
           </Display>
           {change && (
@@ -387,8 +404,10 @@ export const StatCard: React.FC<StatCardProps> = ({
         </div>
         {icon && (
           <div
-            className="opacity-80"
-            style={{ color: "var(--color-accent-orange)" }}
+            className="opacity-90 drop-shadow-lg"
+            style={{
+              color: trend ? "white" : "var(--color-accent-orange-500)",
+            }}
           >
             {icon}
           </div>
@@ -419,12 +438,12 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
 }) => {
   return (
     <Card hoverable interactive className={`relative ${className}`} {...props}>
-      {badge && <div className="absolute top-4 right-4">{badge}</div>}
-      <div className="flex items-center justify-between">
-        <div className="flex-1">{children}</div>
+      {badge && <div className="absolute top-4 right-4 z-10">{badge}</div>}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 min-w-0">{children}</div>
         {showArrow && (
           <svg
-            className="w-5 h-5 text-(--color-text-tertiary) shrink-0 ml-4"
+            className="w-5 h-5 text-(--color-text-tertiary) shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

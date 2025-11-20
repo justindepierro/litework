@@ -682,7 +682,7 @@ export default withPageErrorBoundary(function AthletesPage() {
       return <CheckCircle className="h-4 w-4 text-accent-green" />;
     if (status === "invited")
       return <Clock className="h-4 w-4 text-accent-blue" />;
-    return <User className="h-4 w-4 text-silver-600" />;
+    return <User className="h-4 w-4 text-secondary" />;
   };
 
   const getStatusText = (status: string, injuryStatus?: string | null) => {

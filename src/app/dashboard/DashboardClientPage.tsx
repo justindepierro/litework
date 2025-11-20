@@ -83,7 +83,7 @@ const DashboardSectionHeading = ({
         style={{ background: accentToken }}
       />
       <div className="flex items-center gap-2">
-        {icon && <span className="text-(--text-secondary)">{icon}</span>}
+        {icon && <span className="text-secondary">{icon}</span>}
         <Body
           size="sm"
           variant="secondary"
@@ -452,33 +452,28 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
   // Coach/Admin Dashboard
   if (isCoachOrAdmin) {
     return (
-      <div
-        className="min-h-screen px-4 py-6"
-        style={{ background: "var(--page-gradient-energetic)" }}
-      >
+      <div className="min-h-screen px-4 py-6 bg-linear-to-br from-accent-orange-50 via-accent-pink-50 to-accent-purple-50">
         <div className="max-w-7xl mx-auto space-y-6">
-          {/* Welcome Header */}
-          <div
-            className="rounded-2xl border shadow-(--elevation-1) px-6 py-8"
-            style={{
-              background: "var(--color-bg-surface)",
-              borderColor: "var(--color-border-primary)",
-            }}
-          >
+          {/* Welcome Header - Glass Material with Vibrant Gradient */}
+          <div className="rounded-2xl glass-thick backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl px-6 py-8 relative overflow-hidden">
+            {/* Gradient Accent Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-accent-orange-500 via-accent-pink-500 to-accent-purple-500" />
             <PageHeader
               title={`Welcome back, ${user.fullName}! 👋`}
               subtitle={`${user.role === "admin" ? "Administrator" : "Coach"} Dashboard`}
-              icon={<LayoutDashboard className="w-6 h-6" />}
+              icon={<LayoutDashboard className="w-5 h-5" />}
               gradientVariant="primary"
               actions={
-                <Link href="/profile">
+                <Link href="/profile" className="shrink-0">
                   <Button
                     variant="secondary"
-                    leftIcon={<Settings className="w-5 h-5" />}
-                    className="shrink-0"
+                    leftIcon={<Settings className="w-5 h-5 shrink-0" />}
+                    className="glass hover:glass-thick transition-all duration-300"
                   >
-                    <span className="hidden sm:inline">Profile & Settings</span>
-                    <span className="sm:hidden">Profile</span>
+                    <span className="hidden sm:inline whitespace-nowrap">
+                      Profile & Settings
+                    </span>
+                    <span className="sm:hidden whitespace-nowrap">Profile</span>
                   </Button>
                 </Link>
               }
@@ -502,20 +497,17 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
           </div>
 
           {/* Full-width calendar */}
-          <div>
-            <Card
-              variant="hero"
-              surface="focus"
-              padding="none"
-              className="overflow-hidden border-0 shadow-(--elevation-2)"
-            >
+          <div className="relative">
+            <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl overflow-hidden">
+              {/* Gradient accent bar */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-accent-blue-500 via-accent-purple-500 to-accent-pink-500" />
               {/* Calendar Header */}
-              <div className="px-6 py-5 flex flex-col gap-4 border-b border-white/20 md:flex-row md:items-center md:justify-between">
+              <div className="px-6 py-5 flex flex-col gap-4 border-b border-white/20 md:flex-row md:items-center md:justify-between bg-linear-to-r from-white/50 to-white/30">
                 <div>
-                  <Heading level="h4" variant="inverse">
+                  <Heading level="h3" className="text-navy-700">
                     Team Schedule
                   </Heading>
-                  <Body size="sm" variant="inverse" className="mt-1 opacity-85">
+                  <Body size="sm" variant="secondary" className="mt-1">
                     Manage workout assignments
                   </Body>
                 </div>
@@ -527,8 +519,8 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                     }}
                     variant="secondary"
                     size="sm"
-                    leftIcon={<UserPlus className="w-4 h-4" />}
-                    className="shrink-0"
+                    leftIcon={<UserPlus className="w-4 h-4 shrink-0" />}
+                    className="shrink-0 min-w-[100px] whitespace-nowrap"
                   >
                     Athlete
                   </Button>
@@ -539,8 +531,8 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                     }}
                     variant="primary"
                     size="sm"
-                    leftIcon={<Users className="w-4 h-4" />}
-                    className="shrink-0"
+                    leftIcon={<Users className="w-4 h-4 shrink-0" />}
+                    className="shrink-0 min-w-[100px] whitespace-nowrap"
                   >
                     Group
                   </Button>
@@ -572,7 +564,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                   </div>
                 </Suspense>
               )}
-            </Card>
+            </div>
           </div>
 
           {/* Assignment Modals */}
@@ -622,28 +614,25 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
 
   // Athlete Dashboard - Mobile-Forward, Industry-Leading Design
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: "var(--page-gradient-energetic)" }}
-    >
-      {/* Simplified Header */}
-      <div
-        className="sticky top-0 z-50 border-b shadow-sm"
-        style={{
-          background: "var(--color-bg-surface)",
-          borderColor: "var(--color-border-primary)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+    <div className="min-h-screen bg-linear-to-br from-accent-blue-50 via-accent-cyan-50 to-accent-green-50">
+      {/* Glass Header with Gradient Accent */}
+      <div className="sticky top-0 z-50 border-b border-white/20 shadow-lg glass-thick backdrop-blur-xl">
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-accent-blue-500 via-accent-cyan-500 to-accent-green-500" />
         <div className="container-responsive px-4 py-3 flex items-center justify-between gap-4">
-          <div>
-            <Caption variant="muted">{todayLabel}</Caption>
-            <Heading level="h4" className="mt-1">
+          <div className="flex-1 min-w-0">
+            <Caption variant="muted" className="truncate">
+              {todayLabel}
+            </Caption>
+            <Heading level="h3" className="mt-1 truncate">
               Hi, {user.firstName}! 👋
             </Heading>
           </div>
-          <Link href="/profile">
-            <Button variant="secondary" size="sm" className="shrink-0">
+          <Link href="/profile" className="shrink-0">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="glass hover:glass-thick transition-all duration-300 whitespace-nowrap"
+            >
               Profile
             </Button>
           </Link>
@@ -656,7 +645,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
           <section>
             <DashboardSectionHeading
               label="Today's Workouts"
-              accentToken="var(--accent-orange-500)"
+              accentToken="var(--color-accent-orange-500)"
               icon={<Dumbbell className="w-4 h-4" />}
             />
 
@@ -715,10 +704,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                             )}
                           </div>
                         </div>
-                        <div
-                          className="px-6 pb-6"
-                          style={{ background: "var(--surface-card-overlay)" }}
-                        >
+                        <div className="px-6 pb-6 bg-white/10 backdrop-blur-sm border-t border-white/20">
                           <Link
                             href={`/workouts/live/${assignmentId}`}
                             className="block"
@@ -739,99 +725,73 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                 })}
               </AnimatedList>
             ) : (
-              <Card
-                variant="hero"
-                surface="focus"
-                padding="xl"
-                className="text-center space-y-4"
-              >
-                <div
-                  className="mx-auto flex h-20 w-20 items-center justify-center rounded-full"
-                  style={{ background: "var(--surface-card-overlay)" }}
-                >
-                  <CalendarIcon className="w-10 h-10 text-(--text-inverse)" />
-                </div>
-                <Heading level="h3" variant="inverse">
-                  No Workouts Today
-                </Heading>
-                <Body variant="inverse">
-                  {assignments.length === 0
-                    ? "Your coach will assign workouts soon. Check back later or reach out to your coach."
-                    : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
-                </Body>
-                {assignments.length === 0 && (
-                  <div className="space-y-4 text-left">
-                    {coachWelcomeMessage && (
-                      <div
-                        className="rounded-2xl border p-4"
-                        style={{
-                          background: "var(--surface-card-overlay)",
-                          borderColor: "var(--surface-strength-ring)",
-                        }}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className="flex h-10 w-10 items-center justify-center rounded-full shrink-0"
-                            style={{
-                              background: "var(--surface-card-overlay)",
-                            }}
-                          >
-                            <Users className="w-5 h-5 text-(--text-inverse)" />
-                          </div>
-                          <div className="flex-1">
-                            <Heading
-                              level="h6"
-                              variant="inverse"
-                              className="text-sm mb-1"
-                            >
-                              Message from Your Coach
-                            </Heading>
-                            <Body
-                              size="sm"
-                              variant="inverse"
-                              className="whitespace-pre-wrap"
-                            >
-                              {coachWelcomeMessage}
-                            </Body>
+              <div className="relative glass-thick backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl overflow-hidden p-8">
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-linear-to-br from-accent-cyan-500 to-accent-blue-600 opacity-90" />
+
+                {/* Content */}
+                <div className="relative text-center space-y-4">
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                    <CalendarIcon className="w-10 h-10 text-white drop-shadow-md" />
+                  </div>
+                  <Heading level="h3" className="text-white drop-shadow-md">
+                    No Workouts Today
+                  </Heading>
+                  <Body className="text-white/90">
+                    {assignments.length === 0
+                      ? "Your coach will assign workouts soon. Check back later or reach out to your coach."
+                      : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
+                  </Body>
+                  {assignments.length === 0 && (
+                    <div className="space-y-4 text-left">
+                      {coachWelcomeMessage && (
+                        <div className="rounded-2xl border border-white/30 p-4 glass backdrop-blur-md bg-white/10">
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full shrink-0 bg-white/20 backdrop-blur-sm">
+                              <Users className="w-5 h-5 text-white drop-shadow-md" />
+                            </div>
+                            <div className="flex-1">
+                              <Heading
+                                level="h6"
+                                className="text-sm mb-1 text-white drop-shadow-md"
+                              >
+                                Message from Your Coach
+                              </Heading>
+                              <Body
+                                size="sm"
+                                className="whitespace-pre-wrap text-white/90"
+                              >
+                                {coachWelcomeMessage}
+                              </Body>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    <div
-                      className="rounded-2xl border p-4 space-y-3"
-                      style={{
-                        background: "var(--surface-card-overlay)",
-                        borderColor: "var(--surface-strength-ring)",
-                      }}
-                    >
-                      <Heading level="h6" variant="inverse" className="text-sm">
-                        Getting Started
-                      </Heading>
-                      <div className="space-y-2">
-                        {gettingStartedSteps.map((step, index) => (
-                          <div className="flex items-start gap-3" key={step}>
-                            <div
-                              className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
-                              style={{
-                                background: "var(--surface-card-overlay)",
-                                border:
-                                  "1px solid var(--surface-strength-ring)",
-                                color: "var(--surface-strength-foreground)",
-                              }}
-                            >
-                              {index + 1}
+                      <div className="rounded-2xl border border-white/30 p-4 space-y-3 glass backdrop-blur-md bg-white/10">
+                        <Heading
+                          level="h6"
+                          className="text-sm text-white drop-shadow-md"
+                        >
+                          Getting Started
+                        </Heading>
+                        <div className="space-y-2">
+                          {gettingStartedSteps.map((step, index) => (
+                            <div className="flex items-start gap-3" key={step}>
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm border border-white/40 text-white">
+                                {index + 1}
+                              </div>
+                              <Body size="sm" className="text-white/90">
+                                {step}
+                              </Body>
                             </div>
-                            <Body size="sm" variant="inverse">
-                              {step}
-                            </Body>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </Card>
+                  )}
+                </div>
+              </div>
             )}
           </section>
         )}
@@ -840,7 +800,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
         <section>
           <DashboardSectionHeading
             label="Your Progress"
-            accentToken="var(--accent-green-500)"
+            accentToken="var(--color-accent-green-500)"
             icon={<Flame className="w-4 h-4" />}
           />
           <AnimatedGrid columns={3} gap={4} delay={0.2}>
@@ -874,13 +834,13 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
         <section>
           <DashboardSectionHeading
             label="This Week"
-            accentToken="var(--accent-blue-500)"
+            accentToken="var(--color-accent-blue-500)"
             icon={<CalendarIcon className="w-4 h-4" />}
           />
           <Card
             variant="elevated"
             padding="none"
-            className="overflow-hidden border shadow-(--elevation-1)"
+            className="overflow-hidden border shadow-sm"
           >
             <Calendar
               assignments={assignments}
@@ -896,7 +856,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
           <section>
             <DashboardSectionHeading
               label="Coming Up"
-              accentToken="var(--accent-purple-500)"
+              accentToken="var(--color-accent-purple-500)"
               icon={<CalendarIcon className="w-4 h-4" />}
             />
 
@@ -910,11 +870,8 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
 
                   return (
                     <AnimatedListItem key={assignmentId}>
-                      <Card
-                        variant="interactive"
-                        padding="md"
-                        hoverable
-                        interactive
+                      <div
+                        className="glass backdrop-blur-lg bg-white/60 border border-white/30 rounded-2xl p-4 hover:border-accent-purple-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
                         onClick={() => handleAssignmentClick(assignment)}
                         role="button"
                         tabIndex={0}
@@ -926,20 +883,13 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                         }}
                       >
                         <div className="flex items-center gap-3">
-                          <div
-                            className="flex h-12 w-12 items-center justify-center rounded-full shrink-0"
-                            style={{
-                              background: "var(--color-bg-tertiary)",
-                              border: "1px solid var(--color-border-secondary)",
-                            }}
-                          >
-                            <CalendarIcon className="w-5 h-5 text-(--text-secondary)" />
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full shrink-0 bg-linear-to-br from-accent-purple-500 to-accent-pink-500 border border-white/20 shadow-lg">
+                            <CalendarIcon className="w-5 h-5 text-white drop-shadow-md" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <Heading
                               level="h5"
-                              className="truncate"
-                              style={{ fontSize: "var(--font-size-base)" }}
+                              className="truncate text-base text-navy-700"
                             >
                               {assignment.workoutPlanName || "Workout"}
                             </Heading>
@@ -953,29 +903,19 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                                 ` • ${formatTime12Hour(assignment.startTime)}`}
                             </Caption>
                           </div>
-                          <Eye className="w-5 h-5 text-(--text-tertiary)" />
+                          <Eye className="w-5 h-5 text-accent-purple-500" />
                         </div>
-                      </Card>
+                      </div>
                     </AnimatedListItem>
                   );
                 })}
               </AnimatedList>
             ) : (
-              <Card variant="default" padding="lg" className="text-center">
-                <div
-                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
-                  style={{
-                    background: "var(--color-bg-tertiary)",
-                    border: "1px solid var(--color-border-secondary)",
-                  }}
-                >
-                  <CalendarIcon className="w-7 h-7 text-(--text-secondary)" />
+              <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl p-8 text-center shadow-lg">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-accent-purple-500 to-accent-pink-500 border border-white/20 shadow-lg">
+                  <CalendarIcon className="w-7 h-7 text-white drop-shadow-md" />
                 </div>
-                <Heading
-                  level="h4"
-                  className="mt-3"
-                  style={{ fontSize: "var(--font-size-lg)" }}
-                >
+                <Heading level="h4" className="mt-3 text-lg text-navy-700">
                   No Upcoming Workouts
                 </Heading>
                 <Body size="sm" variant="secondary" className="mt-1">
@@ -983,7 +923,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                     ? "Your training schedule will appear here once your coach assigns workouts."
                     : "All caught up! Your coach will add more workouts soon."}
                 </Body>
-              </Card>
+              </div>
             )}
           </section>
         )}
@@ -1005,7 +945,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
   );
 }
 
-// StatCard Component with count-up animation
+// StatCard Component with count-up animation and vibrant gradient overlays
 interface StatCardProps {
   icon?: React.ReactNode;
   value: number;
@@ -1027,43 +967,42 @@ function StatCard({
     start: !loading,
   });
 
-  const trendSurfaceMap: Record<
-    NonNullable<StatCardProps["trend"]>,
-    EnergySurface
-  > = {
-    up: "strength",
-    down: "focus",
-    neutral: "recovery",
+  const trendGradients = {
+    up: "from-accent-green-500 to-accent-emerald-600",
+    down: "from-accent-blue-500 to-accent-indigo-600",
+    neutral: "from-accent-purple-500 to-accent-pink-600",
   };
-
-  const surface = trendSurfaceMap[trend];
 
   if (loading) {
     return <SkeletonStatCard />;
   }
 
   return (
-    <Card
-      variant="default"
-      padding="md"
-      surface={surface}
-      className="text-center"
-    >
-      {icon && (
-        <div
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full mb-3"
-          style={{ background: "var(--surface-card-overlay)" }}
+    <div className="relative glass-thick backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg overflow-hidden hover:scale-[1.02] transition-all duration-300">
+      {/* Gradient overlay */}
+      <div
+        className={`absolute inset-0 bg-linear-to-br ${trendGradients[trend]} opacity-90`}
+      />
+
+      {/* Content */}
+      <div className="relative text-center p-4">
+        {icon && (
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-full mb-3 bg-white/20 backdrop-blur-sm">
+            <div className="text-white drop-shadow-md">{icon}</div>
+          </div>
+        )}
+        <Display
+          size="md"
+          as="p"
+          className="tabular-nums text-white drop-shadow-md"
         >
-          {icon}
-        </div>
-      )}
-      <Display size="md" variant="inverse" as="p" className="tabular-nums">
-        {count}
-      </Display>
-      <Body size="sm" variant="inverse" weight="medium" className="mt-2">
-        {label}
-      </Body>
-    </Card>
+          {count}
+        </Display>
+        <Body size="sm" weight="medium" className="mt-2 text-white/90">
+          {label}
+        </Body>
+      </div>
+    </div>
   );
 }
 

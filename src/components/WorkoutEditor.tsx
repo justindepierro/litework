@@ -38,7 +38,7 @@ import BlockInstanceEditor from "./BlockInstanceEditor";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { ExerciseItem } from "./workout-editor/ExerciseItem";
-import { Label } from "@/components/ui/Typography";
+import { Label, Caption, Body } from "@/components/ui/Typography";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;
@@ -93,12 +93,12 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
     blockInstance.customizations.removedExercises.length > 0;
 
   return (
-    <div className="border-2 border-(--accent-purple-300) rounded-lg bg-(--accent-purple-50)/30 p-4">
+    <div className="border-2 border-accent-purple-300 rounded-lg bg-accent-purple-50/30 p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-silver-500 hover:text-(--accent-purple-600)"
+            className="p-1 text-silver-500 hover:text-accent-purple-600 transition-colors"
           >
             {isCollapsed ? (
               <ChevronRight className="w-4 h-4" />
@@ -107,7 +107,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
             )}
           </button>
 
-          <Package className="w-4 h-4 text-(--accent-purple-600)" />
+          <Package className="w-4 h-4 text-accent-purple-600" />
 
           <div className="flex-1">
             <div className="font-medium text-silver-900">
@@ -127,7 +127,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onCustomize(blockInstance)}
-            className="px-3 py-1.5 text-sm bg-(--accent-purple-600) text-white rounded-lg hover:bg-(--accent-purple-700) transition-colors flex items-center space-x-1"
+            className="px-3 py-1.5 text-sm bg-accent-purple-600 text-white rounded-lg hover:bg-accent-purple-700 transition-colors flex items-center space-x-1"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Customize</span>
@@ -136,7 +136,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
       </div>
 
       {!isCollapsed && (
-        <div className="ml-6 space-y-3 mt-3 border-l-2 border-(--accent-purple-200) pl-4">
+        <div className="ml-6 space-y-3 mt-3 border-l-2 border-accent-purple-200 pl-4">
           {blockInstance.notes && (
             <div className="text-sm text-silver-600 italic bg-white/50 p-2 rounded">
               {blockInstance.notes}
@@ -313,9 +313,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                   editedGroup.type === "superset") && (
                   <>
                     <div className="flex items-center space-x-1">
-                      <span className="text-(--text-secondary)">
-                        Rest between exercises:
-                      </span>
+                      <Caption variant="muted">Rest between exercises:</Caption>
                       <Input
                         type="number"
                         value={editedGroup.restBetweenExercises || ""}
@@ -331,13 +329,11 @@ const GroupItem: React.FC<GroupItemProps> = ({
                         inputSize="sm"
                         className="w-16"
                       />
-                      <span className="text-(--text-secondary)">sec</span>
+                      <Caption variant="muted">sec</Caption>
                     </div>
 
                     <div className="flex items-center space-x-1">
-                      <span className="text-(--text-secondary)">
-                        Rest between rounds:
-                      </span>
+                      <Caption variant="muted">Rest between rounds:</Caption>
                       <Input
                         type="number"
                         value={editedGroup.restBetweenRounds || ""}
@@ -353,14 +349,14 @@ const GroupItem: React.FC<GroupItemProps> = ({
                         inputSize="sm"
                         className="w-16"
                       />
-                      <span className="text-(--text-secondary)">sec</span>
+                      <Caption variant="muted">sec</Caption>
                     </div>
                   </>
                 )}
 
                 {editedGroup.type === "circuit" && (
                   <div className="flex items-center space-x-1">
-                    <span className="text-(--text-secondary)">Rounds:</span>
+                    <Caption variant="muted">Rounds:</Caption>
                     <Input
                       type="number"
                       value={editedGroup.rounds || ""}
@@ -413,7 +409,10 @@ const GroupItem: React.FC<GroupItemProps> = ({
               {(group.restBetweenExercises ||
                 group.restBetweenRounds ||
                 group.rounds) && (
-                <div className="flex items-center space-x-3 text-xs text-(--text-secondary)">
+                <Caption
+                  variant="muted"
+                  className="flex items-center space-x-3"
+                >
                   {group.restBetweenExercises !== undefined && (
                     <span>Rest between: {group.restBetweenExercises}s</span>
                   )}
@@ -423,7 +422,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
                   {group.rounds !== undefined && (
                     <span>{group.rounds} rounds</span>
                   )}
-                </div>
+                </Caption>
               )}
             </div>
           )}
@@ -438,7 +437,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
           </button>
           <button
             onClick={() => onDeleteGroup(group.id)}
-            className="p-1 text-silver-500 hover:text-(--status-error)"
+            className="p-1 text-silver-500 hover:text-accent-red-600 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -532,45 +531,45 @@ const GroupCreationModal: React.FC<GroupCreationModalProps> = ({
                   onClick={() => setGroupType("superset")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "superset"
-                      ? "border-blue-500 bg-blue-50 text-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50 text-accent-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <Zap className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Superset</div>
-                  <div className="text-xs text-(--text-tertiary) mt-1">
+                  <Caption variant="muted" className="mt-1">
                     2-4 exercises
-                  </div>
+                  </Caption>
                 </button>
 
                 <button
                   onClick={() => setGroupType("circuit")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "circuit"
-                      ? "border-blue-500 bg-blue-50 text-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50 text-accent-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <RotateCcw className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Circuit</div>
-                  <div className="text-xs text-(--text-tertiary) mt-1">
+                  <Caption variant="muted" className="mt-1">
                     Multiple rounds
-                  </div>
+                  </Caption>
                 </button>
 
                 <button
                   onClick={() => setGroupType("section")}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     groupType === "section"
-                      ? "border-blue-500 bg-blue-50 text-blue-500"
+                      ? "border-accent-blue-500 bg-accent-blue-50 text-accent-blue-500"
                       : "border-silver-400 hover:border-silver-500"
                   }`}
                 >
                   <Target className="w-6 h-6 mx-auto mb-2" />
                   <div className="text-sm font-medium">Section</div>
-                  <div className="text-xs text-(--text-tertiary) mt-1">
+                  <Caption variant="muted" className="mt-1">
                     Workout phase
-                  </div>
+                  </Caption>
                 </button>
               </div>
             </div>
@@ -1190,7 +1189,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
         {/* Main workout editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Enhanced mobile header */}
-          <div className="p-4 sm:p-6 border-b border-silver-200 bg-(--bg-secondary)">
+          <div className="p-4 sm:p-6 border-b border-silver-200 bg-silver-50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-1 pr-4">
                 <Input
@@ -1209,7 +1208,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               </div>
               <button
                 onClick={onClose}
-                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-(--interactive-hover) transition-colors touch-manipulation shrink-0"
+                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-silver-100 transition-colors touch-manipulation shrink-0"
               >
                 ×
               </button>
@@ -1224,7 +1223,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       onClick={() => setShowBlockLibrary(true)}
                       variant="primary"
                       leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-gradient-to-r from-accent-purple-600 to-accent-blue-600 hover:from-accent-purple-700 hover:to-accent-blue-700"
                     >
                       Add Block
                     </Button>
@@ -1251,10 +1250,15 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   </>
                 ) : (
                   <>
-                    <div className="col-span-full bg-(--accent-blue-100) border-2 border-(--accent-blue-400) rounded-lg p-3 text-sm text-(--accent-blue-900) font-medium">
-                      {selectedExerciseIds.size === 0
-                        ? "Select exercises to group together"
-                        : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
+                    <div className="col-span-full bg-accent-blue-50 border-2 border-accent-blue-300 rounded-lg p-3">
+                      <Body
+                        size="sm"
+                        className="text-accent-blue-800 font-medium"
+                      >
+                        {selectedExerciseIds.size === 0
+                          ? "Select exercises to group together"
+                          : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
+                      </Body>
                     </div>
 
                     <Button
@@ -1289,7 +1293,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   disabled={isSaving || !workout.name?.trim()}
                   variant="primary"
                   fullWidth
-                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-gradient-to-r from-(--status-success) to-(--accent-emerald-600) hover:from-(--status-success) hover:to-(--accent-emerald-700) border-2 border-(--status-success)"
+                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-success to-accent-green-600 hover:from-success hover:to-accent-green-700 border-2 border-success"
                 >
                   {isSaving ? "Saving..." : "Save Workout"}
                 </Button>

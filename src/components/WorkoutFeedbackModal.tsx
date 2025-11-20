@@ -44,7 +44,7 @@ const RatingSlider: React.FC<RatingSliderProps> = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <div className="text-blue-500">{icon}</div>
+        <div className="text-accent-blue-500">{icon}</div>
         <Label className="text-base font-semibold">{label}</Label>
       </div>
 
@@ -59,8 +59,8 @@ const RatingSlider: React.FC<RatingSliderProps> = ({
               flex-1 p-3 rounded-lg border-2 transition-all
               ${
                 value === rating
-                  ? "border-blue-500 bg-blue-50 text-blue-500 font-semibold"
-                  : "border-silver-300 bg-white hover:border-blue-200 hover:bg-silver-50"
+                  ? "border-accent-blue-500 bg-accent-blue-50 text-accent-blue-500 font-semibold"
+                  : "border-silver-300 bg-white hover:border-accent-blue-200 hover:bg-silver-50"
               }
             `}
           >

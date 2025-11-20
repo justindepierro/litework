@@ -328,10 +328,10 @@ export default function WorkoutAssignmentDetailModal({
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
                     statusColor === "green"
-                      ? "bg-[var(--color-semantic-success-lightest)] text-[var(--color-semantic-success-dark)]"
+                      ? "bg-success-lighter text-success-dark"
                       : statusColor === "red"
-                        ? "bg-[var(--color-semantic-error-lightest)] text-[var(--color-semantic-error-dark)]"
-                        : "bg-[var(--color-semantic-info-lightest)] text-[var(--color-semantic-info-dark)]"
+                        ? "bg-error-lighter text-error-dark"
+                        : "bg-info-lighter text-info-dark"
                   }`}
                 >
                   {statusText}
@@ -352,7 +352,7 @@ export default function WorkoutAssignmentDetailModal({
               </div>
 
               {/* Assignment Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-[var(--color-silver-200)] rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 glass backdrop-blur-lg bg-white/60 border border-white/30 rounded-lg">
                 <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                   <Calendar className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                   <span className="font-medium">Date:</span>

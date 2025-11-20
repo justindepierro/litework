@@ -17,10 +17,14 @@
     "deploy": "./scripts/deployment/deploy.sh",
     "deploy:verify": "node ./scripts/deployment/deploy-verify.mjs",
     "clean": "rm -rf .next && rm -rf node_modules/.cache",
-    "analyze": "ANALYZE=true next build --webpack",
+    "analyze": "ANALYZE=true npm run build",
+    "lighthouse": "lighthouse http://localhost:3000 --view --output-path=./docs/reports/lighthouse-report.html",
+    "analyze:server": "BUNDLE_ANALYZE=server npm run analyze",
+    "analyze:browser": "BUNDLE_ANALYZE=browser npm run analyze",
     "cleanup:imports": "./scripts/dev/cleanup-unused-imports.sh",
     "cleanup:codebase": "./scripts/dev/cleanup-codebase.sh",
-    "audit:contrast": "node ./scripts/analysis/contrast-audit.mjs"
+    "audit:contrast": "node ./scripts/analysis/contrast-audit.mjs",
+    "generate:tokens": "node scripts/dev/generate-tokens.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
@@ -47,7 +51,7 @@
     "web-vitals": "^5.1.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.0.1",
+    "@next/bundle-analyzer": "^16.0.3",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^20",
     "@types/react": "^19",

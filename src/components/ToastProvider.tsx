@@ -146,7 +146,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       {/* Toast Container - Fixed positioning with AnimatePresence */}
       <div
-        className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-[calc(100vw-2rem)]"
+        className="fixed top-4 right-4 left-4 sm:left-auto sm:top-6 sm:right-6 z-50 flex flex-col gap-3 pointer-events-none"
         aria-live="polite"
         aria-atomic="false"
       >
