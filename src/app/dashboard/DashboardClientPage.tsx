@@ -103,7 +103,7 @@ const DashboardSectionHeading = ({
   </div>
 );
 
-function DashboardPage({ initialData }: DashboardClientPageProps) {
+function DashboardClientPageComponent({ initialData }: DashboardClientPageProps) {
   const DEFAULT_STATS: DashboardStats = {
     workoutsThisWeek: 0,
     personalRecords: 0,
@@ -1025,4 +1025,4 @@ function StatCard({
   );
 }
 
-export default withPageErrorBoundary(DashboardPage);
+export default withPageErrorBoundary(DashboardClientPageComponent, "Dashboard");
