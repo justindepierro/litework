@@ -9,6 +9,9 @@ import { PRComparison } from "@/lib/pr-detection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorkoutLiveState } from "@/hooks/useWorkoutLiveState";
 import { useSetCompletion } from "@/hooks/useSetCompletion";
+import { ExerciseCard } from "@/components/WorkoutLive/ExerciseCard";
+import { NavigationButtons } from "@/components/WorkoutLive/NavigationButtons";
+import { ExitConfirmModal } from "@/components/WorkoutLive/ExitConfirmModal";
 import {
   ChevronRight,
   ChevronDown,
@@ -607,174 +610,25 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
         {/* BOTTOM SECTION: Fixed Input Area - Always Visible, No Scroll */}
         {currentExercise && !currentExercise.completed && (
-          <div className="shrink-0 bg-surface border-t-2 border-neutral-light shadow-2xl">
-            <div className="px-4 py-4 pb-safe">
-              {/* Active Exercise Summary Card */}
-              <div className="mb-4 p-4 bg-gradient-subtle-blue border-2 border-accent-blue-200 rounded-xl">
-                <div className="flex items-center justify-between mb-2">
-                  <Heading level="h3" className="flex-1 pr-2">
-                    {currentExercise.exercise_name}
-                  </Heading>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
-                      {currentExercise.sets_completed + 1}
-                    </div>
-                    <div className="text-xs text-secondary font-medium">
-                      of {currentExercise.sets_target}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Target and Progress */}
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
-                    <span className="text-navy-600">Target:</span>
-                    <span className="font-semibold text-navy-700">
-                      {currentExercise.sets_target} ×{" "}
-                      {currentExercise.reps_target}
-                      {currentExercise.weight_target &&
-                        ` @ ${currentExercise.weight_target} lbs`}
-                    </span>
-                  </div>
-                  {currentExercise.rest_seconds > 0 && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
-                      <Clock className="w-3.5 h-3.5 text-navy-600" />
-                      <span className="font-medium text-navy-600">
-                        {currentExercise.rest_seconds}s
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Last Set Display + Quick Copy */}
-                {currentExercise.set_records.length > 0 && (
-                  <div className="mt-3">
-                    {/* Last Set Info */}
-                    <div className="flex items-center justify-between mb-2 px-1">
-                      <span className="text-xs font-semibold text-navy-600 uppercase tracking-wide">
-                        Last Set
-                      </span>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-bold text-accent-blue-500">
-                          {currentExercise.set_records[
-                            currentExercise.set_records.length - 1
-                          ].weight || 0}{" "}
-                          lbs
-                        </span>
-                        <span className="text-navy-500">×</span>
-                        <span className="font-bold text-navy-700">
-                          {
-                            currentExercise.set_records[
-                              currentExercise.set_records.length - 1
-                            ].reps
-                          }{" "}
-                          reps
-                        </span>
-                        {currentExercise.set_records[
-                          currentExercise.set_records.length - 1
-                        ].rpe && (
-                          <span className="text-xs font-medium text-brand px-1.5 py-0.5 bg-brand-lighter rounded">
-                            RPE{" "}
-                            {
-                              currentExercise.set_records[
-                                currentExercise.set_records.length - 1
-                              ].rpe
-                            }
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Copy Button */}
-                    <button
-                      onClick={() => {
-                        const lastSet =
-                          currentExercise.set_records[
-                            currentExercise.set_records.length - 1
-                          ];
-                        if (lastSet.weight) setWeight(lastSet.weight);
-                        setReps(lastSet.reps);
-                        if (lastSet.rpe) setRpe(lastSet.rpe);
-                      }}
-                      className="w-full py-2 bg-white hover:bg-accent-blue-50 active:bg-accent-blue-100 border-2 border-accent-blue-200 text-accent-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
-                    >
-                      <span className="text-base">↻</span>
-                      <span>Copy to Inputs</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Horizontal Input Layout */}
-              <div className="space-y-3 mb-4">
-                {/* Weight and Reps side-by-side */}
-                <div className="grid grid-cols-2 gap-3">
-                  <StepperInput
-                    label="Weight"
-                    value={weight}
-                    onChange={setWeight}
-                    step={5}
-                    min={0}
-                    unit="lbs"
-                  />
-                  <StepperInput
-                    label="Reps"
-                    value={reps}
-                    onChange={setReps}
-                    step={1}
-                    min={0}
-                  />
-                </div>
-
-                {/* RPE full width below */}
-                <StepperInput
-                  label="RPE (Effort)"
-                  value={rpe}
-                  onChange={setRpe}
-                  step={1}
-                  min={1}
-                  max={10}
-                />
-              </div>
-
-              {/* Complete Set Button - Larger */}
-              <button
-                onClick={handleCompleteSet}
-                className="w-full py-5 bg-gradient-cta-blue text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                style={{ minHeight: "64px" }}
-              >
-                <CheckCircle className="w-7 h-7" />
-                Complete Set
-              </button>
-            </div>
-          </div>
+          <ExerciseCard
+            exercise={currentExercise}
+            weight={weight}
+            reps={reps}
+            rpe={rpe}
+            onWeightChange={setWeight}
+            onRepsChange={setReps}
+            onRpeChange={setRpe}
+            onCompleteSet={handleCompleteSet}
+          />
         )}
 
         {/* Finished all sets but workout not complete - show finish button */}
         {currentExercise && currentExercise.completed && (
-          <div className="shrink-0 bg-white border-t-2 border-neutral-light shadow-2xl">
-            <div className="px-4 py-5">
-              {isLastExercise ? (
-                <button
-                  onClick={handleCompleteWorkout}
-                  className="w-full py-5 bg-gradient-cta-green text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                  style={{ minHeight: "64px" }}
-                >
-                  <Trophy className="w-7 h-7" />
-                  Finish Workout
-                </button>
-              ) : (
-                <button
-                  onClick={handleNext}
-                  className="w-full py-5 bg-gradient-cta-blue text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
-                  style={{ minHeight: "64px" }}
-                >
-                  Next Exercise
-                  <ChevronRight className="w-7 h-7" />
-                </button>
-              )}
-            </div>
-          </div>
+          <NavigationButtons
+            isLastExercise={isLastExercise}
+            onNext={handleNext}
+            onComplete={handleCompleteWorkout}
+          />
         )}
       </div>
       {/* END: Split View Container */}
@@ -963,63 +817,18 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         </ModalBackdrop>
       )}
 
-      {showExitConfirm && (
-        <ModalBackdrop
-          isOpen={showExitConfirm}
-          onClose={closeExitConfirm}
-        >
-          <div className="bg-white rounded-2xl max-w-md w-full">
-            <ModalHeader
-              title="Exit Workout?"
-              subtitle="Choose how you'd like to handle this workout session."
-              icon={<AlertCircle className="w-6 h-6" />}
-              onClose={closeExitConfirm}
-            />
-            <ModalContent>
-              <div className="space-y-3">
-                <button
-                  onClick={async () => {
-                    await pauseSession();
-                    router.push("/dashboard");
-                  }}
-                  className="w-full p-4 bg-primary-lighter hover:bg-primary-light active:bg-primary text-primary-dark rounded-xl font-medium text-left border-2 border-primary-light transition-all duration-150 active:scale-[0.99]"
-                >
-                  <div className="font-semibold mb-1">💾 Save & Exit</div>
-                  <div className="text-sm text-primary-dark">
-                    Your progress will be saved. Resume anytime.
-                  </div>
-                </button>
-
-                <button
-                  onClick={async () => {
-                    if (
-                      confirm(
-                        "Are you sure? This workout will be marked as abandoned and cannot be resumed."
-                      )
-                    ) {
-                      await abandonSession();
-                      router.push("/dashboard");
-                    }
-                  }}
-                  className="w-full p-4 bg-error-lighter hover:bg-error-light active:bg-error text-error-dark rounded-xl font-medium text-left border-2 border-error-light transition-all duration-150 active:scale-[0.99]"
-                >
-                  <div className="font-semibold mb-1">🗑️ Abandon Workout</div>
-                  <div className="text-sm text-error-dark">
-                    Discard this session completely.
-                  </div>
-                </button>
-
-                <button
-                  onClick={closeExitConfirm}
-                  className="w-full px-4 py-3 bg-neutral-lighter hover:bg-neutral-light active:bg-neutral text-navy-700 rounded-xl font-medium active:scale-95 transition-all duration-150"
-                >
-                  Cancel
-                </button>
-              </div>
-            </ModalContent>
-          </div>
-        </ModalBackdrop>
-      )}
+      <ExitConfirmModal
+        isOpen={showExitConfirm}
+        onClose={closeExitConfirm}
+        onSaveAndExit={async () => {
+          await pauseSession();
+          router.push("/dashboard");
+        }}
+        onAbandon={async () => {
+          await abandonSession();
+          router.push("/dashboard");
+        }}
+      />
     </div>
   );
 }
