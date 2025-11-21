@@ -43,6 +43,7 @@ import { useExerciseOperations } from "@/hooks/useExerciseOperations";
 import { useGroupOperations } from "@/hooks/useGroupOperations";
 import { useExerciseSelection } from "@/hooks/useExerciseSelection";
 import { useBlockOperations } from "@/hooks/useBlockOperations";
+import { WorkoutEditorHeader, ActionToolbar } from "./WorkoutEditor/";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;
@@ -842,117 +843,37 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
       <div className="bg-white rounded-2xl sm:rounded-lg w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col lg:flex-row shadow-2xl">
         {/* Main workout editor */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Enhanced mobile header */}
+          {/* Header */}
+          <WorkoutEditorHeader
+            workout={workout}
+            onChange={onChange}
+            onClose={onClose}
+          />
+
+          {/* Action Toolbar */}
           <div className="p-4 sm:p-6 border-b border-silver-200 bg-silver-50">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex-1 pr-4">
-                <Input
-                  label="Workout Name"
-                  type="text"
-                  value={workout.name || ""}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    // Directly update workout state
-                    onChange({ ...workout, name: newName });
-                  }}
-                  placeholder="Enter workout name..."
-                  className="text-xl sm:text-lg font-bold"
-                  fullWidth
-                />
-              </div>
-              <button
-                onClick={onClose}
-                className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-silver-100 transition-colors touch-manipulation shrink-0"
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Enhanced mobile action buttons */}
-            <div className="space-y-3">
-              <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
-                {!selectionOps.selectionMode ? (
-                  <>
-                    <Button
-                      onClick={() => blockOps.setShowBlockLibrary(true)}
-                      variant="primary"
-                      leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-linear-to-r from-accent-purple-600 to-accent-blue-600 hover:from-accent-purple-700 hover:to-accent-blue-700"
-                    >
-                      Add Block
-                    </Button>
-
-                    <Button
-                      onClick={exerciseOps.addExercise}
-                      variant="primary"
-                      leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Add Exercise
-                    </Button>
-
-                    {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
-                      .length > 0 && (
-                      <Button
-                        onClick={() => selectionOps.enterSelectionMode()}
-                        variant="success"
-                        leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      >
-                        Group Exercises
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="col-span-full bg-accent-blue-50 border-2 border-accent-blue-300 rounded-lg p-3">
-                      <Body
-                        size="sm"
-                        className="text-accent-blue-800 font-medium"
-                      >
-                        {selectionOps.selectedExerciseIds.size === 0
-                          ? "Select exercises to group together"
-                          : `${selectionOps.selectedExerciseIds.size} exercise${selectionOps.selectedExerciseIds.size > 1 ? "s" : ""} selected`}
-                      </Body>
-                    </div>
-
-                    <Button
-                      onClick={() => selectionOps.selectAllExercises(workout.exercises.filter((ex) => !ex.groupId && !ex.blockInstanceId).map((ex) => ex.id))}
-                      variant="secondary"
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Select All
-                    </Button>
-
-                    <Button
-                      onClick={() => setShowGroupModal(true)}
-                      disabled={selectionOps.selectedExerciseIds.size < 2}
-                      variant="primary"
-                      leftIcon={<Zap className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
-                    >
-                      Create Group
-                    </Button>
-
-                    <Button onClick={selectionOps.clearSelection} variant="danger">
-                      Cancel
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              {/* Save Workout Button - Separate Row */}
-              {!selectionOps.selectionMode && (
-                <Button
-                  onClick={saveWorkout}
-                  disabled={isSaving || !workout.name?.trim()}
-                  variant="primary"
-                  fullWidth
-                  className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-success to-accent-green-600 hover:from-success hover:to-accent-green-700 border-2 border-success"
-                >
-                  {isSaving ? "Saving..." : "Save Workout"}
-                </Button>
-              )}
-            </div>
+            <ActionToolbar
+              selectionMode={selectionOps.selectionMode}
+              selectedCount={selectionOps.selectedExerciseIds.size}
+              ungroupedExercisesCount={
+                ungroupedExercises.filter((ex) => !ex.blockInstanceId).length
+              }
+              onAddExercise={exerciseOps.addExercise}
+              onAddBlock={() => blockOps.setShowBlockLibrary(true)}
+              onEnterSelectionMode={selectionOps.enterSelectionMode}
+              onSelectAll={() =>
+                selectionOps.selectAllExercises(
+                  workout.exercises
+                    .filter((ex) => !ex.groupId && !ex.blockInstanceId)
+                    .map((ex) => ex.id)
+                )
+              }
+              onCreateGroup={() => setShowGroupModal(true)}
+              onCancelSelection={selectionOps.clearSelection}
+              onSave={saveWorkout}
+              isSaving={isSaving}
+              canSave={!!workout.name?.trim()}
+            />
           </div>
 
           {/* Enhanced mobile content area */}
