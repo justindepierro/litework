@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -25,6 +25,8 @@ import { Alert } from "@/components/ui/Alert";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Heading, Body, Label } from "@/components/ui/Typography";
 import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { useBulkOperationState } from "@/hooks/useBulkOperationState";
+import { useBulkOperationHandlers } from "@/hooks/useBulkOperationHandlers";
 
 interface EnhancedAthlete {
   id: string;
@@ -90,179 +92,66 @@ export default withErrorBoundary(function BulkOperationModal({
   groups,
   onExecute,
 }: BulkOperationModalProps) {
-  const [currentStep, setCurrentStep] = useState<
-    "select" | "configure" | "confirm" | "executing"
-  >("select");
-  const [operationType, setOperationType] =
-    useState<BulkOperation["type"]>("bulk_invite");
-  const [selectedAthletes, setSelectedAthletes] = useState<string[]>([]);
-  const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
-  const [operationData, setOperationData] = useState<Record<string, unknown>>(
-    {}
-  );
-  const [isExecuting, setIsExecuting] = useState(false);
-  const [executionResults, setExecutionResults] = useState<{
-    success: boolean;
-    error?: string;
-    results?: unknown;
-  } | null>(null);
+  // Initialize state hook
+  const state = useBulkOperationState();
 
-  // Bulk invite form data
-  const [inviteData, setInviteData] = useState<BulkInviteData>({
-    groupIds: [],
-    message: "",
+  // Initialize handlers hook
+  const handlers = useBulkOperationHandlers({
+    athletes,
+    currentStep: state.currentStep,
+    setCurrentStep: state.setCurrentStep,
+    selectedAthletes: state.selectedAthletes,
+    setSelectedAthletes: state.setSelectedAthletes,
+    selectedGroups: state.selectedGroups,
+    setSelectedGroups: state.setSelectedGroups,
+    expandedGroups: state.expandedGroups,
+    setExpandedGroups: state.setExpandedGroups,
+    operationType: state.operationType,
+    getCurrentOperationData: state.getCurrentOperationData,
+    setOperationData: state.setOperationData,
+    setIsExecuting: state.setIsExecuting,
+    setExecutionResults: state.setExecutionResults,
+    onExecute,
   });
-
-  // Bulk message form data
-  const [messageData, setMessageData] = useState<BulkMessageData>({
-    subject: "",
-    message: "",
-    priority: "normal",
-    notifyViaEmail: false,
-  });
-
-  // Bulk status update data
-  const [statusData, setStatusData] = useState<BulkStatusData>({
-    status: "active",
-    reason: "",
-  });
-
-  // Bulk workout assignment data
-  const [workoutData, setWorkoutData] = useState<BulkWorkoutData>({
-    workoutId: "",
-    scheduledDate: new Date().toISOString().split("T")[0],
-    notes: "",
-  });
-
-  const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
 
   if (!isOpen) return null;
 
-  const resetModal = () => {
-    setCurrentStep("select");
-    setSelectedAthletes([]);
-    setSelectedGroups([]);
-    setOperationData({});
-    setInviteData({ groupIds: [], message: "" });
-    setMessageData({
-      subject: "",
-      message: "",
-      priority: "normal",
-      notifyViaEmail: false,
-    });
-    setStatusData({ status: "active", reason: "" });
-    setWorkoutData({
-      workoutId: "",
-      scheduledDate: new Date().toISOString().split("T")[0],
-      notes: "",
-    });
-    setIsExecuting(false);
-    setExecutionResults(null);
-  };
-
   const handleClose = () => {
-    resetModal();
+    state.resetState();
     onClose();
   };
 
-  const toggleAthleteSelection = (athleteId: string) => {
-    setSelectedAthletes((prev) =>
-      prev.includes(athleteId)
-        ? prev.filter((id) => id !== athleteId)
-        : [...prev, athleteId]
-    );
-  };
+  // Destructure for cleaner access in JSX
+  const {
+    currentStep,
+    operationType,
+    setOperationType,
+    selectedAthletes,
+    selectedGroups,
+    expandedGroups,
+    inviteData,
+    setInviteData,
+    messageData,
+    setMessageData,
+    statusData,
+    setStatusData,
+    workoutData,
+    setWorkoutData,
+    isExecuting,
+    executionResults,
+  } = state;
 
-  const toggleGroupSelection = (groupId: string) => {
-    setSelectedGroups((prev) =>
-      prev.includes(groupId)
-        ? prev.filter((id) => id !== groupId)
-        : [...prev, groupId]
-    );
-  };
-
-  const toggleGroupExpansion = (groupId: string) => {
-    setExpandedGroups((prev) =>
-      prev.includes(groupId)
-        ? prev.filter((id) => id !== groupId)
-        : [...prev, groupId]
-    );
-  };
-
-  const selectAllAthletes = () => {
-    const allAthleteIds = athletes.map((a) => a.id);
-    setSelectedAthletes(allAthleteIds);
-  };
-
-  const clearAllSelections = () => {
-    setSelectedAthletes([]);
-    setSelectedGroups([]);
-  };
-
-  const getAthletesInGroup = (groupId: string) => {
-    return athletes.filter((athlete) => athlete.groupIds?.includes(groupId));
-  };
-
-  const getTotalSelectedCount = () => {
-    const directAthletes = selectedAthletes.length;
-    const groupAthletes = selectedGroups.reduce((count, groupId) => {
-      return count + getAthletesInGroup(groupId).length;
-    }, 0);
-    return directAthletes + groupAthletes;
-  };
-
-  const handleNextStep = () => {
-    if (currentStep === "select") {
-      setCurrentStep("configure");
-    } else if (currentStep === "configure") {
-      // Prepare operation data based on type
-      let data: Record<string, unknown>;
-      switch (operationType) {
-        case "bulk_invite":
-          data = { ...inviteData };
-          break;
-        case "bulk_message":
-          data = { ...messageData };
-          break;
-        case "bulk_update_status":
-          data = { ...statusData };
-          break;
-        case "bulk_assign_workout":
-          data = { ...workoutData };
-          break;
-        default:
-          data = {};
-      }
-      setOperationData(data);
-      setCurrentStep("confirm");
-    } else if (currentStep === "confirm") {
-      executeOperation();
-    }
-  };
-
-  const executeOperation = async () => {
-    setCurrentStep("executing");
-    setIsExecuting(true);
-
-    const operation: BulkOperation = {
-      type: operationType,
-      targetAthletes: selectedAthletes,
-      targetGroups: selectedGroups,
-      data: operationData,
-    };
-
-    try {
-      await onExecute(operation);
-      setExecutionResults({ success: true });
-    } catch (error) {
-      setExecutionResults({
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-    } finally {
-      setIsExecuting(false);
-    }
-  };
+  const {
+    toggleAthleteSelection,
+    toggleGroupSelection,
+    toggleGroupExpansion,
+    selectAllAthletes,
+    clearAllSelections,
+    getAthletesInGroup,
+    getTotalSelectedCount,
+    handleNextStep,
+    handlePreviousStep,
+  } = handlers;
 
   const renderStepContent = () => {
     switch (currentStep) {
