@@ -26,7 +26,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Heading, Body, Label } from "@/components/ui/Typography";
 import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useBulkOperationState } from "@/hooks/useBulkOperationState";
-import { useBulkOperationHandlers } from "@/hooks/useBulkOperationHandlers";
+import { useBulkOperationHandlers, type BulkOperation } from "@/hooks/useBulkOperationHandlers";
 
 interface EnhancedAthlete {
   id: string;
@@ -49,17 +49,6 @@ interface BulkOperationModalProps {
   athletes: EnhancedAthlete[];
   groups: Group[];
   onExecute: (operation: BulkOperation) => Promise<void>;
-}
-
-interface BulkOperation {
-  type:
-    | "bulk_invite"
-    | "bulk_message"
-    | "bulk_assign_workout"
-    | "bulk_update_status";
-  targetAthletes: string[];
-  targetGroups: string[];
-  data: Record<string, unknown>;
 }
 
 interface BulkInviteData {
@@ -782,14 +771,7 @@ export default withErrorBoundary(function BulkOperationModal({
         {currentStep !== "executing" && (
           <ModalFooter align="between">
             <Button
-              onClick={
-                currentStep === "select"
-                  ? handleClose
-                  : () =>
-                      setCurrentStep(
-                        currentStep === "configure" ? "select" : "configure"
-                      )
-              }
+              onClick={currentStep === "select" ? handleClose : handlePreviousStep}
               variant="secondary"
             >
               {currentStep === "select" ? "Cancel" : "Back"}

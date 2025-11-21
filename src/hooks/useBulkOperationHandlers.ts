@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { StepType } from "./useBulkOperationState";
+import type { StepType, OperationType } from "./useBulkOperationState";
 
 interface EnhancedAthlete {
   id: string;
@@ -11,8 +11,8 @@ interface EnhancedAthlete {
   groupIds?: string[];
 }
 
-interface BulkOperation {
-  type: string;
+export interface BulkOperation {
+  type: OperationType;
   targetAthletes: string[];
   targetGroups: string[];
   data: Record<string, unknown>;
@@ -28,7 +28,7 @@ interface UseBulkOperationHandlersProps {
   setSelectedGroups: (groups: string[]) => void;
   expandedGroups: string[];
   setExpandedGroups: (groups: string[]) => void;
-  operationType: string;
+  operationType: OperationType;
   getCurrentOperationData: () => Record<string, unknown>;
   setOperationData: (data: Record<string, unknown>) => void;
   setIsExecuting: (executing: boolean) => void;
