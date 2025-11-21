@@ -39,6 +39,10 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { ExerciseItem } from "./workout-editor/ExerciseItem";
 import { Label, Caption, Body } from "@/components/ui/Typography";
+import { useExerciseOperations } from "@/hooks/useExerciseOperations";
+import { useGroupOperations } from "@/hooks/useGroupOperations";
+import { useExerciseSelection } from "@/hooks/useExerciseSelection";
+import { useBlockOperations } from "@/hooks/useBlockOperations";
 
 interface WorkoutEditorProps {
   workout: WorkoutPlan;
@@ -659,21 +663,28 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   onChange,
   onClose,
 }) => {
-  // UI-only state (not part of workout data)
-  const [showBlockLibrary, setShowBlockLibrary] = useState(false);
-  const [showBlockEditor, setShowBlockEditor] = useState(false);
-  const [editingBlockInstance, setEditingBlockInstance] =
-    useState<BlockInstance | null>(null);
-
-  // Multi-select state
-  const [selectionMode, setSelectionMode] = useState(false);
-  const [selectedExerciseIds, setSelectedExerciseIds] = useState<Set<string>>(
-    new Set()
-  );
+  // Group modal state
   const [showGroupModal, setShowGroupModal] = useState(false);
 
   // KPI tags state
   const [availableKPIs, setAvailableKPIs] = useState<KPITag[]>([]);
+  
+  // State for saving
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Update workout data - single source of truth through onChange
+  const updateWorkout = useCallback(
+    (updatedWorkout: WorkoutPlan) => {
+      onChange(updatedWorkout);
+    },
+    [onChange]
+  );
+
+  // Initialize operation hooks
+  const exerciseOps = useExerciseOperations(workout, updateWorkout);
+  const groupOps = useGroupOperations(workout, updateWorkout);
+  const selectionOps = useExerciseSelection();
+  const blockOps = useBlockOperations(workout, updateWorkout);
 
   // Fetch available KPI tags
   useEffect(() => {
@@ -690,15 +701,6 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     };
     fetchKPIs();
   }, []);
-
-  // Update workout data - single source of truth through onChange
-  const updateWorkout = useCallback(
-    (updatedWorkout: WorkoutPlan) => {
-      // No need to override name - it's already in updatedWorkout
-      onChange(updatedWorkout);
-    },
-    [onChange]
-  );
 
   // Auto-add exercise to library when name is set/changed (with debouncing)
   const handleExerciseNameChange = useCallback(
@@ -741,353 +743,26 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
     [workout.exercises]
   );
 
-  // Add new exercise
-  const addExercise = () => {
-    const newExercise: WorkoutExercise = {
-      id: Date.now().toString(),
-      exerciseId: "new-exercise",
-      exerciseName: "New Exercise",
-      sets: 3,
-      reps: 10,
-      weightType: "fixed",
-      weight: 0,
-      restTime: 120,
-      order: workout.exercises.length + 1,
-    };
-
-    updateWorkout({
-      ...workout,
-      exercises: [...workout.exercises, newExercise],
-    });
-  };
-
-  // Add exercise from library (drag-and-drop)
-  const addExerciseFromLibrary = (libraryExercise: {
-    id: string;
-    name: string;
-    video_url?: string;
-  }) => {
-    const newExercise: WorkoutExercise = {
-      id: Date.now().toString(),
-      exerciseId: libraryExercise.id,
-      exerciseName: libraryExercise.name,
-      sets: 3,
-      reps: 10,
-      weightType: "fixed",
-      weight: 0,
-      restTime: 120,
-      order: workout.exercises.length + 1,
-      videoUrl: libraryExercise.video_url,
-    };
-
-    updateWorkout({
-      ...workout,
-      exercises: [...workout.exercises, newExercise],
-    });
-  };
-
-  // Update exercise
-  const updateExercise = (updatedExercise: WorkoutExercise) => {
-    console.log("[WorkoutEditor] updateExercise called:", {
-      id: updatedExercise.id,
-      name: updatedExercise.exerciseName,
-      currentExercises: workout.exercises.length,
-    });
-
-    const updatedExercises = workout.exercises.map((ex) =>
-      ex.id === updatedExercise.id ? updatedExercise : ex
-    );
-
-    console.log(
-      "[WorkoutEditor] Updated exercises array:",
-      updatedExercises.map((ex) => ({
-        id: ex.id,
-        name: ex.exerciseName,
-      }))
-    );
-
-    updateWorkout({
-      ...workout,
-      exercises: updatedExercises,
-    });
-  };
-
-  // Delete exercise
-  const deleteExercise = (exerciseId: string) => {
-    const updatedExercises = workout.exercises.filter(
-      (ex) => ex.id !== exerciseId
-    );
-
-    updateWorkout({
-      ...workout,
-      exercises: updatedExercises,
-    });
-  };
-
-  // Update group
-  const updateGroup = (updatedGroup: ExerciseGroup) => {
-    const updatedGroups = (workout.groups || []).map((group) =>
-      group.id === updatedGroup.id ? updatedGroup : group
-    );
-
-    updateWorkout({
-      ...workout,
-      groups: updatedGroups,
-    });
-  };
-
-  // Delete group
-  const deleteGroup = (groupId: string) => {
-    const updatedGroups = (workout.groups || []).filter(
-      (group) => group.id !== groupId
-    );
-
-    // Move exercises out of the deleted group
-    const updatedExercises = workout.exercises.map((ex) =>
-      ex.groupId === groupId ? { ...ex, groupId: undefined } : ex
-    );
-
-    updateWorkout({
-      ...workout,
-      groups: updatedGroups,
-      exercises: updatedExercises,
-    });
-  };
-
-  // Multi-select functions
-  const toggleExerciseSelection = (exerciseId: string) => {
-    setSelectedExerciseIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(exerciseId)) {
-        newSet.delete(exerciseId);
-      } else {
-        newSet.add(exerciseId);
-      }
-      return newSet;
-    });
-  };
-
-  const selectAllExercises = () => {
-    const ungroupedIds = workout.exercises
-      .filter((ex) => !ex.groupId && !ex.blockInstanceId)
-      .map((ex) => ex.id);
-    setSelectedExerciseIds(new Set(ungroupedIds));
-  };
-
-  const clearSelection = () => {
-    setSelectedExerciseIds(new Set());
-    setSelectionMode(false);
-  };
-
-  const groupSelectedExercises = (
+  // Wrapper for group creation that also handles modal and selection
+  const handleCreateGroup = (
     groupType: "superset" | "circuit" | "section",
     rounds?: number,
     restBetweenExercises?: number,
     restBetweenRounds?: number
   ) => {
-    if (selectedExerciseIds.size === 0) return;
+    if (selectionOps.selectedExerciseIds.size === 0) return;
 
-    const newGroupId = Date.now().toString();
-    const groupNumber = (workout.groups?.length || 0) + 1;
-    const newGroup: ExerciseGroup = {
-      id: newGroupId,
-      name: `Group ${groupNumber}`,
-      type: groupType,
-      order: groupNumber,
-      rounds: rounds,
-      restBetweenExercises: restBetweenExercises,
-      restBetweenRounds: restBetweenRounds,
-    };
-
-    // Move selected exercises into the new group
-    const updatedExercises = workout.exercises.map((ex) =>
-      selectedExerciseIds.has(ex.id) ? { ...ex, groupId: newGroupId } : ex
+    groupOps.createGroup(
+      Array.from(selectionOps.selectedExerciseIds),
+      groupType,
+      rounds,
+      restBetweenExercises,
+      restBetweenRounds
     );
 
-    updateWorkout({
-      ...workout,
-      groups: [...(workout.groups || []), newGroup],
-      exercises: updatedExercises,
-    });
-
-    clearSelection();
+    selectionOps.clearSelection();
     setShowGroupModal(false);
   };
-
-  // Move exercise up or down
-  const moveExercise = (
-    exerciseId: string,
-    direction: "up" | "down",
-    groupId?: string
-  ) => {
-    const relevantExercises = groupId
-      ? workout.exercises.filter((ex) => ex.groupId === groupId)
-      : workout.exercises.filter((ex) => !ex.groupId);
-
-    const exerciseIndex = relevantExercises.findIndex(
-      (ex) => ex.id === exerciseId
-    );
-    if (exerciseIndex === -1) return;
-
-    const newIndex = direction === "up" ? exerciseIndex - 1 : exerciseIndex + 1;
-    if (newIndex < 0 || newIndex >= relevantExercises.length) return;
-
-    // Create new exercise array with reordered items
-    const updatedExercises = [...workout.exercises];
-    const exerciseToMove = updatedExercises.find((ex) => ex.id === exerciseId);
-    const exerciseToSwap = updatedExercises.find(
-      (ex) => ex.id === relevantExercises[newIndex].id
-    );
-
-    if (exerciseToMove && exerciseToSwap) {
-      const tempOrder = exerciseToMove.order;
-      exerciseToMove.order = exerciseToSwap.order;
-      exerciseToSwap.order = tempOrder;
-    }
-
-    updateWorkout({
-      ...workout,
-      exercises: updatedExercises.sort((a, b) => a.order - b.order),
-    });
-  };
-
-  // Move exercise to different group
-  const moveExerciseToGroup = (exerciseId: string, targetGroupId?: string) => {
-    const updatedExercises = workout.exercises.map((ex) =>
-      ex.id === exerciseId ? { ...ex, groupId: targetGroupId } : ex
-    );
-
-    updateWorkout({
-      ...workout,
-      exercises: updatedExercises,
-    });
-  };
-
-  // Insert a workout block
-  const insertBlock = (block: WorkoutBlock) => {
-    // Generate unique IDs for this block instance
-    const timestamp = Date.now();
-    const blockInstanceId = `block-instance-${timestamp}`;
-
-    const maxOrder = Math.max(...workout.exercises.map((ex) => ex.order), 0);
-    const maxGroupOrder = Math.max(
-      ...(workout.groups || []).map((g) => g.order),
-      0
-    );
-
-    // Clone exercises with new IDs, updated order, and block instance tracking
-    const newExercises = block.exercises.map((ex, index) => ({
-      ...ex,
-      id: `${timestamp}-ex-${index}`,
-      order: maxOrder + index + 1,
-      groupId: ex.groupId ? `${timestamp}-group-${ex.groupId}` : undefined,
-      blockInstanceId, // Track which instance this exercise belongs to
-    }));
-
-    // Clone groups with new IDs, updated order, and block instance tracking
-    const newGroups = (block.groups || []).map((group, index) => ({
-      ...group,
-      id: `${timestamp}-group-${group.id}`,
-      order: maxGroupOrder + index + 1,
-      blockInstanceId, // Track which instance this group belongs to
-    }));
-
-    // Create the block instance metadata
-    const blockInstance: BlockInstance = {
-      id: blockInstanceId,
-      sourceBlockId: block.id,
-      sourceBlockName: block.name,
-      customizations: {
-        modifiedExercises: [],
-        addedExercises: [],
-        removedExercises: [],
-        modifiedGroups: [],
-        addedGroups: [],
-        removedGroups: [],
-      },
-      estimatedDuration: block.estimatedDuration,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    // Update the workout with the new block instance
-    updateWorkout({
-      ...workout,
-      exercises: [...workout.exercises, ...newExercises],
-      groups: [...(workout.groups || []), ...newGroups],
-      blockInstances: [...(workout.blockInstances || []), blockInstance],
-      estimatedDuration: workout.estimatedDuration + block.estimatedDuration,
-    });
-
-    // Close the block library
-    setShowBlockLibrary(false);
-  };
-
-  // Handle saving a new block
-  const handleSaveBlock = async (
-    blockData: Omit<
-      WorkoutBlock,
-      "id" | "createdAt" | "updatedAt" | "usageCount" | "lastUsed"
-    >
-  ) => {
-    try {
-      const response = await fetch("/api/blocks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(blockData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create block");
-      }
-
-      const data = await response.json();
-
-      // Optionally close the editor and show success message
-      setShowBlockEditor(false);
-
-      // Could add a toast notification here
-      // [REMOVED] console.log("Block created successfully:", data.block);
-
-      return data.block;
-    } catch (error) {
-      console.error("Error saving block:", error);
-      throw error;
-    }
-  };
-
-  // Handle block instance updates
-  const handleSaveBlockInstance = (
-    updatedExercises: WorkoutExercise[],
-    updatedGroups: ExerciseGroup[],
-    updatedInstance: BlockInstance
-  ) => {
-    // Replace exercises for this block instance
-    const otherExercises = workout.exercises.filter(
-      (ex) => ex.blockInstanceId !== updatedInstance.id
-    );
-    const otherGroups = (workout.groups || []).filter(
-      (g) => g.blockInstanceId !== updatedInstance.id
-    );
-
-    // Replace block instance
-    const otherInstances = (workout.blockInstances || []).filter(
-      (bi) => bi.id !== updatedInstance.id
-    );
-
-    updateWorkout({
-      ...workout,
-      exercises: [...otherExercises, ...updatedExercises],
-      groups: [...otherGroups, ...updatedGroups],
-      blockInstances: [...otherInstances, updatedInstance],
-    });
-  };
-
-  // State for saving
-  const [isSaving, setIsSaving] = useState(false);
 
   // Save workout to library
   const saveWorkout = async () => {
@@ -1196,10 +871,10 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
             {/* Enhanced mobile action buttons */}
             <div className="space-y-3">
               <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-2 flex-wrap">
-                {!selectionMode ? (
+                {!selectionOps.selectionMode ? (
                   <>
                     <Button
-                      onClick={() => setShowBlockLibrary(true)}
+                      onClick={() => blockOps.setShowBlockLibrary(true)}
                       variant="primary"
                       leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
                       className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-linear-to-r from-accent-purple-600 to-accent-blue-600 hover:from-accent-purple-700 hover:to-accent-blue-700"
@@ -1208,7 +883,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     </Button>
 
                     <Button
-                      onClick={addExercise}
+                      onClick={exerciseOps.addExercise}
                       variant="primary"
                       leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
                       className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
@@ -1219,7 +894,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     {ungroupedExercises.filter((ex) => !ex.blockInstanceId)
                       .length > 0 && (
                       <Button
-                        onClick={() => setSelectionMode(true)}
+                        onClick={() => selectionOps.enterSelectionMode()}
                         variant="success"
                         leftIcon={<Users className="w-5 h-5 sm:w-4 sm:h-4" />}
                       >
@@ -1234,14 +909,14 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                         size="sm"
                         className="text-accent-blue-800 font-medium"
                       >
-                        {selectedExerciseIds.size === 0
+                        {selectionOps.selectedExerciseIds.size === 0
                           ? "Select exercises to group together"
-                          : `${selectedExerciseIds.size} exercise${selectedExerciseIds.size > 1 ? "s" : ""} selected`}
+                          : `${selectionOps.selectedExerciseIds.size} exercise${selectionOps.selectedExerciseIds.size > 1 ? "s" : ""} selected`}
                       </Body>
                     </div>
 
                     <Button
-                      onClick={selectAllExercises}
+                      onClick={() => selectionOps.selectAllExercises(workout.exercises.filter((ex) => !ex.groupId && !ex.blockInstanceId).map((ex) => ex.id))}
                       variant="secondary"
                       className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
                     >
@@ -1250,7 +925,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
                     <Button
                       onClick={() => setShowGroupModal(true)}
-                      disabled={selectedExerciseIds.size < 2}
+                      disabled={selectionOps.selectedExerciseIds.size < 2}
                       variant="primary"
                       leftIcon={<Zap className="w-5 h-5 sm:w-4 sm:h-4" />}
                       className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium"
@@ -1258,7 +933,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       Create Group
                     </Button>
 
-                    <Button onClick={clearSelection} variant="danger">
+                    <Button onClick={selectionOps.clearSelection} variant="danger">
                       Cancel
                     </Button>
                   </>
@@ -1266,7 +941,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               </div>
 
               {/* Save Workout Button - Separate Row */}
-              {!selectionMode && (
+              {!selectionOps.selectionMode && (
                 <Button
                   onClick={saveWorkout}
                   disabled={isSaving || !workout.name?.trim()}
@@ -1293,7 +968,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                 const exerciseData = e.dataTransfer.getData("exercise");
                 if (exerciseData) {
                   const exercise = JSON.parse(exerciseData);
-                  addExerciseFromLibrary(exercise);
+                  exerciseOps.addExerciseFromLibrary(exercise);
                 }
               } catch (error) {
                 console.error("Error adding exercise:", error);
@@ -1308,11 +983,11 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                   blockInstance={blockInstance}
                   exercises={workout.exercises}
                   groups={workout.groups || []}
-                  onCustomize={setEditingBlockInstance}
-                  onDeleteExercise={deleteExercise}
-                  onUpdateExercise={updateExercise}
-                  onMoveExercise={moveExercise}
-                  onMoveExerciseToGroup={moveExerciseToGroup}
+                  onCustomize={blockOps.setEditingBlockInstance}
+                  onDeleteExercise={exerciseOps.deleteExercise}
+                  onUpdateExercise={exerciseOps.updateExercise}
+                  onMoveExercise={exerciseOps.moveExercise}
+                  onMoveExerciseToGroup={exerciseOps.moveExerciseToGroup}
                   availableGroups={workout.groups || []}
                   availableKPIs={availableKPIs}
                   onExerciseNameChange={handleExerciseNameChange}
@@ -1327,19 +1002,19 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     key={exercise.id}
                     exercise={exercise}
                     index={index}
-                    onUpdate={updateExercise}
-                    onDelete={deleteExercise}
-                    onMoveUp={() => moveExercise(exercise.id, "up")}
-                    onMoveDown={() => moveExercise(exercise.id, "down")}
-                    onMoveToGroup={moveExerciseToGroup.bind(null, exercise.id)}
+                    onUpdate={exerciseOps.updateExercise}
+                    onDelete={exerciseOps.deleteExercise}
+                    onMoveUp={() => exerciseOps.moveExercise(exercise.id, "up")}
+                    onMoveDown={() => exerciseOps.moveExercise(exercise.id, "down")}
+                    onMoveToGroup={exerciseOps.moveExerciseToGroup.bind(null, exercise.id)}
                     availableGroups={workout.groups || []}
                     availableKPIs={availableKPIs}
                     canMoveUp={index > 0}
                     canMoveDown={index < ungroupedExercises.length - 1}
                     onExerciseNameChange={handleExerciseNameChange}
-                    selectionMode={selectionMode}
-                    isSelected={selectedExerciseIds.has(exercise.id)}
-                    onToggleSelection={toggleExerciseSelection}
+                    selectionMode={selectionOps.selectionMode}
+                    isSelected={selectionOps.selectedExerciseIds.has(exercise.id)}
+                    onToggleSelection={selectionOps.toggleExerciseSelection}
                   />
                 ))}
 
@@ -1351,12 +1026,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     key={group.id}
                     group={group}
                     exercises={workout.exercises}
-                    onUpdateGroup={updateGroup}
-                    onDeleteGroup={deleteGroup}
-                    onUpdateExercise={updateExercise}
-                    onDeleteExercise={deleteExercise}
-                    onMoveExercise={moveExercise}
-                    onMoveExerciseToGroup={moveExerciseToGroup}
+                    onUpdateGroup={groupOps.updateGroup}
+                    onDeleteGroup={groupOps.deleteGroup}
+                    onUpdateExercise={exerciseOps.updateExercise}
+                    onDeleteExercise={exerciseOps.deleteExercise}
+                    onMoveExercise={exerciseOps.moveExercise}
+                    onMoveExerciseToGroup={exerciseOps.moveExerciseToGroup}
                     availableGroups={workout.groups || []}
                     availableKPIs={availableKPIs}
                     onExerciseNameChange={handleExerciseNameChange}
@@ -1388,12 +1063,12 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
       {/* Modals */}
       <BlockLibrary
-        isOpen={showBlockLibrary}
-        onClose={() => setShowBlockLibrary(false)}
-        onSelectBlock={insertBlock}
+        isOpen={blockOps.showBlockLibrary}
+        onClose={() => blockOps.setShowBlockLibrary(false)}
+        onSelectBlock={blockOps.insertBlock}
         onCreateBlock={() => {
-          setShowBlockLibrary(false);
-          setShowBlockEditor(true);
+          blockOps.setShowBlockLibrary(false);
+          blockOps.setShowBlockEditor(true);
         }}
         selectedBlocks={
           workout.blockInstances?.map((bi) => bi.sourceBlockId) || []
@@ -1402,28 +1077,28 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
       {/* Block Editor Modal */}
       <BlockEditor
-        isOpen={showBlockEditor}
-        onClose={() => setShowBlockEditor(false)}
-        onSave={handleSaveBlock}
+        isOpen={blockOps.showBlockEditor}
+        onClose={() => blockOps.setShowBlockEditor(false)}
+        onSave={blockOps.handleSaveBlock}
       />
 
       {/* Block Instance Editor Modal */}
-      {editingBlockInstance && (
+      {blockOps.editingBlockInstance && (
         <BlockInstanceEditor
-          isOpen={!!editingBlockInstance}
-          onClose={() => setEditingBlockInstance(null)}
-          blockInstance={editingBlockInstance}
+          isOpen={!!blockOps.editingBlockInstance}
+          onClose={() => blockOps.setEditingBlockInstance(null)}
+          blockInstance={blockOps.editingBlockInstance}
           workout={workout}
-          onSave={handleSaveBlockInstance}
+          onSave={blockOps.handleSaveBlockInstance}
         />
       )}
 
       {/* Group Creation Modal */}
       {showGroupModal && (
         <GroupCreationModal
-          selectedCount={selectedExerciseIds.size}
+          selectedCount={selectionOps.selectedExerciseIds.size}
           onClose={() => setShowGroupModal(false)}
-          onCreateGroup={groupSelectedExercises}
+          onCreateGroup={handleCreateGroup}
         />
       )}
     </ModalBackdrop>
