@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
@@ -24,7 +25,7 @@ interface DayViewProps {
   isCoach: boolean;
 }
 
-export function DayView({
+function DayViewComponent({
   currentDate,
   getAssignmentsForDate,
   getAssignmentGroups,
@@ -86,3 +87,15 @@ export function DayView({
     </DroppableDay>
   );
 }
+
+// Memoize to prevent re-rendering when date hasn't changed
+export const DayView = memo(
+  DayViewComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if currentDate or isCoach changes
+    return (
+      prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
+      prevProps.isCoach === nextProps.isCoach
+    );
+  }
+);

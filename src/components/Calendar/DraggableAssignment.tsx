@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useDrag } from "react-dnd";
 import {
   Clock,
@@ -35,7 +36,7 @@ interface DraggableAssignmentProps {
   isCoach: boolean;
 }
 
-export function DraggableAssignment({
+function DraggableAssignmentComponent({
   assignment,
   onClick,
   compact,
@@ -180,6 +181,26 @@ export function DraggableAssignment({
     </div>
   );
 }
+
+// Memoize with custom comparison to prevent unnecessary re-renders
+export const DraggableAssignment = memo(
+  DraggableAssignmentComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if these specific props change
+    return (
+      prevProps.assignment.id === nextProps.assignment.id &&
+      prevProps.assignment.workoutPlanName === nextProps.assignment.workoutPlanName &&
+      prevProps.assignment.status === nextProps.assignment.status &&
+      prevProps.assignment.scheduledDate === nextProps.assignment.scheduledDate &&
+      prevProps.assignment.startTime === nextProps.assignment.startTime &&
+      prevProps.assignment.location === nextProps.assignment.location &&
+      prevProps.assignment.groupId === nextProps.assignment.groupId &&
+      prevProps.assignment.athleteNames?.length === nextProps.assignment.athleteNames?.length &&
+      prevProps.compact === nextProps.compact &&
+      prevProps.isCoach === nextProps.isCoach
+    );
+  }
+);
 
 export { DRAG_TYPE };
 export type { DragItem };

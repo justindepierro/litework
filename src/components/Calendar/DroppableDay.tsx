@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useDrop } from "react-dnd";
 import { DRAG_TYPE, DragItem } from "./DraggableAssignment";
 
@@ -12,7 +13,7 @@ interface DroppableDayProps {
   isCoach: boolean;
 }
 
-export function DroppableDay({
+function DroppableDayComponent({
   date,
   children,
   onDrop,
@@ -51,3 +52,17 @@ export function DroppableDay({
     </div>
   );
 }
+
+// Memoize with custom comparison to prevent unnecessary re-renders
+export const DroppableDay = memo(
+  DroppableDayComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if date, className, or isCoach changes
+    // Children changes will trigger re-render naturally
+    return (
+      prevProps.date.getTime() === nextProps.date.getTime() &&
+      prevProps.className === nextProps.className &&
+      prevProps.isCoach === nextProps.isCoach
+    );
+  }
+);

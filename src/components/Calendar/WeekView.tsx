@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Clock,
   MapPin,
@@ -32,7 +33,7 @@ interface WeekViewProps {
   isCoach: boolean;
 }
 
-export function WeekView({
+function WeekViewComponent({
   weekDays,
   isToday,
   getAssignmentsForDate,
@@ -268,3 +269,15 @@ export function WeekView({
     </>
   );
 }
+
+// Memoize to prevent re-rendering when assignments haven't changed
+export const WeekView = memo(
+  WeekViewComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if weekDays array reference or isCoach changes
+    return (
+      prevProps.weekDays === nextProps.weekDays &&
+      prevProps.isCoach === nextProps.isCoach
+    );
+  }
+);

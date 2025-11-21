@@ -1,6 +1,7 @@
 "use client";
 
-import { WorkoutAssignment, AthleteGroup } from "@/types";
+import { memo } from "react";
+import { WorkoutAssignment } from "@/types";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 import { DraggableAssignment, DragItem } from "./DraggableAssignment";
 import { DroppableDay } from "./DroppableDay";
@@ -24,7 +25,7 @@ interface MonthViewProps {
   isCoach: boolean;
 }
 
-export function MonthView({
+function MonthViewComponent({
   currentDate,
   monthDays,
   isToday,
@@ -131,3 +132,16 @@ export function MonthView({
     </div>
   );
 }
+
+// Memoize to prevent re-rendering when assignments haven't changed
+export const MonthView = memo(
+  MonthViewComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if currentDate, isCoach changes, or monthDays array reference changes
+    return (
+      prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
+      prevProps.isCoach === nextProps.isCoach &&
+      prevProps.monthDays === nextProps.monthDays
+    );
+  }
+);

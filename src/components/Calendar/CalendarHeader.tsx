@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { ChevronLeft, ChevronRight, MoveIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -19,8 +20,7 @@ interface CalendarHeaderProps {
   isCoach: boolean;
 }
 
-export function CalendarHeader({
-  currentDate,
+function CalendarHeaderComponent({
   viewMode,
   formatHeaderDate,
   goToPrevious,
@@ -116,3 +116,16 @@ export function CalendarHeader({
     </>
   );
 }
+
+// Memoize to prevent unnecessary re-renders when parent re-renders
+export const CalendarHeader = memo(
+  CalendarHeaderComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if date, viewMode, or isCoach changes
+    return (
+      prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
+      prevProps.viewMode === nextProps.viewMode &&
+      prevProps.isCoach === nextProps.isCoach
+    );
+  }
+);
