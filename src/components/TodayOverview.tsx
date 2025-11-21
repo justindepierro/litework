@@ -10,6 +10,7 @@ import { SkeletonCard } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/Typography";
 import { Badge } from "@/components/ui/Badge";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 interface TodayWorkout {
   id: string;
@@ -51,11 +52,6 @@ const TodayOverview = memo(function TodayOverview() {
       }
 
       if (data?.success) {
-        console.log("[TodayOverview] Received workouts:", data.workouts);
-        console.log(
-          "[TodayOverview] First workout detail:",
-          JSON.stringify(data.workouts[0], null, 2)
-        );
         setTodayWorkouts(data.workouts || []);
       }
     } catch (error) {
@@ -71,8 +67,7 @@ const TodayOverview = memo(function TodayOverview() {
 
   if (showSkeleton) {
     return (
-      <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-6 h-full flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-cyan" />
+      <GlassCard gradientAccent="cyan" className="h-full flex flex-col">
         <div className="flex items-center gap-3 mb-6">
           <Calendar className="w-6 h-6 text-accent-cyan-600" />
           <h2 className="text-xl font-bold text-navy-700">
@@ -84,13 +79,12 @@ const TodayOverview = memo(function TodayOverview() {
           <SkeletonCard />
           <SkeletonCard />
         </div>
-      </div>
+      </GlassCard>
     );
   }
 
   return (
-    <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-6 h-full flex flex-col relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-cyan" />
+    <GlassCard gradientAccent="cyan" className="h-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6 text-accent-cyan-600" />
         <Heading level="h2" className="text-navy-700">
@@ -113,9 +107,11 @@ const TodayOverview = memo(function TodayOverview() {
               workout.athleteCount
             );
             return (
-              <div
+              <GlassCard
                 key={workout.id}
-                className="rounded-xl p-4 glass backdrop-blur-lg bg-white/60 border border-white/30 hover:border-accent-cyan-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                variant="default"
+                padding="md"
+                className="hover:border-accent-cyan-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
@@ -204,12 +200,12 @@ const TodayOverview = memo(function TodayOverview() {
                     <span className="font-medium">All athletes completed!</span>
                   </div>
                 )}
-              </div>
+              </GlassCard>
             );
           })}
         </div>
       )}
-    </div>
+    </GlassCard>
   );
 });
 

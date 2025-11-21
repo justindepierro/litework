@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/components/ToastProvider";
 import { TrendingUp, Users, Award } from "lucide-react";
 import { Body, Heading } from "@/components/ui/Typography";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 interface GroupStats {
   id: string;
@@ -52,8 +53,11 @@ export default function GroupCompletionStats() {
   }
 
   return (
-    <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl p-4 h-full flex flex-col relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-progress-green" />
+    <GlassCard
+      gradientAccent="green"
+      padding="sm"
+      className="h-full flex flex-col"
+    >
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="w-5 h-5 text-accent-green-600 shrink-0" />
         <Heading level="h4" className="text-navy-700">
@@ -100,9 +104,11 @@ export default function GroupCompletionStats() {
             const accent = accentColors[index % accentColors.length];
 
             return (
-              <div
+              <GlassCard
                 key={group.id}
-                className={`rounded-xl p-3 glass backdrop-blur-lg bg-white/60 border-2 ${accent.border} hover:border-accent-green-400 hover:shadow-xl hover:${accent.glow} hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden`}
+                variant="default"
+                padding="sm"
+                className={`border-2 ${accent.border} hover:border-accent-green-400 hover:shadow-xl hover:${accent.glow} hover:scale-[1.02] transition-all duration-300 cursor-pointer`}
               >
                 {/* Colorful accent dot in top-left */}
                 <div
@@ -188,11 +194,11 @@ export default function GroupCompletionStats() {
                     ></div>
                   </div>
                 </div>
-              </div>
+              </GlassCard>
             );
           })}
         </div>
       )}
-    </div>
+    </GlassCard>
   );
 }

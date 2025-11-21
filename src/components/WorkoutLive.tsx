@@ -87,18 +87,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     return groupsMap;
   }, [session?.groups]);
 
-  // Debug: Log groups and exercises on mount
-  useEffect(() => {
-    if (session) {
-      console.log("[WorkoutLive] Session loaded:", {
-        hasGroups: !!session.groups,
-        groupCount: session.groups?.length || 0,
-        groups: session.groups,
-        exercisesWithGroups: session.exercises.filter((e) => e.group_id).length,
-        totalExercises: session.exercises.length,
-      });
-    }
-  }, [session]);
+  // Groups and exercises are tracked in session state
 
   const currentExercise = session?.exercises[session.current_exercise_index];
   const isLastExercise = session

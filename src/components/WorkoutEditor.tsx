@@ -694,17 +694,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
   // Update workout data - single source of truth through onChange
   const updateWorkout = useCallback(
     (updatedWorkout: WorkoutPlan) => {
-      console.log("[WorkoutEditor] updateWorkout called:", {
-        name: updatedWorkout.name,
-        exerciseCount: updatedWorkout.exercises?.length,
-        exercises: updatedWorkout.exercises?.map((ex) => ({
-          id: ex.id,
-          name: ex.exerciseName,
-        })),
-      });
-
       // No need to override name - it's already in updatedWorkout
-      // [REMOVED] console.log("[WorkoutEditor] Calling parent onChange with workout");
       onChange(updatedWorkout);
     },
     [onChange]
@@ -1134,31 +1124,20 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
               const data = await response.json();
 
               if (data.success && data.data) {
-                console.log(
-                  `[WorkoutEditor] Exercise created with ID: ${data.data.id}`
-                );
                 return {
                   ...ex,
                   exerciseId: data.data.id,
                   exerciseName: data.data.name,
                 };
               } else {
-                console.error(
-                  `[WorkoutEditor] Failed to create exercise: ${data.error}`
-                );
                 throw new Error(data.error || "Failed to create exercise");
               }
             } catch (error) {
-              console.error("[WorkoutEditor] Error creating exercise:", error);
               throw error;
             }
           }
           return ex;
         })
-      );
-
-      console.log(
-        `[WorkoutEditor] All exercises processed. Saving workout with ${updatedExercises.length} exercises`
       );
 
       // Update workout with new exercise IDs
@@ -1223,7 +1202,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                       onClick={() => setShowBlockLibrary(true)}
                       variant="primary"
                       leftIcon={<Package className="w-5 h-5 sm:w-4 sm:h-4" />}
-                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-gradient-to-r from-accent-purple-600 to-accent-blue-600 hover:from-accent-purple-700 hover:to-accent-blue-700"
+                      className="py-3 sm:py-2 rounded-xl sm:rounded-lg font-medium bg-linear-to-r from-accent-purple-600 to-accent-blue-600 hover:from-accent-purple-700 hover:to-accent-blue-700"
                     >
                       Add Block
                     </Button>

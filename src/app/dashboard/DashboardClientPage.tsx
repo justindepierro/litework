@@ -6,10 +6,6 @@ import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useCountUp } from "@/hooks/use-count-up";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
-import TodayOverview from "@/components/TodayOverview";
-import QuickActions from "@/components/QuickActions";
-import GroupCompletionStats from "@/components/GroupCompletionStats";
-import WorkoutAssignmentDetailModal from "@/components/WorkoutAssignmentDetailModal";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import { SkeletonStatCard, SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
@@ -19,7 +15,15 @@ import type {
   DashboardStats,
 } from "@/lib/dashboard-data";
 
-// Lazy load heavy components
+// Lazy load ALL heavy components for better code splitting
+const TodayOverview = lazy(() => import("@/components/TodayOverview"));
+const QuickActions = lazy(() => import("@/components/QuickActions"));
+const GroupCompletionStats = lazy(
+  () => import("@/components/GroupCompletionStats")
+);
+const WorkoutAssignmentDetailModal = lazy(
+  () => import("@/components/WorkoutAssignmentDetailModal")
+);
 const Calendar = lazy(() => import("@/components/Calendar"));
 const GroupAssignmentModal = lazy(
   () => import("@/components/GroupAssignmentModal")
@@ -38,6 +42,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { EnergySurface } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
   AnimatedList,
@@ -455,52 +460,62 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
       <div className="min-h-screen px-4 py-6 bg-linear-to-br from-accent-orange-50 via-accent-pink-50 to-accent-purple-50">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Welcome Header - Glass Material with Vibrant Gradient */}
-          <div className="rounded-2xl glass-thick backdrop-blur-xl bg-white/70 border border-white/20 shadow-xl px-6 py-8 relative overflow-hidden">
-            {/* Gradient Accent Bar */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-accent-orange-500 via-accent-pink-500 to-accent-purple-500" />
-            <PageHeader
-              title={`Welcome back, ${user.fullName}! 👋`}
-              subtitle={`${user.role === "admin" ? "Administrator" : "Coach"} Dashboard`}
-              icon={<LayoutDashboard className="w-5 h-5" />}
-              gradientVariant="primary"
-              actions={
-                <Link href="/profile" className="shrink-0">
-                  <Button
-                    variant="secondary"
-                    leftIcon={<Settings className="w-5 h-5 shrink-0" />}
-                    className="glass hover:glass-thick transition-all duration-300"
-                  >
-                    <span className="hidden sm:inline whitespace-nowrap">
-                      Profile & Settings
-                    </span>
-                    <span className="sm:hidden whitespace-nowrap">Profile</span>
-                  </Button>
-                </Link>
-              }
-            />
-          </div>
+          <GlassCard gradientAccent="primary">
+            {/* Header with title and settings */}
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div className="flex items-center gap-3">
+                <LayoutDashboard className="w-6 h-6 text-accent-orange-500" />
+                <div>
+                  <Display size="sm" className="text-navy-700">
+                    Welcome back, {user.fullName}! 👋
+                  </Display>
+                  <Caption variant="muted" className="mt-0.5">
+                    {user.role === "admin" ? "Administrator" : "Coach"}{" "}
+                    Dashboard
+                  </Caption>
+                </div>
+              </div>
+              <Link href="/profile" className="shrink-0">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<Settings className="w-4 h-4 shrink-0" />}
+                  className="glass hover:glass-thick transition-all duration-300"
+                >
+                  <span className="hidden sm:inline whitespace-nowrap">
+                    Settings
+                  </span>
+                  <span className="sm:hidden whitespace-nowrap">Settings</span>
+                </Button>
+              </Link>
+            </div>
 
-          {/* Quick Actions Bar - Full Width */}
-          <QuickActions />
+            {/* Quick Actions integrated into header */}
+            <div className="pt-4 border-t border-white/20">
+              <QuickActions />
+            </div>
+          </GlassCard>
 
           {/* Two-column layout for coaches */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Left column - Today */}
             <div className="lg:col-span-2">
-              <TodayOverview />
+              <Suspense fallback={<SkeletonCard className="h-64" />}>
+                <TodayOverview />
+              </Suspense>
             </div>
 
             {/* Right column - Stats */}
             <div className="lg:col-span-1">
-              <GroupCompletionStats />
+              <Suspense fallback={<SkeletonCard className="h-64" />}>
+                <GroupCompletionStats />
+              </Suspense>
             </div>
           </div>
 
           {/* Full-width calendar */}
           <div className="relative">
-            <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl shadow-xl overflow-hidden">
-              {/* Gradient accent bar */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-accent-blue-500 via-accent-purple-500 to-accent-pink-500" />
+            <GlassCard gradientAccent="tertiary" padding="none">
               {/* Calendar Header */}
               <div className="px-6 py-5 flex flex-col gap-4 border-b border-white/20 md:flex-row md:items-center md:justify-between bg-linear-to-r from-white/50 to-white/30">
                 <div>
@@ -564,7 +579,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                   </div>
                 </Suspense>
               )}
-            </div>
+            </GlassCard>
           </div>
 
           {/* Assignment Modals */}
@@ -597,15 +612,17 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
 
           {/* Assignment Detail Modal */}
           {selectedAssignmentId && (
-            <WorkoutAssignmentDetailModal
-              isOpen={showDetailModal}
-              onClose={handleCloseDetailModal}
-              assignmentId={selectedAssignmentId}
-              userRole={user?.role || "athlete"}
-              onStartWorkout={handleStartWorkout}
-              onEdit={() => {}}
-              onDelete={handleDeleteAssignment}
-            />
+            <Suspense fallback={null}>
+              <WorkoutAssignmentDetailModal
+                isOpen={showDetailModal}
+                onClose={handleCloseDetailModal}
+                assignmentId={selectedAssignmentId}
+                userRole={user?.role || "athlete"}
+                onStartWorkout={handleStartWorkout}
+                onEdit={() => {}}
+                onDelete={handleDeleteAssignment}
+              />
+            </Suspense>
           )}
         </div>
       </div>
@@ -870,8 +887,10 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
 
                   return (
                     <AnimatedListItem key={assignmentId}>
-                      <div
-                        className="glass backdrop-blur-lg bg-white/60 border border-white/30 rounded-2xl p-4 hover:border-accent-purple-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                      <GlassCard
+                        variant="default"
+                        padding="md"
+                        className="hover:border-accent-purple-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
                         onClick={() => handleAssignmentClick(assignment)}
                         role="button"
                         tabIndex={0}
@@ -905,13 +924,13 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                           </div>
                           <Eye className="w-5 h-5 text-accent-purple-500" />
                         </div>
-                      </div>
+                      </GlassCard>
                     </AnimatedListItem>
                   );
                 })}
               </AnimatedList>
             ) : (
-              <div className="glass-thick backdrop-blur-xl bg-white/70 border border-white/20 rounded-2xl p-8 text-center shadow-lg">
+              <GlassCard padding="lg" className="text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-accent-purple-500 to-accent-pink-500 border border-white/20 shadow-lg">
                   <CalendarIcon className="w-7 h-7 text-white drop-shadow-md" />
                 </div>
@@ -923,7 +942,7 @@ function DashboardPage({ initialData }: DashboardClientPageProps) {
                     ? "Your training schedule will appear here once your coach assigns workouts."
                     : "All caught up! Your coach will add more workouts soon."}
                 </Body>
-              </div>
+              </GlassCard>
             )}
           </section>
         )}

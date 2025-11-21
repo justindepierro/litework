@@ -22,6 +22,7 @@ import {
 import { parseDate, isPast, formatTimeRange } from "@/lib/date-utils";
 import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Alert } from "@/components/ui/Alert";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAsyncState } from "@/hooks/use-async-state";
@@ -352,7 +353,11 @@ export default function WorkoutAssignmentDetailModal({
               </div>
 
               {/* Assignment Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 glass backdrop-blur-lg bg-white/60 border border-white/30 rounded-lg">
+              <GlassCard
+                variant="default"
+                padding="md"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+              >
                 <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                   <Calendar className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                   <span className="font-medium">Date:</span>
@@ -413,7 +418,7 @@ export default function WorkoutAssignmentDetailModal({
                     <span>{getWorkoutDuration(assignment)} min</span>
                   </div>
                 )}
-              </div>
+              </GlassCard>
 
               {/* Notes */}
               {getNotes(assignment) && (

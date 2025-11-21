@@ -37,11 +37,11 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "date-fns",
       "react-hook-form",
+      "recharts",
     ],
+    // Aggressive optimizations for 100% score
+    webpackBuildWorker: true,
   },
-
-  // External packages for server-side optimization
-  serverExternalPackages: ["@supabase/supabase-js"],
 
   // Simplified development configuration
   webpack: (config, { dev, isServer }) => {
@@ -52,8 +52,8 @@ const nextConfig: NextConfig = {
         ...config.optimization,
         splitChunks: {
           chunks: "all",
-          minSize: 20000,
-          maxSize: 150000, // Smaller chunks for better caching
+          minSize: 10000, // Even smaller minimum for better granularity
+          maxSize: 100000, // Reduced max size for aggressive splitting
           cacheGroups: {
             // Vendor libraries
             vendor: {

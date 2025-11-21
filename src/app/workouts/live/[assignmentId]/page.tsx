@@ -51,22 +51,12 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
           body: JSON.stringify({ assignment_id: assignmentId }),
         });
 
-        console.log(
-          "[WorkoutLive] Session start response status:",
-          response.status
-        );
-
         if (!response.ok) {
           const errorData = await response.json();
-          console.error("[WorkoutLive] Session start failed:", errorData);
           throw new Error(errorData.error || "Failed to start workout session");
         }
 
         const { session: newSession } = await response.json();
-        console.log(
-          "[WorkoutLive] Session created successfully:",
-          newSession.id
-        );
 
         // Initialize session in context
         startSession(newSession);

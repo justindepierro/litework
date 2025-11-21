@@ -7,6 +7,7 @@
  */
 
 import React from "react";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 /**
  * Simple virtual list implementation
@@ -126,9 +127,11 @@ export const VirtualExerciseList: React.FC<VirtualExerciseListProps> = ({
   return (
     <div className="space-y-2">
       {exercises.map((exercise) => (
-        <div
+        <GlassCard
           key={exercise.id}
-          className={`glass backdrop-blur-lg bg-white/60 border border-white/30 rounded-lg p-3 transition-all duration-300 ${
+          variant="default"
+          padding="sm"
+          className={`transition-all duration-300 ${
             onExerciseClick
               ? "cursor-pointer hover:bg-white/80 hover:border-accent-blue-400 hover:scale-[1.02]"
               : ""
@@ -139,9 +142,9 @@ export const VirtualExerciseList: React.FC<VirtualExerciseListProps> = ({
           <div className="text-sm text-navy-600 mt-1 flex gap-3">
             {exercise.sets && <span>{exercise.sets} sets</span>}
             {exercise.reps && <span>{exercise.reps} reps</span>}
-            {exercise.weight && <span>{exercise.weight}</span>}
+            {exercise.weight && <span>{exercise.weight} lbs</span>}
           </div>
-        </div>
+        </GlassCard>
       ))}
     </div>
   );

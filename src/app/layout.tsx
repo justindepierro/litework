@@ -5,17 +5,14 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { WorkoutSessionProvider } from "@/contexts/WorkoutSessionContext";
 import { ToastProvider } from "@/components/ToastProvider";
 import Navigation from "@/components/Navigation";
-import PWAInstallBanner from "@/components/PWAInstallBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
-import { CommandPaletteProvider } from "@/components/CommandPaletteProvider";
-import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
+import { ClientUIWrapper } from "@/components/ClientUIWrapper";
 import PageTransition from "@/components/PageTransition";
 import { SkipLink } from "@/components/SkipLink";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { WebVitalsTracker } from "@/components/WebVitalsTracker";
+import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
+import { CriticalCSS } from "@/components/CriticalCSS";
 
 // Initialize development environment (only in dev)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
@@ -33,6 +30,7 @@ const inter = localFont({
   variable: "--font-inter",
   display: "swap",
   preload: true,
+  fallback: ["system-ui", "arial"],
 });
 
 const poppins = localFont({
@@ -103,22 +101,35 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable}`}
     >
       <head>
-        {/* Preconnect to Supabase for faster API calls */}
+        {/* Inline critical CSS for instant rendering */}
+        <CriticalCSS />
+
+        {/* Aggressive resource hints for LCP */}
         <link
           rel="preconnect"
           href="https://lzsjaqkhdoqsafptqpnt.supabase.co"
+          crossOrigin="anonymous"
         />
         <link
           rel="dns-prefetch"
           href="https://lzsjaqkhdoqsafptqpnt.supabase.co"
         />
+        <link
+          rel="preconnect"
+          href="https://vercel.live"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="https://vercel.live" />
+
+        {/* Prefetch critical resources */}
+        <link rel="prefetch" href="/api/auth/session" />
       </head>
       <body>
         <GlobalErrorBoundary>
           <AuthProvider>
             <WorkoutSessionProvider>
               <ToastProvider>
-                <CommandPaletteProvider>
+                <ClientUIWrapper>
                   <SkipLink targetId="main-content">
                     Skip to main content
                   </SkipLink>
@@ -131,17 +142,14 @@ export default function RootLayout({
                   >
                     <PageTransition>{children}</PageTransition>
                   </main>
-                  <PWAInstallBanner />
                   <ServiceWorkerRegistration />
-                  <KeyboardShortcutsHelp />
-                </CommandPaletteProvider>
+                </ClientUIWrapper>
               </ToastProvider>
             </WorkoutSessionProvider>
           </AuthProvider>
         </GlobalErrorBoundary>
-        <Analytics />
-        <SpeedInsights />
-        <WebVitalsTracker />
+        {/* Analytics: Deferred to absolute end, zero impact on initial load */}
+        {process.env.NODE_ENV === "production" && <AnalyticsWrapper />}
       </body>
     </html>
   );

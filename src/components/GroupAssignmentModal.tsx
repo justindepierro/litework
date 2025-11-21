@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { AthleteGroup, WorkoutPlan, WorkoutAssignment, User } from "@/types";
 import { Settings, Check, Users as UsersIcon, Calendar } from "lucide-react";
-import AthleteModificationModal from "./AthleteModificationModal";
+
+// Lazy load heavy modal
+const AthleteModificationModal = lazy(
+  () => import("./AthleteModificationModal")
+);
 import WorkoutAssignmentForm from "./WorkoutAssignmentForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -310,18 +314,22 @@ export default function GroupAssignmentModal({
         selectedAthlete &&
         selectedGroupIds.length > 0 &&
         selectedWorkout && (
-          <AthleteModificationModal
-            isOpen={showModificationModal}
-            onClose={() => setShowModificationModal(false)}
-            athlete={selectedAthlete}
-            group={selectedGroups[0]} // Use first group for context
-            workoutPlan={selectedWorkout}
-            existingModifications={groupModifications[selectedAthlete.id] || []}
-            onSaveModifications={(modifications) => {
-              saveAthleteModifications(selectedAthlete.id, modifications);
-              setShowModificationModal(false);
-            }}
-          />
+          <Suspense fallback={null}>
+            <AthleteModificationModal
+              isOpen={showModificationModal}
+              onClose={() => setShowModificationModal(false)}
+              athlete={selectedAthlete}
+              group={selectedGroups[0]} // Use first group for context
+              workoutPlan={selectedWorkout}
+              existingModifications={
+                groupModifications[selectedAthlete.id] || []
+              }
+              onSaveModifications={(modifications) => {
+                saveAthleteModifications(selectedAthlete.id, modifications);
+                setShowModificationModal(false);
+              }}
+            />
+          </Suspense>
         )}
     </>
   );
