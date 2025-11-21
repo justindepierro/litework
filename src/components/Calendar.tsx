@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, CSSProperties } from "react";
+import { useMemo, CSSProperties } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
@@ -32,6 +32,8 @@ import { Card } from "@/components/ui/Card";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 import { Badge } from "@/components/ui/Badge";
 import { Body } from "@/components/ui/Typography";
+import { useCalendarState } from "@/hooks/useCalendarState";
+import { useCalendarHandlers } from "@/hooks/useCalendarHandlers";
 
 interface CalendarProps {
   assignments: WorkoutAssignment[];
@@ -276,15 +278,40 @@ export default function Calendar({
   isCoach = false,
   groups = [],
 }: CalendarProps) {
-  const [currentDate, setCurrentDate] = useState(initialDate || new Date());
-  const [viewMode, setViewMode] = useState<"month" | "week" | "day">(
-    initialViewMode
-  );
-  const [showMoveConfirmation, setShowMoveConfirmation] = useState(false);
-  const [pendingMove, setPendingMove] = useState<{
-    assignment: WorkoutAssignment;
-    newDate: Date;
-  } | null>(null);
+  // Initialize calendar state
+  const calendarState = useCalendarState(initialDate, initialViewMode);
+
+  // Initialize calendar handlers
+  const handlers = useCalendarHandlers({
+    onAssignmentMove,
+    isSameDay: calendarState.isSameDay,
+    openMoveConfirmation: calendarState.openMoveConfirmation,
+    closeMoveConfirmation: calendarState.closeMoveConfirmation,
+    pendingMove: calendarState.pendingMove,
+  });
+
+  // Destructure for cleaner access
+  const {
+    currentDate,
+    setCurrentDate,
+    viewMode,
+    setViewMode,
+    showMoveConfirmation,
+    pendingMove,
+    goToToday,
+    goToPrevious,
+    goToNext,
+    startOfMonth,
+    startOfWeek,
+    endOfWeek,
+    isSameDay,
+    isToday,
+    monthDays,
+    weekDays,
+    getAssignmentsForDate: getAssignmentsForDateFn,
+  } = calendarState;
+
+  const { handleDrop, handleConfirmGroupMove, handleCancelMove } = handlers;
 
   // Helper to get full group objects for an assignment (with colors)
   const getAssignmentGroups = (
@@ -297,149 +324,8 @@ export default function Calendar({
       : [];
   };
 
-  // Helper functions for date calculations
-  const startOfMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1);
-  };
-
-  const startOfWeek = (date: Date) => {
-    const day = date.getDay();
-    const diff = date.getDate() - day;
-    return new Date(date.getFullYear(), date.getMonth(), diff);
-  };
-
-  const endOfWeek = (date: Date) => {
-    const start = startOfWeek(date);
-    return new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
-  };
-
-  const isSameDay = (date1: Date, date2: Date) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
-
-  const isToday = (date: Date) => {
-    return isSameDay(date, new Date());
-  };
-
-  // Get assignments for a specific date
-  const getAssignmentsForDate = (date: Date): WorkoutAssignment[] => {
-    return assignments.filter((assignment) => {
-      const assignmentDate = parseDate(assignment.scheduledDate);
-      return isSameDay(assignmentDate, date);
-    });
-  };
-
-  // Generate calendar days for month view
-  const monthDays = useMemo(() => {
-    const start = startOfMonth(currentDate);
-    const startDay = startOfWeek(start);
-    const days: Date[] = [];
-
-    const day = new Date(startDay);
-    // Generate 6 weeks (42 days) to fill calendar grid
-    for (let i = 0; i < 42; i++) {
-      days.push(new Date(day));
-      day.setDate(day.getDate() + 1);
-    }
-
-    return days;
-  }, [currentDate]);
-
-  // Generate days for week view
-  const weekDays = useMemo(() => {
-    const start = startOfWeek(currentDate);
-    const days: Date[] = [];
-
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(start);
-      day.setDate(start.getDate() + i);
-      days.push(day);
-    }
-
-    return days;
-  }, [currentDate]);
-
-  // Handle assignment drop
-  const handleDrop = useCallback(
-    (item: DragItem, newDate: Date) => {
-      const assignment = item.assignment;
-      const oldDate = parseDate(assignment.scheduledDate);
-
-      // [REMOVED] console.log("[DROP] Drop detected:", { assignmentId: assignment.id, workoutName: assignment.workoutPlanName, oldDate: oldDate.toDateString(), newDate: newDate.toDateString(), isGroupAssignment: !!assignment.groupId });
-
-      // Don't do anything if dropped on same date
-      if (isSameDay(oldDate, newDate)) {
-        // [REMOVED] console.log("[DROP] Dropped on same date, ignoring");
-        return;
-      }
-
-      // If it's a group assignment, show confirmation
-      if (assignment.groupId && onAssignmentMove) {
-        // [REMOVED] console.log("[DROP] Group assignment - showing confirmation modal");
-        setPendingMove({ assignment, newDate });
-        setShowMoveConfirmation(true);
-      } else if (onAssignmentMove) {
-        // [REMOVED] console.log("[DROP] Individual assignment - moving immediately");
-        // Individual assignment - move immediately
-        onAssignmentMove(assignment.id, newDate, false);
-      } else {
-        console.warn("[DROP] onAssignmentMove callback is not provided");
-      }
-    },
-    [onAssignmentMove]
-  );
-
-  // Confirm group move
-  const handleConfirmGroupMove = useCallback(() => {
-    if (pendingMove && onAssignmentMove) {
-      onAssignmentMove(
-        pendingMove.assignment.id,
-        pendingMove.newDate,
-        true // Move all in group
-      );
-      setShowMoveConfirmation(false);
-      setPendingMove(null);
-    }
-  }, [pendingMove, onAssignmentMove]);
-
-  // Cancel group move
-  const handleCancelMove = useCallback(() => {
-    setShowMoveConfirmation(false);
-    setPendingMove(null);
-  }, []);
-
-  // Navigation handlers
-  const goToPreviousPeriod = () => {
-    const newDate = new Date(currentDate);
-    if (viewMode === "month") {
-      newDate.setMonth(newDate.getMonth() - 1);
-    } else if (viewMode === "week") {
-      newDate.setDate(newDate.getDate() - 7);
-    } else {
-      newDate.setDate(newDate.getDate() - 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const goToNextPeriod = () => {
-    const newDate = new Date(currentDate);
-    if (viewMode === "month") {
-      newDate.setMonth(newDate.getMonth() + 1);
-    } else if (viewMode === "week") {
-      newDate.setDate(newDate.getDate() + 7);
-    } else {
-      newDate.setDate(newDate.getDate() + 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const goToToday = () => {
-    setCurrentDate(new Date());
-  };
+  // Wrapper for getAssignmentsForDate to inject assignments
+  const getAssignmentsForDate = (date: Date) => getAssignmentsForDateFn(assignments, date);
 
   // Format date for header
   const formatHeaderDate = () => {
@@ -855,7 +741,7 @@ export default function Calendar({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <button
-              onClick={goToPreviousPeriod}
+              onClick={goToPrevious}
               className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-tertiary focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2`}
               aria-label="Previous period"
             >
@@ -867,7 +753,7 @@ export default function Calendar({
               {formatHeaderDate()}
             </h2>
             <button
-              onClick={goToNextPeriod}
+              onClick={goToNext}
               className={`p-2 rounded-lg transition-colors ${calendarText.headerPrimary} hover:bg-tertiary focus-visible:ring-2 focus-visible:ring-accent-blue-500 focus-visible:ring-offset-2`}
               aria-label="Next period"
             >
