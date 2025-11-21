@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useWorkoutSession } from "@/contexts/WorkoutSessionContext";
 import { OfflineStatusBanner } from "@/components/OfflineStatus";
 import { PRCelebrationModal } from "@/components/PRBadge";
-import { checkForPR, PRComparison } from "@/lib/pr-detection";
+import { PRComparison } from "@/lib/pr-detection";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWorkoutLiveState } from "@/hooks/useWorkoutLiveState";
+import { useSetCompletion } from "@/hooks/useSetCompletion";
 import {
   ChevronRight,
   ChevronDown,
@@ -53,20 +55,33 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
   const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
-  const [weight, setWeight] = useState<number>(0);
-  const [reps, setReps] = useState<number>(0);
-  const [rpe, setRpe] = useState<number>(7);
-  const [showExitConfirm, setShowExitConfirm] = useState(false);
-  const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
-  const [showPRModal, setShowPRModal] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
-    new Set()
-  );
-  const [showCompletedExercises, setShowCompletedExercises] = useState(false);
-  const [editingExerciseIndex, setEditingExerciseIndex] = useState<
-    number | null
-  >(null);
-  const [isMounted, setIsMounted] = useState(true);
+  // Initialize state management hook
+  const liveState = useWorkoutLiveState();
+  const {
+    weight,
+    setWeight,
+    reps,
+    setReps,
+    rpe,
+    setRpe,
+    showExitConfirm,
+    openExitConfirm,
+    closeExitConfirm,
+    prComparison,
+    showPRModal,
+    showPRCelebration,
+    closePRModal,
+    collapsedGroups,
+    toggleGroupCollapse,
+    showCompletedExercises,
+    setShowCompletedExercises,
+    editingExerciseIndex,
+    setEditingExerciseIndex,
+    isMounted,
+    setIsMounted,
+    resetForm,
+    updateFormFromExercise,
+  } = liveState;
 
   // Cleanup on unmount to prevent state updates
   useEffect(() => {
@@ -74,7 +89,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
     return () => {
       setIsMounted(false);
     };
-  }, []);
+  }, [setIsMounted]);
 
   // Get groups for display (memoized to prevent re-creation on every render)
   const groups: Record<string, ExerciseGroupInfo> = useMemo(() => {
@@ -98,159 +113,38 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
   useEffect(() => {
     if (!currentExercise) return;
 
-    // Pre-fill weight from last set or target
-    if (currentExercise.set_records.length > 0) {
-      const lastSet =
-        currentExercise.set_records[currentExercise.set_records.length - 1];
-      if (lastSet.weight) setWeight(lastSet.weight);
-    } else if (currentExercise.weight_target) {
-      setWeight(currentExercise.weight_target);
-    }
+    const lastSetWeight =
+      currentExercise.set_records.length > 0
+        ? currentExercise.set_records[currentExercise.set_records.length - 1].weight
+        : null;
 
-    // Pre-fill reps from target
-    if (currentExercise.reps_target) {
-      const repsNum = parseInt(currentExercise.reps_target);
-      if (!isNaN(repsNum)) setReps(repsNum);
-    }
+    updateFormFromExercise(
+      lastSetWeight,
+      currentExercise.weight_target,
+      currentExercise.reps_target
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExercise?.session_exercise_id]);
 
-  const handleCompleteSet = useCallback(async () => {
-    if (!session || !currentExercise || !user) return;
-    const weightNum = weight || null;
-    const repsNum = reps || 0;
-    if (repsNum === 0) {
-      alert("Please enter the number of reps completed");
-      return;
-    }
-    const setRecord = {
-      session_exercise_id: currentExercise.session_exercise_id,
-      set_number: currentExercise.sets_completed + 1,
-      weight: weightNum,
-      reps: repsNum,
-      rpe: rpe,
-      completed_at: new Date().toISOString(),
-    };
-    addSetRecord(session.current_exercise_index, setRecord);
-
-    // Check for PR
-    if (weightNum) {
-      try {
-        const comparison = await checkForPR(
-          user.id,
-          currentExercise.exercise_id,
-          weightNum,
-          repsNum
-        );
-        if (comparison.isPR) {
-          setPrComparison(comparison);
-          setShowPRModal(true);
-        }
-      } catch (error) {
-        console.error("[PR Detection] Failed to check for PR:", error);
-      }
-    }
-
-    try {
-      await fetch(`/api/sessions/${session.id}/sets`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(setRecord),
-      });
-    } catch (error) {
-      console.error("Failed to save set:", error);
-    }
-    if (currentExercise.sets_completed + 1 >= currentExercise.sets_target) {
-      completeExercise(session.current_exercise_index);
-
-      // Check if this exercise is part of a circuit/superset
-      const currentGroup = currentExercise.group_id
-        ? groups[currentExercise.group_id]
-        : null;
-
-      if (
-        currentGroup &&
-        (currentGroup.type === "circuit" || currentGroup.type === "superset") &&
-        currentGroup.rounds &&
-        currentGroup.rounds > 1
-      ) {
-        // Find all exercises in this group
-        const groupExercises = session.exercises
-          .map((ex, idx) => ({ ...ex, index: idx }))
-          .filter((ex) => ex.group_id === currentGroup.id);
-
-        const currentPositionInGroup = groupExercises.findIndex(
-          (ex) => ex.index === session.current_exercise_index
-        );
-        const isLastInGroup =
-          currentPositionInGroup === groupExercises.length - 1;
-
-        if (isLastInGroup) {
-          // Just finished last exercise in the circuit
-          const currentRound = session.group_rounds?.[currentGroup.id] || 1;
-
-          if (currentRound < currentGroup.rounds) {
-            // More rounds to go - loop back to first exercise in circuit
-            const firstExerciseIndex = groupExercises[0].index;
-            // Increment round counter
-            updateGroupRound(currentGroup.id, currentRound + 1);
-            // Reset completed state for all exercises in this circuit
-            resetCircuitExercises(currentGroup.id);
-            // Move to first exercise in circuit for next round
-            setTimeout(() => {
-              if (isMounted) updateExerciseIndex(firstExerciseIndex);
-            }, 500);
-          } else {
-            // Finished all rounds - move to next exercise after this group
-            if (!isLastExercise) {
-              setTimeout(() => {
-                if (isMounted)
-                  updateExerciseIndex(session.current_exercise_index + 1);
-              }, 500);
-            }
-          }
-        } else {
-          // Move to next exercise in circuit
-          const nextExerciseIndex =
-            groupExercises[currentPositionInGroup + 1].index;
-          setTimeout(() => {
-            if (isMounted) updateExerciseIndex(nextExerciseIndex);
-          }, 500);
-        }
-      } else {
-        // Regular exercise or single-round group - just move to next
-        if (!isLastExercise) {
-          setTimeout(() => {
-            if (isMounted)
-              updateExerciseIndex(session.current_exercise_index + 1);
-          }, 500);
-        }
-      }
-    } else {
-      // More sets remaining - just continue to next set (no timer)
-      // Form inputs are already pre-filled for the next set
-    }
-    const repsTarget = currentExercise.reps_target
-      ? parseInt(currentExercise.reps_target)
-      : 0;
-    setReps(repsTarget);
-    setRpe(7);
-  }, [
+  // Initialize set completion hook
+  const { handleCompleteSet } = useSetCompletion({
     session,
     currentExercise,
+    isLastExercise,
+    groups,
+    userId: user?.id,
+    isMounted,
     weight,
     reps,
     rpe,
-    user,
     addSetRecord,
     completeExercise,
-    isLastExercise,
     updateExerciseIndex,
     updateGroupRound,
     resetCircuitExercises,
-    groups,
-    isMounted,
-  ]);
+    onPRDetected: showPRCelebration,
+    resetForm,
+  });
 
   const handleNext = useCallback(() => {
     if (
@@ -397,7 +291,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         completedExercises={
           session.exercises.filter((ex) => ex.completed).length
         }
-        onMenuClick={() => setShowExitConfirm(true)}
+        onMenuClick={openExitConfirm}
       />
 
       {/* SPLIT VIEW: Top = Scrollable Exercise List, Bottom = Fixed Input */}
@@ -530,17 +424,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                   {/* Group Header (if first in group) */}
                   {isFirstInGroup && group && (
                     <button
-                      onClick={() => {
-                        setCollapsedGroups((prev) => {
-                          const next = new Set(prev);
-                          if (next.has(group.id)) {
-                            next.delete(group.id);
-                          } else {
-                            next.add(group.id);
-                          }
-                          return next;
-                        });
-                      }}
+                      onClick={() => toggleGroupCollapse(group.id)}
                       className={`w-full rounded-xl border-2 ${colorClasses.border} ${colorClasses.bg} p-3 mb-2 transition-all duration-200 hover:shadow-md active:scale-[0.99]`}
                     >
                       <div className="flex items-center justify-between">
@@ -899,7 +783,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
         <PRCelebrationModal
           comparison={prComparison}
           exerciseName={currentExercise.exercise_name}
-          onClose={() => setShowPRModal(false)}
+          onClose={closePRModal}
         />
       )}
 
@@ -1082,14 +966,14 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
       {showExitConfirm && (
         <ModalBackdrop
           isOpen={showExitConfirm}
-          onClose={() => setShowExitConfirm(false)}
+          onClose={closeExitConfirm}
         >
           <div className="bg-white rounded-2xl max-w-md w-full">
             <ModalHeader
               title="Exit Workout?"
               subtitle="Choose how you'd like to handle this workout session."
               icon={<AlertCircle className="w-6 h-6" />}
-              onClose={() => setShowExitConfirm(false)}
+              onClose={closeExitConfirm}
             />
             <ModalContent>
               <div className="space-y-3">
@@ -1126,7 +1010,7 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 </button>
 
                 <button
-                  onClick={() => setShowExitConfirm(false)}
+                  onClick={closeExitConfirm}
                   className="w-full px-4 py-3 bg-neutral-lighter hover:bg-neutral-light active:bg-neutral text-navy-700 rounded-xl font-medium active:scale-95 transition-all duration-150"
                 >
                   Cancel
