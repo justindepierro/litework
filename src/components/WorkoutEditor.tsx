@@ -70,7 +70,7 @@ interface BlockInstanceItemProps {
   onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
-const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
+const BlockInstanceItem = React.memo<BlockInstanceItemProps>(({
   blockInstance,
   exercises,
   groups,
@@ -190,7 +190,7 @@ const BlockInstanceItem: React.FC<BlockInstanceItemProps> = ({
       )}
     </div>
   );
-};
+});
 
 // Exercise Group Component
 interface GroupItemProps {
@@ -211,7 +211,7 @@ interface GroupItemProps {
   onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
-const GroupItem: React.FC<GroupItemProps> = ({
+const GroupItem = React.memo<GroupItemProps>(({
   group,
   exercises,
   onUpdateGroup,
@@ -479,7 +479,7 @@ const GroupItem: React.FC<GroupItemProps> = ({
       )}
     </div>
   );
-};
+});
 
 // Group Creation Modal Component
 interface GroupCreationModalProps {

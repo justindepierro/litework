@@ -30,8 +30,8 @@ export interface ExerciseItemProps {
   onToggleSelection?: (exerciseId: string) => void;
 }
 
-// Individual Exercise Component - No longer memoized to ensure prop updates work
-export const ExerciseItem: React.FC<ExerciseItemProps> = ({
+// Individual Exercise Component - Memoized for performance optimization
+export const ExerciseItem = React.memo<ExerciseItemProps>(({
   exercise,
   groupId,
   onUpdate,
@@ -985,4 +985,24 @@ export const ExerciseItem: React.FC<ExerciseItemProps> = ({
       </div>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison function for optimal re-render prevention
+  // Only re-render if these props actually change
+  return (
+    prevProps.exercise.id === nextProps.exercise.id &&
+    prevProps.exercise.exerciseName === nextProps.exercise.exerciseName &&
+    prevProps.exercise.sets === nextProps.exercise.sets &&
+    prevProps.exercise.reps === nextProps.exercise.reps &&
+    prevProps.exercise.weight === nextProps.exercise.weight &&
+    prevProps.exercise.weightType === nextProps.exercise.weightType &&
+    prevProps.exercise.restTime === nextProps.exercise.restTime &&
+    prevProps.exercise.notes === nextProps.exercise.notes &&
+    prevProps.exercise.tempo === nextProps.exercise.tempo &&
+    prevProps.canMoveUp === nextProps.canMoveUp &&
+    prevProps.canMoveDown === nextProps.canMoveDown &&
+    prevProps.selectionMode === nextProps.selectionMode &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.availableGroups.length === nextProps.availableGroups.length &&
+    prevProps.availableKPIs?.length === nextProps.availableKPIs?.length
+  );
+});
