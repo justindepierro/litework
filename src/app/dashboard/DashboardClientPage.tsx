@@ -6,6 +6,8 @@ import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useCountUp } from "@/hooks/use-count-up";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
+import { useDashboardState } from "@/hooks/useDashboardState";
+import { useDashboardOperations } from "@/hooks/useDashboardOperations";
 import { WorkoutAssignment, WorkoutPlan, AthleteGroup, User } from "@/types";
 import { SkeletonStatCard, SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
@@ -103,13 +105,9 @@ const DashboardSectionHeading = ({
   </div>
 );
 
-function DashboardClientPageComponent({ initialData }: DashboardClientPageProps) {
-  const DEFAULT_STATS: DashboardStats = {
-    workoutsThisWeek: 0,
-    personalRecords: 0,
-    currentStreak: 0,
-  };
-
+function DashboardClientPageComponent({
+  initialData,
+}: DashboardClientPageProps) {
   const {
     stats: initialStats,
     assignments: initialAssignments = [],
@@ -121,47 +119,52 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
 
   const { user, isLoading } = useRequireAuth();
   const router = useRouter();
-  const [stats, setStats] = useState<DashboardStats>(
-    initialStats ?? DEFAULT_STATS
-  );
-  const [loadingStats, setLoadingStats] = useState(!initialStats);
+
+  // Initialize dashboard state
+  const state = useDashboardState({
+    initialStats,
+    initialAssignments,
+    initialWorkouts,
+    initialGroups,
+    initialAthletes,
+    initialCoachMessage,
+  });
 
   // Use minimum loading time to prevent jarring flashes
   const { showSkeleton: showStatsSkeleton } = useMinimumLoadingTime(
-    loadingStats,
+    state.loadingStats,
     300
   );
-
-  const [coachWelcomeMessage, setCoachWelcomeMessage] = useState<string | null>(
-    initialCoachMessage
-  );
-
-  // Assignment state
-  const [assignments, setAssignments] =
-    useState<WorkoutAssignment[]>(initialAssignments);
-  const [workoutPlans, setWorkoutPlans] =
-    useState<WorkoutPlan[]>(initialWorkouts);
-  const [groups, setGroups] = useState<AthleteGroup[]>(initialGroups);
-  const [athletes, setAthletes] = useState<User[]>(initialAthletes);
-  const [loadingData, setLoadingData] = useState(false);
 
   // Use minimum loading time for assignments/calendar data
   const { showSkeleton: showDataSkeleton } = useMinimumLoadingTime(
-    loadingData,
+    state.loadingData,
     300
   );
 
-  // Modal state
-  const [showGroupAssignment, setShowGroupAssignment] = useState(false);
-  const [showIndividualAssignment, setShowIndividualAssignment] =
-    useState(false);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
-    string | null
-  >(null);
-
   const isCoachOrAdmin = user?.role === "coach" || user?.role === "admin";
+
+  // Initialize dashboard operations
+  const operations = useDashboardOperations({
+    userId: user?.id,
+    isCoachOrAdmin,
+    assignments: state.assignments,
+    setStats: state.setStats,
+    setLoadingStats: state.setLoadingStats,
+    setAssignments: state.setAssignments,
+    setWorkoutPlans: state.setWorkoutPlans,
+    setGroups: state.setGroups,
+    setAthletes: state.setAthletes,
+    setLoadingData: state.setLoadingData,
+    setCoachWelcomeMessage: state.setCoachWelcomeMessage,
+    setShowGroupAssignment: state.setShowGroupAssignment,
+    setShowIndividualAssignment: state.setShowIndividualAssignment,
+    setSelectedDate: state.setSelectedDate,
+    setSelectedAssignmentId: state.setSelectedAssignmentId,
+    setShowDetailModal: state.setShowDetailModal,
+    closeDetailModal: state.closeDetailModal,
+  });
+
   const hasInitialAthleteAssignments = initialAssignments.length > 0;
   const hasInitialStats = Boolean(initialStats);
   const hasInitialCoachMessage = initialCoachMessage !== null;
@@ -172,10 +175,10 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
       initialGroups.length > 0 ||
       initialAthletes.length > 0);
 
-  const todaysAssignments = assignments.filter((assignment) =>
+  const todaysAssignments = state.assignments.filter((assignment) =>
     checkIsToday(parseDate(assignment.scheduledDate))
   );
-  const upcomingAssignments = assignments.filter((assignment) => {
+  const upcomingAssignments = state.assignments.filter((assignment) => {
     const assignmentDate = parseDate(assignment.scheduledDate);
     return checkIsFuture(assignmentDate) && !checkIsToday(assignmentDate);
   });
@@ -204,15 +207,15 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
     }
 
     if (!hasInitialStats) {
-      fetchDashboardStats();
+      operations.fetchDashboardStats();
     }
 
     if (!hasInitialAthleteAssignments) {
-      fetchAthleteAssignments();
+      operations.fetchAthleteAssignments();
     }
 
     if (!hasInitialCoachMessage) {
-      fetchCoachWelcomeMessage();
+      operations.fetchCoachWelcomeMessage();
     }
   }, [
     user,
@@ -225,221 +228,12 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
   // Fetch assignment data for coaches
   useEffect(() => {
     if (user && isCoachOrAdmin && !hasInitialCoachPayload) {
-      fetchCoachData();
+      operations.fetchCoachData();
     }
   }, [user, isCoachOrAdmin, hasInitialCoachPayload]);
 
-  const fetchDashboardStats = async () => {
-    try {
-      setLoadingStats(true);
-      const response = await fetch("/api/analytics/dashboard-stats");
-      const data = await response.json();
-
-      if (data.success) {
-        setStats({
-          workoutsThisWeek: data.stats.workoutsThisWeek || 0,
-          personalRecords: data.stats.personalRecords || 0,
-          currentStreak: data.stats.currentStreak || 0,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch dashboard stats:", error);
-    } finally {
-      setLoadingStats(false);
-    }
-  };
-
-  const fetchAthleteAssignments = async () => {
-    try {
-      setLoadingData(true);
-      const response = await fetch(`/api/assignments?athleteId=${user?.id}`);
-      const data = await response.json();
-
-      if (data.success && data.data) {
-        setAssignments(data.data.assignments || data.data || []);
-      }
-    } catch (error) {
-      console.error("Failed to fetch athlete assignments:", error);
-    } finally {
-      setLoadingData(false);
-    }
-  };
-
-  const fetchCoachWelcomeMessage = async () => {
-    try {
-      // Get the athlete's coach ID from their first assignment
-      if (assignments.length > 0 && assignments[0].assignedBy) {
-        const response = await fetch(
-          `/api/coach/settings/public?coachId=${assignments[0].assignedBy}`
-        );
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(
-            "Failed to fetch coach welcome message:",
-            response.status,
-            response.statusText,
-            errorText
-          );
-          return;
-        }
-
-        const data = await response.json();
-
-        if (data.success && data.settings?.welcome_message) {
-          setCoachWelcomeMessage(data.settings.welcome_message);
-        } else if (!data.success && data.error) {
-          console.warn("Coach welcome message unavailable:", data.error);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to fetch coach welcome message:", error);
-    }
-  };
-
-  const fetchCoachData = async () => {
-    try {
-      setLoadingData(true);
-
-      // Fetch assignments, workouts, groups, and athletes in parallel
-      const [assignmentsRes, workoutsRes, groupsRes, athletesRes] =
-        await Promise.all([
-          fetch("/api/assignments"),
-          fetch("/api/workouts"),
-          fetch("/api/groups"),
-          fetch("/api/athletes"),
-        ]);
-
-      const [assignmentsData, workoutsData, groupsData, athletesData] =
-        await Promise.all([
-          assignmentsRes.json(),
-          workoutsRes.json(),
-          groupsRes.json(),
-          athletesRes.json(),
-        ]);
-
-      if (assignmentsData.success && assignmentsData.data) {
-        const assignments =
-          assignmentsData.data.assignments || assignmentsData.data || [];
-        setAssignments(assignments);
-      }
-
-      if (workoutsData.success && workoutsData.data) {
-        setWorkoutPlans(workoutsData.data.workouts || workoutsData.data || []);
-      }
-
-      // Groups API returns { success: true, groups: [...] }
-      if (groupsData.success) {
-        setGroups(groupsData.groups || []);
-      }
-
-      if (athletesData.success && athletesData.data) {
-        setAthletes(athletesData.data.athletes || athletesData.data || []);
-      }
-    } catch (error) {
-      console.error("Failed to fetch coach data:", error);
-    } finally {
-      setLoadingData(false);
-    }
-  };
-
-  const handleAssignWorkout = async (
-    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
-  ) => {
-    try {
-      const response = await fetch("/api/assignments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(assignment),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Refresh assignments
-        await fetchCoachData();
-        // Show success message (could add toast notification here)
-        // [REMOVED] console.log("Assignment created successfully!");
-      }
-    } catch (error) {
-      console.error("Failed to create assignment:", error);
-    }
-  };
-
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-    setShowGroupAssignment(true);
-  };
-
-  const handleAssignmentClick = (assignment: WorkoutAssignment) => {
-    setSelectedAssignmentId(assignment.id);
-    setShowDetailModal(true);
-  };
-
-  const handleCloseDetailModal = () => {
-    setShowDetailModal(false);
-    setSelectedAssignmentId(null);
-  };
-
   const handleStartWorkout = (assignmentId: string) => {
     router.push(`/workouts/live/${assignmentId}`);
-  };
-
-  const handleDeleteAssignment = async (assignmentId: string) => {
-    try {
-      const response = await fetch(`/api/assignments/${assignmentId}`, {
-        method: "DELETE",
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        handleCloseDetailModal();
-        // Refresh assignments
-        if (isCoachOrAdmin) {
-          fetchCoachData();
-        } else {
-          fetchAthleteAssignments();
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting assignment:", error);
-    }
-  };
-
-  const handleAssignmentMove = async (
-    assignmentId: string,
-    newDate: Date,
-    isGroupAssignment: boolean
-  ) => {
-    try {
-      const response = await fetch("/api/assignments/reschedule", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          assignmentId,
-          newDate: newDate.toISOString(),
-          moveGroup: isGroupAssignment,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Refresh assignments to show new date
-        if (isCoachOrAdmin) {
-          await fetchCoachData();
-        } else {
-          await fetchAthleteAssignments();
-        }
-        // [REMOVED] console.log(data.message);
-      } else {
-        console.error("Failed to reschedule:", data.error);
-        alert("Failed to reschedule workout. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error rescheduling assignment:", error);
-      alert("An error occurred while rescheduling. Please try again.");
-    }
   };
 
   if (isLoading) {
@@ -528,10 +322,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    onClick={() => {
-                      setSelectedDate(new Date());
-                      setShowIndividualAssignment(true);
-                    }}
+                    onClick={operations.handleIndividualAssignClick}
                     variant="secondary"
                     size="sm"
                     leftIcon={<UserPlus className="w-4 h-4 shrink-0" />}
@@ -540,10 +331,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                     Athlete
                   </Button>
                   <Button
-                    onClick={() => {
-                      setSelectedDate(new Date());
-                      setShowGroupAssignment(true);
-                    }}
+                    onClick={operations.handleGroupAssignClick}
                     variant="primary"
                     size="sm"
                     leftIcon={<Users className="w-4 h-4 shrink-0" />}
@@ -568,13 +356,13 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                 >
                   <div className="p-1">
                     <Calendar
-                      assignments={assignments}
-                      onAssignmentClick={handleAssignmentClick}
-                      onDateClick={handleDateClick}
-                      onAssignmentMove={handleAssignmentMove}
+                      assignments={state.assignments}
+                      onAssignmentClick={operations.handleAssignmentClick}
+                      onDateClick={operations.handleDateClick}
+                      onAssignmentMove={operations.handleAssignmentMove}
                       viewMode="month"
                       isCoach={true}
-                      groups={groups}
+                      groups={state.groups}
                     />
                   </div>
                 </Suspense>
@@ -583,44 +371,44 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
           </div>
 
           {/* Assignment Modals */}
-          {showGroupAssignment && (
-            <Suspense fallback={<SkeletonCard className="h-96" />}>
+          {state.showGroupAssignment && (
+            <Suspense fallback={null}>
               <GroupAssignmentModal
-                isOpen={showGroupAssignment}
-                onClose={() => setShowGroupAssignment(false)}
-                selectedDate={selectedDate}
-                groups={groups}
-                workoutPlans={workoutPlans}
-                athletes={athletes}
-                onAssignWorkout={handleAssignWorkout}
+                isOpen={state.showGroupAssignment}
+                onClose={() => state.setShowGroupAssignment(false)}
+                selectedDate={state.selectedDate}
+                groups={state.groups}
+                workoutPlans={state.workoutPlans}
+                athletes={state.athletes}
+                onAssignWorkout={operations.handleAssignWorkout}
               />
             </Suspense>
           )}
 
-          {showIndividualAssignment && (
+          {state.showIndividualAssignment && (
             <Suspense fallback={<SkeletonCard className="h-96" />}>
               <IndividualAssignmentModal
-                isOpen={showIndividualAssignment}
-                onClose={() => setShowIndividualAssignment(false)}
-                athletes={athletes}
-                workoutPlans={workoutPlans}
+                isOpen={state.showIndividualAssignment}
+                onClose={() => state.setShowIndividualAssignment(false)}
+                athletes={state.athletes}
+                workoutPlans={state.workoutPlans}
                 currentUserId={user?.id}
-                onAssignWorkout={handleAssignWorkout}
+                onAssignWorkout={operations.handleAssignWorkout}
               />
             </Suspense>
           )}
 
           {/* Assignment Detail Modal */}
-          {selectedAssignmentId && (
+          {state.selectedAssignmentId && (
             <Suspense fallback={null}>
               <WorkoutAssignmentDetailModal
-                isOpen={showDetailModal}
-                onClose={handleCloseDetailModal}
-                assignmentId={selectedAssignmentId}
+                isOpen={state.showDetailModal}
+                onClose={state.closeDetailModal}
+                assignmentId={state.selectedAssignmentId}
                 userRole={user?.role || "athlete"}
                 onStartWorkout={handleStartWorkout}
                 onEdit={() => {}}
-                onDelete={handleDeleteAssignment}
+                onDelete={operations.handleDeleteAssignment}
               />
             </Suspense>
           )}
@@ -755,13 +543,13 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                     No Workouts Today
                   </Heading>
                   <Body className="text-white/90">
-                    {assignments.length === 0
+                    {state.assignments.length === 0
                       ? "Your coach will assign workouts soon. Check back later or reach out to your coach."
                       : "Enjoy your rest day! Check your schedule below for upcoming workouts."}
                   </Body>
-                  {assignments.length === 0 && (
+                  {state.assignments.length === 0 && (
                     <div className="space-y-4 text-left">
-                      {coachWelcomeMessage && (
+                      {state.coachWelcomeMessage && (
                         <div className="rounded-2xl border border-white/30 p-4 glass backdrop-blur-md bg-white/10">
                           <div className="flex items-start gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full shrink-0 bg-white/20 backdrop-blur-sm">
@@ -778,7 +566,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                                 size="sm"
                                 className="whitespace-pre-wrap text-white/90"
                               >
-                                {coachWelcomeMessage}
+                                {state.coachWelcomeMessage}
                               </Body>
                             </div>
                           </div>
@@ -823,7 +611,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
           <AnimatedGrid columns={3} gap={4} delay={0.2}>
             <StatCard
               icon={<Dumbbell className="w-5 h-5" />}
-              value={stats.workoutsThisWeek}
+              value={state.stats.workoutsThisWeek}
               label="This Week"
               loading={showStatsSkeleton}
               trend="up"
@@ -831,7 +619,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
 
             <StatCard
               icon={<Trophy className="w-5 h-5" />}
-              value={stats.personalRecords}
+              value={state.stats.personalRecords}
               label="PRs"
               loading={showStatsSkeleton}
               trend="neutral"
@@ -839,7 +627,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
 
             <StatCard
               icon={<Flame className="w-5 h-5" />}
-              value={stats.currentStreak}
+              value={state.stats.currentStreak}
               label="Day Streak"
               loading={showStatsSkeleton}
               trend="up"
@@ -860,8 +648,8 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
             className="overflow-hidden border shadow-sm"
           >
             <Calendar
-              assignments={assignments}
-              onAssignmentClick={handleAssignmentClick}
+              assignments={state.assignments}
+              onAssignmentClick={operations.handleAssignmentClick}
               viewMode="week"
               isCoach={false}
             />
@@ -891,13 +679,13 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                         variant="default"
                         padding="md"
                         className="hover:border-accent-purple-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
-                        onClick={() => handleAssignmentClick(assignment)}
+                        onClick={() => operations.handleAssignmentClick(assignment)}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(event) => {
                           if (event.key === "Enter" || event.key === " ") {
                             event.preventDefault();
-                            handleAssignmentClick(assignment);
+                            operations.handleAssignmentClick(assignment);
                           }
                         }}
                       >
@@ -938,7 +726,7 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
                   No Upcoming Workouts
                 </Heading>
                 <Body size="sm" variant="secondary" className="mt-1">
-                  {assignments.length === 0
+                  {state.assignments.length === 0
                     ? "Your training schedule will appear here once your coach assigns workouts."
                     : "All caught up! Your coach will add more workouts soon."}
                 </Body>
@@ -949,15 +737,15 @@ function DashboardClientPageComponent({ initialData }: DashboardClientPageProps)
       </div>
 
       {/* Assignment Detail Modal */}
-      {selectedAssignmentId && (
+      {state.selectedAssignmentId && (
         <WorkoutAssignmentDetailModal
-          isOpen={showDetailModal}
-          onClose={handleCloseDetailModal}
-          assignmentId={selectedAssignmentId}
+          isOpen={state.showDetailModal}
+          onClose={state.closeDetailModal}
+          assignmentId={state.selectedAssignmentId}
           userRole={user?.role || "athlete"}
           onStartWorkout={handleStartWorkout}
           onEdit={() => {}}
-          onDelete={handleDeleteAssignment}
+          onDelete={operations.handleDeleteAssignment}
         />
       )}
     </div>
