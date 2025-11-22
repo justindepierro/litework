@@ -113,8 +113,26 @@ export function useAthletesOperations(
       }) as {
         success: boolean;
         error?: string;
-        data?: { invite?: any };
-        invite?: any;
+        data?: {
+          invite?: {
+            id: string;
+            first_name: string;
+            last_name: string;
+            email: string | null;
+            status: string;
+            group_ids?: string[];
+            created_at: string;
+          };
+        };
+        invite?: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string | null;
+          status: string;
+          group_ids?: string[];
+          created_at: string;
+        };
       };
 
       if (response.success) {
