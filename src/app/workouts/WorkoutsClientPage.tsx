@@ -162,11 +162,12 @@ function WorkoutsPage({
       shouldSkipSkeletonRef.current = false;
       loadWorkouts(shouldShowSkeleton);
     }
-  }, [user, state.showArchived, state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, state.showArchived]);
 
   if (showAuthSkeleton) {
     return (
-      <div className="min-h-screen bg-white container-responsive section-spacing">
+      <div className="min-h-screen container-responsive section-spacing">
         <div className="max-w-7xl mx-auto">
           <SkeletonCard />
         </div>
@@ -176,7 +177,7 @@ function WorkoutsPage({
 
   if (!user || (user.role !== "admin" && user.role !== "coach")) {
     return (
-      <div className="min-h-screen bg-white p-4">
+      <div className="min-h-screen p-4">
         <div className="max-w-md mx-auto mt-20">
           <Card variant="default" padding="lg" className="text-center">
             <XCircle className="w-16 h-16 mx-auto mb-4 text-accent-red" />
@@ -200,7 +201,7 @@ function WorkoutsPage({
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Enhanced mobile-first header */}
       <div className="container-responsive p-6 sm:p-4">
         <div className="max-w-4xl mx-auto">

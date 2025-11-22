@@ -94,7 +94,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       className="flex items-start justify-center pt-[20vh] px-4"
     >
       <Command
-        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden shadow-lg"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden"
         shouldFilter={false} // We'll handle filtering ourselves for exercises
       >
         <div className="flex items-center border-b border-silver-300 px-4">

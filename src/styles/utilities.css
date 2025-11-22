@@ -114,7 +114,7 @@
 }
 
 .btn-success:hover {
-  background-color: #00b894;
+  background-color: var(--color-accent-green-600);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -158,7 +158,7 @@
 
 /* Status Utilities */
 .status-success {
-  background-color: rgba(0, 212, 170, 0.1);
+  background-color: var(--color-accent-green-50);
   color: var(--color-success);
   border: 1px solid var(--color-success);
   border-radius: var(--radius-md);
@@ -166,7 +166,7 @@
 }
 
 .status-warning {
-  background-color: rgba(251, 191, 36, 0.1);
+  background-color: var(--color-accent-amber-50);
   color: var(--color-warning);
   border: 1px solid var(--color-warning);
   border-radius: var(--radius-md);
@@ -174,7 +174,7 @@
 }
 
 .status-error {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--color-accent-red-50);
   color: var(--color-error);
   border: 1px solid var(--color-error);
   border-radius: var(--radius-md);
@@ -182,7 +182,7 @@
 }
 
 .status-info {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: var(--color-accent-blue-50);
   color: var(--color-info);
   border: 1px solid var(--color-info);
   border-radius: var(--radius-md);
@@ -242,7 +242,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--color-accent-blue-50);
 }
 
 /* Responsive Utilities */
@@ -368,82 +368,82 @@ select:focus {
 
 /* Success states (green) */
 .bg-success-light {
-  background-color: #d1fae5;
+  background-color: var(--color-accent-green-100);
 }
 .bg-success-lighter {
-  background-color: #ecfdf5;
+  background-color: var(--color-accent-green-50);
 }
 .text-success {
   color: var(--color-success);
 }
 .text-success-dark {
-  color: #059669;
+  color: var(--color-accent-green-700);
 }
 .border-success {
   border-color: var(--color-success);
 }
 .border-success-light {
-  border-color: #a7f3d0;
+  border-color: var(--color-accent-green-200);
 }
 
-/* Warning states (yellow) */
+/* Warning states (amber - design system) */
 .bg-warning-light {
-  background-color: #fef3c7;
+  background-color: var(--color-accent-amber-100);
 }
 .bg-warning-lighter {
-  background-color: #fffbeb;
+  background-color: var(--color-accent-amber-50);
 }
 .text-warning {
   color: var(--color-warning);
 }
 .text-warning-dark {
-  color: #d97706;
+  color: var(--color-accent-amber-700);
 }
 .border-warning {
   border-color: var(--color-warning);
 }
 .border-warning-light {
-  border-color: #fde68a;
+  border-color: var(--color-accent-amber-200);
 }
 
 /* Error states (red) */
 .bg-error-light {
-  background-color: #fecaca;
+  background-color: var(--color-accent-red-100);
 }
 .bg-error-lighter {
-  background-color: #fef2f2;
+  background-color: var(--color-accent-red-50);
 }
 .text-error {
   color: var(--color-error);
 }
 .text-error-dark {
-  color: #dc2626;
+  color: var(--color-accent-red-700);
 }
 .border-error {
   border-color: var(--color-error);
 }
 .border-error-light {
-  border-color: #fca5a5;
+  border-color: var(--color-accent-red-200);
 }
 
 /* Info states (blue) */
 .bg-info-light {
-  background-color: #bfdbfe;
+  background-color: var(--color-accent-blue-100);
 }
 .bg-info-lighter {
-  background-color: #eff6ff;
+  background-color: var(--color-accent-blue-50);
 }
 .text-info {
   color: var(--color-info);
 }
 .text-info-dark {
-  color: #2563eb;
+  color: var(--color-accent-blue-700);
 }
 .border-info {
   border-color: var(--color-info);
 }
 .border-info-light {
-  border-color: #93c5fd;
+  border-color: var(--color-accent-blue-200);
 }
 
 /* Neutral states (silver/gray) */

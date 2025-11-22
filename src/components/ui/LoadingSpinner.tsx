@@ -36,7 +36,7 @@ interface PageLoadingProps {
 
 export function PageLoading({ message = "Loading..." }: PageLoadingProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
+    <div className="min-h-screen flex items-center justify-center">
       <LoadingSpinner size="lg" message={message} />
     </div>
   );

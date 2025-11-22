@@ -230,13 +230,11 @@ const Navigation = memo(function Navigation() {
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-accent-orange-500 transition-colors" />
               </div>
               <span
-                style={{ color: "#ffffff" }}
                 className="text-xl sm:text-2xl font-bold text-white hidden xs:block"
               >
                 LiteWork
               </span>
               <span
-                style={{ color: "#ffffff" }}
                 className="text-xl font-bold text-white xs:hidden"
               >
                 LW
@@ -258,7 +256,7 @@ const Navigation = memo(function Navigation() {
                           color: isActive ? "#020617" : "#ffffff",
                         }}
                         className={`
-                          group relative px-4 py-2 rounded-xl font-medium text-sm font-bold
+                          group relative px-4 py-2 rounded-xl text-sm font-bold
                           transition-all duration-200 ease-in-out
                           flex items-center gap-2
                           ${
@@ -310,7 +308,6 @@ const Navigation = memo(function Navigation() {
                   {/* Logout Button */}
                   <button
                     onClick={signOut}
-                    style={{ color: "#ffffff" }}
                     className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-accent-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
                     <LogOut className="w-4 h-4" />
@@ -338,12 +335,10 @@ const Navigation = memo(function Navigation() {
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               <Menu
-                style={{ color: "#ffffff" }}
-                className={`w-6 h-6 transition-all duration-200 ${isMobileMenuOpen ? "rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"}`}
+                className={`w-6 h-6 text-white transition-all duration-200 ${isMobileMenuOpen ? "rotate-90 opacity-0 scale-50" : "rotate-0 opacity-100 scale-100"}`}
               />
               <X
-                style={{ color: "#ffffff" }}
-                className={`w-6 h-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${isMobileMenuOpen ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"}`}
+                className={`w-6 h-6 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${isMobileMenuOpen ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"}`}
               />
             </button>
           </div>
@@ -381,13 +376,11 @@ const Navigation = memo(function Navigation() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div
-                        style={{ color: "#ffffff" }}
                         className="text-white font-semibold text-sm"
                       >
                         {user.fullName || user.email}
                       </div>
                       <div
-                        style={{ color: "#e2e8f0" }}
                         className="text-neutral-200 text-xs capitalize"
                       >
                         {user.role}
@@ -463,7 +456,6 @@ const Navigation = memo(function Navigation() {
                     signOut();
                     setIsMobileMenuOpen(false);
                   }}
-                  style={{ color: "#f87171" }}
                   className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-accent-red-400 hover:text-accent-red-300 bg-accent-red-500/20 hover:bg-accent-red-500/30 transition-all duration-200 active:scale-95 mt-2"
                 >
                   <LogOut className="w-5 h-5" />

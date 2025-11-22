@@ -621,7 +621,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Emergency Contact Section */}
-                <div className="bg-gradient-to-br from-accent-red-50 to-accent-orange-50 rounded-xl p-4 sm:p-6 border border-accent-red-100">
+                <div className="bg-gradient-to-br from-accent-red-50 to-accent-pink-50 rounded-xl p-4 sm:p-6 border border-accent-red-100">
                   <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
                     <Phone className="w-5 h-5 text-accent-red-600" />
                     Emergency Contact

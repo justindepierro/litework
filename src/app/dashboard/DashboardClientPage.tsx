@@ -238,7 +238,7 @@ function DashboardClientPageComponent({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-sky-50 to-purple-50">
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -251,7 +251,7 @@ function DashboardClientPageComponent({
   // Coach/Admin Dashboard
   if (isCoachOrAdmin) {
     return (
-      <div className="min-h-screen px-4 py-6 bg-linear-to-br from-accent-orange-50 via-accent-pink-50 to-accent-purple-50">
+      <div className="min-h-screen px-4 py-6 bg-linear-to-br from-accent-blue-50 via-accent-purple-50 to-accent-pink-50">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Welcome Header - Glass Material with Vibrant Gradient */}
           <GlassCard gradientAccent="primary">
