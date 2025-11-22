@@ -19,7 +19,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Heading, Body } from "@/components/ui/Typography";
-import { User as UserType, AthleteKPI as AthleteKPIType } from "@/types";
+import { AthleteKPI as AthleteKPIType } from "@/types";
+import { EnhancedAthlete } from "@/hooks/useAthletesOperations";
 
 interface AthleteStats {
   totalWorkouts: number;
@@ -42,17 +43,6 @@ interface AthleteGroup {
   id: string;
   name: string;
   color?: string;
-}
-
-interface EnhancedAthlete extends UserType {
-  status: "active" | "invited" | "inactive";
-  profileImage?: string | null;
-  bio?: string | null;
-  injuryStatus?: string;
-  lastActivity?: Date | null;
-  stats?: AthleteStats;
-  communication?: AthleteCommunication;
-  personalRecords?: AthleteKPIType[];
 }
 
 interface AthleteCardProps {

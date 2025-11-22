@@ -16,8 +16,8 @@ export interface EnhancedAthlete {
   lastName: string;
   fullName?: string; // Optional to match User type
   email: string;
-  role: "athlete";
-  groupIds?: string[];
+  role: "athlete" | "coach" | "admin"; // Allow all roles to match User type
+  groupIds: string[]; // Required to match User type
   status: "active" | "invited" | "inactive";
   profileImage?: string | null;
   bio?: string | null;

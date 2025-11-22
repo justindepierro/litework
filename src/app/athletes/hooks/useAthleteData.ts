@@ -1,39 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
-import {
-  AthleteGroup,
-  WorkoutPlan,
-  User as UserType,
-  AthleteKPI,
-} from "@/types";
-
-interface AthleteCommunication {
-  unreadMessages: number;
-  lastMessage: string | null;
-  lastMessageTime: Date | null;
-  notificationsEnabled: boolean;
-  preferredContact: "app" | "email" | "sms";
-}
-
-interface EnhancedAthlete extends UserType {
-  status: "active" | "invited" | "inactive";
-  profileImage?: string | null;
-  bio?: string | null;
-  injuryStatus?: string;
-  lastActivity?: Date | null;
-  inviteId?: string; // For invited athletes
-  inviteEmail?: string; // Email from invites table
-  stats?: {
-    totalWorkouts: number;
-    completedWorkouts: number;
-    thisMonthWorkouts: number;
-    totalPRs: number;
-    recentPRs: number;
-    lastWorkout: Date | null;
-  };
-  communication?: AthleteCommunication;
-  personalRecords?: AthleteKPI[];
-}
+import { AthleteGroup, WorkoutPlan, User } from "@/types";
+import { EnhancedAthlete } from "@/hooks/useAthletesOperations";
 
 interface UseAthleteDataReturn {
   athletes: EnhancedAthlete[];
@@ -51,7 +19,7 @@ interface UseAthleteDataReturn {
  * Handles loading athletes, groups, and workout plans from API
  */
 export function useAthleteData(
-  user: UserType | null,
+  user: User | null,
   isAuthLoading: boolean
 ): UseAthleteDataReturn {
   const [athletes, setAthletes] = useState<EnhancedAthlete[]>([]);

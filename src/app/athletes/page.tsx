@@ -57,6 +57,8 @@ import SearchAndFilters from "./components/SearchAndFilters";
 import GroupsSection from "./components/GroupsSection";
 import { useAthleteData } from "./hooks/useAthleteData";
 import { useAthleteFilters } from "./hooks/useAthleteFilters";
+import { useAthletesModals } from "@/hooks/useAthletesModals";
+import { useAthletesOperations, type EnhancedAthlete as EnhancedAthleteType } from "@/hooks/useAthletesOperations";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -92,24 +94,8 @@ interface AthleteCommunication {
   preferredContact: "app" | "email" | "sms";
 }
 
-interface EnhancedAthlete extends UserType {
-  status: "active" | "invited" | "inactive";
-  profileImage?: string | null;
-  bio?: string | null;
-  injuryStatus?: string;
-  lastActivity?: Date | null;
-  inviteId?: string; // For invited athletes
-  inviteEmail?: string; // Email from invites table
-  stats?: {
-    totalWorkouts: number;
-    completedWorkouts: number;
-    thisMonthWorkouts: number;
-    totalPRs: number;
-    recentPRs: number;
-    lastWorkout: Date | null;
-  };
-  communication?: AthleteCommunication;
-}
+// Re-export EnhancedAthlete type from operations hook
+type EnhancedAthlete = EnhancedAthleteType;
 
 export default withPageErrorBoundary(function AthletesPage() {
   const { isLoading, user } = useRequireCoach();
@@ -130,50 +116,26 @@ export default withPageErrorBoundary(function AthletesPage() {
   // Add minimum loading time for smooth skeleton display
   const { showSkeleton } = useMinimumLoadingTime(isLoading, 300);
 
+  // Use modal management hook
+  const modals = useAthletesModals();
+
+  // Use operations hook
+  const operations = useAthletesOperations(
+    athletes,
+    setAthletes,
+    groups,
+    setGroups,
+    loadGroups
+  );
+
+  // Local UI state
   const [error, setError] = useState<string | null>(null);
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [showKPIModal, setShowKPIModal] = useState(false);
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [showBulkModal, setShowBulkModal] = useState(false);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [showGroupFormModal, setShowGroupFormModal] = useState(false);
-  const [showManageGroupModal, setShowManageGroupModal] = useState(false);
-  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
-  const [showEditEmailModal, setShowEditEmailModal] = useState(false);
-  const [showEditAthleteModal, setShowEditAthleteModal] = useState(false);
-  const [showIndividualAssignment, setShowIndividualAssignment] =
-    useState(false);
-  const [showKPIManagementModal, setShowKPIManagementModal] = useState(false);
-  const [showBulkKPIAssignmentModal, setShowBulkKPIAssignmentModal] =
-    useState(false);
   const [availableKPIs, setAvailableKPIs] = useState<KPITag[]>([]);
   const [editingKPI, setEditingKPI] = useState<KPITag | null>(null);
-  const [selectedGroup, setSelectedGroup] = useState<AthleteGroup | null>(null);
-  const [selectedAthlete, setSelectedAthlete] =
-    useState<EnhancedAthlete | null>(null);
-  const [openGroupMenuId, setOpenGroupMenuId] = useState<string | null>(null);
-  const [editingGroup, setEditingGroup] = useState<AthleteGroup | null>(null);
-
-  // Confirmation modal state
-  const [confirmModal, setConfirmModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  }>({
-    isOpen: false,
-    title: "",
-    message: "",
-    onConfirm: () => {},
-  });
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-
-  // Debounce search term to prevent excessive filtering during typing
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
+  
   const [messageForm, setMessageForm] = useState<MessageForm>({
     recipientId: "",
     subject: "",
@@ -182,52 +144,7 @@ export default withPageErrorBoundary(function AthletesPage() {
     notifyViaEmail: false,
   });
 
-  // Handle group deletion
-  const handleDeleteGroup = async (groupId: string) => {
-    setConfirmModal({
-      isOpen: true,
-      title: "Delete Group",
-      message:
-        "Are you sure you want to delete this group? This action cannot be undone and will remove all athlete assignments.",
-      onConfirm: async () => {
-        try {
-          await apiClient.deleteGroup(groupId);
-
-          // Remove from local state
-          setGroups(groups.filter((g) => g.id !== groupId));
-          setOpenGroupMenuId(null);
-
-          toast.success("Group deleted successfully");
-        } catch (error) {
-          console.error("Delete group error:", error);
-          const errorMessage =
-            error instanceof Error ? error.message : "Failed to delete group";
-          toast.error(errorMessage);
-        }
-      },
-    });
-  };
-
-  // Handle group archiving
-  const handleArchiveGroup = async (group: AthleteGroup) => {
-    try {
-      await apiClient.updateGroup(group.id, {
-        ...group,
-        archived: true,
-      });
-
-      // Reload groups to reflect changes
-      await loadGroups();
-      setOpenGroupMenuId(null);
-
-      toast.success("Group archived successfully");
-    } catch (error) {
-      console.error("Archive group error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to archive group";
-      toast.error(errorMessage);
-    }
-  };
+  // Operations are now handled by useAthletesOperations hook
 
   // Load groups when component mounts
   useEffect(() => {
@@ -254,324 +171,33 @@ export default withPageErrorBoundary(function AthletesPage() {
     }
   }, [isLoading]);
 
-  const handleAssignWorkout = async (
-    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
-  ) => {
-    try {
-      const response = await fetch("/api/assignments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(assignment),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success("Workout assigned successfully!");
-        setShowIndividualAssignment(false);
-        setSelectedAthlete(null);
-      } else {
-        toast.error(data.error || "Failed to assign workout");
-      }
-    } catch (err) {
-      console.error("Failed to assign workout:", err);
-      toast.error("Failed to assign workout");
-    }
-  };
+  // Handler functions now in operations hook
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
-      if (openGroupMenuId) {
-        setOpenGroupMenuId(null);
+      if (operations.openGroupMenuId) {
+        operations.setOpenGroupMenuId(null);
       }
     };
 
-    if (openGroupMenuId) {
+    if (operations.openGroupMenuId) {
       document.addEventListener("click", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [openGroupMenuId]);
+  }, [operations.openGroupMenuId, operations.setOpenGroupMenuId]);
 
-  const handleSendInvite = async (inviteForm: InviteForm) => {
-    // Only require first name and last name (email is optional)
-    if (!inviteForm.firstName || !inviteForm.lastName) return;
-
-    try {
-      const response = (await apiClient.createAthleteInvite({
-        firstName: inviteForm.firstName,
-        lastName: inviteForm.lastName,
-        email: inviteForm.email, // Can be empty string
-        groupId: inviteForm.groupId || undefined, // Include groupId if provided
-        notes: inviteForm.notes || undefined, // Include notes if provided
-      })) as {
-        success: boolean;
-        error?: string;
-        data?: {
-          invite?: {
-            id: string;
-            first_name: string;
-            last_name: string;
-            email: string | null;
-            group_ids?: string[];
-            created_at: string;
-          };
-        };
-        invite?: {
-          id: string;
-          first_name: string;
-          last_name: string;
-          email: string | null;
-          group_ids?: string[];
-          created_at: string;
-        };
-      };
-
-      if (response.success) {
-        // Add the new invite to the athletes list immediately
-        // API returns invite at top level
-        const newInvite = response.invite || response.data?.invite;
-        if (newInvite) {
-          const newAthlete: EnhancedAthlete = {
-            id: newInvite.id,
-            firstName: newInvite.first_name || inviteForm.firstName,
-            lastName: newInvite.last_name || inviteForm.lastName,
-            fullName: `${newInvite.first_name || inviteForm.firstName} ${newInvite.last_name || inviteForm.lastName}`,
-            email: newInvite.email || inviteForm.email || "",
-            role: "athlete" as const,
-            groupIds:
-              newInvite.group_ids ||
-              (inviteForm.groupId ? [inviteForm.groupId] : []),
-            status: "invited" as const,
-            profileImage: null,
-            bio: null,
-            injuryStatus: undefined,
-            stats: {
-              totalWorkouts: 0,
-              completedWorkouts: 0,
-              thisMonthWorkouts: 0,
-              totalPRs: 0,
-              recentPRs: 0,
-              lastWorkout: null,
-            },
-            communication: {
-              unreadMessages: 0,
-              lastMessage: null,
-              lastMessageTime: null,
-              notificationsEnabled: true,
-              preferredContact: "app" as const,
-            },
-            personalRecords: [],
-            createdAt: new Date(newInvite.created_at || Date.now()),
-            updatedAt: new Date(newInvite.created_at || Date.now()),
-          };
-
-          // Add to the top of the athletes list for immediate visibility
-          setAthletes((prev) => [newAthlete, ...prev]);
-
-          // Reload groups to show updated athlete count and membership
-          await loadGroups();
-        }
-
-        const successMsg = inviteForm.email
-          ? `Invite sent successfully to ${inviteForm.email}!`
-          : `Athlete ${inviteForm.firstName} ${inviteForm.lastName} added successfully!`;
-        toast.success(successMsg);
-        setShowInviteModal(false);
-        setError("");
-      } else {
-        const errorMsg =
-          typeof response.error === "string"
-            ? response.error
-            : "Failed to send invite";
-        setError(errorMsg);
-        toast.error(errorMsg);
-      }
-    } catch (err) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Failed to add athlete";
-      setError(errorMsg);
-      toast.error(errorMsg);
-      console.error("Error adding athlete:", err);
-    }
-  };
-
-  const handleResendInvite = async (inviteId: string) => {
-    // [REMOVED] console.log("Resending invite:", inviteId);
-    toast.info("Sending invitation email...");
-    try {
-      const response = (await apiClient.resendInvite(inviteId)) as {
-        success: boolean;
-        message?: string;
-      };
-
-      if (response.success) {
-        toast.success("✅ Invitation email sent! Check your inbox.");
-      } else {
-        toast.error("Failed to resend invite");
-      }
-    } catch (err) {
-      console.error("Error resending invite:", err);
-      toast.error("Failed to resend invite");
-    }
-  };
-
-  const handleCancelInvite = (inviteId: string) => {
-    setConfirmModal({
-      isOpen: true,
-      title: "Cancel Invitation",
-      message:
-        "Are you sure you want to cancel this invitation? The athlete will not be able to accept it.",
-      onConfirm: async () => {
-        try {
-          setConfirmModal({ ...confirmModal, isOpen: false });
-
-          const response = (await apiClient.deleteInvite(inviteId)) as {
-            success: boolean;
-            message?: string;
-            error?: string;
-          };
-
-          if (response.success) {
-            // Remove from local state
-            setAthletes((prev) => prev.filter((a) => a.id !== inviteId));
-            // Reload groups to update counts
-            await loadGroups();
-            toast.success("Invitation cancelled successfully");
-          } else {
-            console.error("Delete failed:", response.error || response);
-            toast.error(response.error || "Failed to cancel invitation");
-          }
-        } catch (err) {
-          console.error("Error canceling invite:", err);
-          toast.error(
-            err instanceof Error ? err.message : "Failed to cancel invitation"
-          );
-        }
-      },
-    });
-  };
-
-  const handleUpdateEmail = async (email: string) => {
-    if (!selectedAthlete || !email) {
-      toast.error("Email is required");
-      return;
-    }
-
-    try {
-      const response = (await apiClient.updateInvite(selectedAthlete.id, {
-        email: email,
-      })) as {
-        success: boolean;
-        invite?: {
-          email: string;
-          status: string;
-        };
-        error?: string;
-      };
-
-      if (response.success && response.invite) {
-        // Update local state with new email and status
-        setAthletes((prev) =>
-          prev.map((a) =>
-            a.id === selectedAthlete.id
-              ? {
-                  ...a,
-                  email: response.invite?.email || email,
-                  status: "invited" as const, // Update status to invited
-                }
-              : a
-          )
-        );
-        setShowEditEmailModal(false);
-        toast.success(
-          "Email updated successfully! You can now send the invite."
-        );
-      } else {
-        toast.error(response.error || "Failed to update email");
-      }
-    } catch (err) {
-      console.error("Error updating email:", err);
-      toast.error(
-        err instanceof Error ? err.message : "Failed to update email"
-      );
-    }
-  };
-
-  const handleAddAthleteToGroup = async (
-    groupId: string,
-    athleteId: string
-  ) => {
-    try {
-      const response = await fetch("/api/groups/members", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          groupId,
-          athleteIds: [athleteId],
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const group = groups.find((g) => g.id === groupId);
-        const athlete = athletes.find((a) => a.id === athleteId);
-        toast.success(
-          `Added ${athlete?.firstName || "athlete"} to ${group?.name || "group"}`
-        );
-        loadGroups(); // Refresh groups
-      } else {
-        toast.error(data.error || "Failed to add to group");
-      }
-    } catch (error) {
-      console.error("Error adding to group:", error);
-      toast.error("Failed to add to group");
-    }
-  };
-
+  // Wrapper handlers for UI actions (using operations hook)
   const handleAnalytics = (athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowAnalyticsModal(true);
-  };
-
-  const handleAddKPI = async (kpiForm: KPIForm) => {
-    if (!selectedAthlete || !kpiForm.kpiName || !kpiForm.value) return;
-
-    const newKPI: AthleteKPI = {
-      id: Date.now().toString(),
-      athleteId: selectedAthlete.id,
-      exerciseId: kpiForm.kpiName.toLowerCase().replace(/\s+/g, "-"),
-      exerciseName: kpiForm.kpiName,
-      currentPR: parseFloat(kpiForm.value),
-      dateAchieved: new Date(kpiForm.dateSet),
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    // Update local state
-    const updatedAthletes = athletes.map((athlete) =>
-      athlete.id === selectedAthlete.id
-        ? {
-            ...athlete,
-            personalRecords: [...(athlete.personalRecords || []), newKPI],
-          }
-        : athlete
-    );
-
-    setAthletes(updatedAthletes);
-    setSelectedAthlete({
-      ...selectedAthlete,
-      personalRecords: [...(selectedAthlete.personalRecords || []), newKPI],
-    });
+    operations.setSelectedAthlete(athlete);
+    modals.setShowAnalyticsModal(true);
   };
 
   const handleMessageAthlete = (athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
+    operations.setSelectedAthlete(athlete);
     setMessageForm({
       recipientId: athlete.id,
       subject: "",
@@ -579,36 +205,39 @@ export default withPageErrorBoundary(function AthletesPage() {
       priority: "normal",
       notifyViaEmail: athlete.communication?.preferredContact === "email",
     });
-    setShowMessageModal(true);
+    modals.setShowMessageModal(true);
+  };
+
+  // Wrappers for operations that need modal state updates
+  const handleSendInvite = async (inviteForm: InviteForm) => {
+    const result = await operations.handleSendInvite(inviteForm);
+    if (result?.success) {
+      modals.setShowInviteModal(false);
+      setError("");
+    }
+  };
+
+  const handleUpdateEmail = async (email: string) => {
+    const result = await operations.handleUpdateEmail(email);
+    if (result?.success) {
+      modals.setShowEditEmailModal(false);
+    }
   };
 
   const handleSendMessage = async (messageForm: MessageForm) => {
-    if (!messageForm.message || !selectedAthlete) return;
+    const result = await operations.handleSendMessage(messageForm);
+    if (result?.success) {
+      modals.setShowMessageModal(false);
+    }
+  };
 
-    try {
-      // Here you would call your API to send the message
-      // const response = await apiClient.sendMessage(messageForm);
-
-      // For demo, we'll just update the local state
-      const updatedAthletes = athletes.map((athlete) =>
-        athlete.id === selectedAthlete.id
-          ? {
-              ...athlete,
-              communication: {
-                ...athlete.communication!,
-                lastMessage: messageForm.message,
-                lastMessageTime: new Date(),
-              },
-            }
-          : athlete
-      );
-
-      setAthletes(updatedAthletes);
-      toast.success(`Message sent to ${selectedAthlete.fullName}!`);
-      setShowMessageModal(false);
-    } catch (err) {
-      setError("Failed to send message");
-      console.error("Error sending message:", err);
+  const handleAssignWorkout = async (
+    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
+  ) => {
+    const result = await operations.handleAssignWorkout(assignment);
+    if (result?.success) {
+      modals.setShowIndividualAssignment(false);
+      operations.setSelectedAthlete(null);
     }
   };
 
@@ -707,39 +336,39 @@ export default withPageErrorBoundary(function AthletesPage() {
 
   // Memoize athlete card callbacks for performance
   const handleCardClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowDetailModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowDetailModal(true);
+  }, [operations, modals]);
 
   const handleMessageClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowMessageModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowMessageModal(true);
+  }, [operations, modals]);
 
   const handleAssignWorkoutClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowIndividualAssignment(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowIndividualAssignment(true);
+  }, [operations, modals]);
 
   const handleManageKPIsClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowKPIModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowKPIModal(true);
+  }, [operations, modals]);
 
   const handleViewAnalyticsClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowAnalyticsModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowAnalyticsModal(true);
+  }, [operations, modals]);
 
   const handleAddToGroupClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowAddToGroupModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowAddToGroupModal(true);
+  }, [operations, modals]);
 
   const handleEditEmailClick = useCallback((athlete: EnhancedAthlete) => {
-    setSelectedAthlete(athlete);
-    setShowEditEmailModal(true);
-  }, []);
+    operations.setSelectedAthlete(athlete);
+    modals.setShowEditEmailModal(true);
+  }, [operations, modals]);
 
   if (showSkeleton) {
     return (
@@ -780,7 +409,7 @@ export default withPageErrorBoundary(function AthletesPage() {
           {/* Mobile-Optimized Action Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <Button
-              onClick={() => setShowHistoryModal(true)}
+              onClick={() => modals.setShowHistoryModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg border-accent-light hover:border-accent transition-colors"
               leftIcon={
@@ -790,7 +419,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               History
             </Button>
             <Button
-              onClick={() => setShowBulkModal(true)}
+              onClick={() => modals.setShowBulkModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg border-primary-light hover:border-primary transition-colors"
               leftIcon={
@@ -800,7 +429,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               Bulk Actions
             </Button>
             <Button
-              onClick={() => setShowKPIManagementModal(true)}
+              onClick={() => modals.setShowKPIManagementModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg border-warning-light hover:border-warning bg-warning-lightest hover:bg-warning-light transition-colors"
               leftIcon={
@@ -810,7 +439,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <span className="text-warning-dark">Create KPI</span>
             </Button>
             <Button
-              onClick={() => setShowBulkKPIAssignmentModal(true)}
+              onClick={() => modals.setShowBulkKPIAssignmentModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg border-success-light hover:border-success bg-success-lightest hover:bg-success-light transition-colors"
               leftIcon={
@@ -820,7 +449,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <span className="text-success-dark">Assign KPIs</span>
             </Button>
             <Button
-              onClick={() => setShowGroupFormModal(true)}
+              onClick={() => modals.setShowGroupFormModal(true)}
               variant="secondary"
               className="shadow-md hover:shadow-lg border-accent-light hover:border-accent bg-accent-lightest hover:bg-accent-light transition-colors"
               leftIcon={
@@ -830,7 +459,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <span className="text-accent-dark">Add Group</span>
             </Button>
             <Button
-              onClick={() => setShowInviteModal(true)}
+              onClick={() => modals.setShowInviteModal(true)}
               variant="primary"
               className="shadow-lg hover:shadow-xl bg-gradient-accent-primary hover:opacity-90 transition-opacity"
               leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
@@ -843,17 +472,17 @@ export default withPageErrorBoundary(function AthletesPage() {
         {/* Groups Section */}
         <GroupsSection
           groups={activeGroups}
-          openGroupMenuId={openGroupMenuId}
-          onOpenMenu={setOpenGroupMenuId}
+          openGroupMenuId={operations.openGroupMenuId}
+          onOpenMenu={operations.setOpenGroupMenuId}
           onEditGroup={(group) => {
-            setEditingGroup(group);
-            setShowGroupFormModal(true);
+            operations.setEditingGroup(group);
+            modals.setShowGroupFormModal(true);
           }}
-          onArchiveGroup={handleArchiveGroup}
-          onDeleteGroup={handleDeleteGroup}
+          onArchiveGroup={operations.handleArchiveGroup}
+          onDeleteGroup={operations.handleDeleteGroup}
           onManageMembers={(group) => {
-            setSelectedGroup(group);
-            setShowManageGroupModal(true);
+            operations.setSelectedGroup(group);
+            modals.setShowManageGroupModal(true);
           }}
         />
 
@@ -869,7 +498,7 @@ export default withPageErrorBoundary(function AthletesPage() {
         <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
           {/* Add Athlete Placeholder Card - Colorful & Energetic */}
           <button
-            onClick={() => setShowInviteModal(true)}
+            onClick={() => modals.setShowInviteModal(true)}
             className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-silver-300 hover:border-warning hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
             aria-label="Add new athlete"
           >
@@ -905,8 +534,8 @@ export default withPageErrorBoundary(function AthletesPage() {
                 onViewAnalytics={handleViewAnalyticsClick}
                 onAddToGroup={handleAddToGroupClick}
                 onEditEmail={handleEditEmailClick}
-                onResendInvite={handleResendInvite}
-                onCancelInvite={handleCancelInvite}
+                onResendInvite={operations.handleResendInvite}
+                onCancelInvite={operations.handleCancelInvite}
                 getStatusIcon={getStatusIcon}
                 getStatusText={getStatusText}
               />
@@ -926,12 +555,12 @@ export default withPageErrorBoundary(function AthletesPage() {
 
         {/* Edit Email Modal */}
         {/* Edit Email Modal */}
-        {selectedAthlete && (
+        {operations.selectedAthlete && (
           <EditEmailModal
-            isOpen={showEditEmailModal}
-            onClose={() => setShowEditEmailModal(false)}
-            athlete={selectedAthlete}
-            initialEmail={selectedAthlete.email || ""}
+            isOpen={modals.showEditEmailModal}
+            onClose={() => modals.setShowEditEmailModal(false)}
+            athlete={operations.selectedAthlete}
+            initialEmail={operations.selectedAthlete.email || ""}
             onUpdateEmail={handleUpdateEmail}
           />
         )}
@@ -939,39 +568,39 @@ export default withPageErrorBoundary(function AthletesPage() {
         {/* Invite Modal */}
         {/* Invite Athlete Modal */}
         <InviteAthleteModal
-          isOpen={showInviteModal}
-          onClose={() => setShowInviteModal(false)}
+          isOpen={modals.showInviteModal}
+          onClose={() => modals.setShowInviteModal(false)}
           onInvite={handleSendInvite}
           groups={groups}
-          onCreateNewGroup={() => setShowGroupFormModal(true)}
+          onCreateNewGroup={() => modals.setShowGroupFormModal(true)}
         />
 
         {/* Message Modal */}
-        {selectedAthlete && (
+        {operations.selectedAthlete && (
           <MessageModal
-            isOpen={showMessageModal}
-            onClose={() => setShowMessageModal(false)}
-            athlete={selectedAthlete}
+            isOpen={modals.showMessageModal}
+            onClose={() => modals.setShowMessageModal(false)}
+            athlete={operations.selectedAthlete}
             initialForm={messageForm}
             onSendMessage={handleSendMessage}
           />
         )}
 
         {/* KPI Management Modal */}
-        {selectedAthlete && (
+        {operations.selectedAthlete && (
           <KPIModal
-            isOpen={showKPIModal}
-            onClose={() => setShowKPIModal(false)}
-            athlete={selectedAthlete}
-            onAddKPI={handleAddKPI}
+            isOpen={modals.showKPIModal}
+            onClose={() => modals.setShowKPIModal(false)}
+            athlete={operations.selectedAthlete}
+            onAddKPI={operations.handleAddKPI}
           />
         )}
       </div>
 
       {/* Bulk Operations Modal */}
       <BulkOperationModal
-        isOpen={showBulkModal}
-        onClose={() => setShowBulkModal(false)}
+        isOpen={modals.showBulkModal}
+        onClose={() => modals.setShowBulkModal(false)}
         athletes={filteredAthletes}
         groups={mockGroups}
         onExecute={handleBulkOperation}
@@ -979,111 +608,111 @@ export default withPageErrorBoundary(function AthletesPage() {
 
       {/* Bulk Operations History Modal */}
       <BulkOperationHistory
-        isOpen={showHistoryModal}
-        onClose={() => setShowHistoryModal(false)}
+        isOpen={modals.showHistoryModal}
+        onClose={() => modals.setShowHistoryModal(false)}
       />
 
       {/* Progress Analytics Modal */}
-      {showAnalyticsModal && selectedAthlete && (
+      {modals.showAnalyticsModal && operations.selectedAthlete && (
         <ModalBackdrop
-          isOpen={showAnalyticsModal}
-          onClose={() => setShowAnalyticsModal(false)}
+          isOpen={modals.showAnalyticsModal}
+          onClose={() => modals.setShowAnalyticsModal(false)}
         >
           <div className="bg-white rounded-xl w-full max-w-6xl h-full max-h-[90vh] overflow-hidden flex flex-col">
             <ModalHeader
-              title={`${selectedAthlete.fullName} - Progress Analytics`}
+              title={`${operations.selectedAthlete.fullName} - Progress Analytics`}
               subtitle="Comprehensive performance tracking and insights"
               icon={<BarChart3 className="h-6 w-6" />}
-              onClose={() => setShowAnalyticsModal(false)}
+              onClose={() => modals.setShowAnalyticsModal(false)}
             />
             <div className="flex-1 overflow-y-auto p-6">
-              <ProgressAnalytics athleteId={selectedAthlete.id} />
+              <ProgressAnalytics athleteId={operations.selectedAthlete.id} />
             </div>
           </div>
         </ModalBackdrop>
       )}
 
       {/* Athlete Detail Modal */}
-      {showDetailModal && selectedAthlete && (
+      {modals.showDetailModal && operations.selectedAthlete && (
         <AthleteDetailModal
-          athlete={selectedAthlete}
+          athlete={operations.selectedAthlete}
           groups={groups.filter((g) =>
-            selectedAthlete.groupIds?.includes(g.id!)
+            operations.selectedAthlete?.groupIds?.includes(g.id!)
           )}
           onClose={() => {
-            setShowDetailModal(false);
-            setSelectedAthlete(null);
+            modals.setShowDetailModal(false);
+            operations.setSelectedAthlete(null);
           }}
           onEdit={() => {
-            setShowDetailModal(false);
-            setShowEditAthleteModal(true);
+            modals.setShowDetailModal(false);
+            modals.setShowEditAthleteModal(true);
           }}
           onMessage={() => {
-            setShowDetailModal(false);
-            handleMessageAthlete(selectedAthlete);
+            modals.setShowDetailModal(false);
+            handleMessageAthlete(operations.selectedAthlete!);
           }}
           onViewProgress={() => {
-            setShowDetailModal(false);
-            handleAnalytics(selectedAthlete);
+            modals.setShowDetailModal(false);
+            handleAnalytics(operations.selectedAthlete!);
           }}
           onResendInvite={async (inviteId) => {
-            await handleResendInvite(inviteId);
+            await operations.handleResendInvite(inviteId);
           }}
         />
       )}
 
       {/* Group Form Modal */}
       <GroupFormModal
-        isOpen={showGroupFormModal}
+        isOpen={modals.showGroupFormModal}
         onClose={() => {
-          setShowGroupFormModal(false);
-          setEditingGroup(null);
+          modals.setShowGroupFormModal(false);
+          operations.setEditingGroup(null);
         }}
         onSave={() => {
           // Refresh groups list so new group appears in invite modal
           loadGroups();
-          setShowGroupFormModal(false);
-          setEditingGroup(null);
+          modals.setShowGroupFormModal(false);
+          operations.setEditingGroup(null);
         }}
-        editingGroup={editingGroup}
+        editingGroup={operations.editingGroup}
         existingGroups={groups}
       />
 
       {/* Manage Group Members Modal */}
-      {selectedGroup && (
+      {operations.selectedGroup && (
         <ManageGroupMembersModal
-          isOpen={showManageGroupModal}
+          isOpen={modals.showManageGroupModal}
           onClose={() => {
-            setShowManageGroupModal(false);
-            setSelectedGroup(null);
+            modals.setShowManageGroupModal(false);
+            operations.setSelectedGroup(null);
           }}
-          group={selectedGroup}
+          group={operations.selectedGroup}
           allAthletes={athletes}
           onMembersUpdated={() => {
             // Reload groups to update athlete counts
             loadGroups();
             // Close and reopen the modal to refresh with updated data
-            setShowManageGroupModal(false);
-            setTimeout(() => setShowManageGroupModal(true), 100);
+            modals.setShowManageGroupModal(false);
+            setTimeout(() => modals.setShowManageGroupModal(true), 100);
           }}
         />
       )}
 
       {/* Add Athlete to Group Modal */}
       {/* Add to Group Modal */}
-      {selectedAthlete && (
+      {operations.selectedAthlete && (
         <AddToGroupModal
-          isOpen={showAddToGroupModal}
-          onClose={() => setShowAddToGroupModal(false)}
-          athlete={selectedAthlete}
+          isOpen={modals.showAddToGroupModal}
+          onClose={() => modals.setShowAddToGroupModal(false)}
+          athlete={operations.selectedAthlete}
           groups={groups}
-          onAddToGroup={handleAddAthleteToGroup}
-          onCreateGroup={() => setShowGroupFormModal(true)}
+          onAddToGroup={operations.handleAddAthleteToGroup}
+          onCreateGroup={() => modals.setShowGroupFormModal(true)}
         />
       )}
 
       {/* Individual Assignment Modal */}
-      {showIndividualAssignment && selectedAthlete && (
+      {modals.showIndividualAssignment && operations.selectedAthlete && (
         <Suspense
           fallback={
             <ModalBackdrop isOpen={true} onClose={() => {}}>
@@ -1094,12 +723,12 @@ export default withPageErrorBoundary(function AthletesPage() {
           }
         >
           <IndividualAssignmentModal
-            isOpen={showIndividualAssignment}
+            isOpen={modals.showIndividualAssignment}
             onClose={() => {
-              setShowIndividualAssignment(false);
-              setSelectedAthlete(null);
+              modals.setShowIndividualAssignment(false);
+              operations.setSelectedAthlete(null);
             }}
-            athletes={[selectedAthlete]}
+            athletes={[operations.selectedAthlete]}
             workoutPlans={workoutPlans}
             currentUserId={user?.id}
             onAssignWorkout={handleAssignWorkout}
@@ -1108,12 +737,12 @@ export default withPageErrorBoundary(function AthletesPage() {
       )}
 
       {/* KPI Management Modal */}
-      {showKPIManagementModal && (
+      {modals.showKPIManagementModal && (
         <Suspense fallback={<SkeletonCard />}>
           <KPIManagementModal
-            isOpen={showKPIManagementModal}
+            isOpen={modals.showKPIManagementModal}
             onClose={() => {
-              setShowKPIManagementModal(false);
+              modals.setShowKPIManagementModal(false);
               setEditingKPI(null);
             }}
             onSave={(kpi: KPITag) => {
@@ -1127,7 +756,7 @@ export default withPageErrorBoundary(function AthletesPage() {
                 setAvailableKPIs([...availableKPIs, kpi]);
                 toast.success("KPI created successfully");
               }
-              setShowKPIManagementModal(false);
+              modals.setShowKPIManagementModal(false);
               setEditingKPI(null);
             }}
             editingKPI={editingKPI}
@@ -1136,11 +765,11 @@ export default withPageErrorBoundary(function AthletesPage() {
       )}
 
       {/* Bulk KPI Assignment Modal */}
-      {showBulkKPIAssignmentModal && (
+      {modals.showBulkKPIAssignmentModal && (
         <Suspense fallback={<SkeletonCard />}>
           <BulkKPIAssignmentModal
-            isOpen={showBulkKPIAssignmentModal}
-            onClose={() => setShowBulkKPIAssignmentModal(false)}
+            isOpen={modals.showBulkKPIAssignmentModal}
+            onClose={() => modals.setShowBulkKPIAssignmentModal(false)}
             onComplete={(result: BulkAssignKPIsResponse) => {
               const { totalAssigned, totalSkipped } = result;
 
@@ -1160,7 +789,7 @@ export default withPageErrorBoundary(function AthletesPage() {
                   "Selected group contains only invited athletes. They will receive KPIs when they accept their invites."
                 );
               }
-              setShowBulkKPIAssignmentModal(false);
+              modals.setShowBulkKPIAssignmentModal(false);
             }}
             availableGroups={groups}
             availableAthletes={athletes.filter((a) => a.status === "active")}
@@ -1170,15 +799,15 @@ export default withPageErrorBoundary(function AthletesPage() {
       )}
 
       {/* Athlete Edit Modal */}
-      {showEditAthleteModal && selectedAthlete && (
+      {modals.showEditAthleteModal && operations.selectedAthlete && (
         <Suspense fallback={<SkeletonCard />}>
           <AthleteEditModal
-            athlete={selectedAthlete}
+            athlete={operations.selectedAthlete}
             onClose={() => {
-              setShowEditAthleteModal(false);
+              modals.setShowEditAthleteModal(false);
             }}
             onSuccess={() => {
-              setShowEditAthleteModal(false);
+              modals.setShowEditAthleteModal(false);
               loadAthletes(); // Refresh athlete data
               toast.success("Athlete profile updated successfully");
             }}
@@ -1188,14 +817,14 @@ export default withPageErrorBoundary(function AthletesPage() {
 
       {/* Confirmation Modal */}
       <ConfirmModal
-        isOpen={confirmModal.isOpen}
-        title={confirmModal.title}
-        message={confirmModal.message}
+        isOpen={operations.confirmModal.isOpen}
+        title={operations.confirmModal.title}
+        message={operations.confirmModal.message}
         confirmText="Delete"
         cancelText="Cancel"
         confirmVariant="danger"
-        onConfirm={confirmModal.onConfirm}
-        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        onConfirm={operations.confirmModal.onConfirm}
+        onCancel={() => operations.setConfirmModal({ ...operations.confirmModal, isOpen: false })}
       />
     </div>
   );
