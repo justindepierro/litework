@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useRequireCoach } from "@/hooks/use-auth-guard";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { useToast } from "@/components/ToastProvider";
+import { useWorkoutsPageState } from "@/hooks/useWorkoutsPageState";
+import { useWorkoutsOperations } from "@/hooks/useWorkoutsOperations";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -92,8 +94,17 @@ function WorkoutsPage({
 }: WorkoutsClientPageProps) {
   const { user, isLoading: authLoading } = useRequireCoach();
   const { success, error: showErrorToast } = useToast();
-  const [workouts, setWorkouts] = useState<WorkoutPlan[]>(initialWorkouts);
-  const [loading, setLoading] = useState(initialWorkouts.length === 0);
+
+  // Use custom hooks for state management
+  const state = useWorkoutsPageState(initialWorkouts);
+  const operations = useWorkoutsOperations({
+    setWorkouts: state.setWorkouts,
+    setShowGroupAssignModal: state.setShowGroupAssignModal,
+    setShowIndividualAssignModal: state.setShowIndividualAssignModal,
+    setSelectedWorkout: state.setSelectedWorkout,
+    onSuccess: success,
+    onError: showErrorToast,
+  });
 
   // Add minimum loading time for smooth skeleton display
   const { showSkeleton: showAuthSkeleton } = useMinimumLoadingTime(
@@ -101,108 +112,9 @@ function WorkoutsPage({
     300
   );
   const { showSkeleton: showWorkoutsSkeleton } = useMinimumLoadingTime(
-    loading,
+    state.loading,
     300
   );
-
-  const [error, setError] = useState<string | null>(null);
-  const [showAssignForm, setShowAssignForm] = useState(false);
-  const [showGroupAssignModal, setShowGroupAssignModal] = useState(false);
-  const [showIndividualAssignModal, setShowIndividualAssignModal] =
-    useState(false);
-  const [selectedWorkout, setSelectedWorkout] = useState<WorkoutPlan | null>(
-    null
-  );
-  const [editingWorkout, setEditingWorkout] = useState<WorkoutPlan | null>(
-    null
-  );
-  const [creatingWorkout, setCreatingWorkout] = useState<boolean>(false);
-  const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
-  const [showArchived, setShowArchived] = useState(false);
-  const [currentView, setCurrentView] = useState<"workouts" | "library">(
-    "workouts"
-  );
-  const [newWorkout, setNewWorkout] = useState<Partial<WorkoutPlan>>({
-    name: "",
-    description: "",
-    exercises: [],
-    groups: [],
-    blockInstances: [],
-    estimatedDuration: 30,
-  });
-
-  // Assignment data - load when needed
-  const [groups, setGroups] = useState<AthleteGroup[]>(initialGroups);
-  const [athletes, setAthletes] = useState<UserType[]>(initialAthletes);
-
-  // Load assignment data when assign modal opens
-  const loadAssignmentData = async () => {
-    if (groups.length > 0 && athletes.length > 0) return; // Already loaded
-
-    try {
-      const [groupsRes, athletesRes] = await Promise.all([
-        fetch("/api/groups"),
-        fetch("/api/athletes"),
-      ]);
-
-      const [groupsData, athletesData] = await Promise.all([
-        groupsRes.json(),
-        athletesRes.json(),
-      ]);
-
-      if (groupsData.success) {
-        // API returns { success, groups } for groups endpoint
-        setGroups(groupsData.groups || []);
-      }
-
-      if (athletesData.success && athletesData.data) {
-        // API returns { success, data: { athletes, invites } } for athletes endpoint
-        setAthletes(athletesData.data.athletes || []);
-      }
-    } catch (err) {
-      console.error("Failed to load assignment data:", err);
-      showErrorToast("Failed to load groups and athletes");
-    }
-  };
-  const handleOpenAssignModal = async (
-    workout: WorkoutPlan,
-    mode: "group" | "individual"
-  ) => {
-    setSelectedWorkout(workout);
-    await loadAssignmentData();
-
-    if (mode === "group") {
-      setShowGroupAssignModal(true);
-    } else {
-      setShowIndividualAssignModal(true);
-    }
-  };
-
-  const handleAssignWorkout = async (
-    assignment: Omit<WorkoutAssignment, "id" | "createdAt" | "updatedAt">
-  ) => {
-    try {
-      const response = await fetch("/api/assignments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(assignment), // Send assignment directly, not wrapped in array
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        success("Workout assigned successfully!");
-        setShowGroupAssignModal(false);
-        setShowIndividualAssignModal(false);
-        setSelectedWorkout(null);
-      } else {
-        showErrorToast(data.error || "Failed to assign workout");
-      }
-    } catch (err) {
-      console.error("Failed to assign workout:", err);
-      showErrorToast("Failed to assign workout");
-    }
-  };
 
   const initialWorkoutsCount = initialWorkouts.length;
   const shouldSkipSkeletonRef = useRef(initialWorkoutsCount > 0);
@@ -212,13 +124,13 @@ function WorkoutsPage({
     const loadWorkouts = async (showSkeleton: boolean) => {
       try {
         if (showSkeleton) {
-          setLoading(true);
+          state.setLoading(true);
         }
-        setError(null);
+        state.setError(null);
 
         // Build query params based on showArchived state
         const queryParams = new URLSearchParams();
-        if (showArchived) {
+        if (state.showArchived) {
           queryParams.set("onlyArchived", "true");
         }
 
@@ -228,28 +140,28 @@ function WorkoutsPage({
 
         if (data.success && data.data) {
           const apiResponse = data.data as { workouts?: WorkoutPlan[] };
-          setWorkouts(apiResponse.workouts || []);
+          state.setWorkouts(apiResponse.workouts || []);
         } else {
-          setError(
+          state.setError(
             typeof data.error === "string"
               ? data.error
               : "Failed to load workouts"
           );
         }
       } catch (err) {
-        setError("Failed to load workouts");
+        state.setError("Failed to load workouts");
         console.error("Error loading workouts:", err);
       } finally {
-        setLoading(false);
+        state.setLoading(false);
       }
     };
 
     if (user) {
-      const shouldShowSkeleton = showArchived || !shouldSkipSkeletonRef.current;
+      const shouldShowSkeleton = state.showArchived || !shouldSkipSkeletonRef.current;
       shouldSkipSkeletonRef.current = false;
       loadWorkouts(shouldShowSkeleton);
     }
-  }, [user, showArchived]);
+  }, [user, state.showArchived, state]);
 
   if (showAuthSkeleton) {
     return (
@@ -286,32 +198,6 @@ function WorkoutsPage({
     return `${exercise.weight} lbs`;
   };
 
-  const handleArchiveToggle = async (
-    workoutId: string,
-    currentArchived: boolean
-  ) => {
-    try {
-      const response = await fetch(`/api/workouts/${workoutId}/archive`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ archived: !currentArchived }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Remove from current list (will be in opposite list now)
-        setWorkouts((prev) => prev.filter((w) => w.id !== workoutId));
-        success(currentArchived ? "Workout restored" : "Workout archived");
-      } else {
-        showErrorToast(data.error || "Failed to update workout");
-      }
-    } catch (err) {
-      console.error("Archive error:", err);
-      showErrorToast("Failed to update workout");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white">
       {/* Enhanced mobile-first header */}
@@ -325,18 +211,18 @@ function WorkoutsPage({
             actions={
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Button
-                  variant={currentView === "workouts" ? "primary" : "secondary"}
+                  variant={state.currentView === "workouts" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setCurrentView("workouts")}
+                  onClick={() => state.setCurrentView("workouts")}
                   leftIcon={<Dumbbell className="w-4 h-4" />}
                   className="flex-1 sm:flex-none"
                 >
                   Workouts
                 </Button>
                 <Button
-                  variant={currentView === "library" ? "primary" : "secondary"}
+                  variant={state.currentView === "library" ? "primary" : "secondary"}
                   size="sm"
-                  onClick={() => setCurrentView("library")}
+                  onClick={() => state.setCurrentView("library")}
                   leftIcon={<Library className="w-4 h-4" />}
                   className="flex-1 sm:flex-none"
                 >
@@ -350,12 +236,12 @@ function WorkoutsPage({
 
       {/* Enhanced mobile-first content */}
       <div className="max-w-4xl mx-auto p-6 sm:p-4">
-        {currentView === "workouts" ? (
+        {state.currentView === "workouts" ? (
           <>
             {/* Enhanced error state */}
-            {error && (
+            {state.error && (
               <Alert variant="error">
-                <p className="font-medium">{error}</p>
+                <p className="font-medium">{state.error}</p>
                 <button
                   onClick={() => window.location.reload()}
                   className="mt-3 px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-accent-red/90 transition-colors touch-manipulation"
@@ -375,10 +261,10 @@ function WorkoutsPage({
                   <div className="flex justify-between items-center">
                     <div>
                       <Heading level="h2" className="mb-1">
-                        {showArchived ? "Archived Workouts" : "Your Workouts"}
+                        {state.showArchived ? "Archived Workouts" : "Your Workouts"}
                       </Heading>
                       <Body className="text-sm" variant="secondary">
-                        {showArchived
+                        {state.showArchived
                           ? "Previously archived training plans"
                           : "Create and manage your training programs"}
                       </Body>
@@ -386,7 +272,7 @@ function WorkoutsPage({
                     <Button
                       variant="primary"
                       onClick={() => {
-                        setCreatingWorkout(true);
+                        state.setCreatingWorkout(true);
                       }}
                       leftIcon={<Plus className="w-4 h-4" />}
                       className="shrink-0"
@@ -395,18 +281,18 @@ function WorkoutsPage({
                     </Button>
                   </div>
                   <Button
-                    onClick={() => setShowArchived(!showArchived)}
+                    onClick={() => state.setShowArchived(!state.showArchived)}
                     variant="secondary"
                     className="w-full sm:w-auto self-start"
                     leftIcon={
-                      showArchived ? (
+                      state.showArchived ? (
                         <Dumbbell className="w-4 h-4" />
                       ) : (
                         <Archive className="w-4 h-4" />
                       )
                     }
                   >
-                    {showArchived
+                    {state.showArchived
                       ? "View Active Workouts"
                       : "View Archived Workouts"}
                   </Button>
@@ -417,17 +303,17 @@ function WorkoutsPage({
             {/* Workouts Grid */}
             {!showWorkoutsSkeleton && (
               <AnimatedGrid columns={2} gap={4} delay={0.1} staggerDelay={0.05}>
-                {workouts.length === 0 ? (
+                {state.workouts.length === 0 ? (
                   <div className="col-span-full">
                     <EmptyWorkouts
-                      onCreateWorkout={() => setCreatingWorkout(true)}
+                      onCreateWorkout={() => state.setCreatingWorkout(true)}
                     />
                   </div>
                 ) : (
-                  workouts.map((workout) => {
+                  state.workouts.map((workout) => {
                     // Check if this is a temporary (optimistic) workout
                     const isOptimistic = workout.id.startsWith("temp-");
-                    const isExpanded = expandedWorkout === workout.id;
+                    const isExpanded = state.expandedWorkout === workout.id;
 
                     return (
                       <Card
@@ -447,7 +333,7 @@ function WorkoutsPage({
                           <div
                             className="flex justify-between items-start mb-3 cursor-pointer hover:bg-(--interactive-hover) -m-4 p-4 rounded-lg transition-colors"
                             onClick={() =>
-                              setExpandedWorkout(isExpanded ? null : workout.id)
+                              state.setExpandedWorkout(isExpanded ? null : workout.id)
                             }
                           >
                             <div className="flex-1">
@@ -561,12 +447,12 @@ function WorkoutsPage({
                           </div>
 
                           <div className="flex gap-2">
-                            {!showArchived && (
+                            {!state.showArchived && (
                               <>
                                 <Button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setEditingWorkout(workout);
+                                    state.setEditingWorkout(workout);
                                   }}
                                   variant="secondary"
                                   className="flex-1"
@@ -577,8 +463,8 @@ function WorkoutsPage({
                                 <Button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setSelectedWorkout(workout);
-                                    setShowAssignForm(true);
+                                    state.setSelectedWorkout(workout);
+                                    state.setShowAssignForm(true);
                                   }}
                                   variant="primary"
                                   className="flex-1"
@@ -592,12 +478,12 @@ function WorkoutsPage({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleArchiveToggle(
+                                operations.handleArchiveToggle(
                                   workout.id,
                                   workout.archived || false
                                 );
                               }}
-                              className={`${showArchived ? "btn-primary flex-1" : "btn-secondary"} flex items-center justify-center gap-1`}
+                              className={`${state.showArchived ? "btn-primary flex-1" : "btn-secondary"} flex items-center justify-center gap-1`}
                               disabled={isOptimistic}
                               title={
                                 workout.archived
@@ -608,7 +494,7 @@ function WorkoutsPage({
                               {workout.archived ? (
                                 <>
                                   <ArchiveRestore className="w-4 h-4" />
-                                  {showArchived && "Restore"}
+                                  {state.showArchived && "Restore"}
                                 </>
                               ) : (
                                 <>
@@ -636,7 +522,7 @@ function WorkoutsPage({
           >
             <ExerciseLibrary
               isOpen={true}
-              onClose={() => setCurrentView("workouts")}
+              onClose={() => state.setCurrentView("workouts")}
               mode="browse"
               onAddToWorkout={(exercise: LibraryExercise) => {
                 // When adding from library to a workout being created
@@ -649,44 +535,42 @@ function WorkoutsPage({
                   weightType: "fixed",
                   weight: 0,
                   restTime: 120,
-                  order: (newWorkout.exercises?.length || 0) + 1,
+                  order: (state.newWorkout.exercises?.length || 0) + 1,
                 };
 
-                setNewWorkout({
-                  ...newWorkout,
-                  exercises: [...(newWorkout.exercises || []), workoutExercise],
+                state.setNewWorkout({
+                  ...state.newWorkout,
+                  exercises: [...(state.newWorkout.exercises || []), workoutExercise],
                 });
-                setCurrentView("workouts");
+                state.setCurrentView("workouts");
               }}
             />
           </Suspense>
         )}
 
         {/* Assign Workout Modal - Choice between Group and Individual */}
-        {showAssignForm && selectedWorkout && (
+        {state.showAssignForm && state.selectedWorkout && (
           <ModalBackdrop
-            isOpen={showAssignForm}
+            isOpen={state.showAssignForm}
             onClose={() => {
-              setShowAssignForm(false);
-              setSelectedWorkout(null);
+              state.closeAssignModals();
             }}
           >
             <div className="bg-white rounded-lg max-w-md w-full">
               <ModalHeader
-                title={`Assign Workout: ${selectedWorkout.name}`}
+                title={`Assign Workout: ${state.selectedWorkout.name}`}
                 subtitle="Choose how you'd like to assign this workout:"
                 icon={<Users className="w-6 h-6" />}
                 onClose={() => {
-                  setShowAssignForm(false);
-                  setSelectedWorkout(null);
+                  state.closeAssignModals();
                 }}
               />
               <ModalContent>
                 <div className="space-y-3">
                   <Button
                     onClick={() => {
-                      setShowAssignForm(false);
-                      handleOpenAssignModal(selectedWorkout, "group");
+                      state.setShowAssignForm(false);
+                      operations.handleOpenAssignModal(state.selectedWorkout!, "group");
                     }}
                     variant="primary"
                     fullWidth
@@ -704,8 +588,8 @@ function WorkoutsPage({
 
                   <Button
                     onClick={() => {
-                      setShowAssignForm(false);
-                      handleOpenAssignModal(selectedWorkout, "individual");
+                      state.setShowAssignForm(false);
+                      operations.handleOpenAssignModal(state.selectedWorkout!, "individual");
                     }}
                     variant="secondary"
                     fullWidth
@@ -726,8 +610,7 @@ function WorkoutsPage({
               <ModalFooter align="right">
                 <Button
                   onClick={() => {
-                    setShowAssignForm(false);
-                    setSelectedWorkout(null);
+                    state.closeAssignModals();
                   }}
                   variant="secondary"
                 >
@@ -739,7 +622,7 @@ function WorkoutsPage({
         )}
 
         {/* Group Assignment Modal */}
-        {showGroupAssignModal && selectedWorkout && (
+        {state.showGroupAssignModal && state.selectedWorkout && (
           <Suspense
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
@@ -752,22 +635,21 @@ function WorkoutsPage({
             }
           >
             <GroupAssignmentModal
-              isOpen={showGroupAssignModal}
+              isOpen={state.showGroupAssignModal}
               onClose={() => {
-                setShowGroupAssignModal(false);
-                setSelectedWorkout(null);
+                state.closeAssignModals();
               }}
               selectedDate={new Date()}
-              groups={groups}
-              workoutPlans={workouts}
-              athletes={athletes}
-              onAssignWorkout={handleAssignWorkout}
+              groups={operations.groups}
+              workoutPlans={state.workouts}
+              athletes={operations.athletes}
+              onAssignWorkout={operations.handleAssignWorkout}
             />
           </Suspense>
         )}
 
         {/* Individual Assignment Modal */}
-        {showIndividualAssignModal && selectedWorkout && (
+        {state.showIndividualAssignModal && state.selectedWorkout && (
           <Suspense
             fallback={
               <ModalBackdrop isOpen={true} onClose={() => {}}>
@@ -780,30 +662,29 @@ function WorkoutsPage({
             }
           >
             <IndividualAssignmentModal
-              isOpen={showIndividualAssignModal}
+              isOpen={state.showIndividualAssignModal}
               onClose={() => {
-                setShowIndividualAssignModal(false);
-                setSelectedWorkout(null);
+                state.closeAssignModals();
               }}
-              athletes={athletes}
-              workoutPlans={workouts}
+              athletes={operations.athletes}
+              workoutPlans={state.workouts}
               currentUserId={user?.id}
-              onAssignWorkout={handleAssignWorkout}
+              onAssignWorkout={operations.handleAssignWorkout}
             />
           </Suspense>
         )}
       </div>
 
       {/* Workout Editor Modal */}
-      {(editingWorkout || creatingWorkout) && (
+      {(state.editingWorkout || state.creatingWorkout) && (
         <WorkoutEditorErrorBoundary
           workout={
-            editingWorkout || {
+            state.editingWorkout || {
               id: "new-workout",
-              name: newWorkout.name || "",
-              description: newWorkout.description || "",
-              exercises: newWorkout.exercises || [],
-              estimatedDuration: newWorkout.estimatedDuration || 30,
+              name: state.newWorkout.name || "",
+              description: state.newWorkout.description || "",
+              exercises: state.newWorkout.exercises || [],
+              estimatedDuration: state.newWorkout.estimatedDuration || 30,
               createdBy: user.id,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -811,10 +692,10 @@ function WorkoutsPage({
           }
           onRecover={(recoveredWorkout) => {
             // Recover workout from localStorage after error
-            if (creatingWorkout) {
-              setNewWorkout(recoveredWorkout);
-            } else if (editingWorkout) {
-              setEditingWorkout(recoveredWorkout as WorkoutPlan);
+            if (state.creatingWorkout) {
+              state.setNewWorkout(recoveredWorkout);
+            } else if (state.editingWorkout) {
+              state.setEditingWorkout(recoveredWorkout as WorkoutPlan);
             }
           }}
         >
@@ -831,14 +712,14 @@ function WorkoutsPage({
           >
             <WorkoutEditor
               workout={
-                editingWorkout || {
+                state.editingWorkout || {
                   id: "new-workout",
-                  name: newWorkout.name || "",
-                  description: newWorkout.description || "",
-                  exercises: newWorkout.exercises || [],
-                  groups: newWorkout.groups || [],
-                  blockInstances: newWorkout.blockInstances || [],
-                  estimatedDuration: newWorkout.estimatedDuration || 30,
+                  name: state.newWorkout.name || "",
+                  description: state.newWorkout.description || "",
+                  exercises: state.newWorkout.exercises || [],
+                  groups: state.newWorkout.groups || [],
+                  blockInstances: state.newWorkout.blockInstances || [],
+                  estimatedDuration: state.newWorkout.estimatedDuration || 30,
                   createdBy: user.id,
                   createdAt: new Date(),
                   updatedAt: new Date(),
@@ -846,7 +727,7 @@ function WorkoutsPage({
               }
               onChange={async (updatedWorkout) => {
                 // For creating new workouts
-                if (creatingWorkout) {
+                if (state.creatingWorkout) {
                   // Check if this is an explicit save request (user clicked "Save Workout" button)
                   const workoutWithFlag = updatedWorkout as WorkoutPlan & {
                     _shouldSave?: boolean;
@@ -854,7 +735,7 @@ function WorkoutsPage({
                   const shouldSave = workoutWithFlag._shouldSave;
 
                   // ALWAYS update local state first (for UI reactivity)
-                  setNewWorkout(updatedWorkout);
+                  state.setNewWorkout(updatedWorkout);
 
                   if (!shouldSave) {
                     // Just editing - update state only, don't save to API yet
@@ -905,11 +786,11 @@ function WorkoutsPage({
                   } as WorkoutPlan;
 
                   // Show workout in list immediately (optimistic)
-                  setWorkouts([...workouts, optimisticWorkout]);
+                  state.setWorkouts([...state.workouts, optimisticWorkout]);
 
                   // Close modal immediately for instant UX
-                  setCreatingWorkout(false);
-                  setNewWorkout({
+                  state.setCreatingWorkout(false);
+                  state.setNewWorkout({
                     name: "",
                     description: "",
                     exercises: [],
@@ -932,7 +813,7 @@ function WorkoutsPage({
                       const createdWorkout = apiResponse.workout;
                       if (createdWorkout) {
                         // Replace temporary workout with real one from API
-                        setWorkouts((prevWorkouts) =>
+                        state.setWorkouts((prevWorkouts) =>
                           prevWorkouts.map((w) =>
                             w.id === tempId ? createdWorkout : w
                           )
@@ -940,14 +821,14 @@ function WorkoutsPage({
                         success("Workout saved successfully!");
                       } else {
                         // Rollback: Remove temporary workout
-                        setWorkouts((prevWorkouts) =>
+                        state.setWorkouts((prevWorkouts) =>
                           prevWorkouts.filter((w) => w.id !== tempId)
                         );
                         showErrorToast("Failed to create workout");
                       }
                     } else {
                       // Rollback: Remove temporary workout
-                      setWorkouts((prevWorkouts) =>
+                      state.setWorkouts((prevWorkouts) =>
                         prevWorkouts.filter((w) => w.id !== tempId)
                       );
                       const errorMsg =
@@ -958,7 +839,7 @@ function WorkoutsPage({
                     }
                   } catch (err) {
                     // Rollback: Remove temporary workout
-                    setWorkouts((prevWorkouts) =>
+                    state.setWorkouts((prevWorkouts) =>
                       prevWorkouts.filter((w) => w.id !== tempId)
                     );
                     console.error("Error creating workout:", err);
@@ -975,11 +856,11 @@ function WorkoutsPage({
                   const shouldSave = workoutWithFlag._shouldSave;
 
                   // ALWAYS update local state first
-                  setEditingWorkout(updatedWorkout as WorkoutPlan);
-                  const updatedWorkouts = workouts.map((w) =>
+                  state.setEditingWorkout(updatedWorkout as WorkoutPlan);
+                  const updatedWorkouts = state.workouts.map((w) =>
                     w.id === updatedWorkout.id ? updatedWorkout : w
                   );
-                  setWorkouts(updatedWorkouts);
+                  state.setWorkouts(updatedWorkouts);
 
                   if (!shouldSave) {
                     return;
@@ -1011,7 +892,7 @@ function WorkoutsPage({
                     )) as ApiResponse;
 
                     if (response.success && response.data) {
-                      setEditingWorkout(null);
+                      state.setEditingWorkout(null);
                       success("Workout updated successfully!");
                     } else {
                       const errorMsg =
@@ -1038,9 +919,9 @@ function WorkoutsPage({
               onClose={() => {
                 // Reset state and close modal
                 // Save is handled in onChange now
-                setEditingWorkout(null);
-                setCreatingWorkout(false);
-                setNewWorkout({
+                state.setEditingWorkout(null);
+                state.setCreatingWorkout(false);
+                state.setNewWorkout({
                   name: "",
                   description: "",
                   exercises: [],
