@@ -14,12 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { Body } from "@/components/ui/Typography";
 import { useCalendarState } from "@/hooks/useCalendarState";
 import { useCalendarHandlers } from "@/hooks/useCalendarHandlers";
-import {
-  CalendarHeader,
-  MonthView,
-  WeekView,
-  DayView,
-} from "./Calendar/";
+import { CalendarHeader, MonthView, WeekView, DayView } from "./Calendar/";
 
 interface CalendarProps {
   assignments: WorkoutAssignment[];
@@ -97,7 +92,8 @@ export default function Calendar({
   };
 
   // Wrapper for getAssignmentsForDate to inject assignments
-  const getAssignmentsForDate = (date: Date) => getAssignmentsForDateFn(assignments, date);
+  const getAssignmentsForDate = (date: Date) =>
+    getAssignmentsForDateFn(assignments, date);
 
   // Format date for header
   const formatHeaderDate = () => {
@@ -119,8 +115,6 @@ export default function Calendar({
       });
     }
   };
-
-
 
   return (
     <DndProvider backend={HTML5Backend}>

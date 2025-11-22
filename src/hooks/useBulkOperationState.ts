@@ -44,7 +44,8 @@ export interface ExecutionResults {
 export function useBulkOperationState() {
   // Wizard state
   const [currentStep, setCurrentStep] = useState<StepType>("select");
-  const [operationType, setOperationType] = useState<OperationType>("bulk_invite");
+  const [operationType, setOperationType] =
+    useState<OperationType>("bulk_invite");
 
   // Selection state
   const [selectedAthletes, setSelectedAthletes] = useState<string[]>([]);
@@ -76,9 +77,12 @@ export function useBulkOperationState() {
   });
 
   // Execution state
-  const [operationData, setOperationData] = useState<Record<string, unknown>>({});
+  const [operationData, setOperationData] = useState<Record<string, unknown>>(
+    {}
+  );
   const [isExecuting, setIsExecuting] = useState(false);
-  const [executionResults, setExecutionResults] = useState<ExecutionResults | null>(null);
+  const [executionResults, setExecutionResults] =
+    useState<ExecutionResults | null>(null);
 
   // Reset all state to initial values
   const resetState = useCallback(() => {

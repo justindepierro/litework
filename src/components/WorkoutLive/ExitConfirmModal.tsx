@@ -1,6 +1,10 @@
 import React from "react";
 import { AlertCircle } from "lucide-react";
-import { ModalBackdrop, ModalHeader, ModalContent } from "@/components/ui/Modal";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+} from "@/components/ui/Modal";
 
 interface ExitConfirmModalProps {
   isOpen: boolean;

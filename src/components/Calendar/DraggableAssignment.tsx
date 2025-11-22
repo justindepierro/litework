@@ -189,13 +189,16 @@ export const DraggableAssignment = memo(
     // Only re-render if these specific props change
     return (
       prevProps.assignment.id === nextProps.assignment.id &&
-      prevProps.assignment.workoutPlanName === nextProps.assignment.workoutPlanName &&
+      prevProps.assignment.workoutPlanName ===
+        nextProps.assignment.workoutPlanName &&
       prevProps.assignment.status === nextProps.assignment.status &&
-      prevProps.assignment.scheduledDate === nextProps.assignment.scheduledDate &&
+      prevProps.assignment.scheduledDate ===
+        nextProps.assignment.scheduledDate &&
       prevProps.assignment.startTime === nextProps.assignment.startTime &&
       prevProps.assignment.location === nextProps.assignment.location &&
       prevProps.assignment.groupId === nextProps.assignment.groupId &&
-      prevProps.assignment.athleteNames?.length === nextProps.assignment.athleteNames?.length &&
+      prevProps.assignment.athleteNames?.length ===
+        nextProps.assignment.athleteNames?.length &&
       prevProps.compact === nextProps.compact &&
       prevProps.isCoach === nextProps.isCoach
     );

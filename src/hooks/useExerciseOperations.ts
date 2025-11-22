@@ -31,11 +31,7 @@ export function useExerciseOperations(
 
   // Add exercise from library
   const addExerciseFromLibrary = useCallback(
-    (libraryExercise: {
-      id: string;
-      name: string;
-      video_url?: string;
-    }) => {
+    (libraryExercise: { id: string; name: string; video_url?: string }) => {
       const newExercise: WorkoutExercise = {
         id: Date.now().toString(),
         exerciseId: libraryExercise.id,

@@ -32,7 +32,9 @@ interface UseBulkOperationHandlersProps {
   getCurrentOperationData: () => Record<string, unknown>;
   setOperationData: (data: Record<string, unknown>) => void;
   setIsExecuting: (executing: boolean) => void;
-  setExecutionResults: (results: { success: boolean; error?: string; results?: unknown } | null) => void;
+  setExecutionResults: (
+    results: { success: boolean; error?: string; results?: unknown } | null
+  ) => void;
   onExecute: (operation: BulkOperation) => Promise<void>;
 }
 
@@ -168,7 +170,13 @@ export function useBulkOperationHandlers({
     } else if (currentStep === "confirm") {
       executeOperation();
     }
-  }, [currentStep, setCurrentStep, getCurrentOperationData, setOperationData, executeOperation]);
+  }, [
+    currentStep,
+    setCurrentStep,
+    getCurrentOperationData,
+    setOperationData,
+    executeOperation,
+  ]);
 
   // Navigate back to previous step
   const handlePreviousStep = useCallback(() => {

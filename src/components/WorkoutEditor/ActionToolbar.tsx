@@ -9,17 +9,17 @@ interface ActionToolbarProps {
   selectionMode: boolean;
   selectedCount: number;
   ungroupedExercisesCount: number;
-  
+
   // Exercise operations
   onAddExercise: () => void;
   onAddBlock: () => void;
   onEnterSelectionMode: () => void;
-  
+
   // Selection operations
   onSelectAll: () => void;
   onCreateGroup: () => void;
   onCancelSelection: () => void;
-  
+
   // Save operations
   onSave: () => void;
   isSaving: boolean;

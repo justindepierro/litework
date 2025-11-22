@@ -134,14 +134,11 @@ function MonthViewComponent({
 }
 
 // Memoize to prevent re-rendering when assignments haven't changed
-export const MonthView = memo(
-  MonthViewComponent,
-  (prevProps, nextProps) => {
-    // Only re-render if currentDate, isCoach changes, or monthDays array reference changes
-    return (
-      prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
-      prevProps.isCoach === nextProps.isCoach &&
-      prevProps.monthDays === nextProps.monthDays
-    );
-  }
-);
+export const MonthView = memo(MonthViewComponent, (prevProps, nextProps) => {
+  // Only re-render if currentDate, isCoach changes, or monthDays array reference changes
+  return (
+    prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
+    prevProps.isCoach === nextProps.isCoach &&
+    prevProps.monthDays === nextProps.monthDays
+  );
+});

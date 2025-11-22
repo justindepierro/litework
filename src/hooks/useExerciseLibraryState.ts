@@ -71,7 +71,8 @@ export function useExerciseLibraryState() {
   const [error, setError] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [newExercise, setNewExercise] = useState<NewExercise>(initialNewExercise);
+  const [newExercise, setNewExercise] =
+    useState<NewExercise>(initialNewExercise);
 
   const fetchExercises = useCallback(
     async (filters: {
@@ -87,7 +88,8 @@ export function useExerciseLibraryState() {
         const params = new URLSearchParams();
         if (filters.search) params.append("search", filters.search);
         if (filters.category) params.append("category", filters.category);
-        if (filters.muscleGroup) params.append("muscleGroup", filters.muscleGroup);
+        if (filters.muscleGroup)
+          params.append("muscleGroup", filters.muscleGroup);
         if (filters.equipment) params.append("equipment", filters.equipment);
         if (filters.difficulty) params.append("difficulty", filters.difficulty);
 
@@ -171,7 +173,7 @@ export function useExerciseLibraryState() {
         // Reset form
         setNewExercise(initialNewExercise);
         setShowCreateForm(false);
-        
+
         // Call success callback to refresh exercises
         onSuccess?.();
       } catch (err) {

@@ -26,7 +26,10 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Heading, Body, Label } from "@/components/ui/Typography";
 import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useBulkOperationState } from "@/hooks/useBulkOperationState";
-import { useBulkOperationHandlers, type BulkOperation } from "@/hooks/useBulkOperationHandlers";
+import {
+  useBulkOperationHandlers,
+  type BulkOperation,
+} from "@/hooks/useBulkOperationHandlers";
 
 interface EnhancedAthlete {
   id: string;
@@ -771,7 +774,9 @@ export default withErrorBoundary(function BulkOperationModal({
         {currentStep !== "executing" && (
           <ModalFooter align="between">
             <Button
-              onClick={currentStep === "select" ? handleClose : handlePreviousStep}
+              onClick={
+                currentStep === "select" ? handleClose : handlePreviousStep
+              }
               variant="secondary"
             >
               {currentStep === "select" ? "Cancel" : "Back"}

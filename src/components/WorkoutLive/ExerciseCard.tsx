@@ -62,8 +62,7 @@ export const ExerciseCard = React.memo(function ExerciseCard({
               <span className="text-navy-600">Target:</span>
               <span className="font-semibold text-navy-700">
                 {exercise.sets_target} × {exercise.reps_target}
-                {exercise.weight_target &&
-                  ` @ ${exercise.weight_target} lbs`}
+                {exercise.weight_target && ` @ ${exercise.weight_target} lbs`}
               </span>
             </div>
             {exercise.rest_seconds > 0 && (

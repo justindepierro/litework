@@ -15,9 +15,13 @@ export function useWorkoutLiveState() {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [prComparison, setPrComparison] = useState<PRComparison | null>(null);
   const [showPRModal, setShowPRModal] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
+    new Set()
+  );
   const [showCompletedExercises, setShowCompletedExercises] = useState(false);
-  const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null);
+  const [editingExerciseIndex, setEditingExerciseIndex] = useState<
+    number | null
+  >(null);
   const [isMounted, setIsMounted] = useState(true);
 
   // Form reset helpers
@@ -26,24 +30,27 @@ export function useWorkoutLiveState() {
     setRpe(7);
   }, []);
 
-  const updateFormFromExercise = useCallback((
-    lastSetWeight?: number | null,
-    targetWeight?: number | null,
-    targetReps?: string | null
-  ) => {
-    // Pre-fill weight from last set or target
-    if (lastSetWeight) {
-      setWeight(lastSetWeight);
-    } else if (targetWeight) {
-      setWeight(targetWeight);
-    }
+  const updateFormFromExercise = useCallback(
+    (
+      lastSetWeight?: number | null,
+      targetWeight?: number | null,
+      targetReps?: string | null
+    ) => {
+      // Pre-fill weight from last set or target
+      if (lastSetWeight) {
+        setWeight(lastSetWeight);
+      } else if (targetWeight) {
+        setWeight(targetWeight);
+      }
 
-    // Pre-fill reps from target
-    if (targetReps) {
-      const repsNum = parseInt(targetReps);
-      if (!isNaN(repsNum)) setReps(repsNum);
-    }
-  }, []);
+      // Pre-fill reps from target
+      if (targetReps) {
+        const repsNum = parseInt(targetReps);
+        if (!isNaN(repsNum)) setReps(repsNum);
+      }
+    },
+    []
+  );
 
   // Group collapse toggling
   const toggleGroupCollapse = useCallback((groupId: string) => {
@@ -61,12 +68,12 @@ export function useWorkoutLiveState() {
   // Modal controls
   const openExitConfirm = useCallback(() => setShowExitConfirm(true), []);
   const closeExitConfirm = useCallback(() => setShowExitConfirm(false), []);
-  
+
   const showPRCelebration = useCallback((comparison: PRComparison) => {
     setPrComparison(comparison);
     setShowPRModal(true);
   }, []);
-  
+
   const closePRModal = useCallback(() => {
     setShowPRModal(false);
     setPrComparison(null);
@@ -80,29 +87,29 @@ export function useWorkoutLiveState() {
     setReps,
     rpe,
     setRpe,
-    
+
     // UI state
     showExitConfirm,
     openExitConfirm,
     closeExitConfirm,
-    
+
     prComparison,
     showPRModal,
     showPRCelebration,
     closePRModal,
-    
+
     collapsedGroups,
     toggleGroupCollapse,
-    
+
     showCompletedExercises,
     setShowCompletedExercises,
-    
+
     editingExerciseIndex,
     setEditingExerciseIndex,
-    
+
     isMounted,
     setIsMounted,
-    
+
     // Helper functions
     resetForm,
     updateFormFromExercise,

@@ -118,7 +118,8 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
 
     const lastSetWeight =
       currentExercise.set_records.length > 0
-        ? currentExercise.set_records[currentExercise.set_records.length - 1].weight
+        ? currentExercise.set_records[currentExercise.set_records.length - 1]
+            .weight
         : null;
 
     updateFormFromExercise(

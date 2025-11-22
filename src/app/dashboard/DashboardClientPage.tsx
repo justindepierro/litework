@@ -679,7 +679,9 @@ function DashboardClientPageComponent({
                         variant="default"
                         padding="md"
                         className="hover:border-accent-purple-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
-                        onClick={() => operations.handleAssignmentClick(assignment)}
+                        onClick={() =>
+                          operations.handleAssignmentClick(assignment)
+                        }
                         role="button"
                         tabIndex={0}
                         onKeyDown={(event) => {

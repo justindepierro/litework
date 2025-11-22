@@ -2,25 +2,25 @@ import { useState, useCallback } from "react";
 
 /**
  * Custom hook for managing form state with validation errors
- * 
+ *
  * Replaces the common pattern of:
  * - const [formData, setFormData] = useState(initialState)
  * - const [errors, setErrors] = useState({})
  * - const [isDirty, setIsDirty] = useState(false)
- * 
+ *
  * @template T - The type of the form data object
  * @param initialState - Initial form data values
  * @returns Form state and helper functions
- * 
+ *
  * @example
  * ```typescript
  * const { formData, errors, isDirty, handleChange, setErrors, reset } = useFormState({
  *   name: '',
  *   email: '',
  * });
- * 
- * <Input 
- *   value={formData.name} 
+ *
+ * <Input
+ *   value={formData.name}
  *   onChange={(e) => handleChange('name', e.target.value)}
  *   error={errors.name}
  * />

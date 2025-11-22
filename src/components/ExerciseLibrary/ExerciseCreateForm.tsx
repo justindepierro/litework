@@ -7,8 +7,16 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Label } from "@/components/ui/Typography";
-import { ModalBackdrop, ModalHeader, ModalContent, ModalFooter } from "@/components/ui/Modal";
-import type { ExerciseCategory, EquipmentType } from "@/hooks/useExerciseLibraryState";
+import {
+  ModalBackdrop,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@/components/ui/Modal";
+import type {
+  ExerciseCategory,
+  EquipmentType,
+} from "@/hooks/useExerciseLibraryState";
 
 interface NewExercise {
   name: string;
@@ -146,10 +154,9 @@ function ExerciseCreateFormComponent({
                         } else {
                           setNewExercise({
                             ...newExercise,
-                            equipmentNeeded:
-                              newExercise.equipmentNeeded.filter(
-                                (eq) => eq !== equipment.name
-                              ),
+                            equipmentNeeded: newExercise.equipmentNeeded.filter(
+                              (eq) => eq !== equipment.name
+                            ),
                           });
                         }
                       }}
@@ -206,10 +213,9 @@ function ExerciseCreateFormComponent({
                   {newExercise.instructions.length > 1 && (
                     <button
                       onClick={() => {
-                        const newInstructions =
-                          newExercise.instructions.filter(
-                            (_, i) => i !== index
-                          );
+                        const newInstructions = newExercise.instructions.filter(
+                          (_, i) => i !== index
+                        );
                         setNewExercise({
                           ...newExercise,
                           instructions: newInstructions,
@@ -263,9 +269,7 @@ function ExerciseCreateFormComponent({
           <Button
             onClick={onSubmit}
             variant="primary"
-            disabled={
-              creating || !newExercise.name || !newExercise.categoryId
-            }
+            disabled={creating || !newExercise.name || !newExercise.categoryId}
             isLoading={creating}
             loadingText="Creating..."
             fullWidth

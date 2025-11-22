@@ -70,127 +70,129 @@ interface BlockInstanceItemProps {
   onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
-const BlockInstanceItem = React.memo<BlockInstanceItemProps>(({
-  blockInstance,
-  exercises,
-  groups,
-  onCustomize,
-  onDeleteExercise,
-  onUpdateExercise,
-  onMoveExercise,
-  onMoveExerciseToGroup,
-  availableGroups,
-  availableKPIs = [],
-  onExerciseNameChange,
-}) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const BlockInstanceItem = React.memo<BlockInstanceItemProps>(
+  ({
+    blockInstance,
+    exercises,
+    groups,
+    onCustomize,
+    onDeleteExercise,
+    onUpdateExercise,
+    onMoveExercise,
+    onMoveExerciseToGroup,
+    availableGroups,
+    availableKPIs = [],
+    onExerciseNameChange,
+  }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const blockExercises = exercises.filter(
-    (ex) => ex.blockInstanceId === blockInstance.id && !ex.groupId
-  );
-  const blockGroups = groups.filter(
-    (g) => g.blockInstanceId === blockInstance.id
-  );
+    const blockExercises = exercises.filter(
+      (ex) => ex.blockInstanceId === blockInstance.id && !ex.groupId
+    );
+    const blockGroups = groups.filter(
+      (g) => g.blockInstanceId === blockInstance.id
+    );
 
-  const hasCustomizations =
-    blockInstance.customizations.modifiedExercises.length > 0 ||
-    blockInstance.customizations.addedExercises.length > 0 ||
-    blockInstance.customizations.removedExercises.length > 0;
+    const hasCustomizations =
+      blockInstance.customizations.modifiedExercises.length > 0 ||
+      blockInstance.customizations.addedExercises.length > 0 ||
+      blockInstance.customizations.removedExercises.length > 0;
 
-  return (
-    <div className="border-2 border-accent-purple-300 rounded-lg bg-accent-purple-50/30 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-silver-500 hover:text-accent-purple-600 transition-colors"
-          >
-            {isCollapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <ChevronDown className="w-4 h-4" />
-            )}
-          </button>
-
-          <Package className="w-4 h-4 text-accent-purple-600" />
-
-          <div className="flex-1">
-            <div className="font-medium text-silver-900">
-              {blockInstance.instanceName || blockInstance.sourceBlockName}
-            </div>
-            <div className="text-xs text-silver-500">
-              Block Template
-              {hasCustomizations && (
-                <Badge variant="info" size="sm" className="ml-2">
-                  Customized
-                </Badge>
+    return (
+      <div className="border-2 border-accent-purple-300 rounded-lg bg-accent-purple-50/30 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1 text-silver-500 hover:text-accent-purple-600 transition-colors"
+            >
+              {isCollapsed ? (
+                <ChevronRight className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
               )}
+            </button>
+
+            <Package className="w-4 h-4 text-accent-purple-600" />
+
+            <div className="flex-1">
+              <div className="font-medium text-silver-900">
+                {blockInstance.instanceName || blockInstance.sourceBlockName}
+              </div>
+              <div className="text-xs text-silver-500">
+                Block Template
+                {hasCustomizations && (
+                  <Badge variant="info" size="sm" className="ml-2">
+                    Customized
+                  </Badge>
+                )}
+              </div>
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => onCustomize(blockInstance)}
+              className="px-3 py-1.5 text-sm bg-accent-purple-600 text-white rounded-lg hover:bg-accent-purple-700 transition-colors flex items-center space-x-1"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Customize</span>
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => onCustomize(blockInstance)}
-            className="px-3 py-1.5 text-sm bg-accent-purple-600 text-white rounded-lg hover:bg-accent-purple-700 transition-colors flex items-center space-x-1"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-            <span>Customize</span>
-          </button>
-        </div>
+        {!isCollapsed && (
+          <div className="ml-6 space-y-3 mt-3 border-l-2 border-accent-purple-200 pl-4">
+            {blockInstance.notes && (
+              <div className="text-sm text-silver-600 italic bg-white/50 p-2 rounded">
+                {blockInstance.notes}
+              </div>
+            )}
+
+            {/* Block exercises (ungrouped) */}
+            {blockExercises.map((exercise) => (
+              <ExerciseItem
+                key={exercise.id}
+                exercise={exercise}
+                index={0}
+                onUpdate={onUpdateExercise}
+                onDelete={onDeleteExercise}
+                onMoveUp={() => onMoveExercise(exercise.id, "up")}
+                onMoveDown={() => onMoveExercise(exercise.id, "down")}
+                onMoveToGroup={(groupId) =>
+                  onMoveExerciseToGroup(exercise.id, groupId)
+                }
+                availableGroups={availableGroups}
+                availableKPIs={availableKPIs}
+                canMoveUp={false}
+                canMoveDown={false}
+                onExerciseNameChange={onExerciseNameChange}
+              />
+            ))}
+
+            {/* Block groups */}
+            {blockGroups.map((group) => (
+              <GroupItem
+                key={group.id}
+                group={group}
+                exercises={exercises}
+                onUpdateGroup={() => {}}
+                onDeleteGroup={() => {}}
+                onUpdateExercise={onUpdateExercise}
+                onDeleteExercise={onDeleteExercise}
+                onMoveExercise={onMoveExercise}
+                onMoveExerciseToGroup={onMoveExerciseToGroup}
+                availableGroups={availableGroups}
+                availableKPIs={availableKPIs}
+                onExerciseNameChange={onExerciseNameChange}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {!isCollapsed && (
-        <div className="ml-6 space-y-3 mt-3 border-l-2 border-accent-purple-200 pl-4">
-          {blockInstance.notes && (
-            <div className="text-sm text-silver-600 italic bg-white/50 p-2 rounded">
-              {blockInstance.notes}
-            </div>
-          )}
-
-          {/* Block exercises (ungrouped) */}
-          {blockExercises.map((exercise) => (
-            <ExerciseItem
-              key={exercise.id}
-              exercise={exercise}
-              index={0}
-              onUpdate={onUpdateExercise}
-              onDelete={onDeleteExercise}
-              onMoveUp={() => onMoveExercise(exercise.id, "up")}
-              onMoveDown={() => onMoveExercise(exercise.id, "down")}
-              onMoveToGroup={(groupId) =>
-                onMoveExerciseToGroup(exercise.id, groupId)
-              }
-              availableGroups={availableGroups}
-              availableKPIs={availableKPIs}
-              canMoveUp={false}
-              canMoveDown={false}
-              onExerciseNameChange={onExerciseNameChange}
-            />
-          ))}
-
-          {/* Block groups */}
-          {blockGroups.map((group) => (
-            <GroupItem
-              key={group.id}
-              group={group}
-              exercises={exercises}
-              onUpdateGroup={() => {}}
-              onDeleteGroup={() => {}}
-              onUpdateExercise={onUpdateExercise}
-              onDeleteExercise={onDeleteExercise}
-              onMoveExercise={onMoveExercise}
-              onMoveExerciseToGroup={onMoveExerciseToGroup}
-              availableGroups={availableGroups}
-              availableKPIs={availableKPIs}
-              onExerciseNameChange={onExerciseNameChange}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-});
+    );
+  }
+);
 
 // Exercise Group Component
 interface GroupItemProps {
@@ -211,275 +213,283 @@ interface GroupItemProps {
   onExerciseNameChange?: (name: string) => Promise<string>;
 }
 
-const GroupItem = React.memo<GroupItemProps>(({
-  group,
-  exercises,
-  onUpdateGroup,
-  onDeleteGroup,
-  onUpdateExercise,
-  onDeleteExercise,
-  onMoveExercise,
-  onMoveExerciseToGroup,
-  availableGroups,
-  availableKPIs = [],
-  onExerciseNameChange,
-}) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedGroup, setEditedGroup] = useState(group);
+const GroupItem = React.memo<GroupItemProps>(
+  ({
+    group,
+    exercises,
+    onUpdateGroup,
+    onDeleteGroup,
+    onUpdateExercise,
+    onDeleteExercise,
+    onMoveExercise,
+    onMoveExerciseToGroup,
+    availableGroups,
+    availableKPIs = [],
+    onExerciseNameChange,
+  }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedGroup, setEditedGroup] = useState(group);
 
-  const groupExercises = exercises.filter((ex) => ex.groupId === group.id);
+    const groupExercises = exercises.filter((ex) => ex.groupId === group.id);
 
-  const getGroupIcon = () => {
-    switch (group.type) {
-      case "superset":
-        return <Zap className="w-4 h-4" />;
-      case "circuit":
-        return <RotateCcw className="w-4 h-4" />;
-      case "section":
-        return <Target className="w-4 h-4" />;
-      default:
-        return <Users className="w-4 h-4" />;
-    }
-  };
+    const getGroupIcon = () => {
+      switch (group.type) {
+        case "superset":
+          return <Zap className="w-4 h-4" />;
+        case "circuit":
+          return <RotateCcw className="w-4 h-4" />;
+        case "section":
+          return <Target className="w-4 h-4" />;
+        default:
+          return <Users className="w-4 h-4" />;
+      }
+    };
 
-  const getGroupColor = () => {
-    switch (group.type) {
-      case "superset":
-        return "border-accent-orange bg-accent-orange/5";
-      case "circuit":
-        return "border-accent-blue bg-accent-blue/5";
-      case "section":
-        return "border-accent-green bg-accent-green/5";
-      default:
-        return "border-silver-300 bg-silver-50";
-    }
-  };
+    const getGroupColor = () => {
+      switch (group.type) {
+        case "superset":
+          return "border-accent-orange bg-accent-orange/5";
+        case "circuit":
+          return "border-accent-blue bg-accent-blue/5";
+        case "section":
+          return "border-accent-green bg-accent-green/5";
+        default:
+          return "border-silver-300 bg-silver-50";
+      }
+    };
 
-  const saveGroup = () => {
-    onUpdateGroup(editedGroup);
-    setIsEditing(false);
-  };
+    const saveGroup = () => {
+      onUpdateGroup(editedGroup);
+      setIsEditing(false);
+    };
 
-  return (
-    <div className={`border-2 border-dashed rounded-lg p-4 ${getGroupColor()}`}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-silver-500 hover:text-accent-blue"
-          >
-            {isCollapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <ChevronDown className="w-4 h-4" />
-            )}
-          </button>
-
-          {getGroupIcon()}
-
-          {isEditing ? (
-            <div className="flex flex-col space-y-2 flex-1">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="text"
-                  value={editedGroup.name}
-                  onChange={(e) =>
-                    setEditedGroup({ ...editedGroup, name: e.target.value })
-                  }
-                  placeholder="Group name"
-                  inputSize="sm"
-                  className="flex-1"
-                />
-                <Select
-                  value={editedGroup.type}
-                  onChange={(e) =>
-                    setEditedGroup({
-                      ...editedGroup,
-                      type: e.target.value as
-                        | "superset"
-                        | "circuit"
-                        | "section",
-                    })
-                  }
-                  options={[
-                    { value: "section", label: "Section" },
-                    { value: "superset", label: "Superset" },
-                    { value: "circuit", label: "Circuit" },
-                  ]}
-                  selectSize="sm"
-                  className="w-auto"
-                />
-              </div>
-
-              {/* Rest Intervals */}
-              <div className="flex items-center space-x-2 text-xs">
-                {(editedGroup.type === "circuit" ||
-                  editedGroup.type === "superset") && (
-                  <>
-                    <div className="flex items-center space-x-1">
-                      <Caption variant="muted">Rest between exercises:</Caption>
-                      <Input
-                        type="number"
-                        value={editedGroup.restBetweenExercises || ""}
-                        onChange={(e) =>
-                          setEditedGroup({
-                            ...editedGroup,
-                            restBetweenExercises:
-                              parseInt(e.target.value) || undefined,
-                          })
-                        }
-                        placeholder="0"
-                        min="0"
-                        inputSize="sm"
-                        className="w-16"
-                      />
-                      <Caption variant="muted">sec</Caption>
-                    </div>
-
-                    <div className="flex items-center space-x-1">
-                      <Caption variant="muted">Rest between rounds:</Caption>
-                      <Input
-                        type="number"
-                        value={editedGroup.restBetweenRounds || ""}
-                        onChange={(e) =>
-                          setEditedGroup({
-                            ...editedGroup,
-                            restBetweenRounds:
-                              parseInt(e.target.value) || undefined,
-                          })
-                        }
-                        placeholder="60"
-                        min="0"
-                        inputSize="sm"
-                        className="w-16"
-                      />
-                      <Caption variant="muted">sec</Caption>
-                    </div>
-                  </>
-                )}
-
-                {editedGroup.type === "circuit" && (
-                  <div className="flex items-center space-x-1">
-                    <Caption variant="muted">Rounds:</Caption>
-                    <Input
-                      type="number"
-                      value={editedGroup.rounds || ""}
-                      onChange={(e) =>
-                        setEditedGroup({
-                          ...editedGroup,
-                          rounds: parseInt(e.target.value) || undefined,
-                        })
-                      }
-                      placeholder="3"
-                      min="1"
-                      inputSize="sm"
-                      className="w-12"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={saveGroup}
-                  variant="primary"
-                  size="sm"
-                  className="text-xs px-2 py-1"
-                >
-                  Save
-                </Button>
-                <Button
-                  onClick={() => setIsEditing(false)}
-                  variant="secondary"
-                  size="sm"
-                  className="text-xs px-2 py-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-1">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-medium text-heading-primary">
-                  {group.name}
-                </h3>
-                <span className="text-xs text-body-secondary capitalize">
-                  ({group.type} - {groupExercises.length} exercises)
-                </span>
-              </div>
-
-              {/* Display rest intervals */}
-              {(group.restBetweenExercises ||
-                group.restBetweenRounds ||
-                group.rounds) && (
-                <Caption
-                  variant="muted"
-                  className="flex items-center space-x-3"
-                >
-                  {group.restBetweenExercises !== undefined && (
-                    <span>Rest between: {group.restBetweenExercises}s</span>
-                  )}
-                  {group.restBetweenRounds !== undefined && (
-                    <span>Rest after round: {group.restBetweenRounds}s</span>
-                  )}
-                  {group.rounds !== undefined && (
-                    <span>{group.rounds} rounds</span>
-                  )}
-                </Caption>
+    return (
+      <div
+        className={`border-2 border-dashed rounded-lg p-4 ${getGroupColor()}`}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1 text-silver-500 hover:text-accent-blue"
+            >
+              {isCollapsed ? (
+                <ChevronRight className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
               )}
-            </div>
-          )}
+            </button>
+
+            {getGroupIcon()}
+
+            {isEditing ? (
+              <div className="flex flex-col space-y-2 flex-1">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="text"
+                    value={editedGroup.name}
+                    onChange={(e) =>
+                      setEditedGroup({ ...editedGroup, name: e.target.value })
+                    }
+                    placeholder="Group name"
+                    inputSize="sm"
+                    className="flex-1"
+                  />
+                  <Select
+                    value={editedGroup.type}
+                    onChange={(e) =>
+                      setEditedGroup({
+                        ...editedGroup,
+                        type: e.target.value as
+                          | "superset"
+                          | "circuit"
+                          | "section",
+                      })
+                    }
+                    options={[
+                      { value: "section", label: "Section" },
+                      { value: "superset", label: "Superset" },
+                      { value: "circuit", label: "Circuit" },
+                    ]}
+                    selectSize="sm"
+                    className="w-auto"
+                  />
+                </div>
+
+                {/* Rest Intervals */}
+                <div className="flex items-center space-x-2 text-xs">
+                  {(editedGroup.type === "circuit" ||
+                    editedGroup.type === "superset") && (
+                    <>
+                      <div className="flex items-center space-x-1">
+                        <Caption variant="muted">
+                          Rest between exercises:
+                        </Caption>
+                        <Input
+                          type="number"
+                          value={editedGroup.restBetweenExercises || ""}
+                          onChange={(e) =>
+                            setEditedGroup({
+                              ...editedGroup,
+                              restBetweenExercises:
+                                parseInt(e.target.value) || undefined,
+                            })
+                          }
+                          placeholder="0"
+                          min="0"
+                          inputSize="sm"
+                          className="w-16"
+                        />
+                        <Caption variant="muted">sec</Caption>
+                      </div>
+
+                      <div className="flex items-center space-x-1">
+                        <Caption variant="muted">Rest between rounds:</Caption>
+                        <Input
+                          type="number"
+                          value={editedGroup.restBetweenRounds || ""}
+                          onChange={(e) =>
+                            setEditedGroup({
+                              ...editedGroup,
+                              restBetweenRounds:
+                                parseInt(e.target.value) || undefined,
+                            })
+                          }
+                          placeholder="60"
+                          min="0"
+                          inputSize="sm"
+                          className="w-16"
+                        />
+                        <Caption variant="muted">sec</Caption>
+                      </div>
+                    </>
+                  )}
+
+                  {editedGroup.type === "circuit" && (
+                    <div className="flex items-center space-x-1">
+                      <Caption variant="muted">Rounds:</Caption>
+                      <Input
+                        type="number"
+                        value={editedGroup.rounds || ""}
+                        onChange={(e) =>
+                          setEditedGroup({
+                            ...editedGroup,
+                            rounds: parseInt(e.target.value) || undefined,
+                          })
+                        }
+                        placeholder="3"
+                        min="1"
+                        inputSize="sm"
+                        className="w-12"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={saveGroup}
+                    variant="primary"
+                    size="sm"
+                    className="text-xs px-2 py-1"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    onClick={() => setIsEditing(false)}
+                    variant="secondary"
+                    size="sm"
+                    className="text-xs px-2 py-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-1">
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-medium text-heading-primary">
+                    {group.name}
+                  </h3>
+                  <span className="text-xs text-body-secondary capitalize">
+                    ({group.type} - {groupExercises.length} exercises)
+                  </span>
+                </div>
+
+                {/* Display rest intervals */}
+                {(group.restBetweenExercises ||
+                  group.restBetweenRounds ||
+                  group.rounds) && (
+                  <Caption
+                    variant="muted"
+                    className="flex items-center space-x-3"
+                  >
+                    {group.restBetweenExercises !== undefined && (
+                      <span>Rest between: {group.restBetweenExercises}s</span>
+                    )}
+                    {group.restBetweenRounds !== undefined && (
+                      <span>Rest after round: {group.restBetweenRounds}s</span>
+                    )}
+                    {group.rounds !== undefined && (
+                      <span>{group.rounds} rounds</span>
+                    )}
+                  </Caption>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-1">
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="p-1 text-silver-500 hover:text-accent-blue"
+            >
+              <Edit3 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onDeleteGroup(group.id)}
+              className="p-1 text-silver-500 hover:text-accent-red-600 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-1">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="p-1 text-silver-500 hover:text-accent-blue"
-          >
-            <Edit3 className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => onDeleteGroup(group.id)}
-            className="p-1 text-silver-500 hover:text-accent-red-600 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        {!isCollapsed && (
+          <div className="space-y-2">
+            {groupExercises.map((exercise, index) => (
+              <ExerciseItem
+                key={exercise.id}
+                exercise={exercise}
+                index={index}
+                groupId={group.id}
+                onUpdate={onUpdateExercise}
+                onDelete={onDeleteExercise}
+                onMoveUp={() => onMoveExercise(exercise.id, "up", group.id)}
+                onMoveDown={() => onMoveExercise(exercise.id, "down", group.id)}
+                onMoveToGroup={onMoveExerciseToGroup.bind(null, exercise.id)}
+                availableGroups={availableGroups.filter(
+                  (g) => g.id !== group.id
+                )}
+                availableKPIs={availableKPIs}
+                canMoveUp={index > 0}
+                canMoveDown={index < groupExercises.length - 1}
+                onExerciseNameChange={onExerciseNameChange}
+              />
+            ))}
+
+            {groupExercises.length === 0 && (
+              <div className="text-center text-body-secondary text-sm py-4 border-2 border-dashed border-silver-300 rounded-lg">
+                No exercises in this {group.type} yet
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      {!isCollapsed && (
-        <div className="space-y-2">
-          {groupExercises.map((exercise, index) => (
-            <ExerciseItem
-              key={exercise.id}
-              exercise={exercise}
-              index={index}
-              groupId={group.id}
-              onUpdate={onUpdateExercise}
-              onDelete={onDeleteExercise}
-              onMoveUp={() => onMoveExercise(exercise.id, "up", group.id)}
-              onMoveDown={() => onMoveExercise(exercise.id, "down", group.id)}
-              onMoveToGroup={onMoveExerciseToGroup.bind(null, exercise.id)}
-              availableGroups={availableGroups.filter((g) => g.id !== group.id)}
-              availableKPIs={availableKPIs}
-              canMoveUp={index > 0}
-              canMoveDown={index < groupExercises.length - 1}
-              onExerciseNameChange={onExerciseNameChange}
-            />
-          ))}
-
-          {groupExercises.length === 0 && (
-            <div className="text-center text-body-secondary text-sm py-4 border-2 border-dashed border-silver-300 rounded-lg">
-              No exercises in this {group.type} yet
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-});
+    );
+  }
+);
 
 // Group Creation Modal Component
 interface GroupCreationModalProps {
@@ -669,7 +679,7 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
 
   // KPI tags state
   const [availableKPIs, setAvailableKPIs] = useState<KPITag[]>([]);
-  
+
   // State for saving
   const [isSaving, setIsSaving] = useState(false);
 
@@ -926,15 +936,22 @@ const WorkoutEditor: React.FC<WorkoutEditorProps> = ({
                     onUpdate={exerciseOps.updateExercise}
                     onDelete={exerciseOps.deleteExercise}
                     onMoveUp={() => exerciseOps.moveExercise(exercise.id, "up")}
-                    onMoveDown={() => exerciseOps.moveExercise(exercise.id, "down")}
-                    onMoveToGroup={exerciseOps.moveExerciseToGroup.bind(null, exercise.id)}
+                    onMoveDown={() =>
+                      exerciseOps.moveExercise(exercise.id, "down")
+                    }
+                    onMoveToGroup={exerciseOps.moveExerciseToGroup.bind(
+                      null,
+                      exercise.id
+                    )}
                     availableGroups={workout.groups || []}
                     availableKPIs={availableKPIs}
                     canMoveUp={index > 0}
                     canMoveDown={index < ungroupedExercises.length - 1}
                     onExerciseNameChange={handleExerciseNameChange}
                     selectionMode={selectionOps.selectionMode}
-                    isSelected={selectionOps.selectedExerciseIds.has(exercise.id)}
+                    isSelected={selectionOps.selectedExerciseIds.has(
+                      exercise.id
+                    )}
                     onToggleSelection={selectionOps.toggleExerciseSelection}
                   />
                 ))}

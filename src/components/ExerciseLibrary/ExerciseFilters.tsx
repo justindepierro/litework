@@ -3,7 +3,11 @@
 import { memo } from "react";
 import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/Typography";
-import type { ExerciseCategory, MuscleGroup, EquipmentType } from "@/hooks/useExerciseLibraryState";
+import type {
+  ExerciseCategory,
+  MuscleGroup,
+  EquipmentType,
+} from "@/hooks/useExerciseLibraryState";
 
 interface ExerciseFiltersProps {
   showFilters: boolean;

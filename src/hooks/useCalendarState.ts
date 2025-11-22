@@ -80,10 +80,17 @@ export function useCalendarState(
     return new Date(date.getFullYear(), date.getMonth(), diff);
   }, []);
 
-  const endOfWeek = useCallback((date: Date) => {
-    const start = startOfWeek(date);
-    return new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
-  }, [startOfWeek]);
+  const endOfWeek = useCallback(
+    (date: Date) => {
+      const start = startOfWeek(date);
+      return new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate() + 6
+      );
+    },
+    [startOfWeek]
+  );
 
   const isSameDay = useCallback((date1: Date, date2: Date) => {
     return (
@@ -93,9 +100,12 @@ export function useCalendarState(
     );
   }, []);
 
-  const isToday = useCallback((date: Date) => {
-    return isSameDay(date, new Date());
-  }, [isSameDay]);
+  const isToday = useCallback(
+    (date: Date) => {
+      return isSameDay(date, new Date());
+    },
+    [isSameDay]
+  );
 
   // Generate calendar days
   const monthDays = useMemo(() => {

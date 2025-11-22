@@ -58,7 +58,10 @@ import GroupsSection from "./components/GroupsSection";
 import { useAthleteData } from "./hooks/useAthleteData";
 import { useAthleteFilters } from "./hooks/useAthleteFilters";
 import { useAthletesModals } from "@/hooks/useAthletesModals";
-import { useAthletesOperations, type EnhancedAthlete as EnhancedAthleteType } from "@/hooks/useAthletesOperations";
+import {
+  useAthletesOperations,
+  type EnhancedAthlete as EnhancedAthleteType,
+} from "@/hooks/useAthletesOperations";
 
 // Dynamic imports for large components
 const GroupFormModal = lazy(() => import("@/components/GroupFormModal"));
@@ -135,7 +138,7 @@ export default withPageErrorBoundary(function AthletesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  
+
   const [messageForm, setMessageForm] = useState<MessageForm>({
     recipientId: "",
     subject: "",
@@ -335,40 +338,61 @@ export default withPageErrorBoundary(function AthletesPage() {
   );
 
   // Memoize athlete card callbacks for performance
-  const handleCardClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowDetailModal(true);
-  }, [operations, modals]);
+  const handleCardClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowDetailModal(true);
+    },
+    [operations, modals]
+  );
 
-  const handleMessageClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowMessageModal(true);
-  }, [operations, modals]);
+  const handleMessageClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowMessageModal(true);
+    },
+    [operations, modals]
+  );
 
-  const handleAssignWorkoutClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowIndividualAssignment(true);
-  }, [operations, modals]);
+  const handleAssignWorkoutClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowIndividualAssignment(true);
+    },
+    [operations, modals]
+  );
 
-  const handleManageKPIsClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowKPIModal(true);
-  }, [operations, modals]);
+  const handleManageKPIsClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowKPIModal(true);
+    },
+    [operations, modals]
+  );
 
-  const handleViewAnalyticsClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowAnalyticsModal(true);
-  }, [operations, modals]);
+  const handleViewAnalyticsClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowAnalyticsModal(true);
+    },
+    [operations, modals]
+  );
 
-  const handleAddToGroupClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowAddToGroupModal(true);
-  }, [operations, modals]);
+  const handleAddToGroupClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowAddToGroupModal(true);
+    },
+    [operations, modals]
+  );
 
-  const handleEditEmailClick = useCallback((athlete: EnhancedAthlete) => {
-    operations.setSelectedAthlete(athlete);
-    modals.setShowEditEmailModal(true);
-  }, [operations, modals]);
+  const handleEditEmailClick = useCallback(
+    (athlete: EnhancedAthlete) => {
+      operations.setSelectedAthlete(athlete);
+      modals.setShowEditEmailModal(true);
+    },
+    [operations, modals]
+  );
 
   if (showSkeleton) {
     return (
@@ -824,7 +848,12 @@ export default withPageErrorBoundary(function AthletesPage() {
         cancelText="Cancel"
         confirmVariant="danger"
         onConfirm={operations.confirmModal.onConfirm}
-        onCancel={() => operations.setConfirmModal({ ...operations.confirmModal, isOpen: false })}
+        onCancel={() =>
+          operations.setConfirmModal({
+            ...operations.confirmModal,
+            isOpen: false,
+          })
+        }
       />
     </div>
   );

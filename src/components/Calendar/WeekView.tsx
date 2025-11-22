@@ -1,12 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import {
-  Clock,
-  MapPin,
-  Users,
-  Calendar as CalendarIcon,
-} from "lucide-react";
+import { Clock, MapPin, Users, Calendar as CalendarIcon } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 import { Badge } from "@/components/ui/Badge";
@@ -210,9 +205,7 @@ function WeekViewComponent({
                           className={`flex items-center gap-1.5 text-xs ${calendarText.gridMuted}`}
                         >
                           <Clock className="w-3.5 h-3.5" />
-                          <span>
-                            {formatTime12Hour(assignment.startTime)}
-                          </span>
+                          <span>{formatTime12Hour(assignment.startTime)}</span>
                         </div>
                       )}
                       {assignment.location && (
@@ -255,9 +248,7 @@ function WeekViewComponent({
                   ))}
                 </div>
               ) : (
-                <div
-                  className={`text-center ${calendarText.gridSubtle} py-6`}
-                >
+                <div className={`text-center ${calendarText.gridSubtle} py-6`}>
                   <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No workouts scheduled</p>
                 </div>
@@ -271,13 +262,10 @@ function WeekViewComponent({
 }
 
 // Memoize to prevent re-rendering when assignments haven't changed
-export const WeekView = memo(
-  WeekViewComponent,
-  (prevProps, nextProps) => {
-    // Only re-render if weekDays array reference or isCoach changes
-    return (
-      prevProps.weekDays === nextProps.weekDays &&
-      prevProps.isCoach === nextProps.isCoach
-    );
-  }
-);
+export const WeekView = memo(WeekViewComponent, (prevProps, nextProps) => {
+  // Only re-render if weekDays array reference or isCoach changes
+  return (
+    prevProps.weekDays === nextProps.weekDays &&
+    prevProps.isCoach === nextProps.isCoach
+  );
+});

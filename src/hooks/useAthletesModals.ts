@@ -20,9 +20,11 @@ export function useAthletesModals() {
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [showEditEmailModal, setShowEditEmailModal] = useState(false);
   const [showEditAthleteModal, setShowEditAthleteModal] = useState(false);
-  const [showIndividualAssignment, setShowIndividualAssignment] = useState(false);
+  const [showIndividualAssignment, setShowIndividualAssignment] =
+    useState(false);
   const [showKPIManagementModal, setShowKPIManagementModal] = useState(false);
-  const [showBulkKPIAssignmentModal, setShowBulkKPIAssignmentModal] = useState(false);
+  const [showBulkKPIAssignmentModal, setShowBulkKPIAssignmentModal] =
+    useState(false);
 
   // Convenience method to close all modals at once
   const closeAllModals = useCallback(() => {
@@ -60,7 +62,7 @@ export function useAthletesModals() {
     showIndividualAssignment,
     showKPIManagementModal,
     showBulkKPIAssignmentModal,
-    
+
     // Modal setters
     setShowInviteModal,
     setShowKPIModal,
@@ -77,7 +79,7 @@ export function useAthletesModals() {
     setShowIndividualAssignment,
     setShowKPIManagementModal,
     setShowBulkKPIAssignmentModal,
-    
+
     // Utility
     closeAllModals,
   };

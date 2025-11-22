@@ -157,7 +157,8 @@ function WorkoutsPage({
     };
 
     if (user) {
-      const shouldShowSkeleton = state.showArchived || !shouldSkipSkeletonRef.current;
+      const shouldShowSkeleton =
+        state.showArchived || !shouldSkipSkeletonRef.current;
       shouldSkipSkeletonRef.current = false;
       loadWorkouts(shouldShowSkeleton);
     }
@@ -211,7 +212,9 @@ function WorkoutsPage({
             actions={
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Button
-                  variant={state.currentView === "workouts" ? "primary" : "secondary"}
+                  variant={
+                    state.currentView === "workouts" ? "primary" : "secondary"
+                  }
                   size="sm"
                   onClick={() => state.setCurrentView("workouts")}
                   leftIcon={<Dumbbell className="w-4 h-4" />}
@@ -220,7 +223,9 @@ function WorkoutsPage({
                   Workouts
                 </Button>
                 <Button
-                  variant={state.currentView === "library" ? "primary" : "secondary"}
+                  variant={
+                    state.currentView === "library" ? "primary" : "secondary"
+                  }
                   size="sm"
                   onClick={() => state.setCurrentView("library")}
                   leftIcon={<Library className="w-4 h-4" />}
@@ -261,7 +266,9 @@ function WorkoutsPage({
                   <div className="flex justify-between items-center">
                     <div>
                       <Heading level="h2" className="mb-1">
-                        {state.showArchived ? "Archived Workouts" : "Your Workouts"}
+                        {state.showArchived
+                          ? "Archived Workouts"
+                          : "Your Workouts"}
                       </Heading>
                       <Body className="text-sm" variant="secondary">
                         {state.showArchived
@@ -333,7 +340,9 @@ function WorkoutsPage({
                           <div
                             className="flex justify-between items-start mb-3 cursor-pointer hover:bg-(--interactive-hover) -m-4 p-4 rounded-lg transition-colors"
                             onClick={() =>
-                              state.setExpandedWorkout(isExpanded ? null : workout.id)
+                              state.setExpandedWorkout(
+                                isExpanded ? null : workout.id
+                              )
                             }
                           >
                             <div className="flex-1">
@@ -540,7 +549,10 @@ function WorkoutsPage({
 
                 state.setNewWorkout({
                   ...state.newWorkout,
-                  exercises: [...(state.newWorkout.exercises || []), workoutExercise],
+                  exercises: [
+                    ...(state.newWorkout.exercises || []),
+                    workoutExercise,
+                  ],
                 });
                 state.setCurrentView("workouts");
               }}
@@ -570,7 +582,10 @@ function WorkoutsPage({
                   <Button
                     onClick={() => {
                       state.setShowAssignForm(false);
-                      operations.handleOpenAssignModal(state.selectedWorkout!, "group");
+                      operations.handleOpenAssignModal(
+                        state.selectedWorkout!,
+                        "group"
+                      );
                     }}
                     variant="primary"
                     fullWidth
@@ -589,7 +604,10 @@ function WorkoutsPage({
                   <Button
                     onClick={() => {
                       state.setShowAssignForm(false);
-                      operations.handleOpenAssignModal(state.selectedWorkout!, "individual");
+                      operations.handleOpenAssignModal(
+                        state.selectedWorkout!,
+                        "individual"
+                      );
                     }}
                     variant="secondary"
                     fullWidth

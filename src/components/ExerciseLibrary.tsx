@@ -5,7 +5,10 @@ import { Search, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Heading } from "@/components/ui/Typography";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { useExerciseLibraryState, type Exercise } from "@/hooks/useExerciseLibraryState";
+import {
+  useExerciseLibraryState,
+  type Exercise,
+} from "@/hooks/useExerciseLibraryState";
 import { useExerciseFilters } from "@/hooks/useExerciseFilters";
 import { ExerciseCard } from "@/components/ExerciseLibrary/ExerciseCard";
 import { ExerciseFilters } from "@/components/ExerciseLibrary/ExerciseFilters";
@@ -73,11 +76,26 @@ function ExerciseLibrary({
     if (isOpen) {
       fetchExercises(getFilters());
     }
-  }, [isOpen, debouncedSearchTerm, selectedCategory, selectedMuscleGroup, selectedEquipment, selectedDifficulty, fetchExercises, getFilters]);
+  }, [
+    isOpen,
+    debouncedSearchTerm,
+    selectedCategory,
+    selectedMuscleGroup,
+    selectedEquipment,
+    selectedDifficulty,
+    fetchExercises,
+    getFilters,
+  ]);
 
   // Helper functions
   const getDifficultyLabel = (level: number) => {
-    const labels = ["Beginner", "Beginner", "Intermediate", "Advanced", "Expert"];
+    const labels = [
+      "Beginner",
+      "Beginner",
+      "Intermediate",
+      "Advanced",
+      "Expert",
+    ];
     return labels[level] || "Unknown";
   };
 
@@ -151,10 +169,7 @@ function ExerciseLibrary({
                   className="w-full pl-10 pr-4 py-2 border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <Button
-                onClick={() => setShowCreateForm(true)}
-                variant="primary"
-              >
+              <Button onClick={() => setShowCreateForm(true)} variant="primary">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Exercise
               </Button>

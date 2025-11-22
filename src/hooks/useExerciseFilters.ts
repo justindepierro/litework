@@ -22,9 +22,9 @@ export function useExerciseFilters() {
 
   const hasActiveFilters = Boolean(
     selectedCategory ||
-    selectedMuscleGroup ||
-    selectedEquipment ||
-    selectedDifficulty
+      selectedMuscleGroup ||
+      selectedEquipment ||
+      selectedDifficulty
   );
 
   const getFilters = useCallback(() => {

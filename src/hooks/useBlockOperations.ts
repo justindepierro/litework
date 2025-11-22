@@ -1,5 +1,11 @@
 import { useCallback, useState } from "react";
-import { WorkoutBlock, BlockInstance, WorkoutExercise, ExerciseGroup, WorkoutPlan } from "@/types";
+import {
+  WorkoutBlock,
+  BlockInstance,
+  WorkoutExercise,
+  ExerciseGroup,
+  WorkoutPlan,
+} from "@/types";
 
 /**
  * Hook for managing workout block operations
@@ -11,7 +17,8 @@ export function useBlockOperations(
 ) {
   const [showBlockLibrary, setShowBlockLibrary] = useState(false);
   const [showBlockEditor, setShowBlockEditor] = useState(false);
-  const [editingBlockInstance, setEditingBlockInstance] = useState<BlockInstance | null>(null);
+  const [editingBlockInstance, setEditingBlockInstance] =
+    useState<BlockInstance | null>(null);
 
   // Insert a block from library into the workout
   const insertBlock = useCallback(
@@ -36,12 +43,14 @@ export function useBlockOperations(
       };
 
       // Clone exercises with new IDs
-      const newExercises: WorkoutExercise[] = (block.exercises || []).map((ex, index) => ({
-        ...ex,
-        id: `${blockInstanceId}-ex-${Date.now()}-${index}`,
-        blockInstanceId: blockInstanceId,
-        order: workout.exercises.length + index + 1,
-      }));
+      const newExercises: WorkoutExercise[] = (block.exercises || []).map(
+        (ex, index) => ({
+          ...ex,
+          id: `${blockInstanceId}-ex-${Date.now()}-${index}`,
+          blockInstanceId: blockInstanceId,
+          order: workout.exercises.length + index + 1,
+        })
+      );
 
       // Clone groups with new IDs
       const groupIdMap = new Map<string, string>();
@@ -165,7 +174,7 @@ export function useBlockOperations(
     setShowBlockEditor,
     editingBlockInstance,
     setEditingBlockInstance,
-    
+
     // Operations
     insertBlock,
     handleSaveBlock,
