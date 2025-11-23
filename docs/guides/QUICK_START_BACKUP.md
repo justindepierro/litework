@@ -58,48 +58,59 @@ SELECT COUNT(*) FROM audit_trail;
 
 ### Step 2: Enable Supabase Backups
 
-**Free Daily Backups (Do This First!):**
+**⚠️ NOTE: Automated backups require Supabase Pro Plan ($25/month)**
+
+**If you have Pro Plan:**
 
 1. Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/database
 2. Scroll to **Backup and Recovery**
 3. Toggle **Enable automated backups**
 4. Set backup time: **2:00 AM UTC** (avoids peak usage)
-5. Retention: **7 days** (Free tier)
+5. Retention: **7 days** (Pro tier)
 6. Click **Save**
 
-**Verify:**
+**If you're on Free Plan:**
+- Automated backups are NOT available
+- Use manual exports instead (see Step 4)
+- Consider upgrading to Pro for backups + PITR
+
+**Verify (Pro only):**
 - You'll see "Next backup: [date]" 
 - First backup runs tonight at 2 AM
 
 ---
 
-### Step 3: Decide on Point-in-Time Recovery (PITR)
+### Step 3: Decide on Supabase Pro Plan
 
-**Do you need PITR?**
+**⚠️ IMPORTANT: Automated backups AND PITR both require Pro Plan ($25/month)**
+
+**Do you need Pro Plan?**
 
 ✅ **YES, if:**
-- You need to restore to a specific time (down to the second)
+- You need automated daily backups (7-day retention)
+- You need PITR (restore to any second in last 7 days)
 - Budget allows $25/month
 - This is production with real athlete data
 - Peace of mind is worth $25/month
 
 ❌ **NO, if:**
-- Daily backups are sufficient
-- You're okay with losing up to 24 hours of data
+- Manual weekly exports are sufficient
+- You're okay with relying on audit trail for recent deletions
 - This is still in development/testing
 - Budget is tight
 
-**To Enable PITR ($25/month):**
+**To Enable Pro Plan ($25/month):**
 1. Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/billing
 2. Click **Upgrade to Pro**
 3. Complete billing setup
-4. Go to: Settings → Database → Point-in-Time Recovery
-5. Toggle **Enable PITR**
-6. Set retention: **7 days**
+4. **After upgrade:**
+   - Enable automated backups (Settings → Database)
+   - Enable PITR (Settings → Database → Point-in-Time Recovery)
+5. Set retention: **7 days** for both
 
 ---
 
-### Step 4: Set Up Weekly Schema Exports (Optional)
+### Step 4: Set Up Weekly Schema Exports (ESSENTIAL for Free Plan!)
 
 **Automated Local Backups:**
 
@@ -176,12 +187,15 @@ ORDER BY performed_at DESC;
 SELECT restore_deleted_invite('invite-uuid-here');
 ```
 
-### Daily Backups (After Setup):
+### Daily Backups (Pro Plan Only):
 
+- **⚠️ Requires:** Supabase Pro Plan ($25/month)
 - **Location:** Supabase Dashboard → Database → Backups
 - **Frequency:** Every day at 2 AM UTC
-- **Retention:** 7 days (Free) or 30 days (Pro)
+- **Retention:** 7 days (Pro) or 30 days (Team)
 - **Restore:** Creates new project from backup
+
+**Free Plan Alternative:** Weekly manual exports via LaunchAgent (see Step 4)
 
 ### PITR (If Enabled):
 
@@ -225,9 +239,11 @@ SELECT restore_deleted_invite('uuid-here');
 
 - [ ] **Audit trail migration run** (via Supabase SQL Editor)
 - [ ] **Verify audit_trail table exists** (`SELECT * FROM audit_trail;`)
-- [ ] **Enable daily backups** (Supabase Dashboard)
-- [ ] **Decide on PITR** (upgrade to Pro if needed)
-- [ ] **Set up weekly exports** (LaunchAgent - optional)
+- [ ] **Decide on backup plan:**
+  - [ ] Option A: Upgrade to Pro ($25/month) → Automated daily backups + PITR
+  - [ ] Option B: Stay on Free → Set up weekly manual exports (Step 4)
+- [ ] **If Pro:** Verify daily backups enabled (Supabase Dashboard → Database → Backups)
+- [ ] **If Free:** Set up LaunchAgent for weekly exports (essential!)
 - [ ] **Test restoration** (delete test invite, restore it)
 - [ ] **Bookmark backup guide** (`docs/guides/DATABASE_BACKUP_SETUP.md`)
 
@@ -245,11 +261,13 @@ SELECT restore_deleted_invite('uuid-here');
 
 | Feature | Cost | Included |
 |---------|------|----------|
-| Daily Backups (7 days) | **FREE** | ✅ Schema + Data |
-| Audit Trail | **FREE** | ✅ Deletion tracking |
-| Weekly Exports | **FREE** | ✅ Local backups |
-| **PITR (Optional)** | **$25/month** | ✅ Restore to any second |
+| **Audit Trail** | **FREE** | ✅ Deletion tracking + restore |
+| **Weekly Manual Exports** | **FREE** | ✅ Local schema backups |
+| **Supabase Pro Plan** | **$25/month** | ✅ Daily backups (7 days) + PITR |
 | AWS S3 (Optional) | **~$0.07/month** | ✅ Offsite storage |
+
+**Free Tier:** Audit trail + manual exports only (no automated backups)  
+**Pro Tier:** Audit trail + automated daily backups + PITR ($25/month)
 
 **Recommended for Production:** Free backups + PITR = **$25/month**
 

@@ -2,44 +2,55 @@
 
 Complete guide for setting up automated backups and point-in-time recovery for LiteWork's Supabase database.
 
+> **⚠️ IMPORTANT: Supabase Pro Plan Required for Automated Backups**  
+> As of 2025, Supabase automated daily backups and PITR both require the **Pro Plan ($25/month)**.  
+> Free tier users must rely on **audit trail + manual exports** (Step 3 & 4 below).
+
 ## 🎯 Overview
 
 This guide covers:
-1. **Supabase Built-in Backups** - Automatic daily backups
-2. **Point-in-Time Recovery (PITR)** - Restore to any second in time
-3. **Manual Export/Import** - On-demand database exports
-4. **Audit Trail** - Track all deletions and changes
+1. **Supabase Built-in Backups** - Automatic daily backups **(Pro Plan $25/month)**
+2. **Point-in-Time Recovery (PITR)** - Restore to any second in time **(Pro Plan $25/month)**
+3. **Manual Export/Import** - On-demand database exports **(FREE - Essential for Free tier)**
+4. **Audit Trail** - Track all deletions and changes **(FREE)**
 
 ---
 
 ## 📊 Current Backup Status
 
-### ✅ What We Have Now:
+### ✅ What We Have Now (FREE):
 - **Audit Trail System** - Tracks all deletions and modifications
 - **Soft Delete** - Records marked deleted but kept in database
 - **Schema Exports** - Manual schema dumps in `/database-export/`
 
-### ⚠️ What We Need to Enable:
-- **Automated Backups** - Supabase daily backups
-- **Point-in-Time Recovery** - Restore to specific timestamps
-- **Offsite Backup Storage** - Additional backup location
+### 🔄 Optional Upgrades to Consider:
+- **Automated Backups** - Supabase daily backups **(Requires Pro Plan - $25/month)**
+- **Point-in-Time Recovery** - Restore to specific timestamps **(Requires Pro Plan - $25/month)**
+- **Offsite Backup Storage** - AWS S3 storage **(~$0.07/month - Optional)**
 
 ---
 
-## 1️⃣ Supabase Built-in Backups
+## 1️⃣ Supabase Built-in Backups (Pro Plan Required)
+
+> **⚠️ Requires: Supabase Pro Plan ($25/month)**  
+> Free tier does not include automated backups. See Step 3 for manual backup alternatives.
 
 ### Enable Automated Daily Backups
 
-1. **Go to Supabase Dashboard**
+1. **Upgrade to Pro Plan**
+   - Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/billing
+   - Select **Pro Plan** ($25/month)
+
+2. **Go to Supabase Dashboard**
    - Navigate to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID
    - Click on **Database** → **Backups**
 
-2. **Enable Daily Backups**
+3. **Enable Daily Backups**
    ```
    Settings → Database → Backups
    
    ✅ Enable automated daily backups
-   ✅ Retention: 7 days (Free tier) or 30 days (Pro tier)
+   ✅ Retention: 7 days (Pro) or 30 days (Team)
    ✅ Backup time: 2:00 AM UTC (avoid peak usage)
    ```
 
@@ -114,7 +125,10 @@ supabase db restore \
 
 ---
 
-## 3️⃣ Manual Database Exports
+## 3️⃣ Manual Database Exports (FREE - Essential for Free Tier)
+
+> **✅ FREE:** No Supabase Pro plan required  
+> **🎯 Essential:** Primary backup method if staying on free tier
 
 ### Automated Export Script
 
@@ -377,22 +391,32 @@ supabase projects delete litework-test
 
 ## 8️⃣ Cost Estimates
 
-### Supabase Pro Plan
-- **Plan:** $25/month
+### Free Tier
+- **Cost:** $0/month
 - **Includes:**
-  - 7-day PITR
-  - Daily automated backups
-  - 8GB database
-  - 100GB bandwidth
+  - Audit trail (deletion tracking)
+  - Manual exports (weekly via LaunchAgent)
+  - ⚠️ **NO automated backups**
+  - ⚠️ **NO PITR**
 
-### AWS S3 Storage
+### Supabase Pro Plan
+- **Cost:** $25/month
+- **Includes:**
+  - ✅ 7-day PITR (restore to any second)
+  - ✅ Daily automated backups (7-day retention)
+  - ✅ 8GB database
+  - ✅ 100GB bandwidth
+  - ✅ Audit trail (included)
+
+### AWS S3 Storage (Optional)
 - **Cost:** ~$0.023/GB/month
 - **Estimate:** 100MB backups × 30 days = ~$0.07/month
 - **Negligible cost**
 
-### Total Monthly Cost
-- **With PITR:** $25/month (Supabase Pro)
-- **Without PITR:** $0 (use free daily backups + manual exports)
+### Total Monthly Cost Options
+- **Free Tier:** $0 (audit trail + manual exports only)
+- **Pro Plan:** $25/month (automated backups + PITR)
+- **Pro + S3:** $25.07/month (automated backups + PITR + offsite storage)
 
 ---
 
@@ -401,39 +425,47 @@ supabase projects delete litework-test
 ### For Production (Recommended):
 
 ✅ **Enable:**
-1. Supabase Pro Plan with PITR ($25/month)
-2. Daily automated backups (included)
-3. Weekly exports to S3 ($0.07/month)
-4. Audit trail (already implemented)
+1. Supabase Pro Plan ($25/month) - **Required for automated backups + PITR**
+2. Daily automated backups (included with Pro)
+3. Weekly exports to S3 ($0.07/month - optional)
+4. Audit trail (already implemented - FREE)
 
 ✅ **Benefits:**
-- Restore to any second in last 7 days
-- Multiple backup layers
-- Complete deletion tracking
-- Low cost ($25.07/month total)
+- ✅ Restore to any second in last 7 days
+- ✅ Multiple backup layers
+- ✅ Complete deletion tracking
+- ✅ Automated daily backups
+- 💰 **Cost:** $25.07/month total
 
-### For Development (Budget):
+### For Development/Budget (Free Tier):
 
 ✅ **Enable:**
-1. Supabase Free Plan
-2. Daily automated backups (7-day retention)
-3. Weekly manual exports (local storage)
-4. Audit trail (already implemented)
+1. Supabase Free Plan ($0/month)
+2. ⚠️ **NO automated backups** (Pro required)
+3. Weekly manual exports (local storage - **ESSENTIAL**)
+4. Audit trail (already implemented - FREE)
 
 ✅ **Benefits:**
-- Zero cost
-- Basic recovery capability
-- Good for non-critical environments
+- ✅ Zero cost
+- ✅ Deletion tracking via audit trail
+- ✅ Manual recovery from exports
+- ⚠️ **Limitation:** No automated backups, no PITR
+- 💰 **Cost:** $0/month
+
+**Recommendation:** Upgrade to Pro for production environments. Manual exports alone are risky.
 
 ---
 
 ## 🚀 Implementation Checklist
 
-- [ ] **Run audit trail migration:** `add-audit-trail.sql`
-- [ ] **Enable Supabase daily backups** (via dashboard)
-- [ ] **Decide on PITR:** Upgrade to Pro if needed
-- [ ] **Set up S3 bucket** (optional but recommended)
-- [ ] **Schedule automated exports** (LaunchAgent or cron)
+- [ ] **Run audit trail migration:** `database/add-audit-trail.sql` (via Supabase SQL Editor)
+- [ ] **Decide on Supabase plan:**
+  - [ ] Option A: Upgrade to Pro ($25/month) for automated backups + PITR
+  - [ ] Option B: Stay on Free, rely on manual exports (essential!)
+- [ ] **If Pro:** Enable daily backups (Supabase Dashboard → Database → Backups)
+- [ ] **If Free:** Set up weekly manual exports (LaunchAgent - see Step 3)
+- [ ] **Set up S3 bucket** (optional for offsite storage)
+- [ ] **Test restoration** (delete test data, restore it)
 - [ ] **Test restoration process** (verify it works!)
 - [ ] **Document recovery procedures** (update team wiki)
 - [ ] **Set calendar reminder:** Monthly backup verification
