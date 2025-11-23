@@ -53,16 +53,18 @@ export async function GET(request: NextRequest) {
       orphanedData: 0,
     };
 
-    // 1. Delete expired invites (older than expiry date)
+    // 1. Soft-delete expired invites (older than expiry date)
+    // Changed from hard delete to soft delete to maintain historical data
     const { data: expiredInvites, error: invitesError } = await supabase
       .from("invites")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .lt("expires_at", new Date().toISOString())
+      .is("deleted_at", null) // Only soft-delete invites that aren't already deleted
       .select("id");
 
     if (!invitesError && expiredInvites) {
       results.expiredInvites = expiredInvites.length;
-      // [REMOVED] console.log(`✅ Deleted ${results.expiredInvites} expired invites`);
+      // [REMOVED] console.log(`✅ Soft-deleted ${results.expiredInvites} expired invites`);
     }
 
     // 2. Delete old workout sessions (completed > 90 days ago)
@@ -81,20 +83,22 @@ export async function GET(request: NextRequest) {
       // [REMOVED] console.log(`✅ Deleted ${results.oldSessions} old workout sessions`);
     }
 
-    // 3. Clean up cancelled invites older than 30 days
+    // 3. Soft-delete cancelled invites older than 30 days
+    // Changed from hard delete to soft delete to maintain historical data
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const { data: cancelledInvites, error: cancelledError } = await supabase
       .from("invites")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("status", "cancelled")
       .lt("updated_at", thirtyDaysAgo.toISOString())
+      .is("deleted_at", null) // Only soft-delete invites that aren't already deleted
       .select("id");
 
     if (!cancelledError && cancelledInvites) {
       results.orphanedData = cancelledInvites.length;
-      // [REMOVED] console.log(`✅ Deleted ${results.orphanedData} old cancelled invites`);
+      // [REMOVED] console.log(`✅ Soft-deleted ${results.orphanedData} old cancelled invites`);
     }
 
     // [REMOVED] console.log('✅ Database cleanup completed:', results);
