@@ -28,6 +28,8 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
+import { Heading, Body } from "@/components/ui/Typography";
+import { Button } from "@/components/ui/Button";
 
 // Map icon names to Lucide components
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -199,20 +201,17 @@ export function AchievementNotification({
 
           {/* Achievement name and description */}
           <div>
-            <h3 className="text-xl font-semibold text-navy-800 mb-2">
+            <Heading level="h3" className="text-navy-800 mb-2">
               {achievement.name}
-            </h3>
-            <p className="text-silver-700">{achievement.description}</p>
+            </Heading>
+            <Body className="text-silver-700">{achievement.description}</Body>
           </div>
         </ModalContent>
 
         <ModalFooter align="center">
-          <button
-            onClick={onClose}
-            className="w-full py-3 bg-accent-blue text-white rounded-xl font-semibold hover:bg-accent-blue/90 transition-colors"
-          >
+          <Button onClick={onClose} variant="primary" fullWidth size="lg">
             Continue
-          </button>
+          </Button>
         </ModalFooter>
       </div>
     </ModalBackdrop>

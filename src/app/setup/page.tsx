@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAsyncState } from "@/hooks/use-async-state";
+import { apiClient } from "@/lib/api-client";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
 import { Display, Body } from "@/components/ui/Typography";
 
@@ -33,7 +35,7 @@ export default function SetupPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
-  const [error, setError] = useState("");
+  const { error, setError } = useAsyncState();
   const [checkCount, setCheckCount] = useState(0);
 
   useEffect(() => {
@@ -44,17 +46,17 @@ export default function SetupPage() {
 
     const checkSyncStatus = async () => {
       try {
-        const response = await fetch("/api/auth/sync-status");
+        const { data, error: apiError } =
+          await apiClient.requestWithResponse<SyncStatus>("/auth/sync-status");
 
-        if (!response.ok) {
-          throw new Error("Failed to check sync status");
+        if (apiError || !data) {
+          throw new Error(apiError || "Failed to check sync status");
         }
 
-        const status: SyncStatus = await response.json();
-        setSyncStatus(status);
+        setSyncStatus(data);
 
         // If sync is complete, redirect to dashboard after a brief moment
-        if (status.complete) {
+        if (data.complete) {
           setTimeout(() => {
             router.push("/dashboard");
           }, 1500);

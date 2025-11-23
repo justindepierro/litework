@@ -50,7 +50,11 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  background: linear-gradient(135deg, var(--color-accent-orange-400), var(--color-accent-orange-600));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-orange-400),
+    var(--color-accent-orange-600)
+  );
   animation: confetti-fall 3s linear infinite;
 }
 
@@ -63,13 +67,21 @@
 }
 
 .confetti::before {
-  background: linear-gradient(135deg, var(--color-accent-blue-400), var(--color-accent-blue-600));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-blue-400),
+    var(--color-accent-blue-600)
+  );
   left: -15px;
   animation: confetti-fall 2.8s linear infinite;
 }
 
 .confetti::after {
-  background: linear-gradient(135deg, var(--color-accent-purple-400), var(--color-accent-purple-600));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-purple-400),
+    var(--color-accent-purple-600)
+  );
   left: 15px;
   animation: confetti-fall 3.2s linear infinite;
 }

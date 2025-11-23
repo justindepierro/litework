@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { Badge, BadgeVariant } from "@/components/ui/Badge";
+import { Heading } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -187,9 +188,9 @@ export default function BulkOperationHistory({
           ) : operations.length === 0 ? (
             <div className="text-center py-12">
               <Users className="w-16 h-16 text-silver-500 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-navy-900 mb-2">
+              <Heading level="h3" className="text-navy-900 mb-2">
                 No Operations Yet
-              </h3>
+              </Heading>
               <p className="text-neutral-dark">
                 Your bulk operations will appear here once you start using them.
               </p>

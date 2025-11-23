@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PageContainer } from "@/components/layout";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
@@ -167,11 +168,9 @@ function WorkoutsPage({
 
   if (showAuthSkeleton) {
     return (
-      <div className="min-h-screen container-responsive section-spacing">
-        <div className="max-w-7xl mx-auto">
-          <SkeletonCard />
-        </div>
-      </div>
+      <PageContainer maxWidth="7xl" background="secondary">
+        <SkeletonCard />
+      </PageContainer>
     );
   }
 
@@ -201,44 +200,39 @@ function WorkoutsPage({
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Enhanced mobile-first header */}
-      <div className="container-responsive p-6 sm:p-4">
-        <div className="max-w-4xl mx-auto">
-          <PageHeader
-            title="Workout Management"
-            subtitle="Create and manage training plans"
-            icon={<Dumbbell className="w-6 h-6" />}
-            gradientVariant="primary"
-            actions={
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <Button
-                  variant={
-                    state.currentView === "workouts" ? "primary" : "secondary"
-                  }
-                  size="sm"
-                  onClick={() => state.setCurrentView("workouts")}
-                  leftIcon={<Dumbbell className="w-4 h-4" />}
-                  className="flex-1 sm:flex-none"
-                >
-                  Workouts
-                </Button>
-                <Button
-                  variant={
-                    state.currentView === "library" ? "primary" : "secondary"
-                  }
-                  size="sm"
-                  onClick={() => state.setCurrentView("library")}
-                  leftIcon={<Library className="w-4 h-4" />}
-                  className="flex-1 sm:flex-none"
-                >
-                  Exercise Library
-                </Button>
-              </div>
-            }
-          />
-        </div>
-      </div>
+    <PageContainer maxWidth="7xl" background="secondary">
+      <PageHeader
+        title="Workout Management"
+        subtitle="Create and manage training plans"
+        icon={<Dumbbell className="w-6 h-6" />}
+        gradientVariant="primary"
+        actions={
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <Button
+              variant={
+                state.currentView === "workouts" ? "primary" : "secondary"
+              }
+              size="sm"
+              onClick={() => state.setCurrentView("workouts")}
+              leftIcon={<Dumbbell className="w-4 h-4" />}
+              className="flex-1 sm:flex-none"
+            >
+              Workouts
+            </Button>
+            <Button
+              variant={
+                state.currentView === "library" ? "primary" : "secondary"
+              }
+              size="sm"
+              onClick={() => state.setCurrentView("library")}
+              leftIcon={<Library className="w-4 h-4" />}
+              className="flex-1 sm:flex-none"
+            >
+              Exercise Library
+            </Button>
+          </div>
+        }
+      />
 
       {/* Enhanced mobile-first content */}
       <div className="max-w-4xl mx-auto p-6 sm:p-4">
@@ -951,7 +945,7 @@ function WorkoutsPage({
           </Suspense>
         </WorkoutEditorErrorBoundary>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

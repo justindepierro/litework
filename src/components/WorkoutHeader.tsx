@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Clock, Menu } from "lucide-react";
+import { Heading } from "@/components/ui/Typography";
 
 interface WorkoutHeaderProps {
   workoutName: string;
@@ -62,9 +63,9 @@ export function WorkoutHeader({
       <div className="px-4 py-3">
         {/* Top Row: Title and Menu */}
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-lg font-bold text-(--text-primary) truncate flex-1">
+          <Heading level="h1" className="text-(--text-primary) truncate flex-1">
             {workoutName}
-          </h1>
+          </Heading>
           <button
             onClick={onMenuClick}
             className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-(--interactive-hover) active:bg-(--interactive-active) transition-colors"

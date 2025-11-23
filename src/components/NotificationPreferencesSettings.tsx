@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAsyncState } from "@/hooks/use-async-state";
 import type { NotificationPreferences, NotificationTiming } from "@/types";

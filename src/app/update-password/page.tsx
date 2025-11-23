@@ -7,6 +7,7 @@ import { completePasswordReset, getSession } from "@/lib/auth-client";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 import { Display, Body } from "@/components/ui/Typography";
+import { CenteredContainer } from "@/components/layout/PageContainer";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
@@ -73,8 +74,8 @@ export default function UpdatePasswordPage() {
 
   if (!isValidSession && error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
-        <div className="w-full max-w-md space-y-6">
+      <CenteredContainer background="gradient">
+        <div className="w-full max-w-md mx-auto space-y-6">
           <Alert variant="error" title="Invalid Reset Link">
             <p className="mb-4">{error}</p>
             <Link
@@ -85,13 +86,13 @@ export default function UpdatePasswordPage() {
             </Link>
           </Alert>
         </div>
-      </div>
+      </CenteredContainer>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
-      <div className="w-full max-w-md space-y-6">
+    <CenteredContainer background="gradient">
+      <div className="w-full max-w-md mx-auto space-y-6">
         <div className="text-center">
           <Display size="sm" className="mb-2">
             Create New Password
@@ -164,6 +165,6 @@ export default function UpdatePasswordPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </CenteredContainer>
   );
 }

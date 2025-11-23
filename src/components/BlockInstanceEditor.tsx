@@ -5,6 +5,8 @@ import { useAsyncState } from "@/hooks/use-async-state";
 import { Package, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -239,29 +241,23 @@ export default function BlockInstanceEditor({
 
           {/* Instance Name */}
           <div>
-            <Label className="block mb-2">Instance Name (Optional)</Label>
-            <input
-              type="text"
+            <Input
+              label="Instance Name (Optional)"
               value={instanceName}
               onChange={(e) => setInstanceName(e.target.value)}
               placeholder={blockInstance.sourceBlockName}
-              className="w-full px-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              helperText='Give this instance a custom name (e.g., "Week 3 Progression" or "Beginner Variation")'
             />
-            <Caption variant="muted" className="mt-1">
-              Give this instance a custom name (e.g., &quot;Week 3
-              Progression&quot; or &quot;Beginner Variation&quot;)
-            </Caption>
           </div>
 
           {/* Notes */}
           <div>
-            <Label className="block mb-2">Instance Notes</Label>
-            <textarea
+            <Textarea
+              label="Instance Notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this specific instance..."
               rows={3}
-              className="w-full px-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
             />
           </div>
 

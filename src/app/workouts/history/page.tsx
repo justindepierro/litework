@@ -17,7 +17,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Heading } from "@/components/ui/Typography";
+import { PageContainer } from "@/components/layout";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
+import { StatCard, StatCardGrid } from "@/components/ui/StatCard";
 
 interface SetRecord {
   id: string;
@@ -242,417 +244,395 @@ export default function WorkoutHistoryPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-(--bg-secondary)">
-        <div className="max-w-4xl mx-auto p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-(--bg-tertiary) rounded w-1/3"></div>
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 bg-(--bg-tertiary) rounded"></div>
-              ))}
-            </div>
+      <PageContainer maxWidth="4xl" background="secondary">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-(--bg-tertiary) rounded w-1/3"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-32 bg-(--bg-tertiary) rounded"></div>
+            ))}
           </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-(--bg-secondary)">
-        <div className="max-w-4xl mx-auto p-6">
-          <Alert variant="error" title="Error loading history">
-            <p className="text-sm mb-3">{error}</p>
-            <button
-              onClick={fetchHistory}
-              className="mt-3 px-4 py-2 bg-(--status-error) text-white rounded-lg hover:bg-(--status-error)"
-            >
-              Try Again
-            </button>
-          </Alert>
-        </div>
-      </div>
+      <PageContainer maxWidth="4xl" background="secondary">
+        <Alert variant="error" title="Error loading history">
+          <p className="text-sm mb-3">{error}</p>
+          <button
+            onClick={fetchHistory}
+            className="mt-3 px-4 py-2 bg-(--status-error) text-white rounded-lg hover:bg-(--status-error)"
+          >
+            Try Again
+          </button>
+        </Alert>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="min-h-screen bg-(--bg-secondary)">
-      <div className="max-w-4xl mx-auto p-4 sm:p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <PageHeader
-            title="Workout History"
-            subtitle="Review your past workouts and track your progress"
-            icon={<Calendar className="w-6 h-6" />}
-            actions={
-              <div className="flex gap-2">
-                <Button
-                  variant={showFilters ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                  leftIcon={<Filter className="w-4 h-4" />}
+    <PageContainer maxWidth="4xl" background="secondary">
+      {/* Header */}
+      <div className="mb-6">
+        <PageHeader
+          title="Workout History"
+          subtitle="Review your past workouts and track your progress"
+          icon={<Calendar className="w-6 h-6" />}
+          actions={
+            <div className="flex gap-2">
+              <Button
+                variant={showFilters ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                leftIcon={<Filter className="w-4 h-4" />}
+              >
+                Filters
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={exportToCSV}
+                disabled={filteredSessions.length === 0}
+                leftIcon={<Download className="w-4 h-4" />}
+              >
+                Export
+              </Button>
+            </div>
+          }
+        />
+        {/* Filter Panel */}
+        {showFilters && (
+          <div className="mt-4 bg-white rounded-lg border border-silver-300 p-4">
+            <div className="flex items-center justify-between mb-4">
+              <Heading level="h3">Filters</Heading>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="text-(--text-tertiary) hover:text-(--text-secondary)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Search Workouts"
+                placeholder="Search by name..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+
+              <div>
+                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                  Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(
+                      e.target.value as "all" | "completed" | "in-progress"
+                    );
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
-                  Filters
-                </Button>
+                  <option value="all">All</option>
+                  <option value="completed">Completed</option>
+                  <option value="in-progress">In Progress</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  From Date
+                </label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  To Date
+                </label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-(--text-secondary)">
+                {filteredSessions.length} workout
+                {filteredSessions.length !== 1 ? "s" : ""} found
+              </p>
+              <Button variant="ghost" size="sm" onClick={resetFilters}>
+                Reset Filters
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Summary Stats */}
+      {history && history.sessions.length > 0 && (
+        <StatCardGrid columns={4} className="mb-6">
+          <StatCard label="Total Workouts" value={history.sessions.length} />
+          <StatCard
+            label="Completed"
+            value={history.sessions.filter((s) => s.completed).length}
+            variant="success"
+          />
+          <StatCard
+            label="Total Volume"
+            value={`${history.sessions
+              .reduce((sum, s) => sum + s.stats.totalVolume, 0)
+              .toLocaleString()} lbs`}
+            variant="primary"
+          />
+          <StatCard
+            label="Avg Duration"
+            value={formatDuration(
+              Math.round(
+                history.sessions
+                  .filter((s) => s.stats.duration)
+                  .reduce((sum, s) => sum + (s.stats.duration || 0), 0) /
+                  history.sessions.filter((s) => s.stats.duration).length
+              )
+            )}
+            variant="accent"
+          />
+        </StatCardGrid>
+      )}
+
+      {/* Workout Sessions List */}
+      {filteredSessions.length === 0 ? (
+        <EmptyState
+          icon={Check}
+          title="No workouts found"
+          description={
+            searchQuery || dateFrom || dateTo || statusFilter !== "all"
+              ? "Try adjusting your filters"
+              : "Complete your first workout to see it here!"
+          }
+        />
+      ) : (
+        <>
+          <div className="space-y-4">
+            {paginatedSessions.map((session) => {
+              const isExpanded = expandedSessions.has(session.id);
+              return (
+                <div
+                  key={session.id}
+                  className="bg-white rounded-lg shadow-sm overflow-hidden"
+                >
+                  {/* Session Header */}
+                  <button
+                    onClick={() => toggleSession(session.id)}
+                    className="w-full p-4 text-left hover:bg-(--interactive-hover) transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <Heading level="h3" className="text-(--text-primary)">
+                            {session.workoutPlanName}
+                          </Heading>
+                          {session.completed ? (
+                            <Badge variant="success" size="sm">
+                              Completed
+                            </Badge>
+                          ) : (
+                            <Badge variant="warning" size="sm">
+                              In Progress
+                            </Badge>
+                          )}
+                        </div>
+                        <Body variant="secondary" className="text-sm mt-1">
+                          {formatDate(session.date)}
+                        </Body>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-(--text-secondary)">
+                          <span>
+                            {session.stats.completedExercises}/
+                            {session.stats.totalExercises} exercises
+                          </span>
+                          <span>
+                            {session.stats.completedSets}/
+                            {session.stats.totalSets} sets
+                          </span>
+                          <span>
+                            {session.stats.totalVolume.toLocaleString()} lbs
+                          </span>
+                          {session.stats.duration && (
+                            <span>
+                              {formatDuration(session.stats.duration)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <svg
+                        className={`w-5 h-5 text-(--text-tertiary) transition-transform ${
+                          isExpanded ? "transform rotate-180" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+
+                  {/* Expanded Details */}
+                  {isExpanded && (
+                    <div className="border-t border-silver-300 p-4 bg-(--bg-secondary)">
+                      <Heading
+                        level="h4"
+                        className="text-(--text-primary) mb-3"
+                      >
+                        Exercises
+                      </Heading>
+                      <div className="space-y-4">
+                        {session.sessionExercises.map((exercise) => (
+                          <div
+                            key={exercise.id}
+                            className="bg-white rounded-lg p-3"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <Heading
+                                level="h5"
+                                className="text-(--text-primary)"
+                              >
+                                {exercise.exerciseName}
+                              </Heading>
+                              {exercise.completed && (
+                                <Caption className="text-(--status-success) flex items-center gap-1">
+                                  <Check className="w-4 h-4" />
+                                  Completed
+                                </Caption>
+                              )}
+                            </div>
+                            {exercise.setRecords.length > 0 && (
+                              <div className="space-y-1">
+                                {exercise.setRecords.map((set) => (
+                                  <div
+                                    key={set.id}
+                                    className="flex items-center justify-between text-sm"
+                                  >
+                                    <Caption variant="muted">
+                                      Set {set.setNumber}
+                                    </Caption>
+                                    <Caption>
+                                      {set.actualWeight} lbs × {set.actualReps}{" "}
+                                      reps
+                                      {set.actualWeight !== set.targetWeight ||
+                                      set.actualReps !== set.targetReps ? (
+                                        <Caption
+                                          variant="muted"
+                                          className="ml-2"
+                                        >
+                                          (target: {set.targetWeight} lbs ×{" "}
+                                          {set.targetReps})
+                                        </Caption>
+                                      ) : null}
+                                    </Caption>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6 p-4 bg-white rounded-lg border border-silver-300">
+              <div className="text-sm text-(--text-secondary)">
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, filteredSessions.length)}{" "}
+                of {filteredSessions.length} workouts
+              </div>
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={exportToCSV}
-                  disabled={filteredSessions.length === 0}
-                  leftIcon={<Download className="w-4 h-4" />}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
                 >
-                  Export
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
                 </Button>
-              </div>
-            }
-          />
-          {/* Filter Panel */}
-          {showFilters && (
-            <div className="mt-4 bg-white rounded-lg border border-silver-300 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-(--text-primary)">Filters</h3>
-                <button
-                  onClick={() => setShowFilters(false)}
-                  className="text-(--text-tertiary) hover:text-(--text-secondary)"
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(
+                      (page) =>
+                        page === 1 ||
+                        page === totalPages ||
+                        Math.abs(page - currentPage) <= 1
+                    )
+                    .map((page, index, array) => (
+                      <React.Fragment key={page}>
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <span className="px-2 text-(--text-tertiary)">
+                            ...
+                          </span>
+                        )}
+                        <button
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                            currentPage === page
+                              ? "bg-primary text-white"
+                              : "text-(--text-secondary) hover:bg-(--interactive-hover)"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      </React.Fragment>
+                    ))}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
                 >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input
-                  label="Search Workouts"
-                  placeholder="Search by name..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                />
-
-                <div>
-                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
-                    Status
-                  </label>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => {
-                      setStatusFilter(
-                        e.target.value as "all" | "completed" | "in-progress"
-                      );
-                      setCurrentPage(1);
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  >
-                    <option value="all">All</option>
-                    <option value="completed">Completed</option>
-                    <option value="in-progress">In Progress</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
-                    <Calendar className="w-4 h-4 inline mr-1" />
-                    From Date
-                  </label>
-                  <input
-                    type="date"
-                    value={dateFrom}
-                    onChange={(e) => {
-                      setDateFrom(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
-                    <Calendar className="w-4 h-4 inline mr-1" />
-                    To Date
-                  </label>
-                  <input
-                    type="date"
-                    value={dateTo}
-                    onChange={(e) => {
-                      setDateTo(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full px-3 py-2 bg-white border border-silver-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <p className="text-sm text-(--text-secondary)">
-                  {filteredSessions.length} workout
-                  {filteredSessions.length !== 1 ? "s" : ""} found
-                </p>
-                <Button variant="ghost" size="sm" onClick={resetFilters}>
-                  Reset Filters
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </div>
             </div>
           )}
-        </div>
-
-        {/* Summary Stats */}
-        {history && history.sessions.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-(--text-secondary) text-sm">Total Workouts</p>
-              <Heading level="h4">{history.sessions.length}</Heading>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-(--text-secondary) text-sm">Completed</p>
-              <Heading
-                level="h4"
-                variant="accent"
-                className="text-accent-green-600"
-              >
-                {history.sessions.filter((s) => s.completed).length}
-              </Heading>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-(--text-secondary) text-sm">Total Volume</p>
-              <Heading
-                level="h4"
-                variant="accent"
-                className="text-accent-blue-600"
-              >
-                {history.sessions
-                  .reduce((sum, s) => sum + s.stats.totalVolume, 0)
-                  .toLocaleString()}
-                <span className="text-sm text-(--text-secondary) ml-1">
-                  lbs
-                </span>
-              </Heading>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <p className="text-(--text-secondary) text-sm">Avg Duration</p>
-              <Heading
-                level="h4"
-                variant="accent"
-                className="text-accent-purple-600"
-              >
-                {formatDuration(
-                  Math.round(
-                    history.sessions
-                      .filter((s) => s.stats.duration)
-                      .reduce((sum, s) => sum + (s.stats.duration || 0), 0) /
-                      history.sessions.filter((s) => s.stats.duration).length
-                  )
-                )}
-              </Heading>
-            </div>
-          </div>
-        )}
-
-        {/* Workout Sessions List */}
-        {filteredSessions.length === 0 ? (
-          <EmptyState
-            icon={Check}
-            title="No workouts found"
-            description={
-              searchQuery || dateFrom || dateTo || statusFilter !== "all"
-                ? "Try adjusting your filters"
-                : "Complete your first workout to see it here!"
-            }
-          />
-        ) : (
-          <>
-            <div className="space-y-4">
-              {paginatedSessions.map((session) => {
-                const isExpanded = expandedSessions.has(session.id);
-                return (
-                  <div
-                    key={session.id}
-                    className="bg-white rounded-lg shadow-sm overflow-hidden"
-                  >
-                    {/* Session Header */}
-                    <button
-                      onClick={() => toggleSession(session.id)}
-                      className="w-full p-4 text-left hover:bg-(--interactive-hover) transition-colors"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <h3 className="text-lg font-semibold text-(--text-primary)">
-                              {session.workoutPlanName}
-                            </h3>
-                            {session.completed ? (
-                              <Badge variant="success" size="sm">
-                                Completed
-                              </Badge>
-                            ) : (
-                              <Badge variant="warning" size="sm">
-                                In Progress
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-(--text-secondary) mt-1">
-                            {formatDate(session.date)}
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-(--text-secondary)">
-                            <span>
-                              {session.stats.completedExercises}/
-                              {session.stats.totalExercises} exercises
-                            </span>
-                            <span>
-                              {session.stats.completedSets}/
-                              {session.stats.totalSets} sets
-                            </span>
-                            <span>
-                              {session.stats.totalVolume.toLocaleString()} lbs
-                            </span>
-                            {session.stats.duration && (
-                              <span>
-                                {formatDuration(session.stats.duration)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <svg
-                          className={`w-5 h-5 text-(--text-tertiary) transition-transform ${
-                            isExpanded ? "transform rotate-180" : ""
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </div>
-                    </button>
-
-                    {/* Expanded Details */}
-                    {isExpanded && (
-                      <div className="border-t border-silver-300 p-4 bg-(--bg-secondary)">
-                        <h4 className="font-semibold text-(--text-primary) mb-3">
-                          Exercises
-                        </h4>
-                        <div className="space-y-4">
-                          {session.sessionExercises.map((exercise) => (
-                            <div
-                              key={exercise.id}
-                              className="bg-white rounded-lg p-3"
-                            >
-                              <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-medium text-(--text-primary)">
-                                  {exercise.exerciseName}
-                                </h5>
-                                {exercise.completed && (
-                                  <span className="text-(--status-success) text-sm flex items-center gap-1">
-                                    <Check className="w-4 h-4" />
-                                    Completed
-                                  </span>
-                                )}
-                              </div>
-                              {exercise.setRecords.length > 0 && (
-                                <div className="space-y-1">
-                                  {exercise.setRecords.map((set) => (
-                                    <div
-                                      key={set.id}
-                                      className="flex items-center justify-between text-sm"
-                                    >
-                                      <span className="text-(--text-secondary)">
-                                        Set {set.setNumber}
-                                      </span>
-                                      <span className="text-(--text-primary)">
-                                        {set.actualWeight} lbs ×{" "}
-                                        {set.actualReps} reps
-                                        {set.actualWeight !==
-                                          set.targetWeight ||
-                                        set.actualReps !== set.targetReps ? (
-                                          <span className="text-(--text-tertiary) ml-2">
-                                            (target: {set.targetWeight} lbs ×{" "}
-                                            {set.targetReps})
-                                          </span>
-                                        ) : null}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6 p-4 bg-white rounded-lg border border-silver-300">
-                <div className="text-sm text-(--text-secondary)">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                  {Math.min(
-                    currentPage * itemsPerPage,
-                    filteredSessions.length
-                  )}{" "}
-                  of {filteredSessions.length} workouts
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="w-4 h-4 mr-1" />
-                    Previous
-                  </Button>
-                  <div className="flex gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1)
-                      .filter(
-                        (page) =>
-                          page === 1 ||
-                          page === totalPages ||
-                          Math.abs(page - currentPage) <= 1
-                      )
-                      .map((page, index, array) => (
-                        <React.Fragment key={page}>
-                          {index > 0 && array[index - 1] !== page - 1 && (
-                            <span className="px-2 text-(--text-tertiary)">
-                              ...
-                            </span>
-                          )}
-                          <button
-                            onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                              currentPage === page
-                                ? "bg-primary text-white"
-                                : "text-(--text-secondary) hover:bg-(--interactive-hover)"
-                            }`}
-                          >
-                            {page}
-                          </button>
-                        </React.Fragment>
-                      ))}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+        </>
+      )}
+    </PageContainer>
   );
 }

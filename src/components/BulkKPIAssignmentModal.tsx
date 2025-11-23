@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
 import { apiClient } from "@/lib/api-client";
 import {
   AthleteGroup,
@@ -53,7 +54,7 @@ export default function BulkKPIAssignmentModal({
   const [targetDate, setTargetDate] = useState("");
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { error, setError } = useAsyncState();
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function BulkKPIAssignmentModal({
       setTargetValue("");
       setTargetDate("");
       setNotes("");
-      setError("");
+      setError(null);
     }
   }, [isOpen]);
 

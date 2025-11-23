@@ -14,7 +14,8 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAsyncState } from "@/hooks/use-async-state";
 import { Toggle } from "@/components/ui/Toggle";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Label } from "@/components/ui/Typography";
+import { Label, Heading } from "@/components/ui/Typography";
+import { SectionContainer } from "@/components/ui/SectionHeader";
 
 interface NotificationPreferencesData {
   user_id: string;
@@ -126,9 +127,9 @@ export default function NotificationPreferences() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-navy-900">
+        <Heading level="h2" className="text-navy-900">
           Notification Settings
-        </h2>
+        </Heading>
         <p className="mt-1 text-sm text-neutral-dark">
           Manage how and when you receive notifications from LiteWork
         </p>
@@ -141,9 +142,9 @@ export default function NotificationPreferences() {
 
       {/* Channel Preferences */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-navy-900 mb-4">
+        <Heading level="h3" className="text-navy-900 mb-4">
           Notification Channels
-        </h3>
+        </Heading>
 
         <div className="space-y-4">
           {/* Push Notifications */}
@@ -205,9 +206,9 @@ export default function NotificationPreferences() {
 
       {/* Category Preferences */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-navy-900 mb-4">
+        <Heading level="h3" className="text-navy-900 mb-4">
           Notification Types
-        </h3>
+        </Heading>
 
         <div className="space-y-4">
           {/* Workout Reminders */}

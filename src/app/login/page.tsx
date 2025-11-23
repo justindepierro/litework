@@ -11,6 +11,7 @@ import { PageLoading } from "@/components/ui/LoadingSpinner";
 import { Display, Body, Label } from "@/components/ui/Typography";
 import { Form, FormField, FormSubmitButton } from "@/components/ui/Form";
 import { validationRules } from "@/lib/form-validation";
+import { CenteredContainer } from "@/components/layout/PageContainer";
 
 export default function LoginPage() {
   const [submitError, setSubmitError] = useState("");
@@ -47,8 +48,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center container-responsive py-8 px-4">
-      <div className="w-full max-w-md space-y-6">
+    <CenteredContainer maxWidth="4xl">
+      <div className="w-full max-w-md mx-auto space-y-6">
         <div className="text-center">
           <Display size="lg" className="mb-2">
             Welcome Back
@@ -66,7 +67,9 @@ export default function LoginPage() {
               required: "Email is required",
               custom: (value: any) => {
                 const validation = validateEmail(value);
-                return validation.valid ? undefined : validation.error || "Invalid email";
+                return validation.valid
+                  ? undefined
+                  : validation.error || "Invalid email";
               },
             },
             password: validationRules.required("Password is required"),
@@ -132,6 +135,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </CenteredContainer>
   );
 }

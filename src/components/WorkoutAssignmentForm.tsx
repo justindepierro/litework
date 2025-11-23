@@ -4,6 +4,8 @@ import { WorkoutPlan } from "@/types";
 import DateTimePicker from "./DateTimePicker";
 import { Card } from "@/components/ui/Card";
 import { Heading, Body, Caption } from "@/components/ui/Typography";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 
 interface WorkoutAssignmentFormProps {
   // Workout selection
@@ -109,29 +111,23 @@ export default function WorkoutAssignmentForm({
 
       {/* Location */}
       <div>
-        <label className="block text-body-primary font-medium mb-2">
-          Location (optional)
-        </label>
-        <input
+        <Input
+          label="Location (optional)"
           type="text"
           value={location}
           onChange={(e) => onLocationChange(e.target.value)}
-          className="w-full px-3 py-2 border border-silver-400 rounded-md bg-white text-body-primary placeholder:text-silver-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="e.g., Weight Room, Field House"
         />
       </div>
 
       {/* Notes */}
       <div>
-        <label className="block text-body-primary font-medium mb-2">
-          Session Notes (Optional)
-        </label>
-        <textarea
+        <Textarea
+          label="Session Notes (Optional)"
           value={notes}
           onChange={(e) => onNotesChange(e.target.value)}
           rows={notesRows}
           placeholder={notesPlaceholder}
-          className="w-full px-3 py-2 border border-silver-400 rounded-md bg-white text-body-primary placeholder:text-silver-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
         />
       </div>
 

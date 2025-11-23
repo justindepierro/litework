@@ -70,9 +70,9 @@ const TodayOverview = memo(function TodayOverview() {
       <GlassCard gradientAccent="cyan" className="h-full flex flex-col">
         <div className="flex items-center gap-3 mb-6">
           <Calendar className="w-6 h-6 text-accent-cyan-600" />
-          <h2 className="text-xl font-bold text-navy-700">
+          <Heading level="h2" className="text-navy-700">
             Today&apos;s Schedule
-          </h2>
+          </Heading>
         </div>
         <div className="space-y-3 flex-1">
           <SkeletonCard />
@@ -115,9 +115,9 @@ const TodayOverview = memo(function TodayOverview() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-primary mb-1">
+                    <Heading level="h3" className="text-primary mb-1">
                       {workout.workoutName}
-                    </h3>
+                    </Heading>
                     {/* Show athlete badges for individual assignments OR group name for group assignments */}
                     {workout.isIndividual &&
                     workout.athleteNames &&

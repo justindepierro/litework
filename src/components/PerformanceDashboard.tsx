@@ -119,9 +119,7 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
     <div className="bg-surface rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <Gauge className="w-6 h-6 text-(--text-secondary)" />
-        <h3 className="text-lg font-semibold text-(--text-primary)">
-          Performance Score
-        </h3>
+        <Heading level="h3">Performance Score</Heading>
       </div>
 
       <div className="flex items-center justify-center">

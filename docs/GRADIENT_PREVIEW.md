@@ -1,17 +1,21 @@
 # LiteWork Gradient Background System
 
 ## Overview
+
 Beautiful, modern mesh gradient backgrounds now applied across all pages.
 
 ## Gradient Designs
 
 ### 1. **Primary Gradient** (`bg-gradient-primary`)
+
 A vibrant multi-color gradient perfect for main pages:
+
 - **Colors**: Purple → Sky Blue → Amber → Pink → Teal
 - **Effect**: Smooth diagonal gradient with 5 color stops
 - **Use**: Homepage, major feature pages
 
 **CSS:**
+
 ```css
 linear-gradient(
   135deg,
@@ -24,12 +28,15 @@ linear-gradient(
 ```
 
 ### 2. **Secondary Gradient** (`bg-gradient-secondary`)
+
 A warmer, softer gradient:
+
 - **Colors**: Orange → Pink → Blue
 - **Effect**: Diagonal gradient with warm-to-cool transition
 - **Use**: Dashboard, secondary pages
 
 **CSS:**
+
 ```css
 linear-gradient(
   135deg,
@@ -40,7 +47,9 @@ linear-gradient(
 ```
 
 ### 3. **Energetic Mesh Gradient** (Default - `page-gradient-energetic`)
+
 A sophisticated mesh gradient with multiple radial overlays:
+
 - **Base**: Subtle gray gradient (#fafafa → #ffffff → #f5f5f5)
 - **Overlays**: 5 radial gradients creating depth and energy
   - Top-left: Orange glow (15% opacity)
@@ -54,6 +63,7 @@ A sophisticated mesh gradient with multiple radial overlays:
 ## Implementation
 
 ### Body Background (Global)
+
 The energetic mesh gradient is applied to the `<body>` element:
 
 ```css
@@ -90,6 +100,7 @@ You can override the body background on specific pages:
 ## Design Rationale
 
 ### Why Mesh Gradients?
+
 1. **Modern**: Mesh gradients are trending in 2025 UI design
 2. **Subtle**: Multiple low-opacity overlays create depth without distraction
 3. **Professional**: Not too colorful, maintains readability
@@ -97,6 +108,7 @@ You can override the body background on specific pages:
 5. **Performance**: Pure CSS, no images or SVGs needed
 
 ### Color Psychology
+
 - **Orange** (top-left): Energy, strength, motivation
 - **Purple** (top-right): Premium, achievement, focus
 - **Teal** (bottom-right): Growth, freshness, recovery
@@ -104,11 +116,13 @@ You can override the body background on specific pages:
 - **Cyan** (center): Balance, clarity, trust
 
 ### Accessibility
+
 - All backgrounds maintain AAA contrast ratio with dark text
 - Opacity kept low (8-15%) to ensure readability
 - Pure white/gray base ensures content visibility
 
 ## Browser Support
+
 ✅ All modern browsers (Chrome, Firefox, Safari, Edge)
 ✅ Mobile browsers (iOS Safari, Chrome Mobile)
 ✅ Fixed attachment may fall back to scroll on some mobile browsers (graceful degradation)
@@ -116,9 +130,11 @@ You can override the body background on specific pages:
 ## Examples in App
 
 ### Dashboard
+
 Already uses gradient variations with glass effects on top
 
 ### Workouts Page
+
 ```tsx
 <div className="min-h-screen bg-gradient-energetic">
   {/* Workout cards appear on gradient */}
@@ -126,6 +142,7 @@ Already uses gradient variations with glass effects on top
 ```
 
 ### Athletes Page
+
 ```tsx
 <div className="min-h-screen bg-gradient-primary">
   {/* Athlete list on colorful gradient */}
@@ -138,9 +155,8 @@ To change gradients site-wide, edit `/src/styles/design-tokens-unified.css`:
 
 ```css
 /* Find these variables and adjust colors/stops */
---bg-gradient-primary: ...
---bg-gradient-secondary: ...
---page-gradient-energetic: ...
+--bg-gradient-primary: ... --bg-gradient-secondary: ...
+  --page-gradient-energetic: ...;
 ```
 
 ## Performance Notes

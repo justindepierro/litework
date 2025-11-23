@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
+import { apiClient } from "@/lib/api-client";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -94,7 +96,7 @@ export function WorkoutFeedbackModal({
   const [energyLevel, setEnergyLevel] = useState(3);
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { error, setError } = useAsyncState();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async () => {
@@ -102,23 +104,21 @@ export function WorkoutFeedbackModal({
     setError(null);
 
     try {
-      const response = await fetch(`/api/sessions/${sessionId}/feedback`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          difficulty_rating: difficultyRating,
-          soreness_rating: sorenessRating,
-          energy_level: energyLevel,
-          notes: notes.trim() || null,
-        }),
-      });
+      const { error: apiError } = await apiClient.requestWithResponse(
+        `/sessions/${sessionId}/feedback`,
+        {
+          method: "POST",
+          body: {
+            difficulty_rating: difficultyRating,
+            soreness_rating: sorenessRating,
+            energy_level: energyLevel,
+            notes: notes.trim() || null,
+          },
+        }
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit feedback");
+      if (apiError) {
+        throw new Error(apiError);
       }
 
       setIsSuccess(true);

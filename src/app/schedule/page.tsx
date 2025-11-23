@@ -10,6 +10,7 @@ import { parseDate } from "@/lib/date-utils";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PageContainer } from "@/components/layout";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 import { Body } from "@/components/ui/Typography";
@@ -196,63 +197,59 @@ export default withPageErrorBoundary(function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary container-responsive section-spacing px-4 py-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <PageHeader
-            title="Schedule"
-            subtitle="View and manage your workout schedule"
-            icon={<CalendarIcon className="w-6 h-6" />}
-            gradientVariant="primary"
-            actions={
-              isCoachUser ? (
-                <Button
-                  onClick={() => (window.location.href = "/dashboard")}
-                  variant="primary"
-                  leftIcon={<Plus className="w-5 h-5" />}
-                  className="py-3 px-4 rounded-xl font-medium"
-                >
-                  Assign Workout
-                </Button>
-              ) : undefined
-            }
+    <PageContainer maxWidth="7xl" background="gradient">
+      <div className="mb-6">
+        <PageHeader
+          title="Schedule"
+          subtitle="View and manage your workout schedule"
+          icon={<CalendarIcon className="w-6 h-6" />}
+          gradientVariant="primary"
+          actions={
+            isCoachUser ? (
+              <Button
+                onClick={() => (window.location.href = "/dashboard")}
+                variant="secondary"
+                size="sm"
+              >
+                Coach Dashboard
+              </Button>
+            ) : undefined
+          }
+        />
+      </div>
+
+      {/* Draggable Calendar */}
+      <div className="bg-white rounded-lg shadow-sm">
+        {loadingAssignments ? (
+          <div className="p-12 text-center">
+            <LoadingSpinner size="lg" message="Loading schedule..." />
+          </div>
+        ) : (
+          <Calendar
+            assignments={assignments}
+            onAssignmentClick={handleAssignmentClick}
+            onDateClick={handleDateClick}
+            onAssignmentMove={handleAssignmentMove}
+            viewMode="month"
+            isCoach={isCoachUser}
           />
-        </div>
-
-        {/* Draggable Calendar */}
-        <div className="bg-white rounded-lg shadow-sm">
-          {loadingAssignments ? (
-            <div className="p-12 text-center">
-              <LoadingSpinner size="lg" message="Loading schedule..." />
-            </div>
-          ) : (
-            <Calendar
-              assignments={assignments}
-              onAssignmentClick={handleAssignmentClick}
-              onDateClick={handleDateClick}
-              onAssignmentMove={handleAssignmentMove}
-              viewMode="month"
-              isCoach={isCoachUser}
-            />
-          )}
-        </div>
-
-        {/* Quick Actions for Coaches */}
-        {isCoachUser && (
-          <Alert
-            variant="info"
-            icon={<CalendarIcon />}
-            title="Drag and Drop to Reschedule"
-            className="mt-6"
-          >
-            <Body className="text-sm">
-              Click and drag workouts to different dates to reschedule them.
-              Group assignments will prompt for confirmation before moving all
-              athletes.
-            </Body>
-          </Alert>
         )}
       </div>
+
+      {/* Quick Actions for Coaches */}
+      {isCoachUser && (
+        <Alert
+          variant="info"
+          icon={<CalendarIcon />}
+          title="Drag and Drop to Reschedule"
+          className="mt-6"
+        >
+          <Body className="text-sm">
+            Click and drag workouts to different dates to reschedule them. Group
+            assignments will prompt for confirmation before moving all athletes.
+          </Body>
+        </Alert>
+      )}
 
       {/* Workout Detail Modal */}
       {selectedAssignmentId && (
@@ -279,6 +276,6 @@ export default withPageErrorBoundary(function SchedulePage() {
           />
         </Suspense>
       )}
-    </div>
+    </PageContainer>
   );
 }, "Schedule");

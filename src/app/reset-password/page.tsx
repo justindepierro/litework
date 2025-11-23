@@ -6,6 +6,7 @@ import { requestPasswordReset } from "@/lib/auth-client";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
 import { Display } from "@/components/ui/Typography";
+import { CenteredContainer } from "@/components/layout/PageContainer";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -36,8 +37,8 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
-      <div className="w-full max-w-md space-y-6">
+    <CenteredContainer background="gradient">
+      <div className="w-full max-w-md mx-auto space-y-6">
         <div className="text-center">
           <Display size="lg" className="mb-2">
             Reset Password
@@ -123,6 +124,6 @@ export default function ResetPasswordPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </CenteredContainer>
   );
 }

@@ -30,14 +30,17 @@ export default function AuthenticatedHome() {
           <div className="text-center">
             <Display size="xl" className="text-heading-primary">
               <span className="block">Weight Lifting Club</span>
-              <span className="block text-heading-accent mt-1">
+              <Display size="lg" className="block text-heading-accent mt-1">
                 Workout Tracker
-              </span>
+              </Display>
             </Display>
-            <p className="mt-4 text-body-secondary text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            <Body
+              className="mt-4 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+              variant="secondary"
+            >
               Track your workouts, monitor progress, and stay on schedule with
               your weight lifting goals.
-            </p>
+            </Body>
 
             {/* CTA Button - Mobile Optimized */}
             <div className="mt-8 w-full max-w-sm mx-auto">

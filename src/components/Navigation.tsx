@@ -201,15 +201,13 @@ const Navigation = memo(function Navigation() {
           ${isVisible ? "translate-y-0" : "-translate-y-full"}
           ${
             isScrolled
-              ? "bg-neutral-950/98 backdrop-blur-md shadow-xl border-b border-neutral-700"
-              : "bg-neutral-950 border-b border-neutral-800"
+              ? "bg-navy-900 backdrop-blur-md shadow-xl border-b border-navy-700"
+              : "bg-navy-900 border-b border-navy-800"
           }
         `}
         style={{
-          // Explicit background for iOS Safari - DARKER for better contrast
-          backgroundColor: isScrolled
-            ? "rgba(2, 6, 23, 0.98)"
-            : "rgb(2, 6, 23)",
+          // Explicit solid background for maximum contrast with white text
+          backgroundColor: "rgb(15, 23, 42)", // navy-900
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -229,16 +227,10 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-button-orange rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-accent-orange-500 transition-colors" />
               </div>
-              <span
-                className="text-xl sm:text-2xl font-bold text-white hidden xs:block"
-              >
+              <span className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
                 LiteWork
               </span>
-              <span
-                className="text-xl font-bold text-white xs:hidden"
-              >
-                LW
-              </span>
+              <span className="text-xl font-bold text-white xs:hidden">LW</span>
             </Link>
 
             {/* Desktop Navigation - Modern Pills with High Contrast */}
@@ -375,14 +367,10 @@ const Navigation = memo(function Navigation() {
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div
-                        className="text-white font-semibold text-sm"
-                      >
+                      <div className="text-white font-semibold text-sm">
                         {user.fullName || user.email}
                       </div>
-                      <div
-                        className="text-neutral-200 text-xs capitalize"
-                      >
+                      <div className="text-neutral-200 text-xs capitalize">
                         {user.role}
                       </div>
                     </div>

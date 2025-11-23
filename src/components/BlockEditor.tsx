@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { useAsyncState } from "@/hooks/use-async-state";
 import {
   Plus,
   Trash2,
@@ -15,6 +16,9 @@ import { WorkoutBlock, WorkoutExercise } from "@/types";
 import { ButtonLoading } from "@/components/ui/LoadingSpinner";
 import { Alert } from "@/components/ui/Alert";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Select } from "@/components/ui/Select";
 import { Body, Label } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
@@ -89,7 +93,7 @@ export default function BlockEditor({
     initialBlock?.estimatedDuration?.toString() || ""
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { error, setError } = useAsyncState();
 
   const addExercise = () => {
     const newExercise: WorkoutExercise = {
@@ -206,68 +210,59 @@ export default function BlockEditor({
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="block mb-2">Block Name *</Label>
-                <input
-                  type="text"
+                <Input
+                  label="Block Name *"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g., My Push Day Main Lifts"
-                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  required
                 />
               </div>
 
               <div>
-                <Label className="block mb-2">Category *</Label>
-                <select
+                <Select
+                  label="Category *"
                   value={category}
                   onChange={(e) =>
                     setCategory(e.target.value as WorkoutBlock["category"])
                   }
-                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  {CATEGORY_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  options={CATEGORY_OPTIONS.map((opt) => ({
+                    value: opt.value,
+                    label: opt.label,
+                  }))}
+                  required
+                />
               </div>
             </div>
 
             <div>
-              <Label className="block mb-2">Description</Label>
-              <textarea
+              <Textarea
+                label="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of this workout block..."
                 rows={3}
-                className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="block mb-2">Tags (comma separated)</Label>
-                <input
-                  type="text"
+                <Input
+                  label="Tags (comma separated)"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="e.g., push, strength, chest"
-                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <Label className="block mb-2">
-                  Estimated Duration (minutes)
-                </Label>
-                <input
+                <Input
+                  label="Estimated Duration (minutes)"
                   type="number"
                   value={estimatedDuration}
                   onChange={(e) => setEstimatedDuration(e.target.value)}
                   placeholder="30"
                   min="0"
-                  className="w-full px-4 py-2 border border-silver-400 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -482,17 +477,15 @@ export default function BlockEditor({
 
                           {/* Notes */}
                           <div>
-                            <Label className="block text-xs mb-1">
-                              Notes (equipment, cues, etc.)
-                            </Label>
-                            <textarea
+                            <Textarea
+                              label="Notes (equipment, cues, etc.)"
                               value={exercise.notes || ""}
                               onChange={(e) =>
                                 updateExercise(index, { notes: e.target.value })
                               }
                               placeholder="e.g., Use resistance band, focus on squeeze at top..."
                               rows={2}
-                              className="w-full px-3 py-2 border border-silver-400 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                              className="text-sm"
                             />
                           </div>
                         </div>

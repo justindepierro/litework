@@ -14,7 +14,7 @@ import {
   DropdownItem,
   DropdownDivider,
 } from "@/components/ui/Dropdown";
-import { Body } from "@/components/ui/Typography";
+import { Body, Heading } from "@/components/ui/Typography";
 
 interface GroupsSectionProps {
   groups: AthleteGroup[];
@@ -45,10 +45,10 @@ export default function GroupsSection({
 
   return (
     <div className="mb-6 bg-white rounded-xl shadow-sm border border-subtle p-4">
-      <h3 className="text-lg font-semibold text-heading-primary mb-4 flex items-center gap-2">
+      <Heading level="h3" className="mb-4 flex items-center gap-2">
         <Users className="w-5 h-5 text-accent" />
         Groups ({groups.length})
-      </h3>
+      </Heading>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {groups.map((group) => {
           // Get athlete count directly from group's athleteIds array
@@ -106,7 +106,9 @@ export default function GroupsSection({
               {/* Group content (clickable to manage members) */}
               <div className="w-full">
                 <div className="flex items-center justify-between mb-2 pr-8">
-                  <h4 className="font-semibold text-primary">{group.name}</h4>
+                  <Heading level="h4" className="text-primary">
+                    {group.name}
+                  </Heading>
                   {group.color && (
                     <div
                       className="w-4 h-4 rounded-full"

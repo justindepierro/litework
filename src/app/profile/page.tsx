@@ -17,7 +17,14 @@ import { Select } from "@/components/ui/Select";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { Alert } from "@/components/ui/Alert";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Body, Label, Caption, Display } from "@/components/ui/Typography";
+import {
+  Body,
+  Label,
+  Caption,
+  Display,
+  Heading,
+} from "@/components/ui/Typography";
+import { SectionContainer } from "@/components/ui/SectionHeader";
 import {
   User,
   Save,
@@ -385,10 +392,13 @@ export default function ProfilePage() {
 
         {/* Profile Picture Section */}
         <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
-          <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+          <Heading
+            level="h2"
+            className="text-primary mb-4 flex items-center gap-2"
+          >
             <Camera className="w-5 h-5 text-primary" />
             Profile Picture
-          </h2>
+          </Heading>
 
           <div className="flex flex-col sm:flex-row items-center gap-6">
             {/* Avatar Display */}
@@ -521,72 +531,66 @@ export default function ProfilePage() {
             {activeTab === "profile" && (
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 {/* Basic Information Section */}
-                <div className="bg-gradient-to-br from-accent-blue-50 to-accent-indigo-50 rounded-xl p-4 sm:p-6 border border-accent-blue-100">
-                  <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-                    <User className="w-5 h-5 text-primary" />
-                    Basic Information
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>First Name *</Label>
-                        <Input
-                          type="text"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <Label>Last Name *</Label>
-                        <Input
-                          type="text"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          required
-                        />
-                      </div>
+                <SectionContainer
+                  title="Basic Information"
+                  icon={<User className="w-5 h-5 text-primary" />}
+                  level="h3"
+                  variant="gradient"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>First Name *</Label>
+                      <Input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                      />
                     </div>
 
                     <div>
-                      <Label className="flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        Email
-                      </Label>
+                      <Label>Last Name *</Label>
                       <Input
-                        type="email"
-                        value={profile?.email || ""}
-                        disabled
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
                       />
-                      <Caption variant="muted" className="mt-1">
-                        Contact support to change your email
-                      </Caption>
-                    </div>
-
-                    <div>
-                      <Label className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Phone Number
-                      </Label>
-                      <Input
-                        type="tel"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />
-                      <Caption variant="muted" className="mt-1">
-                        Your personal phone number
-                      </Caption>
                     </div>
                   </div>
-                </div>
+
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Email
+                    </Label>
+                    <Input type="email" value={profile?.email || ""} disabled />
+                    <Caption variant="muted" className="mt-1">
+                      Contact support to change your email
+                    </Caption>
+                  </div>
+
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      Phone Number
+                    </Label>
+                    <Input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                    <Caption variant="muted" className="mt-1">
+                      Your personal phone number
+                    </Caption>
+                  </div>
+                </SectionContainer>
 
                 {/* About Section */}
                 <div className="bg-gradient-to-br from-accent-purple-50 to-accent-pink-50 rounded-xl p-4 sm:p-6 border border-accent-purple-100">
-                  <h3 className="text-lg font-semibold text-primary mb-4">
+                  <Heading level="h3" className="text-primary mb-4">
                     About You
-                  </h3>
+                  </Heading>
 
                   <div className="space-y-4">
                     <div>
@@ -621,12 +625,12 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Emergency Contact Section */}
-                <div className="bg-gradient-to-br from-accent-red-50 to-accent-pink-50 rounded-xl p-4 sm:p-6 border border-accent-red-100">
-                  <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-accent-red-600" />
-                    Emergency Contact
-                  </h3>
-
+                <SectionContainer
+                  title="Emergency Contact"
+                  icon={<Phone className="w-5 h-5 text-accent-red-600" />}
+                  level="h3"
+                  variant="gradient"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label>Emergency Contact Name</Label>
@@ -646,7 +650,7 @@ export default function ProfilePage() {
                       />
                     </div>
                   </div>
-                </div>
+                </SectionContainer>
 
                 <div className="flex justify-end pt-4">
                   <button
@@ -666,10 +670,13 @@ export default function ProfilePage() {
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 {/* Personal Details Section */}
                 <div className="bg-gradient-to-br from-accent-green-50 to-accent-emerald-50 rounded-xl p-4 sm:p-6 border border-accent-green-100">
-                  <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                  <Heading
+                    level="h3"
+                    className="text-primary mb-4 flex items-center gap-2"
+                  >
                     <Calendar className="w-5 h-5 text-accent-green-600" />
                     Personal Details
-                  </h3>
+                  </Heading>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -707,10 +714,13 @@ export default function ProfilePage() {
 
                 {/* Physical Measurements Section */}
                 <div className="bg-gradient-to-br from-accent-cyan-50 to-accent-blue-50 rounded-xl p-4 sm:p-6 border border-accent-cyan-100">
-                  <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                  <Heading
+                    level="h3"
+                    className="text-primary mb-4 flex items-center gap-2"
+                  >
                     <Activity className="w-5 h-5 text-accent-cyan-600" />
                     Physical Measurements
-                  </h3>
+                  </Heading>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -773,9 +783,9 @@ export default function ProfilePage() {
                 {/* BMI Display */}
                 {profile?.bmi && (
                   <div className="bg-gradient-to-r from-accent-blue-50 to-accent-cyan-50 rounded-lg p-4 border border-accent-blue-100">
-                    <h4 className="font-semibold text-primary mb-2">
+                    <Heading level="h4" className="text-primary mb-2">
                       Body Mass Index (BMI)
-                    </h4>
+                    </Heading>
                     <div className="flex items-center justify-between">
                       <Display
                         size="sm"
@@ -812,10 +822,13 @@ export default function ProfilePage() {
             {activeTab === "account" && (
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-xl p-4 sm:p-6 border border-neutral-200">
-                  <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+                  <Heading
+                    level="h3"
+                    className="text-primary mb-4 flex items-center gap-2"
+                  >
                     <Lock className="w-5 h-5 text-primary" />
                     Change Password
-                  </h3>
+                  </Heading>
                   <Body className="text-sm mb-4" variant="secondary">
                     Use a strong password with at least 6 characters.
                   </Body>

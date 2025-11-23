@@ -14,6 +14,7 @@ This document establishes **strict rules** for using the design system to preven
 ### Rule #1: NO HARDCODED COLORS
 
 **❌ NEVER DO THIS:**
+
 ```tsx
 // WRONG - Hardcoded hex colors
 <div style={{ color: "#ffffff" }}>Text</div>
@@ -27,6 +28,7 @@ This document establishes **strict rules** for using the design system to preven
 ```
 
 **✅ ALWAYS DO THIS:**
+
 ```tsx
 // CORRECT - Use Tailwind classes
 <div className="text-white">Text</div>
@@ -42,6 +44,7 @@ This document establishes **strict rules** for using the design system to preven
 ### Rule #2: SINGLE SOURCE OF TRUTH
 
 **All design tokens live in ONE place:**
+
 - `/src/styles/design-tokens-unified.css` - CSS variables
 - `/src/styles/tokens.ts` - TypeScript exports (auto-generated)
 
@@ -50,6 +53,7 @@ This document establishes **strict rules** for using the design system to preven
 ### Rule #3: USE TAILWIND FIRST, CSS VARIABLES SECOND
 
 **Priority Order:**
+
 1. **Tailwind utility classes** (preferred for 90% of cases)
 2. **CSS variables** (for complex or dynamic values)
 3. **Component-specific CSS** (only if above don't work)
@@ -72,6 +76,7 @@ src/components/CriticalCSS.tsx  ← Inline critical CSS (minimal, references var
 ```
 
 **Files DELETED (Legacy):**
+
 - ❌ `critical.css` - Replaced by CriticalCSS component
 - ❌ `base.css` - Not needed (Tailwind handles base styles)
 - ❌ `components.css` - Not imported (use component-level styles)
@@ -84,6 +89,7 @@ src/components/CriticalCSS.tsx  ← Inline critical CSS (minimal, references var
 ### Available Color Systems
 
 #### 1. **Accent Colors** (Brand Colors)
+
 Use for UI elements, highlights, and semantic states:
 
 ```css
@@ -113,6 +119,7 @@ Use for UI elements, highlights, and semantic states:
 ```
 
 #### 2. **Neutral Colors** (Text & Backgrounds)
+
 ```css
 /* Navy - Primary text and UI */
 --color-navy-50 to --color-navy-900
@@ -122,6 +129,7 @@ Use for UI elements, highlights, and semantic states:
 ```
 
 #### 3. **Semantic Colors** (Shorthand)
+
 ```css
 --color-primary        /* Blue (#3b82f6) */
 --color-success        /* Green (#00d4aa) */
@@ -161,6 +169,7 @@ Use for UI elements, highlights, and semantic states:
 **Problem**: Yellow/amber background appeared on all pages despite multiple fixes.
 
 **Root Cause**: Hardcoded hex colors in multiple places:
+
 1. `CriticalCSS.tsx` - Inline styles with `#fef3c7` and `#fde68a`
 2. `utilities.css` - 20+ hardcoded hex colors
 3. `celebrations.css` - Hardcoded amber/yellow confetti
@@ -168,6 +177,7 @@ Use for UI elements, highlights, and semantic states:
 5. Multiple conflicting CSS files overriding each other
 
 **Why It Happened**:
+
 - Critical CSS loads FIRST (in `<head>`) and overrides everything
 - Multiple developers adding inline styles without checking design system
 - No documentation on color usage rules
@@ -230,8 +240,8 @@ grep -r "rgba(" src/styles/
 
 ```tsx
 // ❌ WRONG
-<span style={{ 
-  backgroundColor: "#d1fae5", 
+<span style={{
+  backgroundColor: "#d1fae5",
   color: "#059669",
   padding: "4px 8px",
   borderRadius: "4px"
@@ -262,7 +272,7 @@ grep -r "rgba(" src/styles/
 </div>
 
 // ✅ EVEN BETTER - Use CSS variable
-<div 
+<div
   className="p-4 rounded-lg"
   style={{ backgroundColor: `var(--color-${isActive ? "success" : "error"})` }}
 >
@@ -274,8 +284,8 @@ grep -r "rgba(" src/styles/
 
 ```tsx
 // ❌ WRONG
-<div style={{ 
-  background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" 
+<div style={{
+  background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)"
 }}>
   Gradient
 </div>
@@ -303,17 +313,20 @@ grep -r "rgba(" src/styles/
 ### Converting Hardcoded Colors to Design System
 
 **Step 1**: Identify the hardcoded color
+
 ```tsx
 // Found: style={{ color: "#ffffff" }}
 ```
 
 **Step 2**: Find equivalent in design system
+
 ```bash
 # Search design tokens file
 grep -i "ffffff" src/styles/design-tokens-unified.css
 ```
 
 **Step 3**: Replace with Tailwind class
+
 ```tsx
 // Before
 <span style={{ color: "#ffffff" }}>Text</span>
@@ -324,27 +337,29 @@ grep -i "ffffff" src/styles/design-tokens-unified.css
 
 ### Common Color Mappings
 
-| Hardcoded Hex | Design System                        | Tailwind Class              |
-| ------------- | ------------------------------------ | --------------------------- |
-| `#ffffff`     | `var(--color-silver-100)` / white    | `text-white` / `bg-white`   |
-| `#3b82f6`     | `var(--color-primary)`               | `text-primary` / `bg-primary` |
-| `#ff6b35`     | `var(--color-accent-orange-500)`     | `text-accent-orange-500`    |
-| `#00d4aa`     | `var(--color-accent-green-500)`      | `text-accent-green-500`     |
-| `#ef4444`     | `var(--color-error)`                 | `text-error` / `bg-error`   |
-| `#fbbf24`     | `var(--color-warning)`               | `text-warning`              |
-| `#e5e7eb`     | `var(--color-silver-400)`            | `text-silver-400`           |
-| `#1e293b`     | `var(--color-navy-800)`              | `text-navy-800`             |
+| Hardcoded Hex | Design System                     | Tailwind Class                |
+| ------------- | --------------------------------- | ----------------------------- |
+| `#ffffff`     | `var(--color-silver-100)` / white | `text-white` / `bg-white`     |
+| `#3b82f6`     | `var(--color-primary)`            | `text-primary` / `bg-primary` |
+| `#ff6b35`     | `var(--color-accent-orange-500)`  | `text-accent-orange-500`      |
+| `#00d4aa`     | `var(--color-accent-green-500)`   | `text-accent-green-500`       |
+| `#ef4444`     | `var(--color-error)`              | `text-error` / `bg-error`     |
+| `#fbbf24`     | `var(--color-warning)`            | `text-warning`                |
+| `#e5e7eb`     | `var(--color-silver-400)`         | `text-silver-400`             |
+| `#1e293b`     | `var(--color-navy-800)`           | `text-navy-800`               |
 
 ---
 
 ## 🎓 **Learning Resources**
 
 ### Internal Documentation
+
 - `/design-system` - Live design system page (visual reference)
 - `/src/styles/design-tokens-unified.css` - All available tokens (715 lines)
 - `COMPONENT_USAGE_STANDARDS.md` - Component best practices
 
 ### External Resources
+
 - [Tailwind CSS Colors](https://tailwindcss.com/docs/customizing-colors)
 - [CSS Variables (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
 - [OKLCH Color Space](https://oklch.com/) - Used for our accent colors
@@ -375,13 +390,13 @@ Copy this checklist for every PR that touches styles:
 
 ### When to Use Each Approach
 
-| Scenario                        | Approach                          | Example                             |
-| ------------------------------- | --------------------------------- | ----------------------------------- |
-| Static color on standard element | Tailwind class                    | `className="text-accent-orange-500"` |
-| Dynamic color based on state    | Conditional Tailwind              | `className={isActive ? "bg-success" : "bg-error"}` |
-| Complex gradient                | CSS variable                      | `style={{ background: "var(--bg-gradient-primary)" }}` |
-| Programmatic color calculation  | CSS variable with JS              | `style={{ backgroundColor: `var(--color-accent-${color}-500)` }}` |
-| Animation color changes         | CSS variable + CSS transition     | See `celebrations.css` patterns     |
+| Scenario                         | Approach                      | Example                                                           |
+| -------------------------------- | ----------------------------- | ----------------------------------------------------------------- |
+| Static color on standard element | Tailwind class                | `className="text-accent-orange-500"`                              |
+| Dynamic color based on state     | Conditional Tailwind          | `className={isActive ? "bg-success" : "bg-error"}`                |
+| Complex gradient                 | CSS variable                  | `style={{ background: "var(--bg-gradient-primary)" }}`            |
+| Programmatic color calculation   | CSS variable with JS          | `style={{ backgroundColor: `var(--color-accent-${color}-500)` }}` |
+| Animation color changes          | CSS variable + CSS transition | See `celebrations.css` patterns                                   |
 
 ### Emergency Debugging
 

@@ -9,8 +9,14 @@ import { validateEmail, validatePassword } from "@/lib/security";
 import { Alert } from "@/components/ui/Alert";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
 import { Heading, Body, Caption } from "@/components/ui/Typography";
-import { Form, FormField, FormCheckbox, FormSubmitButton } from "@/components/ui/Form";
+import {
+  Form,
+  FormField,
+  FormCheckbox,
+  FormSubmitButton,
+} from "@/components/ui/Form";
 import { validationRules } from "@/lib/form-validation";
+import { CenteredContainer } from "@/components/layout/PageContainer";
 
 interface InviteData {
   id: string;
@@ -31,7 +37,9 @@ function SignUpForm() {
   const [inviteError, setInviteError] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState<"weak" | "fair" | "good" | "strong" | null>(null);
+  const [passwordStrength, setPasswordStrength] = useState<
+    "weak" | "fair" | "good" | "strong" | null
+  >(null);
 
   const { signUp } = useAuth();
   const { isLoading: authLoading } = useRedirectIfAuthenticated();
@@ -49,11 +57,17 @@ function SignUpForm() {
 
         if (!response.ok) {
           if (response.status === 404) {
-            setInviteError("Invitation not found. It may have expired or been cancelled.");
+            setInviteError(
+              "Invitation not found. It may have expired or been cancelled."
+            );
           } else if (response.status === 410) {
-            setInviteError("This invitation has expired. Please contact your coach for a new invitation.");
+            setInviteError(
+              "This invitation has expired. Please contact your coach for a new invitation."
+            );
           } else {
-            setInviteError("Failed to load invitation. Please contact your coach.");
+            setInviteError(
+              "Failed to load invitation. Please contact your coach."
+            );
           }
           setInviteLoading(false);
           return;
@@ -68,7 +82,9 @@ function SignUpForm() {
         }
 
         if (new Date(data.expiresAt) < new Date()) {
-          setInviteError("This invitation has expired. Please contact your coach for a new invitation.");
+          setInviteError(
+            "This invitation has expired. Please contact your coach for a new invitation."
+          );
           setInviteLoading(false);
           return;
         }
@@ -103,7 +119,11 @@ function SignUpForm() {
       /[0-9]/.test(password)
     ) {
       return "good";
-    } else if (password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password)) {
+    } else if (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password)
+    ) {
       return "fair";
     }
     return "weak";
@@ -141,7 +161,8 @@ function SignUpForm() {
 
       // AuthContext will handle redirect to /dashboard
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred during sign up";
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred during sign up";
       setSubmitError(errorMessage);
     }
   };
@@ -152,19 +173,22 @@ function SignUpForm() {
 
   if (showEmailConfirmation) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
-        <div className="w-full max-w-md text-center space-y-6 bg-(--bg-surface) p-8 rounded-xl shadow-xl">
+      <CenteredContainer background="gradient">
+        <div className="w-full max-w-md mx-auto text-center space-y-6 bg-(--bg-surface) p-8 rounded-xl shadow-xl">
           <div className="w-16 h-16 bg-(--status-success-light) text-(--status-success) rounded-full flex items-center justify-center mx-auto text-3xl">
             ✓
           </div>
           <Heading level="h2">Check Your Email</Heading>
           <Body variant="secondary">
-            We&apos;ve sent a confirmation link to your email address. Please check your inbox and click the link to
-            verify your account.
+            We&apos;ve sent a confirmation link to your email address. Please
+            check your inbox and click the link to verify your account.
           </Body>
           <Body variant="secondary" className="text-sm">
             Didn&apos;t receive the email? Check your spam folder or{" "}
-            <Link href="/support" className="text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)]">
+            <Link
+              href="/support"
+              className="text-(--accent-blue-600) hover:text-(--accent-blue-700) font-[var(--font-weight-medium)]"
+            >
               contact support
             </Link>
             .
@@ -176,16 +200,18 @@ function SignUpForm() {
             ← Back to home
           </Link>
         </div>
-      </div>
+      </CenteredContainer>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-primary container-responsive py-8 px-4">
+    <CenteredContainer background="gradient">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <Heading level="h2" className="mb-2">
-            {inviteData ? `Welcome, ${inviteData.firstName}!` : "Create Your Account"}
+            {inviteData
+              ? `Welcome, ${inviteData.firstName}!`
+              : "Create Your Account"}
           </Heading>
           <Body variant="secondary">
             {inviteData
@@ -197,7 +223,9 @@ function SignUpForm() {
         {inviteError && (
           <Alert variant="error">
             <div>
-              <Body className="font-[var(--font-weight-semibold)] mb-1">Invitation Error</Body>
+              <Body className="font-[var(--font-weight-semibold)] mb-1">
+                Invitation Error
+              </Body>
               <Caption>{inviteError}</Caption>
               <Link
                 href="/"
@@ -227,7 +255,9 @@ function SignUpForm() {
                 required: "Email is required",
                 custom: (value: any) => {
                   const validation = validateEmail(value);
-                  return validation.valid ? undefined : validation.error || "Invalid email";
+                  return validation.valid
+                    ? undefined
+                    : validation.error || "Invalid email";
                 },
               },
               password: {
@@ -235,7 +265,9 @@ function SignUpForm() {
                 custom: (value: any) => {
                   const validation = validatePassword(value);
                   setPasswordStrength(calculatePasswordStrength(value));
-                  return validation.valid ? undefined : validation.error || "Invalid password";
+                  return validation.valid
+                    ? undefined
+                    : validation.error || "Invalid password";
                 },
               },
               confirmPassword: {
@@ -315,7 +347,8 @@ function SignUpForm() {
                               : "text-(--status-error) font-[var(--font-weight-semibold)]"
                       }
                     >
-                      {passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}
+                      {passwordStrength.charAt(0).toUpperCase() +
+                        passwordStrength.slice(1)}
                     </Caption>
                   </div>
                   <div className="flex gap-1 h-1.5">
@@ -345,7 +378,8 @@ function SignUpForm() {
                     />
                     <div
                       className={`flex-1 rounded-full ${
-                        passwordStrength === "good" || passwordStrength === "strong"
+                        passwordStrength === "good" ||
+                        passwordStrength === "strong"
                           ? passwordStrength === "good"
                             ? "bg-(--accent-blue-500)"
                             : "bg-(--status-success)"
@@ -354,7 +388,9 @@ function SignUpForm() {
                     />
                     <div
                       className={`flex-1 rounded-full ${
-                        passwordStrength === "strong" ? "bg-(--status-success)" : "bg-(--bg-tertiary)"
+                        passwordStrength === "strong"
+                          ? "bg-(--status-success)"
+                          : "bg-(--bg-tertiary)"
                       }`}
                     />
                   </div>
@@ -406,7 +442,7 @@ function SignUpForm() {
           </Link>
         </div>
       </div>
-    </div>
+    </CenteredContainer>
   );
 }
 

@@ -6,6 +6,7 @@
 
 import { useRequireAuth } from "@/hooks/use-auth-guard";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/Typography";
 import NotificationPermission from "@/components/NotificationPermission";
 import NotificationPreferencesSettings from "@/components/NotificationPreferencesSettings";
 import { PageLoading } from "@/components/ui/LoadingSpinner";
@@ -37,9 +38,9 @@ export default function SettingsPage() {
       <div className="space-y-8">
         {/* Push Notification Permission */}
         <div>
-          <h2 className="text-xl font-semibold text-(--text-primary) mb-4">
+          <Heading level="h2" className="mb-4">
             Browser Notifications
-          </h2>
+          </Heading>
           <NotificationPermission />
         </div>
 

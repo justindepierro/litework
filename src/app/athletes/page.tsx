@@ -12,6 +12,7 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { Button } from "@/components/ui/Button";
+import { Heading } from "@/components/ui/Typography";
 import { AnimatedGrid } from "@/components/ui/AnimatedList";
 import { withPageErrorBoundary } from "@/components/ui/PageErrorBoundary";
 import {
@@ -31,6 +32,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Body } from "@/components/ui/Typography";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PageContainer } from "@/components/layout";
 import {
   User as UserType,
   AthleteKPI,
@@ -396,230 +398,226 @@ export default withPageErrorBoundary(function AthletesPage() {
 
   if (showSkeleton) {
     return (
-      <div className="min-h-screen container-responsive section-spacing">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
+      <PageContainer maxWidth="7xl" background="secondary">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-      <div className="max-w-7xl mx-auto">
-        {/* Error Display */}
-        {error && (
-          <Alert variant="error" onDismiss={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+    <PageContainer maxWidth="7xl" background="secondary">
+      {/* Error Display */}
+      {error && (
+        <Alert variant="error" onDismiss={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
 
-        {/* Enhanced Mobile-Optimized Header */}
-        <div className="flex flex-col gap-6 mb-8">
-          <PageHeader
-            title="Team Athletes"
-            subtitle="Manage your athletes with invite-based onboarding, performance tracking, and seamless communication"
-            icon={<Users className="w-6 h-6" />}
-            gradientVariant="primary"
-          />
-
-          {/* Mobile-Optimized Communication Stats */}
-          <AthleteStats athleteCounts={athleteCounts} athletes={athletes} />
-
-          {/* Mobile-Optimized Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Button
-              onClick={() => modals.setShowHistoryModal(true)}
-              variant="secondary"
-              className="shadow-md hover:shadow-lg border-accent-light hover:border-accent transition-colors"
-              leftIcon={
-                <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple" />
-              }
-            >
-              History
-            </Button>
-            <Button
-              onClick={() => modals.setShowBulkModal(true)}
-              variant="secondary"
-              className="shadow-md hover:shadow-lg border-primary-light hover:border-primary transition-colors"
-              leftIcon={
-                <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue" />
-              }
-            >
-              Bulk Actions
-            </Button>
-            <Button
-              onClick={() => modals.setShowKPIManagementModal(true)}
-              variant="secondary"
-              className="shadow-md hover:shadow-lg border-warning-light hover:border-warning bg-warning-lightest hover:bg-warning-light transition-colors"
-              leftIcon={
-                <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
-              }
-            >
-              <span className="text-warning-dark">Create KPI</span>
-            </Button>
-            <Button
-              onClick={() => modals.setShowBulkKPIAssignmentModal(true)}
-              variant="secondary"
-              className="shadow-md hover:shadow-lg border-success-light hover:border-success bg-success-lightest hover:bg-success-light transition-colors"
-              leftIcon={
-                <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
-              }
-            >
-              <span className="text-success-dark">Assign KPIs</span>
-            </Button>
-            <Button
-              onClick={() => modals.setShowGroupFormModal(true)}
-              variant="secondary"
-              className="shadow-md hover:shadow-lg border-accent-light hover:border-accent bg-accent-lightest hover:bg-accent-light transition-colors"
-              leftIcon={
-                <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
-              }
-            >
-              <span className="text-accent-dark">Add Group</span>
-            </Button>
-            <Button
-              onClick={() => modals.setShowInviteModal(true)}
-              variant="primary"
-              className="shadow-lg hover:shadow-xl bg-gradient-accent-primary hover:opacity-90 transition-opacity"
-              leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
-            >
-              Add Athlete
-            </Button>
-          </div>
-        </div>
-
-        {/* Groups Section */}
-        <GroupsSection
-          groups={activeGroups}
-          openGroupMenuId={operations.openGroupMenuId}
-          onOpenMenu={operations.setOpenGroupMenuId}
-          onEditGroup={(group) => {
-            operations.setEditingGroup(group);
-            modals.setShowGroupFormModal(true);
-          }}
-          onArchiveGroup={operations.handleArchiveGroup}
-          onDeleteGroup={operations.handleDeleteGroup}
-          onManageMembers={(group) => {
-            operations.setSelectedGroup(group);
-            modals.setShowManageGroupModal(true);
-          }}
+      {/* Enhanced Mobile-Optimized Header */}
+      <div className="flex flex-col gap-6 mb-8">
+        <PageHeader
+          title="Team Athletes"
+          subtitle="Manage your athletes with invite-based onboarding, performance tracking, and seamless communication"
+          icon={<Users className="w-6 h-6" />}
+          gradientVariant="primary"
         />
 
-        {/* Mobile-Optimized Search and Filters */}
-        <SearchAndFilters
-          searchTerm={searchTerm}
-          statusFilter={statusFilter}
-          onSearchChange={setSearchTerm}
-          onStatusFilterChange={setStatusFilter}
-        />
+        {/* Mobile-Optimized Communication Stats */}
+        <AthleteStats athleteCounts={athleteCounts} athletes={athletes} />
 
-        {/* Athletes Grid - Mobile Optimized Cards */}
-        <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
-          {/* Add Athlete Placeholder Card - Colorful & Energetic */}
-          <button
-            onClick={() => modals.setShowInviteModal(true)}
-            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-silver-300 hover:border-warning hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
-            aria-label="Add new athlete"
+        {/* Mobile-Optimized Action Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <Button
+            onClick={() => modals.setShowHistoryModal(true)}
+            variant="secondary"
+            className="shadow-md hover:shadow-lg border-accent-light hover:border-accent transition-colors"
+            leftIcon={
+              <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple" />
+            }
           >
-            {/* Colorful accent bar - only on hover */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-accent-primary rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-            {/* Centered content */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-16 h-16 bg-gradient-accent-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
-                <Plus className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-(--text-primary) mb-1">
-                  Add New Athlete
-                </h3>
-                <Body className="text-sm" variant="secondary">
-                  Click to add athlete profile
-                </Body>
-              </div>
-            </div>
-          </button>
-
-          {filteredAthletes.length > 0 &&
-            filteredAthletes.map((athlete) => (
-              <AthleteCard
-                key={athlete.id}
-                athlete={athlete}
-                groups={groups}
-                onCardClick={handleCardClick}
-                onMessageClick={handleMessageClick}
-                onAssignWorkout={handleAssignWorkoutClick}
-                onManageKPIs={handleManageKPIsClick}
-                onViewAnalytics={handleViewAnalyticsClick}
-                onAddToGroup={handleAddToGroupClick}
-                onEditEmail={handleEditEmailClick}
-                onResendInvite={operations.handleResendInvite}
-                onCancelInvite={operations.handleCancelInvite}
-                getStatusIcon={getStatusIcon}
-                getStatusText={getStatusText}
-              />
-            ))}
-        </AnimatedGrid>
-
-        {/* Empty State - Only show if no athletes at all */}
-        {filteredAthletes.length === 0 && (
-          <EmptySearch
-            searchTerm={searchTerm || "filtered"}
-            onClearSearch={() => {
-              setSearchTerm("");
-              setStatusFilter("all");
-            }}
-          />
-        )}
-
-        {/* Edit Email Modal */}
-        {/* Edit Email Modal */}
-        {operations.selectedAthlete && (
-          <EditEmailModal
-            isOpen={modals.showEditEmailModal}
-            onClose={() => modals.setShowEditEmailModal(false)}
-            athlete={operations.selectedAthlete}
-            initialEmail={operations.selectedAthlete.email || ""}
-            onUpdateEmail={handleUpdateEmail}
-          />
-        )}
-
-        {/* Invite Modal */}
-        {/* Invite Athlete Modal */}
-        <InviteAthleteModal
-          isOpen={modals.showInviteModal}
-          onClose={() => modals.setShowInviteModal(false)}
-          onInvite={handleSendInvite}
-          groups={groups}
-          onCreateNewGroup={() => modals.setShowGroupFormModal(true)}
-        />
-
-        {/* Message Modal */}
-        {operations.selectedAthlete && (
-          <MessageModal
-            isOpen={modals.showMessageModal}
-            onClose={() => modals.setShowMessageModal(false)}
-            athlete={operations.selectedAthlete}
-            initialForm={messageForm}
-            onSendMessage={handleSendMessage}
-          />
-        )}
-
-        {/* KPI Management Modal */}
-        {operations.selectedAthlete && (
-          <KPIModal
-            isOpen={modals.showKPIModal}
-            onClose={() => modals.setShowKPIModal(false)}
-            athlete={operations.selectedAthlete}
-            onAddKPI={operations.handleAddKPI}
-          />
-        )}
+            History
+          </Button>
+          <Button
+            onClick={() => modals.setShowBulkModal(true)}
+            variant="secondary"
+            className="shadow-md hover:shadow-lg border-primary-light hover:border-primary transition-colors"
+            leftIcon={
+              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue" />
+            }
+          >
+            Bulk Actions
+          </Button>
+          <Button
+            onClick={() => modals.setShowKPIManagementModal(true)}
+            variant="secondary"
+            className="shadow-md hover:shadow-lg border-warning-light hover:border-warning bg-warning-lightest hover:bg-warning-light transition-colors"
+            leftIcon={
+              <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
+            }
+          >
+            <span className="text-warning-dark">Create KPI</span>
+          </Button>
+          <Button
+            onClick={() => modals.setShowBulkKPIAssignmentModal(true)}
+            variant="secondary"
+            className="shadow-md hover:shadow-lg border-success-light hover:border-success bg-success-lightest hover:bg-success-light transition-colors"
+            leftIcon={
+              <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
+            }
+          >
+            <span className="text-success-dark">Assign KPIs</span>
+          </Button>
+          <Button
+            onClick={() => modals.setShowGroupFormModal(true)}
+            variant="secondary"
+            className="shadow-md hover:shadow-lg border-accent-light hover:border-accent bg-accent-lightest hover:bg-accent-light transition-colors"
+            leftIcon={
+              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
+            }
+          >
+            <span className="text-accent-dark">Add Group</span>
+          </Button>
+          <Button
+            onClick={() => modals.setShowInviteModal(true)}
+            variant="primary"
+            className="shadow-lg hover:shadow-xl bg-gradient-accent-primary hover:opacity-90 transition-opacity"
+            leftIcon={<Plus className="w-5 h-5 sm:w-4 sm:h-4" />}
+          >
+            Add Athlete
+          </Button>
+        </div>
       </div>
+
+      {/* Groups Section */}
+      <GroupsSection
+        groups={activeGroups}
+        openGroupMenuId={operations.openGroupMenuId}
+        onOpenMenu={operations.setOpenGroupMenuId}
+        onEditGroup={(group) => {
+          operations.setEditingGroup(group);
+          modals.setShowGroupFormModal(true);
+        }}
+        onArchiveGroup={operations.handleArchiveGroup}
+        onDeleteGroup={operations.handleDeleteGroup}
+        onManageMembers={(group) => {
+          operations.setSelectedGroup(group);
+          modals.setShowManageGroupModal(true);
+        }}
+      />
+
+      {/* Mobile-Optimized Search and Filters */}
+      <SearchAndFilters
+        searchTerm={searchTerm}
+        statusFilter={statusFilter}
+        onSearchChange={setSearchTerm}
+        onStatusFilterChange={setStatusFilter}
+      />
+
+      {/* Athletes Grid - Mobile Optimized Cards */}
+      <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
+        {/* Add Athlete Placeholder Card - Colorful & Energetic */}
+        <button
+          onClick={() => modals.setShowInviteModal(true)}
+          className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-silver-300 hover:border-warning hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
+          aria-label="Add new athlete"
+        >
+          {/* Colorful accent bar - only on hover */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-accent-primary rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+          {/* Centered content */}
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-16 h-16 bg-gradient-accent-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
+              <Plus className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-center">
+              <Heading level="h3" className="mb-1">
+                Add New Athlete
+              </Heading>
+              <Body className="text-sm" variant="secondary">
+                Click to add athlete profile
+              </Body>
+            </div>
+          </div>
+        </button>
+
+        {filteredAthletes.length > 0 &&
+          filteredAthletes.map((athlete) => (
+            <AthleteCard
+              key={athlete.id}
+              athlete={athlete}
+              groups={groups}
+              onCardClick={handleCardClick}
+              onMessageClick={handleMessageClick}
+              onAssignWorkout={handleAssignWorkoutClick}
+              onManageKPIs={handleManageKPIsClick}
+              onViewAnalytics={handleViewAnalyticsClick}
+              onAddToGroup={handleAddToGroupClick}
+              onEditEmail={handleEditEmailClick}
+              onResendInvite={operations.handleResendInvite}
+              onCancelInvite={operations.handleCancelInvite}
+              getStatusIcon={getStatusIcon}
+              getStatusText={getStatusText}
+            />
+          ))}
+      </AnimatedGrid>
+
+      {/* Empty State - Only show if no athletes at all */}
+      {filteredAthletes.length === 0 && (
+        <EmptySearch
+          searchTerm={searchTerm || "filtered"}
+          onClearSearch={() => {
+            setSearchTerm("");
+            setStatusFilter("all");
+          }}
+        />
+      )}
+
+      {/* Edit Email Modal */}
+      {/* Edit Email Modal */}
+      {operations.selectedAthlete && (
+        <EditEmailModal
+          isOpen={modals.showEditEmailModal}
+          onClose={() => modals.setShowEditEmailModal(false)}
+          athlete={operations.selectedAthlete}
+          initialEmail={operations.selectedAthlete.email || ""}
+          onUpdateEmail={handleUpdateEmail}
+        />
+      )}
+
+      {/* Invite Modal */}
+      {/* Invite Athlete Modal */}
+      <InviteAthleteModal
+        isOpen={modals.showInviteModal}
+        onClose={() => modals.setShowInviteModal(false)}
+        onInvite={handleSendInvite}
+        groups={groups}
+        onCreateNewGroup={() => modals.setShowGroupFormModal(true)}
+      />
+
+      {/* Message Modal */}
+      {operations.selectedAthlete && (
+        <MessageModal
+          isOpen={modals.showMessageModal}
+          onClose={() => modals.setShowMessageModal(false)}
+          athlete={operations.selectedAthlete}
+          initialForm={messageForm}
+          onSendMessage={handleSendMessage}
+        />
+      )}
+
+      {/* KPI Management Modal */}
+      {operations.selectedAthlete && (
+        <KPIModal
+          isOpen={modals.showKPIModal}
+          onClose={() => modals.setShowKPIModal(false)}
+          athlete={operations.selectedAthlete}
+          onAddKPI={operations.handleAddKPI}
+        />
+      )}
 
       {/* Bulk Operations Modal */}
       <BulkOperationModal
@@ -855,6 +853,6 @@ export default withPageErrorBoundary(function AthletesPage() {
           })
         }
       />
-    </div>
+    </PageContainer>
   );
 }, "Athletes");

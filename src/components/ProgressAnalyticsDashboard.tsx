@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Select } from "@/components/ui/Select";
-import { Heading, Body } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
+import { StatCard, StatCardGrid } from "@/components/ui/StatCard";
 
 // Progress data - will be loaded from API
 const mockProgressData: Array<{
@@ -184,130 +185,79 @@ export default function ProgressAnalyticsDashboard() {
       )}
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-surface rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-accent-blue-50 rounded-xl flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-accent-blue-500" />
-            </div>
-            <div>
-              <Heading level="h3">Total Workouts</Heading>
-              <p className="text-sm text-body-secondary">This period</p>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-heading-primary mb-2">
-            {analyticsSummary.totalWorkouts}
-          </div>
-          <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-success font-medium">+12%</span>
-            <span className="text-caption-muted">vs last period</span>
-          </div>
-        </div>
-
-        <div className="bg-surface rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-success-light rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-success" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-heading-primary">
-                Total Volume
-              </h3>
-              <p className="text-sm text-body-secondary">Pounds lifted</p>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-heading-primary mb-2">
-            {analyticsSummary.totalVolume.toLocaleString()}
-          </div>
-          <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-success font-medium">+8.3%</span>
-            <span className="text-caption-muted">vs last period</span>
-          </div>
-        </div>
-
-        <div className="bg-surface rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-accent-light rounded-xl flex items-center justify-center">
-              <Target className="w-5 h-5 text-accent" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-heading-primary">
-                Strength Gain
-              </h3>
-              <p className="text-sm text-body-secondary">
-                Average 1RM increase
-              </p>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-heading-primary mb-2">
-            +{analyticsSummary.strengthGain}%
-          </div>
-          <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-success font-medium">+2.1%</span>
-            <span className="text-caption-muted">vs last period</span>
-          </div>
-        </div>
-
-        <div className="bg-surface rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-warning-light rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-warning" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-heading-primary">
-                Consistency
-              </h3>
-              <p className="text-sm text-body-secondary">Workout adherence</p>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-heading-primary mb-2">
-            {analyticsSummary.consistencyScore}%
-          </div>
-          <div className="flex items-center gap-1 text-sm">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-success font-medium">+5%</span>
-            <span className="text-caption-muted">vs last period</span>
-          </div>
-        </div>
-      </div>
+      <StatCardGrid columns={4}>
+        <StatCard
+          label="Total Workouts"
+          value={analyticsSummary.totalWorkouts}
+          icon={<BarChart3 className="w-5 h-5" />}
+          subtitle="This period"
+          trend={{ value: 12, direction: "up", label: "vs last period" }}
+          variant="primary"
+          size="lg"
+        />
+        <StatCard
+          label="Total Volume"
+          value={analyticsSummary.totalVolume.toLocaleString()}
+          icon={<Zap className="w-5 h-5" />}
+          subtitle="Pounds lifted"
+          trend={{ value: 8.3, direction: "up", label: "vs last period" }}
+          variant="success"
+          size="lg"
+        />
+        <StatCard
+          label="Strength Gain"
+          value={`+${analyticsSummary.strengthGain}%`}
+          icon={<Target className="w-5 h-5" />}
+          subtitle="Average 1RM increase"
+          trend={{ value: 2.1, direction: "up", label: "vs last period" }}
+          variant="accent"
+          size="lg"
+        />
+        <StatCard
+          label="Consistency"
+          value={`${analyticsSummary.consistencyScore}%`}
+          icon={<Calendar className="w-5 h-5" />}
+          subtitle="Workout adherence"
+          trend={{ value: 5, direction: "up", label: "vs last period" }}
+          variant="warning"
+          size="lg"
+        />
+      </StatCardGrid>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Strength Progression Chart */}
         <div className="bg-surface rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-bold text-heading-primary mb-4">
+          <Heading level="h3" className="mb-4">
             Strength Progression
-          </h3>
+          </Heading>
           <div className="h-64 bg-neutral-lighter rounded-lg flex items-center justify-center">
             <div className="text-center">
               <BarChart3 className="w-12 h-12 text-steel-400 mx-auto mb-2" />
-              <p className="text-caption-muted">
+              <Caption variant="muted">
                 Chart visualization would go here
-              </p>
-              <p className="text-sm text-steel-400">
+              </Caption>
+              <Caption className="text-steel-400">
                 Shows 1RM progression over time
-              </p>
+              </Caption>
             </div>
           </div>
         </div>
 
         {/* Volume Trends */}
         <div className="bg-surface rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-bold text-heading-primary mb-4">
+          <Heading level="h3" className="mb-4">
             Volume Trends
-          </h3>
+          </Heading>
           <div className="h-64 bg-neutral-lighter rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-steel-400 mx-auto mb-2" />
-              <p className="text-caption-muted">
+              <Caption variant="muted">
                 Chart visualization would go here
-              </p>
-              <p className="text-sm text-steel-400">
+              </Caption>
+              <Caption className="text-steel-400">
                 Shows total volume over time
-              </p>
+              </Caption>
             </div>
           </div>
         </div>
@@ -316,9 +266,7 @@ export default function ProgressAnalyticsDashboard() {
       {/* Top Exercises Table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-heading-primary">
-            Top Exercises
-          </h3>
+          <Heading level="h3">Top Exercises</Heading>
           <Award className="w-5 h-5 text-warning" />
         </div>
 
@@ -374,9 +322,7 @@ export default function ProgressAnalyticsDashboard() {
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-heading-primary">
-            Recent Activity
-          </h3>
+          <Heading level="h3">Recent Activity</Heading>
           <Users className="w-5 h-5 text-primary" />
         </div>
 
@@ -390,15 +336,13 @@ export default function ProgressAnalyticsDashboard() {
                 <Target className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-heading-primary">
-                  {activity.exercise}
-                </div>
-                <div className="text-sm text-body-secondary">
+                <Body className="font-medium">{activity.exercise}</Body>
+                <Body variant="secondary" className="text-sm">
                   {activity.weight}lbs × {activity.reps} × {activity.sets} ={" "}
                   {activity.volume.toLocaleString()} total lbs
-                </div>
+                </Body>
               </div>
-              <div className="text-sm text-caption-muted">{activity.date}</div>
+              <Caption variant="muted">{activity.date}</Caption>
             </div>
           ))}
         </div>

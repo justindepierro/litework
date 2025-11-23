@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Search, Dumbbell } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body } from "@/components/ui/Typography";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { useAsyncState } from "@/hooks/use-async-state";
 
 interface Exercise {
@@ -72,13 +74,12 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-navy-500" />
-          <input
+          <Input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search exercises..."
-            className="w-full pl-10 pr-4 py-2 border border-neutral-light rounded-lg focus:ring-2 focus:ring-accent-blue-500 focus:border-accent-blue-500"
+            leftIcon={<Search className="w-4 h-4" />}
           />
         </div>
       </div>
@@ -94,7 +95,7 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
         {!loading && searchQuery.length < 2 && (
           <div className="text-center text-navy-600 py-8">
             <Dumbbell className="w-12 h-12 mx-auto mb-3 text-navy-500" />
-            <p className="text-sm">Type to search exercises</p>
+            <Body className="text-sm">Type to search exercises</Body>
           </div>
         )}
 
@@ -111,18 +112,20 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
         {error && (
           <div className="text-center py-8 px-4">
             <div className="bg-error-lighter border border-error-light rounded-lg p-4">
-              <p className="text-sm text-error-dark font-medium mb-2">
+              <Body className="text-sm text-error-dark font-medium mb-2">
                 {error}
-              </p>
-              <button
+              </Body>
+              <Button
                 onClick={() => {
                   setError(null);
                   setSearchQuery("");
                 }}
+                variant="ghost"
+                size="sm"
                 className="text-xs text-error hover:text-error-dark underline"
               >
                 Try again
-              </button>
+              </Button>
             </div>
           </div>
         )}
