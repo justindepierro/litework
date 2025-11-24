@@ -6,14 +6,14 @@ import DashboardClientPage from "./DashboardClientPage";
 import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardBootstrapData } from "@/lib/dashboard-data";
 
-// Empty initial data - will be loaded client-side
-const emptyData: DashboardBootstrapData = {
-  stats: null,
+// Empty initial data - will be loaded client-side (role will be added from user)
+const emptyData = {
+  stats: undefined,
   assignments: [],
   workouts: [],
   groups: [],
   athletes: [],
-  coachWelcomeMessage: null,
+  coachWelcomeMessage: undefined,
 };
 
 export default function DashboardPage() {
@@ -37,5 +37,11 @@ export default function DashboardPage() {
     );
   }
 
-  return <DashboardClientPage initialData={emptyData} />;
+  // Create data with user role
+  const dataWithRole: DashboardBootstrapData = {
+    ...emptyData,
+    role: user.role,
+  };
+
+  return <DashboardClientPage initialData={dataWithRole} />;
 }

@@ -406,7 +406,7 @@ function DesignSystemContent() {
                   Error with Action
                 </Button>
                 <Button
-                  variant="warning"
+                  variant="secondary"
                   onClick={() => handleSnackbarDemo("warning")}
                 >
                   Warning
@@ -494,7 +494,7 @@ function DesignSystemContent() {
                   +10%
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => setProgress(45)}
                 >
