@@ -56,16 +56,28 @@ export default function PageTransition({
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        initial="hidden"
+        initial="visible"
         animate="visible"
         exit="exit"
         variants={pageTransition}
         style={{
           // GPU acceleration for smoother animations
           willChange: "transform, opacity",
+          // Ensure content is always visible as fallback
+          minHeight: "100%",
+          position: "relative",
+          zIndex: 1,
         }}
+        onAnimationStart={() => {}}
+        onAnimationComplete={() => {}}
       >
-        {children}
+        <div
+          style={{
+            minHeight: "100vh",
+          }}
+        >
+          {children}
+        </div>
       </motion.div>
     </AnimatePresence>
   );

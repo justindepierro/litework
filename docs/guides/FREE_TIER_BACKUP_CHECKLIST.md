@@ -24,6 +24,7 @@
    ```
 
 **What this gives you:**
+
 - ✅ Tracks ALL deletions (invites, users, workouts)
 - ✅ Can restore soft-deleted records instantly
 - ✅ See who deleted what and when
@@ -34,18 +35,21 @@
 ### Task 2: Set Up Weekly Backups (2 minutes)
 
 Run this command:
+
 ```bash
 cd /Users/justindepierro/Documents/LiteWork
 ./scripts/database/setup-weekly-backups.sh
 ```
 
 **What this does:**
+
 - ✅ Creates LaunchAgent for weekly backups
 - ✅ Runs every Sunday at 3:00 AM
 - ✅ Saves to `database-export/schema-dump.sql`
 - ✅ Tests backup immediately
 
 **What this gives you:**
+
 - ✅ Weekly database snapshots
 - ✅ Schema + structure backups
 - ✅ Manual recovery option
@@ -56,19 +60,22 @@ cd /Users/justindepierro/Documents/LiteWork
 ## 🛡️ What You're Protected Against
 
 ### With Audit Trail:
+
 ✅ **Accidental deletions today** → Restore instantly  
 ✅ **Who deleted what** → Full accountability  
-✅ **Soft-deleted records** → One-command restore  
+✅ **Soft-deleted records** → One-command restore
 
 ### With Weekly Exports:
+
 ✅ **Database corruption** → Restore from last Sunday  
 ✅ **Schema changes** → Rollback if needed  
-✅ **Local backup** → No reliance on Supabase  
+✅ **Local backup** → No reliance on Supabase
 
 ### What You're NOT Protected Against:
+
 ⚠️ **Data loss between Sunday backups** → Can't restore to Tuesday  
 ⚠️ **Automated recovery** → Manual restore process required  
-⚠️ **Real-time backup** → Weekly schedule only  
+⚠️ **Real-time backup** → Weekly schedule only
 
 **Acceptable risk for now** → Can upgrade to Pro ($25/month) later if needed
 
@@ -84,12 +91,12 @@ INSERT INTO invites (email, first_name, last_name, status)
 VALUES ('test@example.com', 'Test', 'User', 'draft');
 
 -- 2. Soft delete it
-UPDATE invites 
-SET deleted_at = NOW() 
+UPDATE invites
+SET deleted_at = NOW()
 WHERE email = 'test@example.com';
 
 -- 3. Check audit trail
-SELECT * FROM audit_log_summary 
+SELECT * FROM audit_log_summary
 WHERE record_name LIKE '%Test User%'
 ORDER BY performed_at DESC;
 
@@ -124,17 +131,21 @@ tail -20 logs/backup.log
 ## 📅 Maintenance Schedule
 
 ### Daily:
+
 - Nothing! Audit trail runs automatically
 
 ### Weekly (Sundays):
+
 - Backup runs automatically at 3 AM
 - No action needed
 
 ### Monthly:
+
 - Check `logs/backup.log` for any errors
 - Verify `database-export/schema-dump.sql` is updating
 
 ### Quarterly:
+
 - Test restoration process (see Test 1 above)
 - Consider upgrading to Pro if business is growing
 
@@ -143,6 +154,7 @@ tail -20 logs/backup.log
 ## 🆘 Recovery Procedures
 
 ### Scenario 1: Deleted invite TODAY
+
 ```sql
 -- Find it
 SELECT * FROM get_deletion_history('invites')
@@ -153,6 +165,7 @@ SELECT restore_deleted_invite('uuid-from-above');
 ```
 
 ### Scenario 2: Deleted invite THIS WEEK
+
 ```sql
 -- Find it
 SELECT * FROM get_deletion_history('invites')
@@ -163,12 +176,14 @@ SELECT restore_deleted_invite('uuid-from-above');
 ```
 
 ### Scenario 3: Need to restore from LAST SUNDAY
+
 1. Open `database-export/schema-dump.sql`
 2. Find the deleted record in the schema
 3. Extract the SQL INSERT statement
 4. Run it in Supabase SQL Editor
 
 ### Scenario 4: Major disaster (database corruption)
+
 1. Create new Supabase project
 2. Run `database-export/schema-dump.sql` in new project
 3. Point app to new project URL
@@ -179,18 +194,21 @@ SELECT restore_deleted_invite('uuid-from-above');
 ## 💰 Cost Comparison
 
 ### Your Choice: Free Tier
+
 - **Cost:** $0/month
 - **Coverage:** Audit trail + weekly exports
 - **Risk:** Can't restore between backups
 - **Effort:** Low (automated)
 
 ### Alternative: Pro Plan
+
 - **Cost:** $25/month
 - **Coverage:** Everything above + daily backups + PITR
 - **Risk:** Minimal (restore to any second)
 - **Effort:** Zero (fully automated)
 
 **When to upgrade:**
+
 - Multiple coaches using system
 - Critical athlete data (competitions, scholarships)
 - High volume of daily changes

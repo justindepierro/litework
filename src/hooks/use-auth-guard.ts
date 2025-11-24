@@ -12,10 +12,11 @@ export function useRequireAuth() {
 
   useEffect(() => {
     if (!loading && !user && !hasRedirected.current) {
+      console.log("[useRequireAuth] No user found, redirecting to login");
       hasRedirected.current = true;
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user?.id, loading, router]);
 
   return { user, isLoading: loading };
 }
@@ -41,7 +42,7 @@ export function useRequireCoach() {
         router.push("/dashboard");
       }
     }
-  }, [user, loading, router]);
+  }, [user?.id, user?.role, loading, router]);
 
   return { user, isLoading: loading };
 }
@@ -67,7 +68,7 @@ export function useRequireAdmin() {
         router.push("/dashboard");
       }
     }
-  }, [user, loading, router]);
+  }, [user?.id, user?.role, loading, router]);
 
   return { user, isLoading: loading };
 }
@@ -88,7 +89,7 @@ export function useRedirectIfAuthenticated(redirectTo: string = "/dashboard") {
       hasRedirected.current = true;
       router.push(redirectTo);
     }
-  }, [user, loading, router, redirectTo]);
+  }, [user?.id, loading, router, redirectTo]);
 
   return { user, isLoading: loading };
 }

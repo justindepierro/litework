@@ -3,17 +3,21 @@
 ## ✅ What We Just Set Up
 
 ### 1. Audit Trail System
+
 **File:** `database/add-audit-trail.sql`
 
 Tracks ALL deletions and modifications to:
+
 - ✅ Invites (create, delete, soft-delete, restore, status changes)
 - ✅ Users (athlete deletions and restorations)
 - ✅ Workout Plans (deletions)
 
 ### 2. Database Backup Guide
+
 **File:** `docs/guides/DATABASE_BACKUP_SETUP.md`
 
 Complete setup instructions for:
+
 - ✅ Supabase automated daily backups (free)
 - ✅ Point-in-Time Recovery / PITR ($25/month)
 - ✅ Offsite backup to AWS S3
@@ -47,6 +51,7 @@ psql "$DATABASE_URL" -f database/add-audit-trail.sql
 ```
 
 **Verify it worked:**
+
 ```sql
 -- In Supabase SQL Editor, run:
 SELECT COUNT(*) FROM audit_trail;
@@ -70,12 +75,14 @@ SELECT COUNT(*) FROM audit_trail;
 6. Click **Save**
 
 **If you're on Free Plan:**
+
 - Automated backups are NOT available
 - Use manual exports instead (see Step 4)
 - Consider upgrading to Pro for backups + PITR
 
 **Verify (Pro only):**
-- You'll see "Next backup: [date]" 
+
+- You'll see "Next backup: [date]"
 - First backup runs tonight at 2 AM
 
 ---
@@ -87,6 +94,7 @@ SELECT COUNT(*) FROM audit_trail;
 **Do you need Pro Plan?**
 
 ✅ **YES, if:**
+
 - You need automated daily backups (7-day retention)
 - You need PITR (restore to any second in last 7 days)
 - Budget allows $25/month
@@ -94,12 +102,14 @@ SELECT COUNT(*) FROM audit_trail;
 - Peace of mind is worth $25/month
 
 ❌ **NO, if:**
+
 - Manual weekly exports are sufficient
 - You're okay with relying on audit trail for recent deletions
 - This is still in development/testing
 - Budget is tight
 
 **To Enable Pro Plan ($25/month):**
+
 1. Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/billing
 2. Click **Upgrade to Pro**
 3. Complete billing setup
@@ -168,13 +178,13 @@ This runs every **Sunday at 3 AM**.
 
 ```sql
 -- See all recent deletions
-SELECT * FROM audit_log_summary 
-WHERE action IN ('delete', 'soft_delete') 
-ORDER BY performed_at DESC 
+SELECT * FROM audit_log_summary
+WHERE action IN ('delete', 'soft_delete')
+ORDER BY performed_at DESC
 LIMIT 20;
 
 -- See who deleted what
-SELECT 
+SELECT
   performed_by_name,
   record_name,
   action,
@@ -259,12 +269,12 @@ SELECT restore_deleted_invite('uuid-here');
 
 ## 💰 Cost Summary
 
-| Feature | Cost | Included |
-|---------|------|----------|
-| **Audit Trail** | **FREE** | ✅ Deletion tracking + restore |
-| **Weekly Manual Exports** | **FREE** | ✅ Local schema backups |
-| **Supabase Pro Plan** | **$25/month** | ✅ Daily backups (7 days) + PITR |
-| AWS S3 (Optional) | **~$0.07/month** | ✅ Offsite storage |
+| Feature                   | Cost             | Included                         |
+| ------------------------- | ---------------- | -------------------------------- |
+| **Audit Trail**           | **FREE**         | ✅ Deletion tracking + restore   |
+| **Weekly Manual Exports** | **FREE**         | ✅ Local schema backups          |
+| **Supabase Pro Plan**     | **$25/month**    | ✅ Daily backups (7 days) + PITR |
+| AWS S3 (Optional)         | **~$0.07/month** | ✅ Offsite storage               |
 
 **Free Tier:** Audit trail + manual exports only (no automated backups)  
 **Pro Tier:** Audit trail + automated daily backups + PITR ($25/month)

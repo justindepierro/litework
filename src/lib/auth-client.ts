@@ -504,16 +504,12 @@ export async function getSession() {
       "Fetching session from Supabase"
     );
 
-    // Add a timeout to prevent infinite hanging (3 seconds is plenty for session check)
-    const sessionPromise = supabase.auth.getSession();
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Session fetch timeout")), 3000)
-    );
-
+    // Fetch session directly without timeout race (timeout was causing issues)
+    // If Supabase is truly hanging, we have bigger problems than timeout handling
     const {
       data: { session },
       error,
-    } = await Promise.race([sessionPromise, timeoutPromise]);
+    } = await supabase.auth.getSession();
 
     if (error) {
       const classified = classifyAuthError(error);
@@ -578,6 +574,22 @@ export async function getCurrentUser(): Promise<User | null> {
       }
     );
 
+    // NOTE: Removed setSession call as it was causing infinite loops
+    // The session from getSession() should already be valid
+    // The 401 error should be fixed by ensuring session is properly persisted
+
+    logAuthEvent(
+      correlationId,
+      "debug",
+      "profile_fetch",
+      "Using existing session to fetch profile",
+      {
+        userId: session.user.id,
+        hasAccessToken: !!session.access_token,
+        tokenExpiry: session.expires_at,
+      }
+    );
+
     // Get user profile from database with shorter timeout (profile fetch should be fast)
     const profilePromise = supabase
       .from("users")
@@ -586,7 +598,7 @@ export async function getCurrentUser(): Promise<User | null> {
       .single();
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)
+      setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
     );
 
     const { data: profile, error } = await Promise.race([
@@ -596,6 +608,15 @@ export async function getCurrentUser(): Promise<User | null> {
 
     if (error) {
       const classified = classifyAuthError(error);
+      console.error("[AUTH] Profile fetch error details:", {
+        error,
+        classified,
+        userId: session.user.id,
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
       timer.error("Profile fetch failed", classified);
       return null;
     }
@@ -682,6 +703,9 @@ export function onAuthChange(callback: (user: User | null) => void) {
           { event, userId: session.user.id }
         );
 
+        // NOTE: Session already set by auth state change event
+        // No need to call setSession again
+
         // Get user profile from database with shorter timeout
         const profilePromise = supabase
           .from("users")
@@ -689,15 +713,15 @@ export function onAuthChange(callback: (user: User | null) => void) {
           .eq("id", session.user.id)
           .single();
 
-        // 3 second timeout for faster failure detection
+        // 5 second timeout for faster failure detection
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => {
             reject(
               new Error(
-                "Profile fetch timeout - database query exceeded 3 seconds"
+                "Profile fetch timeout - database query exceeded 5 seconds"
               )
             );
-          }, 3000)
+          }, 5000)
         );
 
         const result = await Promise.race([

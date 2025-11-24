@@ -1,4 +1,5 @@
 # Athlete Experience UX Audit & Enhancement Roadmap
+
 **Date:** November 23, 2025  
 **Auditor:** System Analysis  
 **Target User:** Athletes (Primary Mobile Users)
@@ -35,6 +36,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 1. Dashboard (Home Screen)
 
 **Current State:**
+
 - ✅ Beautiful gradient background (cyan/blue/green blend)
 - ✅ Glass morphism header with profile access
 - ✅ "Today's Workouts" section with hero cards
@@ -44,15 +46,16 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **HIGH** | No quick access to workout history | Athletes can't easily review past workouts | 100% |
-| **HIGH** | No progress indicators visible | No motivation/streak tracking on home | 100% |
-| **MEDIUM** | Empty state needs improvement | "No workouts today" lacks actionable guidance | 30-40% |
-| **MEDIUM** | No upcoming workouts preview | Athletes can't see tomorrow's workouts | 100% |
-| **LOW** | Profile button placement | Could be more prominent (icon instead of text) | 100% |
+| Priority   | Issue                              | Impact                                         | Users Affected |
+| ---------- | ---------------------------------- | ---------------------------------------------- | -------------- |
+| **HIGH**   | No quick access to workout history | Athletes can't easily review past workouts     | 100%           |
+| **HIGH**   | No progress indicators visible     | No motivation/streak tracking on home          | 100%           |
+| **MEDIUM** | Empty state needs improvement      | "No workouts today" lacks actionable guidance  | 30-40%         |
+| **MEDIUM** | No upcoming workouts preview       | Athletes can't see tomorrow's workouts         | 100%           |
+| **LOW**    | Profile button placement           | Could be more prominent (icon instead of text) | 100%           |
 
 **Visual:**
+
 ```
 ┌───────────────────────────────────────┐
 │  Glass Header (Gradient Accent Bar)  │
@@ -77,6 +80,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ```
 
 **Recommendations:**
+
 1. Add "Quick Stats" section: workouts this week, total volume, current streak
 2. Add "Recent Workouts" compact list (last 3 with dates)
 3. Add "This Week" section showing upcoming scheduled workouts
@@ -88,6 +92,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 2. Workout View (Pre-Workout Review)
 
 **Current State:**
+
 - ✅ Clear workout title with icon
 - ✅ Metadata grid (date, duration, exercise count)
 - ✅ "Before You Start" section with equipment list
@@ -98,15 +103,16 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **HIGH** | Exercise preview is text-heavy | Hard to quickly scan 10+ exercises | 80% |
-| **MEDIUM** | No warmup/cooldown indicators | Athletes skip warmups, risk injury | 60% |
-| **MEDIUM** | Equipment list auto-detection incomplete | Athletes arrive unprepared | 40% |
-| **LOW** | No workout difficulty rating | Athletes can't gauge intensity | 100% |
-| **LOW** | No estimated calorie burn | Missing motivational metric | 70% |
+| Priority   | Issue                                    | Impact                             | Users Affected |
+| ---------- | ---------------------------------------- | ---------------------------------- | -------------- |
+| **HIGH**   | Exercise preview is text-heavy           | Hard to quickly scan 10+ exercises | 80%            |
+| **MEDIUM** | No warmup/cooldown indicators            | Athletes skip warmups, risk injury | 60%            |
+| **MEDIUM** | Equipment list auto-detection incomplete | Athletes arrive unprepared         | 40%            |
+| **LOW**    | No workout difficulty rating             | Athletes can't gauge intensity     | 100%           |
+| **LOW**    | No estimated calorie burn                | Missing motivational metric        | 70%            |
 
 **Visual:**
+
 ```
 ┌───────────────────────────────────────┐
 │  🏋️ Upper Body Strength               │
@@ -140,6 +146,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ```
 
 **Recommendations:**
+
 1. Add difficulty badge (Beginner/Intermediate/Advanced) based on exercise complexity
 2. Add warmup section with specific exercises (if assigned by coach)
 3. Improve equipment auto-detection (add equipment tags to exercises table)
@@ -153,6 +160,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 3. Workout Live Mode (Active Workout)
 
 **Current State:** ⭐ **This is the star of the app!**
+
 - ✅ **Excellent** split-view layout (scrollable exercises + fixed input)
 - ✅ Fixed workout header with timer and progress
 - ✅ Auto-collapsing completed exercises (reduces scroll by 50%)
@@ -167,15 +175,16 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **MEDIUM** | No rest timer between sets | Athletes don't rest properly | 90% |
-| **MEDIUM** | No quick weight calculator (% of 1RM) | Athletes guess weights | 40% |
-| **LOW** | No exercise form video quick access | Athletes check phone for form | 50% |
-| **LOW** | No music/timer integration hints | Athletes multitask poorly | 30% |
-| **LOW** | No quick "Skip Exercise" option | Athletes improvise on the fly | 20% |
+| Priority   | Issue                                 | Impact                        | Users Affected |
+| ---------- | ------------------------------------- | ----------------------------- | -------------- |
+| **MEDIUM** | No rest timer between sets            | Athletes don't rest properly  | 90%            |
+| **MEDIUM** | No quick weight calculator (% of 1RM) | Athletes guess weights        | 40%            |
+| **LOW**    | No exercise form video quick access   | Athletes check phone for form | 50%            |
+| **LOW**    | No music/timer integration hints      | Athletes multitask poorly     | 30%            |
+| **LOW**    | No quick "Skip Exercise" option       | Athletes improvise on the fly | 20%            |
 
 **Visual:**
+
 ```
 ┌───────────────────────────────────────┐
 │  ⏱️ 18:34 │ 3/8 exercises │ Menu ☰   │ ← Fixed Header (Great!)
@@ -213,6 +222,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ```
 
 **Recommendations:**
+
 1. **Add auto-starting rest timer** after completing a set (with skip option)
 2. Add quick 1RM calculator popup (show suggested weights for % targets)
 3. Add "View Form Video" icon button on active exercise card
@@ -226,6 +236,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 4. Workout History
 
 **Current State:**
+
 - ✅ Paginated list of past workouts
 - ✅ Stats summary (exercises, sets, volume, duration)
 - ✅ Expandable sessions to view details
@@ -235,15 +246,16 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **HIGH** | No visual progress graphs | Can't see improvement trends | 100% |
-| **HIGH** | No exercise-specific history | Can't track per-exercise progress | 100% |
-| **MEDIUM** | No workout comparison view | Can't compare current vs last week | 80% |
-| **MEDIUM** | No calendar heatmap | No visual streak tracking | 70% |
-| **LOW** | Export only available as download | Can't share to social/coach | 40% |
+| Priority   | Issue                             | Impact                             | Users Affected |
+| ---------- | --------------------------------- | ---------------------------------- | -------------- |
+| **HIGH**   | No visual progress graphs         | Can't see improvement trends       | 100%           |
+| **HIGH**   | No exercise-specific history      | Can't track per-exercise progress  | 100%           |
+| **MEDIUM** | No workout comparison view        | Can't compare current vs last week | 80%            |
+| **MEDIUM** | No calendar heatmap               | No visual streak tracking          | 70%            |
+| **LOW**    | Export only available as download | Can't share to social/coach        | 40%            |
 
 **Visual:**
+
 ```
 ┌───────────────────────────────────────┐
 │  📅 Workout History                   │
@@ -270,6 +282,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ```
 
 **Recommendations:**
+
 1. Add **weekly volume chart** (bar chart: total volume per week)
 2. Add **exercise-specific history** page (tap exercise to see all performances)
 3. Add **calendar heatmap** (GitHub-style: workouts per day)
@@ -283,6 +296,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 5. Progress Tracking
 
 **Current State:**
+
 - ✅ Analytics dashboard component exists
 - ✅ Multiple view modes (overview, strength, comparison, goals)
 - ✅ Time frame selector (1m, 3m, 6m, 1y)
@@ -291,16 +305,17 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **HIGH** | Charts/graphs not implemented | Progress page feels empty | 100% |
-| **HIGH** | No body measurements tracking | Can't track weight/body comp | 80% |
-| **HIGH** | No photo progress tracking | Missing visual comparison | 70% |
-| **MEDIUM** | No goal setting interface | Athletes lack direction | 90% |
-| **MEDIUM** | No strength standards comparison | Athletes don't know if they're "strong" | 60% |
-| **LOW** | No achievement/badge system | Lacking gamification | 50% |
+| Priority   | Issue                            | Impact                                  | Users Affected |
+| ---------- | -------------------------------- | --------------------------------------- | -------------- |
+| **HIGH**   | Charts/graphs not implemented    | Progress page feels empty               | 100%           |
+| **HIGH**   | No body measurements tracking    | Can't track weight/body comp            | 80%            |
+| **HIGH**   | No photo progress tracking       | Missing visual comparison               | 70%            |
+| **MEDIUM** | No goal setting interface        | Athletes lack direction                 | 90%            |
+| **MEDIUM** | No strength standards comparison | Athletes don't know if they're "strong" | 60%            |
+| **LOW**    | No achievement/badge system      | Lacking gamification                    | 50%            |
 
 **Visual:**
+
 ```
 ┌───────────────────────────────────────┐
 │  📈 Progress Tracking                 │
@@ -326,6 +341,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ```
 
 **Recommendations:**
+
 1. **Implement chart library** (Recharts or Chart.js)
 2. Add **1RM progression charts** per exercise (line graph with trend)
 3. Add **total volume trends** (bar chart: weekly volume over time)
@@ -340,6 +356,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ### 6. Profile Page
 
 **Current State:**
+
 - ✅ Avatar upload with preview
 - ✅ Personal info editing (name, phone, DOB)
 - ✅ Body metrics (height, weight) with BMI calculation
@@ -350,14 +367,15 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 
 **Issues Identified:**
 
-| Priority | Issue | Impact | Users Affected |
-|----------|-------|--------|----------------|
-| **MEDIUM** | No social features | Athletes can't connect with teammates | 60% |
-| **MEDIUM** | No notification preferences | Can't customize alerts | 80% |
-| **LOW** | No theme/appearance settings | No dark mode option | 40% |
-| **LOW** | No app tutorial/help section | New users get lost | 30% |
+| Priority   | Issue                        | Impact                                | Users Affected |
+| ---------- | ---------------------------- | ------------------------------------- | -------------- |
+| **MEDIUM** | No social features           | Athletes can't connect with teammates | 60%            |
+| **MEDIUM** | No notification preferences  | Can't customize alerts                | 80%            |
+| **LOW**    | No theme/appearance settings | No dark mode option                   | 40%            |
+| **LOW**    | No app tutorial/help section | New users get lost                    | 30%            |
 
 **Recommendations:**
+
 1. Add **notification preferences** section (workout reminders, PR notifications, coach messages)
 2. Add **social features** (view other athletes in same group, workout leaderboard opt-in)
 3. Add **appearance settings** (dark mode toggle, color scheme preferences)
@@ -369,30 +387,35 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 🎨 Visual Design Assessment
 
 ### Color System: ⭐ 8/10
+
 - ✅ Excellent use of gradients (cyan/blue/green)
 - ✅ Good semantic colors (success, warning, error)
 - ✅ Glass morphism effects well-executed
 - ⚠️ Could benefit from more accent colors for variety
 
 ### Typography: ⭐ 7.5/10
+
 - ✅ Consistent heading hierarchy
 - ✅ Good use of Typography components
 - ✅ Readable font sizes
 - ⚠️ Could use more weight variations for emphasis
 
 ### Spacing & Layout: ⭐ 8/10
+
 - ✅ Excellent mobile-first responsive design
 - ✅ Good use of padding/margins
 - ✅ Cards well-organized
 - ⚠️ Some screens feel cramped (workout history)
 
 ### Iconography: ⭐ 7/10
+
 - ✅ Lucide icons consistently used
 - ✅ Good icon sizes for touch
 - ⚠️ Could use more custom fitness-specific icons
 - ⚠️ Some icons lack color accent
 
 ### Animations: ⭐ 8.5/10
+
 - ✅ Smooth list animations (stagger delay)
 - ✅ PR celebration modal is excellent
 - ✅ Loading skeletons well-implemented
@@ -404,18 +427,21 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 📱 Mobile-Specific Assessment
 
 ### Touch Targets: ⭐ 9/10
+
 - ✅ All buttons meet 44×44px minimum
 - ✅ Large steppers in live mode
 - ✅ Generous padding on cards
 - ✅ Good spacing between interactive elements
 
 ### Scrolling: ⭐ 8.5/10
+
 - ✅ Split-view in live mode is perfect
 - ✅ Smooth scroll performance
 - ✅ Fixed headers don't obstruct content
 - ⚠️ Some lists could use infinite scroll vs pagination
 
 ### Offline Support: ⭐ 7/10
+
 - ✅ Offline banner implemented
 - ✅ PWA manifest configured
 - ✅ Service worker exists
@@ -423,6 +449,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - ⚠️ No offline workout drafts
 
 ### Performance: ⭐ 8/10
+
 - ✅ Fast initial load
 - ✅ Skeleton loading states
 - ✅ Lazy loading implemented
@@ -479,9 +506,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 🗺️ Enhancement Roadmap
 
 ### Phase 1: Critical Fixes (2-3 weeks)
+
 **Focus:** Fix broken features and add essential missing functionality
 
 #### Week 1-2: Progress Tracking Overhaul
+
 - [ ] Implement chart library (Recharts recommended)
 - [ ] Build 1RM progression charts per exercise
 - [ ] Build total volume trend charts
@@ -490,11 +519,13 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add exercise-specific history pages
 
 **Success Metrics:**
+
 - Progress page engagement increases by 200%
 - User session time on progress page > 2 minutes
 - At least 60% of active users check progress weekly
 
 #### Week 2-3: Live Mode Enhancements
+
 - [ ] Implement auto-starting rest timer between sets
 - [ ] Add skip timer option
 - [ ] Add rest timer sound/vibration notification
@@ -503,6 +534,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Implement haptic feedback on set completion (PWA)
 
 **Success Metrics:**
+
 - Rest period compliance improves (measure via set completion timestamps)
 - 1RM calculator used in 30%+ of workouts
 - User satisfaction rating for live mode increases to 9.5/10
@@ -510,9 +542,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ---
 
 ### Phase 2: Dashboard & Discovery (2-3 weeks)
+
 **Focus:** Improve home screen and feature discoverability
 
 #### Week 3-4: Dashboard Enhancements
+
 - [ ] Add "Quick Stats" widget (workouts this week, total volume, streak)
 - [ ] Add "Recent Workouts" compact list (last 3)
 - [ ] Add "This Week" upcoming workouts section
@@ -521,11 +555,13 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add pull-to-refresh on dashboard
 
 **Success Metrics:**
+
 - Dashboard bounce rate decreases by 30%
 - Feature discovery increases (more users find History/Progress)
 - Session starts per user increase by 20%
 
 #### Week 4-5: Workout View Improvements
+
 - [ ] Add difficulty badge to workout view
 - [ ] Add warmup section (if assigned by coach)
 - [ ] Improve equipment auto-detection (add to database)
@@ -535,6 +571,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add "Tap to preview" exercise modals
 
 **Success Metrics:**
+
 - Athletes arrive better prepared (equipment)
 - Warmup completion rate increases
 - Time to start workout decreases (better prep)
@@ -542,9 +579,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ---
 
 ### Phase 3: Goal Setting & Motivation (3-4 weeks)
+
 **Focus:** Add gamification and long-term engagement features
 
 #### Week 5-6: Goal & Achievement System
+
 - [ ] Build goal setting interface (SMART goals)
 - [ ] Add goal progress tracking on dashboard
 - [ ] Create achievement/badge system
@@ -558,11 +597,13 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add achievement showcase on profile
 
 **Success Metrics:**
+
 - 70%+ of active users set at least one goal
 - Goal completion rate > 40%
 - User retention increases by 25%
 
 #### Week 6-7: Strength Standards & Comparisons
+
 - [ ] Add strength standards database (Beginner/Novice/Intermediate/Advanced)
 - [ ] Build strength standards comparison view
 - [ ] Add "How strong am I?" feature
@@ -571,6 +612,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add PR celebration enhancements (confetti, sound)
 
 **Success Metrics:**
+
 - Users check strength standards regularly
 - Increased motivation from seeing progress toward next level
 - PR celebrations drive social sharing
@@ -578,9 +620,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ---
 
 ### Phase 4: Visual Progress & Social (3-4 weeks)
+
 **Focus:** Photo tracking and community features
 
 #### Week 7-8: Progress Photos
+
 - [ ] Build progress photo upload system
 - [ ] Create photo gallery with timeline
 - [ ] Add before/after comparison slider
@@ -589,10 +633,12 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Enable photo export/sharing
 
 **Success Metrics:**
+
 - 40%+ of users upload at least one progress photo
 - Photo uploads correlate with increased app retention
 
 #### Week 8-9: Social Features (Optional)
+
 - [ ] Add athlete profiles (view other athletes in same group)
 - [ ] Build workout leaderboard (opt-in)
 - [ ] Add social workout sharing (Instagram/Twitter cards)
@@ -601,6 +647,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add high-five/fist-bump reactions
 
 **Success Metrics:**
+
 - 50%+ of users enable social features
 - Increased team camaraderie (survey)
 - Social shares increase app awareness
@@ -608,9 +655,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ---
 
 ### Phase 5: Polish & Optimization (2-3 weeks)
+
 **Focus:** Performance, accessibility, and final touches
 
 #### Week 9-10: Performance Optimization
+
 - [ ] Optimize API calls (reduce redundant requests)
 - [ ] Implement request caching
 - [ ] Add infinite scroll to workout history
@@ -619,11 +668,13 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add service worker caching strategies
 
 **Success Metrics:**
+
 - Lighthouse performance score > 90
 - API response times < 200ms
 - App load time < 2 seconds
 
 #### Week 10-11: Accessibility & Settings
+
 - [ ] Implement dark mode
 - [ ] Add theme customization (accent colors)
 - [ ] Improve keyboard navigation
@@ -633,6 +684,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 - [ ] Add app statistics on profile
 
 **Success Metrics:**
+
 - WCAG AA compliance achieved
 - Dark mode adoption > 50%
 - Support ticket reduction by 30%
@@ -640,9 +692,11 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ---
 
 ### Phase 6: Advanced Features (Future)
+
 **Focus:** AI, automation, and premium features
 
 #### Future Enhancements (3-6 months out)
+
 - [ ] AI workout suggestions based on history
 - [ ] Auto-progressive overload recommendations
 - [ ] Voice command support in live mode
@@ -659,22 +713,26 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 📊 Success Metrics & KPIs
 
 ### User Engagement
+
 - **Daily Active Users (DAU):** Target 80% of registered athletes
 - **Session Duration:** Target 15+ minutes (up from current ~10 min)
 - **Workouts Completed per Week:** Target 3.5 (up from 3.0)
 - **Feature Discovery:** 70% of users use Progress page monthly
 
 ### Retention
+
 - **Day 7 Retention:** Target 75% (up from ~65%)
 - **Day 30 Retention:** Target 60% (up from ~50%)
 - **Churn Rate:** Target < 10% monthly
 
 ### Satisfaction
+
 - **Live Mode Rating:** Target 9.5/10 (currently 9/10)
 - **Overall App Rating:** Target 4.8/5 stars (currently ~4.5/5)
 - **NPS Score:** Target 70+ (very high)
 
 ### Performance
+
 - **App Load Time:** Target < 2 seconds (currently ~2.5s)
 - **API Response Time:** Target < 200ms (currently ~300ms)
 - **Lighthouse Score:** Target 90+ (currently 85)
@@ -684,6 +742,7 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 💡 Quick Wins (Can Implement This Week)
 
 ### Immediate Improvements (< 1 day each)
+
 1. **Add workout streak counter to dashboard**
    - Query: COUNT workouts in last 7 days
    - Display: "🔥 5-day streak!"
@@ -724,16 +783,16 @@ LiteWork provides a **mobile-first workout tracking experience** for weight lift
 ## 🎯 Priority Matrix
 
 ```
-High Impact ↑          
-            │  
+High Impact ↑
+            │
             │  1. Progress Charts      4. Rest Timer
-            │  2. Dashboard Stats      5. Goal Setting  
+            │  2. Dashboard Stats      5. Goal Setting
             │  3. History Visuals      6. Achievements
-            │  
+            │
             │  7. Photo Progress       10. Social Features
-            │  8. 1RM Calculator        
+            │  8. 1RM Calculator
             │  9. Dark Mode
-            │  
+            │
 Low Impact  ├─────────────────────────────────────→ High Effort
             │ Easy to Implement         Hard to Implement
 ```
@@ -745,6 +804,7 @@ Low Impact  ├─────────────────────�
 ## 🔧 Implementation Notes
 
 ### Tech Stack Considerations
+
 - **Charts:** Use Recharts (tree-shakeable, good mobile performance)
 - **Photos:** Use Supabase Storage (already integrated)
 - **Rest Timer:** Use Web Notifications API + Audio API
@@ -753,6 +813,7 @@ Low Impact  ├─────────────────────�
 - **Haptics:** Use Vibration API (PWA-compatible)
 
 ### Database Schema Changes Needed
+
 ```sql
 -- Goal tracking
 CREATE TABLE athlete_goals (
@@ -807,6 +868,7 @@ CREATE TABLE workout_warmups (
 The athlete experience in LiteWork has a **strong foundation** with excellent mobile optimization and a best-in-class live workout interface. The split-view design, auto-collapsing exercises, and PR celebrations are standout features that differentiate the app.
 
 However, there are **significant opportunities** to improve engagement and retention through:
+
 1. **Visual progress tracking** (charts, graphs, photos)
 2. **Goal setting and gamification** (achievements, streaks)
 3. **Better feature discovery** (dashboard enhancements, bottom nav)
@@ -815,6 +877,7 @@ However, there are **significant opportunities** to improve engagement and reten
 By following the phased roadmap above, LiteWork can evolve from a **good workout tracker** to a **best-in-class strength training companion** that athletes love and use daily.
 
 **Recommended Focus for Next Sprint:**
+
 1. Implement progress charts (Phase 1, Week 1-2)
 2. Add rest timer to live mode (Phase 1, Week 2-3)
 3. Enhance dashboard with quick stats (Phase 2, Week 3-4)
@@ -824,6 +887,7 @@ These three improvements will have the **highest immediate impact** on user sati
 ---
 
 **Next Steps:**
+
 1. Review this audit with team
 2. Prioritize Phase 1 items
 3. Create detailed user stories for top 5 items

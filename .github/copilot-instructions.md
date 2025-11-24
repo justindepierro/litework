@@ -140,7 +140,26 @@ canViewAllAthletes(user); // coach or admin
 - **Mobile-First**: Optimized for use on phones and tablets in the gym
 - **Offline Capability**: Core functionality works without internet connection
 
-## Recent Major Enhancements (October 2025)
+## Recent Major Enhancements (October-November 2025)
+
+### Layout & Background System Standards (Nov 23, 2025)
+
+- **PageContainer Default Fix**: Changed default from `background="secondary"` to `background="gradient"` to prevent body gradient bleed-through
+- **Background Standards Documentation**: Created comprehensive guides for layout and background usage
+- **Component Documentation**: Enhanced PageContainer with JSDoc warnings about proper usage
+- **Fixed Pages**: Updated workouts, history, and athletes pages to use opaque backgrounds
+- **Prevention System**: Multi-layered approach including safe defaults, documentation, and optional ESLint rules
+- **Quick Reference**: Created decision tree and traffic light system for background selection
+
+**Key Rule**: Always use opaque backgrounds (`gradient`, `white`, `silver`) for full-page containers. Never use `background="secondary"` for pages that scroll.
+
+**Documentation**: See `docs/guides/LAYOUT_BACKGROUND_STANDARDS.md` and `docs/guides/QUICK_REF_BACKGROUNDS.md`
+
+### Dashboard Layout Fixes (Nov 23, 2025)
+
+- **Fixed Floating Header**: Removed sticky positioning from dashboard glass header
+- **Proper Flow**: Header now flows naturally within page layout
+- **Mobile Optimization**: Improved spacing and responsive behavior
 
 ### Directory Organization & Professional Structure (Nov 1, 2025)
 
@@ -306,6 +325,62 @@ Before ANY code is merged, verify:
 - [ ] NO custom badges (must use Badge component)
 
 **Reference**: `docs/guides/COMPONENT_USAGE_STANDARDS.md` for complete examples and migration guide.
+
+### 🚨 Common UI Issues to Watch For
+
+**Layout Issues:**
+
+1. **Floating/Sticky Headers** - Avoid `sticky` positioning on headers inside page containers. Headers should flow naturally with content.
+
+   ```tsx
+   // ❌ BAD - Creates floating header
+   <div className="sticky top-16 z-40">
+
+   // ✅ GOOD - Natural flow
+   <div className="border-b">
+   ```
+
+2. **Background Bleed-Through** - Always use opaque backgrounds for full-page containers
+
+   ```tsx
+   // ❌ BAD - Shows body gradient
+   <PageContainer background="secondary">
+
+   // ✅ GOOD - Opaque gradient
+   <PageContainer background="gradient">
+   ```
+
+3. **Z-Index Conflicts** - Keep z-index values reasonable (1-50), not 9999
+
+   ```tsx
+   // ❌ BAD
+   style={{ zIndex: 9999 }}
+
+   // ✅ GOOD
+   style={{ zIndex: 40 }}
+   ```
+
+4. **Console.log in JSX** - Never put console.log directly in JSX (causes TypeScript errors)
+
+   ```tsx
+   // ❌ BAD
+   <div>
+     {console.log("test")}
+     <Content />
+   </div>;
+
+   // ✅ GOOD
+   useEffect(() => {
+     console.log("test");
+   }, []);
+   ```
+
+**When investigating UI issues:**
+
+- Check for `sticky`, `fixed`, or `absolute` positioning
+- Verify background opacity (use `gradient`, `white`, or `silver` for pages)
+- Look for excessive z-index values
+- Ensure proper page structure (PageContainer wraps content)
 
 ### Code Quality Standards
 

@@ -1,4 +1,5 @@
 # Quick Start: UX Improvements Implementation Guide
+
 **Get Started in 1 Hour - See Results Today**
 
 ---
@@ -44,20 +45,20 @@ const fetchWorkoutStreak = async () => {
 **Create API endpoint:** `src/app/api/analytics/streak/route.ts`
 
 ```typescript
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth-utils';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/lib/auth-utils";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(request: NextRequest) {
   return withAuth(request, async (user) => {
     // Get all completed workouts, ordered by date
     const { data: sessions } = await supabase
-      .from('workout_sessions')
-      .select('completed_at')
-      .eq('athlete_id', user.id)
-      .eq('status', 'completed')
-      .not('completed_at', 'is', null)
-      .order('completed_at', { ascending: false });
+      .from("workout_sessions")
+      .select("completed_at")
+      .eq("athlete_id", user.id)
+      .eq("status", "completed")
+      .not("completed_at", "is", null)
+      .order("completed_at", { ascending: false });
 
     if (!sessions || sessions.length === 0) {
       return NextResponse.json({ streak: 0 });
@@ -88,7 +89,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ streak });
   });
-};
+}
 ```
 
 ---
@@ -165,19 +166,22 @@ import { BottomNav } from '@/components/BottomNav';
 **Create hook:** `src/hooks/useRestTimer.ts`
 
 ```typescript
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
 export function useRestTimer(initialSeconds: number = 90) {
   const [timeRemaining, setTimeRemaining] = useState(initialSeconds);
   const [isActive, setIsActive] = useState(false);
   const [totalTime, setTotalTime] = useState(initialSeconds);
 
-  const start = useCallback((seconds?: number) => {
-    const time = seconds || totalTime;
-    setTotalTime(time);
-    setTimeRemaining(time);
-    setIsActive(true);
-  }, [totalTime]);
+  const start = useCallback(
+    (seconds?: number) => {
+      const time = seconds || totalTime;
+      setTotalTime(time);
+      setTimeRemaining(time);
+      setIsActive(true);
+    },
+    [totalTime]
+  );
 
   const pause = useCallback(() => {
     setIsActive(false);
@@ -189,22 +193,24 @@ export function useRestTimer(initialSeconds: number = 90) {
   }, [totalTime]);
 
   const addTime = useCallback((seconds: number) => {
-    setTimeRemaining(prev => prev + seconds);
-    setTotalTime(prev => prev + seconds);
+    setTimeRemaining((prev) => prev + seconds);
+    setTotalTime((prev) => prev + seconds);
   }, []);
 
   useEffect(() => {
     if (!isActive || timeRemaining <= 0) return;
 
     const interval = setInterval(() => {
-      setTimeRemaining(prev => {
+      setTimeRemaining((prev) => {
         if (prev <= 1) {
           // Play sound
-          if ('vibrate' in navigator) {
+          if ("vibrate" in navigator) {
             navigator.vibrate([200, 100, 200]);
           }
-          const audio = new Audio('/sounds/ding.mp3'); // Add ding.mp3 to public/sounds/
-          audio.play().catch(() => {/* Ignore errors */});
+          const audio = new Audio("/sounds/ding.mp3"); // Add ding.mp3 to public/sounds/
+          audio.play().catch(() => {
+            /* Ignore errors */
+          });
 
           setIsActive(false);
           return 0;
@@ -216,9 +222,8 @@ export function useRestTimer(initialSeconds: number = 90) {
     return () => clearInterval(interval);
   }, [isActive, timeRemaining]);
 
-  const progressPercentage = totalTime > 0 
-    ? ((totalTime - timeRemaining) / totalTime) * 100 
-    : 0;
+  const progressPercentage =
+    totalTime > 0 ? ((totalTime - timeRemaining) / totalTime) * 100 : 0;
 
   return {
     timeRemaining,
@@ -231,7 +236,7 @@ export function useRestTimer(initialSeconds: number = 90) {
     formatTime: (seconds: number) => {
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
     },
   };
 }
@@ -248,7 +253,7 @@ const restTimer = useRestTimer(currentExercise?.rest_seconds || 90);
 // Modify handleCompleteSet to auto-start timer
 const handleCompleteSet = async () => {
   // ... existing code ...
-  
+
   // After successful set completion:
   if (currentExercise?.rest_seconds > 0) {
     restTimer.start(currentExercise.rest_seconds);
@@ -267,7 +272,7 @@ const handleCompleteSet = async () => {
         {restTimer.formatTime(restTimer.timeRemaining)}
       </span>
     </div>
-    
+
     {/* Progress bar */}
     <div className="w-full bg-accent-green-200 rounded-full h-2 mb-3">
       <div
@@ -309,13 +314,13 @@ const handleCompleteSet = async () => {
       <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-accent-cyan-100 to-accent-blue-100 rounded-full flex items-center justify-center">
         <CalendarIcon className="w-10 h-10 text-accent-blue-600" />
       </div>
-      
+
       <Heading level="h3" className="mb-2">
         No Workouts Scheduled Today
       </Heading>
-      
+
       <Body variant="secondary" className="mb-6">
-        {state.assignments.length === 0 
+        {state.assignments.length === 0
           ? "Your coach hasn't assigned any workouts yet. Check back soon!"
           : "Enjoy your rest day! Recovery is just as important as training."
         }
@@ -359,9 +364,9 @@ const handleCompleteSet = async () => {
 **API Endpoint:** `src/app/api/analytics/quick-stats/route.ts`
 
 ```typescript
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth-utils';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/lib/auth-utils";
+import { supabase } from "@/lib/supabase";
 
 export async function GET(request: NextRequest) {
   return withAuth(request, async (user) => {
@@ -372,39 +377,46 @@ export async function GET(request: NextRequest) {
 
     // Get this week's workouts
     const { data: sessions } = await supabase
-      .from('workout_sessions')
-      .select('id, completed_at')
-      .eq('athlete_id', user.id)
-      .eq('status', 'completed')
-      .gte('completed_at', weekStart.toISOString());
+      .from("workout_sessions")
+      .select("id, completed_at")
+      .eq("athlete_id", user.id)
+      .eq("status", "completed")
+      .gte("completed_at", weekStart.toISOString());
 
     const workoutsThisWeek = sessions?.length || 0;
 
     // Get this week's volume
     const { data: setRecords } = await supabase
-      .from('set_records')
-      .select('actual_weight, actual_reps, session_exercises!inner(workout_sessions!inner(completed_at))')
-      .eq('session_exercises.workout_sessions.athlete_id', user.id)
-      .gte('session_exercises.workout_sessions.completed_at', weekStart.toISOString());
+      .from("set_records")
+      .select(
+        "actual_weight, actual_reps, session_exercises!inner(workout_sessions!inner(completed_at))"
+      )
+      .eq("session_exercises.workout_sessions.athlete_id", user.id)
+      .gte(
+        "session_exercises.workout_sessions.completed_at",
+        weekStart.toISOString()
+      );
 
-    const totalVolume = setRecords?.reduce((sum, set) => 
-      sum + (set.actual_weight * set.actual_reps), 0
-    ) || 0;
+    const totalVolume =
+      setRecords?.reduce(
+        (sum, set) => sum + set.actual_weight * set.actual_reps,
+        0
+      ) || 0;
 
     // Get streak (reuse from previous endpoint)
     const { data: allSessions } = await supabase
-      .from('workout_sessions')
-      .select('completed_at')
-      .eq('athlete_id', user.id)
-      .eq('status', 'completed')
-      .not('completed_at', 'is', null)
-      .order('completed_at', { ascending: false });
+      .from("workout_sessions")
+      .select("completed_at")
+      .eq("athlete_id", user.id)
+      .eq("status", "completed")
+      .not("completed_at", "is", null)
+      .order("completed_at", { ascending: false });
 
     let streak = 0;
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    for (const session of (allSessions || [])) {
+    for (const session of allSessions || []) {
       const sessionDate = new Date(session.completed_at);
       sessionDate.setHours(0, 0, 0, 0);
       const daysDiff = Math.floor(
@@ -517,9 +529,9 @@ const { data: recentWorkouts } = await supabase
           <div className="flex-1">
             <Body weight="semibold">{workout.workout_name}</Body>
             <Caption variant="muted">
-              {new Date(workout.completed_at).toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
+              {new Date(workout.completed_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
               })} • {Math.floor(workout.total_duration_seconds / 60)}min
             </Caption>
           </div>
@@ -564,7 +576,7 @@ export function OneRMChart({ exerciseName, data }: OneRMChartProps) {
   const latestWeight = data[data.length - 1]?.weight || 0;
   const earliestWeight = data[0]?.weight || 0;
   const improvement = latestWeight - earliestWeight;
-  const improvementPercent = earliestWeight > 0 
+  const improvementPercent = earliestWeight > 0
     ? ((improvement / earliestWeight) * 100).toFixed(1)
     : 0;
 
@@ -589,35 +601,35 @@ export function OneRMChart({ exerciseName, data }: OneRMChartProps) {
       <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-          <XAxis 
-            dataKey="date" 
+          <XAxis
+            dataKey="date"
             stroke="#6B7280"
             fontSize={12}
             tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
           />
-          <YAxis 
+          <YAxis
             stroke="#6B7280"
             fontSize={12}
             domain={['dataMin - 10', 'dataMax + 10']}
           />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#fff', 
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
               border: '1px solid #E5E7EB',
               borderRadius: '8px',
               padding: '8px 12px'
             }}
-            labelFormatter={(value) => new Date(value).toLocaleDateString('en-US', { 
-              month: 'long', 
+            labelFormatter={(value) => new Date(value).toLocaleDateString('en-US', {
+              month: 'long',
               day: 'numeric',
               year: 'numeric'
             })}
             formatter={(value: number) => [`${value} lbs`, '1RM']}
           />
-          <Line 
-            type="monotone" 
-            dataKey="weight" 
-            stroke="#3B82F6" 
+          <Line
+            type="monotone"
+            dataKey="weight"
+            stroke="#3B82F6"
             strokeWidth={3}
             dot={{ fill: '#3B82F6', r: 4 }}
             activeDot={{ r: 6 }}
@@ -674,20 +686,24 @@ Track these after deployment:
 ### Common Issues:
 
 **Charts not rendering:**
+
 - Check that recharts is installed
 - Verify data format matches chart expectations
 - Check for console errors
 
 **Bottom nav overlapping content:**
+
 - Add `pb-16` (64px padding-bottom) to page containers
 - Use `safe-area-bottom` class for iOS notch
 
 **Rest timer sound not playing:**
+
 - Add `ding.mp3` to `public/sounds/` directory
 - Check browser audio permissions
 - Test on device (not just simulator)
 
 **API endpoints 500 error:**
+
 - Check Supabase connection
 - Verify RLS policies allow access
 - Check for typos in table/column names

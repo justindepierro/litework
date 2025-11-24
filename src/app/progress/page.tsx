@@ -3,7 +3,7 @@
 import { useAthleteGuard } from "@/hooks/use-auth-guard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PageContainer } from "@/components/layout";
-import ProgressAnalytics from "@/components/ProgressAnalytics";
+import ProgressDashboard from "@/components/ProgressDashboard";
 import { TrendingUp } from "lucide-react";
 
 export default function ProgressPage() {
@@ -27,9 +27,8 @@ export default function ProgressPage() {
           gradientVariant="primary"
         />
       </div>
-      <ProgressAnalytics
+      <ProgressDashboard
         athleteId={user!.role === "athlete" ? user!.id : undefined}
-        showHeader={false}
       />
     </PageContainer>
   );

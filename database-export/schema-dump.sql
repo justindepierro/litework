@@ -1,160 +1,5 @@
 Initialising login role...
 Dumping schemas from remote database...
-17.6.1.031: Pulling from supabase/postgres
-a990654f713c: Pulling fs layer
-77020bb9e1e3: Pulling fs layer
-4f4fb700ef54: Pulling fs layer
-d544f141acdd: Pulling fs layer
-3d5382589c9d: Pulling fs layer
-ac13eb8f2542: Pulling fs layer
-a2e6921f52dd: Pulling fs layer
-b8a35db46e38: Pulling fs layer
-8516421a23ef: Pulling fs layer
-24ef86775b84: Pulling fs layer
-16ad5cc92e40: Pulling fs layer
-374ff779b43a: Pulling fs layer
-6a03575abc24: Pulling fs layer
-ffc388e5e0a3: Pulling fs layer
-07bb00c777cc: Pulling fs layer
-4f4fb700ef54: Pulling fs layer
-322102ef5f62: Pulling fs layer
-5561635e80a8: Pulling fs layer
-f20361773031: Pulling fs layer
-0ef67446278a: Pulling fs layer
-9a3884654ad1: Pulling fs layer
-ad440a9e69a3: Pulling fs layer
-11bed4e4b4e1: Pulling fs layer
-df1bde91310f: Pulling fs layer
-2e60b59ddd05: Pulling fs layer
-57929c66b793: Pulling fs layer
-c81e981421b6: Pulling fs layer
-c47d6768f496: Pulling fs layer
-f981126797ab: Pulling fs layer
-864035e2b002: Pulling fs layer
-c4484b6019d7: Pulling fs layer
-56f1c4b774cb: Pulling fs layer
-08f4c37b2bd0: Pulling fs layer
-2f96abb4d1e5: Pulling fs layer
-1c7c4254478a: Pulling fs layer
-90ea0cf7a4a5: Pulling fs layer
-b92f1676c8cc: Pulling fs layer
-d1f82b8069d9: Pulling fs layer
-5d3e3a8a424b: Pulling fs layer
-2bcf824748d3: Pulling fs layer
-292a3bd4e937: Pulling fs layer
-3794ae28129c: Pulling fs layer
-1529d040f745: Pulling fs layer
-9521c02c43d9: Pulling fs layer
-c0ff2ef382ca: Pulling fs layer
-d3646845ad75: Pulling fs layer
-0787626131f1: Pulling fs layer
-710587d3d703: Pulling fs layer
-996ad0cb94be: Pulling fs layer
-d8e8d38ce849: Pulling fs layer
-4f4fb700ef54: Pulling fs layer
-e2a15aff3fc2: Pulling fs layer
-4f4fb700ef54: Already exists
-3d5382589c9d: Download complete
-a990654f713c: Download complete
-77020bb9e1e3: Download complete
-8516421a23ef: Download complete
-374ff779b43a: Download complete
-2e60b59ddd05: Download complete
-df1bde91310f: Download complete
-292a3bd4e937: Download complete
-0ef67446278a: Download complete
-b92f1676c8cc: Download complete
-f20361773031: Download complete
-56f1c4b774cb: Download complete
-11bed4e4b4e1: Download complete
-a2e6921f52dd: Download complete
-07bb00c777cc: Download complete
-c47d6768f496: Download complete
-08f4c37b2bd0: Download complete
-9a3884654ad1: Download complete
-5d3e3a8a424b: Download complete
-d3646845ad75: Download complete
-c4484b6019d7: Download complete
-0787626131f1: Download complete
-710587d3d703: Download complete
-322102ef5f62: Download complete
-2bcf824748d3: Download complete
-c0ff2ef382ca: Download complete
-ad440a9e69a3: Download complete
-1c7c4254478a: Download complete
-1529d040f745: Download complete
-e2a15aff3fc2: Download complete
-9521c02c43d9: Download complete
-f981126797ab: Download complete
-90ea0cf7a4a5: Download complete
-ffc388e5e0a3: Download complete
-d8e8d38ce849: Download complete
-c81e981421b6: Download complete
-24ef86775b84: Download complete
-16ad5cc92e40: Download complete
-d1f82b8069d9: Download complete
-57929c66b793: Download complete
-3794ae28129c: Download complete
-2f96abb4d1e5: Download complete
-6a03575abc24: Download complete
-996ad0cb94be: Download complete
-b8a35db46e38: Download complete
-b8a35db46e38: Pull complete
-864035e2b002: Download complete
-5561635e80a8: Download complete
-d544f141acdd: Download complete
-d544f141acdd: Pull complete
-3d5382589c9d: Pull complete
-a990654f713c: Pull complete
-864035e2b002: Pull complete
-24ef86775b84: Pull complete
-4f4fb700ef54: Pull complete
-ac13eb8f2542: Download complete
-ac13eb8f2542: Pull complete
-77020bb9e1e3: Pull complete
-57929c66b793: Pull complete
-292a3bd4e937: Pull complete
-6a03575abc24: Pull complete
-2e60b59ddd05: Pull complete
-df1bde91310f: Pull complete
-0ef67446278a: Pull complete
-56f1c4b774cb: Pull complete
-322102ef5f62: Pull complete
-ad440a9e69a3: Pull complete
-c81e981421b6: Pull complete
-996ad0cb94be: Pull complete
-5561635e80a8: Pull complete
-07bb00c777cc: Pull complete
-ffc388e5e0a3: Pull complete
-d8e8d38ce849: Pull complete
-16ad5cc92e40: Pull complete
-0787626131f1: Pull complete
-710587d3d703: Pull complete
-f981126797ab: Pull complete
-90ea0cf7a4a5: Pull complete
-2f96abb4d1e5: Pull complete
-8516421a23ef: Pull complete
-a2e6921f52dd: Pull complete
-374ff779b43a: Pull complete
-b92f1676c8cc: Pull complete
-f20361773031: Pull complete
-11bed4e4b4e1: Pull complete
-c47d6768f496: Pull complete
-08f4c37b2bd0: Pull complete
-9a3884654ad1: Pull complete
-d3646845ad75: Pull complete
-2bcf824748d3: Pull complete
-c0ff2ef382ca: Pull complete
-1529d040f745: Pull complete
-e2a15aff3fc2: Pull complete
-9521c02c43d9: Pull complete
-5d3e3a8a424b: Pull complete
-1c7c4254478a: Pull complete
-c4484b6019d7: Pull complete
-d1f82b8069d9: Pull complete
-3794ae28129c: Pull complete
-Digest: sha256:11b10612ff108c31ff3e7ac62474c15be9f0d74196188ee4ed6e6f05ae25996f
-Status: Downloaded newer image for public.ecr.aws/supabase/postgres:17.6.1.031
 
 
 
@@ -207,6 +52,154 @@ CREATE TYPE "public"."workout_mode" AS ENUM (
 
 
 ALTER TYPE "public"."workout_mode" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."auto_assign_group_kpis"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  v_group_id TEXT;
+  v_kpi_assignment RECORD;
+  v_existing_id UUID;
+BEGIN
+  -- Only process if group_ids changed (added new groups) OR if status changed to active
+  IF TG_OP = 'UPDATE' THEN
+    -- Skip if group_ids didn't change AND status didn't change to active
+    IF NEW.group_ids = OLD.group_ids AND NOT (OLD.status = 'invited' AND NEW.status = 'active') THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  -- For each group the athlete is now in
+  FOREACH v_group_id IN ARRAY NEW.group_ids
+  LOOP
+    -- Skip if athlete was already in this group (for UPDATE operations)
+    -- But still process if they just changed from invited to active
+    IF TG_OP = 'UPDATE' AND v_group_id = ANY(OLD.group_ids) AND NOT (OLD.status = 'invited' AND NEW.status = 'active') THEN
+      CONTINUE;
+    END IF;
+
+    -- Find all KPI assignments for this group
+    FOR v_kpi_assignment IN
+      SELECT DISTINCT
+        kpi_tag_id,
+        assigned_by,
+        target_value,
+        target_date,
+        notes
+      FROM athlete_assigned_kpis
+      WHERE assigned_via = 'group:' || v_group_id
+        AND is_active = true
+    LOOP
+      -- Check if athlete already has this KPI assigned
+      SELECT id INTO v_existing_id
+      FROM athlete_assigned_kpis
+      WHERE athlete_id = NEW.id
+        AND kpi_tag_id = v_kpi_assignment.kpi_tag_id
+        AND is_active = true;
+
+      -- Only assign if not already assigned
+      IF v_existing_id IS NULL THEN
+        INSERT INTO athlete_assigned_kpis (
+          athlete_id,
+          kpi_tag_id,
+          assigned_by,
+          assigned_via,
+          target_value,
+          target_date,
+          notes,
+          is_active
+        ) VALUES (
+          NEW.id,
+          v_kpi_assignment.kpi_tag_id,
+          v_kpi_assignment.assigned_by,
+          'group:' || v_group_id, -- Preserve group assignment context
+          v_kpi_assignment.target_value,
+          v_kpi_assignment.target_date,
+          v_kpi_assignment.notes,
+          true
+        );
+      END IF;
+    END LOOP;
+  END LOOP;
+
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."auto_assign_group_kpis"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."auto_assign_group_kpis"() IS 'Automatically assigns group KPIs to athletes when they join a group';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text" DEFAULT 'individual'::"text", "p_target_value" numeric DEFAULT NULL::numeric, "p_target_date" "date" DEFAULT NULL::"date", "p_notes" "text" DEFAULT NULL::"text") RETURNS TABLE("athlete_id" "uuid", "kpi_tag_id" "uuid", "assignment_id" "uuid", "was_already_assigned" boolean)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  v_athlete_id UUID;
+  v_kpi_tag_id UUID;
+  v_existing_id UUID;
+  v_new_id UUID;
+BEGIN
+  -- Loop through all athlete/KPI combinations
+  FOREACH v_athlete_id IN ARRAY p_athlete_ids
+  LOOP
+    FOREACH v_kpi_tag_id IN ARRAY p_kpi_tag_ids
+    LOOP
+      -- Check if already assigned and active
+      SELECT id INTO v_existing_id
+      FROM athlete_assigned_kpis
+      WHERE athlete_assigned_kpis.athlete_id = v_athlete_id
+        AND athlete_assigned_kpis.kpi_tag_id = v_kpi_tag_id
+        AND is_active = true;
+      
+      IF v_existing_id IS NOT NULL THEN
+        -- Already assigned - return existing
+        athlete_id := v_athlete_id;
+        kpi_tag_id := v_kpi_tag_id;
+        assignment_id := v_existing_id;
+        was_already_assigned := true;
+        RETURN NEXT;
+      ELSE
+        -- Create new assignment
+        INSERT INTO athlete_assigned_kpis (
+          athlete_id,
+          kpi_tag_id,
+          assigned_by,
+          assigned_via,
+          target_value,
+          target_date,
+          notes
+        ) VALUES (
+          v_athlete_id,
+          v_kpi_tag_id,
+          p_assigned_by,
+          p_assigned_via,
+          p_target_value,
+          p_target_date,
+          p_notes
+        ) RETURNING id INTO v_new_id;
+        
+        athlete_id := v_athlete_id;
+        kpi_tag_id := v_kpi_tag_id;
+        assignment_id := v_new_id;
+        was_already_assigned := false;
+        RETURN NEXT;
+      END IF;
+    END LOOP;
+  END LOOP;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text", "p_target_value" numeric, "p_target_date" "date", "p_notes" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text", "p_target_value" numeric, "p_target_date" "date", "p_notes" "text") IS 'Bulk assign KPI tags to multiple athletes, skipping duplicates';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."calculate_age"("birth_date" "date") RETURNS integer
@@ -320,6 +313,253 @@ $$;
 ALTER FUNCTION "public"."create_notification"("target_user_id" "uuid", "notification_type" "text", "notification_title" "text", "notification_message" "text", "notification_data" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") RETURNS "uuid"
+    LANGUAGE "plpgsql"
+    AS $$
+DECLARE
+  v_plan_id UUID;
+  v_exercise JSONB;
+  v_group JSONB;
+  v_block_instance JSONB;
+  v_exercise_id UUID;
+  v_group_id UUID;
+  v_block_instance_id UUID;
+  v_temp_group_id TEXT;
+  v_temp_block_id TEXT;
+  v_kpi_tag TEXT;
+  v_group_id_map JSONB := '{}'::JSONB;
+  v_block_id_map JSONB := '{}'::JSONB;
+BEGIN
+  -- 1. Create the workout plan
+  INSERT INTO workout_plans (
+    name,
+    description,
+    estimated_duration,
+    target_group_id,
+    created_by,
+    archived,
+    created_at,
+    updated_at
+  ) VALUES (
+    p_name,
+    p_description,
+    p_estimated_duration,
+    p_target_group_id,
+    p_created_by,
+    COALESCE(p_archived, false),
+    NOW(),
+    NOW()
+  )
+  RETURNING id INTO v_plan_id;
+
+  -- 2. Insert block instances first (they need to exist before groups can reference them)
+  IF p_block_instances IS NOT NULL AND jsonb_array_length(p_block_instances) > 0 THEN
+    FOR v_block_instance IN SELECT * FROM jsonb_array_elements(p_block_instances)
+    LOOP
+      v_temp_block_id := v_block_instance->>'id';
+      
+      INSERT INTO workout_block_instances (
+        workout_plan_id,
+        source_block_id,
+        source_block_name,
+        instance_name,
+        notes,
+        estimated_duration,
+        modified_exercises,
+        added_exercises,
+        removed_exercises,
+        modified_groups,
+        added_groups,
+        removed_groups,
+        created_at,
+        updated_at
+      ) VALUES (
+        v_plan_id,
+        (v_block_instance->>'source_block_id')::UUID,
+        v_block_instance->>'source_block_name',
+        v_block_instance->>'instance_name',
+        v_block_instance->>'notes',
+        (v_block_instance->>'estimated_duration')::INTEGER,
+        COALESCE(v_block_instance->'modified_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'added_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'removed_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'modified_groups', '[]'::jsonb),
+        COALESCE(v_block_instance->'added_groups', '[]'::jsonb),
+        COALESCE(v_block_instance->'removed_groups', '[]'::jsonb),
+        NOW(),
+        NOW()
+      )
+      RETURNING id INTO v_block_instance_id;
+      
+      -- Store mapping of temporary ID to real UUID
+      IF v_temp_block_id IS NOT NULL THEN
+        v_block_id_map := jsonb_set(v_block_id_map, ARRAY[v_temp_block_id], to_jsonb(v_block_instance_id::text));
+      END IF;
+    END LOOP;
+  END IF;
+
+  -- 3. Insert exercise groups if provided (create mapping for group IDs)
+  IF p_groups IS NOT NULL AND jsonb_array_length(p_groups) > 0 THEN
+    FOR v_group IN SELECT * FROM jsonb_array_elements(p_groups)
+    LOOP
+      v_temp_group_id := v_group->>'id';
+      
+      -- Map the block_instance_id if it's a temporary ID
+      v_block_instance_id := NULL;
+      IF v_group->>'block_instance_id' IS NOT NULL THEN
+        IF v_block_id_map ? (v_group->>'block_instance_id') THEN
+          v_block_instance_id := (v_block_id_map->>(v_group->>'block_instance_id'))::UUID;
+        ELSE
+          -- Try to cast as UUID (for already-existing block instances)
+          BEGIN
+            v_block_instance_id := (v_group->>'block_instance_id')::UUID;
+          EXCEPTION WHEN OTHERS THEN
+            v_block_instance_id := NULL;
+          END;
+        END IF;
+      END IF;
+      
+      INSERT INTO workout_exercise_groups (
+        workout_plan_id,
+        name,
+        type,
+        description,
+        order_index,
+        rest_between_rounds,
+        rest_between_exercises,
+        rounds,
+        notes,
+        block_instance_id,
+        created_at
+      ) VALUES (
+        v_plan_id,
+        v_group->>'name',
+        v_group->>'type',
+        v_group->>'description',
+        (v_group->>'order_index')::INTEGER,
+        (v_group->>'rest_between_rounds')::INTEGER,
+        (v_group->>'rest_between_exercises')::INTEGER,
+        (v_group->>'rounds')::INTEGER,
+        v_group->>'notes',
+        v_block_instance_id,
+        NOW()
+      )
+      RETURNING id INTO v_group_id;
+      
+      -- Store mapping of temporary ID to real UUID
+      IF v_temp_group_id IS NOT NULL THEN
+        v_group_id_map := jsonb_set(v_group_id_map, ARRAY[v_temp_group_id], to_jsonb(v_group_id::text));
+      END IF;
+    END LOOP;
+  END IF;
+
+  -- 4. Insert exercises (map group_id and block_instance_id using our mappings)
+  IF p_exercises IS NOT NULL AND jsonb_array_length(p_exercises) > 0 THEN
+    FOR v_exercise IN SELECT * FROM jsonb_array_elements(p_exercises)
+    LOOP
+      -- Map the group_id if it's a temporary ID
+      v_group_id := NULL;
+      IF v_exercise->>'group_id' IS NOT NULL THEN
+        IF v_group_id_map ? (v_exercise->>'group_id') THEN
+          v_group_id := (v_group_id_map->>(v_exercise->>'group_id'))::UUID;
+        ELSE
+          -- Try to cast as UUID (for already-existing groups)
+          BEGIN
+            v_group_id := (v_exercise->>'group_id')::UUID;
+          EXCEPTION WHEN OTHERS THEN
+            v_group_id := NULL;
+          END;
+        END IF;
+      END IF;
+      
+      -- Map the block_instance_id if it's a temporary ID
+      v_block_instance_id := NULL;
+      IF v_exercise->>'block_instance_id' IS NOT NULL THEN
+        IF v_block_id_map ? (v_exercise->>'block_instance_id') THEN
+          v_block_instance_id := (v_block_id_map->>(v_exercise->>'block_instance_id'))::UUID;
+        ELSE
+          -- Try to cast as UUID (for already-existing block instances)
+          BEGIN
+            v_block_instance_id := (v_exercise->>'block_instance_id')::UUID;
+          EXCEPTION WHEN OTHERS THEN
+            v_block_instance_id := NULL;
+          END;
+        END IF;
+      END IF;
+      
+      -- Insert exercise with mapped IDs
+      INSERT INTO workout_exercises (
+        workout_plan_id,
+        exercise_id,
+        exercise_name,
+        sets,
+        reps,
+        weight_type,
+        weight,
+        weight_max,
+        percentage,
+        percentage_max,
+        percentage_base_kpi,
+        tempo,
+        each_side,
+        rest_time,
+        notes,
+        order_index,
+        group_id,
+        block_instance_id,
+        substitution_reason,
+        original_exercise,
+        progression_notes,
+        created_at
+      ) VALUES (
+        v_plan_id,
+        v_exercise->>'exercise_id',
+        v_exercise->>'exercise_name',
+        (v_exercise->>'sets')::INTEGER,
+        (v_exercise->>'reps')::INTEGER,
+        (v_exercise->>'weight_type')::weight_type,
+        (v_exercise->>'weight')::NUMERIC,
+        (v_exercise->>'weight_max')::NUMERIC,
+        (v_exercise->>'percentage')::INTEGER,
+        (v_exercise->>'percentage_max')::INTEGER,
+        v_exercise->>'percentage_base_kpi',
+        v_exercise->>'tempo',
+        COALESCE((v_exercise->>'each_side')::BOOLEAN, false),
+        (v_exercise->>'rest_time')::INTEGER,
+        v_exercise->>'notes',
+        (v_exercise->>'order_index')::INTEGER,
+        v_group_id::text,
+        v_block_instance_id::text,
+        v_exercise->>'substitution_reason',
+        v_exercise->>'original_exercise',
+        v_exercise->>'progression_notes',
+        NOW()
+      )
+      RETURNING id INTO v_exercise_id;
+
+      -- Insert KPI tags for this exercise if provided
+      IF v_exercise->'kpi_tag_ids' IS NOT NULL AND jsonb_array_length(v_exercise->'kpi_tag_ids') > 0 THEN
+        FOR v_kpi_tag IN SELECT * FROM jsonb_array_elements_text(v_exercise->'kpi_tag_ids')
+        LOOP
+          INSERT INTO exercise_kpi_tags (workout_exercise_id, kpi_tag_id)
+          VALUES (v_exercise_id, v_kpi_tag::UUID);
+        END LOOP;
+      END IF;
+    END LOOP;
+  END IF;
+
+  RETURN v_plan_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") IS 'Creates a workout plan with exercises, groups, and block instances in a single transaction. Handles mapping of temporary frontend IDs to database UUIDs.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."delete_expired_notifications"() RETURNS "void"
     LANGUAGE "plpgsql"
     AS $$
@@ -332,6 +572,35 @@ $$;
 
 
 ALTER FUNCTION "public"."delete_expired_notifications"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_deletion_history"("p_table_name" "text", "p_record_id" "uuid" DEFAULT NULL::"uuid", "p_limit" integer DEFAULT 50) RETURNS TABLE("id" "uuid", "record_id" "uuid", "action" "text", "record_data" "jsonb", "deleted_at" timestamp with time zone, "deleted_by" "uuid", "deleted_by_email" "text", "deleted_by_name" "text")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    a.id,
+    a.record_id,
+    a.action,
+    COALESCE(a.old_values, a.new_values) as record_data,
+    a.performed_at as deleted_at,
+    a.performed_by as deleted_by,
+    u.email as deleted_by_email,
+    u.first_name || ' ' || u.last_name as deleted_by_name
+  FROM public.audit_trail a
+  LEFT JOIN public.users u ON a.performed_by = u.id
+  WHERE 
+    a.table_name = p_table_name
+    AND a.action IN ('delete', 'soft_delete')
+    AND (p_record_id IS NULL OR a.record_id = p_record_id)
+  ORDER BY a.performed_at DESC
+  LIMIT p_limit;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_deletion_history"("p_table_name" "text", "p_record_id" "uuid", "p_limit" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."get_exercises_with_details"("category_filter" "uuid" DEFAULT NULL::"uuid", "muscle_group_filter" "text" DEFAULT NULL::"text", "equipment_filter" "text" DEFAULT NULL::"text", "difficulty_filter" integer DEFAULT NULL::integer, "search_term" "text" DEFAULT NULL::"text") RETURNS TABLE("id" "uuid", "name" "text", "description" "text", "category_name" "text", "category_color" "text", "muscle_groups" "jsonb", "equipment_needed" "text"[], "difficulty_level" integer, "is_compound" boolean, "is_bodyweight" boolean, "instructions" "jsonb", "video_url" "text", "usage_count" integer)
@@ -488,6 +757,105 @@ COMMENT ON FUNCTION "public"."handle_new_user"() IS 'Automatically creates a use
 
 
 
+CREATE OR REPLACE FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  athlete_record RECORD;
+  cleanup_summary JSONB;
+  deleted_kpis INT;
+  deleted_sessions INT;
+  deleted_assignments INT;
+  updated_groups INT;
+BEGIN
+  -- Verify confirmation code
+  IF confirmation_code != athlete_id::TEXT THEN
+    RAISE EXCEPTION 'Confirmation code mismatch. Hard delete cancelled.';
+  END IF;
+  
+  -- Get athlete data before deletion
+  SELECT * INTO athlete_record FROM users WHERE id = athlete_id;
+  
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Athlete not found: %', athlete_id;
+  END IF;
+  
+  -- CASCADE CLEANUP
+  
+  -- 1. Delete KPIs
+  DELETE FROM athlete_kpis WHERE athlete_id = athlete_id;
+  GET DIAGNOSTICS deleted_kpis = ROW_COUNT;
+  
+  -- 2. Delete workout sessions
+  DELETE FROM workout_sessions WHERE athlete_id = athlete_id;
+  GET DIAGNOSTICS deleted_sessions = ROW_COUNT;
+  
+  -- 3. Delete workout assignments
+  DELETE FROM workout_assignments WHERE athlete_id = athlete_id;
+  GET DIAGNOSTICS deleted_assignments = ROW_COUNT;
+  
+  -- 4. Remove from groups
+  UPDATE athlete_groups
+  SET athlete_ids = array_remove(athlete_ids, athlete_id)
+  WHERE athlete_id = ANY(athlete_ids);
+  GET DIAGNOSTICS updated_groups = ROW_COUNT;
+  
+  -- 5. Delete progress entries
+  DELETE FROM progress_entries WHERE athlete_id = athlete_id;
+  
+  -- 6. Delete set records
+  DELETE FROM set_records 
+  WHERE session_id IN (
+    SELECT id FROM workout_sessions WHERE athlete_id = athlete_id
+  );
+  
+  -- 7. HARD DELETE the user
+  DELETE FROM users WHERE id = athlete_id;
+  
+  -- 8. Delete from Supabase Auth (handled by application layer)
+  
+  -- Log the HARD deletion
+  INSERT INTO athlete_audit_log (
+    action,
+    table_name,
+    record_id,
+    record_data,
+    performed_by,
+    reason
+  ) VALUES (
+    'hard_delete',
+    'users',
+    athlete_id,
+    to_jsonb(athlete_record),
+    deleted_by,
+    deletion_reason
+  );
+  
+  -- Build summary
+  cleanup_summary := jsonb_build_object(
+    'success', true,
+    'athlete_id', athlete_id,
+    'athlete_name', athlete_record.first_name || ' ' || athlete_record.last_name,
+    'deleted_kpis', deleted_kpis,
+    'deleted_sessions', deleted_sessions,
+    'deleted_assignments', deleted_assignments,
+    'updated_groups', updated_groups,
+    'warning', 'This action cannot be undone',
+    'deleted_at', NOW()
+  );
+  
+  RETURN cleanup_summary;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") IS 'Permanently delete an athlete with CASCADE cleanup. Cannot be undone. Requires confirmation code.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."increment_block_usage"("block_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -522,6 +890,121 @@ $$;
 ALTER FUNCTION "public"."increment_exercise_usage"("exercise_uuid" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."log_audit_event"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  -- Log DELETE operations
+  IF (TG_OP = 'DELETE') THEN
+    INSERT INTO public.audit_trail (
+      table_name,
+      record_id,
+      action,
+      old_values,
+      performed_by
+    ) VALUES (
+      TG_TABLE_NAME,
+      OLD.id,
+      CASE 
+        WHEN OLD.deleted_at IS NOT NULL THEN 'delete' -- Already soft-deleted, now hard deleting
+        ELSE 'delete'
+      END,
+      to_jsonb(OLD),
+      auth.uid()
+    );
+    RETURN OLD;
+  END IF;
+
+  -- Log UPDATE operations (especially soft deletes and restores)
+  IF (TG_OP = 'UPDATE') THEN
+    -- Soft delete detection (deleted_at changed from NULL to timestamp)
+    IF (OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL) THEN
+      INSERT INTO public.audit_trail (
+        table_name,
+        record_id,
+        action,
+        old_values,
+        new_values,
+        performed_by
+      ) VALUES (
+        TG_TABLE_NAME,
+        NEW.id,
+        'soft_delete',
+        to_jsonb(OLD),
+        to_jsonb(NEW),
+        auth.uid()
+      );
+      RETURN NEW;
+    END IF;
+
+    -- Restore detection (deleted_at changed from timestamp to NULL)
+    IF (OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL) THEN
+      INSERT INTO public.audit_trail (
+        table_name,
+        record_id,
+        action,
+        old_values,
+        new_values,
+        performed_by
+      ) VALUES (
+        TG_TABLE_NAME,
+        NEW.id,
+        'restore',
+        to_jsonb(OLD),
+        to_jsonb(NEW),
+        auth.uid()
+      );
+      RETURN NEW;
+    END IF;
+
+    -- Log other significant updates (status changes, etc.)
+    IF (TG_TABLE_NAME = 'invites' AND OLD.status IS DISTINCT FROM NEW.status) THEN
+      INSERT INTO public.audit_trail (
+        table_name,
+        record_id,
+        action,
+        old_values,
+        new_values,
+        performed_by
+      ) VALUES (
+        TG_TABLE_NAME,
+        NEW.id,
+        'update',
+        jsonb_build_object('status', OLD.status),
+        jsonb_build_object('status', NEW.status),
+        auth.uid()
+      );
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+  -- Log INSERT operations for invites
+  IF (TG_OP = 'INSERT' AND TG_TABLE_NAME = 'invites') THEN
+    INSERT INTO public.audit_trail (
+      table_name,
+      record_id,
+      action,
+      new_values,
+      performed_by
+    ) VALUES (
+      TG_TABLE_NAME,
+      NEW.id,
+      'insert',
+      to_jsonb(NEW),
+      auth.uid()
+    );
+    RETURN NEW;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."log_audit_event"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."mark_message_as_read"("message_id" "uuid") RETURNS boolean
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -536,6 +1019,164 @@ $$;
 
 
 ALTER FUNCTION "public"."mark_message_as_read"("message_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  result JSONB;
+BEGIN
+  -- Restore the user
+  UPDATE users 
+  SET deleted_at = NULL
+  WHERE id = athlete_id AND deleted_at IS NOT NULL;
+  
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Athlete not found or not deleted: %', athlete_id;
+  END IF;
+  
+  -- Log the restoration
+  INSERT INTO athlete_audit_log (
+    action,
+    table_name,
+    record_id,
+    performed_by
+  ) VALUES (
+    'restore',
+    'users',
+    athlete_id,
+    restored_by
+  );
+  
+  result := jsonb_build_object(
+    'success', true,
+    'athlete_id', athlete_id,
+    'restored_at', NOW()
+  );
+  
+  RETURN result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") IS 'Restore a soft-deleted athlete.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."restore_deleted_invite"("invite_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  result JSONB;
+BEGIN
+  -- Restore the invite by clearing deleted_at
+  UPDATE public.invites
+  SET 
+    deleted_at = NULL,
+    updated_at = NOW()
+  WHERE id = invite_id
+  RETURNING to_jsonb(invites.*) INTO result;
+
+  IF result IS NULL THEN
+    RAISE EXCEPTION 'Invite not found: %', invite_id;
+  END IF;
+
+  RETURN result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."restore_deleted_invite"("invite_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_coach_responded_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  IF NEW.coach_response IS NOT NULL AND OLD.coach_response IS NULL THEN
+    NEW.coach_responded_at = NOW();
+    NEW.coach_viewed = TRUE;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_coach_responded_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+  athlete_record RECORD;
+  affected_groups INT;
+  affected_assignments INT;
+  result JSONB;
+BEGIN
+  -- Get athlete data before deletion
+  SELECT * INTO athlete_record FROM users WHERE id = athlete_id;
+  
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Athlete not found: %', athlete_id;
+  END IF;
+  
+  -- Soft delete the user
+  UPDATE users 
+  SET deleted_at = NOW()
+  WHERE id = athlete_id;
+  
+  -- Log the deletion
+  INSERT INTO athlete_audit_log (
+    action,
+    table_name,
+    record_id,
+    record_data,
+    performed_by,
+    reason
+  ) VALUES (
+    'delete',
+    'users',
+    athlete_id,
+    to_jsonb(athlete_record),
+    deleted_by,
+    deletion_reason
+  );
+  
+  -- Count affected relationships
+  SELECT COUNT(*) INTO affected_groups
+  FROM athlete_groups
+  WHERE athlete_id = ANY(athlete_ids);
+  
+  SELECT COUNT(*) INTO affected_assignments
+  FROM workout_assignments
+  WHERE athlete_id = athlete_id;
+  
+  -- Return summary
+  result := jsonb_build_object(
+    'success', true,
+    'athlete_id', athlete_id,
+    'athlete_name', athlete_record.first_name || ' ' || athlete_record.last_name,
+    'affected_groups', affected_groups,
+    'affected_assignments', affected_assignments,
+    'can_restore', true,
+    'deleted_at', NOW()
+  );
+  
+  RETURN result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text") IS 'Soft delete an athlete with audit logging. Can be restored.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."toggle_block_favorite"("block_id" "uuid", "user_id" "uuid") RETURNS boolean
@@ -564,6 +1205,32 @@ $$;
 
 
 ALTER FUNCTION "public"."toggle_block_favorite"("block_id" "uuid", "user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_athlete_assigned_kpis_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_athlete_assigned_kpis_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_feedback_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_feedback_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_notification_preferences_updated_at"() RETURNS "trigger"
@@ -632,9 +1299,394 @@ $$;
 
 ALTER FUNCTION "public"."update_workout_blocks_updated_at"() OWNER TO "postgres";
 
+
+CREATE OR REPLACE FUNCTION "public"."update_workout_plan_transaction"("p_plan_id" "uuid", "p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") RETURNS boolean
+    LANGUAGE "plpgsql"
+    AS $$
+DECLARE
+  v_exercise JSONB;
+  v_group JSONB;
+  v_block_instance JSONB;
+  v_exercise_id UUID;
+  v_kpi_tag TEXT;
+BEGIN
+  -- 1. Update the workout plan
+  UPDATE workout_plans
+  SET
+    name = p_name,
+    description = p_description,
+    estimated_duration = p_estimated_duration,
+    target_group_id = p_target_group_id,
+    archived = COALESCE(p_archived, false),
+    updated_at = NOW()
+  WHERE id = p_plan_id;
+
+  -- 2. Delete existing data (cascading deletes will handle related records)
+  -- Note: exercise_kpi_tags should have ON DELETE CASCADE foreign key
+  DELETE FROM workout_exercises WHERE workout_plan_id = p_plan_id;
+  DELETE FROM workout_exercise_groups WHERE workout_plan_id = p_plan_id;
+  DELETE FROM workout_block_instances WHERE workout_plan_id = p_plan_id;
+
+  -- 3. Insert exercise groups if provided
+  IF p_groups IS NOT NULL AND jsonb_array_length(p_groups) > 0 THEN
+    FOR v_group IN SELECT * FROM jsonb_array_elements(p_groups)
+    LOOP
+      INSERT INTO workout_exercise_groups (
+        workout_plan_id,
+        name,
+        type,
+        description,
+        order_index,
+        rest_between_rounds,
+        rest_between_exercises,
+        rounds,
+        notes,
+        block_instance_id,
+        created_at
+      ) VALUES (
+        p_plan_id,
+        v_group->>'name',
+        v_group->>'type',
+        v_group->>'description',
+        (v_group->>'order_index')::INTEGER,
+        (v_group->>'rest_between_rounds')::INTEGER,
+        (v_group->>'rest_between_exercises')::INTEGER,
+        (v_group->>'rounds')::INTEGER,
+        v_group->>'notes',
+        NULLIF(v_group->>'block_instance_id', '')::UUID,
+        NOW()
+      );
+    END LOOP;
+  END IF;
+
+  -- 4. Insert exercises if provided
+  IF p_exercises IS NOT NULL AND jsonb_array_length(p_exercises) > 0 THEN
+    FOR v_exercise IN SELECT * FROM jsonb_array_elements(p_exercises)
+    LOOP
+      -- Insert exercise
+      INSERT INTO workout_exercises (
+        workout_plan_id,
+        exercise_id,
+        exercise_name,
+        sets,
+        reps,
+        weight_type,
+        weight,
+        weight_max,
+        percentage,
+        percentage_max,
+        percentage_base_kpi,
+        tempo,
+        each_side,
+        rest_time,
+        notes,
+        video_url,
+        order_index,
+        group_id,
+        block_instance_id,
+        substitution_reason,
+        original_exercise,
+        progression_notes,
+        created_at
+      ) VALUES (
+        p_plan_id,
+        NULLIF(v_exercise->>'exercise_id', '')::UUID,
+        v_exercise->>'exercise_name',
+        (v_exercise->>'sets')::INTEGER,
+        v_exercise->>'reps',
+        v_exercise->>'weight_type',
+        (v_exercise->>'weight')::NUMERIC,
+        (v_exercise->>'weight_max')::NUMERIC,
+        (v_exercise->>'percentage')::NUMERIC,
+        (v_exercise->>'percentage_max')::NUMERIC,
+        v_exercise->>'percentage_base_kpi',
+        v_exercise->>'tempo',
+        COALESCE((v_exercise->>'each_side')::BOOLEAN, false),
+        (v_exercise->>'rest_time')::INTEGER,
+        v_exercise->>'notes',
+        v_exercise->>'video_url',
+        (v_exercise->>'order_index')::INTEGER,
+        NULLIF(v_exercise->>'group_id', '')::UUID,
+        NULLIF(v_exercise->>'block_instance_id', '')::UUID,
+        v_exercise->>'substitution_reason',
+        v_exercise->>'original_exercise',
+        v_exercise->>'progression_notes',
+        NOW()
+      )
+      RETURNING id INTO v_exercise_id;
+
+      -- Insert KPI tags for this exercise if provided
+      IF v_exercise->'kpi_tag_ids' IS NOT NULL AND jsonb_array_length(v_exercise->'kpi_tag_ids') > 0 THEN
+        FOR v_kpi_tag IN SELECT * FROM jsonb_array_elements_text(v_exercise->'kpi_tag_ids')
+        LOOP
+          INSERT INTO exercise_kpi_tags (workout_exercise_id, kpi_tag_id)
+          VALUES (v_exercise_id, v_kpi_tag::UUID);
+        END LOOP;
+      END IF;
+    END LOOP;
+  END IF;
+
+  -- 5. Insert block instances if provided
+  IF p_block_instances IS NOT NULL AND jsonb_array_length(p_block_instances) > 0 THEN
+    FOR v_block_instance IN SELECT * FROM jsonb_array_elements(p_block_instances)
+    LOOP
+      INSERT INTO workout_block_instances (
+        workout_plan_id,
+        source_block_id,
+        source_block_name,
+        instance_name,
+        notes,
+        estimated_duration,
+        modified_exercises,
+        added_exercises,
+        removed_exercises,
+        modified_groups,
+        added_groups,
+        removed_groups,
+        created_at,
+        updated_at
+      ) VALUES (
+        p_plan_id,
+        (v_block_instance->>'source_block_id')::UUID,
+        v_block_instance->>'source_block_name',
+        v_block_instance->>'instance_name',
+        v_block_instance->>'notes',
+        (v_block_instance->>'estimated_duration')::INTEGER,
+        COALESCE(v_block_instance->'modified_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'added_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'removed_exercises', '[]'::jsonb),
+        COALESCE(v_block_instance->'modified_groups', '[]'::jsonb),
+        COALESCE(v_block_instance->'added_groups', '[]'::jsonb),
+        COALESCE(v_block_instance->'removed_groups', '[]'::jsonb),
+        NOW(),
+        NOW()
+      );
+    END LOOP;
+  END IF;
+
+  RETURN true;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Any error will cause the entire transaction to rollback
+    RAISE;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_workout_plan_transaction"("p_plan_id" "uuid", "p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_workout_session_feedback_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_workout_session_feedback_updated_at"() OWNER TO "postgres";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
+
+
+CREATE TABLE IF NOT EXISTS "public"."athlete_assigned_kpis" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "athlete_id" "uuid" NOT NULL,
+    "kpi_tag_id" "uuid" NOT NULL,
+    "assigned_by" "uuid",
+    "assigned_via" "text",
+    "assigned_at" timestamp without time zone DEFAULT "now"() NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "target_value" numeric,
+    "target_date" "date",
+    "notes" "text",
+    "created_at" timestamp without time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."athlete_assigned_kpis" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."athlete_assigned_kpis" IS 'Links athletes to their active KPI tags for tracking performance metrics';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."kpi_tags" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "display_name" "text" NOT NULL,
+    "color" "text" DEFAULT '#3B82F6'::"text" NOT NULL,
+    "description" "text",
+    "kpi_type" "text" DEFAULT 'one_rm'::"text" NOT NULL,
+    "primary_exercise_id" "text",
+    "created_by" "uuid",
+    "created_at" timestamp without time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."kpi_tags" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."kpi_tags" IS 'Available KPI tags for categorizing exercises (coach-defined)';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."users" (
+    "id" "uuid" NOT NULL,
+    "email" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "role" "public"."user_role" DEFAULT 'athlete'::"public"."user_role" NOT NULL,
+    "group_ids" "text"[] DEFAULT '{}'::"text"[],
+    "coach_id" "uuid",
+    "date_of_birth" "date",
+    "injury_status" "text",
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "bio" "text",
+    "profile_image_url" "text",
+    "phone_number" "text",
+    "emergency_contact_name" "text",
+    "emergency_contact_phone" "text",
+    "last_activity_at" timestamp with time zone,
+    "status" "text" DEFAULT 'active'::"text",
+    "first_name" "text" NOT NULL,
+    "last_name" "text" NOT NULL,
+    "full_name" "text" GENERATED ALWAYS AS ((("first_name" || ' '::"text") || "last_name")) STORED,
+    "avatar_url" "text",
+    "height_inches" numeric(5,2),
+    "weight_lbs" numeric(5,2),
+    "gender" "text",
+    "notification_preferences" "jsonb" DEFAULT '{"workoutReminders": {"timing": "smart", "enabled": true, "channels": ["email"]}, "assignmentNotifications": {"enabled": true, "channels": ["email"]}, "achievementNotifications": {"enabled": true, "channels": ["email"]}}'::"jsonb",
+    "notes" "text",
+    "deleted_at" timestamp with time zone,
+    "tos_accepted_at" timestamp without time zone,
+    "tos_version" "text" DEFAULT '1.0'::"text",
+    "privacy_policy_accepted_at" timestamp without time zone,
+    "privacy_policy_version" "text" DEFAULT '1.0'::"text",
+    CONSTRAINT "users_gender_check" CHECK (("gender" = ANY (ARRAY['male'::"text", 'female'::"text", 'other'::"text", 'prefer_not_to_say'::"text"]))),
+    CONSTRAINT "users_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'invited'::"text", 'inactive'::"text", 'suspended'::"text"])))
+);
+
+
+ALTER TABLE "public"."users" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."users"."bio" IS 'Athlete bio/description visible to athlete';
+
+
+
+COMMENT ON COLUMN "public"."users"."notification_preferences" IS 'User notification preferences in JSONB format:
+{
+  "workoutReminders": {
+    "enabled": boolean,
+    "timing": "smart" | "morning" | "evening" | "2hours" | "1hour" | "30min",
+    "channels": ["email", "push"]
+  },
+  "achievementNotifications": {
+    "enabled": boolean,
+    "channels": ["email", "push"]
+  },
+  "assignmentNotifications": {
+    "enabled": boolean,
+    "channels": ["email", "push"]
+  }
+}';
+
+
+
+COMMENT ON COLUMN "public"."users"."notes" IS 'Coach notes about athlete (visible only to coaches)';
+
+
+
+COMMENT ON COLUMN "public"."users"."deleted_at" IS 'Soft delete timestamp. NULL = active, NOT NULL = deleted';
+
+
+
+COMMENT ON COLUMN "public"."users"."tos_accepted_at" IS 'Timestamp when user accepted Terms of Service';
+
+
+
+COMMENT ON COLUMN "public"."users"."tos_version" IS 'Version of TOS that user accepted (e.g., 1.0, 1.1, 2.0)';
+
+
+
+COMMENT ON COLUMN "public"."users"."privacy_policy_accepted_at" IS 'Timestamp when user accepted Privacy Policy';
+
+
+
+COMMENT ON COLUMN "public"."users"."privacy_policy_version" IS 'Version of Privacy Policy that user accepted';
+
+
+
+CREATE OR REPLACE VIEW "public"."active_athlete_kpis" AS
+ SELECT "aak"."id" AS "assignment_id",
+    "aak"."athlete_id",
+    "u"."name" AS "athlete_name",
+    "aak"."kpi_tag_id",
+    "kt"."name" AS "kpi_name",
+    "kt"."display_name" AS "kpi_display_name",
+    "kt"."color" AS "kpi_color",
+    "kt"."kpi_type",
+    "aak"."target_value",
+    "aak"."target_date",
+    "aak"."notes",
+    "aak"."assigned_via",
+    "aak"."assigned_at",
+    "assigned_by_user"."name" AS "assigned_by_name"
+   FROM ((("public"."athlete_assigned_kpis" "aak"
+     JOIN "public"."users" "u" ON (("aak"."athlete_id" = "u"."id")))
+     JOIN "public"."kpi_tags" "kt" ON (("aak"."kpi_tag_id" = "kt"."id")))
+     LEFT JOIN "public"."users" "assigned_by_user" ON (("aak"."assigned_by" = "assigned_by_user"."id")))
+  WHERE ("aak"."is_active" = true)
+  ORDER BY "u"."name", "kt"."display_name";
+
+
+ALTER VIEW "public"."active_athlete_kpis" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."active_athlete_kpis" IS 'Active athlete KPI assignments with full tag details';
+
+
+
+CREATE OR REPLACE VIEW "public"."active_athletes" AS
+ SELECT "id",
+    "email",
+    "name",
+    "role",
+    "group_ids",
+    "coach_id",
+    "date_of_birth",
+    "injury_status",
+    "created_at",
+    "updated_at",
+    "bio",
+    "profile_image_url",
+    "phone_number",
+    "emergency_contact_name",
+    "emergency_contact_phone",
+    "last_activity_at",
+    "status",
+    "first_name",
+    "last_name",
+    "full_name",
+    "avatar_url",
+    "height_inches",
+    "weight_lbs",
+    "gender",
+    "notification_preferences",
+    "notes",
+    "deleted_at"
+   FROM "public"."users"
+  WHERE (("role" = 'athlete'::"public"."user_role") AND ("deleted_at" IS NULL));
+
+
+ALTER VIEW "public"."active_athletes" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."activity_log" (
@@ -649,6 +1701,126 @@ CREATE TABLE IF NOT EXISTS "public"."activity_log" (
 
 
 ALTER TABLE "public"."activity_log" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."athlete_achievements" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "athlete_id" "uuid" NOT NULL,
+    "achievement_type" "text" NOT NULL,
+    "earned_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."athlete_achievements" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."athlete_achievements" IS 'Tracks achievement badges earned by athletes';
+
+
+
+COMMENT ON COLUMN "public"."athlete_achievements"."achievement_type" IS 'Type of achievement: first_workout, streak_3, volume_10k, etc.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."athlete_audit_log" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "action" character varying(50) NOT NULL,
+    "table_name" character varying(50) NOT NULL,
+    "record_id" "uuid" NOT NULL,
+    "record_data" "jsonb",
+    "performed_by" "uuid",
+    "performed_at" timestamp with time zone DEFAULT "now"(),
+    "reason" "text",
+    "ip_address" "inet",
+    "user_agent" "text"
+);
+
+
+ALTER TABLE "public"."athlete_audit_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."athlete_audit_log" IS 'Audit log for all athlete deletion/restoration actions';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."workout_feedback" (
+    "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
+    "workout_session_id" "uuid" NOT NULL,
+    "athlete_id" "uuid" NOT NULL,
+    "difficulty_rating" integer,
+    "difficulty_notes" "text",
+    "soreness_level" integer,
+    "soreness_areas" "text"[],
+    "energy_level" integer,
+    "enjoyed" boolean,
+    "what_went_well" "text",
+    "what_was_difficult" "text",
+    "suggestions" "text",
+    "coach_viewed" boolean DEFAULT false,
+    "coach_response" "text",
+    "coach_responded_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "workout_feedback_difficulty_rating_check" CHECK ((("difficulty_rating" >= 1) AND ("difficulty_rating" <= 10))),
+    CONSTRAINT "workout_feedback_energy_level_check" CHECK ((("energy_level" >= 1) AND ("energy_level" <= 10))),
+    CONSTRAINT "workout_feedback_soreness_level_check" CHECK ((("soreness_level" >= 1) AND ("soreness_level" <= 10)))
+);
+
+
+ALTER TABLE "public"."workout_feedback" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."workout_feedback" IS 'Athlete feedback on completed workouts';
+
+
+
+COMMENT ON COLUMN "public"."workout_feedback"."difficulty_rating" IS 'How difficult was the workout (1=too easy, 10=way too hard)';
+
+
+
+COMMENT ON COLUMN "public"."workout_feedback"."soreness_level" IS 'Overall soreness level (1=none, 10=extremely sore)';
+
+
+
+COMMENT ON COLUMN "public"."workout_feedback"."soreness_areas" IS 'Array of muscle groups experiencing soreness';
+
+
+
+COMMENT ON COLUMN "public"."workout_feedback"."energy_level" IS 'Energy level after workout (1=exhausted, 10=energized)';
+
+
+
+COMMENT ON COLUMN "public"."workout_feedback"."enjoyed" IS 'Whether the athlete enjoyed the workout';
+
+
+
+CREATE OR REPLACE VIEW "public"."athlete_feedback_summary" AS
+ SELECT "athlete_id",
+    "count"(*) AS "total_feedback",
+    "avg"("difficulty_rating") AS "avg_difficulty",
+    "avg"("soreness_level") AS "avg_soreness",
+    "avg"("energy_level") AS "avg_energy",
+    (("sum"(
+        CASE
+            WHEN ("enjoyed" = true) THEN 1
+            ELSE 0
+        END))::double precision / ("count"(*))::double precision) AS "enjoyment_rate",
+    "sum"(
+        CASE
+            WHEN ("coach_viewed" = true) THEN 1
+            ELSE 0
+        END) AS "feedback_viewed",
+    "max"("created_at") AS "last_feedback_date"
+   FROM "public"."workout_feedback"
+  GROUP BY "athlete_id";
+
+
+ALTER VIEW "public"."athlete_feedback_summary" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."athlete_feedback_summary" IS 'Aggregate feedback statistics by athlete';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."athlete_groups" (
@@ -673,6 +1845,275 @@ COMMENT ON COLUMN "public"."athlete_groups"."archived" IS 'Whether the group is 
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."exercise_kpi_tags" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "workout_exercise_id" "uuid" NOT NULL,
+    "kpi_tag_id" "uuid" NOT NULL,
+    "relevance_notes" "text",
+    "created_at" timestamp without time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."exercise_kpi_tags" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."exercise_kpi_tags" IS 'Links workout exercises to KPI tags for tracking training leading to PRs';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."session_exercises" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "workout_session_id" "uuid",
+    "workout_exercise_id" "uuid" NOT NULL,
+    "exercise_name" "text" NOT NULL,
+    "target_sets" integer NOT NULL,
+    "completed_sets" integer DEFAULT 0,
+    "started" boolean DEFAULT false,
+    "completed" boolean DEFAULT false,
+    "is_modified" boolean DEFAULT false,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "group_id" "uuid"
+);
+
+
+ALTER TABLE "public"."session_exercises" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."session_exercises"."group_id" IS 'Reference to the exercise group this exercise belongs to (superset, circuit, or section)';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."set_records" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "session_exercise_id" "uuid",
+    "set_number" integer NOT NULL,
+    "target_reps" integer NOT NULL,
+    "actual_reps" integer NOT NULL,
+    "target_weight" numeric NOT NULL,
+    "actual_weight" numeric NOT NULL,
+    "completed" boolean DEFAULT true,
+    "completed_at" timestamp with time zone DEFAULT "now"(),
+    "created_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."set_records" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."workout_assignments" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "workout_plan_id" "uuid" NOT NULL,
+    "assigned_by" "uuid" NOT NULL,
+    "assigned_to_user_id" "uuid",
+    "assigned_to_group_id" "uuid",
+    "scheduled_date" "date" NOT NULL,
+    "notes" "text",
+    "completed" boolean DEFAULT false,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "start_time" time without time zone,
+    "end_time" time without time zone,
+    "location" "text",
+    "reminder_sent" boolean DEFAULT false,
+    "notification_preferences" "jsonb" DEFAULT '{}'::"jsonb",
+    "workout_plan_name" "text",
+    "assignment_type" "text" DEFAULT 'individual'::"text",
+    "athlete_ids" "uuid"[] DEFAULT '{}'::"uuid"[],
+    "assigned_date" timestamp with time zone DEFAULT "now"(),
+    "status" "text" DEFAULT 'assigned'::"text",
+    "modifications" "jsonb" DEFAULT '[]'::"jsonb",
+    CONSTRAINT "assignment_target_check" CHECK (((("assigned_to_user_id" IS NOT NULL) AND ("assigned_to_group_id" IS NULL)) OR (("assigned_to_user_id" IS NULL) AND ("assigned_to_group_id" IS NOT NULL)))),
+    CONSTRAINT "workout_assignments_assignment_type_check" CHECK (("assignment_type" = ANY (ARRAY['individual'::"text", 'group'::"text"]))),
+    CONSTRAINT "workout_assignments_status_check" CHECK (("status" = ANY (ARRAY['assigned'::"text", 'in_progress'::"text", 'completed'::"text", 'skipped'::"text"])))
+);
+
+
+ALTER TABLE "public"."workout_assignments" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."start_time" IS 'Training session start time (HH:MM format)';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."end_time" IS 'Training session end time (HH:MM format)';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."location" IS 'Where the workout will take place';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."reminder_sent" IS 'Whether reminder notification has been sent';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."notification_preferences" IS 'JSON object with notification settings';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."workout_plan_name" IS 'Cached workout plan name for display';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."assignment_type" IS 'Type of assignment: individual or group';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."athlete_ids" IS 'Array of athlete UUIDs assigned to this workout';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."assigned_date" IS 'When the workout was assigned (different from scheduled_date)';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."status" IS 'Current status: assigned, in_progress, completed, skipped';
+
+
+
+COMMENT ON COLUMN "public"."workout_assignments"."modifications" IS 'Individual athlete modifications to the base workout';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."workout_exercises" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "workout_plan_id" "uuid",
+    "exercise_id" "text" NOT NULL,
+    "exercise_name" "text" NOT NULL,
+    "sets" integer NOT NULL,
+    "reps" integer NOT NULL,
+    "weight_type" "public"."weight_type" NOT NULL,
+    "weight" numeric,
+    "percentage" integer,
+    "rest_time" integer DEFAULT 60,
+    "order_index" integer NOT NULL,
+    "group_id" "text",
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "tempo" "text",
+    "weight_max" numeric,
+    "percentage_max" integer,
+    "percentage_base_kpi" "text",
+    "each_side" boolean DEFAULT false,
+    "notes" "text",
+    "block_instance_id" "text",
+    "substitution_reason" "text",
+    "original_exercise" "text",
+    "progression_notes" "text",
+    "video_url" "text"
+);
+
+
+ALTER TABLE "public"."workout_exercises" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."workout_exercises"."video_url" IS 'YouTube URL for exercise demonstration video';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."workout_plans" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "estimated_duration" integer DEFAULT 30,
+    "target_group_id" "uuid",
+    "created_by" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    "block_ids" "uuid"[] DEFAULT '{}'::"uuid"[],
+    "block_instances" "jsonb" DEFAULT '[]'::"jsonb",
+    "archived" boolean DEFAULT false
+);
+
+
+ALTER TABLE "public"."workout_plans" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."workout_plans"."block_instances" IS 'Array of block instances used in this workout. Each instance has: id, sourceBlockId, sourceBlockName, instanceName (optional), customizations (tracking changes), notes, estimatedDuration, createdAt, updatedAt';
+
+
+
+COMMENT ON COLUMN "public"."workout_plans"."archived" IS 'Marks workout as archived. Archived workouts are hidden from default views but preserved for history.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."workout_sessions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "workout_plan_id" "uuid" NOT NULL,
+    "workout_plan_name" "text" NOT NULL,
+    "workout_assignment_id" "uuid",
+    "date" "date" DEFAULT CURRENT_DATE NOT NULL,
+    "mode" "public"."workout_mode" DEFAULT 'view'::"public"."workout_mode" NOT NULL,
+    "started" boolean DEFAULT false,
+    "completed" boolean DEFAULT false,
+    "progress_percentage" integer DEFAULT 0,
+    "started_at" timestamp with time zone,
+    "completed_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."workout_sessions" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."athlete_kpi_exercise_history" AS
+ SELECT "ws"."user_id" AS "athlete_id",
+    "se"."workout_session_id",
+    "ws"."completed_at" AS "session_date",
+    "wa"."workout_plan_id",
+    "wp"."name" AS "workout_name",
+    "ekt"."kpi_tag_id",
+    "kt"."name" AS "kpi_tag_name",
+    "kt"."display_name" AS "kpi_display_name",
+    "we"."exercise_id",
+    "se"."exercise_name",
+    "sr"."set_number",
+    "sr"."actual_reps" AS "reps_completed",
+    "sr"."actual_weight" AS "weight_used",
+    NULL::numeric AS "rpe",
+    "we"."sets" AS "prescribed_sets",
+    "we"."reps" AS "prescribed_reps",
+    "we"."weight" AS "prescribed_weight",
+    "we"."weight_type",
+    "we"."percentage",
+    "we"."percentage_base_kpi",
+    "ekt"."relevance_notes"
+   FROM ((((((("public"."set_records" "sr"
+     JOIN "public"."session_exercises" "se" ON (("sr"."session_exercise_id" = "se"."id")))
+     JOIN "public"."workout_exercises" "we" ON (("se"."workout_exercise_id" = "we"."id")))
+     JOIN "public"."exercise_kpi_tags" "ekt" ON (("ekt"."workout_exercise_id" = "we"."id")))
+     JOIN "public"."kpi_tags" "kt" ON (("ekt"."kpi_tag_id" = "kt"."id")))
+     JOIN "public"."workout_sessions" "ws" ON (("se"."workout_session_id" = "ws"."id")))
+     JOIN "public"."workout_assignments" "wa" ON (("ws"."workout_assignment_id" = "wa"."id")))
+     JOIN "public"."workout_plans" "wp" ON (("wa"."workout_plan_id" = "wp"."id")))
+  ORDER BY "ws"."completed_at" DESC, "sr"."set_number";
+
+
+ALTER VIEW "public"."athlete_kpi_exercise_history" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."athlete_kpi_exercise_history" IS 'Complete history of exercises tagged with KPIs for analysis';
+
+
+
+CREATE OR REPLACE VIEW "public"."athlete_kpi_summary" AS
+ SELECT "athlete_id",
+    "athlete_name",
+    "count"(*) AS "active_kpis",
+    "array_agg"("kpi_display_name" ORDER BY "kpi_display_name") AS "kpi_names",
+    "array_agg"("kpi_color" ORDER BY "kpi_display_name") AS "kpi_colors"
+   FROM "public"."active_athlete_kpis"
+  GROUP BY "athlete_id", "athlete_name"
+  ORDER BY "athlete_name";
+
+
+ALTER VIEW "public"."athlete_kpi_summary" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."athlete_kpi_summary" IS 'Summary of active KPIs per athlete';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."athlete_kpis" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "athlete_id" "uuid" NOT NULL,
@@ -688,6 +2129,81 @@ CREATE TABLE IF NOT EXISTS "public"."athlete_kpis" (
 
 
 ALTER TABLE "public"."athlete_kpis" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."audit_trail" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "table_name" "text" NOT NULL,
+    "record_id" "uuid" NOT NULL,
+    "action" "text" NOT NULL,
+    "old_values" "jsonb",
+    "new_values" "jsonb",
+    "performed_by" "uuid",
+    "performed_at" timestamp with time zone DEFAULT "now"(),
+    "ip_address" "text",
+    "user_agent" "text",
+    "metadata" "jsonb",
+    CONSTRAINT "audit_trail_action_check" CHECK (("action" = ANY (ARRAY['insert'::"text", 'update'::"text", 'delete'::"text", 'soft_delete'::"text", 'restore'::"text"])))
+);
+
+
+ALTER TABLE "public"."audit_trail" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."audit_trail" IS 'Comprehensive audit log for tracking all data modifications';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."table_name" IS 'Name of the table that was modified';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."record_id" IS 'ID of the record that was modified';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."action" IS 'Type of action performed (insert, update, delete, soft_delete, restore)';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."old_values" IS 'JSON snapshot of record before modification';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."new_values" IS 'JSON snapshot of record after modification';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."performed_by" IS 'User who performed the action';
+
+
+
+COMMENT ON COLUMN "public"."audit_trail"."metadata" IS 'Additional context (reason, notes, etc.)';
+
+
+
+CREATE OR REPLACE VIEW "public"."audit_log_summary" AS
+ SELECT "a"."id",
+    "a"."table_name",
+    "a"."record_id",
+    "a"."action",
+    "a"."performed_at",
+    "a"."performed_by",
+    "u"."email" AS "performed_by_email",
+    (("u"."first_name" || ' '::"text") || "u"."last_name") AS "performed_by_name",
+        CASE
+            WHEN ("a"."table_name" = 'invites'::"text") THEN ((COALESCE(("a"."old_values" ->> 'first_name'::"text"), ("a"."new_values" ->> 'first_name'::"text")) || ' '::"text") || COALESCE(("a"."old_values" ->> 'last_name'::"text"), ("a"."new_values" ->> 'last_name'::"text")))
+            WHEN ("a"."table_name" = 'users'::"text") THEN ((COALESCE(("a"."old_values" ->> 'first_name'::"text"), ("a"."new_values" ->> 'first_name'::"text")) || ' '::"text") || COALESCE(("a"."old_values" ->> 'last_name'::"text"), ("a"."new_values" ->> 'last_name'::"text")))
+            ELSE NULL::"text"
+        END AS "record_name",
+    "a"."old_values",
+    "a"."new_values"
+   FROM ("public"."audit_trail" "a"
+     LEFT JOIN "public"."users" "u" ON (("a"."performed_by" = "u"."id")))
+  ORDER BY "a"."performed_at" DESC;
+
+
+ALTER VIEW "public"."audit_log_summary" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."block_exercise_groups" (
@@ -754,6 +2270,70 @@ CREATE TABLE IF NOT EXISTS "public"."bulk_operations" (
 ALTER TABLE "public"."bulk_operations" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."coach_program_settings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "coach_id" "uuid" NOT NULL,
+    "program_name" "text" DEFAULT 'Weight Lifting Club'::"text",
+    "program_description" "text" DEFAULT 'Building strength, character, and champions'::"text",
+    "welcome_message" "text" DEFAULT 'Welcome to our strength program! I''m excited to work with you and help you achieve your goals. Let''s get stronger together!'::"text",
+    "warmup_template" "jsonb" DEFAULT '{"enabled": true, "duration": 10, "exercises": ["5 min light cardio (jog, bike, or rowing)", "Dynamic stretches: arm circles, leg swings, hip openers", "Activation: band pull-aparts, glute bridges", "Movement prep: 1-2 light sets of first exercise"], "instructions": "Complete the following warmup before starting your workout:"}'::"jsonb",
+    "email_signature" "text" DEFAULT 'Coach\nWeight Lifting Club'::"text",
+    "email_branding" "jsonb" DEFAULT '{"primaryColor": "#3b82f6"}'::"jsonb",
+    "default_rest_time" integer DEFAULT 90,
+    "default_workout_duration" integer DEFAULT 60,
+    "auto_calculate_1rm" boolean DEFAULT true,
+    "athlete_welcome_checklist" "text"[] DEFAULT ARRAY['Review safety rules and gym etiquette'::"text", 'Learn proper barbell technique'::"text", 'Establish baseline 1RM numbers'::"text", 'Set personal goals for the season'::"text"],
+    "required_fields" "jsonb" DEFAULT '{"dateOfBirth": true, "injuryStatus": true, "emergencyContact": false}'::"jsonb",
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."coach_program_settings" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."coach_program_settings" IS 'Stores coach-level program customization settings including branding, warmup templates, and default preferences';
+
+
+
+CREATE OR REPLACE VIEW "public"."coach_unread_feedback" AS
+ SELECT "wf"."id",
+    "wf"."workout_session_id",
+    "wf"."athlete_id",
+    "wf"."difficulty_rating",
+    "wf"."difficulty_notes",
+    "wf"."soreness_level",
+    "wf"."soreness_areas",
+    "wf"."energy_level",
+    "wf"."enjoyed",
+    "wf"."what_went_well",
+    "wf"."what_was_difficult",
+    "wf"."suggestions",
+    "wf"."coach_viewed",
+    "wf"."coach_response",
+    "wf"."coach_responded_at",
+    "wf"."created_at",
+    "wf"."updated_at",
+    (("u"."first_name" || ' '::"text") || "u"."last_name") AS "athlete_name",
+    "u"."email" AS "athlete_email",
+    "ws"."workout_plan_id",
+    "ws"."completed_at" AS "workout_completed_at",
+    "wp"."name" AS "workout_name"
+   FROM ((("public"."workout_feedback" "wf"
+     JOIN "public"."users" "u" ON (("wf"."athlete_id" = "u"."id")))
+     JOIN "public"."workout_sessions" "ws" ON (("wf"."workout_session_id" = "ws"."id")))
+     LEFT JOIN "public"."workout_plans" "wp" ON (("ws"."workout_plan_id" = "wp"."id")))
+  WHERE ("wf"."coach_viewed" = false)
+  ORDER BY "wf"."created_at" DESC;
+
+
+ALTER VIEW "public"."coach_unread_feedback" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."coach_unread_feedback" IS 'All unviewed feedback with athlete and workout details';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."communication_preferences" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -770,6 +2350,47 @@ CREATE TABLE IF NOT EXISTS "public"."communication_preferences" (
 
 
 ALTER TABLE "public"."communication_preferences" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."deleted_athletes" AS
+ SELECT "u"."id",
+    "u"."email",
+    "u"."name",
+    "u"."role",
+    "u"."group_ids",
+    "u"."coach_id",
+    "u"."date_of_birth",
+    "u"."injury_status",
+    "u"."created_at",
+    "u"."updated_at",
+    "u"."bio",
+    "u"."profile_image_url",
+    "u"."phone_number",
+    "u"."emergency_contact_name",
+    "u"."emergency_contact_phone",
+    "u"."last_activity_at",
+    "u"."status",
+    "u"."first_name",
+    "u"."last_name",
+    "u"."full_name",
+    "u"."avatar_url",
+    "u"."height_inches",
+    "u"."weight_lbs",
+    "u"."gender",
+    "u"."notification_preferences",
+    "u"."notes",
+    "u"."deleted_at",
+    "a"."performed_at" AS "audit_deleted_at",
+    "a"."reason" AS "deletion_reason",
+    (("deleter"."first_name" || ' '::"text") || "deleter"."last_name") AS "deleted_by_name"
+   FROM (("public"."users" "u"
+     LEFT JOIN "public"."athlete_audit_log" "a" ON ((("a"."record_id" = "u"."id") AND (("a"."action")::"text" = 'delete'::"text"))))
+     LEFT JOIN "public"."users" "deleter" ON (("deleter"."id" = "a"."performed_by")))
+  WHERE (("u"."role" = 'athlete'::"public"."user_role") AND ("u"."deleted_at" IS NOT NULL))
+  ORDER BY "u"."deleted_at" DESC;
+
+
+ALTER VIEW "public"."deleted_athletes" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."equipment_types" (
@@ -893,6 +2514,43 @@ CREATE TABLE IF NOT EXISTS "public"."in_app_notifications" (
 ALTER TABLE "public"."in_app_notifications" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."invite_audit_log" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "invite_id" "uuid",
+    "event_type" "text" NOT NULL,
+    "actor_id" "uuid",
+    "target_id" "uuid",
+    "ip_address" "text",
+    "user_agent" "text",
+    "metadata" "jsonb",
+    "created_at" timestamp without time zone DEFAULT "now"(),
+    CONSTRAINT "invite_audit_log_event_type_check" CHECK (("event_type" = ANY (ARRAY['created'::"text", 'sent'::"text", 'resent'::"text", 'accepted'::"text", 'verified'::"text", 'expired'::"text", 'cancelled'::"text", 'email_changed'::"text", 'suspicious_activity'::"text"])))
+);
+
+
+ALTER TABLE "public"."invite_audit_log" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."invite_audit_log" IS 'Comprehensive audit trail for all invite-related events';
+
+
+
+COMMENT ON COLUMN "public"."invite_audit_log"."event_type" IS 'Type of event: created, sent, resent, accepted, verified, expired, cancelled, email_changed, suspicious_activity';
+
+
+
+COMMENT ON COLUMN "public"."invite_audit_log"."actor_id" IS 'User who performed the action (coach, athlete, or system)';
+
+
+
+COMMENT ON COLUMN "public"."invite_audit_log"."target_id" IS 'User who was affected by the action (usually the athlete)';
+
+
+
+COMMENT ON COLUMN "public"."invite_audit_log"."metadata" IS 'Flexible JSONB field for event-specific data';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."invites" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "email" "text",
@@ -912,6 +2570,11 @@ CREATE TABLE IF NOT EXISTS "public"."invites" (
     "date_of_birth" "date",
     "injury_status" "text",
     "group_ids" "text"[] DEFAULT '{}'::"text"[],
+    "deleted_at" timestamp with time zone,
+    "accepted_ip" "text",
+    "accepted_user_agent" "text",
+    "resend_count" integer DEFAULT 0,
+    "last_sent_at" timestamp without time zone,
     CONSTRAINT "invites_pending_must_have_email" CHECK (((("status" = 'pending'::"text") AND ("email" IS NOT NULL)) OR ("status" <> 'pending'::"text"))),
     CONSTRAINT "invites_pending_must_have_email_and_expiry" CHECK (((("status" = 'pending'::"text") AND ("email" IS NOT NULL) AND ("expires_at" IS NOT NULL)) OR ("status" <> 'pending'::"text")))
 );
@@ -957,6 +2620,30 @@ COMMENT ON CONSTRAINT "invites_pending_must_have_email" ON "public"."invites" IS
 
 
 COMMENT ON CONSTRAINT "invites_pending_must_have_email_and_expiry" ON "public"."invites" IS 'Ensures pending invites always have an email address and expiration date, but draft invites can be created without either';
+
+
+
+CREATE OR REPLACE VIEW "public"."kpi_tag_volume_summary" AS
+ SELECT "athlete_id",
+    "kpi_tag_id",
+    "kpi_tag_name",
+    "kpi_display_name",
+    "date_trunc"('week'::"text", "session_date") AS "week_start",
+    "count"(DISTINCT "workout_session_id") AS "workouts_completed",
+    "count"(DISTINCT "exercise_id") AS "unique_exercises",
+    "sum"("reps_completed") AS "total_reps",
+    "sum"((("reps_completed")::numeric * COALESCE("weight_used", (0)::numeric))) AS "total_volume",
+    "avg"("rpe") AS "avg_rpe",
+    "max"("weight_used") AS "max_weight"
+   FROM "public"."athlete_kpi_exercise_history"
+  GROUP BY "athlete_id", "kpi_tag_id", "kpi_tag_name", "kpi_display_name", ("date_trunc"('week'::"text", "session_date"))
+  ORDER BY "athlete_id", ("date_trunc"('week'::"text", "session_date")) DESC;
+
+
+ALTER VIEW "public"."kpi_tag_volume_summary" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."kpi_tag_volume_summary" IS 'Weekly volume summary per KPI tag per athlete';
 
 
 
@@ -1144,38 +2831,42 @@ CREATE TABLE IF NOT EXISTS "public"."push_subscriptions" (
 ALTER TABLE "public"."push_subscriptions" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."session_exercises" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "workout_session_id" "uuid",
-    "workout_exercise_id" "uuid" NOT NULL,
-    "exercise_name" "text" NOT NULL,
-    "target_sets" integer NOT NULL,
-    "completed_sets" integer DEFAULT 0,
-    "started" boolean DEFAULT false,
-    "completed" boolean DEFAULT false,
-    "is_modified" boolean DEFAULT false,
-    "created_at" timestamp with time zone DEFAULT "now"()
+CREATE TABLE IF NOT EXISTS "public"."tos_versions" (
+    "id" integer NOT NULL,
+    "version" "text" NOT NULL,
+    "title" "text" NOT NULL,
+    "content" "text" NOT NULL,
+    "effective_date" "date" NOT NULL,
+    "created_at" timestamp without time zone DEFAULT "now"(),
+    "created_by" "uuid"
 );
 
 
-ALTER TABLE "public"."session_exercises" OWNER TO "postgres";
+ALTER TABLE "public"."tos_versions" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."set_records" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "session_exercise_id" "uuid",
-    "set_number" integer NOT NULL,
-    "target_reps" integer NOT NULL,
-    "actual_reps" integer NOT NULL,
-    "target_weight" numeric NOT NULL,
-    "actual_weight" numeric NOT NULL,
-    "completed" boolean DEFAULT true,
-    "completed_at" timestamp with time zone DEFAULT "now"(),
-    "created_at" timestamp with time zone DEFAULT "now"()
-);
+COMMENT ON TABLE "public"."tos_versions" IS 'Historical record of Terms of Service versions';
 
 
-ALTER TABLE "public"."set_records" OWNER TO "postgres";
+
+COMMENT ON COLUMN "public"."tos_versions"."effective_date" IS 'Date when this version becomes effective';
+
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."tos_versions_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE "public"."tos_versions_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."tos_versions_id_seq" OWNED BY "public"."tos_versions"."id";
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."user_exercise_preferences" (
@@ -1194,68 +2885,6 @@ CREATE TABLE IF NOT EXISTS "public"."user_exercise_preferences" (
 
 
 ALTER TABLE "public"."user_exercise_preferences" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."users" (
-    "id" "uuid" NOT NULL,
-    "email" "text" NOT NULL,
-    "name" "text" NOT NULL,
-    "role" "public"."user_role" DEFAULT 'athlete'::"public"."user_role" NOT NULL,
-    "group_ids" "text"[] DEFAULT '{}'::"text"[],
-    "coach_id" "uuid",
-    "date_of_birth" "date",
-    "injury_status" "text",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "bio" "text",
-    "profile_image_url" "text",
-    "phone_number" "text",
-    "emergency_contact_name" "text",
-    "emergency_contact_phone" "text",
-    "last_activity_at" timestamp with time zone,
-    "status" "text" DEFAULT 'active'::"text",
-    "first_name" "text" NOT NULL,
-    "last_name" "text" NOT NULL,
-    "full_name" "text" GENERATED ALWAYS AS ((("first_name" || ' '::"text") || "last_name")) STORED,
-    "avatar_url" "text",
-    "height_inches" numeric(5,2),
-    "weight_lbs" numeric(5,2),
-    "gender" "text",
-    "notification_preferences" "jsonb" DEFAULT '{"workoutReminders": {"timing": "smart", "enabled": true, "channels": ["email"]}, "assignmentNotifications": {"enabled": true, "channels": ["email"]}, "achievementNotifications": {"enabled": true, "channels": ["email"]}}'::"jsonb",
-    "notes" "text",
-    CONSTRAINT "users_gender_check" CHECK (("gender" = ANY (ARRAY['male'::"text", 'female'::"text", 'other'::"text", 'prefer_not_to_say'::"text"]))),
-    CONSTRAINT "users_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'invited'::"text", 'inactive'::"text", 'suspended'::"text"])))
-);
-
-
-ALTER TABLE "public"."users" OWNER TO "postgres";
-
-
-COMMENT ON COLUMN "public"."users"."bio" IS 'Athlete bio/description visible to athlete';
-
-
-
-COMMENT ON COLUMN "public"."users"."notification_preferences" IS 'User notification preferences in JSONB format:
-{
-  "workoutReminders": {
-    "enabled": boolean,
-    "timing": "smart" | "morning" | "evening" | "2hours" | "1hour" | "30min",
-    "channels": ["email", "push"]
-  },
-  "achievementNotifications": {
-    "enabled": boolean,
-    "channels": ["email", "push"]
-  },
-  "assignmentNotifications": {
-    "enabled": boolean,
-    "channels": ["email", "push"]
-  }
-}';
-
-
-
-COMMENT ON COLUMN "public"."users"."notes" IS 'Coach notes about athlete (visible only to coaches)';
-
 
 
 CREATE OR REPLACE VIEW "public"."user_notification_summary" AS
@@ -1317,24 +2946,6 @@ CREATE OR REPLACE VIEW "public"."users_with_metrics" AS
 
 
 ALTER VIEW "public"."users_with_metrics" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."workout_assignments" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "workout_plan_id" "uuid" NOT NULL,
-    "assigned_by" "uuid" NOT NULL,
-    "assigned_to_user_id" "uuid",
-    "assigned_to_group_id" "uuid",
-    "scheduled_date" "date" NOT NULL,
-    "notes" "text",
-    "completed" boolean DEFAULT false,
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    CONSTRAINT "assignment_target_check" CHECK (((("assigned_to_user_id" IS NOT NULL) AND ("assigned_to_group_id" IS NULL)) OR (("assigned_to_user_id" IS NULL) AND ("assigned_to_group_id" IS NOT NULL))))
-);
-
-
-ALTER TABLE "public"."workout_assignments" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."workout_block_instances" (
@@ -1431,79 +3042,76 @@ CREATE TABLE IF NOT EXISTS "public"."workout_exercise_groups" (
 ALTER TABLE "public"."workout_exercise_groups" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."workout_exercises" (
+CREATE TABLE IF NOT EXISTS "public"."workout_session_feedback" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "workout_plan_id" "uuid",
-    "exercise_id" "text" NOT NULL,
-    "exercise_name" "text" NOT NULL,
-    "sets" integer NOT NULL,
-    "reps" integer NOT NULL,
-    "weight_type" "public"."weight_type" NOT NULL,
-    "weight" numeric,
-    "percentage" integer,
-    "rest_time" integer DEFAULT 60,
-    "order_index" integer NOT NULL,
-    "group_id" "text",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "tempo" "text",
-    "weight_max" numeric,
-    "percentage_max" integer,
-    "percentage_base_kpi" "text",
-    "each_side" boolean DEFAULT false,
+    "session_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "difficulty_rating" integer,
+    "soreness_rating" integer,
+    "energy_level" integer,
     "notes" "text",
-    "block_instance_id" "text",
-    "substitution_reason" "text",
-    "original_exercise" "text",
-    "progression_notes" "text"
-);
-
-
-ALTER TABLE "public"."workout_exercises" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."workout_plans" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "description" "text",
-    "estimated_duration" integer DEFAULT 30,
-    "target_group_id" "uuid",
-    "created_by" "uuid" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"(),
     "updated_at" timestamp with time zone DEFAULT "now"(),
-    "block_ids" "uuid"[] DEFAULT '{}'::"uuid"[],
-    "block_instances" "jsonb" DEFAULT '[]'::"jsonb"
+    CONSTRAINT "workout_session_feedback_difficulty_rating_check" CHECK ((("difficulty_rating" >= 1) AND ("difficulty_rating" <= 5))),
+    CONSTRAINT "workout_session_feedback_energy_level_check" CHECK ((("energy_level" >= 1) AND ("energy_level" <= 5))),
+    CONSTRAINT "workout_session_feedback_soreness_rating_check" CHECK ((("soreness_rating" >= 1) AND ("soreness_rating" <= 5)))
 );
 
 
-ALTER TABLE "public"."workout_plans" OWNER TO "postgres";
+ALTER TABLE "public"."workout_session_feedback" OWNER TO "postgres";
 
 
-COMMENT ON COLUMN "public"."workout_plans"."block_instances" IS 'Array of block instances used in this workout. Each instance has: id, sourceBlockId, sourceBlockName, instanceName (optional), customizations (tracking changes), notes, estimatedDuration, createdAt, updatedAt';
+COMMENT ON TABLE "public"."workout_session_feedback" IS 'Athlete feedback after completing workout sessions';
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."workout_sessions" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "workout_plan_id" "uuid" NOT NULL,
-    "workout_plan_name" "text" NOT NULL,
-    "workout_assignment_id" "uuid",
-    "date" "date" DEFAULT CURRENT_DATE NOT NULL,
-    "mode" "public"."workout_mode" DEFAULT 'view'::"public"."workout_mode" NOT NULL,
-    "started" boolean DEFAULT false,
-    "completed" boolean DEFAULT false,
-    "progress_percentage" integer DEFAULT 0,
-    "started_at" timestamp with time zone,
-    "completed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT "now"()
-);
+COMMENT ON COLUMN "public"."workout_session_feedback"."difficulty_rating" IS 'How difficult was the workout? 1=Too Easy, 5=Too Hard';
 
 
-ALTER TABLE "public"."workout_sessions" OWNER TO "postgres";
+
+COMMENT ON COLUMN "public"."workout_session_feedback"."soreness_rating" IS 'How sore are you? 1=Not Sore, 5=Very Sore';
+
+
+
+COMMENT ON COLUMN "public"."workout_session_feedback"."energy_level" IS 'Energy level during workout? 1=Very Low, 5=Very High';
+
+
+
+COMMENT ON COLUMN "public"."workout_session_feedback"."notes" IS 'Optional text feedback from athlete';
+
+
+
+ALTER TABLE ONLY "public"."tos_versions" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."tos_versions_id_seq"'::"regclass");
+
 
 
 ALTER TABLE ONLY "public"."activity_log"
     ADD CONSTRAINT "activity_log_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."athlete_achievements"
+    ADD CONSTRAINT "athlete_achievements_athlete_id_achievement_type_key" UNIQUE ("athlete_id", "achievement_type");
+
+
+
+ALTER TABLE ONLY "public"."athlete_achievements"
+    ADD CONSTRAINT "athlete_achievements_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."athlete_assigned_kpis"
+    ADD CONSTRAINT "athlete_assigned_kpis_athlete_id_kpi_tag_id_is_active_key" UNIQUE ("athlete_id", "kpi_tag_id", "is_active");
+
+
+
+ALTER TABLE ONLY "public"."athlete_assigned_kpis"
+    ADD CONSTRAINT "athlete_assigned_kpis_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."athlete_audit_log"
+    ADD CONSTRAINT "athlete_audit_log_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1514,6 +3122,11 @@ ALTER TABLE ONLY "public"."athlete_groups"
 
 ALTER TABLE ONLY "public"."athlete_kpis"
     ADD CONSTRAINT "athlete_kpis_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."audit_trail"
+    ADD CONSTRAINT "audit_trail_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1529,6 +3142,16 @@ ALTER TABLE ONLY "public"."block_exercises"
 
 ALTER TABLE ONLY "public"."bulk_operations"
     ADD CONSTRAINT "bulk_operations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."coach_program_settings"
+    ADD CONSTRAINT "coach_program_settings_coach_id_unique" UNIQUE ("coach_id");
+
+
+
+ALTER TABLE ONLY "public"."coach_program_settings"
+    ADD CONSTRAINT "coach_program_settings_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1567,6 +3190,16 @@ ALTER TABLE ONLY "public"."exercise_categories"
 
 
 
+ALTER TABLE ONLY "public"."exercise_kpi_tags"
+    ADD CONSTRAINT "exercise_kpi_tags_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."exercise_kpi_tags"
+    ADD CONSTRAINT "exercise_kpi_tags_workout_exercise_id_kpi_tag_id_key" UNIQUE ("workout_exercise_id", "kpi_tag_id");
+
+
+
 ALTER TABLE ONLY "public"."exercise_muscle_groups"
     ADD CONSTRAINT "exercise_muscle_groups_exercise_id_muscle_group_id_key" UNIQUE ("exercise_id", "muscle_group_id");
 
@@ -1602,8 +3235,23 @@ ALTER TABLE ONLY "public"."in_app_notifications"
 
 
 
+ALTER TABLE ONLY "public"."invite_audit_log"
+    ADD CONSTRAINT "invite_audit_log_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."invites"
     ADD CONSTRAINT "invites_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."kpi_tags"
+    ADD CONSTRAINT "kpi_tags_name_key" UNIQUE ("name");
+
+
+
+ALTER TABLE ONLY "public"."kpi_tags"
+    ADD CONSTRAINT "kpi_tags_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1672,6 +3320,16 @@ ALTER TABLE ONLY "public"."set_records"
 
 
 
+ALTER TABLE ONLY "public"."tos_versions"
+    ADD CONSTRAINT "tos_versions_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."tos_versions"
+    ADD CONSTRAINT "tos_versions_version_key" UNIQUE ("version");
+
+
+
 ALTER TABLE ONLY "public"."user_exercise_preferences"
     ADD CONSTRAINT "user_exercise_preferences_pkey" PRIMARY KEY ("id");
 
@@ -1717,8 +3375,23 @@ ALTER TABLE ONLY "public"."workout_exercises"
 
 
 
+ALTER TABLE ONLY "public"."workout_feedback"
+    ADD CONSTRAINT "workout_feedback_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."workout_plans"
     ADD CONSTRAINT "workout_plans_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."workout_session_feedback"
+    ADD CONSTRAINT "workout_session_feedback_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."workout_session_feedback"
+    ADD CONSTRAINT "workout_session_feedback_session_id_key" UNIQUE ("session_id");
 
 
 
@@ -1747,11 +3420,47 @@ CREATE INDEX "idx_assignments_group_date" ON "public"."workout_assignments" USIN
 
 
 
+CREATE INDEX "idx_assignments_group_date_new" ON "public"."workout_assignments" USING "btree" ("assigned_to_group_id", "scheduled_date") WHERE ("assigned_to_group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_assignments_reminder_pending" ON "public"."workout_assignments" USING "btree" ("scheduled_date", "reminder_sent") WHERE ("reminder_sent" = false);
+
+
+
+CREATE INDEX "idx_assignments_scheduled_date" ON "public"."workout_assignments" USING "btree" ("scheduled_date");
+
+
+
 CREATE INDEX "idx_assignments_user_completed_date" ON "public"."workout_assignments" USING "btree" ("assigned_to_user_id", "completed", "scheduled_date");
 
 
 
 CREATE INDEX "idx_assignments_user_date" ON "public"."workout_assignments" USING "btree" ("assigned_to_user_id", "scheduled_date");
+
+
+
+CREATE INDEX "idx_athlete_achievements_athlete_id" ON "public"."athlete_achievements" USING "btree" ("athlete_id");
+
+
+
+CREATE INDEX "idx_athlete_achievements_earned_at" ON "public"."athlete_achievements" USING "btree" ("earned_at" DESC);
+
+
+
+CREATE INDEX "idx_athlete_assigned_kpis_active" ON "public"."athlete_assigned_kpis" USING "btree" ("athlete_id", "is_active");
+
+
+
+CREATE INDEX "idx_athlete_assigned_kpis_assigned_by" ON "public"."athlete_assigned_kpis" USING "btree" ("assigned_by");
+
+
+
+CREATE INDEX "idx_athlete_assigned_kpis_athlete" ON "public"."athlete_assigned_kpis" USING "btree" ("athlete_id");
+
+
+
+CREATE INDEX "idx_athlete_assigned_kpis_kpi_tag" ON "public"."athlete_assigned_kpis" USING "btree" ("kpi_tag_id");
 
 
 
@@ -1767,6 +3476,34 @@ CREATE INDEX "idx_athlete_kpis_athlete_id" ON "public"."athlete_kpis" USING "btr
 
 
 
+CREATE INDEX "idx_audit_log_performed_at" ON "public"."athlete_audit_log" USING "btree" ("performed_at" DESC);
+
+
+
+CREATE INDEX "idx_audit_log_record" ON "public"."athlete_audit_log" USING "btree" ("table_name", "record_id");
+
+
+
+CREATE INDEX "idx_audit_trail_action" ON "public"."audit_trail" USING "btree" ("action");
+
+
+
+CREATE INDEX "idx_audit_trail_performed_at" ON "public"."audit_trail" USING "btree" ("performed_at" DESC);
+
+
+
+CREATE INDEX "idx_audit_trail_performed_by" ON "public"."audit_trail" USING "btree" ("performed_by");
+
+
+
+CREATE INDEX "idx_audit_trail_record_id" ON "public"."audit_trail" USING "btree" ("record_id");
+
+
+
+CREATE INDEX "idx_audit_trail_table_name" ON "public"."audit_trail" USING "btree" ("table_name");
+
+
+
 CREATE INDEX "idx_block_exercise_groups_block_id" ON "public"."block_exercise_groups" USING "btree" ("block_id");
 
 
@@ -1775,11 +3512,27 @@ CREATE INDEX "idx_block_exercises_block_id" ON "public"."block_exercises" USING 
 
 
 
+CREATE INDEX "idx_block_instances_plan_id" ON "public"."workout_block_instances" USING "btree" ("workout_plan_id");
+
+
+
 CREATE INDEX "idx_bulk_operations_performed_by" ON "public"."bulk_operations" USING "btree" ("performed_by");
 
 
 
 CREATE INDEX "idx_bulk_operations_status" ON "public"."bulk_operations" USING "btree" ("status");
+
+
+
+CREATE INDEX "idx_coach_program_settings_coach_id" ON "public"."coach_program_settings" USING "btree" ("coach_id");
+
+
+
+CREATE INDEX "idx_exercise_kpi_tags_kpi_tag" ON "public"."exercise_kpi_tags" USING "btree" ("kpi_tag_id");
+
+
+
+CREATE INDEX "idx_exercise_kpi_tags_workout_exercise" ON "public"."exercise_kpi_tags" USING "btree" ("workout_exercise_id");
 
 
 
@@ -1831,6 +3584,22 @@ CREATE INDEX "idx_exercises_name" ON "public"."exercises" USING "btree" ("name")
 
 
 
+CREATE INDEX "idx_feedback_athlete" ON "public"."workout_feedback" USING "btree" ("athlete_id");
+
+
+
+CREATE INDEX "idx_feedback_created" ON "public"."workout_feedback" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "idx_feedback_session" ON "public"."workout_feedback" USING "btree" ("workout_session_id");
+
+
+
+CREATE INDEX "idx_feedback_unviewed" ON "public"."workout_feedback" USING "btree" ("coach_viewed", "created_at" DESC) WHERE ("coach_viewed" = false);
+
+
+
 CREATE INDEX "idx_groups_archived" ON "public"."athlete_groups" USING "btree" ("archived");
 
 
@@ -1852,6 +3621,22 @@ CREATE INDEX "idx_in_app_notifs_unread" ON "public"."in_app_notifications" USING
 
 
 CREATE INDEX "idx_in_app_notifs_user_id" ON "public"."in_app_notifications" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_invite_audit_log_actor" ON "public"."invite_audit_log" USING "btree" ("actor_id");
+
+
+
+CREATE INDEX "idx_invite_audit_log_created" ON "public"."invite_audit_log" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "idx_invite_audit_log_event" ON "public"."invite_audit_log" USING "btree" ("event_type");
+
+
+
+CREATE INDEX "idx_invite_audit_log_invite" ON "public"."invite_audit_log" USING "btree" ("invite_id");
 
 
 
@@ -1884,6 +3669,14 @@ CREATE INDEX "idx_invites_last_name" ON "public"."invites" USING "btree" ("last_
 
 
 CREATE INDEX "idx_invites_status" ON "public"."invites" USING "btree" ("status");
+
+
+
+CREATE INDEX "idx_kpi_tags_created_by" ON "public"."kpi_tags" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "idx_kpi_tags_name" ON "public"."kpi_tags" USING "btree" ("name");
 
 
 
@@ -1959,7 +3752,27 @@ CREATE INDEX "idx_push_subs_user_id" ON "public"."push_subscriptions" USING "btr
 
 
 
+CREATE INDEX "idx_session_exercises_group_id" ON "public"."session_exercises" USING "btree" ("group_id");
+
+
+
+CREATE INDEX "idx_session_exercises_session" ON "public"."session_exercises" USING "btree" ("workout_session_id", "exercise_name");
+
+
+
 CREATE INDEX "idx_session_exercises_session_id" ON "public"."session_exercises" USING "btree" ("workout_session_id");
+
+
+
+CREATE INDEX "idx_sessions_assignment" ON "public"."workout_sessions" USING "btree" ("workout_assignment_id") WHERE ("workout_assignment_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_sessions_user_completed" ON "public"."workout_sessions" USING "btree" ("user_id", "completed", "completed_at" DESC) WHERE ("completed" = true);
+
+
+
+CREATE INDEX "idx_sessions_user_date" ON "public"."workout_sessions" USING "btree" ("user_id", "completed_at" DESC NULLS LAST);
 
 
 
@@ -1999,6 +3812,10 @@ CREATE INDEX "idx_users_email" ON "public"."users" USING "btree" ("email");
 
 
 
+CREATE INDEX "idx_users_email_lookup" ON "public"."users" USING "btree" ("email") WHERE ("email" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_users_first_name" ON "public"."users" USING "btree" ("first_name");
 
 
@@ -2019,6 +3836,10 @@ CREATE INDEX "idx_users_role" ON "public"."users" USING "btree" ("role");
 
 
 
+CREATE INDEX "idx_users_role_lookup" ON "public"."users" USING "btree" ("role");
+
+
+
 CREATE INDEX "idx_users_status" ON "public"."users" USING "btree" ("status");
 
 
@@ -2031,7 +3852,19 @@ CREATE INDEX "idx_workout_assignments_assigned_to_user" ON "public"."workout_ass
 
 
 
+CREATE INDEX "idx_workout_assignments_assignment_type" ON "public"."workout_assignments" USING "btree" ("assignment_type");
+
+
+
+CREATE INDEX "idx_workout_assignments_athlete_ids" ON "public"."workout_assignments" USING "gin" ("athlete_ids");
+
+
+
 CREATE INDEX "idx_workout_assignments_date" ON "public"."workout_assignments" USING "btree" ("scheduled_date");
+
+
+
+CREATE INDEX "idx_workout_assignments_status" ON "public"."workout_assignments" USING "btree" ("status");
 
 
 
@@ -2079,7 +3912,47 @@ CREATE INDEX "idx_workout_exercise_groups_workout_plan" ON "public"."workout_exe
 
 
 
+CREATE INDEX "idx_workout_exercises_block_instance" ON "public"."workout_exercises" USING "btree" ("block_instance_id") WHERE ("block_instance_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_workout_exercises_group_id" ON "public"."workout_exercises" USING "btree" ("group_id") WHERE ("group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_workout_exercises_group_order" ON "public"."workout_exercises" USING "btree" ("group_id", "order_index") WHERE ("group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_workout_exercises_plan_id" ON "public"."workout_exercises" USING "btree" ("workout_plan_id");
+
+
+
+CREATE INDEX "idx_workout_exercises_plan_order" ON "public"."workout_exercises" USING "btree" ("workout_plan_id", "order_index");
+
+
+
+CREATE INDEX "idx_workout_exercises_video_url" ON "public"."workout_exercises" USING "btree" ("video_url") WHERE ("video_url" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_workout_exercises_workout_plan" ON "public"."workout_exercises" USING "btree" ("workout_plan_id");
+
+
+
+CREATE INDEX "idx_workout_groups_block_instance" ON "public"."workout_exercise_groups" USING "btree" ("block_instance_id") WHERE ("block_instance_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_workout_groups_plan_id" ON "public"."workout_exercise_groups" USING "btree" ("workout_plan_id");
+
+
+
+CREATE INDEX "idx_workout_groups_plan_order" ON "public"."workout_exercise_groups" USING "btree" ("workout_plan_id", "order_index");
+
+
+
+CREATE INDEX "idx_workout_plans_archived" ON "public"."workout_plans" USING "btree" ("archived");
 
 
 
@@ -2111,6 +3984,18 @@ CREATE INDEX "idx_workout_plans_target_group" ON "public"."workout_plans" USING 
 
 
 
+CREATE INDEX "idx_workout_session_feedback_created_at" ON "public"."workout_session_feedback" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "idx_workout_session_feedback_session_id" ON "public"."workout_session_feedback" USING "btree" ("session_id");
+
+
+
+CREATE INDEX "idx_workout_session_feedback_user_id" ON "public"."workout_session_feedback" USING "btree" ("user_id");
+
+
+
 CREATE INDEX "idx_workout_sessions_date" ON "public"."workout_sessions" USING "btree" ("date");
 
 
@@ -2119,11 +4004,39 @@ CREATE INDEX "idx_workout_sessions_user_id" ON "public"."workout_sessions" USING
 
 
 
+CREATE OR REPLACE TRIGGER "audit_invites_changes" AFTER INSERT OR DELETE OR UPDATE ON "public"."invites" FOR EACH ROW EXECUTE FUNCTION "public"."log_audit_event"();
+
+
+
+CREATE OR REPLACE TRIGGER "audit_users_changes" AFTER DELETE OR UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."log_audit_event"();
+
+
+
+CREATE OR REPLACE TRIGGER "audit_workout_plans_changes" AFTER DELETE ON "public"."workout_plans" FOR EACH ROW EXECUTE FUNCTION "public"."log_audit_event"();
+
+
+
 CREATE OR REPLACE TRIGGER "create_communication_preferences_for_new_user" AFTER INSERT ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."create_default_communication_preferences"();
 
 
 
+CREATE OR REPLACE TRIGGER "trigger_auto_assign_group_kpis" AFTER INSERT OR UPDATE OF "group_ids" ON "public"."users" FOR EACH ROW WHEN (("new"."role" = 'athlete'::"public"."user_role")) EXECUTE FUNCTION "public"."auto_assign_group_kpis"();
+
+
+
+COMMENT ON TRIGGER "trigger_auto_assign_group_kpis" ON "public"."users" IS 'Triggers group KPI inheritance when athlete joins a group';
+
+
+
 CREATE OR REPLACE TRIGGER "trigger_create_default_notification_preferences" AFTER INSERT ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."create_default_notification_preferences"();
+
+
+
+CREATE OR REPLACE TRIGGER "trigger_set_coach_responded_at" BEFORE UPDATE ON "public"."workout_feedback" FOR EACH ROW EXECUTE FUNCTION "public"."set_coach_responded_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trigger_update_feedback_timestamp" BEFORE UPDATE ON "public"."workout_feedback" FOR EACH ROW EXECUTE FUNCTION "public"."update_feedback_updated_at"();
 
 
 
@@ -2132,6 +4045,10 @@ CREATE OR REPLACE TRIGGER "trigger_update_notification_preferences_updated_at" B
 
 
 CREATE OR REPLACE TRIGGER "trigger_update_users_timestamp" BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."update_users_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "update_athlete_assigned_kpis_timestamp" BEFORE UPDATE ON "public"."athlete_assigned_kpis" FOR EACH ROW EXECUTE FUNCTION "public"."update_athlete_assigned_kpis_updated_at"();
 
 
 
@@ -2183,12 +4100,41 @@ CREATE OR REPLACE TRIGGER "update_workout_plans_updated_at" BEFORE UPDATE ON "pu
 
 
 
+CREATE OR REPLACE TRIGGER "update_workout_session_feedback_timestamp" BEFORE UPDATE ON "public"."workout_session_feedback" FOR EACH ROW EXECUTE FUNCTION "public"."update_workout_session_feedback_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "workout_blocks_updated_at" BEFORE UPDATE ON "public"."workout_blocks" FOR EACH ROW EXECUTE FUNCTION "public"."update_workout_blocks_updated_at"();
 
 
 
 ALTER TABLE ONLY "public"."activity_log"
     ADD CONSTRAINT "activity_log_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."athlete_achievements"
+    ADD CONSTRAINT "athlete_achievements_athlete_id_fkey" FOREIGN KEY ("athlete_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."athlete_assigned_kpis"
+    ADD CONSTRAINT "athlete_assigned_kpis_assigned_by_fkey" FOREIGN KEY ("assigned_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."athlete_assigned_kpis"
+    ADD CONSTRAINT "athlete_assigned_kpis_athlete_id_fkey" FOREIGN KEY ("athlete_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."athlete_assigned_kpis"
+    ADD CONSTRAINT "athlete_assigned_kpis_kpi_tag_id_fkey" FOREIGN KEY ("kpi_tag_id") REFERENCES "public"."kpi_tags"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."athlete_audit_log"
+    ADD CONSTRAINT "athlete_audit_log_performed_by_fkey" FOREIGN KEY ("performed_by") REFERENCES "public"."users"("id");
 
 
 
@@ -2199,6 +4145,11 @@ ALTER TABLE ONLY "public"."athlete_groups"
 
 ALTER TABLE ONLY "public"."athlete_kpis"
     ADD CONSTRAINT "athlete_kpis_athlete_id_fkey" FOREIGN KEY ("athlete_id") REFERENCES "public"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."audit_trail"
+    ADD CONSTRAINT "audit_trail_performed_by_fkey" FOREIGN KEY ("performed_by") REFERENCES "auth"."users"("id");
 
 
 
@@ -2217,6 +4168,11 @@ ALTER TABLE ONLY "public"."bulk_operations"
 
 
 
+ALTER TABLE ONLY "public"."coach_program_settings"
+    ADD CONSTRAINT "coach_program_settings_coach_id_fkey" FOREIGN KEY ("coach_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."communication_preferences"
     ADD CONSTRAINT "communication_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id");
 
@@ -2224,6 +4180,16 @@ ALTER TABLE ONLY "public"."communication_preferences"
 
 ALTER TABLE ONLY "public"."exercise_analytics"
     ADD CONSTRAINT "exercise_analytics_exercise_id_fkey" FOREIGN KEY ("exercise_id") REFERENCES "public"."exercises"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."exercise_kpi_tags"
+    ADD CONSTRAINT "exercise_kpi_tags_kpi_tag_id_fkey" FOREIGN KEY ("kpi_tag_id") REFERENCES "public"."kpi_tags"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."exercise_kpi_tags"
+    ADD CONSTRAINT "exercise_kpi_tags_workout_exercise_id_fkey" FOREIGN KEY ("workout_exercise_id") REFERENCES "public"."workout_exercises"("id") ON DELETE CASCADE;
 
 
 
@@ -2262,8 +4228,28 @@ ALTER TABLE ONLY "public"."in_app_notifications"
 
 
 
+ALTER TABLE ONLY "public"."invite_audit_log"
+    ADD CONSTRAINT "invite_audit_log_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."invite_audit_log"
+    ADD CONSTRAINT "invite_audit_log_invite_id_fkey" FOREIGN KEY ("invite_id") REFERENCES "public"."invites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."invite_audit_log"
+    ADD CONSTRAINT "invite_audit_log_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."invites"
     ADD CONSTRAINT "invites_invited_by_fkey" FOREIGN KEY ("invited_by") REFERENCES "public"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."kpi_tags"
+    ADD CONSTRAINT "kpi_tags_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
 
 
 
@@ -2313,6 +4299,11 @@ ALTER TABLE ONLY "public"."push_subscriptions"
 
 
 ALTER TABLE ONLY "public"."session_exercises"
+    ADD CONSTRAINT "session_exercises_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."workout_exercise_groups"("id");
+
+
+
+ALTER TABLE ONLY "public"."session_exercises"
     ADD CONSTRAINT "session_exercises_workout_exercise_id_fkey" FOREIGN KEY ("workout_exercise_id") REFERENCES "public"."workout_exercises"("id");
 
 
@@ -2324,6 +4315,11 @@ ALTER TABLE ONLY "public"."session_exercises"
 
 ALTER TABLE ONLY "public"."set_records"
     ADD CONSTRAINT "set_records_session_exercise_id_fkey" FOREIGN KEY ("session_exercise_id") REFERENCES "public"."session_exercises"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."tos_versions"
+    ADD CONSTRAINT "tos_versions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id");
 
 
 
@@ -2392,6 +4388,16 @@ ALTER TABLE ONLY "public"."workout_exercises"
 
 
 
+ALTER TABLE ONLY "public"."workout_feedback"
+    ADD CONSTRAINT "workout_feedback_athlete_id_fkey" FOREIGN KEY ("athlete_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workout_feedback"
+    ADD CONSTRAINT "workout_feedback_workout_session_id_fkey" FOREIGN KEY ("workout_session_id") REFERENCES "public"."workout_sessions"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."workout_plans"
     ADD CONSTRAINT "workout_plans_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id");
 
@@ -2399,6 +4405,16 @@ ALTER TABLE ONLY "public"."workout_plans"
 
 ALTER TABLE ONLY "public"."workout_plans"
     ADD CONSTRAINT "workout_plans_target_group_id_fkey" FOREIGN KEY ("target_group_id") REFERENCES "public"."athlete_groups"("id");
+
+
+
+ALTER TABLE ONLY "public"."workout_session_feedback"
+    ADD CONSTRAINT "workout_session_feedback_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."workout_sessions"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workout_session_feedback"
+    ADD CONSTRAINT "workout_session_feedback_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -2413,6 +4429,24 @@ ALTER TABLE ONLY "public"."workout_sessions"
 
 
 CREATE POLICY "Admins can manage all blocks" ON "public"."workout_blocks" USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = 'admin'::"public"."user_role")))));
+
+
+
+CREATE POLICY "Admins can view all audit logs" ON "public"."athlete_audit_log" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = 'admin'::"public"."user_role")))));
+
+
+
+CREATE POLICY "Admins can view all audit logs" ON "public"."audit_trail" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = 'admin'::"public"."user_role")))));
+
+
+
+CREATE POLICY "Admins have full access to feedback" ON "public"."workout_feedback" USING ((EXISTS ( SELECT 1
    FROM "public"."users"
   WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = 'admin'::"public"."user_role")))));
 
@@ -2458,6 +4492,34 @@ CREATE POLICY "Allow all workout sessions operations" ON "public"."workout_sessi
 
 
 
+CREATE POLICY "Athletes can create own feedback" ON "public"."workout_feedback" FOR INSERT WITH CHECK (("auth"."uid"() = "athlete_id"));
+
+
+
+CREATE POLICY "Athletes can insert own feedback" ON "public"."workout_session_feedback" FOR INSERT WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "Athletes can update own feedback" ON "public"."workout_session_feedback" FOR UPDATE USING (("user_id" = "auth"."uid"())) WITH CHECK (("user_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "Athletes can update own unviewed feedback" ON "public"."workout_feedback" FOR UPDATE USING ((("auth"."uid"() = "athlete_id") AND ("coach_viewed" = false))) WITH CHECK ((("auth"."uid"() = "athlete_id") AND ("coach_viewed" = false)));
+
+
+
+CREATE POLICY "Athletes can view own achievements" ON "public"."athlete_achievements" FOR SELECT USING (("athlete_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "Athletes can view own feedback" ON "public"."workout_feedback" FOR SELECT USING (("auth"."uid"() = "athlete_id"));
+
+
+
+CREATE POLICY "Athletes can view own feedback" ON "public"."workout_session_feedback" FOR SELECT USING (("user_id" = "auth"."uid"()));
+
+
+
 CREATE POLICY "Categories readable by authenticated users" ON "public"."exercise_categories" FOR SELECT TO "authenticated" USING (true);
 
 
@@ -2465,6 +4527,12 @@ CREATE POLICY "Categories readable by authenticated users" ON "public"."exercise
 CREATE POLICY "Coaches can create invites" ON "public"."invites" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."users"
   WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['admin'::"public"."user_role", 'coach'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "Coaches can insert own settings" ON "public"."coach_program_settings" FOR INSERT WITH CHECK ((("auth"."uid"() = "coach_id") AND (EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND (("users"."role" = 'coach'::"public"."user_role") OR ("users"."role" = 'admin'::"public"."user_role")))))));
 
 
 
@@ -2483,7 +4551,33 @@ CREATE POLICY "Coaches can message their athletes" ON "public"."messages" FOR IN
 
 
 
+CREATE POLICY "Coaches can respond to feedback" ON "public"."workout_feedback" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"])))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "Coaches can update own settings" ON "public"."coach_program_settings" FOR UPDATE USING ((("auth"."uid"() = "coach_id") AND (EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND (("users"."role" = 'coach'::"public"."user_role") OR ("users"."role" = 'admin'::"public"."user_role")))))));
+
+
+
+CREATE POLICY "Coaches can view all achievements" ON "public"."athlete_achievements" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
 CREATE POLICY "Coaches can view all blocks" ON "public"."workout_blocks" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "Coaches can view all feedback" ON "public"."workout_session_feedback" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."users"
   WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
 
@@ -2520,10 +4614,36 @@ CREATE POLICY "Coaches can view athlete activity" ON "public"."activity_log" FOR
 
 
 
+CREATE POLICY "Coaches can view athlete feedback" ON "public"."workout_feedback" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
 CREATE POLICY "Coaches can view athlete progress analytics" ON "public"."progress_analytics" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM ("public"."users" "coach"
      JOIN "public"."users" "athlete" ON (("athlete"."id" = "progress_analytics"."user_id")))
   WHERE (("coach"."id" = "auth"."uid"()) AND ("coach"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"])) AND (("athlete"."coach_id" = "auth"."uid"()) OR ("athlete"."role" = 'athlete'::"public"."user_role"))))));
+
+
+
+CREATE POLICY "Coaches can view own settings" ON "public"."coach_program_settings" FOR SELECT USING ((("auth"."uid"() = "coach_id") AND (EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND (("users"."role" = 'coach'::"public"."user_role") OR ("users"."role" = 'admin'::"public"."user_role")))))));
+
+
+
+CREATE POLICY "Coaches can view their invite audit logs" ON "public"."invite_audit_log" FOR SELECT USING (((EXISTS ( SELECT 1
+   FROM "public"."invites"
+  WHERE (("invites"."id" = "invite_audit_log"."invite_id") AND ("invites"."invited_by" = "auth"."uid"())))) OR (EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['admin'::"public"."user_role", 'coach'::"public"."user_role"])))))));
+
+
+
+CREATE POLICY "Coaches can view their own audit logs" ON "public"."audit_trail" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"])) AND (("audit_trail"."performed_by" = "auth"."uid"()) OR ("users"."role" = 'admin'::"public"."user_role"))))));
 
 
 
@@ -2579,7 +4699,21 @@ CREATE POLICY "Muscle groups readable by authenticated users" ON "public"."muscl
 
 
 
+CREATE POLICY "Only coaches can access invites" ON "public"."invites" USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
 CREATE POLICY "Service role can insert users" ON "public"."users" FOR INSERT WITH CHECK (true);
+
+
+
+CREATE POLICY "System can insert achievements" ON "public"."athlete_achievements" FOR INSERT WITH CHECK (true);
+
+
+
+CREATE POLICY "System can insert audit logs" ON "public"."invite_audit_log" FOR INSERT WITH CHECK (true);
 
 
 
@@ -2694,10 +4828,46 @@ CREATE POLICY "Users can view template blocks" ON "public"."workout_blocks" FOR 
 ALTER TABLE "public"."activity_log" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."athlete_achievements" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."athlete_assigned_kpis" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "athlete_assigned_kpis_delete_coach" ON "public"."athlete_assigned_kpis" FOR DELETE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "athlete_assigned_kpis_insert_coach" ON "public"."athlete_assigned_kpis" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "athlete_assigned_kpis_select_own" ON "public"."athlete_assigned_kpis" FOR SELECT USING ((("athlete_id" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"])))))));
+
+
+
+CREATE POLICY "athlete_assigned_kpis_update_coach" ON "public"."athlete_assigned_kpis" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+ALTER TABLE "public"."athlete_audit_log" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."athlete_groups" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."athlete_kpis" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."audit_trail" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."block_exercise_groups" ENABLE ROW LEVEL SECURITY;
@@ -2753,6 +4923,9 @@ CREATE POLICY "block_exercises_update" ON "public"."block_exercises" FOR UPDATE 
 ALTER TABLE "public"."bulk_operations" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."coach_program_settings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."communication_preferences" ENABLE ROW LEVEL SECURITY;
 
 
@@ -2763,6 +4936,36 @@ ALTER TABLE "public"."exercise_analytics" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."exercise_categories" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."exercise_kpi_tags" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "exercise_kpi_tags_delete_coach" ON "public"."exercise_kpi_tags" FOR DELETE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "exercise_kpi_tags_insert_coach" ON "public"."exercise_kpi_tags" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "exercise_kpi_tags_select_own" ON "public"."exercise_kpi_tags" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM ("public"."workout_exercises" "we"
+     JOIN "public"."workout_plans" "wp" ON (("we"."workout_plan_id" = "wp"."id")))
+  WHERE (("we"."id" = "exercise_kpi_tags"."workout_exercise_id") AND (("wp"."created_by" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+           FROM "public"."workout_assignments" "wa"
+          WHERE (("wa"."workout_plan_id" = "wp"."id") AND ("wa"."assigned_to_user_id" = "auth"."uid"())))))))));
+
+
+
+CREATE POLICY "exercise_kpi_tags_update_coach" ON "public"."exercise_kpi_tags" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
 
 
 ALTER TABLE "public"."exercise_muscle_groups" ENABLE ROW LEVEL SECURITY;
@@ -2777,7 +4980,35 @@ ALTER TABLE "public"."exercises" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."in_app_notifications" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."invite_audit_log" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."kpi_tags" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "kpi_tags_delete_coach" ON "public"."kpi_tags" FOR DELETE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "kpi_tags_insert_coach" ON "public"."kpi_tags" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
+
+
+CREATE POLICY "kpi_tags_select_all" ON "public"."kpi_tags" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "kpi_tags_update_coach" ON "public"."kpi_tags" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."users"
+  WHERE (("users"."id" = "auth"."uid"()) AND ("users"."role" = ANY (ARRAY['coach'::"public"."user_role", 'admin'::"public"."user_role"]))))));
+
 
 
 ALTER TABLE "public"."messages" ENABLE ROW LEVEL SECURITY;
@@ -2945,7 +5176,13 @@ CREATE POLICY "workout_exercise_groups_update_policy" ON "public"."workout_exerc
 ALTER TABLE "public"."workout_exercises" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."workout_feedback" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."workout_plans" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."workout_session_feedback" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."workout_sessions" ENABLE ROW LEVEL SECURITY;
@@ -2955,6 +5192,18 @@ GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."auto_assign_group_kpis"() TO "anon";
+GRANT ALL ON FUNCTION "public"."auto_assign_group_kpis"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."auto_assign_group_kpis"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text", "p_target_value" numeric, "p_target_date" "date", "p_notes" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text", "p_target_value" numeric, "p_target_date" "date", "p_notes" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."bulk_assign_kpis"("p_athlete_ids" "uuid"[], "p_kpi_tag_ids" "uuid"[], "p_assigned_by" "uuid", "p_assigned_via" "text", "p_target_value" numeric, "p_target_date" "date", "p_notes" "text") TO "service_role";
 
 
 
@@ -2994,9 +5243,21 @@ GRANT ALL ON FUNCTION "public"."create_notification"("target_user_id" "uuid", "n
 
 
 
+GRANT ALL ON FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "anon";
+GRANT ALL ON FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."create_workout_plan_transaction"("p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_created_by" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."delete_expired_notifications"() TO "anon";
 GRANT ALL ON FUNCTION "public"."delete_expired_notifications"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."delete_expired_notifications"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_deletion_history"("p_table_name" "text", "p_record_id" "uuid", "p_limit" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."get_deletion_history"("p_table_name" "text", "p_record_id" "uuid", "p_limit" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_deletion_history"("p_table_name" "text", "p_record_id" "uuid", "p_limit" integer) TO "service_role";
 
 
 
@@ -3030,6 +5291,12 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."hard_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text", "confirmation_code" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."increment_block_usage"("block_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."increment_block_usage"("block_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."increment_block_usage"("block_id" "uuid") TO "service_role";
@@ -3042,15 +5309,57 @@ GRANT ALL ON FUNCTION "public"."increment_exercise_usage"("exercise_uuid" "uuid"
 
 
 
+GRANT ALL ON FUNCTION "public"."log_audit_event"() TO "anon";
+GRANT ALL ON FUNCTION "public"."log_audit_event"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."log_audit_event"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."mark_message_as_read"("message_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."mark_message_as_read"("message_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mark_message_as_read"("message_id" "uuid") TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."restore_athlete"("athlete_id" "uuid", "restored_by" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."restore_deleted_invite"("invite_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."restore_deleted_invite"("invite_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."restore_deleted_invite"("invite_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_coach_responded_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_coach_responded_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_coach_responded_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."soft_delete_athlete"("athlete_id" "uuid", "deleted_by" "uuid", "deletion_reason" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."toggle_block_favorite"("block_id" "uuid", "user_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."toggle_block_favorite"("block_id" "uuid", "user_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."toggle_block_favorite"("block_id" "uuid", "user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_athlete_assigned_kpis_updated_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_athlete_assigned_kpis_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_athlete_assigned_kpis_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_feedback_updated_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_feedback_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_feedback_updated_at"() TO "service_role";
 
 
 
@@ -3084,9 +5393,75 @@ GRANT ALL ON FUNCTION "public"."update_workout_blocks_updated_at"() TO "service_
 
 
 
+GRANT ALL ON FUNCTION "public"."update_workout_plan_transaction"("p_plan_id" "uuid", "p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "anon";
+GRANT ALL ON FUNCTION "public"."update_workout_plan_transaction"("p_plan_id" "uuid", "p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_workout_plan_transaction"("p_plan_id" "uuid", "p_name" "text", "p_description" "text", "p_estimated_duration" integer, "p_target_group_id" "uuid", "p_archived" boolean, "p_exercises" "jsonb", "p_groups" "jsonb", "p_block_instances" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_workout_session_feedback_updated_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_workout_session_feedback_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_workout_session_feedback_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_assigned_kpis" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_assigned_kpis" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_assigned_kpis" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."kpi_tags" TO "anon";
+GRANT ALL ON TABLE "public"."kpi_tags" TO "authenticated";
+GRANT ALL ON TABLE "public"."kpi_tags" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."users" TO "anon";
+GRANT ALL ON TABLE "public"."users" TO "authenticated";
+GRANT ALL ON TABLE "public"."users" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."active_athlete_kpis" TO "anon";
+GRANT ALL ON TABLE "public"."active_athlete_kpis" TO "authenticated";
+GRANT ALL ON TABLE "public"."active_athlete_kpis" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."active_athletes" TO "anon";
+GRANT ALL ON TABLE "public"."active_athletes" TO "authenticated";
+GRANT ALL ON TABLE "public"."active_athletes" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."activity_log" TO "anon";
 GRANT ALL ON TABLE "public"."activity_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."activity_log" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_achievements" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_achievements" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_achievements" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_audit_log" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_audit_log" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_audit_log" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workout_feedback" TO "anon";
+GRANT ALL ON TABLE "public"."workout_feedback" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_feedback" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_feedback_summary" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_feedback_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_feedback_summary" TO "service_role";
 
 
 
@@ -3096,9 +5471,75 @@ GRANT ALL ON TABLE "public"."athlete_groups" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."exercise_kpi_tags" TO "anon";
+GRANT ALL ON TABLE "public"."exercise_kpi_tags" TO "authenticated";
+GRANT ALL ON TABLE "public"."exercise_kpi_tags" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."session_exercises" TO "anon";
+GRANT ALL ON TABLE "public"."session_exercises" TO "authenticated";
+GRANT ALL ON TABLE "public"."session_exercises" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."set_records" TO "anon";
+GRANT ALL ON TABLE "public"."set_records" TO "authenticated";
+GRANT ALL ON TABLE "public"."set_records" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workout_assignments" TO "anon";
+GRANT ALL ON TABLE "public"."workout_assignments" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_assignments" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workout_exercises" TO "anon";
+GRANT ALL ON TABLE "public"."workout_exercises" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_exercises" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workout_plans" TO "anon";
+GRANT ALL ON TABLE "public"."workout_plans" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_plans" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workout_sessions" TO "anon";
+GRANT ALL ON TABLE "public"."workout_sessions" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_sessions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_kpi_exercise_history" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_kpi_exercise_history" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_kpi_exercise_history" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."athlete_kpi_summary" TO "anon";
+GRANT ALL ON TABLE "public"."athlete_kpi_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."athlete_kpi_summary" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."athlete_kpis" TO "anon";
 GRANT ALL ON TABLE "public"."athlete_kpis" TO "authenticated";
 GRANT ALL ON TABLE "public"."athlete_kpis" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."audit_trail" TO "anon";
+GRANT ALL ON TABLE "public"."audit_trail" TO "authenticated";
+GRANT ALL ON TABLE "public"."audit_trail" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."audit_log_summary" TO "anon";
+GRANT ALL ON TABLE "public"."audit_log_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."audit_log_summary" TO "service_role";
 
 
 
@@ -3120,9 +5561,27 @@ GRANT ALL ON TABLE "public"."bulk_operations" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."coach_program_settings" TO "anon";
+GRANT ALL ON TABLE "public"."coach_program_settings" TO "authenticated";
+GRANT ALL ON TABLE "public"."coach_program_settings" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."coach_unread_feedback" TO "anon";
+GRANT ALL ON TABLE "public"."coach_unread_feedback" TO "authenticated";
+GRANT ALL ON TABLE "public"."coach_unread_feedback" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."communication_preferences" TO "anon";
 GRANT ALL ON TABLE "public"."communication_preferences" TO "authenticated";
 GRANT ALL ON TABLE "public"."communication_preferences" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."deleted_athletes" TO "anon";
+GRANT ALL ON TABLE "public"."deleted_athletes" TO "authenticated";
+GRANT ALL ON TABLE "public"."deleted_athletes" TO "service_role";
 
 
 
@@ -3168,9 +5627,21 @@ GRANT ALL ON TABLE "public"."in_app_notifications" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."invite_audit_log" TO "anon";
+GRANT ALL ON TABLE "public"."invite_audit_log" TO "authenticated";
+GRANT ALL ON TABLE "public"."invite_audit_log" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."invites" TO "anon";
 GRANT ALL ON TABLE "public"."invites" TO "authenticated";
 GRANT ALL ON TABLE "public"."invites" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."kpi_tag_volume_summary" TO "anon";
+GRANT ALL ON TABLE "public"."kpi_tag_volume_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."kpi_tag_volume_summary" TO "service_role";
 
 
 
@@ -3228,27 +5699,21 @@ GRANT ALL ON TABLE "public"."push_subscriptions" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."session_exercises" TO "anon";
-GRANT ALL ON TABLE "public"."session_exercises" TO "authenticated";
-GRANT ALL ON TABLE "public"."session_exercises" TO "service_role";
+GRANT ALL ON TABLE "public"."tos_versions" TO "anon";
+GRANT ALL ON TABLE "public"."tos_versions" TO "authenticated";
+GRANT ALL ON TABLE "public"."tos_versions" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."set_records" TO "anon";
-GRANT ALL ON TABLE "public"."set_records" TO "authenticated";
-GRANT ALL ON TABLE "public"."set_records" TO "service_role";
+GRANT ALL ON SEQUENCE "public"."tos_versions_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."tos_versions_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."tos_versions_id_seq" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."user_exercise_preferences" TO "anon";
 GRANT ALL ON TABLE "public"."user_exercise_preferences" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_exercise_preferences" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."users" TO "anon";
-GRANT ALL ON TABLE "public"."users" TO "authenticated";
-GRANT ALL ON TABLE "public"."users" TO "service_role";
 
 
 
@@ -3261,12 +5726,6 @@ GRANT ALL ON TABLE "public"."user_notification_summary" TO "service_role";
 GRANT ALL ON TABLE "public"."users_with_metrics" TO "anon";
 GRANT ALL ON TABLE "public"."users_with_metrics" TO "authenticated";
 GRANT ALL ON TABLE "public"."users_with_metrics" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."workout_assignments" TO "anon";
-GRANT ALL ON TABLE "public"."workout_assignments" TO "authenticated";
-GRANT ALL ON TABLE "public"."workout_assignments" TO "service_role";
 
 
 
@@ -3288,21 +5747,9 @@ GRANT ALL ON TABLE "public"."workout_exercise_groups" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."workout_exercises" TO "anon";
-GRANT ALL ON TABLE "public"."workout_exercises" TO "authenticated";
-GRANT ALL ON TABLE "public"."workout_exercises" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."workout_plans" TO "anon";
-GRANT ALL ON TABLE "public"."workout_plans" TO "authenticated";
-GRANT ALL ON TABLE "public"."workout_plans" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."workout_sessions" TO "anon";
-GRANT ALL ON TABLE "public"."workout_sessions" TO "authenticated";
-GRANT ALL ON TABLE "public"."workout_sessions" TO "service_role";
+GRANT ALL ON TABLE "public"."workout_session_feedback" TO "anon";
+GRANT ALL ON TABLE "public"."workout_session_feedback" TO "authenticated";
+GRANT ALL ON TABLE "public"."workout_session_feedback" TO "service_role";
 
 
 
@@ -3338,5 +5785,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 RESET ALL;
-A new version of Supabase CLI is available: v2.54.11 (currently installed v2.51.0)
+A new version of Supabase CLI is available: v2.58.5 (currently installed v2.51.0)
 We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli

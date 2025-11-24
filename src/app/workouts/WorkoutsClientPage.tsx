@@ -168,7 +168,7 @@ function WorkoutsPage({
 
   if (showAuthSkeleton) {
     return (
-      <PageContainer maxWidth="7xl" background="secondary">
+      <PageContainer maxWidth="7xl" background="gradient">
         <SkeletonCard />
       </PageContainer>
     );
@@ -200,7 +200,7 @@ function WorkoutsPage({
   };
 
   return (
-    <PageContainer maxWidth="7xl" background="secondary">
+    <PageContainer maxWidth="7xl" background="gradient">
       <PageHeader
         title="Workout Management"
         subtitle="Create and manage training plans"

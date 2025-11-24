@@ -398,7 +398,7 @@ export default withPageErrorBoundary(function AthletesPage() {
 
   if (showSkeleton) {
     return (
-      <PageContainer maxWidth="7xl" background="secondary">
+      <PageContainer maxWidth="7xl" background="gradient">
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={i} />
@@ -409,7 +409,7 @@ export default withPageErrorBoundary(function AthletesPage() {
   }
 
   return (
-    <PageContainer maxWidth="7xl" background="secondary">
+    <PageContainer maxWidth="7xl" background="gradient">
       {/* Error Display */}
       {error && (
         <Alert variant="error" onDismiss={() => setError(null)}>

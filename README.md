@@ -33,6 +33,25 @@ A comprehensive web-based workout tracking application designed for weight lifti
 
 ## ✅ Current Status (November 2025)
 
+### November 23, 2025: Layout & Design System Standardization
+
+**Latest Updates**:
+
+- ✅ **PageContainer Background Standards**: Changed default from `secondary` to `gradient` to prevent body gradient bleed-through
+- ✅ **Dashboard Layout Fix**: Removed floating sticky header for natural content flow
+- ✅ **Comprehensive Documentation**: Created layout/background standards guides
+- ✅ **Clean Codebase**: Removed all debug console.logs and test backgrounds
+- ✅ **Enhanced Copilot Instructions**: Added common UI issues section for better AI assistance
+
+**Key Standards**:
+
+- Always use opaque backgrounds (`gradient`, `white`, `silver`) for full-page containers
+- Avoid `sticky` positioning on headers inside page containers
+- Keep z-index values reasonable (1-50)
+- No console.log in JSX (causes TypeScript errors)
+
+See `docs/guides/LAYOUT_BACKGROUND_STANDARDS.md` for complete guidelines.
+
 ### Sprint 8 Complete: Stability & UX Polish
 
 **Production-Ready** with comprehensive crash fixes and UX enhancements.

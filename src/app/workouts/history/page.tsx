@@ -244,7 +244,7 @@ export default function WorkoutHistoryPage() {
 
   if (authLoading || loading) {
     return (
-      <PageContainer maxWidth="4xl" background="secondary">
+      <PageContainer maxWidth="4xl" background="gradient">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-(--bg-tertiary) rounded w-1/3"></div>
           <div className="space-y-3">
@@ -259,7 +259,7 @@ export default function WorkoutHistoryPage() {
 
   if (error) {
     return (
-      <PageContainer maxWidth="4xl" background="secondary">
+      <PageContainer maxWidth="4xl" background="gradient">
         <Alert variant="error" title="Error loading history">
           <p className="text-sm mb-3">{error}</p>
           <button
@@ -274,7 +274,7 @@ export default function WorkoutHistoryPage() {
   }
 
   return (
-    <PageContainer maxWidth="4xl" background="secondary">
+    <PageContainer maxWidth="4xl" background="gradient">
       {/* Header */}
       <div className="mb-6">
         <PageHeader

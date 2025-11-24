@@ -1,4 +1,5 @@
 # Athlete Experience - Visual Flow Diagrams
+
 **Companion to: ATHLETE_UX_AUDIT_2025.md**
 
 ---
@@ -442,6 +443,7 @@ Bottom Navigation Bar (NEW! - Critical for Discovery)
 ## 📊 User Flow Improvements - Before & After
 
 ### BEFORE: Starting a Workout
+
 ```
 Dashboard → [Start Workout] → Workout View → [Start Live Workout] → Live Mode
   ↑                                ↑
@@ -450,6 +452,7 @@ Dashboard → [Start Workout] → Workout View → [Start Live Workout] → Live
 ```
 
 ### AFTER: Starting a Workout (Proposed)
+
 ```
 Dashboard → [Start Workout] → Workout View → [Start Live Workout] → Live Mode
   ↑                                ↑                                    ↑
@@ -465,6 +468,7 @@ Dashboard → [Start Workout] → Workout View → [Start Live Workout] → Live
 ## 🎨 Visual Design Tokens
 
 ### Color Palette (Current)
+
 ```
 Primary Colors:
 ┌──────────┬──────────┬──────────┬──────────┐
@@ -489,6 +493,7 @@ Semantic Colors:
 ```
 
 ### Typography Scale
+
 ```
 Display:  48px / 56px  (3rem / 3.5rem)  - Page headers
 H1:       36px / 44px  (2.25rem / 2.75rem)
@@ -499,6 +504,7 @@ Caption:  14px / 20px  (0.875rem / 1.25rem)
 ```
 
 ### Spacing System
+
 ```
 4px   - xs   (tight spacing, badges)
 8px   - sm   (component padding)
@@ -513,6 +519,7 @@ Caption:  14px / 20px  (0.875rem / 1.25rem)
 ## 🚀 Component Interaction Patterns
 
 ### Rest Timer Flow (Proposed)
+
 ```
 Set Completed
       ↓
@@ -540,6 +547,7 @@ Input Area Re-enables for Next Set
 ```
 
 ### 1RM Calculator Modal (Proposed)
+
 ```
 Tap "Calculator" Icon in Live Mode
       ↓
@@ -569,6 +577,7 @@ Tap "Calculator" Icon in Live Mode
 ## 📱 Mobile Screen Dimensions
 
 ### Target Devices
+
 ```
 iPhone SE (Small)         iPhone 13/14 (Medium)   iPhone 14 Pro Max (Large)
 ┌─────────────┐          ┌────────────────┐      ┌──────────────────┐
@@ -585,6 +594,7 @@ iPhone SE (Small)         iPhone 13/14 (Medium)   iPhone 14 Pro Max (Large)
 ```
 
 ### Touch Target Sizes
+
 ```
 Minimum: 44×44px (iOS Human Interface Guidelines)
 Optimal: 48×48px (Material Design)
@@ -640,6 +650,7 @@ LiteWork Implementation:
 ## 🔧 Technical Implementation Notes
 
 ### Rest Timer Component (Pseudo-code)
+
 ```typescript
 // hooks/useRestTimer.ts
 export function useRestTimer(restSeconds: number) {
@@ -647,13 +658,17 @@ export function useRestTimer(restSeconds: number) {
   const [isActive, setIsActive] = useState(false);
 
   const start = () => setIsActive(true);
-  const skip = () => { setIsActive(false); setTimeRemaining(restSeconds); };
-  const addTime = (seconds: number) => setTimeRemaining(prev => prev + seconds);
+  const skip = () => {
+    setIsActive(false);
+    setTimeRemaining(restSeconds);
+  };
+  const addTime = (seconds: number) =>
+    setTimeRemaining((prev) => prev + seconds);
 
   useEffect(() => {
     if (!isActive) return;
     const interval = setInterval(() => {
-      setTimeRemaining(prev => {
+      setTimeRemaining((prev) => {
         if (prev <= 1) {
           playSound(); // Ding!
           vibrate([200]); // Buzz!
@@ -671,6 +686,7 @@ export function useRestTimer(restSeconds: number) {
 ```
 
 ### Chart Library Recommendation
+
 ```bash
 # Install Recharts (best for mobile)
 npm install recharts

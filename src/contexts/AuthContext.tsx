@@ -151,10 +151,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
           setInitializing(false);
           initializingRef.current = false;
+
+          if (currentUser) {
+            console.log(
+              "[AuthContext] User authenticated:",
+              currentUser.email,
+              currentUser.role
+            );
+          } else {
+            console.log("[AuthContext] No authenticated user found");
+          }
         }
       } catch (error) {
         clearTimeout(timeout);
         timer.error("Auth initialization failed", error);
+        console.error("[AuthContext] Auth initialization error:", error);
 
         if (mountedRef.current) {
           setUser(null);
@@ -173,14 +184,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = authClient.onAuthChange((newUser) => {
       // Ignore auth changes during active operations (sign in/up/out)
       if (!authOperationInProgress.current && mountedRef.current) {
-        const previousUser = user;
+        const previousUser = userRef.current;
+
+        // Only update if user actually changed (prevents infinite loops)
+        const userChanged =
+          (!previousUser && newUser) ||
+          (previousUser && !newUser) ||
+          (previousUser && newUser && previousUser.id !== newUser.id);
+
+        if (!userChanged) {
+          // User didn't actually change, ignore this callback
+          return;
+        }
+
         setUser(newUser);
 
         // Log session changes for debugging
         if (previousUser && !newUser) {
           console.warn("[AUTH] User session ended - possible logout or expiry");
         } else if (!previousUser && newUser) {
-          // User session started
+          console.log("[AUTH] User session started:", newUser.email);
         } else if (newUser && previousUser && newUser.id !== previousUser.id) {
           console.warn(
             "[AUTH] User session changed - security alert",

@@ -1,9 +1,61 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Display, Heading, Body, Caption } from "@/components/ui/Typography";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Tooltip } from "@/components/ui/Tooltip";
+import { SnackbarProvider, useSnackbar } from "@/components/ui/Snackbar";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Chip } from "@/components/ui/Chip";
 import { tokens } from "@/styles/tokens";
+import {
+  Edit,
+  Trash,
+  Save,
+  Download,
+  Dumbbell,
+  Heart,
+  Zap,
+  Target,
+} from "lucide-react";
 
-export default function DesignSystemPage() {
+function DesignSystemContent() {
+  const snackbar = useSnackbar();
+  const [progress, setProgress] = useState(45);
+  const [selectedFilters, setSelectedFilters] = useState([
+    "strength",
+    "cardio",
+  ]);
+
+  const handleSnackbarDemo = (
+    type: "success" | "error" | "warning" | "info"
+  ) => {
+    const messages = {
+      success: "Workout saved successfully!",
+      error: "Failed to load workout data",
+      warning: "Session will expire in 5 minutes",
+      info: "New exercises available in library",
+    };
+
+    if (type === "error") {
+      snackbar.error(messages[type], {
+        label: "RETRY",
+        onClick: () => snackbar.info("Retrying..."),
+      });
+    } else {
+      snackbar[type](messages[type]);
+    }
+  };
+
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters((prev) =>
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter]
+    );
+  };
+
   return (
     <div className="min-h-screen bg-bg-primary pb-20">
       {/* Header */}
@@ -92,14 +144,19 @@ export default function DesignSystemPage() {
 
           {/* Accent Palette */}
           <div className="space-y-8">
-            <Heading level="h3">Accent Palette (Auto-Generated)</Heading>
+            <Heading level="h3">Accent Palette</Heading>
             <Body variant="secondary" className="mb-4">
-              Dynamically generated from <code>tokens.ts</code>.
+              Core colors for the app. Amber and lime are utility colors for
+              warnings/alerts.
             </Body>
 
             <div className="space-y-8">
-              {Object.entries(tokens.color.accent).map(
-                ([colorName, shades]) => (
+              {Object.entries(tokens.color.accent)
+                .filter(
+                  ([colorName]) =>
+                    !["yellow", "lime", "amber"].includes(colorName)
+                )
+                .map(([colorName, shades]) => (
                   <div key={colorName} className="space-y-3">
                     <Heading
                       level="h4"
@@ -130,8 +187,7 @@ export default function DesignSystemPage() {
                         ))}
                     </div>
                   </div>
-                )
-              )}
+                ))}
             </div>
           </div>
         </section>
@@ -279,8 +335,319 @@ export default function DesignSystemPage() {
             </div>
           </div>
         </section>
+
+        {/* 6. New Components Showcase */}
+        <section className="space-y-8">
+          <div className="border-b border-border-subtle pb-4">
+            <Heading level="h2">Interactive Components</Heading>
+            <Body variant="secondary">
+              New enhanced components for better UX.
+            </Body>
+          </div>
+
+          {/* Tooltips */}
+          <div className="space-y-4">
+            <Heading level="h3">Tooltips</Heading>
+            <Body variant="secondary" className="mb-4">
+              Hover over icons for contextual help. Configurable position and
+              delay.
+            </Body>
+            <div className="p-8 bg-bg-surface rounded-2xl border border-border-subtle">
+              <div className="flex flex-wrap gap-4">
+                <Tooltip content="Edit workout" position="top">
+                  <Button variant="secondary" size="md">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip content="Save changes" position="bottom">
+                  <Button variant="primary" size="md">
+                    <Save className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip
+                  content="Delete workout (This action cannot be undone)"
+                  position="left"
+                >
+                  <Button variant="danger" size="md">
+                    <Trash className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip content="Download as PDF" position="right">
+                  <Button variant="secondary" size="md">
+                    <Download className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
+
+          {/* Snackbar */}
+          <div className="space-y-4">
+            <Heading level="h3">Snackbar Notifications</Heading>
+            <Body variant="secondary" className="mb-4">
+              Lightweight, bottom-anchored notifications with optional actions.
+              Better than heavy toast libraries!
+            </Body>
+            <div className="p-8 bg-bg-surface rounded-2xl border border-border-subtle">
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant="primary"
+                  onClick={() => handleSnackbarDemo("success")}
+                >
+                  Success Message
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleSnackbarDemo("error")}
+                >
+                  Error with Action
+                </Button>
+                <Button
+                  variant="warning"
+                  onClick={() => handleSnackbarDemo("warning")}
+                >
+                  Warning
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => handleSnackbarDemo("info")}
+                >
+                  Info
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Bars */}
+          <div className="space-y-4">
+            <Heading level="h3">Progress Bars</Heading>
+            <Body variant="secondary" className="mb-4">
+              Smooth animated progress indicators with multiple variants.
+            </Body>
+            <div className="p-8 bg-bg-surface rounded-2xl border border-border-subtle space-y-6">
+              <div className="space-y-2">
+                <ProgressBar
+                  value={progress}
+                  variant="default"
+                  size="md"
+                  showLabel
+                  label="Workout Progress"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <ProgressBar
+                  value={85}
+                  variant="success"
+                  size="md"
+                  showLabel
+                  label="Goals Completed"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <ProgressBar
+                  value={60}
+                  variant="warning"
+                  size="lg"
+                  showLabel
+                  label="Recovery Status"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <ProgressBar
+                  value={75}
+                  variant="gradient"
+                  size="lg"
+                  showLabel
+                  label="Training Intensity"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Caption variant="muted">Indeterminate loading state:</Caption>
+                <ProgressBar
+                  value={0}
+                  variant="default"
+                  size="sm"
+                  indeterminate
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4 border-t border-border-subtle">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setProgress(Math.max(0, progress - 10))}
+                >
+                  -10%
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setProgress(Math.min(100, progress + 10))}
+                >
+                  +10%
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setProgress(45)}
+                >
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Chips */}
+          <div className="space-y-4">
+            <Heading level="h3">Chips</Heading>
+            <Body variant="secondary" className="mb-4">
+              Compact elements for tags, filters, and labels. Perfect for
+              categorization!
+            </Body>
+            <div className="p-8 bg-bg-surface rounded-2xl border border-border-subtle space-y-8">
+              {/* Filter Chips */}
+              <div className="space-y-3">
+                <Caption variant="muted">Interactive Filter Chips:</Caption>
+                <div className="flex flex-wrap gap-2">
+                  <Chip
+                    label="Strength"
+                    variant="outlined"
+                    selected={selectedFilters.includes("strength")}
+                    onClick={() => toggleFilter("strength")}
+                    icon={<Dumbbell className="w-4 h-4" />}
+                  />
+                  <Chip
+                    label="Cardio"
+                    variant="outlined"
+                    selected={selectedFilters.includes("cardio")}
+                    onClick={() => toggleFilter("cardio")}
+                    icon={<Heart className="w-4 h-4" />}
+                  />
+                  <Chip
+                    label="HIIT"
+                    variant="outlined"
+                    selected={selectedFilters.includes("hiit")}
+                    onClick={() => toggleFilter("hiit")}
+                    icon={<Zap className="w-4 h-4" />}
+                  />
+                  <Chip
+                    label="Mobility"
+                    variant="outlined"
+                    selected={selectedFilters.includes("mobility")}
+                    onClick={() => toggleFilter("mobility")}
+                    icon={<Target className="w-4 h-4" />}
+                  />
+                </div>
+              </div>
+
+              {/* Status Chips */}
+              <div className="space-y-3">
+                <Caption variant="muted">Status Chips:</Caption>
+                <div className="flex flex-wrap gap-2">
+                  <Chip label="Active" variant="success" size="sm" />
+                  <Chip label="Pending" variant="warning" size="sm" />
+                  <Chip label="Failed" variant="error" size="sm" />
+                  <Chip label="Completed" variant="primary" size="sm" />
+                </div>
+              </div>
+
+              {/* Deletable Chips */}
+              <div className="space-y-3">
+                <Caption variant="muted">
+                  Deletable Tags (click X to remove):
+                </Caption>
+                <div className="flex flex-wrap gap-2">
+                  <Chip
+                    label="Bench Press"
+                    variant="default"
+                    onDelete={() => snackbar.info("Removed: Bench Press")}
+                  />
+                  <Chip
+                    label="Squats"
+                    variant="default"
+                    onDelete={() => snackbar.info("Removed: Squats")}
+                  />
+                  <Chip
+                    label="Deadlifts"
+                    variant="default"
+                    onDelete={() => snackbar.info("Removed: Deadlifts")}
+                  />
+                </div>
+              </div>
+
+              {/* Size Variants */}
+              <div className="space-y-3">
+                <Caption variant="muted">Size Variants:</Caption>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Chip label="Small" variant="primary" size="sm" />
+                  <Chip label="Medium" variant="primary" size="md" />
+                  <Chip label="Large" variant="primary" size="lg" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Gradient Preview */}
+        <section className="space-y-8">
+          <div className="border-b border-border-subtle pb-4">
+            <Heading level="h2">Background Gradients</Heading>
+            <Body variant="secondary">
+              Smooth, subtle mesh gradients that add depth without distraction.
+            </Body>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="h-64 rounded-2xl bg-gradient-primary border border-border-subtle p-6 flex items-end">
+              <div>
+                <Heading level="h4" className="mb-1">
+                  Primary Gradient
+                </Heading>
+                <Caption variant="muted">Soft multi-color blend</Caption>
+              </div>
+            </div>
+
+            <div className="h-64 rounded-2xl bg-gradient-secondary border border-border-subtle p-6 flex items-end">
+              <div>
+                <Heading level="h4" className="mb-1">
+                  Secondary Gradient
+                </Heading>
+                <Caption variant="muted">Warm, gentle transition</Caption>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="p-8 rounded-2xl border border-border-subtle"
+            style={{ background: "var(--page-gradient-energetic)" }}
+          >
+            <Heading level="h4" className="mb-2">
+              Energetic Mesh Gradient
+            </Heading>
+            <Body variant="secondary">
+              This is the default body background - a sophisticated mesh
+              gradient with multiple radial overlays. Smoothed opacity
+              (0.03-0.05) creates subtle depth without harsh glows.
+            </Body>
+          </div>
+        </section>
       </div>
     </div>
+  );
+}
+
+export default function DesignSystemPage() {
+  return (
+    <SnackbarProvider>
+      <DesignSystemContent />
+    </SnackbarProvider>
   );
 }
 

@@ -3,6 +3,17 @@
  *
  * Provides consistent max-width, padding, and background across all pages.
  * Enhanced for Phase 5: Layout Standardization
+ *
+ * BACKGROUND PROP USAGE:
+ * - 'gradient' (DEFAULT): Gray gradient, fully opaque - USE FOR MOST PAGES
+ * - 'white': Pure white (#ffffff) - Use for clean, minimal pages
+ * - 'silver': White (#ffffff via silver-100) - Use for elevated content
+ * - 'primary': White (#ffffff via bg-primary) - Use for main content areas
+ * - 'secondary': Light gray (#f9fafb) - ⚠️ AVOID for full pages (shows body gradient)
+ *
+ * IMPORTANT: 'secondary' background is semi-transparent and will show the body's
+ * colorful gradient (with green tint) on scrolling pages. Only use 'secondary'
+ * for small components, not full-page containers.
  */
 
 import React from "react";
@@ -47,19 +58,25 @@ const paddingMap = {
  *
  * Usage:
  * ```tsx
- * <PageContainer maxWidth="1600px" padding="6">
+ * // Default: gradient background (recommended)
+ * <PageContainer maxWidth="7xl" padding="6">
  *   <PageHeader title="Dashboard" />
- *   <div className="space-y-8">
- *     {content}
- *   </div>
+ *   {content}
  * </PageContainer>
+ *
+ * // Explicit white background for clean pages
+ * <PageContainer maxWidth="4xl" background="white">
+ *   {content}
+ * </PageContainer>
+ *
+ * // ⚠️ AVOID 'secondary' for full pages - use for components only
  * ```
  */
 export function PageContainer({
   children,
   maxWidth = "7xl",
   padding = "6",
-  background = "secondary",
+  background = "gradient",
   className = "",
   animate = true,
   as: Component = "div",

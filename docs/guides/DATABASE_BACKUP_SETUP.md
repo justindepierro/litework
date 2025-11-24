@@ -9,6 +9,7 @@ Complete guide for setting up automated backups and point-in-time recovery for L
 ## 🎯 Overview
 
 This guide covers:
+
 1. **Supabase Built-in Backups** - Automatic daily backups **(Pro Plan $25/month)**
 2. **Point-in-Time Recovery (PITR)** - Restore to any second in time **(Pro Plan $25/month)**
 3. **Manual Export/Import** - On-demand database exports **(FREE - Essential for Free tier)**
@@ -19,11 +20,13 @@ This guide covers:
 ## 📊 Current Backup Status
 
 ### ✅ What We Have Now (FREE):
+
 - **Audit Trail System** - Tracks all deletions and modifications
 - **Soft Delete** - Records marked deleted but kept in database
 - **Schema Exports** - Manual schema dumps in `/database-export/`
 
 ### 🔄 Optional Upgrades to Consider:
+
 - **Automated Backups** - Supabase daily backups **(Requires Pro Plan - $25/month)**
 - **Point-in-Time Recovery** - Restore to specific timestamps **(Requires Pro Plan - $25/month)**
 - **Offsite Backup Storage** - AWS S3 storage **(~$0.07/month - Optional)**
@@ -46,15 +49,16 @@ This guide covers:
    - Click on **Database** → **Backups**
 
 3. **Enable Daily Backups**
+
    ```
    Settings → Database → Backups
-   
+
    ✅ Enable automated daily backups
    ✅ Retention: 7 days (Pro) or 30 days (Team)
    ✅ Backup time: 2:00 AM UTC (avoid peak usage)
    ```
 
-3. **Verify Backup Schedule**
+4. **Verify Backup Schedule**
    - Backups are stored in Supabase's infrastructure
    - Available for restore via dashboard or API
    - Includes full database snapshot (schema + data)
@@ -62,6 +66,7 @@ This guide covers:
 ### Restore from Automated Backup
 
 **Via Supabase Dashboard:**
+
 ```
 1. Go to Database → Backups
 2. Select backup date
@@ -87,9 +92,10 @@ This guide covers:
    - Enables 7-day PITR window
 
 2. **Enable PITR in Dashboard**
+
    ```
    Settings → Database → Point-in-Time Recovery
-   
+
    ✅ Enable PITR
    ✅ Retention: 7 days (Pro) or 30 days (Team)
    ```
@@ -102,6 +108,7 @@ This guide covers:
 ### Restore Using PITR
 
 **Via Supabase Dashboard:**
+
 ```
 1. Go to Database → Point-in-Time Recovery
 2. Select target timestamp (down to the second)
@@ -110,6 +117,7 @@ This guide covers:
 ```
 
 **Via Supabase CLI:**
+
 ```bash
 # Restore to specific timestamp
 supabase db restore \
@@ -118,6 +126,7 @@ supabase db restore \
 ```
 
 ### Use Cases for PITR:
+
 - ✅ Accidental bulk deletion (restore 5 minutes before)
 - ✅ Data corruption from bad migration
 - ✅ Recover from malicious changes
@@ -135,12 +144,14 @@ supabase db restore \
 We've already set this up! Located at: `scripts/database/export-schema.sh`
 
 **Run Manual Export:**
+
 ```bash
 cd /Users/justindepierro/Documents/LiteWork
 ./scripts/database/export-schema.sh
 ```
 
 **Output:**
+
 - `database-export/schema-dump.sql` - Full schema with tables, functions, RLS
 - `database-export/SUMMARY.txt` - Human-readable summary
 - `database-export/TABLES_SUMMARY.txt` - Table structure overview
@@ -196,6 +207,7 @@ This runs every Sunday at 3:00 AM.
 ### Option A: AWS S3 Storage (Recommended)
 
 **Setup S3 Bucket:**
+
 ```bash
 # Install AWS CLI
 brew install awscli
@@ -307,8 +319,8 @@ SELECT * FROM public.audit_log_summary LIMIT 50;
 SELECT public.restore_deleted_invite('invite-uuid-here');
 
 -- Restore a deleted user
-UPDATE public.users 
-SET deleted_at = NULL 
+UPDATE public.users
+SET deleted_at = NULL
 WHERE id = 'user-uuid-here';
 ```
 
@@ -316,7 +328,7 @@ WHERE id = 'user-uuid-here';
 
 ```sql
 -- Find who deleted specific invite
-SELECT 
+SELECT
   performed_by_name,
   performed_by_email,
   deleted_at,
@@ -334,6 +346,7 @@ WHERE record_id = 'invite-uuid-here';
 ### Scenario 1: Deleted Invites (Last 24 Hours)
 
 **Use Audit Trail:**
+
 ```sql
 -- Find recently deleted invites
 SELECT * FROM public.get_deletion_history('invites', NULL, 100)
@@ -347,6 +360,7 @@ SELECT public.restore_deleted_invite('uuid-2');
 ### Scenario 2: Deleted Data (Last 7 Days)
 
 **Use PITR (Pro Plan):**
+
 ```bash
 # Restore to before deletion
 supabase db restore \
@@ -357,6 +371,7 @@ supabase db restore \
 ### Scenario 3: Major Data Loss
 
 **Use Daily Backup:**
+
 ```
 1. Go to Supabase Dashboard
 2. Database → Backups
@@ -392,6 +407,7 @@ supabase projects delete litework-test
 ## 8️⃣ Cost Estimates
 
 ### Free Tier
+
 - **Cost:** $0/month
 - **Includes:**
   - Audit trail (deletion tracking)
@@ -400,6 +416,7 @@ supabase projects delete litework-test
   - ⚠️ **NO PITR**
 
 ### Supabase Pro Plan
+
 - **Cost:** $25/month
 - **Includes:**
   - ✅ 7-day PITR (restore to any second)
@@ -409,11 +426,13 @@ supabase projects delete litework-test
   - ✅ Audit trail (included)
 
 ### AWS S3 Storage (Optional)
+
 - **Cost:** ~$0.023/GB/month
 - **Estimate:** 100MB backups × 30 days = ~$0.07/month
 - **Negligible cost**
 
 ### Total Monthly Cost Options
+
 - **Free Tier:** $0 (audit trail + manual exports only)
 - **Pro Plan:** $25/month (automated backups + PITR)
 - **Pro + S3:** $25.07/month (automated backups + PITR + offsite storage)
@@ -425,12 +444,14 @@ supabase projects delete litework-test
 ### For Production (Recommended):
 
 ✅ **Enable:**
+
 1. Supabase Pro Plan ($25/month) - **Required for automated backups + PITR**
 2. Daily automated backups (included with Pro)
 3. Weekly exports to S3 ($0.07/month - optional)
 4. Audit trail (already implemented - FREE)
 
 ✅ **Benefits:**
+
 - ✅ Restore to any second in last 7 days
 - ✅ Multiple backup layers
 - ✅ Complete deletion tracking
@@ -440,12 +461,14 @@ supabase projects delete litework-test
 ### For Development/Budget (Free Tier):
 
 ✅ **Enable:**
+
 1. Supabase Free Plan ($0/month)
 2. ⚠️ **NO automated backups** (Pro required)
 3. Weekly manual exports (local storage - **ESSENTIAL**)
 4. Audit trail (already implemented - FREE)
 
 ✅ **Benefits:**
+
 - ✅ Zero cost
 - ✅ Deletion tracking via audit trail
 - ✅ Manual recovery from exports

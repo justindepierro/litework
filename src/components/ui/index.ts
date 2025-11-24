@@ -16,3 +16,9 @@ export * from "./PageHeader";
 // Existing components
 export * from "./LoadingSpinner";
 export * from "./ErrorBoundary";
+
+// New enhanced components
+export { Tooltip } from "./Tooltip";
+export { SnackbarProvider, useSnackbar } from "./Snackbar";
+export { ProgressBar } from "./ProgressBar";
+export { Chip } from "./Chip";

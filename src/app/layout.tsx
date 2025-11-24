@@ -12,7 +12,7 @@ import PageTransition from "@/components/PageTransition";
 import { SkipLink } from "@/components/SkipLink";
 import { initializeDevelopmentEnvironment } from "@/lib/dev-init";
 import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
-import { CriticalCSS } from "@/components/CriticalCSS";
+import { BottomNavWrapper } from "@/components/navigation/BottomNavWrapper";
 
 // Initialize development environment (only in dev)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
@@ -101,9 +101,6 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable}`}
     >
       <head>
-        {/* Inline critical CSS for instant rendering */}
-        <CriticalCSS />
-
         {/* Aggressive resource hints for LCP */}
         <link
           rel="preconnect"
@@ -139,9 +136,15 @@ export default function RootLayout({
                     id="main-content"
                     tabIndex={-1}
                     className="pt-16 sm:pt-18"
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      minHeight: "100vh",
+                    }}
                   >
                     <PageTransition>{children}</PageTransition>
                   </main>
+                  <BottomNavWrapper />
                   <ServiceWorkerRegistration />
                 </ClientUIWrapper>
               </ToastProvider>
