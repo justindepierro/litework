@@ -73,46 +73,49 @@ export default function GroupCompletionStats() {
       ) : (
         <div className="space-y-3 flex-1 overflow-y-auto overflow-x-hidden pr-1">
           {groupStats.map((group, index) => {
-            // Colorful accent for each card based on index
+            // Vibrant colorful accent for each card based on index
             const accentColors = [
               {
-                border: "border-accent-purple-200",
-                bg: "bg-accent-purple-50/30",
-                glow: "shadow-accent-purple-500/10",
+                border: "border-accent-purple-400",
+                bg: "bg-linear-to-br from-accent-purple-100 to-accent-purple-50",
+                glow: "shadow-accent-purple-500/20",
+                dotBg: "bg-accent-purple-400",
               },
               {
-                border: "border-accent-blue-200",
-                bg: "bg-accent-blue-50/30",
-                glow: "shadow-accent-blue-500/10",
+                border: "border-accent-blue-400",
+                bg: "bg-linear-to-br from-accent-blue-100 to-accent-blue-50",
+                glow: "shadow-accent-blue-500/20",
+                dotBg: "bg-accent-blue-400",
               },
               {
-                border: "border-accent-pink-200",
-                bg: "bg-accent-pink-50/30",
-                glow: "shadow-accent-pink-500/10",
+                border: "border-accent-pink-400",
+                bg: "bg-linear-to-br from-accent-pink-100 to-accent-pink-50",
+                glow: "shadow-accent-pink-500/20",
+                dotBg: "bg-accent-pink-400",
               },
               {
-                border: "border-accent-cyan-200",
-                bg: "bg-accent-cyan-50/30",
-                glow: "shadow-accent-cyan-500/10",
+                border: "border-accent-cyan-400",
+                bg: "bg-linear-to-br from-accent-cyan-100 to-accent-cyan-50",
+                glow: "shadow-accent-cyan-500/20",
+                dotBg: "bg-accent-cyan-400",
               },
               {
-                border: "border-accent-orange-200",
-                bg: "bg-accent-orange-50/30",
-                glow: "shadow-accent-orange-500/10",
+                border: "border-accent-orange-400",
+                bg: "bg-linear-to-br from-accent-orange-100 to-accent-orange-50",
+                glow: "shadow-accent-orange-500/20",
+                dotBg: "bg-accent-orange-400",
               },
             ];
             const accent = accentColors[index % accentColors.length];
 
             return (
-              <GlassCard
+              <div
                 key={group.id}
-                variant="default"
-                padding="sm"
-                className={`border-2 ${accent.border} hover:border-accent-green-400 hover:shadow-xl hover:${accent.glow} hover:scale-[1.02] transition-all duration-300 cursor-pointer`}
+                className={`${accent.bg} border-2 ${accent.border} rounded-2xl p-4 hover:border-accent-green-500 hover:shadow-xl hover:${accent.glow} hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden`}
               >
                 {/* Colorful accent dot in top-left */}
                 <div
-                  className={`absolute top-2 left-2 w-2 h-2 rounded-full ${accent.bg} border ${accent.border} shadow-sm`}
+                  className={`absolute top-2 left-2 w-2 h-2 rounded-full ${accent.dotBg} shadow-md`}
                 />
 
                 {/* Header with group name and completion rate */}
@@ -159,7 +162,7 @@ export default function GroupCompletionStats() {
                 {/* Stats row with colorful accent backgrounds */}
                 <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                   <div
-                    className={`min-w-0 rounded-lg p-2 ${accent.bg} border ${accent.border}`}
+                    className={`min-w-0 rounded-lg p-2 bg-white/60 border ${accent.border}`}
                   >
                     <Body
                       variant="secondary"
@@ -173,7 +176,7 @@ export default function GroupCompletionStats() {
                     </Body>
                   </div>
                   <div
-                    className={`min-w-0 rounded-lg p-2 ${accent.bg} border ${accent.border}`}
+                    className={`min-w-0 rounded-lg p-2 bg-white/60 border ${accent.border}`}
                   >
                     <Body
                       variant="secondary"
@@ -203,7 +206,7 @@ export default function GroupCompletionStats() {
                     ></div>
                   </div>
                 </div>
-              </GlassCard>
+              </div>
             );
           })}
         </div>

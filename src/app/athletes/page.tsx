@@ -434,52 +434,52 @@ export default withPageErrorBoundary(function AthletesPage() {
           <Button
             onClick={() => modals.setShowHistoryModal(true)}
             variant="secondary"
-            className="shadow-md hover:shadow-lg border-accent-light hover:border-accent transition-colors"
+            className="shadow-md hover:shadow-lg bg-linear-to-br from-accent-purple-100 to-accent-purple-50 border-accent-purple-400 hover:border-accent-purple-500 transition-all"
             leftIcon={
-              <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple" />
+              <History className="w-5 h-5 sm:w-4 sm:h-4 text-accent-purple-600" />
             }
           >
-            History
+            <Body className="text-accent-purple-700">History</Body>
           </Button>
           <Button
             onClick={() => modals.setShowBulkModal(true)}
             variant="secondary"
-            className="shadow-md hover:shadow-lg border-primary-light hover:border-primary transition-colors"
+            className="shadow-md hover:shadow-lg bg-linear-to-br from-accent-blue-100 to-accent-blue-50 border-accent-blue-400 hover:border-accent-blue-500 transition-all"
             leftIcon={
-              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue" />
+              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-blue-600" />
             }
           >
-            Bulk Actions
+            <Body className="text-accent-blue-700">Bulk Actions</Body>
           </Button>
           <Button
             onClick={() => modals.setShowKPIManagementModal(true)}
             variant="secondary"
-            className="shadow-md hover:shadow-lg border-warning-light hover:border-warning bg-warning-lightest hover:bg-warning-light transition-colors"
+            className="shadow-md hover:shadow-lg bg-linear-to-br from-accent-amber-100 to-accent-orange-100 border-accent-amber-400 hover:border-accent-amber-500 transition-all"
             leftIcon={
-              <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
+              <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-amber-600" />
             }
           >
-            <Body className="text-warning-dark">Create KPI</Body>
+            <Body className="text-accent-amber-700">Create KPI</Body>
           </Button>
           <Button
             onClick={() => modals.setShowBulkKPIAssignmentModal(true)}
             variant="secondary"
-            className="shadow-md hover:shadow-lg border-success-light hover:border-success bg-success-lightest hover:bg-success-light transition-colors"
+            className="shadow-md hover:shadow-lg bg-linear-to-br from-accent-green-100 to-accent-emerald-100 border-accent-green-400 hover:border-accent-green-500 transition-all"
             leftIcon={
-              <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
+              <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green-600" />
             }
           >
-            <Body className="text-success-dark">Assign KPIs</Body>
+            <Body className="text-accent-green-700">Assign KPIs</Body>
           </Button>
           <Button
             onClick={() => modals.setShowGroupFormModal(true)}
             variant="secondary"
-            className="shadow-md hover:shadow-lg border-accent-light hover:border-accent bg-accent-lightest hover:bg-accent-light transition-colors"
+            className="shadow-md hover:shadow-lg bg-linear-to-br from-accent-pink-100 to-accent-purple-100 border-accent-pink-400 hover:border-accent-pink-500 transition-all"
             leftIcon={
-              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
+              <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink-600" />
             }
           >
-            <Body className="text-accent-dark">Add Group</Body>
+            <Body className="text-accent-pink-700">Add Group</Body>
           </Button>
           <Button
             onClick={() => modals.setShowInviteModal(true)}

@@ -35,13 +35,13 @@ const QuickActions = memo(function QuickActions() {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: "bg-accent-blue-500/10 hover:bg-accent-blue-500/20 text-accent-blue-700 border border-accent-blue-200 hover:border-accent-blue-300",
+      blue: "bg-linear-to-br from-accent-blue-100 to-accent-blue-200 hover:from-accent-blue-200 hover:to-accent-blue-300 text-accent-blue-700 border-2 border-accent-blue-400 hover:border-accent-blue-500 shadow-md hover:shadow-lg",
       orange:
-        "bg-accent-orange-500/10 hover:bg-accent-orange-500/20 text-accent-orange-700 border border-accent-orange-200 hover:border-accent-orange-300",
+        "bg-linear-to-br from-accent-orange-100 to-accent-orange-200 hover:from-accent-orange-200 hover:to-accent-orange-300 text-accent-orange-700 border-2 border-accent-orange-400 hover:border-accent-orange-500 shadow-md hover:shadow-lg",
       purple:
-        "bg-accent-purple-500/10 hover:bg-accent-purple-500/20 text-accent-purple-700 border border-accent-purple-200 hover:border-accent-purple-300",
+        "bg-linear-to-br from-accent-purple-100 to-accent-purple-200 hover:from-accent-purple-200 hover:to-accent-purple-300 text-accent-purple-700 border-2 border-accent-purple-400 hover:border-accent-purple-500 shadow-md hover:shadow-lg",
       green:
-        "bg-accent-green-500/10 hover:bg-accent-green-500/20 text-accent-green-700 border border-accent-green-200 hover:border-accent-green-300",
+        "bg-linear-to-br from-accent-green-100 to-accent-green-200 hover:from-accent-green-200 hover:to-accent-green-300 text-accent-green-700 border-2 border-accent-green-400 hover:border-accent-green-500 shadow-md hover:shadow-lg",
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };

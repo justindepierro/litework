@@ -106,12 +106,18 @@ const TodayOverview = memo(function TodayOverview() {
               workout.completedCount,
               workout.athleteCount
             );
+            
+            // Gradient based on completion rate
+            const gradientClass = rate >= 90 
+              ? "bg-linear-to-br from-accent-green-50 to-white border-accent-green-400" 
+              : rate >= 50 
+              ? "bg-linear-to-br from-accent-blue-50 to-white border-accent-blue-400"
+              : "bg-linear-to-br from-accent-amber-50 to-white border-accent-amber-400";
+            
             return (
-              <GlassCard
+              <div
                 key={workout.id}
-                variant="default"
-                padding="md"
-                className="hover:border-accent-cyan-400 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                className={`${gradientClass} border-2 rounded-2xl p-4 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
@@ -204,7 +210,7 @@ const TodayOverview = memo(function TodayOverview() {
                     </Body>
                   </div>
                 )}
-              </GlassCard>
+              </div>
             );
           })}
         </div>
