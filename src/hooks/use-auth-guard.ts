@@ -12,7 +12,7 @@ export function useRequireAuth() {
 
   useEffect(() => {
     if (!loading && !user && !hasRedirected.current) {
-      console.log("[useRequireAuth] No user found, redirecting to login");
+      // Redirecting to login - silent
       hasRedirected.current = true;
       router.push("/login");
     }

@@ -115,7 +115,7 @@ export function useDashboardOperations({
         if (data.success && data.settings?.welcome_message) {
           setCoachWelcomeMessage(data.settings.welcome_message);
         } else if (!data.success && data.error) {
-          console.warn("Coach welcome message unavailable:", data.error);
+          // Coach welcome message unavailable - non-critical
         }
       }
     } catch (error) {

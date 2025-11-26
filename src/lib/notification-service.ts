@@ -118,17 +118,13 @@ export async function sendPushNotification(
 
     // 2. Check if notification category is enabled
     if (!isCategoryEnabled(prefs, payload.category)) {
-      console.log(
-        `⏭️  Category '${payload.category}' disabled for user ${userId}`
-      );
+      // Category disabled - silent
       return { success: true, sent: 0, failed: 0 };
     }
 
     // 3. Check quiet hours
     if (isQuietHours(prefs.quiet_hours)) {
-      console.log(
-        `🔕 Quiet hours active for user ${userId}, skipping notification`
-      );
+      // Quiet hours - silent
       return { success: true, sent: 0, failed: 0 };
     }
 

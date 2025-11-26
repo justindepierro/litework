@@ -43,21 +43,32 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protect routes that require authentication
-  // This is a backup to the client-side protection
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/api/auth") &&
-    !request.nextUrl.pathname.startsWith("/_next") &&
-    !request.nextUrl.pathname.startsWith("/static") &&
-    !request.nextUrl.pathname.startsWith("/public") &&
-    !request.nextUrl.pathname.includes(".") // Exclude static files
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    // const url = request.nextUrl.clone()
-    // url.pathname = '/login'
-    // return NextResponse.redirect(url)
+  // Server-side redirect for defense-in-depth and zero-flash UX
+  const publicPaths = [
+    "/login",
+    "/signup",
+    "/auth",
+    "/reset-password",
+    "/update-password",
+    "/api/auth",
+    "/_next",
+    "/static",
+    "/public",
+    "/offline",
+  ];
+
+  const isPublicPath = publicPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
+  const isStaticFile = request.nextUrl.pathname.includes(".");
+
+  if (!user && !isPublicPath && !isStaticFile) {
+    // User not authenticated - redirect to login
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    // Preserve intended destination for redirect after login
+    url.searchParams.set("redirectTo", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
   }
 
   return response;

@@ -8,25 +8,17 @@
  * - Current workout streak
  */
 
-import { NextResponse } from "next/server";
-import { getAuthenticatedUser, getAdminClient } from "@/lib/auth-server";
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth, getAdminClient } from "@/lib/auth-server";
 import { calculateWorkoutStreak } from "@/lib/analytics-utils";
 
 // Cache dashboard stats for 1 minute (frequently changing data)
 export const revalidate = 60;
 
-export async function GET() {
-  const { user, error: authError } = await getAuthenticatedUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { success: false, error: authError || "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  try {
-    const supabase = getAdminClient();
+export async function GET(request: NextRequest) {
+  return withAuth(request, async (user) => {
+    try {
+      const supabase = getAdminClient();
     const now = new Date();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
@@ -65,16 +57,17 @@ export async function GET() {
   } catch (error) {
     console.error("Dashboard stats error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch dashboard statistics",
-        stats: {
-          workoutsThisWeek: 0,
-          personalRecords: 0,
-          currentStreak: 0,
+        {
+          success: false,
+          error: "Failed to fetch dashboard statistics",
+          stats: {
+            workoutsThisWeek: 0,
+            personalRecords: 0,
+            currentStreak: 0,
+          },
         },
-      },
-      { status: 500 }
-    );
-  }
+        { status: 500 }
+      );
+    }
+  });
 }

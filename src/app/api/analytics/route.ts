@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getAuthenticatedUser,
+  withAuth,
   getAdminClient,
   isCoach,
   isAdmin,
@@ -8,16 +8,9 @@ import {
 import { calculateDetailedStreaks } from "@/lib/analytics-utils";
 
 export async function GET(request: NextRequest) {
-  try {
-    const { user, error: authError } = await getAuthenticatedUser();
-    if (!user) {
-      return NextResponse.json(
-        { error: authError || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    const supabase = getAdminClient();
+  return withAuth(request, async (user) => {
+    try {
+      const supabase = getAdminClient();
 
     const { searchParams } = new URL(request.url);
     const athleteId = searchParams.get("athleteId");
@@ -291,121 +284,116 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    return NextResponse.json({
-      success: true,
-      data: analyticsData,
-    });
-  } catch (error) {
-    console.error("Analytics API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+      return NextResponse.json({
+        success: true,
+        data: analyticsData,
+      });
+    } catch (error) {
+      console.error("Analytics API error:", error);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  });
 }
 
 // POST endpoint for generating analytics reports
 export async function POST(request: NextRequest) {
-  try {
-    const { user, error: authError } = await getAuthenticatedUser();
-    if (!user) {
-      return NextResponse.json(
-        { error: authError || "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    if (!isCoach(user)) {
+  return withAuth(request, async (user) => {
+    try {
+      if (!isCoach(user)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
-        { status: 403 }
+          { status: 403 }
+        );
+      }
+
+      const body = await request.json();
+      const { athleteIds, reportType, timeframe } = body;
+
+      const supabase = getAdminClient();
+
+      // Generate bulk analytics report
+      const reportData = await Promise.all(
+        athleteIds.map(async (athleteId: string) => {
+          // Verify access to athlete
+          const { data: athlete } = await supabase
+            .from("users")
+            .select("id, first_name, last_name, coach_id")
+            .eq("id", athleteId)
+            .single();
+
+          if (
+            !athlete ||
+            (athlete.coach_id !== user.id && user.role !== "admin")
+          ) {
+            return null;
+          }
+
+          // Get basic analytics for each athlete
+          const startDate = new Date();
+          switch (timeframe) {
+            case "1m":
+              startDate.setMonth(startDate.getMonth() - 1);
+              break;
+            case "3m":
+              startDate.setMonth(startDate.getMonth() - 3);
+              break;
+            case "6m":
+              startDate.setMonth(startDate.getMonth() - 6);
+              break;
+            case "1y":
+              startDate.setFullYear(startDate.getFullYear() - 1);
+              break;
+          }
+
+          const { data: sessions } = await supabase
+            .from("workout_sessions")
+            .select("id, total_volume, started_at")
+            .eq("user_id", athleteId)
+            .gte("started_at", startDate.toISOString());
+
+          interface SessionData {
+            total_volume?: number;
+          }
+
+          return {
+            athleteId,
+            athleteName: `${athlete.first_name} ${athlete.last_name}`,
+            totalWorkouts: sessions?.length || 0,
+            totalVolume:
+              sessions?.reduce(
+                (sum: number, s: SessionData) => sum + (s.total_volume || 0),
+                0
+              ) || 0,
+            avgVolume: sessions?.length
+              ? Math.round(
+                  sessions.reduce(
+                    (sum: number, s: SessionData) => sum + (s.total_volume || 0),
+                    0
+                  ) / sessions.length
+                )
+              : 0,
+          };
+        })
+      );
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          reportType,
+          timeframe,
+          athletes: reportData.filter(Boolean),
+          generatedAt: new Date().toISOString(),
+        },
+      });
+      } catch (error) {
+        console.error("Analytics report generation error:", error);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
       );
     }
-
-    const body = await request.json();
-    const { athleteIds, reportType, timeframe } = body;
-
-    const supabase = getAdminClient();
-
-    // Generate bulk analytics report
-    const reportData = await Promise.all(
-      athleteIds.map(async (athleteId: string) => {
-        // Verify access to athlete
-        const { data: athlete } = await supabase
-          .from("users")
-          .select("id, first_name, last_name, coach_id")
-          .eq("id", athleteId)
-          .single();
-
-        if (
-          !athlete ||
-          (athlete.coach_id !== user.id && user.role !== "admin")
-        ) {
-          return null;
-        }
-
-        // Get basic analytics for each athlete
-        const startDate = new Date();
-        switch (timeframe) {
-          case "1m":
-            startDate.setMonth(startDate.getMonth() - 1);
-            break;
-          case "3m":
-            startDate.setMonth(startDate.getMonth() - 3);
-            break;
-          case "6m":
-            startDate.setMonth(startDate.getMonth() - 6);
-            break;
-          case "1y":
-            startDate.setFullYear(startDate.getFullYear() - 1);
-            break;
-        }
-
-        const { data: sessions } = await supabase
-          .from("workout_sessions")
-          .select("id, total_volume, started_at")
-          .eq("user_id", athleteId)
-          .gte("started_at", startDate.toISOString());
-
-        interface SessionData {
-          total_volume?: number;
-        }
-
-        return {
-          athleteId,
-          athleteName: `${athlete.first_name} ${athlete.last_name}`,
-          totalWorkouts: sessions?.length || 0,
-          totalVolume:
-            sessions?.reduce(
-              (sum: number, s: SessionData) => sum + (s.total_volume || 0),
-              0
-            ) || 0,
-          avgVolume: sessions?.length
-            ? Math.round(
-                sessions.reduce(
-                  (sum: number, s: SessionData) => sum + (s.total_volume || 0),
-                  0
-                ) / sessions.length
-              )
-            : 0,
-        };
-      })
-    );
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        reportType,
-        timeframe,
-        athletes: reportData.filter(Boolean),
-        generatedAt: new Date().toISOString(),
-      },
-    });
-  } catch (error) {
-    console.error("Analytics report generation error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+  });
 }

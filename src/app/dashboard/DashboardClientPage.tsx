@@ -302,8 +302,7 @@ function DashboardClientPageComponent({
 
   // Coach/Admin Dashboard
   if (isCoachOrAdmin) {
-    console.log(">>> RENDERING COACH/ADMIN DASHBOARD <<<");
-    console.trace("Coach dashboard render stack");
+    // Dashboard render - debug logs removed
     return (
       <div className="min-h-screen px-4 py-6 bg-linear-to-br from-accent-blue-50 via-accent-purple-50 to-accent-pink-50">
         <div className="max-w-7xl mx-auto space-y-6">
@@ -725,7 +724,7 @@ function DashboardClientPageComponent({
                 showAddButton={true}
                 onAddClick={() => {
                   // TODO: Open goal creation modal
-                  console.log("Open goal modal");
+                  // Open goal modal
                 }}
               />
             </Suspense>

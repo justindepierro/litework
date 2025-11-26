@@ -152,15 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setInitializing(false);
           initializingRef.current = false;
 
-          if (currentUser) {
-            console.log(
-              "[AuthContext] User authenticated:",
-              currentUser.email,
-              currentUser.role
-            );
-          } else {
-            console.log("[AuthContext] No authenticated user found");
-          }
+          // User authenticated successfully - silent in production
         }
       } catch (error) {
         clearTimeout(timeout);
@@ -199,19 +191,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(newUser);
 
-        // Log session changes for debugging
-        if (previousUser && !newUser) {
-          console.warn("[AUTH] User session ended - possible logout or expiry");
-        } else if (!previousUser && newUser) {
-          console.log("[AUTH] User session started:", newUser.email);
-        } else if (newUser && previousUser && newUser.id !== previousUser.id) {
-          console.warn(
-            "[AUTH] User session changed - security alert",
-            previousUser.email,
-            "->",
-            newUser.email
-          );
-        }
+        // Session changes tracked silently - logs removed for production
 
         // If user logged out elsewhere, redirect to login
         // Add delay to prevent premature redirects during session refresh
@@ -219,7 +199,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Wait a moment to see if this is just a temporary state during refresh
           setTimeout(() => {
             if (!userRef.current && mountedRef.current) {
-              console.log("[AUTH] Session lost, redirecting to login");
               router.push("/login");
             }
           }, 1000); // 1 second grace period
@@ -237,9 +216,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           !authOperationInProgress.current
         ) {
           try {
-            console.log("[AUTH] Refreshing session...");
             await authClient.refreshSession();
-            console.log("[AUTH] Session refreshed successfully");
           } catch (error) {
             console.error("[AUTH] Failed to refresh session:", error);
 

@@ -527,7 +527,7 @@ export async function getSession() {
 
     // Log timeout as warning (expected on slow connections), other errors as error
     if (errorMessage.includes("timeout")) {
-      console.warn(`[AUTH] Session fetch timeout - check network connection`);
+      // Session fetch timeout - silent
     } else {
       logAuthEvent(
         correlationId,
@@ -733,9 +733,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
 
           // Use warn instead of error for timeout (expected on slow connections)
           if (errorMessage.includes("timeout")) {
-            console.warn(
-              `[AUTH] Profile fetch timeout - check network connection`
-            );
+            // Profile fetch timeout - silent
           } else {
             timer.error("Profile fetch failed", {
               message: errorMessage,
@@ -800,9 +798,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
 
         // Log timeout as warning (expected on slow connections), other errors as error
         if (errorMessage.includes("timeout")) {
-          console.warn(
-            `[AUTH] Profile fetch timeout in auth state change - check network connection`
-          );
+          // Profile fetch timeout in auth change - silent
         } else {
           timer.error("Auth state change error", {
             type: classified.type,

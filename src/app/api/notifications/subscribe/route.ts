@@ -4,11 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
-} from "@/lib/auth-server";
+import { withAuth } from "@/lib/auth-server";
 import {
   savePushSubscription,
   removePushSubscription,
@@ -19,16 +15,8 @@ import {
  * Subscribe to push notifications
  */
 export async function POST(request: NextRequest) {
-  const { user, error: authError } = await getAuthenticatedUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { success: false, error: authError || "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  try {
+  return withAuth(request, async (user) => {
+    try {
     const body = await request.json();
     const { subscription, deviceName } = body;
 
@@ -61,14 +49,15 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Successfully subscribed to push notifications",
       subscriptionId: result.id,
-    });
-  } catch (error) {
-    console.error("❌ Error subscribing to push notifications:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+      });
+    } catch (error) {
+      console.error("❌ Error subscribing to push notifications:", error);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  });
 }
 
 /**
@@ -76,45 +65,38 @@ export async function POST(request: NextRequest) {
  * Unsubscribe from push notifications
  */
 export async function DELETE(request: NextRequest) {
-  const { user, error: authError } = await getAuthenticatedUser();
+  return withAuth(request, async (user) => {
+    try {
+        const body = await request.json();
+      const { endpoint } = body;
 
-  if (!user) {
-    return NextResponse.json(
-      { success: false, error: authError || "Unauthorized" },
-      { status: 401 }
-    );
-  }
+      if (!endpoint) {
+        return NextResponse.json(
+          { error: "Endpoint is required" },
+          { status: 400 }
+        );
+      }
 
-  try {
-    const body = await request.json();
-    const { endpoint } = body;
+      // Remove subscription from database
+      const result = await removePushSubscription(user.id, endpoint);
 
-    if (!endpoint) {
-      return NextResponse.json(
-        { error: "Endpoint is required" },
-        { status: 400 }
-      );
-    }
+      if (!result.success) {
+        return NextResponse.json(
+          { error: result.error || "Failed to remove subscription" },
+          { status: 500 }
+        );
+      }
 
-    // Remove subscription from database
-    const result = await removePushSubscription(user.id, endpoint);
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || "Failed to remove subscription" },
+      return NextResponse.json({
+        success: true,
+        message: "Successfully unsubscribed from push notifications",
+      });
+  } catch (error) {
+        console.error("❌ Error unsubscribing from push notifications:", error);
+        return NextResponse.json(
+        { error: "Internal server error" },
         { status: 500 }
       );
     }
-
-    return NextResponse.json({
-      success: true,
-      message: "Successfully unsubscribed from push notifications",
-    });
-  } catch (error) {
-    console.error("❌ Error unsubscribing from push notifications:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+  });
 }

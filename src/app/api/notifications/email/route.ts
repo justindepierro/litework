@@ -4,11 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getAuthenticatedUser,
-  hasRoleOrHigher,
-  isCoach,
-} from "@/lib/auth-server";
+import { withAuth, isCoach } from "@/lib/auth-server";
 import { sendEmailNotification, sendEmailToUsers } from "@/lib/email-service";
 import type { EmailNotificationPayload } from "@/lib/email-service";
 import type { NotificationCategory } from "@/lib/notification-service";
@@ -22,23 +18,14 @@ import type { NotificationCategory } from "@/lib/notification-service";
  * - Multiple users: { users: [{ userId, email, name }], subject, category, templateData }
  */
 export async function POST(request: NextRequest) {
-  const { user, error: authError } = await getAuthenticatedUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { success: false, error: authError || "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  if (!isCoach(user)) {
-    return NextResponse.json(
-      { success: false, error: "Forbidden - Coach access required" },
-      { status: 403 }
-    );
-  }
-
-  try {
+  return withAuth(request, async (user) => {
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden - Coach access required" },
+        { status: 403 }
+      );
+    }
+    try {
     const body = await request.json();
 
     // Single email
@@ -127,7 +114,8 @@ export async function POST(request: NextRequest) {
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
-    );
-  }
+        { status: 500 }
+      );
+    }
+  });
 }

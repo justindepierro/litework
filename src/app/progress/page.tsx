@@ -1,20 +1,16 @@
-"use client";
-
-import { useAthleteGuard } from "@/hooks/use-auth-guard";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PageContainer } from "@/components/layout";
 import ProgressDashboard from "@/components/ProgressDashboard";
 import { TrendingUp } from "lucide-react";
 
-export default function ProgressPage() {
-  const { user, isLoading } = useAthleteGuard();
+// Server Component - Auth check happens on server
+export default async function ProgressPage() {
+  const { user, error } = await getAuthenticatedUser();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
-        <div className="text-heading-secondary text-lg">Loading...</div>
-      </div>
-    );
+  if (!user) {
+    redirect("/login?redirectTo=/progress");
   }
 
   return (
@@ -28,7 +24,7 @@ export default function ProgressPage() {
         />
       </div>
       <ProgressDashboard
-        athleteId={user!.role === "athlete" ? user!.id : undefined}
+        athleteId={user.role === "athlete" ? user.id : undefined}
       />
     </PageContainer>
   );

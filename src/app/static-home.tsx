@@ -64,7 +64,7 @@ export default function StaticHome() {
               <Link
                 href="/register"
                 className="group inline-flex items-center justify-center px-10 py-4 text-lg font-bold bg-white border-2 border-white rounded-xl hover:bg-silver-50 transition-all shadow-lg min-h-[56px]"
-                style={{ color: 'rgb(15, 23, 42)' }}
+                style={{ color: "rgb(15, 23, 42)" }}
               >
                 Sign Up Free
               </Link>

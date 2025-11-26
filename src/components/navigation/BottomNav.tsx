@@ -41,10 +41,14 @@ export function BottomNav({ className = "" }: BottomNavProps) {
 
   return (
     <nav
-      className={`fixed bottom-0 left-0 right-0 bg-white border-t border-silver-300 ${className}`}
+      className={`fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-silver-300 shadow-lg md:hidden ${className}`}
       style={{
         paddingBottom: "max(env(safe-area-inset-bottom), 0.5rem)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
       }}
+      role="navigation"
+      aria-label="Mobile bottom navigation"
     >
       <div className="flex items-center justify-around px-2 pt-2">
         {navItems.map((item) => {
@@ -53,20 +57,22 @@ export function BottomNav({ className = "" }: BottomNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center min-w-16 py-2 px-3 rounded-lg transition-colors ${
+              className={`flex flex-col items-center justify-center touch-target flex-1 max-w-24 py-2 px-2 rounded-xl transition-all duration-200 ${
                 item.isActive
-                  ? "text-primary bg-primary/10"
-                  : "text-silver-600 hover:text-navy-900 hover:bg-silver-100"
+                  ? "text-primary bg-primary/10 scale-105"
+                  : "text-silver-600 active:bg-silver-100 active:scale-95"
               }`}
+              aria-label={item.label}
+              aria-current={item.isActive ? "page" : undefined}
             >
               <Icon
-                className={`w-6 h-6 mb-1 ${
-                  item.isActive ? "text-primary" : "text-current"
+                className={`w-6 h-6 mb-1 transition-transform ${
+                  item.isActive ? "text-primary scale-110" : "text-current"
                 }`}
               />
               <Caption
-                className={`text-xs font-medium ${
-                  item.isActive ? "text-primary" : "text-current"
+                className={`text-xs font-medium leading-tight ${
+                  item.isActive ? "text-primary font-semibold" : "text-current"
                 }`}
               >
                 {item.label}

@@ -1,43 +1,29 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/lib/auth-server";
 import DashboardClientPage from "./DashboardClientPage";
-import { useAuth } from "@/contexts/AuthContext";
 import type { DashboardBootstrapData } from "@/lib/dashboard-data";
 
-// Empty initial data - will be loaded client-side (role will be added from user)
-const emptyData = {
-  stats: undefined,
-  assignments: [],
-  workouts: [],
-  groups: [],
-  athletes: [],
-  coachWelcomeMessage: undefined,
-};
+// Server Component - Auth check happens on server
+export default async function DashboardPage() {
+  // Server-side auth check - no JavaScript required
+  const { user, error } = await getAuthenticatedUser();
 
-export default function DashboardPage() {
-  const { user, loading } = useAuth();
-
-  // Show loading state while auth is initializing
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  // If no user after loading completes, DashboardClientPage's useAuthGuard will handle redirect
+  // Redirect to login if not authenticated
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    redirect("/login?redirectTo=/dashboard");
   }
 
-  // Create data with user role
+  // Empty initial data - will be loaded client-side (role will be added from user)
+  const emptyData = {
+    stats: undefined,
+    assignments: [],
+    workouts: [],
+    groups: [],
+    athletes: [],
+    coachWelcomeMessage: undefined,
+  };
+
+  // Create data with user role from server
   const dataWithRole: DashboardBootstrapData = {
     ...emptyData,
     role: user.role,

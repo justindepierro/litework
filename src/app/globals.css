@@ -43,9 +43,17 @@ body {
 /* SAFE AREA HANDLING FOR MOBILE DEVICES */
 /* ============================================ */
 
-/* Support for iOS notch and home indicator */
+/* Support for iOS notch, Dynamic Island, and home indicator */
 .safe-area-inset {
   padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-inset-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -57,20 +65,50 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
+/* Margin variants for fixed elements */
+.safe-area-mt {
+  margin-top: env(safe-area-inset-top);
+}
+
+.safe-area-mb {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+/* Height calculations accounting for safe areas */
+.h-screen-safe {
+  height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+
+.min-h-screen-safe {
+  min-height: calc(
+    100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+  );
+}
+
 /* ============================================ */
 /* TOUCH TARGET UTILITIES (WCAG 2.1 - 2.5.5) */
 /* ============================================ */
 
-/* Minimum 48x48px touch targets for mobile devices */
-.btn-touch {
+/* Minimum 44x44px touch targets - WCAG 2.1 Level AAA */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Standard 48x48px touch targets - WCAG recommended */
+.btn-touch,
+.touch-target-md {
   min-height: 48px;
   min-width: 48px;
-  touch-action: manipulation; /* Disable double-tap zoom on button */
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
 /* Large touch targets for gym/workout context (56px) */
-.btn-touch-lg {
+.btn-touch-lg,
+.touch-target-lg {
   min-height: 56px;
   min-width: 56px;
   touch-action: manipulation;
@@ -78,11 +116,25 @@ body {
 }
 
 /* Extra large for primary actions in workout mode */
-.btn-touch-xl {
+.btn-touch-xl,
+.touch-target-xl {
   min-height: 64px;
   min-width: 64px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Touch spacing - adequate gaps between touch targets */
+.touch-gap {
+  gap: 8px; /* Minimum 8px between touch targets */
+}
+
+.touch-gap-md {
+  gap: 12px; /* Comfortable spacing */
+}
+
+.touch-gap-lg {
+  gap: 16px; /* Generous spacing for workout mode */
 }
 
 /* ============================================ */
@@ -278,6 +330,62 @@ body {
     var(--color-accent-amber-500),
     var(--color-accent-orange-500)
   );
+}
+
+/* ============================================ */
+/* MOBILE-SPECIFIC UTILITIES */
+/* ============================================ */
+
+/* Prevent text selection on mobile for buttons/controls */
+.no-select-mobile {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Smooth scrolling with momentum on iOS */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+/* Hide scrollbars on mobile (optional, for cleaner UI) */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile card layouts - better than tables */
+.mobile-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+/* Horizontal scroll containers for mobile */
+.scroll-container-mobile {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.scroll-container-mobile > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
 
 /* ============================================ */
@@ -907,6 +1015,108 @@ html {
 
 .animate-slide-in-right {
   animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================ */
+/* MOBILE-FIRST RESPONSIVE BREAKPOINTS */
+/* ============================================ */
+
+/* Small phones (320px - 479px) */
+@media (max-width: 479px) {
+  /* Increase touch targets on very small screens */
+  button:not(.btn-sm),
+  a.button,
+  [role="button"] {
+    min-height: 48px;
+  }
+
+  /* Reduce padding on containers for more content space */
+  .container-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Stack layouts by default */
+  .responsive-flex {
+    flex-direction: column;
+  }
+}
+
+/* Phones (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  /* Comfortable touch targets */
+  .touch-optimized {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Tablets (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Hybrid layouts - mix of mobile and desktop patterns */
+  .adaptive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large tablets and laptops (1024px+) */
+@media (min-width: 1024px) {
+  /* Desktop optimizations */
+  .hover-effects-desktop:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--elevation-2);
+  }
+}
+
+/* Touch device specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-only {
+    display: none;
+  }
+
+  /* Increase all interactive element sizes */
+  button,
+  a[role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Larger tap targets in forms */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  /* Remove hover animations */
+  * {
+    transition-property: none !important;
+  }
+
+  /* But keep focus and active states */
+  *:focus,
+  *:active {
+    transition:
+      box-shadow 0.15s ease-out,
+      background-color 0.15s ease-out !important;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 767px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Compress navigation */
+  nav {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
 }
 
 .animate-slide-out-right {

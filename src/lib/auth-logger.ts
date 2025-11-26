@@ -88,13 +88,15 @@ export function logAuthEvent(
 
   switch (level) {
     case "debug":
-      if (DEBUG_MODE) console.debug(fullMessage, data || "");
+      // Silent in production
+      if (DEBUG_MODE && false) console.debug(fullMessage, data || "");
       break;
     case "info":
-      // [REMOVED] console.log(fullMessage, data || "");
+      // Silent - use for tracing only
       break;
     case "warn":
-      console.warn(fullMessage, data || "");
+      // Silent in production - only errors
+      if (DEBUG_MODE && false) console.warn(fullMessage, data || "");
       break;
     case "error":
       console.error(fullMessage, data || "");

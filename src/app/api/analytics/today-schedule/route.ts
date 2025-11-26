@@ -6,29 +6,20 @@
  * For coaches/admins only
  */
 
-import { NextResponse } from "next/server";
-import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
+import { NextRequest, NextResponse } from "next/server";
+import { withAuth, isCoach } from "@/lib/auth-server";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 import { transformToCamel } from "@/lib/case-transform";
 
-export async function GET() {
-  const { user, error: authError } = await getAuthenticatedUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { success: false, error: authError || "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  if (!isCoach(user)) {
-    return NextResponse.json(
-      { success: false, error: "Forbidden - Coach access required" },
-      { status: 403 }
-    );
-  }
-
-  try {
+export async function GET(request: NextRequest) {
+  return withAuth(request, async (user) => {
+    if (!isCoach(user)) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden - Coach access required" },
+        { status: 403 }
+      );
+    }
+    try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
@@ -147,8 +138,9 @@ export async function GET() {
         success: false,
         error: "Failed to fetch today's schedule",
         workouts: [],
-      },
-      { status: 500 }
-    );
-  }
+        },
+        { status: 500 }
+      );
+    }
+  });
 }
