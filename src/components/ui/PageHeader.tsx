@@ -70,13 +70,22 @@ export function PageHeader({
 
   return (
     <div className={cx("relative", alignmentClass, className)}>
-      {/* Gradient Accent Bar - Desktop Only */}
+      {/* Gradient Accent Bar - Visible on Mobile & Desktop */}
       {showGradient && (
-        <div
-          className="absolute -left-4 top-0 bottom-0 w-1.5 rounded-full hidden sm:block"
-          style={{ background: barBackground }}
-          aria-hidden="true"
-        />
+        <>
+          {/* Mobile: Top horizontal bar */}
+          <div
+            className="absolute -top-2 left-0 right-0 h-1 rounded-full sm:hidden"
+            style={{ background: barBackground }}
+            aria-hidden="true"
+          />
+          {/* Desktop: Left vertical bar */}
+          <div
+            className="absolute -left-4 top-0 bottom-0 w-1.5 rounded-full hidden sm:block"
+            style={{ background: barBackground }}
+            aria-hidden="true"
+          />
+        </>
       )}
 
       <div className="flex items-start justify-between gap-4 flex-wrap">

@@ -90,16 +90,16 @@ export function QuickStatsWidget({
       label: "Day Streak",
       value: stats.currentStreak,
       suffix: stats.currentStreak === 1 ? "day" : "days",
-      color: "text-warning",
-      bgColor: "bg-warning/10",
+      color: "text-accent-amber-600",
+      bgGradient: "from-accent-amber-400 to-accent-orange-500",
     },
     {
       icon: <Dumbbell className="w-6 h-6" />,
       label: "This Week",
       value: stats.workoutsThisWeek,
       suffix: stats.workoutsThisWeek === 1 ? "workout" : "workouts",
-      color: "text-primary",
-      bgColor: "bg-primary/10",
+      color: "text-accent-purple-600",
+      bgGradient: "from-accent-purple-400 to-accent-pink-500",
       trend: trends?.workoutsChange,
     },
     {
@@ -107,8 +107,8 @@ export function QuickStatsWidget({
       label: "Weekly Volume",
       value: Math.round(stats.totalVolumeThisWeek / 1000),
       suffix: "k lbs",
-      color: "text-cyan-500",
-      bgColor: "bg-cyan-50",
+      color: "text-accent-cyan-600",
+      bgGradient: "from-accent-cyan-400 to-accent-blue-500",
       trend: trends?.volumeChangePercent,
       trendIsPercent: true,
     },
@@ -117,8 +117,8 @@ export function QuickStatsWidget({
       label: "Recent PRs",
       value: stats.recentPRs,
       suffix: stats.recentPRs === 1 ? "PR" : "PRs",
-      color: "text-warning",
-      bgColor: "bg-warning/10",
+      color: "text-accent-emerald-600",
+      bgGradient: "from-accent-emerald-400 to-accent-green-500",
     },
   ];
 
@@ -135,9 +135,9 @@ export function QuickStatsWidget({
             padding="md"
             className="relative overflow-hidden"
           >
-            {/* Icon background */}
+            {/* Gradient icon background */}
             <div
-              className={`absolute top-2 right-2 w-12 h-12 rounded-full ${stat.bgColor} opacity-50`}
+              className={`absolute top-2 right-2 w-12 h-12 rounded-full bg-linear-to-br ${stat.bgGradient} opacity-20`}
             />
 
             {/* Icon */}

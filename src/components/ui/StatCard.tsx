@@ -68,32 +68,37 @@ export function StatCard({
   subtitle,
   size = "md",
 }: StatCardProps) {
-  // Variant-specific colors
+  // Variant-specific colors with gradients for mobile pop
   const variantColors = {
     default: {
-      iconBg: "bg-primary-light",
-      iconColor: "text-primary",
+      iconBg: "bg-linear-to-br from-accent-blue-400 to-accent-blue-600",
+      iconColor: "text-white",
       valueColor: "text-heading-primary",
+      cardGradient: "from-accent-blue-50 to-white",
     },
     primary: {
-      iconBg: "bg-primary-light",
-      iconColor: "text-primary",
-      valueColor: "text-primary",
+      iconBg: "bg-linear-to-br from-accent-purple-400 to-accent-pink-500",
+      iconColor: "text-white",
+      valueColor: "text-accent-purple-700",
+      cardGradient: "from-accent-purple-50 to-white",
     },
     success: {
-      iconBg: "bg-(--status-success-light)",
-      iconColor: "text-(--status-success)",
-      valueColor: "text-(--status-success)",
+      iconBg: "bg-linear-to-br from-accent-green-400 to-accent-emerald-500",
+      iconColor: "text-white",
+      valueColor: "text-accent-green-700",
+      cardGradient: "from-accent-green-50 to-white",
     },
     warning: {
-      iconBg: "bg-(--status-warning-light)",
-      iconColor: "text-(--status-warning)",
-      valueColor: "text-(--status-warning)",
+      iconBg: "bg-linear-to-br from-accent-amber-400 to-accent-orange-500",
+      iconColor: "text-white",
+      valueColor: "text-accent-amber-700",
+      cardGradient: "from-accent-amber-50 to-white",
     },
     accent: {
-      iconBg: "bg-accent-light",
-      iconColor: "text-accent",
-      valueColor: "text-accent",
+      iconBg: "bg-linear-to-br from-accent-cyan-400 to-accent-blue-500",
+      iconColor: "text-white",
+      valueColor: "text-accent-cyan-700",
+      cardGradient: "from-accent-cyan-50 to-white",
     },
   };
 
@@ -131,13 +136,13 @@ export function StatCard({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm ${sizes.padding} ${className}`}
+      className={`bg-linear-to-br ${colors.cardGradient} rounded-lg shadow-md hover:shadow-lg transition-shadow ${sizes.padding} ${className}`}
     >
       {/* Icon and Label Header */}
       {icon && (
         <div className={`flex items-center ${sizes.gap} mb-4`}>
           <div
-            className={`${sizes.iconSize} ${colors.iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}
+            className={`${sizes.iconSize} ${colors.iconBg} rounded-xl flex items-center justify-center shrink-0 shadow-md`}
           >
             <div className={colors.iconColor}>{icon}</div>
           </div>

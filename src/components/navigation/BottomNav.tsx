@@ -18,24 +18,32 @@ export function BottomNav({ className = "" }: BottomNavProps) {
       label: "Home",
       icon: Home,
       isActive: pathname === "/dashboard",
+      gradient: "from-accent-orange-400 to-accent-pink-500",
+      color: "text-accent-orange-600",
     },
     {
       href: "/history",
       label: "History",
       icon: History,
       isActive: pathname === "/history",
+      gradient: "from-accent-blue-400 to-accent-purple-500",
+      color: "text-accent-blue-600",
     },
     {
       href: "/progress",
       label: "Progress",
       icon: TrendingUp,
       isActive: pathname === "/progress",
+      gradient: "from-accent-cyan-400 to-accent-blue-500",
+      color: "text-accent-cyan-600",
     },
     {
       href: "/profile",
       label: "Profile",
       icon: User,
       isActive: pathname === "/profile",
+      gradient: "from-accent-purple-400 to-accent-pink-500",
+      color: "text-accent-purple-600",
     },
   ];
 
@@ -57,22 +65,30 @@ export function BottomNav({ className = "" }: BottomNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center touch-target flex-1 max-w-24 py-2 px-2 rounded-xl transition-all duration-200 ${
+              className={`flex flex-col items-center justify-center touch-target flex-1 max-w-24 py-2 px-2 rounded-xl transition-all duration-200 relative overflow-hidden ${
                 item.isActive
-                  ? "text-primary bg-primary/10 scale-105"
+                  ? `${item.color} scale-105 shadow-md`
                   : "text-silver-600 active:bg-silver-100 active:scale-95"
               }`}
               aria-label={item.label}
               aria-current={item.isActive ? "page" : undefined}
             >
+              {/* Gradient background for active state */}
+              {item.isActive && (
+                <div
+                  className={`absolute inset-0 bg-linear-to-br ${item.gradient} opacity-10 rounded-xl`}
+                  aria-hidden="true"
+                />
+              )}
+              
               <Icon
-                className={`w-6 h-6 mb-1 transition-transform ${
-                  item.isActive ? "text-primary scale-110" : "text-current"
+                className={`w-6 h-6 mb-1 transition-transform relative z-10 ${
+                  item.isActive ? `${item.color} scale-110` : "text-current"
                 }`}
               />
               <Caption
-                className={`text-xs font-medium leading-tight ${
-                  item.isActive ? "text-primary font-semibold" : "text-current"
+                className={`text-xs font-medium leading-tight relative z-10 ${
+                  item.isActive ? `${item.color} font-semibold` : "text-current"
                 }`}
               >
                 {item.label}

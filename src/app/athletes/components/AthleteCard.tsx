@@ -125,6 +125,7 @@ function AthleteCard({
                         key={groupId}
                         variant="neutral"
                         className="text-xs"
+                        gradient
                         style={{
                           backgroundColor: group.color
                             ? `${group.color}20`

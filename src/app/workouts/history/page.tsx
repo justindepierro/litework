@@ -478,7 +478,7 @@ export default function WorkoutHistoryPage() {
                               Completed
                             </Badge>
                           ) : (
-                            <Badge variant="warning" size="sm">
+                            <Badge variant="warning" size="sm" gradient>
                               In Progress
                             </Badge>
                           )}
