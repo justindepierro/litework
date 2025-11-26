@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Display, Heading, Body } from "@/components/ui/Typography";
+import { Display, Heading, Body, Caption } from "@/components/ui/Typography";
 import {
   BarChart3,
   TrendingUp,
@@ -29,7 +29,9 @@ export default function AuthenticatedHome() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
             <Display size="xl" className="text-heading-primary">
-              <span className="block">Weight Lifting Club</span>
+              <Body as="span" className="block text-inherit">
+                Weight Lifting Club
+              </Body>
               <Display size="lg" className="block text-heading-accent mt-1">
                 Workout Tracker
               </Display>
@@ -102,9 +104,9 @@ export default function AuthenticatedHome() {
                 detailed analytics and visual charts.
               </Body>
               <div className="mt-3 text-center">
-                <span className="status-success inline-block px-2 py-1 text-xs rounded-full font-medium">
+                <Caption className="status-success inline-block px-2 py-1 rounded-full font-medium">
                   Analytics
-                </span>
+                </Caption>
               </div>
             </Card>
 
@@ -124,9 +126,9 @@ export default function AuthenticatedHome() {
                 training session.
               </Body>
               <div className="mt-3 text-center">
-                <span className="status-info inline-block px-2 py-1 text-xs rounded-full font-medium">
+                <Caption className="status-info inline-block px-2 py-1 rounded-full font-medium">
                   Never Miss
-                </span>
+                </Caption>
               </div>
             </Card>
 
@@ -170,36 +172,36 @@ export default function AuthenticatedHome() {
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-green"
               >
                 <BarChart3 className="w-8 h-8 mb-2 text-accent-green" />
-                <span className="text-body-primary text-sm font-medium">
+                <Body size="sm" weight="medium">
                   Dashboard
-                </span>
+                </Body>
               </Link>
               <Link
                 href="/workout/new"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-orange"
               >
                 <Dumbbell className="w-8 h-8 mb-2 text-accent-orange" />
-                <span className="text-body-primary text-sm font-medium">
+                <Body size="sm" weight="medium">
                   New Workout
-                </span>
+                </Body>
               </Link>
               <Link
                 href="/progress"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-pink"
               >
                 <TrendingUp className="w-8 h-8 mb-2 text-accent-pink" />
-                <span className="text-body-primary text-sm font-medium">
+                <Body size="sm" weight="medium">
                   Progress
-                </span>
+                </Body>
               </Link>
               <Link
                 href="/schedule"
                 className="card-stat flex flex-col items-center justify-center hover:border-accent-blue"
               >
                 <Calendar className="w-8 h-8 mb-2 text-accent-blue" />
-                <span className="text-body-primary text-sm font-medium">
+                <Body size="sm" weight="medium">
                   Schedule
-                </span>
+                </Body>
               </Link>
             </div>
           </div>

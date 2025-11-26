@@ -8,6 +8,7 @@
 
 import React, { useState, useId } from "react";
 import { motion } from "framer-motion";
+import { Body } from "./Typography";
 import { Eye, EyeOff, AlertCircle, Check } from "lucide-react";
 
 export interface FloatingLabelInputProps
@@ -174,7 +175,11 @@ export const FloatingLabelInput = React.forwardRef<
             }}
           >
             {label}
-            {props.required && <span className="text-error ml-1">*</span>}
+            {props.required && (
+              <Body as="span" className="text-error ml-1">
+                *
+              </Body>
+            )}
           </motion.label>
 
           {/* Right icon / state indicator */}
@@ -373,7 +378,9 @@ export const FloatingLabelTextarea = React.forwardRef<
           >
             {label}
             {props.required && (
-              <span className="text-[var(--color-error)] ml-1">*</span>
+              <Body as="span" className="text-[var(--color-error)] ml-1">
+                *
+              </Body>
             )}
           </motion.label>
         </div>

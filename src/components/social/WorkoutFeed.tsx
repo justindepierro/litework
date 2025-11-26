@@ -123,13 +123,13 @@ export function WorkoutFeed({
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">
+                  <Body size="sm" weight="semibold" className="text-white">
                     {item.athleteName
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
                       .toUpperCase()}
-                  </span>
+                  </Body>
                 </div>
               )}
             </div>
@@ -145,9 +145,13 @@ export function WorkoutFeed({
                         <Activity className="w-4 h-4 text-success shrink-0" />
                         <Caption variant="muted">
                           completed{" "}
-                          <span className="font-medium text-charcoal">
+                          <Body
+                            as="span"
+                            weight="medium"
+                            className="text-charcoal"
+                          >
                             {item.activityData.workoutName || "a workout"}
-                          </span>
+                          </Body>
                         </Caption>
                       </>
                     ) : (
@@ -155,9 +159,13 @@ export function WorkoutFeed({
                         <TrendingUp className="w-4 h-4 text-warning shrink-0" />
                         <Caption variant="muted">
                           set a new PR on{" "}
-                          <span className="font-medium text-charcoal">
+                          <Body
+                            as="span"
+                            weight="medium"
+                            className="text-charcoal"
+                          >
                             {item.activityData.exerciseName}
-                          </span>
+                          </Body>
                         </Caption>
                       </>
                     )}
@@ -173,9 +181,9 @@ export function WorkoutFeed({
                           {item.activityData.weight} lbs ×{" "}
                           {item.activityData.reps} reps
                           {item.activityData.improvement && (
-                            <span className="ml-1">
+                            <Body as="span" className="ml-1">
                               (+{item.activityData.improvement}%)
-                            </span>
+                            </Body>
                           )}
                         </Caption>
                       </div>

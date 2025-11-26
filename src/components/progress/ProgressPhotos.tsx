@@ -194,14 +194,14 @@ export function ProgressPhotos({
             {(photo.isBeforePhoto || photo.isAfterPhoto) && (
               <div className="absolute top-2 left-2 flex gap-2">
                 {photo.isBeforePhoto && (
-                  <span className="bg-silver-700/90 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                  <Caption className="bg-silver-700/90 text-white px-2 py-1 rounded-full font-semibold">
                     Before
-                  </span>
+                  </Caption>
                 )}
                 {photo.isAfterPhoto && (
-                  <span className="bg-success/90 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                  <Caption className="bg-success/90 text-white px-2 py-1 rounded-full font-semibold">
                     After
-                  </span>
+                  </Caption>
                 )}
               </div>
             )}

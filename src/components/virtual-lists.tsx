@@ -8,6 +8,7 @@
 
 import React from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { Heading, Body } from "@/components/ui/Typography";
 
 /**
  * Simple virtual list implementation
@@ -44,11 +45,13 @@ export const VirtualWorkoutList: React.FC<VirtualWorkoutListProps> = ({
           className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer"
           onClick={() => onWorkoutClick(workout.id)}
         >
-          <h3 className="font-semibold text-lg mb-2">{workout.name}</h3>
+          <Heading level="h3" className="font-semibold text-lg mb-2">
+            {workout.name}
+          </Heading>
           {workout.description && (
-            <p className="text-sm text-navy-600 mb-2 line-clamp-2">
+            <Body size="sm" className="text-navy-600 mb-2 line-clamp-2">
               {workout.description}
-            </p>
+            </Body>
           )}
           <div className="text-sm text-navy-500">
             {workout.exerciseCount} exercises
@@ -87,9 +90,13 @@ export const VirtualAthleteList: React.FC<VirtualAthleteListProps> = ({
           onClick={() => onAthleteClick(athlete.id)}
         >
           <div className="h-12 w-12 rounded-full bg-linear-to-br from-accent-purple-500 to-accent-pink-500 flex items-center justify-center shadow-lg">
-            <span className="text-lg font-semibold text-white drop-shadow-md">
+            <Body
+              size="lg"
+              weight="semibold"
+              className="text-white drop-shadow-md"
+            >
               {athlete.name.charAt(0).toUpperCase()}
-            </span>
+            </Body>
           </div>
           <div className="flex-1">
             <div className="font-medium text-navy-700">{athlete.name}</div>

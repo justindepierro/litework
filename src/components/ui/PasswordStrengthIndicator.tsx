@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Caption } from "./Typography";
 
 interface PasswordStrengthIndicatorProps {
   password: string;
@@ -41,12 +42,10 @@ export function PasswordStrengthIndicator({
   return (
     <div className={`mt-2 ${className}`}>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-(--text-secondary)">
-          Password Strength
-        </span>
-        <span className={`text-xs font-medium ${config.textColor}`}>
+        <Caption variant="muted">Password Strength</Caption>
+        <Caption className={`font-medium ${config.textColor}`}>
           {config.label}
-        </span>
+        </Caption>
       </div>
       <div className="h-2 w-full bg-(--bg-tertiary) rounded-full overflow-hidden">
         <div

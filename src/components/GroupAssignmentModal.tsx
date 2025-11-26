@@ -19,7 +19,7 @@ import {
   ModalFooter,
 } from "@/components/ui/Modal";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Label } from "@/components/ui/Typography";
+import { Label, Heading, Body } from "@/components/ui/Typography";
 
 import { WorkoutModification } from "@/types";
 
@@ -184,22 +184,23 @@ export default function GroupAssignmentModal({
                             onChange={() => toggleGroup(group.id)}
                             label=""
                           />
-                          <span className="flex-1 text-body-primary">
-                            {group.name}
-                          </span>
-                          <span className="text-silver-600 text-sm">
+                          <Body className="flex-1">{group.name}</Body>
+                          <Body size="sm" className="text-silver-600">
                             {group.athleteIds.length} athletes
-                          </span>
+                          </Body>
                         </div>
                       ))
                     )}
                   </div>
                   {selectedGroupIds.length > 0 && (
-                    <p className="text-sm text-accent-blue mt-2 flex items-center gap-1">
+                    <Body
+                      size="sm"
+                      className="text-accent-blue mt-2 flex items-center gap-1"
+                    >
                       <Check className="w-4 h-4" />
                       {selectedGroupIds.length} group
                       {selectedGroupIds.length > 1 ? "s" : ""} selected
-                    </p>
+                    </Body>
                   )}
                 </div>
 
@@ -224,11 +225,11 @@ export default function GroupAssignmentModal({
 
               {/* Right Column - Athletes & Modifications */}
               <div>
-                <h3 className="text-heading-secondary text-lg mb-4">
+                <Heading level="h3" className="text-lg mb-4">
                   Athletes
                   {selectedGroupIds.length > 0 &&
                     ` (${allAthleteIds.size} total)`}
-                </h3>
+                </Heading>
 
                 {selectedGroupIds.length > 0 && groupAthletes.length > 0 ? (
                   <div className="space-y-3 max-h-96 overflow-y-auto">

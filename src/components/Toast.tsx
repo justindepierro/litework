@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { X, CheckCircle, XCircle, AlertCircle, Info } from "lucide-react";
+import { Body } from "@/components/ui/Typography";
 import { notificationSlideIn } from "@/lib/animation-variants";
 
 export type ToastType = "success" | "error" | "warning" | "info";
@@ -97,9 +98,9 @@ export default function Toast({
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-base font-medium leading-relaxed wrap-break-word">
+        <Body weight="medium" className="leading-relaxed wrap-break-word">
           {message}
-        </p>
+        </Body>
 
         {/* Optional Action Button */}
         {action && (

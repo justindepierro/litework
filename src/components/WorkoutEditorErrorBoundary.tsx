@@ -12,6 +12,7 @@ import { WorkoutPlan } from "@/types";
 import { AlertTriangle, RefreshCw, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
+import { Body } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -119,9 +120,9 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
             <ModalContent>
               {/* Error Message */}
               <Alert variant="error" title="Error Details">
-                <p className="text-sm font-mono">
+                <Body size="sm" className="font-mono">
                   {error?.message || "Unknown error occurred"}
-                </p>
+                </Body>
               </Alert>
 
               {/* Recovery Status */}
@@ -131,11 +132,13 @@ export class WorkoutEditorErrorBoundary extends Component<Props, State> {
                   icon={<Save />}
                   title="Your Work is Safe"
                 >
-                  <p className="text-sm mb-1">Your work has been saved!</p>
-                  <p className="text-sm">
+                  <Body size="sm" className="mb-1">
+                    Your work has been saved!
+                  </Body>
+                  <Body size="sm">
                     We automatically saved your workout draft. You can recover
                     it or start fresh.
-                  </p>
+                  </Body>
                 </Alert>
               )}
 

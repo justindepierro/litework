@@ -579,9 +579,12 @@ export default function AthleteDetailModal({
                                 >
                                   {tag.displayName}
                                 </span>
-                                <span className="text-xs text-(--text-tertiary) font-medium uppercase tracking-wide">
+                                <Caption
+                                  variant="muted"
+                                  className="font-medium uppercase tracking-wide"
+                                >
                                   Pending
-                                </span>
+                                </Caption>
                               </div>
                             ))}
                           </div>

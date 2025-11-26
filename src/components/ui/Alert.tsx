@@ -6,6 +6,7 @@
 
 import React, { HTMLAttributes, ReactNode } from "react";
 import { Info, CheckCircle, AlertTriangle, XCircle, X } from "lucide-react";
+import { Heading, Body } from "./Typography";
 
 export type AlertVariant = "info" | "success" | "warning" | "error";
 
@@ -64,12 +65,16 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         {...props}
       >
         {displayIcon && (
-          <span className={`shrink-0 mt-0.5 ${iconColor[variant]}`}>
+          <Body as="span" className={`shrink-0 mt-0.5 ${iconColor[variant]}`}>
             {displayIcon}
-          </span>
+          </Body>
         )}
         <div className="flex-1 min-w-0">
-          {title && <h4 className="font-semibold mb-1 text-sm">{title}</h4>}
+          {title && (
+            <Heading level="h4" className="font-semibold mb-1 text-sm">
+              {title}
+            </Heading>
+          )}
           <div className="text-sm">{children}</div>
         </div>
         {onDismiss && (

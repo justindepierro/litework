@@ -96,7 +96,11 @@ const DashboardSectionHeading = ({
         style={{ background: accentToken }}
       />
       <div className="flex items-center gap-2">
-        {icon && <span className="text-secondary">{icon}</span>}
+        {icon && (
+          <Body as="span" variant="secondary">
+            {icon}
+          </Body>
+        )}
         <Body
           size="sm"
           variant="secondary"
@@ -326,10 +330,15 @@ function DashboardClientPageComponent({
                   leftIcon={<Settings className="w-4 h-4 shrink-0" />}
                   className="glass hover:glass-thick transition-all duration-300"
                 >
-                  <span className="hidden sm:inline whitespace-nowrap">
+                  <Body
+                    as="span"
+                    className="hidden sm:inline whitespace-nowrap"
+                  >
                     Settings
-                  </span>
-                  <span className="sm:hidden whitespace-nowrap">Settings</span>
+                  </Body>
+                  <Body as="span" className="sm:hidden whitespace-nowrap">
+                    Settings
+                  </Body>
                 </Button>
               </Link>
             </div>

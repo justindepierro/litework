@@ -22,6 +22,7 @@ import {
   DropdownHeader,
   DropdownContent,
 } from "@/components/ui/Dropdown";
+import { Body, Caption } from "@/components/ui/Typography";
 
 interface InAppNotification {
   id: string;
@@ -251,14 +252,14 @@ export default function NotificationBell() {
         >
           <Bell className="w-6 h-6 text-white" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200 z-10">
+            <Caption className="absolute -top-1 -right-1 bg-error text-white font-bold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center shadow-lg animate-in zoom-in-95 duration-200 z-10">
               {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
+            </Caption>
           )}
           {hasError && (
-            <span className="absolute -bottom-0.5 -right-0.5 bg-warning text-white rounded-full h-3 w-3 flex items-center justify-center">
+            <Caption className="absolute -bottom-0.5 -right-0.5 bg-warning text-white rounded-full h-3 w-3 flex items-center justify-center">
               <AlertCircle className="w-2 h-2" />
-            </span>
+            </Caption>
           )}
         </button>
       }
@@ -303,12 +304,12 @@ export default function NotificationBell() {
                 />
               </div>
               <div>
-                <p className="font-semibold text-body-dark">
+                <Body weight="semibold" className="text-body-dark">
                   Failed to load notifications
-                </p>
-                <p className="text-sm text-body-light mt-1">
+                </Body>
+                <Body size="sm" className="text-body-light mt-1">
                   Please try again later
-                </p>
+                </Body>
               </div>
               <button
                 onClick={loadNotifications}
@@ -363,14 +364,17 @@ export default function NotificationBell() {
                       </button>
                     </div>
                     {notification.body && (
-                      <p className="text-sm text-neutral-dark mt-1 line-clamp-2">
+                      <Body
+                        size="sm"
+                        className="text-neutral-dark mt-1 line-clamp-2"
+                      >
                         {notification.body}
-                      </p>
+                      </Body>
                     )}
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-xs text-neutral font-medium">
+                      <Caption className="text-neutral font-medium">
                         {formatTime(notification.createdAt)}
-                      </span>
+                      </Caption>
                       {!notification.read && (
                         <button
                           onClick={(e) => {
@@ -409,9 +413,9 @@ export default function NotificationBell() {
             className="text-sm text-primary hover:text-primary-dark font-semibold w-full text-center py-2 rounded-lg hover:bg-white transition-all duration-200 flex items-center justify-center gap-2 group"
           >
             View all notifications
-            <span className="transform group-hover:translate-x-1 transition-transform duration-200">
+            <Caption className="transform group-hover:translate-x-1 transition-transform duration-200">
               →
-            </span>
+            </Caption>
           </button>
         </div>
       )}

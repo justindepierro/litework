@@ -14,7 +14,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAsyncState } from "@/hooks/use-async-state";
 import { Toggle } from "@/components/ui/Toggle";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Label, Heading } from "@/components/ui/Typography";
+import { Label, Heading, Body } from "@/components/ui/Typography";
 import { SectionContainer } from "@/components/ui/SectionHeader";
 
 interface NotificationPreferencesData {
@@ -130,9 +130,9 @@ export default function NotificationPreferences() {
         <Heading level="h2" className="text-navy-900">
           Notification Settings
         </Heading>
-        <p className="mt-1 text-sm text-neutral-dark">
+        <Body size="sm" className="mt-1 text-neutral-dark">
           Manage how and when you receive notifications from LiteWork
-        </p>
+        </Body>
       </div>
 
       {/* Success/Error Messages */}
@@ -151,9 +151,9 @@ export default function NotificationPreferences() {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="push_enabled">Push Notifications</Label>
-              <p className="text-sm text-neutral">
+              <Body size="sm" className="text-neutral">
                 Receive instant notifications in your browser
-              </p>
+              </Body>
             </div>
             <Toggle
               checked={preferences.push_enabled}
@@ -167,9 +167,9 @@ export default function NotificationPreferences() {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="email_enabled">Email Notifications</Label>
-              <p className="text-sm text-neutral">
+              <Body size="sm" className="text-neutral">
                 Receive notifications via email
-              </p>
+              </Body>
             </div>
             <Toggle
               checked={preferences.email_enabled}

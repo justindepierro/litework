@@ -258,15 +258,15 @@ export function Leaderboard({
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-white font-bold text-lg">
+                    <Body className="text-white font-bold text-lg">
                       {entries[1].athleteName
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
-                    </span>
+                    </Body>
                   )}
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#C0C0C0] rounded-full flex items-center justify-center border-2 border-white">
-                    <span className="text-white text-xs font-bold">2</span>
+                    <Caption className="text-white font-bold">2</Caption>
                   </div>
                 </div>
                 <Caption className="font-medium text-center line-clamp-1">
@@ -290,18 +290,18 @@ export function Leaderboard({
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-white font-bold text-xl">
+                    <Body className="text-white font-bold text-xl">
                       {entries[0].athleteName
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
-                    </span>
+                    </Body>
                   )}
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2">
                     <Trophy className="w-6 h-6 text-[#FFD700] drop-shadow-md" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#FFD700] rounded-full flex items-center justify-center border-2 border-white">
-                    <span className="text-white text-sm font-bold">1</span>
+                    <Caption className="text-white font-bold">1</Caption>
                   </div>
                 </div>
                 <Body className="font-bold text-center line-clamp-1">
@@ -325,15 +325,15 @@ export function Leaderboard({
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-white font-bold text-lg">
+                    <Body className="text-white font-bold text-lg">
                       {entries[2].athleteName
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
-                    </span>
+                    </Body>
                   )}
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#CD7F32] rounded-full flex items-center justify-center border-2 border-white">
-                    <span className="text-white text-xs font-bold">3</span>
+                    <Caption className="text-white font-bold">3</Caption>
                   </div>
                 </div>
                 <Caption className="font-medium text-center line-clamp-1">
@@ -373,12 +373,12 @@ export function Leaderboard({
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-secondary flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">
+                  <Body size="sm" weight="semibold" className="text-white">
                     {entry.athleteName
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
-                  </span>
+                  </Body>
                 </div>
               )}
             </div>

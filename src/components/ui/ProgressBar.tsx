@@ -7,6 +7,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { Body } from "./Typography";
 
 export interface ProgressBarProps {
   /** Progress value (0-100) */
@@ -64,9 +65,9 @@ export function ProgressBar({
     <div className={className}>
       {(showLabel || label) && (
         <div className="flex justify-between items-center mb-1">
-          <span className="text-sm font-medium text-(--text-primary)">
+          <Body size="sm" weight="medium">
             {label || `${Math.round(percentage)}%`}
-          </span>
+          </Body>
         </div>
       )}
 

@@ -498,8 +498,12 @@ export default function ProfilePage() {
               }`}
             >
               <User className="w-4 h-4 inline mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Personal Info</span>
-              <span className="inline sm:hidden">Info</span>
+              <Body as="span" className="hidden sm:inline">
+                Personal Info
+              </Body>
+              <Body as="span" className="inline sm:hidden">
+                Info
+              </Body>
             </button>
             <button
               onClick={() => setActiveTab("metrics")}
@@ -510,8 +514,12 @@ export default function ProfilePage() {
               }`}
             >
               <Activity className="w-4 h-4 inline mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Physical Metrics</span>
-              <span className="inline sm:hidden">Metrics</span>
+              <Body as="span" className="hidden sm:inline">
+                Physical Metrics
+              </Body>
+              <Body as="span" className="inline sm:hidden">
+                Metrics
+              </Body>
             </button>
             <button
               onClick={() => setActiveTab("account")}
@@ -794,9 +802,13 @@ export default function ProfilePage() {
                       >
                         {profile.bmi}
                       </Display>
-                      <span className="px-3 py-1 bg-white text-accent-blue-700 rounded-full text-sm font-medium capitalize">
+                      <Body
+                        size="sm"
+                        weight="medium"
+                        className="px-3 py-1 bg-white text-accent-blue-700 rounded-full capitalize"
+                      >
                         {profile.bmiCategory}
-                      </span>
+                      </Body>
                     </div>
                     <Caption variant="muted" className="mt-2">
                       BMI is a general indicator and may not reflect athletic

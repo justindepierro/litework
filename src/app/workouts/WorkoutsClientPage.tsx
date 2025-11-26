@@ -241,7 +241,7 @@ function WorkoutsPage({
             {/* Enhanced error state */}
             {state.error && (
               <Alert variant="error">
-                <p className="font-medium">{state.error}</p>
+                <Body weight="medium">{state.error}</Body>
                 <button
                   onClick={() => window.location.reload()}
                   className="mt-3 px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-accent-red/90 transition-colors touch-manipulation"
@@ -382,10 +382,10 @@ function WorkoutsPage({
                                   Exercises ({workout.exercises.length})
                                   {workout.groups &&
                                     workout.groups.length > 0 && (
-                                      <span className="ml-2 text-accent-blue-600">
+                                      <Caption className="ml-2 text-primary">
                                         • {workout.groups.length} group
                                         {workout.groups.length !== 1 ? "s" : ""}
-                                      </span>
+                                      </Caption>
                                     )}
                                 </Caption>
                                 <ExerciseGroupDisplay

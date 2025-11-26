@@ -77,7 +77,7 @@ export default function UpdatePasswordPage() {
       <CenteredContainer background="gradient">
         <div className="w-full max-w-md mx-auto space-y-6">
           <Alert variant="error" title="Invalid Reset Link">
-            <p className="mb-4">{error}</p>
+            <Body className="mb-4">{error}</Body>
             <Link
               href="/reset-password"
               className="inline-block px-4 py-2 bg-error text-white rounded-lg hover:bg-error-dark font-medium"

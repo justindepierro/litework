@@ -10,6 +10,7 @@
 
 import React, { useState } from "react";
 import { ChevronDown, AlertCircle, Check } from "lucide-react";
+import { Body } from "./Typography";
 
 export interface SelectOption {
   value: string;
@@ -86,7 +87,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <label className="block text-sm font-semibold mb-2 transition-colors text-primary">
             {label}
             {props.required && (
-              <span className="ml-1 font-medium text-error">*</span>
+              <Body as="span" weight="medium" className="ml-1 text-error">
+                *
+              </Body>
             )}
           </label>
         )}

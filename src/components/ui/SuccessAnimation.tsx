@@ -10,6 +10,7 @@
 
 import React, { useEffect } from "react";
 import { Check } from "lucide-react";
+import { Body } from "./Typography";
 
 interface SuccessAnimationProps {
   /** Whether to show the animation */
@@ -90,9 +91,13 @@ export function SuccessAnimation({
         </div>
 
         {message && (
-          <p className="text-sm font-medium text-(--text-primary) animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
+          <Body
+            size="sm"
+            weight="medium"
+            className="animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100"
+          >
             {message}
-          </p>
+          </Body>
         )}
       </div>
 

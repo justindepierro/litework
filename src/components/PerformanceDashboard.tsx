@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Heading, Body } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 
 interface WebVitalDisplayProps {
   name: string;
@@ -81,18 +81,20 @@ const WebVitalCard: React.FC<WebVitalDisplayProps> = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {getRatingIcon(rating)}
-          <span className="font-medium text-sm">{name}</span>
+          <Body size="sm" weight="medium">
+            {name}
+          </Body>
         </div>
-        <span className="text-xs uppercase font-medium">
+        <Caption className="uppercase font-medium">
           {rating.replace("-", " ")}
-        </span>
+        </Caption>
       </div>
 
       <div className="mb-2">
-        <span className="text-2xl font-bold">{formatValue(value)}</span>
+        <Body className="text-2xl font-bold">{formatValue(value)}</Body>
       </div>
 
-      <p className="text-xs opacity-75 mb-2">{description}</p>
+      <Caption className="opacity-75 mb-2">{description}</Caption>
 
       <div className="flex justify-between text-xs opacity-60">
         <span>Good: ≤{formatValue(threshold.good)}</span>
@@ -174,7 +176,7 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
       </div>
 
       <div className="mt-4 text-center">
-        <p className="text-sm text-(--text-secondary) flex items-center gap-1">
+        <Body size="sm" variant="secondary" className="flex items-center gap-1">
           {score >= 90 && (
             <>
               <Zap className="w-4 h-4" />
@@ -193,7 +195,7 @@ const PerformanceScore: React.FC<{ score: number }> = ({ score }) => {
               Performance needs attention
             </>
           )}
-        </p>
+        </Body>
       </div>
     </div>
   );
@@ -369,9 +371,9 @@ const PerformanceDashboard: React.FC = () => {
           {getLatestWebVitals().length === 0 && (
             <div className="bg-(--bg-secondary) border border-silver-300 rounded-lg p-8 text-center">
               <Activity className="w-12 h-12 text-(--text-tertiary) mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-(--text-primary) mb-2">
+              <Heading level="h3" className="mb-2">
                 No Web Vitals Data Yet
-              </h3>
+              </Heading>
               <Body variant="secondary">
                 Performance metrics will appear as you interact with the
                 application.
@@ -390,9 +392,7 @@ const PerformanceDashboard: React.FC = () => {
 
             <div className="bg-white rounded-lg overflow-hidden shadow-sm">
               <div className="p-4 border-b border-silver-300">
-                <h3 className="font-medium text-(--text-primary)">
-                  Resource Loading Times
-                </h3>
+                <Heading level="h3">Resource Loading Times</Heading>
               </div>
 
               <div className="overflow-x-auto">
@@ -444,7 +444,7 @@ const PerformanceDashboard: React.FC = () => {
                             {resource.cached ? (
                               <CheckCircle className="w-4 h-4 text-(--status-success)" />
                             ) : (
-                              <span className="text-(--text-tertiary)">No</span>
+                              <Caption variant="muted">No</Caption>
                             )}
                           </td>
                         </tr>
@@ -468,49 +468,41 @@ const PerformanceDashboard: React.FC = () => {
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-(--accent-blue-500) rounded-full"></div>
-                  <span className="font-medium text-(--text-primary)">
-                    DOM Content Loaded
-                  </span>
+                  <Body weight="medium">DOM Content Loaded</Body>
                 </div>
-                <span className="text-2xl font-bold text-(--accent-blue-600)">
+                <Body className="text-2xl font-bold text-(--accent-blue-600)">
                   {Math.round(metrics.navigationTiming.domContentLoaded)}ms
-                </span>
+                </Body>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-(--accent-green-500) rounded-full"></div>
-                  <span className="font-medium text-(--text-primary)">
-                    Load Complete
-                  </span>
+                  <Body weight="medium">Load Complete</Body>
                 </div>
-                <span className="text-2xl font-bold text-(--status-success)">
+                <Body className="text-2xl font-bold text-(--status-success)">
                   {Math.round(metrics.navigationTiming.loadComplete)}ms
-                </span>
+                </Body>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-(--accent-orange-500) rounded-full"></div>
-                  <span className="font-medium text-(--text-primary)">
-                    First Paint
-                  </span>
+                  <Body weight="medium">First Paint</Body>
                 </div>
-                <span className="text-2xl font-bold text-(--accent-orange-600)">
+                <Body className="text-2xl font-bold text-(--accent-orange-600)">
                   {Math.round(metrics.navigationTiming.firstPaint)}ms
-                </span>
+                </Body>
               </div>
 
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 bg-(--accent-purple-500) rounded-full"></div>
-                  <span className="font-medium text-(--text-primary)">
-                    Time to Interactive
-                  </span>
+                  <Body weight="medium">Time to Interactive</Body>
                 </div>
-                <span className="text-2xl font-bold text-(--accent-purple-600)">
+                <Body className="text-2xl font-bold text-(--accent-purple-600)">
                   {Math.round(metrics.navigationTiming.timeToInteractive)}ms
-                </span>
+                </Body>
               </div>
             </div>
           </div>
@@ -601,9 +593,7 @@ const PerformanceDashboard: React.FC = () => {
                     className="flex items-center justify-between py-2 border-b border-silver-300 last:border-b-0"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-medium text-(--text-primary)">
-                        {vital.name}
-                      </span>
+                      <Body weight="medium">{vital.name}</Body>
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                           vital.rating === "good"

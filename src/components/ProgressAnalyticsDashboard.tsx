@@ -303,9 +303,9 @@ export default function ProgressAnalyticsDashboard() {
                     {exercise.sessions}
                   </td>
                   <td className="py-4 px-4">
-                    <span className="text-success font-medium">
+                    <Body as="span" weight="medium" className="text-success">
                       +{exercise.improvement}%
-                    </span>
+                    </Body>
                   </td>
                   <td className="py-4 px-4">
                     <Badge variant="success" size="sm">

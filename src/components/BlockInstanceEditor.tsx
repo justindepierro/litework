@@ -13,7 +13,7 @@ import {
   ModalContent,
   ModalFooter,
 } from "@/components/ui/Modal";
-import { Label, Caption } from "@/components/ui/Typography";
+import { Label, Caption, Body, Heading } from "@/components/ui/Typography";
 import {
   WorkoutExercise,
   ExerciseGroup,
@@ -263,23 +263,31 @@ export default function BlockInstanceEditor({
 
           {/* Exercise Customization Summary */}
           <div className="bg-silver-50 rounded-lg p-4 shadow-sm">
-            <h3 className="font-medium text-silver-900 mb-3">Block Contents</h3>
+            <Heading level="h3" className="mb-3">
+              Block Contents
+            </Heading>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-silver-600">Exercises:</span>
-                <span className="font-medium text-silver-900">
+                <Body size="sm" className="text-silver-600">
+                  Exercises:
+                </Body>
+                <Body size="sm" weight="medium" className="text-silver-900">
                   {exercises.length}
-                </span>
+                </Body>
               </div>
               <div className="flex justify-between">
-                <span className="text-silver-600">Groups:</span>
-                <span className="font-medium text-silver-900">
+                <Body size="sm" className="text-silver-600">
+                  Groups:
+                </Body>
+                <Body size="sm" weight="medium" className="text-silver-900">
                   {groups.length}
-                </span>
+                </Body>
               </div>
               <div className="flex justify-between">
-                <span className="text-silver-600">Estimated Duration:</span>
-                <span className="font-medium text-silver-900">
+                <Body size="sm" className="text-silver-600">
+                  Estimated Duration:
+                </Body>
+                <Body size="sm" weight="medium" className="text-silver-900">
                   {Math.round(
                     exercises.reduce((sum, ex) => {
                       const exerciseTime =
@@ -289,7 +297,7 @@ export default function BlockInstanceEditor({
                     }, 0)
                   )}{" "}
                   min
-                </span>
+                </Body>
               </div>
             </div>
           </div>

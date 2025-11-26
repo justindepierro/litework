@@ -3,7 +3,7 @@
 import { memo, useEffect } from "react";
 import { Search, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body } from "@/components/ui/Typography";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import {
   useExerciseLibraryState,
@@ -138,9 +138,9 @@ function ExerciseLibrary({
           <div className="p-6 border-b border-silver-300 flex items-center justify-between">
             <div>
               <Heading level="h2">Exercise Library</Heading>
-              <p className="text-sm text-(--text-secondary) mt-1">
+              <Body size="sm" variant="secondary" className="mt-1">
                 Select an exercise or create a new one
-              </p>
+              </Body>
             </div>
             <button
               onClick={onClose}

@@ -14,10 +14,12 @@ export default function StaticHome() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
             <Display size="xl" className="text-heading-primary">
-              <span className="block">Weight Lifting Club</span>
-              <span className="block text-heading-accent mt-1">
+              <Body as="span" className="block">
+                Weight Lifting Club
+              </Body>
+              <Body as="span" className="block text-heading-accent mt-1">
                 Workout Tracker
-              </span>
+              </Body>
             </Display>
 
             <Body

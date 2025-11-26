@@ -32,6 +32,15 @@ export type DisplaySize = "sm" | "md" | "lg" | "xl";
 export type DisplayVariant = "primary" | "secondary" | "accent" | "inverse";
 export type LinkVariant = "primary" | "secondary" | "accent" | "muted";
 
+// Import Body for use in Label component
+const BodyForLabel = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => <span className={className}>{children}</span>;
+
 const headingSizeTokens: Record<HeadingLevel, string> = {
   h1: "--font-size-fluid-5xl",
   h2: "--font-size-fluid-4xl",
@@ -250,11 +259,11 @@ export const Label: React.FC<LabelProps> = ({
       )}
       {...props}
     >
-      <span>{children}</span>
+      <BodyForLabel className="">{children}</BodyForLabel>
       {isRequired && (
-        <span aria-hidden="true" className="ml-0.5 text-error">
+        <BodyForLabel className="ml-0.5 text-error" aria-hidden="true">
           *
-        </span>
+        </BodyForLabel>
       )}
     </label>
   );

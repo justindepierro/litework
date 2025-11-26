@@ -24,6 +24,7 @@ import { ExerciseGroupDisplay } from "./ExerciseGroupDisplay";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Alert } from "@/components/ui/Alert";
+import { Body, Heading, Caption } from "@/components/ui/Typography";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAsyncState } from "@/hooks/use-async-state";
 import type { WorkoutAssignment, WorkoutPlan, ExerciseGroup } from "@/types";
@@ -318,7 +319,7 @@ export default function WorkoutAssignmentDetailModal({
           <div className="p-8">
             <ModalHeader title="Error" onClose={onClose} />
             <ModalContent>
-              <p className="text-[var(--color-text-secondary)]">{error}</p>
+              <Body variant="secondary">{error}</Body>
             </ModalContent>
           </div>
         ) : assignment ? (
@@ -338,16 +339,16 @@ export default function WorkoutAssignmentDetailModal({
                   {statusText}
                 </span>
                 {getWorkoutDescription(assignment) && (
-                  <p className="text-[var(--color-text-secondary)] mt-2">
+                  <Body variant="secondary" className="mt-2">
                     {getWorkoutDescription(assignment)}
-                  </p>
+                  </Body>
                 )}
                 {getGroupName(assignment) && (
                   <div className="flex items-center gap-2 mt-2">
                     <Users className="w-4 h-4 text-[var(--color-text-tertiary)]" />
-                    <span className="text-sm text-[var(--color-text-secondary)]">
+                    <Body size="sm" variant="secondary">
                       Group: {getGroupName(assignment)}
-                    </span>
+                    </Body>
                   </div>
                 )}
               </div>
@@ -360,8 +361,10 @@ export default function WorkoutAssignmentDetailModal({
               >
                 <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                   <Calendar className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                  <span className="font-medium">Date:</span>
-                  <span>
+                  <Body weight="medium" as="span">
+                    Date:
+                  </Body>
+                  <Body as="span">
                     {(() => {
                       const dateValue = getScheduledDate(assignment);
                       if (!dateValue) return "No date set";
@@ -376,14 +379,16 @@ export default function WorkoutAssignmentDetailModal({
                         day: "numeric",
                       });
                     })()}
-                  </span>
+                  </Body>
                 </div>
 
                 {getStartTime(assignment) && (
                   <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                     <Clock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                    <span className="font-medium">Time:</span>
-                    <span>
+                    <Body weight="medium" as="span">
+                      Time:
+                    </Body>
+                    <Body as="span">
                       {getEndTime(assignment)
                         ? formatTimeRange(
                             getStartTime(assignment)!,
@@ -393,29 +398,35 @@ export default function WorkoutAssignmentDetailModal({
                             getStartTime(assignment)!,
                             getStartTime(assignment)!
                           ).split(" - ")[0]}
-                    </span>
+                    </Body>
                   </div>
                 )}
 
                 {getLocation(assignment) && (
                   <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                     <MapPin className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                    <span className="font-medium">Location:</span>
-                    <span>{getLocation(assignment)}</span>
+                    <Body weight="medium" as="span">
+                      Location:
+                    </Body>
+                    <Body as="span">{getLocation(assignment)}</Body>
                   </div>
                 )}
 
                 <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                   <User className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                  <span className="font-medium">Assigned by:</span>
-                  <span>{getAssignedBy(assignment)}</span>
+                  <Body weight="medium" as="span">
+                    Assigned by:
+                  </Body>
+                  <Body as="span">{getAssignedBy(assignment)}</Body>
                 </div>
 
                 {getWorkoutDuration(assignment) && (
                   <div className="flex items-center gap-2 text-[var(--color-text-primary)]">
                     <Clock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                    <span className="font-medium">Duration:</span>
-                    <span>{getWorkoutDuration(assignment)} min</span>
+                    <Body weight="medium" as="span">
+                      Duration:
+                    </Body>
+                    <Body as="span">{getWorkoutDuration(assignment)} min</Body>
                   </div>
                 )}
               </GlassCard>
@@ -430,10 +441,10 @@ export default function WorkoutAssignmentDetailModal({
               {/* Workout Exercises with Groups */}
               {getExercises(assignment).length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-(--text-primary) mb-4 flex items-center gap-2">
+                  <Heading level="h3" className="mb-4 flex items-center gap-2">
                     <CheckCircle className="w-5 h-5" />
                     Workout ({getExercises(assignment).length} exercises)
-                  </h3>
+                  </Heading>
                   <ExerciseGroupDisplay
                     exercises={getExercises(assignment).map((ex) => ({
                       id: ex.id,
@@ -525,9 +536,9 @@ export default function WorkoutAssignmentDetailModal({
                     {statusText === "Completed" && (
                       <div className="flex-1 p-3 bg-success-lighter border border-success-light rounded-lg text-center">
                         <CheckCircle className="w-6 h-6 text-success mx-auto mb-1" />
-                        <p className="text-success-dark font-medium">
+                        <Body weight="medium" className="text-success-dark">
                           Workout Completed!
-                        </p>
+                        </Body>
                       </div>
                     )}
                   </>

@@ -25,7 +25,7 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
-import { Heading, Body, Label } from "@/components/ui/Typography";
+import { Heading, Body, Label, Caption } from "@/components/ui/Typography";
 import {
   Calendar,
   TrendingUp,
@@ -272,9 +272,9 @@ function AnalyticsDashboard({
             >
               <BarChart3 className="w-8 h-8" /> Progress Analytics
             </Heading>
-            <p className="text-heading-secondary leading-relaxed">
+            <Body variant="secondary" className="leading-relaxed">
               Track progress, strength gains, and workout consistency
-            </p>
+            </Body>
           </div>
 
           {/* Mobile-optimized controls */}
@@ -395,7 +395,9 @@ function AnalyticsDashboard({
                   </Body>
                   <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.consistencyScore}
-                    <span className="text-lg text-secondary ml-1">%</span>
+                    <Caption variant="muted" className="text-lg ml-1">
+                      %
+                    </Caption>
                   </Body>
                 </div>
                 <div className="p-3 rounded-xl text-accent-orange-600 bg-linear-to-br from-accent-orange-50 to-accent-orange-100">
@@ -412,7 +414,9 @@ function AnalyticsDashboard({
                   </Body>
                   <Body className="text-3xl sm:text-2xl font-bold mt-1">
                     {overviewStats.avgImprovement}
-                    <span className="text-lg text-secondary ml-1">%</span>
+                    <Caption variant="muted" className="text-lg ml-1">
+                      %
+                    </Caption>
                   </Body>
                   <div className="flex items-center mt-2 text-sm text-success">
                     <TrendingUp className="w-4 h-4 mr-1" />
@@ -672,10 +676,10 @@ function AnalyticsDashboard({
             <div className="space-y-4">
               <div className="rounded-lg p-4 shadow-sm bg-white">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium">Bench Press 1RM</span>
-                  <span className="text-primary-600 font-semibold">
+                  <Body weight="medium">Bench Press 1RM</Body>
+                  <Body weight="semibold" className="text-primary">
                     225 lbs
-                  </span>
+                  </Body>
                 </div>
                 <div className="w-full bg-surface-gray rounded-full h-2">
                   <div className="bg-primary-600 h-2 rounded-full w-3/4"></div>
@@ -688,10 +692,10 @@ function AnalyticsDashboard({
 
               <div className="rounded-lg p-4 shadow-sm bg-white">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium">Weekly Consistency</span>
-                  <span className="text-primary-600 font-semibold">
+                  <Body weight="medium">Weekly Consistency</Body>
+                  <Body weight="semibold" className="text-primary">
                     4 workouts
-                  </span>
+                  </Body>
                 </div>
                 <div className="w-full bg-surface-gray rounded-full h-2">
                   <div className="bg-accent-green h-2 rounded-full w-4/5"></div>
@@ -713,23 +717,31 @@ function AnalyticsDashboard({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-accent-orange/10 rounded-lg">
                 <Award className="w-8 h-8 text-accent-orange mx-auto mb-2" />
-                <p className="font-medium text-sm">First 200lb Bench</p>
-                <p className="text-xs text-heading-secondary">2 days ago</p>
+                <Body size="sm" weight="medium">
+                  First 200lb Bench
+                </Body>
+                <Caption variant="muted">2 days ago</Caption>
               </div>
               <div className="text-center p-4 bg-accent-green/10 rounded-lg">
                 <Zap className="w-8 h-8 text-accent-green mx-auto mb-2" />
-                <p className="font-medium text-sm">7-Day Streak</p>
-                <p className="text-xs text-heading-secondary">Active</p>
+                <Body size="sm" weight="medium">
+                  7-Day Streak
+                </Body>
+                <Caption variant="muted">Active</Caption>
               </div>
               <div className="text-center p-4 bg-accent-blue/10 rounded-lg">
                 <Users className="w-8 h-8 text-accent-blue mx-auto mb-2" />
-                <p className="font-medium text-sm">Top 10% Lifter</p>
-                <p className="text-xs text-heading-secondary">This month</p>
+                <Body size="sm" weight="medium">
+                  Top 10% Lifter
+                </Body>
+                <Caption variant="muted">This month</Caption>
               </div>
               <div className="text-center p-4 bg-(--accent-purple-100) rounded-lg">
                 <Activity className="w-8 h-8 text-(--accent-purple-600) mx-auto mb-2" />
-                <p className="font-medium text-sm">Volume Leader</p>
-                <p className="text-xs text-heading-secondary">Last week</p>
+                <Body size="sm" weight="medium">
+                  Volume Leader
+                </Body>
+                <Caption variant="muted">Last week</Caption>
               </div>
             </div>
           </Card>
@@ -742,21 +754,27 @@ function AnalyticsDashboard({
             </div>
             <div className="space-y-4">
               <div className="border-l-4 border-accent-green pl-4">
-                <p className="font-medium text-accent-green">Strength Gains</p>
+                <Body weight="medium" className="text-accent-green">
+                  Strength Gains
+                </Body>
                 <Body className="text-sm" variant="secondary">
                   Your bench press has improved 12% this month. Keep focusing on
                   progressive overload.
                 </Body>
               </div>
               <div className="border-l-4 border-accent-orange pl-4">
-                <p className="font-medium text-accent-orange">Recovery Note</p>
+                <Body weight="medium" className="text-accent-orange">
+                  Recovery Note
+                </Body>
                 <Body className="text-sm" variant="secondary">
                   Consider adding more rest days between heavy squat sessions
                   for optimal recovery.
                 </Body>
               </div>
               <div className="border-l-4 border-accent-blue pl-4">
-                <p className="font-medium text-accent-blue">Consistency Win</p>
+                <Body weight="medium" className="text-accent-blue">
+                  Consistency Win
+                </Body>
                 <Body className="text-sm" variant="secondary">
                   You&apos;re in the top 15% for workout consistency this
                   quarter. Great work!

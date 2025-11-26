@@ -5,7 +5,7 @@ import Link from "next/link";
 import { requestPasswordReset } from "@/lib/auth-client";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { Alert } from "@/components/ui/Alert";
-import { Display } from "@/components/ui/Typography";
+import { Display, Body } from "@/components/ui/Typography";
 import { CenteredContainer } from "@/components/layout/PageContainer";
 
 export default function ResetPasswordPage() {
@@ -43,23 +43,23 @@ export default function ResetPasswordPage() {
           <Display size="lg" className="mb-2">
             Reset Password
           </Display>
-          <p className="mt-2 text-body-secondary text-base sm:text-sm">
+          <Body variant="secondary" className="mt-2 text-base sm:text-sm">
             Enter your email address and we&apos;ll send you instructions to
             reset your password
-          </p>
+          </Body>
         </div>
 
         {success ? (
           <Alert variant="success" title="Check your email">
             <div className="space-y-4">
-              <p>
+              <Body>
                 We&apos;ve sent password reset instructions to your email
                 address.
-              </p>
+              </Body>
               <div className="pt-4 border-t border-success-light">
-                <p className="mb-3">
+                <Body className="mb-3">
                   <strong>Next steps:</strong>
-                </p>
+                </Body>
                 <ol className="space-y-2 list-decimal list-inside">
                   <li>Check your inbox (and spam folder)</li>
                   <li>Click the reset link in the email</li>

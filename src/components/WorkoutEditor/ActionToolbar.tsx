@@ -1,7 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/Button";
 import { Body } from "@/components/ui/Typography";
-import { Plus, Package, Users, Zap } from "lucide-react";
+import {
+  Plus,
+  Package,
+  Users,
+  Zap,
+  Undo2,
+  Redo2,
+  Keyboard,
+  Eye,
+} from "lucide-react";
 import { WorkoutExercise } from "@/types";
 
 interface ActionToolbarProps {
@@ -24,6 +33,14 @@ interface ActionToolbarProps {
   onSave: () => void;
   isSaving: boolean;
   canSave: boolean;
+
+  // Undo/Redo operations
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
+  onShowKeyboardShortcuts?: () => void;
+  onShowPreview?: () => void;
 }
 
 /**
@@ -43,6 +60,12 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({
   onSave,
   isSaving,
   canSave,
+  onUndo,
+  onRedo,
+  canUndo = false,
+  canRedo = false,
+  onShowKeyboardShortcuts,
+  onShowPreview,
 }) => {
   return (
     <div className="space-y-3">
@@ -76,6 +99,42 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({
                 Group Exercises
               </Button>
             )}
+
+            {/* Undo/Redo buttons */}
+            <div className="flex items-center gap-1 ml-auto">
+              <Button
+                onClick={onUndo}
+                disabled={!canUndo}
+                variant="ghost"
+                size="sm"
+                className="px-2"
+                aria-label="Undo (⌘Z)"
+                title="Undo (⌘Z)"
+              >
+                <Undo2 className="w-4 h-4" />
+              </Button>
+              <Button
+                onClick={onRedo}
+                disabled={!canRedo}
+                variant="ghost"
+                size="sm"
+                className="px-2"
+                aria-label="Redo (⌘⇧Z)"
+                title="Redo (⌘⇧Z)"
+              >
+                <Redo2 className="w-4 h-4" />
+              </Button>
+              <Button
+                onClick={onShowKeyboardShortcuts}
+                variant="ghost"
+                size="sm"
+                className="px-2"
+                aria-label="Keyboard shortcuts (⌘/)"
+                title="Keyboard shortcuts (⌘/)"
+              >
+                <Keyboard className="w-4 h-4" />
+              </Button>
+            </div>
           </>
         ) : (
           <>
@@ -112,24 +171,36 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({
         )}
       </div>
 
-      {/* Save Workout Button - Separate Row */}
+      {/* Preview and Save Buttons - Separate Row */}
       {!selectionMode && (
-        <Button
-          onClick={onSave}
-          disabled={isSaving || !canSave}
-          variant="primary"
-          fullWidth
-          className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-success to-accent-green-600 hover:from-success hover:to-accent-green-700 border-2 border-success"
-        >
-          {isSaving ? (
-            <>
-              <span className="animate-spin mr-2">⏳</span>
-              Saving...
-            </>
-          ) : (
-            "Save Workout"
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={onShowPreview}
+            variant="secondary"
+            leftIcon={<Eye className="w-4 h-4" />}
+            className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-medium"
+          >
+            Preview
+          </Button>
+          <Button
+            onClick={onSave}
+            disabled={isSaving || !canSave}
+            variant="primary"
+            fullWidth
+            className="py-3 sm:py-2.5 rounded-xl sm:rounded-lg font-bold bg-linear-to-r from-success to-accent-green-600 hover:from-success hover:to-accent-green-700 border-2 border-success"
+          >
+            {isSaving ? (
+              <>
+                <Body as="span" className="animate-spin mr-2">
+                  ⏳
+                </Body>
+                Saving...
+              </>
+            ) : (
+              "Save Workout"
+            )}
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -8,6 +8,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { AlertCircle, Check } from "lucide-react";
+import { Body } from "./Typography";
 
 export interface TextareaProps
   extends Omit<
@@ -128,7 +129,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           <label className="block text-sm font-[var(--font-weight-medium)] text-[var(--color-text-primary)] mb-2">
             {label}
             {props.required && (
-              <span className="text-[var(--color-error)] ml-1">*</span>
+              <Body as="span" className="text-[var(--color-error)] ml-1">
+                *
+              </Body>
             )}
           </label>
         )}

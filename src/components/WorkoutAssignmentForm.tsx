@@ -62,7 +62,10 @@ export default function WorkoutAssignmentForm({
       {/* Workout Selection */}
       <div>
         <label className="block text-body-primary font-medium mb-2">
-          Select Workout <span className="text-error">*</span>
+          Select Workout{" "}
+          <Body as="span" className="text-error">
+            *
+          </Body>
         </label>
         <select
           value={selectedWorkoutId}

@@ -8,6 +8,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Body } from "./Typography";
 import { CheckCircle, XCircle, AlertCircle, Info, X } from "lucide-react";
 
 export interface SnackbarAction {
@@ -141,9 +142,9 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
                   `}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
-                  <p className="flex-1 text-sm font-medium">
+                  <Body size="sm" weight="medium" className="flex-1">
                     {snackbar.message}
-                  </p>
+                  </Body>
 
                   {snackbar.action && (
                     <button

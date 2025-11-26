@@ -22,6 +22,7 @@ import {
   FloatingLabelTextarea,
 } from "@/components/ui/FloatingLabelInput";
 import { Select } from "@/components/ui/Select";
+import { Heading, Body } from "@/components/ui/Typography";
 import type { User as UserType } from "@/types";
 
 interface AthleteEditModalProps {
@@ -141,9 +142,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Contact Information */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
+              <Heading level="h3" className="text-sm uppercase tracking-wide">
                 Contact Information
-              </h3>
+              </Heading>
               <FloatingLabelInput
                 label="Email"
                 type="email"
@@ -166,9 +167,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Emergency Contact */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
+              <Heading level="h3" className="text-sm uppercase tracking-wide">
                 Emergency Contact
-              </h3>
+              </Heading>
               <FloatingLabelInput
                 label="Emergency Contact Name"
                 value={values.emergencyContact}
@@ -190,9 +191,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Physical Information */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
+              <Heading level="h3" className="text-sm uppercase tracking-wide">
                 Physical Information
-              </h3>
+              </Heading>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FloatingLabelInput
                   label="Height (inches)"
@@ -235,9 +236,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Injury Status */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
+              <Heading level="h3" className="text-sm uppercase tracking-wide">
                 Health Status
-              </h3>
+              </Heading>
               <FloatingLabelInput
                 label="Injury Status"
                 value={values.injuryStatus}
@@ -250,9 +251,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
 
             {/* Bio */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-(--text-primary) uppercase tracking-wide">
+              <Heading level="h3" className="text-sm uppercase tracking-wide">
                 About
-              </h3>
+              </Heading>
               <FloatingLabelTextarea
                 label="Bio"
                 value={values.bio}
@@ -265,7 +266,9 @@ const AthleteEditModal: React.FC<AthleteEditModalProps> = ({
             {/* Error Message */}
             {errors.submit && (
               <div className="rounded-lg bg-error-light border border-error p-4">
-                <p className="text-sm text-error">{errors.submit}</p>
+                <Body size="sm" className="text-error">
+                  {errors.submit}
+                </Body>
               </div>
             )}
           </div>

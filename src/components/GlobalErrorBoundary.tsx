@@ -4,6 +4,7 @@ import { Component, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
 import { Alert } from "@/components/ui/Alert";
+import { Body } from "@/components/ui/Typography";
 import { motion } from "framer-motion";
 
 interface Props {
@@ -126,9 +127,9 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                 transition={{ delay: 0.4 }}
               >
                 <Alert variant="error" className="mb-6">
-                  <p className="font-mono text-sm break-all">
+                  <Body size="sm" className="font-mono break-all">
                     {this.state.error.message}
-                  </p>
+                  </Body>
                 </Alert>
               </motion.div>
             )}

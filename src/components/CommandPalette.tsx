@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ModalBackdrop } from "@/components/ui/Modal";
+import { Body } from "@/components/ui/Typography";
 
 interface Exercise {
   id: string;
@@ -130,14 +131,14 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
                 <Plus className="w-5 h-5 text-(--accent-blue-600)" />
-                <span className="font-medium">Create New Workout</span>
+                <Body weight="medium">Create New Workout</Body>
               </Command.Item>
               <Command.Item
                 onSelect={() => navigate("/exercises/new")}
                 className="flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer hover:bg-(--accent-blue-50) data-[selected=true]:bg-(--accent-blue-50) transition-colors"
               >
                 <Dumbbell className="w-5 h-5 text-(--accent-blue-600)" />
-                <span className="font-medium">Create New Exercise</span>
+                <Body weight="medium">Create New Exercise</Body>
               </Command.Item>
             </Command.Group>
           )}

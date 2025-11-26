@@ -126,9 +126,13 @@ export default function GroupCompletionStats() {
                     </Heading>
                     <div className="flex items-center gap-1.5 text-xs text-navy-600 mt-0.5">
                       <Users className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">
+                      <Body
+                        as="span"
+                        size="xs"
+                        className="truncate text-navy-600"
+                      >
                         {group.athleteCount} athletes
-                      </span>
+                      </Body>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -141,9 +145,14 @@ export default function GroupCompletionStats() {
                             : "text-accent-amber-500"
                       }`}
                     />
-                    <span className="text-lg font-bold text-navy-700 tabular-nums">
+                    <Body
+                      as="span"
+                      size="lg"
+                      weight="bold"
+                      className="text-navy-700 tabular-nums"
+                    >
                       {group.avgCompletionRate}%
-                    </span>
+                    </Body>
                   </div>
                 </div>
 
@@ -159,9 +168,9 @@ export default function GroupCompletionStats() {
                     >
                       Completed
                     </Body>
-                    <p className="font-semibold text-navy-700 truncate">
+                    <Body weight="semibold" className="text-navy-700 truncate">
                       {group.completedWorkouts} workouts
-                    </p>
+                    </Body>
                   </div>
                   <div
                     className={`min-w-0 rounded-lg p-2 ${accent.bg} border ${accent.border}`}
@@ -173,9 +182,9 @@ export default function GroupCompletionStats() {
                     >
                       Total Assigned
                     </Body>
-                    <p className="font-semibold text-navy-700 truncate">
+                    <Body weight="semibold" className="text-navy-700 truncate">
                       {group.totalAssignments} workouts
-                    </p>
+                    </Body>
                   </div>
                 </div>
 

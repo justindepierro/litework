@@ -10,6 +10,7 @@ import React from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { motion } from "framer-motion";
+import { Body } from "./Typography";
 
 export interface ChipProps {
   /** Chip label */
@@ -121,9 +122,15 @@ export function Chip({
         />
       )}
 
-      {icon && <span className={iconSize[size]}>{icon}</span>}
+      {icon && (
+        <Body as="span" className={iconSize[size]}>
+          {icon}
+        </Body>
+      )}
 
-      <span className="truncate max-w-[200px]">{label}</span>
+      <Body as="span" className="truncate max-w-[200px]">
+        {label}
+      </Body>
 
       {onDelete && !disabled && (
         <button

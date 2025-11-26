@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { Badge, BadgeVariant } from "@/components/ui/Badge";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -176,14 +176,18 @@ export default function BulkOperationHistory({
               <RefreshCw
                 className={`w-5 h-5 text-neutral ${loading ? "animate-spin" : ""}`}
               />
-              <span className="text-sm text-neutral-dark">Refresh</span>
+              <Body size="sm" className="text-neutral-dark">
+                Refresh
+              </Body>
             </button>
           </div>
 
           {loading ? (
             <div className="text-center py-8">
               <RefreshCw className="w-8 h-8 text-neutral mx-auto mb-4 animate-spin" />
-              <p className="text-neutral-dark">Loading operation history...</p>
+              <Body className="text-neutral-dark">
+                Loading operation history...
+              </Body>
             </div>
           ) : operations.length === 0 ? (
             <div className="text-center py-12">
@@ -191,9 +195,9 @@ export default function BulkOperationHistory({
               <Heading level="h3" className="text-navy-900 mb-2">
                 No Operations Yet
               </Heading>
-              <p className="text-neutral-dark">
+              <Body className="text-neutral-dark">
                 Your bulk operations will appear here once you start using them.
-              </p>
+              </Body>
             </div>
           ) : (
             <div className="space-y-4">
@@ -209,9 +213,9 @@ export default function BulkOperationHistory({
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-medium text-navy-900">
+                          <Heading level="h3" className="text-navy-900">
                             {getOperationTitle(operation.type)}
-                          </h3>
+                          </Heading>
                           <Badge
                             variant={getStatusColor(operation.status)}
                             size="sm"
@@ -222,21 +226,29 @@ export default function BulkOperationHistory({
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-neutral-dark mb-3">
                           <div>
-                            <span className="font-medium">Targets:</span>{" "}
+                            <Body size="sm" weight="medium" as="span">
+                              Targets:
+                            </Body>{" "}
                             {operation.targetCount}
                           </div>
                           <div>
-                            <span className="font-medium">Success:</span>{" "}
+                            <Body size="sm" weight="medium" as="span">
+                              Success:
+                            </Body>{" "}
                             {operation.successCount}
                           </div>
                           {operation.failureCount > 0 && (
                             <div>
-                              <span className="font-medium">Failed:</span>{" "}
+                              <Body size="sm" weight="medium" as="span">
+                                Failed:
+                              </Body>{" "}
                               {operation.failureCount}
                             </div>
                           )}
                           <div>
-                            <span className="font-medium">Duration:</span>{" "}
+                            <Body size="sm" weight="medium" as="span">
+                              Duration:
+                            </Body>{" "}
                             {formatDuration(
                               operation.createdAt,
                               operation.completedAt

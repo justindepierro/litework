@@ -10,6 +10,7 @@
 import React from "react";
 import { useNetwork } from "@/hooks/use-network";
 import { useSync } from "@/hooks/use-sync";
+import { Body } from "@/components/ui/Typography";
 
 export function OfflineStatusBanner() {
   const { isOnline } = useNetwork();
@@ -128,7 +129,9 @@ export function SyncStatusIndicator() {
             d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"
           />
         </svg>
-        <span className="text-sm font-medium">Offline</span>
+        <Body size="sm" weight="medium">
+          Offline
+        </Body>
       </div>
     );
   }
@@ -149,7 +152,9 @@ export function SyncStatusIndicator() {
             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
           />
         </svg>
-        <span className="text-sm font-medium">Syncing</span>
+        <Body size="sm" weight="medium">
+          Syncing
+        </Body>
       </div>
     );
   }
@@ -175,7 +180,9 @@ export function SyncStatusIndicator() {
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span className="text-sm font-medium">{totalUnsynced}</span>
+        <Body size="sm" weight="medium">
+          {totalUnsynced}
+        </Body>
       </div>
     );
   }

@@ -220,7 +220,9 @@ export function AchievementBadges({
                 size="md"
                 className={`${meta.bgColor} ${meta.color} border-none`}
               >
-                <span className="mr-1">{meta.icon}</span>
+                <Body as="span" className="mr-1">
+                  {meta.icon}
+                </Body>
                 {achievement.title}
               </Badge>
             );

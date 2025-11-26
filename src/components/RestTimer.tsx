@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Play, Pause, SkipForward, Volume2, Clock } from "lucide-react";
 import { ModalBackdrop } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body } from "@/components/ui/Typography";
 
 interface RestTimerProps {
   duration: number; // seconds
@@ -165,7 +165,9 @@ export default function RestTimer({
         {hasCompleted && (
           <div className="flex items-center justify-center gap-2 mt-4 text-(--status-success)">
             <Volume2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Rest period complete!</span>
+            <Body size="sm" weight="medium">
+              Rest period complete!
+            </Body>
           </div>
         )}
       </div>

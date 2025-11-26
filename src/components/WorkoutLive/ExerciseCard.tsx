@@ -1,5 +1,5 @@
 import React from "react";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body, Caption, Label } from "@/components/ui/Typography";
 import { StepperInput } from "@/components/ui/StepperInput";
 import { CheckCircle, Clock } from "lucide-react";
 import { ExerciseProgress } from "@/types/session";
@@ -47,30 +47,30 @@ export const ExerciseCard = React.memo(function ExerciseCard({
               {exercise.exercise_name}
             </Heading>
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary">
+              <Body className="text-2xl font-bold">
                 {exercise.sets_completed + 1}
-              </div>
-              <div className="text-xs text-secondary font-medium">
+              </Body>
+              <Caption variant="muted" className="font-medium">
                 of {exercise.sets_target}
-              </div>
+              </Caption>
             </div>
           </div>
 
           {/* Target and Progress */}
           <div className="flex items-center gap-3 text-sm">
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/80 rounded-lg">
-              <span className="text-navy-600">Target:</span>
-              <span className="font-semibold text-navy-700">
+              <Label className="text-sm">Target:</Label>
+              <Body size="sm" weight="semibold">
                 {exercise.sets_target} × {exercise.reps_target}
                 {exercise.weight_target && ` @ ${exercise.weight_target} lbs`}
-              </span>
+              </Body>
             </div>
             {exercise.rest_seconds > 0 && (
               <div className="flex items-center gap-1 px-2.5 py-1 bg-white/80 rounded-lg">
-                <Clock className="w-3.5 h-3.5 text-navy-600" />
-                <span className="font-medium text-navy-600">
+                <Clock className="w-3.5 h-3.5 text-silver-500" />
+                <Body size="sm" weight="medium">
                   {exercise.rest_seconds}s
-                </span>
+                </Body>
               </div>
             )}
           </div>
@@ -80,21 +80,27 @@ export const ExerciseCard = React.memo(function ExerciseCard({
             <div className="mt-3">
               {/* Last Set Info */}
               <div className="flex items-center justify-between mb-2 px-1">
-                <span className="text-xs font-semibold text-navy-600 uppercase tracking-wide">
+                <Caption
+                  variant="muted"
+                  className="font-semibold uppercase tracking-wide"
+                >
                   Last Set
-                </span>
+                </Caption>
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="font-bold text-accent-blue-500">
+                  <Body size="sm" weight="bold" className="text-primary">
                     {lastSet.weight || 0} lbs
-                  </span>
-                  <span className="text-navy-500">×</span>
-                  <span className="font-bold text-navy-700">
+                  </Body>
+                  <Caption variant="muted">×</Caption>
+                  <Body size="sm" weight="bold">
                     {lastSet.reps} reps
-                  </span>
+                  </Body>
                   {lastSet.rpe && (
-                    <span className="text-xs font-medium text-brand px-1.5 py-0.5 bg-brand-lighter rounded">
+                    <Caption
+                      variant="muted"
+                      className="font-medium px-1.5 py-0.5 bg-silver-100 rounded"
+                    >
                       RPE {lastSet.rpe}
-                    </span>
+                    </Caption>
                   )}
                 </div>
               </div>
@@ -104,8 +110,10 @@ export const ExerciseCard = React.memo(function ExerciseCard({
                 onClick={handleCopyLastSet}
                 className="w-full py-2 bg-white hover:bg-accent-blue-50 active:bg-accent-blue-100 border-2 border-accent-blue-200 text-accent-blue-700 rounded-lg font-medium text-sm active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
               >
-                <span className="text-base">↻</span>
-                <span>Copy to Inputs</span>
+                <Body size="base">↻</Body>
+                <Body size="sm" weight="medium">
+                  Copy to Inputs
+                </Body>
               </button>
             </div>
           )}

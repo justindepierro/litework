@@ -3,13 +3,21 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
-import { GripVertical, Trash2, Edit3, MoreVertical, Check } from "lucide-react";
+import {
+  GripVertical,
+  Trash2,
+  Edit3,
+  MoreVertical,
+  Check,
+  X,
+} from "lucide-react";
 import { WorkoutExercise, ExerciseGroup, KPITag } from "@/types";
 import ExerciseAutocomplete from "../ExerciseAutocomplete";
 import { SaveStatus, useSaveStatus } from "@/components/ui/SaveStatus";
 import { Dropdown, DropdownItem } from "@/components/ui/Dropdown";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Label, Caption } from "@/components/ui/Typography";
+import { Label, Caption, Body, Heading } from "@/components/ui/Typography";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export interface ExerciseItemProps {
   exercise: WorkoutExercise;
@@ -22,6 +30,7 @@ export interface ExerciseItemProps {
   onMoveToGroup: (groupId?: string) => void;
   availableGroups: ExerciseGroup[];
   availableKPIs?: KPITag[];
+  isLoadingKPIs?: boolean;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onExerciseNameChange?: (name: string) => Promise<string>;
@@ -42,6 +51,7 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
     onMoveToGroup,
     availableGroups,
     availableKPIs = [],
+    isLoadingKPIs = false,
     canMoveUp,
     canMoveDown,
     onExerciseNameChange,
@@ -148,33 +158,27 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
             )}
 
             <div className="flex flex-col space-y-1">
-              <button
+              <Button
                 onClick={onMoveUp}
                 disabled={!canMoveUp}
+                variant="ghost"
+                size="sm"
+                className="p-1 text-xs"
                 aria-label="Move exercise up"
-                className={`p-1 text-xs ${
-                  canMoveUp
-                    ? "text-silver-500 hover:text-silver-700"
-                    : "text-silver-300"
-                }`}
-                title="Move up"
               >
                 ↑
-              </button>
+              </Button>
               <GripVertical className="w-4 h-4 text-silver-500" />
-              <button
+              <Button
                 onClick={onMoveDown}
                 disabled={!canMoveDown}
+                variant="ghost"
+                size="sm"
+                className="p-1 text-xs"
                 aria-label="Move exercise down"
-                className={`p-1 text-xs ${
-                  canMoveDown
-                    ? "text-silver-500 hover:text-silver-700"
-                    : "text-silver-300"
-                }`}
-                title="Move down"
               >
                 ↓
-              </button>
+              </Button>
             </div>
 
             <div className="flex-1">
@@ -290,8 +294,7 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                   <div>
                     <Label className="block mb-2">Weight Type</Label>
                     <div className="grid grid-cols-3 gap-2">
-                      <button
-                        type="button"
+                      <Button
                         onClick={() =>
                           setEditedExercise({
                             ...editedExercise,
@@ -299,16 +302,17 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                             percentage: undefined,
                           })
                         }
-                        className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        variant={
                           editedExercise.weightType === "fixed"
-                            ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
-                            : "border-silver-300 text-silver-600 hover:border-silver-400"
-                        }`}
+                            ? "primary"
+                            : "secondary"
+                        }
+                        size="md"
+                        className="p-3"
                       >
                         Fixed
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button
                         onClick={() =>
                           setEditedExercise({
                             ...editedExercise,
@@ -316,16 +320,17 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                             weight: undefined,
                           })
                         }
-                        className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        variant={
                           editedExercise.weightType === "percentage"
-                            ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
-                            : "border-silver-300 text-silver-600 hover:border-silver-400"
-                        }`}
+                            ? "primary"
+                            : "secondary"
+                        }
+                        size="md"
+                        className="p-3"
                       >
                         % 1RM
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button
                         onClick={() =>
                           setEditedExercise({
                             ...editedExercise,
@@ -334,14 +339,16 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                             percentage: undefined,
                           })
                         }
-                        className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                        variant={
                           editedExercise.weightType === "bodyweight"
-                            ? "border-accent-blue bg-(--accent-blue-50) text-accent-blue"
-                            : "border-silver-300 text-silver-600 hover:border-silver-400"
-                        }`}
+                            ? "primary"
+                            : "secondary"
+                        }
+                        size="md"
+                        className="p-3"
                       >
                         Body
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -368,7 +375,9 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                           className="flex-1"
                           selectOnFocus
                         />
-                        <span className="text-silver-600 font-medium">-</span>
+                        <Body weight="medium" variant="secondary">
+                          -
+                        </Body>
                         <Input
                           type="number"
                           value={editedExercise.weightMax ?? ""}
@@ -418,7 +427,9 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                           className="flex-1"
                           selectOnFocus
                         />
-                        <span className="text-silver-600 font-medium">-</span>
+                        <Body weight="medium" variant="secondary">
+                          -
+                        </Body>
                         <Input
                           type="number"
                           value={editedExercise.percentageMax ?? ""}
@@ -499,55 +510,63 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                   />
 
                   {/* KPI Tags */}
-                  {availableKPIs.length > 0 && (
+                  {(isLoadingKPIs || availableKPIs.length > 0) && (
                     <div>
                       <Label className="block mb-2">
                         KPI Tags
-                        <span className="text-xs text-silver-500 ml-2 font-normal">
+                        <Caption variant="muted" className="ml-2 font-normal">
                           (Which KPIs does this exercise develop?)
-                        </span>
+                        </Caption>
                       </Label>
-                      <div className="flex flex-wrap gap-2">
-                        {availableKPIs.map((kpi) => {
-                          const isSelected = editedExercise.kpiTagIds?.includes(
-                            kpi.id
-                          );
-                          return (
-                            <button
-                              key={kpi.id}
-                              type="button"
-                              onClick={() => {
-                                const currentTags =
-                                  editedExercise.kpiTagIds || [];
-                                const newTags = isSelected
-                                  ? currentTags.filter((id) => id !== kpi.id)
-                                  : [...currentTags, kpi.id];
-                                setEditedExercise({
-                                  ...editedExercise,
-                                  kpiTagIds:
-                                    newTags.length > 0 ? newTags : undefined,
-                                });
-                              }}
-                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                                isSelected
-                                  ? "border-2 shadow-sm"
-                                  : "border-2 border-dashed opacity-60 hover:opacity-100"
-                              }`}
-                              style={{
-                                backgroundColor: isSelected
-                                  ? kpi.color
-                                  : "transparent",
-                                borderColor: kpi.color,
-                                color: isSelected ? "#fff" : kpi.color,
-                              }}
-                            >
-                              {kpi.displayName}
-                              {isSelected && <Check className="w-3 h-3" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {editedExercise.kpiTagIds &&
+                      {isLoadingKPIs ? (
+                        <div className="flex flex-wrap gap-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <Skeleton key={i} className="h-8 w-20 rounded-lg" />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {availableKPIs.map((kpi) => {
+                            const isSelected =
+                              editedExercise.kpiTagIds?.includes(kpi.id);
+                            return (
+                              <button
+                                key={kpi.id}
+                                type="button"
+                                onClick={() => {
+                                  const currentTags =
+                                    editedExercise.kpiTagIds || [];
+                                  const newTags = isSelected
+                                    ? currentTags.filter((id) => id !== kpi.id)
+                                    : [...currentTags, kpi.id];
+                                  setEditedExercise({
+                                    ...editedExercise,
+                                    kpiTagIds:
+                                      newTags.length > 0 ? newTags : undefined,
+                                  });
+                                }}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                  isSelected
+                                    ? "border-2 shadow-sm"
+                                    : "border-2 border-dashed opacity-60 hover:opacity-100"
+                                }`}
+                                style={{
+                                  backgroundColor: isSelected
+                                    ? kpi.color
+                                    : "transparent",
+                                  borderColor: kpi.color,
+                                  color: isSelected ? "#fff" : kpi.color,
+                                }}
+                              >
+                                {kpi.displayName}
+                                {isSelected && <Check className="w-3 h-3" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {!isLoadingKPIs &&
+                        editedExercise.kpiTagIds &&
                         editedExercise.kpiTagIds.length > 0 && (
                           <Caption variant="default" className="mt-2">
                             {editedExercise.kpiTagIds.length} KPI
@@ -623,30 +642,37 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                         }}
                         placeholder="Search exercises..."
                       />
-                      <button
+                      <Button
                         onClick={() => {
                           handleInlineEdit(
                             "exerciseName",
                             editedExercise.exerciseName
                           );
                         }}
-                        className="p-2 text-(--status-success) hover:bg-(--status-success-light) rounded"
+                        variant="ghost"
+                        size="sm"
+                        className="p-2 text-success hover:bg-success/10"
+                        aria-label="Save exercise name"
                       >
                         <Check className="w-4 h-4" />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => {
                           setInlineEditField(null);
                           setEditedExercise(exercise);
                         }}
-                        className="p-2 text-silver-500 hover:bg-(--interactive-hover) rounded"
+                        variant="ghost"
+                        size="sm"
+                        className="p-2"
+                        aria-label="Cancel editing"
                       >
-                        ✕
-                      </button>
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
                   ) : (
-                    <h4
-                      className="font-medium text-heading-primary cursor-pointer hover:text-accent-blue transition-colors"
+                    <Heading
+                      level="h4"
+                      className="cursor-pointer hover:text-accent-blue transition-colors"
                       onClick={() => {
                         setInlineEditField("name");
                         setEditedExercise(exercise);
@@ -654,7 +680,7 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
                       title="Click to search/edit exercise"
                     >
                       {exercise.exerciseName}
-                    </h4>
+                    </Heading>
                   )}
 
                   {/* Sets, Reps, Weight - Inline editable */}
@@ -979,18 +1005,26 @@ export const ExerciseItem = React.memo<ExerciseItemProps>(
               ))}
             </Dropdown>
 
-            <button
+            <Button
               onClick={() => setIsEditing(!isEditing)}
-              className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg hover:bg-(--interactive-hover) transition-colors touch-manipulation"
+              variant="ghost"
+              size="lg"
+              className="p-3 sm:p-2 text-silver-500 hover:text-accent-blue rounded-xl sm:rounded-lg"
+              aria-label={
+                isEditing ? "Close exercise editor" : "Edit exercise details"
+              }
             >
               <Edit3 className="w-5 h-5 sm:w-4 sm:h-4" />
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => onDelete(exercise.id)}
-              className="p-3 sm:p-2 text-silver-500 hover:text-(--status-error) rounded-xl sm:rounded-lg hover:bg-(--status-error-light) transition-colors touch-manipulation"
+              variant="ghost"
+              size="lg"
+              className="p-3 sm:p-2 text-silver-500 hover:text-error rounded-xl sm:rounded-lg"
+              aria-label="Delete exercise"
             >
               <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, X, Download } from "lucide-react";
-import { Body } from "@/components/ui/Typography";
+import { Body, Heading } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -108,9 +108,12 @@ export default function PWAInstallBanner() {
             <Plus className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-heading-primary font-semibold text-sm">
+            <Heading
+              level="h3"
+              className="text-heading-primary font-semibold text-sm"
+            >
               Install App
-            </h3>
+            </Heading>
             <Body className="text-xs" variant="secondary">
               Add to home screen for quick access
             </Body>

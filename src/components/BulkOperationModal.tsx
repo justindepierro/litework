@@ -23,7 +23,7 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Heading, Body, Label } from "@/components/ui/Typography";
+import { Heading, Body, Label, Caption } from "@/components/ui/Typography";
 import { withErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { useBulkOperationState } from "@/hooks/useBulkOperationState";
 import {
@@ -548,29 +548,39 @@ export default withErrorBoundary(function BulkOperationModal({
 
           <div className="bg-(--bg-secondary) rounded-lg p-4 space-y-3">
             <div>
-              <span className="font-medium">Targets: </span>
-              <span>{getTotalSelectedCount()} athletes</span>
+              <Body weight="medium" as="span">
+                Targets:{" "}
+              </Body>
+              <Body as="span">{getTotalSelectedCount()} athletes</Body>
               {selectedGroups.length > 0 && (
-                <span className="text-sm text-(--text-secondary)">
+                <Body size="sm" variant="secondary" as="span">
                   {" "}
                   ({selectedGroups.length} groups, {selectedAthletes.length}{" "}
                   individuals)
-                </span>
+                </Body>
               )}
             </div>
 
             {operationType === "bulk_message" && (
               <>
                 <div>
-                  <span className="font-medium">Subject: </span>
-                  <span>{messageData.subject || "No subject"}</span>
+                  <Body weight="medium" as="span">
+                    Subject:{" "}
+                  </Body>
+                  <Body as="span">{messageData.subject || "No subject"}</Body>
                 </div>
                 <div>
-                  <span className="font-medium">Priority: </span>
-                  <span className="capitalize">{messageData.priority}</span>
+                  <Body weight="medium" as="span">
+                    Priority:{" "}
+                  </Body>
+                  <Body as="span" className="capitalize">
+                    {messageData.priority}
+                  </Body>
                 </div>
                 <div>
-                  <span className="font-medium">Message: </span>
+                  <Body weight="medium" as="span">
+                    Message:{" "}
+                  </Body>
                   <div className="mt-1 p-2 bg-white rounded border text-sm">
                     {messageData.message}
                   </div>
@@ -581,13 +591,19 @@ export default withErrorBoundary(function BulkOperationModal({
             {operationType === "bulk_update_status" && (
               <>
                 <div>
-                  <span className="font-medium">New Status: </span>
-                  <span className="capitalize">{statusData.status}</span>
+                  <Body weight="medium" as="span">
+                    New Status:{" "}
+                  </Body>
+                  <Body as="span" className="capitalize">
+                    {statusData.status}
+                  </Body>
                 </div>
                 {statusData.reason && (
                   <div>
-                    <span className="font-medium">Reason: </span>
-                    <span>{statusData.reason}</span>
+                    <Body weight="medium" as="span">
+                      Reason:{" "}
+                    </Body>
+                    <Body as="span">{statusData.reason}</Body>
                   </div>
                 )}
               </>
@@ -596,19 +612,25 @@ export default withErrorBoundary(function BulkOperationModal({
             {operationType === "bulk_assign_workout" && (
               <>
                 <div>
-                  <span className="font-medium">Workout: </span>
-                  <span>{workoutData.workoutId}</span>
+                  <Body weight="medium" as="span">
+                    Workout:{" "}
+                  </Body>
+                  <Body as="span">{workoutData.workoutId}</Body>
                 </div>
                 <div>
-                  <span className="font-medium">Date: </span>
-                  <span>
+                  <Body weight="medium" as="span">
+                    Date:{" "}
+                  </Body>
+                  <Body as="span">
                     {new Date(workoutData.scheduledDate).toLocaleDateString()}
-                  </span>
+                  </Body>
                 </div>
                 {workoutData.notes && (
                   <div>
-                    <span className="font-medium">Notes: </span>
-                    <span>{workoutData.notes}</span>
+                    <Body weight="medium" as="span">
+                      Notes:{" "}
+                    </Body>
+                    <Body as="span">{workoutData.notes}</Body>
                   </div>
                 )}
               </>

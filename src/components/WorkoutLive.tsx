@@ -31,7 +31,7 @@ import { SkeletonCard, SkeletonExerciseItem } from "@/components/ui/Skeleton";
 import { StepperInput } from "@/components/ui/StepperInput";
 import { WorkoutHeader } from "@/components/WorkoutHeader";
 import { Badge } from "@/components/ui/Badge";
-import { Heading, Body, Label } from "@/components/ui/Typography";
+import { Heading, Body, Label, Caption } from "@/components/ui/Typography";
 import type { ExerciseGroupInfo } from "@/types/session";
 
 interface WorkoutLiveProps {
@@ -314,10 +314,10 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                 >
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-success" />
-                    <span className="font-semibold text-success-dark">
+                    <Body weight="semibold" className="text-success-dark">
                       Completed (
                       {session.exercises.filter((ex) => ex.completed).length})
-                    </span>
+                    </Body>
                   </div>
                   <ChevronDown
                     className={`w-5 h-5 text-success transition-transform duration-200 ${showCompletedExercises ? "" : "-rotate-90"}`}
@@ -339,13 +339,13 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 flex-1">
                               <CheckCircle className="w-4 h-4 text-success shrink-0" />
-                              <span className="font-medium text-navy-700">
+                              <Body weight="medium" className="text-navy-700">
                                 {exercise.exercise_name}
-                              </span>
+                              </Body>
                             </div>
-                            <span className="text-sm text-navy-500">
+                            <Body size="sm" className="text-navy-500">
                               {exercise.set_records.length} sets
-                            </span>
+                            </Body>
                           </div>
                         </button>
                       );
@@ -576,22 +576,31 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                                     animationDelay: `${setIndex * 50}ms`,
                                   }}
                                 >
-                                  <span className="text-navy-600 font-semibold">
+                                  <Body
+                                    weight="semibold"
+                                    className="text-navy-600"
+                                  >
                                     Set {set.set_number}
-                                  </span>
+                                  </Body>
                                   <div className="flex items-center gap-3">
                                     {set.weight && (
-                                      <span className="text-navy-700 font-bold">
+                                      <Body
+                                        weight="bold"
+                                        className="text-navy-700"
+                                      >
                                         {set.weight} lbs
-                                      </span>
+                                      </Body>
                                     )}
-                                    <span className="text-navy-700 font-semibold">
+                                    <Body
+                                      weight="semibold"
+                                      className="text-navy-700"
+                                    >
                                       × {set.reps}
-                                    </span>
+                                    </Body>
                                     {set.rpe && (
-                                      <span className="text-brand font-medium text-xs px-2 py-0.5 bg-brand-lighter rounded">
+                                      <Caption className="px-2 py-0.5 bg-brand-lighter rounded text-brand font-medium">
                                         RPE {set.rpe}
-                                      </span>
+                                      </Caption>
                                     )}
                                   </div>
                                 </div>
@@ -664,9 +673,9 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                       className="p-4 bg-neutral-lighter hover:bg-neutral-light rounded-xl shadow-sm transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-navy-700">
+                        <Body weight="semibold" className="text-navy-700">
                           Set {set.set_number}
-                        </span>
+                        </Body>
                         <button
                           onClick={async () => {
                             if (confirm(`Delete Set ${set.set_number}?`)) {
@@ -793,9 +802,9 @@ export default function WorkoutLive({}: WorkoutLiveProps) {
                             <div className="px-2 py-1.5 bg-neutral-lighter rounded-lg font-semibold text-navy-700">
                               {set.rpe}
                             </div>
-                            <span className="text-[10px] text-navy-500">
+                            <Caption className="text-[10px] text-navy-500">
                               Not editable yet
-                            </span>
+                            </Caption>
                           </div>
                         )}
                       </div>

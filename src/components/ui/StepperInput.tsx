@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Label } from "@/components/ui/Typography";
+import { Label, Caption } from "@/components/ui/Typography";
 
 interface StepperInputProps {
   label: string;
@@ -73,9 +73,12 @@ export function StepperInput({
             aria-label={label}
           />
           {unit && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-(--text-tertiary) pointer-events-none">
+            <Caption
+              variant="muted"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            >
               {unit}
-            </span>
+            </Caption>
           )}
         </div>
 

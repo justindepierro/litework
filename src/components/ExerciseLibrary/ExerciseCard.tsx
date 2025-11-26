@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { Star, Target, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 import type { Exercise } from "@/hooks/useExerciseLibraryState";
 
 interface ExerciseCardProps {
@@ -46,9 +46,9 @@ function ExerciseCardComponent({
             >
               {exercise.category_name}
             </Badge>
-            <span className={getDifficultyColor(exercise.difficulty_level)}>
+            <Caption className={getDifficultyColor(exercise.difficulty_level)}>
               {getDifficultyLabel(exercise.difficulty_level)}
-            </span>
+            </Caption>
           </div>
         </div>
         {exercise.usage_count > 0 && (
@@ -61,50 +61,50 @@ function ExerciseCardComponent({
 
       {/* Description */}
       {exercise.description && (
-        <p className="text-sm text-(--text-secondary) mb-3 line-clamp-2">
+        <Body size="sm" variant="secondary" className="mb-3 line-clamp-2">
           {exercise.description}
-        </p>
+        </Body>
       )}
 
       {/* Muscle Groups */}
       {exercise.muscle_groups && exercise.muscle_groups.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3">
           {exercise.muscle_groups.slice(0, 3).map((muscle, idx) => (
-            <span
+            <Caption
               key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-(--bg-tertiary) text-(--text-secondary)"
+              className="inline-flex items-center px-2 py-0.5 rounded-full bg-(--bg-tertiary) text-(--text-secondary)"
             >
               <Target className="w-3 h-3 mr-1" />
               {muscle.name}
-            </span>
+            </Caption>
           ))}
           {exercise.muscle_groups.length > 3 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-(--bg-tertiary) text-(--text-secondary)">
+            <Caption className="inline-flex items-center px-2 py-0.5 rounded-full bg-(--bg-tertiary) text-(--text-secondary)">
               +{exercise.muscle_groups.length - 3} more
-            </span>
+            </Caption>
           )}
         </div>
       )}
 
       {/* Equipment & Attributes */}
-      <div className="flex flex-wrap items-center gap-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2">
         {exercise.is_compound && (
-          <span className="inline-flex items-center px-2 py-1 rounded bg-(--status-info-light) text-(--status-info)">
+          <Caption className="inline-flex items-center px-2 py-1 rounded bg-(--status-info-light) text-(--status-info)">
             <Zap className="w-3 h-3 mr-1" />
             Compound
-          </span>
+          </Caption>
         )}
         {exercise.is_bodyweight && (
-          <span className="inline-flex items-center px-2 py-1 rounded bg-(--status-success-light) text-(--status-success)">
+          <Caption className="inline-flex items-center px-2 py-1 rounded bg-(--status-success-light) text-(--status-success)">
             Bodyweight
-          </span>
+          </Caption>
         )}
         {exercise.equipment_needed && exercise.equipment_needed.length > 0 && (
-          <span className="text-(--text-secondary)">
+          <Caption variant="muted">
             {exercise.equipment_needed.slice(0, 2).join(", ")}
             {exercise.equipment_needed.length > 2 &&
               ` +${exercise.equipment_needed.length - 2}`}
-          </span>
+          </Caption>
         )}
       </div>
     </div>

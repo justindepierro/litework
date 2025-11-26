@@ -4,6 +4,7 @@
 import React from "react";
 import { Clock, Repeat, Layers, Dumbbell } from "lucide-react";
 import type { WorkoutExercise, ExerciseGroup } from "@/types";
+import { Heading, Body, Caption, Label } from "@/components/ui/Typography";
 
 interface ExerciseGroupDisplayProps {
   exercises: WorkoutExercise[];
@@ -139,19 +140,22 @@ export function ExerciseGroupDisplay({
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className={`font-bold text-lg ${colors?.text}`}>
+                      <Heading level="h3" className={`${colors?.text}`}>
                         {group.name}
-                      </h3>
-                      <span
-                        className={`text-xs font-semibold px-2 py-1 ${colors?.badge} text-white rounded-full uppercase`}
+                      </Heading>
+                      <Caption
+                        className={`font-semibold px-2 py-1 ${colors?.badge} text-white rounded-full uppercase`}
                       >
                         {group.type}
-                      </span>
+                      </Caption>
                     </div>
                     {group.description && (
-                      <p className={`text-sm ${colors?.text} opacity-80 mt-1`}>
+                      <Body
+                        size="sm"
+                        className={`${colors?.text} opacity-80 mt-1`}
+                      >
                         {group.description}
-                      </p>
+                      </Body>
                     )}
                   </div>
                 </div>
@@ -168,15 +172,18 @@ export function ExerciseGroupDisplay({
                             <Repeat className="w-5 h-5" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-(--text-secondary) uppercase">
+                            <Caption
+                              variant="muted"
+                              className="font-medium uppercase"
+                            >
                               Complete
-                            </div>
-                            <div
+                            </Caption>
+                            <Body
                               className={`text-2xl font-bold ${colors?.text}`}
                             >
                               {group.rounds}{" "}
                               {group.rounds === 1 ? "Round" : "Rounds"}
-                            </div>
+                            </Body>
                           </div>
                         </div>
                       )}
@@ -188,14 +195,17 @@ export function ExerciseGroupDisplay({
                             <Clock className="w-5 h-5" />
                           </div>
                           <div>
-                            <div className="text-xs font-medium text-(--text-secondary) uppercase">
+                            <Caption
+                              variant="muted"
+                              className="font-medium uppercase"
+                            >
                               Rest Between Rounds
-                            </div>
-                            <div
+                            </Caption>
+                            <Body
                               className={`text-2xl font-bold ${colors?.text}`}
                             >
                               {formatRestTime(group.restBetweenRounds)}
-                            </div>
+                            </Body>
                           </div>
                         </div>
                       )}
@@ -233,60 +243,78 @@ export function ExerciseGroupDisplay({
                         </div>
 
                         <div className="flex-1">
-                          <h4 className="font-semibold text-(--text-primary) mb-2">
+                          <Heading level="h4" className="mb-2">
                             {exercise.exerciseName}
-                          </h4>
+                          </Heading>
 
                           {/* Exercise details */}
                           <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                            <div className="flex items-center gap-1 text-(--text-secondary)">
-                              <span className="font-medium">Sets:</span>
-                              <span className="text-(--text-primary) font-semibold">
+                            <div className="flex items-center gap-1">
+                              <Caption variant="muted" className="font-medium">
+                                Sets:
+                              </Caption>
+                              <Body size="sm" weight="semibold">
                                 {exercise.sets}
-                              </span>
+                              </Body>
                             </div>
 
-                            <div className="flex items-center gap-1 text-(--text-secondary)">
-                              <span className="font-medium">Reps:</span>
-                              <span className="text-(--text-primary) font-semibold">
+                            <div className="flex items-center gap-1">
+                              <Caption variant="muted" className="font-medium">
+                                Reps:
+                              </Caption>
+                              <Body size="sm" weight="semibold">
                                 {exercise.reps}
                                 {exercise.eachSide && " each side"}
-                              </span>
+                              </Body>
                             </div>
 
                             {exercise.weight && (
-                              <div className="flex items-center gap-1 text-(--text-secondary)">
-                                <span className="font-medium">Weight:</span>
-                                <span className="text-(--text-primary) font-semibold">
+                              <div className="flex items-center gap-1">
+                                <Caption
+                                  variant="muted"
+                                  className="font-medium"
+                                >
+                                  Weight:
+                                </Caption>
+                                <Body size="sm" weight="semibold">
                                   {formatWeight(exercise)}
-                                </span>
+                                </Body>
                               </div>
                             )}
 
                             {exercise.tempo && (
-                              <div className="flex items-center gap-1 text-(--text-secondary)">
-                                <span className="font-medium">Tempo:</span>
-                                <span className="text-(--text-primary) font-semibold">
+                              <div className="flex items-center gap-1">
+                                <Caption
+                                  variant="muted"
+                                  className="font-medium"
+                                >
+                                  Tempo:
+                                </Caption>
+                                <Body size="sm" weight="semibold">
                                   {exercise.tempo}
-                                </span>
+                                </Body>
                               </div>
                             )}
 
                             {exercise.restTime && (
-                              <div className="flex items-center gap-1 text-(--text-secondary)">
-                                <Clock className="w-4 h-4" />
-                                <span className="text-(--text-primary) font-semibold">
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-4 h-4 text-silver-500" />
+                                <Body size="sm" weight="semibold">
                                   {formatRestTime(exercise.restTime)}
-                                </span>
+                                </Body>
                               </div>
                             )}
                           </div>
 
                           {/* Exercise notes */}
                           {exercise.notes && (
-                            <p className="mt-2 text-sm text-(--text-secondary) italic border-l-2 border-silver-400 pl-3">
+                            <Body
+                              size="sm"
+                              variant="secondary"
+                              className="mt-2 italic border-l-2 border-silver-400 pl-3"
+                            >
                               {exercise.notes}
-                            </p>
+                            </Body>
                           )}
                         </div>
 
@@ -317,9 +345,9 @@ export function ExerciseGroupDisplay({
               {/* Group notes */}
               {group.notes && (
                 <div className="mt-3 p-3 bg-white bg-opacity-60 rounded-lg border border-silver-300">
-                  <p className="text-sm text-(--text-secondary) italic">
+                  <Body size="sm" variant="secondary" className="italic">
                     {group.notes}
-                  </p>
+                  </Body>
                 </div>
               )}
             </div>
@@ -354,60 +382,72 @@ export function ExerciseGroupDisplay({
                 </div>
 
                 <div className="flex-1">
-                  <h4 className="font-semibold text-(--text-primary) text-lg mb-2">
+                  <Heading level="h4" className="mb-2">
                     {exercise.exerciseName}
-                  </h4>
+                  </Heading>
 
                   {/* Exercise details */}
                   <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
                     <div className="flex items-center gap-1 text-(--text-secondary)">
-                      <span className="font-medium">Sets:</span>
-                      <span className="text-(--text-primary) font-semibold">
+                      <Caption variant="muted" className="font-medium">
+                        Sets:
+                      </Caption>
+                      <Body size="sm" weight="semibold">
                         {exercise.sets}
-                      </span>
+                      </Body>
                     </div>
 
                     <div className="flex items-center gap-1 text-(--text-secondary)">
-                      <span className="font-medium">Reps:</span>
-                      <span className="text-(--text-primary) font-semibold">
+                      <Caption variant="muted" className="font-medium">
+                        Reps:
+                      </Caption>
+                      <Body size="sm" weight="semibold">
                         {exercise.reps}
                         {exercise.eachSide && " each side"}
-                      </span>
+                      </Body>
                     </div>
 
                     {exercise.weight && (
                       <div className="flex items-center gap-1 text-(--text-secondary)">
-                        <span className="font-medium">Weight:</span>
-                        <span className="text-(--text-primary) font-semibold">
+                        <Caption variant="muted" className="font-medium">
+                          Weight:
+                        </Caption>
+                        <Body size="sm" weight="semibold">
                           {formatWeight(exercise)}
-                        </span>
+                        </Body>
                       </div>
                     )}
 
                     {exercise.tempo && (
                       <div className="flex items-center gap-1 text-(--text-secondary)">
-                        <span className="font-medium">Tempo:</span>
-                        <span className="text-(--text-primary) font-semibold">
+                        <Caption variant="muted" className="font-medium">
+                          Tempo:
+                        </Caption>
+                        <Body size="sm" weight="semibold">
                           {exercise.tempo}
-                        </span>
+                        </Body>
                       </div>
                     )}
 
                     {exercise.restTime && (
                       <div className="flex items-center gap-1 text-(--text-secondary)">
                         <Clock className="w-4 h-4" />
-                        <span className="text-(--text-primary) font-semibold">
+                        <Body size="sm" weight="semibold">
                           {formatRestTime(exercise.restTime)}
-                        </span>
+                        </Body>
                       </div>
                     )}
                   </div>
 
                   {/* Exercise notes */}
                   {exercise.notes && (
-                    <p className="mt-2 text-sm text-(--text-secondary) italic border-l-2 border-silver-400 pl-3">
+                    <Body
+                      size="sm"
+                      variant="secondary"
+                      className="mt-2 italic border-l-2 border-silver-400 pl-3"
+                    >
                       {exercise.notes}
-                    </p>
+                    </Body>
                   )}
                 </div>
 

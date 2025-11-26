@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Dumbbell } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
-import { Heading, Body } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useAsyncState } from "@/hooks/use-async-state";
@@ -155,7 +155,7 @@ const ExerciseLibraryPanel: React.FC<ExerciseLibraryPanelProps> = ({
 
       {/* Footer Hint */}
       <div className="p-3 border-t border-neutral-light bg-white text-xs text-navy-600">
-        <p className="font-medium mb-1">💡 Quick Tips:</p>
+        <Caption className="mb-1 font-medium">💡 Quick Tips:</Caption>
         <ul className="space-y-1 text-navy-500">
           <li>• Drag exercises into your workout</li>
           <li>• Drop on another exercise to create a group</li>

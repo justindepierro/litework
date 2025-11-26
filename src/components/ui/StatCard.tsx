@@ -178,11 +178,15 @@ export function StatCard({
           {trend.direction === "down" && (
             <TrendingDown className="w-4 h-4 text-(--status-error)" />
           )}
-          <span className={`font-medium ${trendColors[trend.direction]}`}>
+          <Body
+            as="span"
+            weight="medium"
+            className={trendColors[trend.direction]}
+          >
             {trend.direction === "up" ? "+" : ""}
             {trend.value}
             {typeof trend.value === "number" && "%"}
-          </span>
+          </Body>
           {trend.label && (
             <Body variant="secondary" className="text-xs">
               {trend.label}

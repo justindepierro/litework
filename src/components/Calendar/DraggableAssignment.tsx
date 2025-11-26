@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { useDrag } from "react-dnd";
+import { Body, Caption } from "@/components/ui/Typography";
 import {
   Clock,
   MapPin,
@@ -142,9 +143,14 @@ function DraggableAssignmentComponent({
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary border border-subtle">
                 <Users className="w-3 h-3 text-secondary" />
-                <span className="text-xs font-semibold text-secondary">
+                <Body
+                  as="span"
+                  size="xs"
+                  weight="semibold"
+                  className="text-secondary"
+                >
                   Group
-                </span>
+                </Body>
               </div>
             </div>
           )}
@@ -160,19 +166,22 @@ function DraggableAssignmentComponent({
                   const displayName = `${initial}. ${lastName}`;
 
                   return (
-                    <span
+                    <Body
+                      as="span"
                       key={idx}
-                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-secondary border border-subtle text-secondary"
+                      size="xs"
+                      weight="medium"
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-secondary border border-subtle text-secondary"
                       title={name}
                     >
                       {displayName}
-                    </span>
+                    </Body>
                   );
                 })}
                 {assignment.athleteNames.length > 3 && (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-secondary border border-subtle text-secondary">
+                  <Caption className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-secondary border border-subtle text-secondary">
                     +{assignment.athleteNames.length - 3}
-                  </span>
+                  </Caption>
                 )}
               </div>
             )}

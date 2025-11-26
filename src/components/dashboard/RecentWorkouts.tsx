@@ -179,7 +179,9 @@ export function RecentWorkouts({
                       <Caption variant="muted">{timeAgo}</Caption>
                       {workout.duration && (
                         <>
-                          <span className="text-silver-400">•</span>
+                          <Body as="span" className="text-silver-400">
+                            •
+                          </Body>
                           <Caption variant="muted">
                             {Math.round(workout.duration / 60)} min
                           </Caption>

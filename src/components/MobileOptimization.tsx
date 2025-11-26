@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/Typography";
+import { Label, Body, Heading } from "@/components/ui/Typography";
 
 export interface DeviceInfo {
   isMobile: boolean;
@@ -160,11 +160,16 @@ export function MobileModal({
         <div
           className={`flex justify-between items-center p-4 sm:p-6 border-b ${deviceInfo.isMobile ? "shrink-0" : ""}`}
         >
-          <h2 className="text-lg sm:text-xl font-bold text-(--text-primary) truncate">
+          <Heading
+            level="h2"
+            className="text-lg sm:text-xl font-bold text-(--text-primary) truncate"
+          >
             {title}
-          </h2>
+          </Heading>
           <TouchButton variant="secondary" size="sm" onClick={onClose}>
-            <span className="text-lg">×</span>
+            <Body as="span" className="text-lg">
+              ×
+            </Body>
           </TouchButton>
         </div>
 
@@ -205,7 +210,12 @@ export function MobileInput({
     <div className="space-y-2">
       {label && (
         <Label className="block">
-          {label} {required && <span className="text-(--status-error)">*</span>}
+          {label}{" "}
+          {required && (
+            <Body as="span" className="text-(--status-error)">
+              *
+            </Body>
+          )}
         </Label>
       )}
       <input

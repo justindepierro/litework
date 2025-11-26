@@ -2,6 +2,7 @@
 // Consistent loading states across the application
 
 import { Loader2 } from "lucide-react";
+import { Body } from "./Typography";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -24,7 +25,9 @@ export function LoadingSpinner({
     <div className={`flex items-center justify-center gap-2 ${className}`}>
       <Loader2 className={`animate-spin ${sizeClasses[size]}`} />
       {message && (
-        <span className="text-heading-secondary text-sm">{message}</span>
+        <Body size="sm" variant="secondary">
+          {message}
+        </Body>
       )}
     </div>
   );

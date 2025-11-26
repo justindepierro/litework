@@ -8,7 +8,7 @@ import { formatTimeRange } from "@/lib/date-utils";
 import { useMinimumLoadingTime } from "@/hooks/use-minimum-loading-time";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -174,11 +174,13 @@ const TodayOverview = memo(function TodayOverview() {
                 {/* Progress bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-secondary">Completion</span>
-                    <span className="font-medium text-primary">
+                    <Body size="sm" variant="secondary">
+                      Completion
+                    </Body>
+                    <Body size="sm" weight="medium">
                       {workout.completedCount}/{workout.athleteCount} athletes (
                       {rate}%)
-                    </span>
+                    </Body>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-2">
                     <div
@@ -197,7 +199,9 @@ const TodayOverview = memo(function TodayOverview() {
                 {rate === 100 && (
                   <div className="mt-3 flex items-center gap-2 text-sm text-success">
                     <CheckCircle className="w-4 h-4" />
-                    <span className="font-medium">All athletes completed!</span>
+                    <Body size="sm" weight="medium">
+                      All athletes completed!
+                    </Body>
                   </div>
                 )}
               </GlassCard>

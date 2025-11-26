@@ -6,6 +6,7 @@ import { useFormValidationLegacy } from "@/hooks/use-form-validation";
 import { Users, Search, Check, X } from "lucide-react";
 import WorkoutAssignmentForm from "./WorkoutAssignmentForm";
 import { Button } from "@/components/ui/Button";
+import { Body } from "@/components/ui/Typography";
 import { Alert } from "@/components/ui/Alert";
 import { EmptySearch } from "@/components/ui/EmptyState";
 import {
@@ -218,7 +219,9 @@ export default function IndividualAssignmentModal({
               </div>
 
               {selectedAthleteIds.length === 0 && errors.submit && (
-                <p className="text-error text-sm mb-2">{errors.submit}</p>
+                <Body size="sm" className="text-error mb-2">
+                  {errors.submit}
+                </Body>
               )}
 
               {/* Search Box */}

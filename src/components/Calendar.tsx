@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/Modal";
 import { WorkoutAssignment, AthleteGroup } from "@/types";
 import { Button } from "@/components/ui/Button";
-import { Body } from "@/components/ui/Typography";
+import { Body, Caption } from "@/components/ui/Typography";
 import { useCalendarState } from "@/hooks/useCalendarState";
 import { useCalendarHandlers } from "@/hooks/useCalendarHandlers";
 import { CalendarHeader, MonthView, WeekView, DayView } from "./Calendar/";
@@ -173,15 +173,15 @@ export default function Calendar({
         <div className="flex items-center gap-4 mt-6 pt-4 border-t border-subtle text-sm">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-linear-to-br from-accent-blue-50 to-accent-blue-100 shadow-sm border border-accent-blue-200" />
-            <span className={calendarText.gridMuted}>Assigned</span>
+            <Caption className={calendarText.gridMuted}>Assigned</Caption>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-linear-to-br from-success-lighter to-accent-green-100 shadow-sm border border-success-light" />
-            <span className={calendarText.gridMuted}>Completed</span>
+            <Caption className={calendarText.gridMuted}>Completed</Caption>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-linear-to-br from-error-lighter to-accent-red-50 shadow-sm border border-error-light" />
-            <span className={calendarText.gridMuted}>Overdue</span>
+            <Caption className={calendarText.gridMuted}>Overdue</Caption>
           </div>
         </div>
       </div>
@@ -203,11 +203,15 @@ export default function Calendar({
               </Body>
               <div className="bg-secondary p-4 rounded-lg space-y-2 text-sm">
                 <div>
-                  <span className="font-medium">Workout:</span>{" "}
+                  <Body size="sm" weight="medium" as="span">
+                    Workout:
+                  </Body>{" "}
                   {pendingMove.assignment.workoutPlanName}
                 </div>
                 <div>
-                  <span className="font-medium">New Date:</span>{" "}
+                  <Body size="sm" weight="medium" as="span">
+                    New Date:
+                  </Body>{" "}
                   {pendingMove.newDate.toLocaleDateString("en-US", {
                     weekday: "long",
                     month: "long",

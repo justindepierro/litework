@@ -1,6 +1,7 @@
 "use client";
 
 import { Users, Clock, MessageCircle, AlertCircle } from "lucide-react";
+import { Body } from "@/components/ui/Typography";
 
 interface AthleteCounts {
   active: number;
@@ -38,25 +39,27 @@ export default function AthleteStats({
     <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-6">
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-info-lighter rounded-xl sm:bg-transparent sm:p-0">
         <Users className="h-5 w-5 text-info" />
-        <span className="text-sm font-medium">
+        <Body size="sm" weight="medium">
           {athleteCounts.active} Active
-        </span>
+        </Body>
       </div>
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-warning-lighter rounded-xl sm:bg-transparent sm:p-0">
         <Clock className="h-5 w-5 text-warning" />
-        <span className="text-sm font-medium">
+        <Body size="sm" weight="medium">
           {athleteCounts.invited} Pending
-        </span>
+        </Body>
       </div>
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-success-lighter rounded-xl sm:bg-transparent sm:p-0">
         <MessageCircle className="h-5 w-5 text-success" />
-        <span className="text-sm font-medium">{totalUnread} Unread</span>
+        <Body size="sm" weight="medium">
+          {totalUnread} Unread
+        </Body>
       </div>
       <div className="flex items-center justify-center sm:justify-start gap-2 p-3 bg-warning-lighter rounded-xl sm:bg-transparent sm:p-0">
         <AlertCircle className="h-5 w-5 text-warning" />
-        <span className="text-sm font-medium">
+        <Body size="sm" weight="medium">
           {athleteCounts.injured} Injured
-        </span>
+        </Body>
       </div>
     </div>
   );

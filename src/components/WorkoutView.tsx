@@ -8,7 +8,7 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Alert } from "@/components/ui/Alert";
-import { Heading, Body } from "@/components/ui/Typography";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 import {
   Dumbbell,
   Calendar,
@@ -155,21 +155,21 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
               <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 bg-gradient-to-br from-silver-200 to-info-lightest rounded-xl p-4 border border-info-lighter">
                 <div className="flex items-center justify-center gap-2 text-body-small">
                   <Calendar className="w-5 h-5 text-accent-blue" />
-                  <span className="font-medium">
+                  <Body size="sm" weight="medium">
                     {workout.date.toLocaleDateString()}
-                  </span>
+                  </Body>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-body-small">
                   <Clock className="w-5 h-5 text-accent-green" />
-                  <span className="font-medium">
+                  <Body size="sm" weight="medium">
                     ~{workoutPlan.estimatedDuration} min
-                  </span>
+                  </Body>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-body-small">
                   <Target className="w-5 h-5 text-accent-purple" />
-                  <span className="font-medium">
+                  <Body size="sm" weight="medium">
                     {workoutPlan.exercises.length} exercises
-                  </span>
+                  </Body>
                 </div>
               </div>
             </div>
@@ -241,9 +241,13 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                         </span>
                       ))
                     ) : (
-                      <span className="px-4 py-2 bg-gradient-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-sm font-medium text-navy-900 shadow-sm">
+                      <Body
+                        size="sm"
+                        weight="medium"
+                        className="px-4 py-2 bg-linear-to-br from-white to-info-lightest border-2 border-info-light rounded-lg text-navy-900 shadow-sm"
+                      >
                         Check exercise details
-                      </span>
+                      </Body>
                     );
                   })()}
                 </div>
@@ -258,12 +262,12 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                 <div className="flex items-center gap-3">
                   <div className="flex-1 bg-white rounded-lg p-4 border-2 border-info-light">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-neutral-darker">
+                      <Body size="sm" weight="medium" variant="secondary">
                         Estimated Time
-                      </span>
-                      <span className="text-lg font-bold text-primary">
+                      </Body>
+                      <Body className="text-lg font-bold text-primary">
                         {workoutPlan.estimatedDuration} min
-                      </span>
+                      </Body>
                     </div>
                     <div className="w-full bg-silver-400 rounded-full h-2">
                       <div
@@ -297,30 +301,30 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                 <div className="bg-white rounded-lg p-4 border-2 border-info-light space-y-2">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-info-lighter flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-primary">1</span>
+                      <Caption className="text-primary font-bold">1</Caption>
                     </div>
-                    <p className="text-sm text-neutral-darker flex-1">
+                    <Body size="sm" variant="secondary" className="flex-1">
                       <strong>5 min cardio:</strong> Light jog, rowing, or jump
                       rope to raise heart rate
-                    </p>
+                    </Body>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-info-lighter flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-primary">2</span>
+                      <Caption className="text-primary font-bold">2</Caption>
                     </div>
-                    <p className="text-sm text-neutral-darker flex-1">
+                    <Body size="sm" variant="secondary" className="flex-1">
                       <strong>Dynamic stretches:</strong> Arm circles, leg
                       swings, hip openers for mobility
-                    </p>
+                    </Body>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-info-lighter flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-primary">3</span>
+                      <Caption className="text-primary font-bold">3</Caption>
                     </div>
-                    <p className="text-sm text-neutral-darker flex-1">
+                    <Body size="sm" variant="secondary" className="flex-1">
                       <strong>Movement prep:</strong> Do 1-2 light sets of your
                       first exercise with minimal weight
-                    </p>
+                    </Body>
                   </div>
                 </div>
               </div>
@@ -335,9 +339,13 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <Heading level="h2">Progress Overview</Heading>
-              <span className="text-body-small px-4 py-2 bg-accent-green bg-opacity-10 text-accent-green rounded-xl font-bold border border-accent-green">
+              <Body
+                size="sm"
+                weight="bold"
+                className="px-4 py-2 bg-accent-green bg-opacity-10 text-accent-green rounded-xl border border-accent-green"
+              >
                 {workout.progressPercentage}% Complete
-              </span>
+              </Body>
             </div>
 
             {/* Enhanced progress bar */}
@@ -436,22 +444,22 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">
                           <div className="flex items-center gap-2 text-body-small bg-info-lightest rounded-lg px-3 py-2">
                             <Target className="w-4 h-4 text-primary" />
-                            <span className="font-medium">
+                            <Body size="sm" weight="medium">
                               {exercise.sets} sets × {exercise.reps} reps
-                            </span>
+                            </Body>
                           </div>
                           <div className="flex items-center gap-2 text-body-small bg-accent-orange-50 rounded-lg px-3 py-2">
                             <Weight className="w-4 h-4 text-accent-orange-600" />
-                            <span className="font-medium">
+                            <Body size="sm" weight="medium">
                               {formatWeight(exercise)}
-                            </span>
+                            </Body>
                           </div>
                           {exercise.restTime && (
                             <div className="flex items-center gap-2 text-body-small bg-success-lightest rounded-lg px-3 py-2">
                               <Clock className="w-4 h-4 text-success-dark" />
-                              <span className="font-medium">
+                              <Body size="sm" weight="medium">
                                 {formatTime(exercise.restTime)} rest
-                              </span>
+                              </Body>
                             </div>
                           )}
                         </div>
@@ -484,9 +492,7 @@ function WorkoutView({ sessionId }: WorkoutViewProps) {
                           }`}
                         >
                           <div className="flex justify-between items-center mb-2">
-                            <span className="text-body-primary font-bold">
-                              Set {setIndex + 1}
-                            </span>
+                            <Body weight="bold">Set {setIndex + 1}</Body>
                             {isSetComplete && (
                               <Check className="w-4 h-4 text-accent-green" />
                             )}

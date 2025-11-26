@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/Badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch, EmptyState } from "@/components/ui/EmptyState";
 import { ModalBackdrop, ModalHeader } from "@/components/ui/Modal";
+import { Heading, Body, Caption } from "@/components/ui/Typography";
 
 interface BlockLibraryProps {
   isOpen: boolean;
@@ -273,7 +274,7 @@ export default function BlockLibrary({
             {filteredBlocks.length !== 1 ? "s" : ""} found
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-neutral-dark">Sort by:</span>
+            <Caption className="text-neutral-dark">Sort by:</Caption>
             <select
               value={sortBy}
               onChange={(e) =>
@@ -297,7 +298,9 @@ export default function BlockLibrary({
           ) : error ? (
             <div className="text-center py-12">
               <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
-              <p className="text-error-dark text-lg font-semibold">{error}</p>
+              <Body size="lg" weight="semibold" className="text-error-dark">
+                {error}
+              </Body>
               <button
                 onClick={fetchBlocks}
                 className="mt-4 px-4 py-2 bg-accent-blue-500 text-white rounded-lg hover:bg-accent-blue-600 transition-colors"
@@ -356,14 +359,12 @@ export default function BlockLibrary({
                           <Icon className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-navy-900 text-sm">
+                          <Heading level="h3" className="text-sm">
                             {block.name}
-                          </h3>
-                          <span
-                            className={`text-xs ${config.color} font-medium`}
-                          >
+                          </Heading>
+                          <Caption className={`${config.color} font-medium`}>
                             {config.label}
-                          </span>
+                          </Caption>
                         </div>
                       </div>
 
@@ -391,9 +392,12 @@ export default function BlockLibrary({
 
                     {/* Description */}
                     {block.description && (
-                      <p className="text-sm text-neutral-dark mb-3 line-clamp-2">
+                      <Body
+                        size="sm"
+                        className="text-neutral-dark mb-3 line-clamp-2"
+                      >
                         {block.description}
-                      </p>
+                      </Body>
                     )}
 
                     {/* Stats */}
@@ -425,9 +429,9 @@ export default function BlockLibrary({
                           </Badge>
                         ))}
                         {block.tags.length > 3 && (
-                          <span className="px-2 py-1 text-neutral text-xs">
+                          <Caption className="px-2 py-1 text-neutral">
                             +{block.tags.length - 3}
-                          </span>
+                          </Caption>
                         )}
                       </div>
                     )}

@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { Clock, MapPin, Users, Calendar as CalendarIcon } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
+import { Body } from "@/components/ui/Typography";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 import { Badge } from "@/components/ui/Badge";
 import { formatTime12Hour } from "@/lib/date-utils";
@@ -75,7 +76,9 @@ function WeekViewComponent({
                       className="text-xs text-accent-blue-600 hover:text-accent-blue-700 p-1 hover:bg-accent-blue-50 rounded transition-colors"
                       title="Assign workout"
                     >
-                      <span className="text-lg leading-none">+</span>
+                      <Body as="span" size="lg" className="leading-none">
+                        +
+                      </Body>
                     </button>
                   )}
                 </div>
@@ -181,7 +184,9 @@ function WeekViewComponent({
                     className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-blue-600 text-inverse hover:bg-accent-blue-700 transition-colors touch-manipulation"
                     title="Assign workout"
                   >
-                    <span className="text-xl font-bold">+</span>
+                    <Body as="span" size="xl" weight="bold">
+                      +
+                    </Body>
                   </button>
                 )}
               </div>
@@ -250,7 +255,7 @@ function WeekViewComponent({
               ) : (
                 <div className={`text-center ${calendarText.gridSubtle} py-6`}>
                   <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No workouts scheduled</p>
+                  <Body size="sm">No workouts scheduled</Body>
                 </div>
               )}
             </DroppableDay>

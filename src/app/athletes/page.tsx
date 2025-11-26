@@ -459,7 +459,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <Tag className="w-5 h-5 sm:w-4 sm:h-4 text-accent-orange" />
             }
           >
-            <span className="text-warning-dark">Create KPI</span>
+            <Body className="text-warning-dark">Create KPI</Body>
           </Button>
           <Button
             onClick={() => modals.setShowBulkKPIAssignmentModal(true)}
@@ -469,7 +469,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <Target className="w-5 h-5 sm:w-4 sm:h-4 text-accent-green" />
             }
           >
-            <span className="text-success-dark">Assign KPIs</span>
+            <Body className="text-success-dark">Assign KPIs</Body>
           </Button>
           <Button
             onClick={() => modals.setShowGroupFormModal(true)}
@@ -479,7 +479,7 @@ export default withPageErrorBoundary(function AthletesPage() {
               <Users className="w-5 h-5 sm:w-4 sm:h-4 text-accent-pink" />
             }
           >
-            <span className="text-accent-dark">Add Group</span>
+            <Body className="text-accent-dark">Add Group</Body>
           </Button>
           <Button
             onClick={() => modals.setShowInviteModal(true)}

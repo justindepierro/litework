@@ -9,7 +9,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { Display, Body } from "@/components/ui/Typography";
+import { Display, Body, Heading } from "@/components/ui/Typography";
 
 interface Breadcrumb {
   label: string;
@@ -78,9 +78,13 @@ export function PageHeader({
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="text-(--text-primary) font-medium">
+                <Body
+                  as="span"
+                  weight="medium"
+                  className="text-(--text-primary)"
+                >
                   {crumb.label}
-                </span>
+                </Body>
               )}
               {index < breadcrumbs.length - 1 && (
                 <ChevronRight className="w-4 h-4 text-(--text-tertiary)" />
@@ -161,9 +165,12 @@ export function SectionHeader({
   return (
     <div className={`flex items-center justify-between mb-4 ${className}`}>
       <div className="flex items-center gap-3 min-w-0 flex-1">
-        <h2 className="text-xl font-semibold text-(--text-primary) truncate">
+        <Heading
+          level="h2"
+          className="text-xl font-semibold text-(--text-primary) truncate"
+        >
           {title}
-        </h2>
+        </Heading>
         {badge && <div className="shrink-0">{badge}</div>}
       </div>
       {subtitle && (

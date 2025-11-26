@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalContent,
 } from "@/components/ui/Modal";
+import { Body, Heading } from "@/components/ui/Typography";
 
 interface ShortcutGroup {
   title: string;
@@ -97,25 +98,28 @@ export function KeyboardShortcutsHelp() {
 
         <ModalContent>
           <div className="space-y-6">
-            <p className="text-sm text-silver-600">
+            <Body size="sm" variant="secondary">
               Use these keyboard shortcuts to navigate and perform actions
               quickly throughout LiteWork.
-            </p>
+            </Body>
 
             {shortcutGroups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-sm font-semibold text-navy-700 uppercase tracking-wider mb-3">
+                <Heading
+                  level="h3"
+                  className="text-sm font-semibold text-navy-700 uppercase tracking-wider mb-3"
+                >
                   {group.title}
-                </h3>
+                </Heading>
                 <div className="space-y-2">
                   {group.shortcuts.map((shortcut) => (
                     <div
                       key={shortcut.keys}
                       className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-silver-50"
                     >
-                      <span className="text-sm text-navy-700">
+                      <Body size="sm" className="text-navy-700">
                         {shortcut.description}
-                      </span>
+                      </Body>
                       <kbd className="px-3 py-1.5 bg-silver-100 border border-silver-300 rounded text-xs font-mono font-semibold text-navy-700 shadow-sm">
                         {shortcut.keys}
                       </kbd>
@@ -128,14 +132,14 @@ export function KeyboardShortcutsHelp() {
 
           {/* Footer tip */}
           <div className="mt-6 p-4 bg-(--accent-blue-50) border border-(--accent-blue-200) rounded-lg">
-            <p className="text-sm text-(--accent-blue-800)">
+            <Body size="sm" className="text-(--accent-blue-800)">
               <strong>Pro tip:</strong> Press{" "}
               <kbd className="px-2 py-0.5 bg-white border border-(--accent-blue-300) rounded text-xs font-mono">
                 {modKey}+K
               </kbd>{" "}
               to open the command palette for quick access to all actions and
               navigation.
-            </p>
+            </Body>
           </div>
         </ModalContent>
       </div>

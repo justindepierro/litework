@@ -95,8 +95,12 @@ export function SectionHeader({
             level={level}
             className={`${styles.titleColor} flex items-center gap-2 ${subtitle ? "mb-1" : ""}`}
           >
-            {icon && <span className={styles.iconColor}>{icon}</span>}
-            <span>{title}</span>
+            {icon && (
+              <Body as="span" className={styles.iconColor}>
+                {icon}
+              </Body>
+            )}
+            <Body as="span">{title}</Body>
           </Heading>
           {subtitle && (
             <Body variant="secondary" className="text-sm mt-1">
@@ -135,7 +139,11 @@ export function SectionHeaderSimple({
       level={level}
       className={`mb-4 flex items-center gap-2 ${className}`}
     >
-      {icon && <span className="text-primary">{icon}</span>}
+      {icon && (
+        <Body as="span" className="text-primary">
+          {icon}
+        </Body>
+      )}
       {title}
     </Heading>
   );

@@ -10,6 +10,7 @@ import React, { useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { Heading, Body } from "./Typography";
 import {
   modalBackdrop,
   modalContent as modalContentVariants,
@@ -211,9 +212,13 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       <div className="flex items-center gap-3 flex-1">
         {icon && <div className="shrink-0 !text-white">{icon}</div>}
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold !text-white">{title}</h2>
+          <Heading level="h2" className="text-2xl font-bold !text-white">
+            {title}
+          </Heading>
           {subtitle && (
-            <p className="text-sm !text-white/90 mt-0.5">{subtitle}</p>
+            <Body size="sm" className="!text-white/90 mt-0.5">
+              {subtitle}
+            </Body>
           )}
         </div>
       </div>

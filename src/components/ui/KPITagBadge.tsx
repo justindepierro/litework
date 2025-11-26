@@ -1,5 +1,5 @@
 import React from "react";
-import { Label, Caption } from "@/components/ui/Typography";
+import { Label, Caption, Body } from "@/components/ui/Typography";
 
 /**
  * KPITagBadge Component
@@ -52,7 +52,9 @@ export function KPITagBadge({
       onClick={onClick}
       title={showTooltip ? displayName : undefined}
     >
-      <span className="font-bold">{name}</span>
+      <Body size="sm" weight="bold" as="span">
+        {name}
+      </Body>
 
       {onRemove && (
         <button
@@ -130,9 +132,9 @@ export function KPITagList({
       ))}
 
       {remainingCount > 0 && (
-        <span className="text-xs text-silver-600 font-medium">
+        <Caption className="text-silver-600 font-medium">
           +{remainingCount} more
-        </span>
+        </Caption>
       )}
     </div>
   );
@@ -187,9 +189,9 @@ export function KPITagSelector({
         {selectedTags.length > 0 ? (
           <KPITagList tags={selectedTags} size="sm" onTagRemove={onTagToggle} />
         ) : (
-          <span className="text-sm text-silver-500">
+          <Body size="sm" className="text-silver-500">
             Click to add KPI tags...
-          </span>
+          </Body>
         )}
       </div>
 
@@ -241,9 +243,13 @@ export function KPITagSelector({
                           size="sm"
                           showTooltip={false}
                         />
-                        <span className="text-sm font-medium text-silver-900">
+                        <Body
+                          size="sm"
+                          weight="medium"
+                          className="text-silver-900"
+                        >
                           {tag.displayName}
-                        </span>
+                        </Body>
                       </div>
                       {isSelected && (
                         <svg
@@ -268,9 +274,9 @@ export function KPITagSelector({
                 );
               })
             ) : (
-              <p className="p-4 text-sm text-silver-500 text-center">
+              <Body size="sm" className="p-4 text-silver-500 text-center">
                 No tags found
-              </p>
+              </Body>
             )}
           </div>
         </div>

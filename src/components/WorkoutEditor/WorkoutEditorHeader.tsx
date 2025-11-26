@@ -1,6 +1,8 @@
 import React from "react";
 import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { WorkoutPlan } from "@/types";
+import { X } from "lucide-react";
 
 interface WorkoutEditorHeaderProps {
   workout: WorkoutPlan;
@@ -34,12 +36,15 @@ export const WorkoutEditorHeader: React.FC<WorkoutEditorHeaderProps> = ({
             fullWidth
           />
         </div>
-        <button
+        <Button
           onClick={onClose}
-          className="text-silver-500 hover:text-silver-700 text-3xl sm:text-2xl w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl hover:bg-silver-100 transition-colors touch-manipulation shrink-0"
+          variant="ghost"
+          size="lg"
+          className="text-silver-500 hover:text-silver-700 w-10 h-10 sm:w-8 sm:h-8 rounded-xl hover:bg-silver-100 shrink-0"
+          aria-label="Close workout editor"
         >
-          ×
-        </button>
+          <X className="w-6 h-6 sm:w-5 sm:h-5" />
+        </Button>
       </div>
     </div>
   );

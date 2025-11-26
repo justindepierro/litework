@@ -17,6 +17,7 @@ import {
   Menu,
 } from "lucide-react";
 import NotificationBell from "@/components/NotificationBell";
+import { Body } from "@/components/ui/Typography";
 
 const Navigation = memo(function Navigation() {
   const { user, signOut } = useAuth();
@@ -227,10 +228,10 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-button-orange rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-accent-orange-500 transition-colors" />
               </div>
-              <span className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
+              <Body className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
                 LiteWork
-              </span>
-              <span className="text-xl font-bold text-white xs:hidden">LW</span>
+              </Body>
+              <Body className="text-xl font-bold text-white xs:hidden">LW</Body>
             </Link>
 
             {/* Desktop Navigation - Modern Pills with High Contrast */}
@@ -294,7 +295,7 @@ const Navigation = memo(function Navigation() {
                     <User
                       className={`w-4 h-4 ${pathname === "/profile" ? "text-neutral-950" : "text-white"}`}
                     />
-                    <span className="hidden lg:inline">Profile</span>
+                    <Body className="hidden lg:inline">Profile</Body>
                   </Link>
 
                   {/* Logout Button */}
@@ -303,7 +304,7 @@ const Navigation = memo(function Navigation() {
                     className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-accent-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span className="hidden lg:inline">Logout</span>
+                    <Body className="hidden lg:inline">Logout</Body>
                   </button>
                 </>
               )}
@@ -403,7 +404,7 @@ const Navigation = memo(function Navigation() {
                         <Icon
                           className={`w-5 h-5 ${isActive ? "text-neutral-950" : item.color}`}
                         />
-                        <span className="flex-1">{item.label}</span>
+                        <Body className="flex-1">{item.label}</Body>
                         {isActive && (
                           <div className="w-2 h-2 rounded-full bg-accent-orange-400" />
                         )}
@@ -435,7 +436,7 @@ const Navigation = memo(function Navigation() {
                   <User
                     className={`w-5 h-5 ${pathname === "/profile" ? "text-neutral-950" : "text-neutral-300"}`}
                   />
-                  <span className="flex-1">Profile & Settings</span>
+                  <Body className="flex-1">Profile & Settings</Body>
                 </Link>
 
                 {/* Logout Button */}
@@ -447,7 +448,7 @@ const Navigation = memo(function Navigation() {
                   className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-accent-red-400 hover:text-accent-red-300 bg-accent-red-500/20 hover:bg-accent-red-500/30 transition-all duration-200 active:scale-95 mt-2"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span className="flex-1 text-left">Logout</span>
+                  <Body className="flex-1 text-left">Logout</Body>
                 </button>
               </div>
             ) : (

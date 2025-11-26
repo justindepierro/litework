@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { WorkoutAssignment } from "@/types";
+import { Body } from "@/components/ui/Typography";
 import { HoverCard, WorkoutPreviewCard } from "@/components/ui/HoverCard";
 import { Card } from "@/components/ui/Card";
 import { DraggableAssignment, DragItem } from "./DraggableAssignment";
@@ -70,9 +71,13 @@ function DayViewComponent({
               <div
                 className={`mt-3 p-2 rounded text-sm bg-secondary ${calendarText.gridMuted}`}
               >
-                <span className={`font-medium ${calendarText.gridPrimary}`}>
+                <Body
+                  as="span"
+                  weight="medium"
+                  className={calendarText.gridPrimary}
+                >
                   Notes:
-                </span>{" "}
+                </Body>{" "}
                 {assignment.notes}
               </div>
             )}
@@ -81,7 +86,7 @@ function DayViewComponent({
       ) : (
         <div className={`text-center py-12 ${calendarText.gridSubtle}`}>
           <CalendarIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-lg">No workouts scheduled for this day</p>
+          <Body size="lg">No workouts scheduled for this day</Body>
         </div>
       )}
     </DroppableDay>

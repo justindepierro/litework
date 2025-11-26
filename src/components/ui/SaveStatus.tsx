@@ -8,6 +8,7 @@
 
 import React, { useEffect } from "react";
 import { Check, Loader2 } from "lucide-react";
+import { Caption } from "@/components/ui/Typography";
 
 export type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -77,21 +78,21 @@ export const SaveStatus: React.FC<SaveStatusProps> = ({
           <Loader2
             className={`${iconSizes[size]} animate-spin text-silver-600`}
           />
-          <span className="text-silver-600">{savingMessage}</span>
+          <Caption className="text-silver-600">{savingMessage}</Caption>
         </>
       )}
 
       {status === "saved" && (
         <>
           <Check className={`${iconSizes[size]} text-success`} />
-          <span className="text-success">{savedMessage}</span>
+          <Caption className="text-success">{savedMessage}</Caption>
         </>
       )}
 
       {status === "error" && (
         <>
-          <span className={`${iconSizes[size]} text-error`}>✕</span>
-          <span className="text-error">{errorMessage}</span>
+          <Caption className={`${iconSizes[size]} text-error`}>✕</Caption>
+          <Caption className="text-error">{errorMessage}</Caption>
         </>
       )}
     </div>
@@ -138,18 +139,18 @@ export const InlineSaveStatus: React.FC<{
       {status === "saving" && (
         <>
           <Loader2 className="w-3 h-3 animate-spin text-silver-500 mr-1" />
-          <span className="text-silver-500">Saving...</span>
+          <Caption className="text-silver-500">Saving...</Caption>
         </>
       )}
 
       {status === "saved" && (
         <>
           <Check className="w-3 h-3 text-success mr-1" />
-          <span className="text-success">Saved</span>
+          <Caption className="text-success">Saved</Caption>
         </>
       )}
 
-      {status === "error" && <span className="text-error text-xs">Error</span>}
+      {status === "error" && <Caption className="text-error">Error</Caption>}
     </span>
   );
 };

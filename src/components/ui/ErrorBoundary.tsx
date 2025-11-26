@@ -6,6 +6,7 @@
 import React from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Heading, Body } from "./Typography";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -37,14 +38,14 @@ function DefaultErrorFallback({
           <AlertTriangle className="w-12 h-12 text-error" />
         </div>
 
-        <h1 className="text-heading-primary text-xl mb-2">
+        <Heading level="h1" className="text-xl mb-2">
           Something went wrong
-        </h1>
+        </Heading>
 
-        <p className="text-body-secondary mb-6">
+        <Body variant="secondary" className="mb-6">
           An unexpected error occurred. Please try refreshing the page or return
           to the home page.
-        </p>
+        </Body>
 
         {process.env.NODE_ENV === "development" && error && (
           <details className="mb-6 text-left">

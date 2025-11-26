@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { Body, Heading, Caption } from "@/components/ui/Typography";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -231,9 +232,7 @@ const EnhancedPWAInstall: React.FC = () => {
         icon={<CheckCircle />}
         title="LiteWork is installed!"
       >
-        <p className="text-sm">
-          Enjoy the full offline experience in your gym.
-        </p>
+        <Body size="sm">Enjoy the full offline experience in your gym.</Body>
       </Alert>
     );
   }
@@ -243,9 +242,9 @@ const EnhancedPWAInstall: React.FC = () => {
       {/* Installation Banner */}
       {showInstallBanner && deferredPrompt && (
         <Alert variant="info" icon={<Download />} title="Install LiteWork">
-          <p className="text-sm mb-4">
+          <Body size="sm" className="mb-4">
             Get the full offline experience for your gym workouts
-          </p>
+          </Body>
           <div className="flex gap-2">
             <button
               onClick={() => setShowInstallBanner(false)}
@@ -273,13 +272,9 @@ const EnhancedPWAInstall: React.FC = () => {
         ) : (
           <WifiOff className="w-5 h-5" />
         )}
-        <span className="font-medium">
-          {isOnline ? "Connected" : "Offline Mode"}
-        </span>
+        <Body weight="medium">{isOnline ? "Connected" : "Offline Mode"}</Body>
         {!isOnline && (
-          <span className="text-sm">
-            - Your workouts will sync when reconnected
-          </span>
+          <Body size="sm">- Your workouts will sync when reconnected</Body>
         )}
       </div>
 
@@ -287,9 +282,7 @@ const EnhancedPWAInstall: React.FC = () => {
       <div className="bg-(--bg-secondary) rounded-lg p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <Database className="w-5 h-5 text-(--text-secondary)" />
-          <h3 className="font-medium text-(--text-primary)">
-            Offline Cache Status
-          </h3>
+          <Heading level="h3">Offline Cache Status</Heading>
           <button
             onClick={handleCacheRefresh}
             className="ml-auto px-3 py-1 text-sm bg-(--bg-tertiary) hover:bg-(--interactive-hover) rounded-lg transition-colors"
@@ -357,10 +350,8 @@ const EnhancedPWAInstall: React.FC = () => {
 
           <div className="pt-2 border-t border-silver-400">
             <div className="flex items-center justify-between">
-              <span className="font-medium">Total Cache Size</span>
-              <span className="text-(--text-secondary)">
-                {cacheStatus.totalCacheSize}
-              </span>
+              <Body weight="medium">Total Cache Size</Body>
+              <Body variant="secondary">{cacheStatus.totalCacheSize}</Body>
             </div>
           </div>
         </div>
@@ -369,9 +360,9 @@ const EnhancedPWAInstall: React.FC = () => {
       {/* Installation Instructions */}
       {!deferredPrompt && !isInstalled && (
         <div className="bg-(--bg-secondary) rounded-lg p-4 shadow-sm">
-          <h3 className="font-medium text-(--text-primary) mb-2">
+          <Heading level="h3" className="mb-2">
             Manual Installation
-          </h3>
+          </Heading>
           <div className="text-sm text-(--text-secondary) space-y-1">
             <p>
               <strong>Chrome/Edge:</strong> Menu → Install LiteWork

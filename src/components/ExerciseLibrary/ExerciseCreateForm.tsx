@@ -6,7 +6,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { Label } from "@/components/ui/Typography";
+import { Label, Body } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -161,7 +161,7 @@ function ExerciseCreateFormComponent({
                         }
                       }}
                     />
-                    <span className="text-sm">{equipment.name}</span>
+                    <Body size="sm">{equipment.name}</Body>
                   </div>
                 ))}
               </div>

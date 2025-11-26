@@ -168,9 +168,9 @@ export default function NotificationPreferencesSettings() {
         <div className="flex items-center justify-between">
           <div>
             <Heading level="h3">Workout Reminders</Heading>
-            <p className="text-sm text-(--text-secondary)">
+            <Body size="sm" variant="secondary">
               Get notified about upcoming workouts
-            </p>
+            </Body>
           </div>
           <Toggle
             checked={preferences.workoutReminders.enabled}
@@ -204,7 +204,7 @@ export default function NotificationPreferencesSettings() {
                 <option value="1hour">1 hour before workout</option>
                 <option value="30min">30 minutes before workout</option>
               </select>
-              <p className="mt-1 text-xs text-(--text-tertiary)">
+              <Body size="xs" variant="tertiary" className="mt-1">
                 {preferences.workoutReminders.timing === "smart" &&
                   "We'll calculate the best time based on your workout schedule"}
                 {preferences.workoutReminders.timing === "morning" &&
@@ -215,7 +215,7 @@ export default function NotificationPreferencesSettings() {
                   preferences.workoutReminders.timing
                 ) &&
                   "You'll get a reminder at this exact time before each workout"}
-              </p>
+              </Body>
             </div>
 
             {/* Channels */}
@@ -248,9 +248,9 @@ export default function NotificationPreferencesSettings() {
         <div className="flex items-center justify-between">
           <div>
             <Heading level="h3">Achievement Notifications</Heading>
-            <p className="text-sm text-(--text-secondary)">
+            <Body size="sm" variant="secondary">
               Get notified when you hit a new PR or milestone
-            </p>
+            </Body>
           </div>
           <Toggle
             checked={preferences.achievementNotifications.enabled}
@@ -272,9 +272,9 @@ export default function NotificationPreferencesSettings() {
         <div className="flex items-center justify-between">
           <div>
             <Heading level="h3">New Workout Assignments</Heading>
-            <p className="text-sm text-(--text-secondary)">
+            <Body size="sm" variant="secondary">
               Get notified when your coach assigns a new workout
-            </p>
+            </Body>
           </div>
           <Toggle
             checked={preferences.assignmentNotifications.enabled}

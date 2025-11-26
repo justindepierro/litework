@@ -10,6 +10,7 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Check } from "lucide-react";
+import { Body } from "./Typography";
 
 const cx = (...classes: Array<string | undefined | false>) =>
   classes.filter(Boolean).join(" ");
@@ -250,9 +251,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       </>
     ) : (
       <>
-        {leftIcon && <span className="inline-flex">{leftIcon}</span>}
-        <span>{children}</span>
-        {rightIcon && <span className="inline-flex">{rightIcon}</span>}
+        {leftIcon && (
+          <Body as="span" className="inline-flex">
+            {leftIcon}
+          </Body>
+        )}
+        <Body as="span">{children}</Body>
+        {rightIcon && (
+          <Body as="span" className="inline-flex">
+            {rightIcon}
+          </Body>
+        )}
       </>
     );
 

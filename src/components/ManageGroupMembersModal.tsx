@@ -11,6 +11,7 @@ import { apiClient } from "@/lib/api-client";
 import { UserPlus, Users, Search, Check } from "lucide-react";
 import { User as UserType, AthleteGroup } from "@/types";
 import { useToast } from "@/components/ToastProvider";
+import { Body } from "@/components/ui/Typography";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptySearch } from "@/components/ui/EmptyState";
@@ -200,7 +201,9 @@ export default function ManageGroupMembersModal({
                       {isInGroup && (
                         <div className="flex items-center gap-2 text-accent-blue">
                           <Check className="w-5 h-5" />
-                          <span className="text-sm font-medium">In Group</span>
+                          <Body size="sm" weight="medium">
+                            In Group
+                          </Body>
                         </div>
                       )}
                       {!isInGroup && (

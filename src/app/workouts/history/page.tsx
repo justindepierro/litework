@@ -261,7 +261,9 @@ export default function WorkoutHistoryPage() {
     return (
       <PageContainer maxWidth="4xl" background="gradient">
         <Alert variant="error" title="Error loading history">
-          <p className="text-sm mb-3">{error}</p>
+          <Body size="sm" className="mb-3">
+            {error}
+          </Body>
           <button
             onClick={fetchHistory}
             className="mt-3 px-4 py-2 bg-(--status-error) text-white rounded-lg hover:bg-(--status-error)"
@@ -328,9 +330,14 @@ export default function WorkoutHistoryPage() {
               />
 
               <div>
-                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                <Body
+                  size="sm"
+                  weight="medium"
+                  variant="secondary"
+                  className="block mb-1.5"
+                >
                   Status
-                </label>
+                </Body>
                 <select
                   value={statusFilter}
                   onChange={(e) => {
@@ -348,10 +355,15 @@ export default function WorkoutHistoryPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                <Body
+                  size="sm"
+                  weight="medium"
+                  variant="secondary"
+                  className="block mb-1.5"
+                >
                   <Calendar className="w-4 h-4 inline mr-1" />
                   From Date
-                </label>
+                </Body>
                 <input
                   type="date"
                   value={dateFrom}
@@ -364,10 +376,15 @@ export default function WorkoutHistoryPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-(--text-secondary) mb-1.5">
+                <Body
+                  size="sm"
+                  weight="medium"
+                  variant="secondary"
+                  className="block mb-1.5"
+                >
                   <Calendar className="w-4 h-4 inline mr-1" />
                   To Date
-                </label>
+                </Body>
                 <input
                   type="date"
                   value={dateTo}
@@ -381,10 +398,10 @@ export default function WorkoutHistoryPage() {
             </div>
 
             <div className="mt-4 flex items-center justify-between">
-              <p className="text-sm text-(--text-secondary)">
+              <Body size="sm" variant="secondary">
                 {filteredSessions.length} workout
                 {filteredSessions.length !== 1 ? "s" : ""} found
-              </p>
+              </Body>
               <Button variant="ghost" size="sm" onClick={resetFilters}>
                 Reset Filters
               </Button>
@@ -602,9 +619,9 @@ export default function WorkoutHistoryPage() {
                     .map((page, index, array) => (
                       <React.Fragment key={page}>
                         {index > 0 && array[index - 1] !== page - 1 && (
-                          <span className="px-2 text-(--text-tertiary)">
+                          <Caption variant="muted" className="px-2">
                             ...
-                          </span>
+                          </Caption>
                         )}
                         <button
                           onClick={() => setCurrentPage(page)}

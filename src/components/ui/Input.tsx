@@ -8,6 +8,7 @@
 
 import React, { memo } from "react";
 import { Eye, EyeOff, AlertCircle, Check } from "lucide-react";
+import { Body } from "./Typography";
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -84,7 +85,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label className="block text-sm font-medium text-primary mb-2">
             {label}
-            {props.required && <span className="text-error ml-1">*</span>}
+            {props.required && (
+              <Body as="span" className="text-error ml-1">
+                *
+              </Body>
+            )}
           </label>
         )}
 
@@ -228,7 +233,11 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label className="block text-sm font-medium text-primary mb-2">
             {label}
-            {props.required && <span className="text-error ml-1">*</span>}
+            {props.required && (
+              <Body as="span" className="text-error ml-1">
+                *
+              </Body>
+            )}
           </label>
         )}
 

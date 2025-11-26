@@ -9,7 +9,7 @@
 "use client";
 
 import React, { ReactNode, useState, useRef, useEffect } from "react";
-import { Heading, Body } from "./Typography";
+import { Heading, Body, Caption } from "./Typography";
 
 interface DropdownProps {
   /** Button or element that triggers the dropdown */
@@ -291,9 +291,9 @@ export function DropdownItem({
       </div>
 
       {shortcut && (
-        <span className="text-xs text-silver-500 font-medium px-2 py-0.5 bg-silver-100 rounded group-hover:bg-silver-200 transition-colors">
+        <Caption className="text-silver-500 font-medium px-2 py-0.5 bg-silver-100 rounded group-hover:bg-silver-200 transition-colors">
           {shortcut}
-        </span>
+        </Caption>
       )}
 
       {/* Hover indicator */}
@@ -318,9 +318,9 @@ export function DropdownDivider({
       <div className={`my-2 px-4 ${className}`}>
         <div className="flex items-center gap-3">
           <div className="flex-1 border-t border-silver-300" />
-          <span className="text-xs font-semibold text-silver-500 uppercase tracking-wider">
+          <Caption className="font-semibold text-silver-500 uppercase tracking-wider">
             {label}
-          </span>
+          </Caption>
           <div className="flex-1 border-t border-silver-300" />
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Heading, Body, Caption } from "./Typography";
 
 interface RateLimitErrorProps {
   error: string;
@@ -61,10 +62,15 @@ export function RateLimitError({ error, className = "" }: RateLimitErrorProps) {
           />
         </svg>
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-(--status-error)">
+          <Heading
+            level="h3"
+            className="text-sm font-medium text-(--status-error)"
+          >
             Too Many Attempts
-          </h3>
-          <p className="mt-1 text-sm text-(--status-error)">{error}</p>
+          </Heading>
+          <Body size="sm" className="mt-1 text-(--status-error)">
+            {error}
+          </Body>
           {timeRemaining && (
             <div className="mt-3 flex items-center">
               <div className="flex-1">
@@ -72,9 +78,9 @@ export function RateLimitError({ error, className = "" }: RateLimitErrorProps) {
                   <div className="h-full bg-(--status-error) rounded-full animate-pulse" />
                 </div>
               </div>
-              <span className="ml-3 text-xs font-medium text-(--status-error) tabular-nums">
+              <Caption className="ml-3 font-medium text-(--status-error) tabular-nums">
                 {timeRemaining}
-              </span>
+              </Caption>
             </div>
           )}
         </div>

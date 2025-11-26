@@ -81,9 +81,9 @@ export default function StartWorkoutPage({ params }: StartWorkoutPageProps) {
         <div className="text-center">
           <Dumbbell className="w-16 h-16 text-(--accent-blue-600) mx-auto mb-4 animate-bounce" />
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--accent-blue-600) mx-auto mb-4" />
-          <p className="text-lg text-(--text-secondary)">
+          <Body size="lg" variant="secondary">
             Starting your workout...
-          </p>
+          </Body>
         </div>
       </div>
     );

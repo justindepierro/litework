@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Body } from "@/components/ui/Typography";
+import { Body, Heading } from "@/components/ui/Typography";
 import {
   ModalBackdrop,
   ModalHeader,
@@ -111,9 +111,9 @@ export default function AthleteModificationModal({
         <ModalContent>
           {/* Add New Modification */}
           <Card variant="default" padding="md" className="mb-6">
-            <h3 className="text-heading-secondary text-lg mb-4">
+            <Heading level="h3" className="text-lg mb-4">
               Add Modification
-            </h3>
+            </Heading>
             <div className="flex gap-3">
               <Select
                 value={selectedExercise}
@@ -140,9 +140,9 @@ export default function AthleteModificationModal({
 
           {/* Current Modifications */}
           <div className="space-y-4">
-            <h3 className="text-heading-secondary text-lg">
+            <Heading level="h3" className="text-lg">
               Current Modifications ({modifications.length})
-            </h3>
+            </Heading>
 
             {modifications.length === 0 ? (
               <div className="text-center py-8 text-body-secondary">
@@ -166,9 +166,9 @@ export default function AthleteModificationModal({
                     >
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h4 className="text-heading-secondary text-lg">
+                          <Heading level="h4" className="text-lg">
                             {exercise.exerciseName}
-                          </h4>
+                          </Heading>
                           <Body className="text-sm" variant="secondary">
                             Original: {exercise.sets} sets × {exercise.reps}{" "}
                             reps

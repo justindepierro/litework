@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert } from "@/components/ui/Alert";
 import { useAsyncState } from "@/hooks/use-async-state";
+import { Body } from "@/components/ui/Typography";
 import { Bell, CheckCircle, XCircle } from "lucide-react";
 
 interface NotificationPermissionProps {
@@ -217,10 +218,10 @@ export default function NotificationPermission({
     <div className={`notification-permission ${className}`}>
       {permission === "default" && (
         <Alert variant="info" icon={<Bell />} title="Enable Push Notifications">
-          <p className="text-sm mb-4">
+          <Body size="sm" className="mb-4">
             Get notified when you have new workouts, messages from your coach,
             and more.
-          </p>
+          </Body>
           <button
             onClick={requestPermission}
             disabled={isLoading}
@@ -262,9 +263,9 @@ export default function NotificationPermission({
           icon={<CheckCircle />}
           title="Notifications Enabled"
         >
-          <p className="text-sm mb-4">
+          <Body size="sm" className="mb-4">
             You&apos;ll receive push notifications for workouts and messages.
-          </p>
+          </Body>
           <button
             onClick={unsubscribe}
             disabled={isLoading}
@@ -277,10 +278,10 @@ export default function NotificationPermission({
 
       {permission === "denied" && (
         <Alert variant="error" icon={<XCircle />} title="Notifications Blocked">
-          <p className="text-sm">
+          <Body size="sm">
             You&apos;ve blocked notifications. To enable them, go to your
             browser settings and allow notifications for this site.
-          </p>
+          </Body>
         </Alert>
       )}
 

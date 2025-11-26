@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Clock, Menu } from "lucide-react";
-import { Heading } from "@/components/ui/Typography";
+import { Heading, Body } from "@/components/ui/Typography";
 
 interface WorkoutHeaderProps {
   workoutName: string;
@@ -80,17 +80,19 @@ export function WorkoutHeader({
           {/* Elapsed Timer */}
           <div className="flex items-center gap-1.5 text-(--text-secondary)">
             <Clock className="w-4 h-4" />
-            <span className="font-semibold">{elapsedTime}</span>
+            <Body size="sm" weight="semibold">
+              {elapsedTime}
+            </Body>
           </div>
 
           {/* Progress */}
           <div className="flex items-center gap-2">
-            <span className="text-(--text-secondary) font-medium">
+            <Body size="sm" weight="medium" className="text-(--text-secondary)">
               {completedExercises}/{totalExercises} exercises
-            </span>
-            <span className="text-(--accent-blue-600) font-bold">
+            </Body>
+            <Body size="sm" weight="bold" className="text-(--accent-blue-600)">
               {progressPercent}%
-            </span>
+            </Body>
           </div>
         </div>
 
