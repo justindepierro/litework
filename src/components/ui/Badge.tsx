@@ -19,7 +19,11 @@ export type BadgeVariant =
   | "warning"
   | "error"
   | "neutral"
-  | "info";
+  | "info"
+  | "purple"
+  | "orange"
+  | "pink"
+  | "emerald";
 export type BadgeSize = "sm" | "md" | "lg";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -27,6 +31,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   size?: BadgeSize;
   dot?: boolean;
   children: ReactNode;
+  /** Use gradient background for more visual pop */
+  gradient?: boolean;
 }
 
 const variantTokens: Record<
@@ -36,31 +42,41 @@ const variantTokens: Record<
     color: string;
     border: string;
     dot: string;
+    gradientFrom?: string;
+    gradientTo?: string;
   }
 > = {
   primary: {
     background: "var(--color-accent-blue-100)",
-    color: "var(--color-accent-blue-700)",
+    color: "var(--color-accent-blue-800)",
     border: "var(--color-accent-blue-300)",
-    dot: "var(--color-accent-blue-500)",
+    dot: "var(--color-accent-blue-600)",
+    gradientFrom: "var(--color-accent-blue-500)",
+    gradientTo: "var(--color-accent-blue-600)",
   },
   success: {
     background: "var(--color-accent-green-100)",
-    color: "var(--color-accent-green-700)",
+    color: "var(--color-accent-green-800)",
     border: "var(--color-accent-green-300)",
-    dot: "var(--color-accent-green-500)",
+    dot: "var(--color-accent-green-600)",
+    gradientFrom: "var(--color-accent-green-500)",
+    gradientTo: "var(--color-accent-green-600)",
   },
   warning: {
     background: "var(--color-accent-amber-100)",
-    color: "var(--color-accent-amber-700)",
+    color: "var(--color-accent-amber-900)",
     border: "var(--color-accent-amber-300)",
-    dot: "var(--color-accent-amber-500)",
+    dot: "var(--color-accent-amber-600)",
+    gradientFrom: "var(--color-accent-amber-500)",
+    gradientTo: "var(--color-accent-orange-500)",
   },
   error: {
     background: "var(--color-accent-red-100)",
-    color: "var(--color-accent-red-700)",
+    color: "var(--color-accent-red-800)",
     border: "var(--color-accent-red-300)",
-    dot: "var(--color-accent-red-500)",
+    dot: "var(--color-accent-red-600)",
+    gradientFrom: "var(--color-accent-red-500)",
+    gradientTo: "var(--color-accent-red-600)",
   },
   neutral: {
     background: "var(--color-neutral-lighter)",
@@ -70,9 +86,43 @@ const variantTokens: Record<
   },
   info: {
     background: "var(--color-accent-cyan-100)",
-    color: "var(--color-accent-cyan-700)",
+    color: "var(--color-accent-cyan-800)",
     border: "var(--color-accent-cyan-300)",
-    dot: "var(--color-accent-cyan-500)",
+    dot: "var(--color-accent-cyan-600)",
+    gradientFrom: "var(--color-accent-cyan-500)",
+    gradientTo: "var(--color-accent-blue-500)",
+  },
+  purple: {
+    background: "var(--color-accent-purple-100)",
+    color: "var(--color-accent-purple-800)",
+    border: "var(--color-accent-purple-300)",
+    dot: "var(--color-accent-purple-600)",
+    gradientFrom: "var(--color-accent-purple-500)",
+    gradientTo: "var(--color-accent-purple-600)",
+  },
+  orange: {
+    background: "var(--color-accent-orange-100)",
+    color: "var(--color-accent-orange-900)",
+    border: "var(--color-accent-orange-300)",
+    dot: "var(--color-accent-orange-600)",
+    gradientFrom: "var(--color-accent-orange-500)",
+    gradientTo: "var(--color-accent-orange-600)",
+  },
+  pink: {
+    background: "var(--color-accent-pink-100)",
+    color: "var(--color-accent-pink-800)",
+    border: "var(--color-accent-pink-300)",
+    dot: "var(--color-accent-pink-600)",
+    gradientFrom: "var(--color-accent-pink-500)",
+    gradientTo: "var(--color-accent-pink-600)",
+  },
+  emerald: {
+    background: "var(--color-accent-emerald-100)",
+    color: "var(--color-accent-emerald-800)",
+    border: "var(--color-accent-emerald-300)",
+    dot: "var(--color-accent-emerald-600)",
+    gradientFrom: "var(--color-accent-emerald-500)",
+    gradientTo: "var(--color-accent-emerald-600)",
   },
 };
 
@@ -107,6 +157,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       variant = "neutral",
       size = "md",
       dot = false,
+      gradient = false,
       className = "",
       style,
       children,
@@ -114,18 +165,24 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     },
     ref
   ) => {
+    const tokens = variantTokens[variant];
+    const useGradient = gradient && tokens.gradientFrom && tokens.gradientTo;
+
     return (
       <span
         ref={ref}
         className={cx(
-          "inline-flex items-center gap-1.5 rounded-full border font-medium transition-colors",
+          "inline-flex items-center gap-1.5 rounded-full border font-semibold transition-all",
+          useGradient && "shadow-sm hover:shadow-md",
           className
         )}
         style={mergeStyles(
           {
-            background: variantTokens[variant].background,
-            color: variantTokens[variant].color,
-            borderColor: variantTokens[variant].border,
+            background: useGradient
+              ? `linear-gradient(135deg, ${tokens.gradientFrom}, ${tokens.gradientTo})`
+              : tokens.background,
+            color: useGradient ? "#ffffff" : tokens.color,
+            borderColor: useGradient ? "transparent" : tokens.border,
             fontSize: sizeMetrics[size].fontSize,
             paddingInline: sizeMetrics[size].paddingInline,
             paddingBlock: sizeMetrics[size].paddingBlock,
@@ -137,11 +194,12 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       >
         {dot && (
           <span
-            className="rounded-full"
+            className="rounded-full animate-pulse"
             style={{
-              background: variantTokens[variant].dot,
+              background: useGradient ? "#ffffff" : tokens.dot,
               width: size === "sm" ? "0.375rem" : "0.5rem",
               height: size === "sm" ? "0.375rem" : "0.5rem",
+              boxShadow: useGradient ? "0 0 4px rgba(255,255,255,0.5)" : "none",
             }}
             aria-hidden="true"
           />

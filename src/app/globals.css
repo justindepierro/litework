@@ -483,9 +483,13 @@ h6,
 p,
 span,
 div,
-button,
-a {
+button {
   color: inherit;
+}
+
+/* Links should respect their own color classes, not inherit */
+a {
+  color: currentColor;
 }
 
 /* Typography Classes */

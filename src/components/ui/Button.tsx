@@ -26,11 +26,19 @@ export type ButtonVariant =
   | "ghost"
   | "success";
 export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonColorScheme =
+  | "default"
+  | "blue"
+  | "purple"
+  | "orange"
+  | "green";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  /** Color scheme for secondary buttons - adds visual personality */
+  colorScheme?: ButtonColorScheme;
   isLoading?: boolean;
   loadingText?: string;
   showSuccessState?: boolean;
@@ -53,6 +61,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     {
       variant = "primary",
       size = "md",
+      colorScheme = "default",
       isLoading = false,
       loadingText,
       showSuccessState = false,
@@ -147,6 +156,66 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
+    // Color scheme styles for secondary variant
+    const colorSchemeStyles: Record<ButtonColorScheme, string> = {
+      default: `
+        glass backdrop-blur-lg
+        bg-white/80
+        text-navy-700
+        border border-white/40
+        shadow-md
+        ${
+          disabled || isLoading
+            ? "opacity-50"
+            : "hover:bg-white/90 hover:border-white/60 hover:shadow-lg hover:scale-105 active:scale-100"
+        }
+      `,
+      blue: `
+        bg-gradient-to-br from-accent-blue-400 to-accent-blue-500
+        text-white
+        border border-accent-blue-300/30
+        shadow-md shadow-accent-blue-400/20
+        ${
+          disabled || isLoading
+            ? "opacity-50"
+            : "hover:from-accent-blue-500 hover:to-accent-blue-600 hover:shadow-lg hover:shadow-accent-blue-500/30 hover:scale-105 active:scale-100"
+        }
+      `,
+      purple: `
+        bg-gradient-to-br from-accent-purple-400 to-accent-purple-500
+        text-white
+        border border-accent-purple-300/30
+        shadow-md shadow-accent-purple-400/20
+        ${
+          disabled || isLoading
+            ? "opacity-50"
+            : "hover:from-accent-purple-500 hover:to-accent-purple-600 hover:shadow-lg hover:shadow-accent-purple-500/30 hover:scale-105 active:scale-100"
+        }
+      `,
+      orange: `
+        bg-gradient-to-br from-accent-orange-400 to-accent-orange-500
+        text-white
+        border border-accent-orange-300/30
+        shadow-md shadow-accent-orange-400/20
+        ${
+          disabled || isLoading
+            ? "opacity-50"
+            : "hover:from-accent-orange-500 hover:to-accent-orange-600 hover:shadow-lg hover:shadow-accent-orange-500/30 hover:scale-105 active:scale-100"
+        }
+      `,
+      green: `
+        bg-gradient-to-br from-accent-green-400 to-accent-green-500
+        text-white
+        border border-accent-green-300/30
+        shadow-md shadow-accent-green-400/20
+        ${
+          disabled || isLoading
+            ? "opacity-50"
+            : "hover:from-accent-green-500 hover:to-accent-green-600 hover:shadow-lg hover:shadow-accent-green-500/30 hover:scale-105 active:scale-100"
+        }
+      `,
+    };
+
     // Variant styles with VIBRANT OKLCH gradients!
     const variantStyles: Record<ButtonVariant, string> = {
       primary: `
@@ -161,19 +230,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             : "hover:from-accent-orange-600 hover:to-accent-orange-700 hover:shadow-xl hover:shadow-accent-orange-600/40 hover:scale-105 active:scale-100 active:from-accent-orange-700 active:to-accent-orange-800 focus:ring-2 focus:ring-accent-orange-400 focus:ring-offset-2"
         }
       `,
-      secondary: `
-        glass backdrop-blur-lg
-        bg-white/80
-        text-navy-700
-        border border-white/40
-        shadow-md
-        font-medium
-        ${
-          disabled || isLoading
-            ? "opacity-50 bg-neutral-lighter/50"
-            : "hover:bg-white/90 hover:border-white/60 hover:shadow-lg hover:scale-105 active:scale-100 active:bg-white active:shadow-inner focus:ring-2 focus:ring-accent-blue-300 focus:ring-offset-2"
-        }
-      `,
+      secondary: colorSchemeStyles[colorScheme],
       danger: `
         bg-linear-to-br from-accent-red-500 to-accent-red-600
         text-white

@@ -152,7 +152,9 @@ export default function AuthenticatedHome() {
                 entire team.
               </Body>
               <div className="mt-3 text-center">
-                <Badge variant="primary">Coach Tools</Badge>
+                <Badge variant="orange" gradient>
+                  Coach Tools
+                </Badge>
               </div>
             </Card>
           </div>

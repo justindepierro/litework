@@ -201,15 +201,25 @@ export const Body: React.FC<BodyProps> = ({
 }) => {
   const Component = as;
 
+  // Check if className has custom overrides to avoid conflicts
+  const hasCustomWeight = className?.includes("font-");
+  const hasCustomSize = className?.includes("text-");
+
+  // Don't apply fontSize or fontWeight in inline styles - let className handle everything
+  // Only apply fontFamily and lineHeight which don't conflict with Tailwind
+
   return (
     <Component
       className={cx(bodyVariantColors[variant], className)}
       style={mergeStyles(
         {
           fontFamily: "var(--font-family-primary)",
-          fontSize: `var(${bodySizeTokens[size]})`,
           lineHeight: bodyLineHeights[size],
-          fontWeight: weightScale[weight],
+          // Let Tailwind classes handle fontSize, fontWeight, and color
+          ...(hasCustomSize
+            ? {}
+            : { fontSize: `var(${bodySizeTokens[size]})` }),
+          ...(hasCustomWeight ? {} : { fontWeight: weightScale[weight] }),
         },
         style
       )}

@@ -228,10 +228,15 @@ const Navigation = memo(function Navigation() {
                 <div className="absolute inset-0 bg-gradient-button-orange rounded-xl blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
                 <Dumbbell className="relative w-7 h-7 sm:w-8 sm:h-8 text-accent-orange-500 transition-colors" />
               </div>
-              <Body className="text-xl sm:text-2xl font-bold text-white hidden xs:block">
+              <Body
+                variant="inverse"
+                className="text-xl sm:text-2xl font-bold hidden xs:block"
+              >
                 LiteWork
               </Body>
-              <Body className="text-xl font-bold text-white xs:hidden">LW</Body>
+              <Body variant="inverse" className="text-xl font-bold xs:hidden">
+                LW
+              </Body>
             </Link>
 
             {/* Desktop Navigation - Modern Pills with High Contrast */}
@@ -245,9 +250,6 @@ const Navigation = memo(function Navigation() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        style={{
-                          color: isActive ? "#020617" : "#ffffff",
-                        }}
                         className={`
                           group relative px-4 py-2 rounded-xl text-sm font-bold
                           transition-all duration-200 ease-in-out
@@ -278,11 +280,8 @@ const Navigation = memo(function Navigation() {
                   {/* Profile Button */}
                   <Link
                     href="/profile"
-                    style={{
-                      color: pathname === "/profile" ? "#020617" : "#ffffff",
-                    }}
                     className={`
-                      group relative px-4 py-2 rounded-xl font-medium text-sm
+                      group relative px-4 py-2 rounded-xl text-sm font-bold
                       transition-all duration-200 ease-in-out
                       flex items-center gap-2
                       ${
@@ -295,16 +294,16 @@ const Navigation = memo(function Navigation() {
                     <User
                       className={`w-4 h-4 ${pathname === "/profile" ? "text-neutral-950" : "text-white"}`}
                     />
-                    <Body className="hidden lg:inline">Profile</Body>
+                    <span className="hidden lg:inline">Profile</span>
                   </Link>
 
                   {/* Logout Button */}
                   <button
                     onClick={signOut}
-                    className="px-4 py-2 rounded-xl font-medium text-sm text-white hover:text-white hover:bg-accent-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
+                    className="px-4 py-2 rounded-xl font-bold text-sm text-white hover:text-white hover:bg-accent-red-500/20 transition-all duration-200 flex items-center gap-2 ml-1"
                   >
-                    <LogOut className="w-4 h-4" />
-                    <Body className="hidden lg:inline">Logout</Body>
+                    <LogOut className="w-4 h-4 text-white" />
+                    <span className="hidden lg:inline">Logout</span>
                   </button>
                 </>
               )}
@@ -388,9 +387,6 @@ const Navigation = memo(function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          color: isActive ? "#020617" : "#ffffff",
-                        }}
                         className={`
                           flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
                           transition-all duration-200 active:scale-95
@@ -404,7 +400,7 @@ const Navigation = memo(function Navigation() {
                         <Icon
                           className={`w-5 h-5 ${isActive ? "text-neutral-950" : item.color}`}
                         />
-                        <Body className="flex-1">{item.label}</Body>
+                        <span className="flex-1">{item.label}</span>
                         {isActive && (
                           <div className="w-2 h-2 rounded-full bg-accent-orange-400" />
                         )}
@@ -420,9 +416,6 @@ const Navigation = memo(function Navigation() {
                 <Link
                   href="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  style={{
-                    color: pathname === "/profile" ? "#020617" : "#ffffff",
-                  }}
                   className={`
                     flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base
                     transition-all duration-200 active:scale-95
@@ -434,9 +427,9 @@ const Navigation = memo(function Navigation() {
                   `}
                 >
                   <User
-                    className={`w-5 h-5 ${pathname === "/profile" ? "text-neutral-950" : "text-neutral-300"}`}
+                    className={`w-5 h-5 ${pathname === "/profile" ? "text-neutral-950" : "text-white"}`}
                   />
-                  <Body className="flex-1">Profile & Settings</Body>
+                  <span className="flex-1">Profile & Settings</span>
                 </Link>
 
                 {/* Logout Button */}
@@ -447,8 +440,8 @@ const Navigation = memo(function Navigation() {
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-medium text-base text-accent-red-400 hover:text-accent-red-300 bg-accent-red-500/20 hover:bg-accent-red-500/30 transition-all duration-200 active:scale-95 mt-2"
                 >
-                  <LogOut className="w-5 h-5" />
-                  <Body className="flex-1 text-left">Logout</Body>
+                  <LogOut className="w-5 h-5 text-accent-red-400" />
+                  <span className="flex-1 text-left">Logout</span>
                 </button>
               </div>
             ) : (

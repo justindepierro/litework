@@ -474,7 +474,7 @@ export default function WorkoutHistoryPage() {
                             {session.workoutPlanName}
                           </Heading>
                           {session.completed ? (
-                            <Badge variant="success" size="sm">
+                            <Badge variant="success" size="sm" gradient>
                               Completed
                             </Badge>
                           ) : (

@@ -223,6 +223,9 @@ function WorkoutsPage({
               variant={
                 state.currentView === "library" ? "primary" : "secondary"
               }
+              colorScheme={
+                state.currentView === "library" ? undefined : "purple"
+              }
               size="sm"
               onClick={() => state.setCurrentView("library")}
               leftIcon={<Library className="w-4 h-4" />}
@@ -459,6 +462,7 @@ function WorkoutsPage({
                                     state.setEditingWorkout(workout);
                                   }}
                                   variant="secondary"
+                                  colorScheme="blue"
                                   className="flex-1"
                                   disabled={isOptimistic}
                                 >
@@ -470,7 +474,7 @@ function WorkoutsPage({
                                     state.setSelectedWorkout(workout);
                                     state.setShowAssignForm(true);
                                   }}
-                                  variant="primary"
+                                  variant="success"
                                   className="flex-1"
                                   disabled={isOptimistic}
                                   leftIcon={<Users className="w-4 h-4" />}
@@ -605,6 +609,7 @@ function WorkoutsPage({
                       );
                     }}
                     variant="secondary"
+                    colorScheme="purple"
                     fullWidth
                     className="py-4"
                     leftIcon={<User className="w-5 h-5" />}
