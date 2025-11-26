@@ -21,6 +21,7 @@
 **Always use one of these patterns:**
 
 #### **Pattern 1: `withAuth()` Wrapper (Recommended)**
+
 ```typescript
 import { withAuth } from "@/lib/auth-server";
 
@@ -33,19 +34,20 @@ export async function GET(request: NextRequest) {
 ```
 
 #### **Pattern 2: `getAuthenticatedUser()` (Also Good)**
+
 ```typescript
 import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
       { error: authError || "Authentication required" },
       { status: 401 }
     );
   }
-  
+
   // Check permissions if needed
   if (!isCoach(user)) {
     return NextResponse.json(
@@ -53,7 +55,7 @@ export async function GET(request: NextRequest) {
       { status: 403 }
     );
   }
-  
+
   // Proceed with logic
 }
 ```
@@ -70,26 +72,27 @@ import { getAuthenticatedUser, isCoach } from "@/lib/auth-server";
 
 export default async function MyPage() {
   const { user } = await getAuthenticatedUser();
-  
+
   // Redirect if not authenticated
   if (!user) {
     redirect("/login");
   }
-  
+
   // Redirect if insufficient permissions
   if (!isCoach(user)) {
     redirect("/dashboard");
   }
-  
+
   // Fetch data server-side
   const data = await fetchData(user.id);
-  
+
   // Render page
   return <MyComponent data={data} />;
 }
 ```
 
 **Benefits:**
+
 - ✅ No client JavaScript needed for auth
 - ✅ Zero flash of unauthorized content
 - ✅ Better performance (less client work)
@@ -109,23 +112,24 @@ import { useRequireAuth, useCoachGuard, useAdminGuard } from "@/hooks/use-auth-g
 export default function MyClientPage() {
   // For any authenticated user (athlete, coach, admin)
   const { user, isLoading } = useRequireAuth();
-  
+
   // For coach or admin only
   // const { user, isLoading } = useCoachGuard();
-  
+
   // For admin only
   // const { user, isLoading } = useAdminGuard();
-  
+
   if (isLoading) {
     return <LoadingSkeleton />;
   }
-  
+
   // user is guaranteed here (guard redirects if not authenticated)
   return <MyComponent user={user} />;
 }
 ```
 
 **When to Use:**
+
 - Interactive features requiring client state
 - Real-time updates
 - Heavy client-side logic
@@ -143,11 +147,11 @@ import { useRedirectIfAuthenticated } from "@/hooks/use-auth-guard";
 
 export default function LoginPage() {
   const { isLoading } = useRedirectIfAuthenticated("/dashboard");
-  
+
   if (isLoading) {
     return <LoadingSkeleton />;
   }
-  
+
   // Show login form
   return <LoginForm />;
 }
@@ -160,26 +164,32 @@ export default function LoginPage() {
 ### Available Functions (from `src/lib/auth-server.ts`)
 
 ```typescript
-import { isAdmin, isCoach, hasRoleOrHigher, canManageGroups } from "@/lib/auth-server";
+import {
+  isAdmin,
+  isCoach,
+  hasRoleOrHigher,
+  canManageGroups,
+} from "@/lib/auth-server";
 
 // Admin only
-isAdmin(user)  // true if role === "admin"
+isAdmin(user); // true if role === "admin"
 
 // Coach or admin
-isCoach(user)  // true if role === "coach" OR "admin"
+isCoach(user); // true if role === "coach" OR "admin"
 
 // Hierarchical check (admin > coach > athlete)
-hasRoleOrHigher(user, "coach")  // true if admin or coach
+hasRoleOrHigher(user, "coach"); // true if admin or coach
 
 // Permission-based checks
-canManageGroups(user)       // coach or admin
-canAssignWorkouts(user)     // coach or admin
-canViewAllAthletes(user)    // coach or admin
+canManageGroups(user); // coach or admin
+canAssignWorkouts(user); // coach or admin
+canViewAllAthletes(user); // coach or admin
 ```
 
 **⚠️ IMPORTANT: Admin Hierarchy**
 
 **NEVER** check for coach like this:
+
 ```typescript
 // ❌ BAD - Excludes admins!
 if (user.role === "coach") {
@@ -188,6 +198,7 @@ if (user.role === "coach") {
 ```
 
 **ALWAYS** use helper functions:
+
 ```typescript
 // ✅ GOOD - Includes admins
 if (isCoach(user)) {
@@ -203,19 +214,19 @@ if (isCoach(user)) {
 
 ```typescript
 // Require any authenticated user
-useRequireAuth()     // Main hook
-useAthleteGuard()    // Alias for clarity
+useRequireAuth(); // Main hook
+useAthleteGuard(); // Alias for clarity
 
 // Require coach or admin
-useRequireCoach()    // Main hook
-useCoachGuard()      // Alias for clarity
+useRequireCoach(); // Main hook
+useCoachGuard(); // Alias for clarity
 
 // Require admin only
-useRequireAdmin()    // Main hook
-useAdminGuard()      // Alias for clarity
+useRequireAdmin(); // Main hook
+useAdminGuard(); // Alias for clarity
 
 // Redirect authenticated users (for login/signup)
-useRedirectIfAuthenticated(redirectTo = "/dashboard")
+useRedirectIfAuthenticated((redirectTo = "/dashboard"));
 ```
 
 ### Return Value
@@ -243,13 +254,13 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       );
     }
-    
+
     // Parse request
     const body = await request.json();
-    
+
     // Create workout
     const workout = await createWorkout(user.id, body);
-    
+
     return NextResponse.json({ success: true, workout });
   });
 }
@@ -265,10 +276,10 @@ export default async function WorkoutsPage() {
   const { user } = await getAuthenticatedUser();
   if (!user) redirect("/login");
   if (!isCoach(user)) redirect("/dashboard");
-  
+
   // Fetch data server-side
   const workouts = await fetchWorkouts(user.id);
-  
+
   // Render page
   return <WorkoutsClient workouts={workouts} />;
 }
@@ -282,17 +293,17 @@ export default async function WorkoutsPage() {
 export default function ProfilePage() {
   const { user, isLoading } = useRequireAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  
+
   useEffect(() => {
     if (user) {
       fetchProfile(user.id).then(setProfile);
     }
   }, [user]);
-  
+
   if (isLoading || !profile) {
     return <LoadingSkeleton />;
   }
-  
+
   return <ProfileView profile={profile} />;
 }
 ```
@@ -304,21 +315,21 @@ export default function ProfilePage() {
 ```typescript
 export default function DashboardPage() {
   const { user, isLoading } = useRequireAuth();
-  
+
   if (isLoading) return <LoadingSkeleton />;
-  
+
   return (
     <div>
       <h1>Dashboard</h1>
-      
+
       {/* Show to all authenticated users */}
       <MyWorkouts userId={user!.id} />
-      
+
       {/* Show only to coaches/admins */}
       {isCoach(user!) && (
         <AthleteManagement />
       )}
-      
+
       {/* Show only to admins */}
       {isAdmin(user!) && (
         <SystemSettings />
@@ -470,11 +481,11 @@ export default function MyPage() {
 // ✅ GOOD
 export default function MyPage() {
   const { user, isLoading } = useRequireAuth();
-  
+
   if (isLoading) {
     return <LoadingSkeleton />;
   }
-  
+
   return <div>{user!.name}</div>; // Safe to use user!
 }
 ```

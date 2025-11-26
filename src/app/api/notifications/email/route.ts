@@ -26,94 +26,94 @@ export async function POST(request: NextRequest) {
       );
     }
     try {
-    const body = await request.json();
+      const body = await request.json();
 
-    // Single email
-    if (body.email && !body.users) {
-      const { email, userId, subject, category, templateData } = body as {
-        email: string;
-        userId?: string;
-        subject: string;
-        category: NotificationCategory;
-        templateData: EmailNotificationPayload["templateData"];
-      };
+      // Single email
+      if (body.email && !body.users) {
+        const { email, userId, subject, category, templateData } = body as {
+          email: string;
+          userId?: string;
+          subject: string;
+          category: NotificationCategory;
+          templateData: EmailNotificationPayload["templateData"];
+        };
 
-      if (!email || !subject || !templateData) {
-        return NextResponse.json(
-          { error: "Missing required fields: email, subject, templateData" },
-          { status: 400 }
+        if (!email || !subject || !templateData) {
+          return NextResponse.json(
+            { error: "Missing required fields: email, subject, templateData" },
+            { status: 400 }
+          );
+        }
+
+        const result = await sendEmailNotification(
+          {
+            to: email,
+            subject,
+            category,
+            templateData,
+          },
+          userId
         );
+
+        return NextResponse.json({
+          success: result.success,
+          emailId: result.emailId,
+          error: result.error,
+        });
       }
 
-      const result = await sendEmailNotification(
-        {
-          to: email,
+      // Multiple emails
+      if (body.users && Array.isArray(body.users)) {
+        const { users, subject, category, templateData } = body as {
+          users: Array<{ userId: string; email: string; name: string }>;
+          subject: string;
+          category: NotificationCategory;
+          templateData: Omit<
+            EmailNotificationPayload["templateData"],
+            "userName"
+          >;
+        };
+
+        if (!users || users.length === 0 || !subject || !templateData) {
+          return NextResponse.json(
+            { error: "Missing required fields: users, subject, templateData" },
+            { status: 400 }
+          );
+        }
+
+        const results = await sendEmailToUsers(
+          users,
           subject,
           category,
-          templateData,
-        },
-        userId
-      );
-
-      return NextResponse.json({
-        success: result.success,
-        emailId: result.emailId,
-        error: result.error,
-      });
-    }
-
-    // Multiple emails
-    if (body.users && Array.isArray(body.users)) {
-      const { users, subject, category, templateData } = body as {
-        users: Array<{ userId: string; email: string; name: string }>;
-        subject: string;
-        category: NotificationCategory;
-        templateData: Omit<
-          EmailNotificationPayload["templateData"],
-          "userName"
-        >;
-      };
-
-      if (!users || users.length === 0 || !subject || !templateData) {
-        return NextResponse.json(
-          { error: "Missing required fields: users, subject, templateData" },
-          { status: 400 }
+          templateData
         );
+
+        const totalSuccess = Object.values(results).filter(
+          (r) => r.success
+        ).length;
+        const totalFailed = Object.values(results).filter(
+          (r) => !r.success
+        ).length;
+
+        return NextResponse.json({
+          success: totalSuccess > 0,
+          sent: totalSuccess,
+          failed: totalFailed,
+          results,
+        });
       }
 
-      const results = await sendEmailToUsers(
-        users,
-        subject,
-        category,
-        templateData
+      return NextResponse.json(
+        { error: "Invalid request body. Provide either email or users array." },
+        { status: 400 }
       );
-
-      const totalSuccess = Object.values(results).filter(
-        (r) => r.success
-      ).length;
-      const totalFailed = Object.values(results).filter(
-        (r) => !r.success
-      ).length;
-
-      return NextResponse.json({
-        success: totalSuccess > 0,
-        sent: totalSuccess,
-        failed: totalFailed,
-        results,
-      });
-    }
-
-    return NextResponse.json(
-      { error: "Invalid request body. Provide either email or users array." },
-      { status: 400 }
-    );
-  } catch (error) {
-    console.error("❌ Error sending email notifications:", error);
-    return NextResponse.json(
-      {
-        error: "Internal server error",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
+    } catch (error) {
+      console.error("❌ Error sending email notifications:", error);
+      return NextResponse.json(
+        {
+          error: "Internal server error",
+          message: error instanceof Error ? error.message : "Unknown error",
+        },
         { status: 500 }
       );
     }

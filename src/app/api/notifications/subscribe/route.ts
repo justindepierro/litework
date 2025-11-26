@@ -17,38 +17,38 @@ import {
 export async function POST(request: NextRequest) {
   return withAuth(request, async (user) => {
     try {
-    const body = await request.json();
-    const { subscription, deviceName } = body;
+      const body = await request.json();
+      const { subscription, deviceName } = body;
 
-    if (!subscription || !subscription.endpoint) {
-      return NextResponse.json(
-        { error: "Invalid subscription object" },
-        { status: 400 }
+      if (!subscription || !subscription.endpoint) {
+        return NextResponse.json(
+          { error: "Invalid subscription object" },
+          { status: 400 }
+        );
+      }
+
+      // Get user agent from headers
+      const userAgent = request.headers.get("user-agent") || undefined;
+
+      // Save subscription to database
+      const result = await savePushSubscription(
+        user.id,
+        subscription,
+        deviceName,
+        userAgent
       );
-    }
 
-    // Get user agent from headers
-    const userAgent = request.headers.get("user-agent") || undefined;
+      if (!result.success) {
+        return NextResponse.json(
+          { error: result.error || "Failed to save subscription" },
+          { status: 500 }
+        );
+      }
 
-    // Save subscription to database
-    const result = await savePushSubscription(
-      user.id,
-      subscription,
-      deviceName,
-      userAgent
-    );
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || "Failed to save subscription" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Successfully subscribed to push notifications",
-      subscriptionId: result.id,
+      return NextResponse.json({
+        success: true,
+        message: "Successfully subscribed to push notifications",
+        subscriptionId: result.id,
       });
     } catch (error) {
       console.error("❌ Error subscribing to push notifications:", error);
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   return withAuth(request, async (user) => {
     try {
-        const body = await request.json();
+      const body = await request.json();
       const { endpoint } = body;
 
       if (!endpoint) {
@@ -91,9 +91,9 @@ export async function DELETE(request: NextRequest) {
         success: true,
         message: "Successfully unsubscribed from push notifications",
       });
-  } catch (error) {
-        console.error("❌ Error unsubscribing from push notifications:", error);
-        return NextResponse.json(
+    } catch (error) {
+      console.error("❌ Error unsubscribing from push notifications:", error);
+      return NextResponse.json(
         { error: "Internal server error" },
         { status: 500 }
       );

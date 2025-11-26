@@ -14,6 +14,7 @@
 The LiteWork application implements a **robust multi-layered authentication system** with Supabase Auth (SSR), comprehensive API protection, and role-based access control. The authentication architecture is **fundamentally sound** with proper separation of concerns between client and server.
 
 **Key Strengths:**
+
 - ✅ All API routes properly protected with authentication checks
 - ✅ Consistent use of `getAuthenticatedUser()` or `withAuth()` wrappers
 - ✅ Client-side auth guards with React hooks prevent unauthorized access
@@ -23,6 +24,7 @@ The LiteWork application implements a **robust multi-layered authentication syst
 - ✅ CORS properly configured for API routes
 
 **Areas for Improvement:**
+
 - ⚠️ Middleware auth redirect logic is commented out (relies on client-side guards)
 - ⚠️ Some pages use auth checks instead of Next.js middleware (potential race conditions)
 - 💡 Consider implementing server-side route protection for enhanced security
@@ -92,6 +94,7 @@ canViewAllAthletes(user)      // coach or admin
 ```
 
 **Implementation:** ✅ **SECURE**
+
 - Uses `@supabase/ssr` with cookie-based storage (no token exposure)
 - Fetches user profile from database after session validation
 - Proper error handling with descriptive messages
@@ -104,6 +107,7 @@ canViewAllAthletes(user)      // coach or admin
 #### **Client-Side Context** (`src/contexts/AuthContext.tsx`)
 
 **Features:**
+
 - Auth state management with loading states
 - Correlation IDs for operation tracking
 - Health checks for connection monitoring
@@ -111,6 +115,7 @@ canViewAllAthletes(user)      // coach or admin
 - Session refresh handling
 
 **Implementation:** ✅ **SECURE**
+
 - No sensitive data exposure in client context
 - Proper loading states prevent flashing content
 - Auth operations tracked for debugging
@@ -126,19 +131,20 @@ canViewAllAthletes(user)      // coach or admin
 
 ```typescript
 // Require any authenticated user (athlete, coach, admin)
-useRequireAuth() / useAthleteGuard()
+useRequireAuth() / useAthleteGuard();
 
 // Require coach or admin (blocks athletes)
-useRequireCoach() / useCoachGuard()
+useRequireCoach() / useCoachGuard();
 
 // Require admin only (blocks coaches and athletes)
-useRequireAdmin() / useAdminGuard()
+useRequireAdmin() / useAdminGuard();
 
 // Redirect authenticated users (for login/signup pages)
-useRedirectIfAuthenticated(redirectTo = "/dashboard")
+useRedirectIfAuthenticated((redirectTo = "/dashboard"));
 ```
 
 **Implementation:** ✅ **SECURE**
+
 - Uses refs to prevent multiple redirects
 - Checks both loading state and user presence
 - Redirects to appropriate pages (login for unauth, dashboard for insufficient perms)
@@ -156,22 +162,23 @@ useRedirectIfAuthenticated(redirectTo = "/dashboard")
 export async function middleware(request: NextRequest) {
   // 1. Updates Supabase session (cookies)
   const { response } = await updateSession(request);
-  
+
   // 2. Auth redirect logic is COMMENTED OUT (lines 49-59)
   // if (!user) {
   //   // no user, potentially respond by redirecting
   //   return NextResponse.redirect(new URL('/login', request.url));
   // }
-  
+
   // 3. CORS for API routes
   // 4. Security headers
   // 5. Compression headers
-  
+
   return response;
 }
 ```
 
 **Coverage:** Applied to protected routes
+
 ```typescript
 export const config = {
   matcher: [
@@ -187,6 +194,7 @@ export const config = {
 ```
 
 **Status:** ⚠️ **PARTIAL IMPLEMENTATION**
+
 - ✅ Session refresh works correctly
 - ✅ Security headers applied
 - ⚠️ Auth redirect disabled - relies on client-side guards
@@ -203,22 +211,24 @@ export const config = {
 #### **Protection Patterns Used**
 
 **Pattern 1: `getAuthenticatedUser()` (Most Common)**
+
 ```typescript
 export async function GET(request: NextRequest) {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
     return NextResponse.json(
       { error: authError || "Authentication required" },
       { status: 401 }
     );
   }
-  
+
   // Proceed with logic
 }
 ```
 
 **Pattern 2: `withAuth()` Wrapper (Cleaner)**
+
 ```typescript
 export async function POST(request: NextRequest) {
   return withAuth(request, async (user) => {
@@ -233,11 +243,13 @@ export async function POST(request: NextRequest) {
 **Total API Routes Analyzed:** 50+
 
 **Authentication Coverage:**
+
 - ✅ **100% of API routes** use `getAuthenticatedUser()` or `withAuth()`
 - ✅ **0 unprotected endpoints** found
 - ✅ All routes return 401 for unauthenticated requests
 
 **Routes Using `withAuth()` (Recommended Pattern):**
+
 - `/api/analytics/1rm-history`
 - `/api/analytics/volume-history`
 - `/api/analytics/check-pr`
@@ -247,6 +259,7 @@ export async function POST(request: NextRequest) {
 - `/api/workout-feed`
 
 **Routes Using `getAuthenticatedUser()` (Also Secure):**
+
 - `/api/athletes` (+ coach check with `isCoach(user)`)
 - `/api/workouts` (+ coach check with `isCoach(user)`)
 - `/api/exercises` (+ auth check)
@@ -260,24 +273,32 @@ export async function POST(request: NextRequest) {
 - `/api/goals` (all operations)
 
 **Role-Based Authorization:**
+
 - ✅ Coach-only routes properly use `isCoach(user)` check
 - ✅ Admin routes properly use `isAdmin(user)` check
 - ✅ Athlete routes allow access with any authenticated user
 
 **Example: Proper Coach Authorization**
+
 ```typescript
 // src/app/api/athletes/route.ts
 export async function GET() {
   const { user, error: authError } = await getAuthenticatedUser();
-  
+
   if (!user) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
   }
-  
+
   if (!isCoach(user)) {
-    return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
   }
-  
+
   // Fetch athletes
 }
 ```
@@ -290,18 +311,18 @@ export async function GET() {
 
 #### **Protected Pages Overview**
 
-| Page | Protection Method | Guard Hook | Status |
-|------|------------------|-----------|--------|
-| `/dashboard` | Client guard | `useAuth()` | ✅ Secure |
-| `/workouts` | **Server check** | `getAuthenticatedUser()` | ✅ **Best** |
-| `/workouts/view/[sessionId]` | Client guard | Hook in component | ✅ Secure |
-| `/workouts/live/[assignmentId]` | Client guard | `useAuth()` | ✅ Secure |
-| `/workouts/history` | Client guard | `useAthleteGuard()` | ✅ Secure |
-| `/profile` | Client guard | `useRequireAuth()` | ✅ Secure |
-| `/progress` | Client guard | `useAthleteGuard()` | ✅ Secure |
-| `/login` | Anti-guard | `useRedirectIfAuthenticated()` | ✅ Secure |
-| `/signup` | Anti-guard | `useRedirectIfAuthenticated()` | ✅ Secure |
-| `/` (home) | **Server check** | Cookie check | ✅ **Best** |
+| Page                            | Protection Method | Guard Hook                     | Status      |
+| ------------------------------- | ----------------- | ------------------------------ | ----------- |
+| `/dashboard`                    | Client guard      | `useAuth()`                    | ✅ Secure   |
+| `/workouts`                     | **Server check**  | `getAuthenticatedUser()`       | ✅ **Best** |
+| `/workouts/view/[sessionId]`    | Client guard      | Hook in component              | ✅ Secure   |
+| `/workouts/live/[assignmentId]` | Client guard      | `useAuth()`                    | ✅ Secure   |
+| `/workouts/history`             | Client guard      | `useAthleteGuard()`            | ✅ Secure   |
+| `/profile`                      | Client guard      | `useRequireAuth()`             | ✅ Secure   |
+| `/progress`                     | Client guard      | `useAthleteGuard()`            | ✅ Secure   |
+| `/login`                        | Anti-guard        | `useRedirectIfAuthenticated()` | ✅ Secure   |
+| `/signup`                       | Anti-guard        | `useRedirectIfAuthenticated()` | ✅ Secure   |
+| `/` (home)                      | **Server check**  | Cookie check                   | ✅ **Best** |
 
 #### **Notable Implementation: `/workouts/page.tsx`**
 
@@ -310,20 +331,21 @@ export async function GET() {
 ```typescript
 export default async function WorkoutsPage() {
   const { user } = await getAuthenticatedUser();
-  
+
   if (!user) {
     redirect("/login");
   }
-  
+
   if (!isCoach(user)) {
     redirect("/dashboard");
   }
-  
+
   // Render page
 }
 ```
 
 **Why This is Best:**
+
 - ✅ **Server-side rendering** with auth check before page renders
 - ✅ **No flash of unauthorized content** - redirect happens on server
 - ✅ **SEO-friendly** - search engines see proper redirect
@@ -338,16 +360,17 @@ export default async function WorkoutsPage() {
 ```typescript
 export default function ProfilePage() {
   const { user, isLoading } = useRequireAuth();
-  
+
   if (isLoading) {
     return <LoadingSkeleton />;
   }
-  
+
   // Render page (guard redirects if no user)
 }
 ```
 
 **Why This Works:**
+
 - ✅ **Effective** - Redirects happen quickly
 - ✅ **User-friendly** - Loading states prevent blank screens
 - ⚠️ **Client-dependent** - Requires JavaScript enabled
@@ -448,6 +471,7 @@ Redirect to /dashboard after 2 seconds
 #### **RLS Policies Analysis**
 
 **Users Table:**
+
 ```sql
 -- Users can view own profile
 CREATE POLICY "Users can view own profile" ON public.users
@@ -468,6 +492,7 @@ CREATE POLICY "Users can update own profile" ON public.users
 ```
 
 **Athlete Groups:**
+
 ```sql
 -- Coaches can manage their groups
 CREATE POLICY "Coaches can manage their groups" ON public.athlete_groups
@@ -484,6 +509,7 @@ CREATE POLICY "Athletes can view their groups" ON public.athlete_groups
 ```
 
 **KPIs:**
+
 ```sql
 -- Athletes can manage own KPIs
 CREATE POLICY "Athletes can manage own KPIs" ON public.athlete_kpis
@@ -500,6 +526,7 @@ CREATE POLICY "Coaches can manage all KPIs" ON public.athlete_kpis
 ```
 
 **Invites:**
+
 ```sql
 -- Only coaches can access invites
 CREATE POLICY "Only coaches can access invites" ON public.invites
@@ -512,6 +539,7 @@ CREATE POLICY "Only coaches can access invites" ON public.invites
 ```
 
 **RLS Coverage:** ✅ **COMPREHENSIVE**
+
 - ✅ All sensitive tables have RLS policies
 - ✅ Proper separation between athletes and coaches
 - ✅ Admin role included in coach policies
@@ -533,18 +561,29 @@ const securityHeaders = new Map([
   ["X-XSS-Protection", "1; mode=block"],
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
   ["Permissions-Policy", "camera=(), microphone=(), geolocation=()"],
-  ["Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"],
+  [
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
+  ],
 ]);
 ```
 
 **CORS Configuration:**
+
 ```typescript
 response.headers.set("Access-Control-Allow-Origin", "*");
-response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+response.headers.set(
+  "Access-Control-Allow-Methods",
+  "GET, POST, PUT, DELETE, OPTIONS"
+);
+response.headers.set(
+  "Access-Control-Allow-Headers",
+  "Content-Type, Authorization"
+);
 ```
 
 **Analysis:**
+
 - ✅ **X-Frame-Options: DENY** - Prevents clickjacking
 - ✅ **X-Content-Type-Options: nosniff** - Prevents MIME sniffing
 - ✅ **X-XSS-Protection** - Legacy XSS protection (browsers mostly ignore now)
@@ -562,6 +601,7 @@ response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorizatio
 ### 🟢 Critical: No Issues Found
 
 **All critical security requirements are met:**
+
 - ✅ Authentication required for all API routes
 - ✅ Authorization checks on sensitive operations
 - ✅ Database-level security with RLS
@@ -579,6 +619,7 @@ response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorizatio
 Middleware has auth redirect logic commented out, relying solely on client-side guards.
 
 **Risk:** **LOW**
+
 - Client guards work effectively
 - Brief flash possible on protected pages
 - Not a vulnerability, but not optimal UX
@@ -590,29 +631,37 @@ Uncomment and implement server-side redirects in middleware:
 // middleware.ts
 export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request);
-  
+
   const { pathname } = request.nextUrl;
-  
+
   // Public routes that don't require auth
-  const publicPaths = ['/login', '/signup', '/reset-password', '/', '/offline', '/diagnostic'];
+  const publicPaths = [
+    "/login",
+    "/signup",
+    "/reset-password",
+    "/",
+    "/offline",
+    "/diagnostic",
+  ];
   const isPublicPath = publicPaths.includes(pathname);
-  
+
   // Redirect unauthenticated users trying to access protected routes
   if (!user && !isPublicPath) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
-  
+
   // Redirect authenticated users away from login/signup
-  if (user && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-  
+
   // Apply security headers...
   return response;
 }
 ```
 
 **Benefits:**
+
 - ✅ Server-side redirects before page renders
 - ✅ No flash of unauthorized content
 - ✅ Defense-in-depth (server + client)
@@ -631,11 +680,13 @@ Most pages use client-side guards. Only `/workouts` and `/` use server-side chec
 Convert high-value pages to server components with server-side auth:
 
 **Target Pages:**
+
 - `/dashboard` - High-value, should be server-checked
 - `/profile` - Contains sensitive data
 - `/progress` - Athlete metrics
 
 **Example Migration:**
+
 ```typescript
 // Before (client-side)
 export default function ProfilePage() {
@@ -646,19 +697,20 @@ export default function ProfilePage() {
 // After (server-side)
 export default async function ProfilePage() {
   const { user } = await getAuthenticatedUser();
-  
+
   if (!user) {
     redirect('/login');
   }
-  
+
   // Fetch data server-side
   const profile = await fetchProfile(user.id);
-  
+
   return <ProfileClient profile={profile} />;
 }
 ```
 
 **Benefits:**
+
 - ✅ No client JavaScript needed for auth
 - ✅ Zero flash of content
 - ✅ Better performance (less client work)
@@ -697,6 +749,7 @@ export async function GET(request: NextRequest) {
 ```
 
 **Benefits:**
+
 - ✅ Less boilerplate
 - ✅ Consistent error handling
 - ✅ Cleaner code
@@ -717,14 +770,14 @@ import { Ratelimit } from "@upstash/ratelimit";
 export async function POST(request: NextRequest) {
   const ip = request.ip || "anonymous";
   const { success } = await ratelimit.limit(ip);
-  
+
   if (!success) {
     return NextResponse.json(
       { error: "Too many attempts. Please try again later." },
       { status: 429 }
     );
   }
-  
+
   // Proceed with login
 }
 ```
@@ -742,7 +795,7 @@ CSP allows `unsafe-eval` and `unsafe-inline` (required for Next.js dev).
 Use environment-specific CSP:
 
 ```typescript
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 const csp = isDev
   ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
@@ -758,6 +811,7 @@ const csp = isDev
 ### Manual Testing Checklist
 
 **Authentication Flows:**
+
 - [ ] Login with valid credentials → redirects to dashboard
 - [ ] Login with invalid credentials → shows error, stays on login
 - [ ] Login when already logged in → redirects to dashboard
@@ -768,6 +822,7 @@ const csp = isDev
 - [ ] Password reset flow → sends email, allows reset, redirects
 
 **Authorization Flows:**
+
 - [ ] Athlete cannot access `/workouts` (coach page) → redirects to dashboard
 - [ ] Athlete can access `/dashboard`, `/progress`, `/profile`
 - [ ] Coach can access all athlete pages + `/workouts`, `/athletes`
@@ -775,11 +830,13 @@ const csp = isDev
 - [ ] Unauthenticated user cannot access protected pages → redirects to login
 
 **API Security:**
+
 - [ ] All API routes return 401 for unauthenticated requests
 - [ ] Coach-only API routes return 403 for athlete users
 - [ ] Admin-only API routes return 403 for coach/athlete users
 
 **Edge Cases:**
+
 - [ ] Session expiration → logout and redirect to login
 - [ ] Token refresh works seamlessly
 - [ ] Opening multiple tabs maintains consistent auth state
@@ -794,19 +851,19 @@ const csp = isDev
 
 ```typescript
 // tests/lib/auth-server.test.ts
-describe('Auth Server Utils', () => {
-  test('isCoach returns true for coach role', () => {
-    const user = { role: 'coach' };
+describe("Auth Server Utils", () => {
+  test("isCoach returns true for coach role", () => {
+    const user = { role: "coach" };
     expect(isCoach(user)).toBe(true);
   });
-  
-  test('isCoach returns true for admin role', () => {
-    const user = { role: 'admin' };
+
+  test("isCoach returns true for admin role", () => {
+    const user = { role: "admin" };
     expect(isCoach(user)).toBe(true);
   });
-  
-  test('isCoach returns false for athlete role', () => {
-    const user = { role: 'athlete' };
+
+  test("isCoach returns false for athlete role", () => {
+    const user = { role: "athlete" };
     expect(isCoach(user)).toBe(false);
   });
 });
@@ -816,17 +873,17 @@ describe('Auth Server Utils', () => {
 
 ```typescript
 // e2e/auth-flows.spec.ts
-test('login flow', async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('[name="email"]', 'test@example.com');
-  await page.fill('[name="password"]', 'password123');
+test("login flow", async ({ page }) => {
+  await page.goto("/login");
+  await page.fill('[name="email"]', "test@example.com");
+  await page.fill('[name="password"]', "password123");
   await page.click('button[type="submit"]');
-  await expect(page).toHaveURL('/dashboard');
+  await expect(page).toHaveURL("/dashboard");
 });
 
-test('protected page redirect', async ({ page }) => {
-  await page.goto('/workouts');
-  await expect(page).toHaveURL('/login');
+test("protected page redirect", async ({ page }) => {
+  await page.goto("/workouts");
+  await expect(page).toHaveURL("/login");
 });
 ```
 
