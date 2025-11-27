@@ -259,16 +259,16 @@ function WorkoutsPage({
 
             {/* Action Buttons */}
             {!showWorkoutsSkeleton && (
-              <div className="bg-gradient-subtle-primary rounded-xl p-6 mb-6 border border-silver-200">
+              <div className="bg-linear-to-br from-accent-blue-50 via-accent-purple-50 to-accent-pink-50 rounded-xl p-6 mb-6 border-2 border-accent-blue-300 shadow-lg">
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <Heading level="h2" className="mb-1">
+                      <Heading level="h2" className="mb-1 bg-linear-to-r from-accent-blue-600 to-accent-purple-600 bg-clip-text text-transparent">
                         {state.showArchived
                           ? "Archived Workouts"
                           : "Your Workouts"}
                       </Heading>
-                      <Body className="text-sm" variant="secondary">
+                      <Body className="text-sm font-medium text-accent-purple-700">
                         {state.showArchived
                           ? "Previously archived training plans"
                           : "Create and manage your training programs"}
@@ -280,7 +280,7 @@ function WorkoutsPage({
                         state.setCreatingWorkout(true);
                       }}
                       leftIcon={<Plus className="w-4 h-4" />}
-                      className="shrink-0"
+                      className="shrink-0 bg-linear-to-br from-accent-orange-500 to-accent-pink-500 hover:from-accent-orange-600 hover:to-accent-pink-600 shadow-lg hover:shadow-xl"
                     >
                       Create Workout
                     </Button>
@@ -288,12 +288,12 @@ function WorkoutsPage({
                   <Button
                     onClick={() => state.setShowArchived(!state.showArchived)}
                     variant="secondary"
-                    className="w-full sm:w-auto self-start"
+                    className="w-full sm:w-auto self-start bg-linear-to-br from-accent-purple-100 to-accent-purple-50 border-accent-purple-400 hover:border-accent-purple-500 text-accent-purple-700 hover:shadow-md"
                     leftIcon={
                       state.showArchived ? (
-                        <Dumbbell className="w-4 h-4" />
+                        <Dumbbell className="w-4 h-4 text-accent-purple-600" />
                       ) : (
-                        <Archive className="w-4 h-4" />
+                        <Archive className="w-4 h-4 text-accent-purple-600" />
                       )
                     }
                   >
@@ -321,19 +321,17 @@ function WorkoutsPage({
                     const isExpanded = state.expandedWorkout === workout.id;
 
                     return (
-                      <Card
+                      <div
                         key={workout.id}
-                        variant="default"
-                        padding="none"
-                        className={`relative overflow-hidden ${
+                        className={`relative overflow-hidden rounded-xl bg-linear-to-br from-white to-silver-50 shadow-md hover:shadow-2xl border-2 border-silver-300 hover:border-accent-blue-400 hover:scale-[1.02] transition-all duration-300 ${
                           isOptimistic ? "opacity-70 animate-pulse" : ""
-                        } hover:shadow-lg transition-shadow`}
+                        }`}
                       >
-                        {/* Gradient Accent Bar - Inside Card */}
-                        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-accent-primary" />
+                        {/* Animated Gradient Accent Bar at top */}
+                        <div className="h-2 bg-linear-to-r from-accent-orange-400 via-accent-purple-500 to-accent-cyan-500 animate-gradient-x" />
 
-                        {/* Card Content with left padding to account for gradient bar */}
-                        <div className="pl-6 pr-4 py-4">
+                        {/* Card Content */}
+                        <div className="p-4">
                           {/* Header - Always visible, clickable to expand */}
                           <div
                             className="flex justify-between items-start mb-3 cursor-pointer hover:bg-(--interactive-hover) -m-4 p-4 rounded-lg transition-colors"
@@ -368,7 +366,12 @@ function WorkoutsPage({
                                 </Body>
                               )}
                             </div>
-                            <Badge variant="neutral" size="sm" className="ml-4">
+                            <Badge 
+                              variant="info" 
+                              size="sm" 
+                              gradient
+                              className="ml-4 font-bold"
+                            >
                               {workout.estimatedDuration}min
                             </Badge>
                           </div>
@@ -463,8 +466,7 @@ function WorkoutsPage({
                                     state.setEditingWorkout(workout);
                                   }}
                                   variant="secondary"
-                                  colorScheme="blue"
-                                  className="flex-1"
+                                  className="flex-1 bg-linear-to-br from-accent-blue-100 to-accent-blue-50 border-accent-blue-400 hover:border-accent-blue-500 text-accent-blue-700 hover:shadow-md"
                                   disabled={isOptimistic}
                                 >
                                   Edit
@@ -476,7 +478,7 @@ function WorkoutsPage({
                                     state.setShowAssignForm(true);
                                   }}
                                   variant="success"
-                                  className="flex-1"
+                                  className="flex-1 bg-linear-to-br from-accent-green-500 to-accent-emerald-500 hover:from-accent-green-600 hover:to-accent-emerald-600 shadow-md hover:shadow-lg"
                                   disabled={isOptimistic}
                                   leftIcon={<Users className="w-4 h-4" />}
                                 >
@@ -513,7 +515,7 @@ function WorkoutsPage({
                             </button>
                           </div>
                         </div>
-                      </Card>
+                      </div>
                     );
                   })
                 )}
