@@ -519,25 +519,28 @@ export default withPageErrorBoundary(function AthletesPage() {
 
       {/* Athletes Grid - Mobile Optimized Cards */}
       <AnimatedGrid columns={3} gap={6} delay={0.1} staggerDelay={0.06}>
-        {/* Add Athlete Placeholder Card - Colorful & Energetic */}
+        {/* Add Athlete Placeholder Card - Vibrant & Animated */}
         <button
           onClick={() => modals.setShowInviteModal(true)}
-          className="relative bg-white rounded-xl shadow-sm hover:shadow-lg border-2 border-dashed border-silver-300 hover:border-warning hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6"
+          className="relative bg-linear-to-br from-accent-orange-50 via-accent-pink-50 to-accent-purple-50 rounded-xl shadow-lg hover:shadow-2xl border-4 border-dashed border-accent-orange-400 hover:border-accent-pink-500 hover:scale-[1.05] transition-all duration-300 group touch-manipulation cursor-pointer min-h-[280px] flex flex-col items-center justify-center gap-4 p-6 overflow-hidden"
           aria-label="Add new athlete"
         >
-          {/* Colorful accent bar - only on hover */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-accent-primary rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+          {/* Animated gradient accent bar at top */}
+          <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-accent-orange-500 via-accent-pink-500 to-accent-purple-500 animate-gradient-x" />
+
+          {/* Pulsing glow effect */}
+          <div className="absolute inset-0 bg-linear-to-br from-accent-orange-200/30 via-accent-pink-200/30 to-accent-purple-200/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
 
           {/* Centered content */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-16 h-16 bg-gradient-accent-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-md mb-4">
-              <Plus className="w-8 h-8 text-white" />
+          <div className="flex flex-col items-center justify-center relative z-10">
+            <div className="w-20 h-20 bg-linear-to-br from-accent-orange-500 via-accent-pink-500 to-accent-purple-500 rounded-full flex items-center justify-center group-hover:scale-125 group-hover:rotate-90 transition-all duration-500 shadow-xl ring-4 ring-accent-pink-300 group-hover:ring-8 mb-4">
+              <Plus className="w-10 h-10 text-white group-hover:rotate-180 transition-transform duration-500" />
             </div>
             <div className="text-center">
-              <Heading level="h3" className="mb-1">
+              <Heading level="h3" className="mb-1 bg-linear-to-r from-accent-orange-600 to-accent-purple-600 bg-clip-text text-transparent">
                 Add New Athlete
               </Heading>
-              <Body className="text-sm" variant="secondary">
+              <Body className="text-sm font-medium text-accent-pink-700">
                 Click to add athlete profile
               </Body>
             </div>

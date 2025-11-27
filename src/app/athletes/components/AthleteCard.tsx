@@ -79,17 +79,17 @@ function AthleteCard({
   return (
     <div
       onClick={() => onCardClick(athlete)}
-      className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-200 group touch-manipulation cursor-pointer relative overflow-hidden border-2 border-transparent hover:border-(--accent-orange-200)"
+      className="bg-linear-to-br from-white to-silver-50 rounded-xl shadow-md hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 group touch-manipulation cursor-pointer relative overflow-hidden border-2 border-silver-300 hover:border-accent-blue-400"
     >
-      {/* Colorful gradient accent bar at top */}
-      <div className="h-1.5 bg-gradient-to-r from-(--accent-orange-500) via-(--accent-purple-500) to-(--accent-green-500)" />
+      {/* Animated colorful gradient accent bar at top */}
+      <div className="h-2 bg-linear-to-r from-accent-orange-400 via-accent-purple-500 to-accent-cyan-500 animate-gradient-x" />
 
       {/* Mobile-Optimized Card Header */}
       <div className="p-4 sm:p-6 pb-3 sm:pb-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="relative shrink-0">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-(--accent-orange-500) to-(--accent-pink-500) rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg shadow-lg">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-accent-orange-500 to-accent-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-base sm:text-lg shadow-xl ring-2 ring-accent-pink-300 group-hover:ring-4 group-hover:ring-accent-pink-400 transition-all">
                 {(athlete.fullName || "")
                   .split(" ")
                   .map((n: string) => n[0])
@@ -182,32 +182,32 @@ function AthleteCard({
 
         {/* Performance Stats */}
         {athlete.status === "active" && athlete.stats && (
-          <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-(--bg-secondary) rounded-lg border border-(--border-primary)">
-            <div className="text-center">
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="p-3 bg-linear-to-br from-accent-orange-100 to-accent-orange-50 border-2 border-accent-orange-400 rounded-xl text-center shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Dumbbell className="h-4 w-4 text-(--accent-orange-500)" />
+                <Dumbbell className="h-5 w-5 text-accent-orange-600" />
                 <Body
                   variant="primary"
-                  className="font-semibold text-(--accent-orange-600)"
+                  className="font-bold text-lg text-accent-orange-700"
                 >
                   {athlete.stats.thisMonthWorkouts}
                 </Body>
               </div>
-              <Body variant="secondary" className="text-xs">
+              <Body variant="secondary" className="text-xs font-medium text-accent-orange-700">
                 This Month
               </Body>
             </div>
-            <div className="text-center">
+            <div className="p-3 bg-linear-to-br from-accent-purple-100 to-accent-purple-50 border-2 border-accent-purple-400 rounded-xl text-center shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Trophy className="h-4 w-4 text-(--accent-purple-500)" />
+                <Trophy className="h-5 w-5 text-accent-purple-600" />
                 <Body
                   variant="primary"
-                  className="font-semibold text-(--accent-purple-600)"
+                  className="font-bold text-lg text-accent-purple-700"
                 >
                   {athlete.stats.recentPRs}
                 </Body>
               </div>
-              <Body variant="secondary" className="text-xs">
+              <Body variant="secondary" className="text-xs font-medium text-accent-purple-700">
                 Recent PRs
               </Body>
             </div>
@@ -287,7 +287,8 @@ function AthleteCard({
                 }}
                 variant="secondary"
                 size="sm"
-                leftIcon={<Send className="w-4 h-4" />}
+                className="bg-linear-to-br from-accent-purple-100 to-accent-purple-50 border-accent-purple-400 hover:border-accent-purple-500 text-accent-purple-700 hover:shadow-md"
+                leftIcon={<Send className="w-4 h-4 text-accent-purple-600" />}
               >
                 Message
               </Button>
@@ -298,6 +299,7 @@ function AthleteCard({
                 }}
                 variant="primary"
                 size="sm"
+                className="bg-linear-to-br from-accent-orange-500 to-accent-pink-500 hover:from-accent-orange-600 hover:to-accent-pink-600 shadow-md hover:shadow-lg"
                 leftIcon={<Dumbbell className="w-4 h-4" />}
               >
                 Assign
@@ -309,7 +311,8 @@ function AthleteCard({
                 }}
                 variant="secondary"
                 size="sm"
-                leftIcon={<Zap className="w-4 h-4" />}
+                className="bg-linear-to-br from-accent-amber-100 to-accent-amber-50 border-accent-amber-400 hover:border-accent-amber-500 text-accent-amber-700 hover:shadow-md"
+                leftIcon={<Zap className="w-4 h-4 text-accent-amber-600" />}
               >
                 Manage PRs
               </Button>
@@ -320,7 +323,8 @@ function AthleteCard({
                 }}
                 variant="secondary"
                 size="sm"
-                leftIcon={<BarChart3 className="w-4 h-4" />}
+                className="bg-linear-to-br from-accent-cyan-100 to-accent-cyan-50 border-accent-cyan-400 hover:border-accent-cyan-500 text-accent-cyan-700 hover:shadow-md"
+                leftIcon={<BarChart3 className="w-4 h-4 text-accent-cyan-600" />}
               >
                 Progress
               </Button>
@@ -331,7 +335,8 @@ function AthleteCard({
                 }}
                 variant="secondary"
                 size="sm"
-                leftIcon={<Users className="w-4 h-4" />}
+                className="bg-linear-to-br from-accent-green-100 to-accent-green-50 border-accent-green-400 hover:border-accent-green-500 text-accent-green-700 hover:shadow-md col-span-2"
+                leftIcon={<Users className="w-4 h-4 text-accent-green-600" />}
               >
                 Add to Group
               </Button>

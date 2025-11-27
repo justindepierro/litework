@@ -44,20 +44,36 @@ export default function GroupsSection({
   }
 
   return (
-    <div className="mb-6 bg-white rounded-xl shadow-sm border border-subtle p-4">
-      <Heading level="h3" className="mb-4 flex items-center gap-2">
-        <Users className="w-5 h-5 text-accent" />
-        Groups ({groups.length})
+    <div className="mb-6 bg-linear-to-br from-white to-silver-50 rounded-xl shadow-md border-2 border-accent-blue-300 p-4">
+      <Heading level="h3" className="mb-4 flex items-center gap-3">
+        <div className="p-2 bg-linear-to-br from-accent-blue-400 to-accent-purple-500 rounded-lg shadow-md">
+          <Users className="w-5 h-5 text-white" />
+        </div>
+        <span className="bg-linear-to-r from-accent-blue-600 to-accent-purple-600 bg-clip-text text-transparent font-bold">
+          Groups ({groups.length})
+        </span>
       </Heading>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {groups.map((group) => {
           // Get athlete count directly from group's athleteIds array
           const athleteCount = group.athleteIds?.length || 0;
 
+          // Rotating gradient backgrounds for visual distinction
+          const gradients = [
+            "bg-linear-to-br from-accent-purple-100 to-accent-purple-50 border-accent-purple-400 hover:border-accent-purple-500",
+            "bg-linear-to-br from-accent-blue-100 to-accent-blue-50 border-accent-blue-400 hover:border-accent-blue-500",
+            "bg-linear-to-br from-accent-pink-100 to-accent-pink-50 border-accent-pink-400 hover:border-accent-pink-500",
+            "bg-linear-to-br from-accent-cyan-100 to-accent-cyan-50 border-accent-cyan-400 hover:border-accent-cyan-500",
+            "bg-linear-to-br from-accent-orange-100 to-accent-orange-50 border-accent-orange-400 hover:border-accent-orange-500",
+            "bg-linear-to-br from-accent-green-100 to-accent-green-50 border-accent-green-400 hover:border-accent-green-500",
+          ];
+          const gradientIndex = groups.findIndex((g) => g.id === group.id);
+          const gradient = gradients[gradientIndex % gradients.length];
+
           return (
             <div
               key={group.id}
-              className="p-4 bg-secondary border-2 border-subtle rounded-lg relative"
+              className={`p-4 ${gradient} border-2 rounded-xl relative shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
             >
               {/* 3-dot menu */}
               <div className="absolute top-3 right-3">
@@ -138,7 +154,7 @@ export default function GroupsSection({
                   </button>
                   <button
                     onClick={() => onManageMembers(group)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-accent-blue hover:bg-accent-blue/90 text-white text-xs font-medium rounded-full transition-colors"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-linear-to-br from-accent-blue-500 to-accent-purple-500 hover:from-accent-blue-600 hover:to-accent-purple-600 text-white text-xs font-bold rounded-full shadow-md hover:shadow-lg transition-all"
                     aria-label="Add athletes to group"
                   >
                     <Plus className="w-3 h-3" />
