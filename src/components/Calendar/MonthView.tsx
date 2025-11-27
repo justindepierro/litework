@@ -123,53 +123,21 @@ function MonthViewComponent({
               </span>
             </div>
 
-            {/* Mobile: Show 4-section grid with icons */}
-            <div className="md:hidden flex-1 flex items-center justify-center relative">
-              {hasWorkouts ? (
-                <div className="relative w-full h-full flex items-center justify-center">
-                  {/* 4-section grid background */}
-                  <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-0.5 p-1">
-                    {/* Top-left: Assigned */}
-                    {assignedCount > 0 && (
-                      <div className="flex items-start justify-start">
-                        <div className="bg-linear-to-br from-accent-blue-500 to-accent-cyan-500 rounded-full p-0.5 shadow-md">
-                          <Dumbbell className="w-2 h-2 text-white" strokeWidth={3} />
-                        </div>
-                      </div>
-                    )}
-                    {/* Top-right: Completed */}
-                    {completedCount > 0 && (
-                      <div className="flex items-start justify-end">
-                        <div className="bg-linear-to-br from-accent-green-500 to-accent-emerald-500 rounded-full p-0.5 shadow-md">
-                          <CheckCircle className="w-2 h-2 text-white" strokeWidth={3} />
-                        </div>
-                      </div>
-                    )}
-                    {/* Bottom-left: Overdue */}
-                    {overdueCount > 0 && (
-                      <div className="flex items-end justify-start">
-                        <div className="bg-linear-to-br from-accent-red-500 to-accent-orange-500 rounded-full p-0.5 shadow-md">
-                          <AlertCircle className="w-2 h-2 text-white" strokeWidth={3} />
-                        </div>
-                      </div>
-                    )}
-                    {/* Bottom-right: Reserved for future use */}
-                    {dayAssignments.length > 5 && (
-                      <div className="flex items-end justify-end">
-                        <div className="bg-linear-to-br from-accent-purple-500 to-accent-pink-500 rounded-full p-0.5 shadow-md">
-                          <Clock className="w-2 h-2 text-white" strokeWidth={3} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  {/* Center: Workout count */}
-                  <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-full w-5 h-5 flex items-center justify-center shadow-md border border-accent-blue-300">
-                    <span className="text-[10px] font-bold text-accent-blue-700">
-                      {dayAssignments.length}
-                    </span>
-                  </div>
+            {/* Mobile: Show single colored badge based on priority status */}
+            <div className="md:hidden flex-1 flex items-center justify-center">
+              {hasWorkouts && (
+                <div className={`rounded-full w-6 h-6 flex items-center justify-center shadow-md border-2 ${
+                  overdueCount > 0
+                    ? "bg-linear-to-br from-accent-red-500 to-accent-orange-500 border-accent-red-600"
+                    : assignedCount > 0
+                      ? "bg-linear-to-br from-accent-blue-500 to-accent-cyan-500 border-accent-blue-600"
+                      : "bg-linear-to-br from-accent-green-500 to-accent-emerald-500 border-accent-green-600"
+                }`}>
+                  <span className="text-[11px] font-bold text-white">
+                    {dayAssignments.length}
+                  </span>
                 </div>
-              ) : null}
+              )}
             </div>
 
             {/* Desktop: Show full workout cards */}
