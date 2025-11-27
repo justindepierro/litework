@@ -63,13 +63,13 @@ function MonthViewComponent({
             onDrop={handleDrop}
             isCoach={isCoach}
             onClick={() => isCoach && onDateClick?.(date)}
-            className={`min-h-32 p-2 rounded-xl transition-all duration-200 flex flex-col border ${
+            className={`min-h-32 p-2.5 rounded-xl transition-all duration-300 flex flex-col border-2 ${
               isCurrentMonth
-                ? `bg-secondary border-subtle ${calendarText.gridPrimary} shadow-sm hover:shadow-md hover:scale-[1.01]`
-                : `bg-tertiary border-subtle ${calendarText.gridMuted}`
+                ? `bg-linear-to-br from-white to-accent-blue-50/50 border-accent-blue-200 ${calendarText.gridPrimary} shadow-md hover:shadow-xl hover:scale-[1.02] hover:border-accent-blue-400`
+                : `bg-linear-to-br from-silver-50 to-silver-100 border-silver-300 ${calendarText.gridMuted}`
             } ${
               isTodayDate
-                ? "border-accent-blue-400 ring-2 ring-accent-blue-200 ring-offset-1 bg-accent-blue-50 shadow-lg"
+                ? "border-accent-cyan-500 ring-4 ring-accent-cyan-200/50 ring-offset-2 bg-linear-to-br from-accent-cyan-50 via-accent-blue-50 to-accent-purple-50 shadow-2xl"
                 : ""
             } ${isCoach ? "cursor-pointer" : ""}`}
           >
@@ -78,7 +78,7 @@ function MonthViewComponent({
               <span
                 className={`text-sm font-bold ${
                   isTodayDate
-                    ? "text-accent-blue-600"
+                    ? "bg-linear-to-r from-accent-cyan-600 to-accent-blue-600 bg-clip-text text-transparent"
                     : isCurrentMonth
                       ? calendarText.gridPrimary
                       : calendarText.gridMuted

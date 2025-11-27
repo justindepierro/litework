@@ -118,7 +118,7 @@ export default function Calendar({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="rounded-xl shadow-lg p-4 border border-subtle bg-primary">
+      <div className="rounded-xl shadow-lg p-6 border-2 border-accent-blue-200 bg-linear-to-br from-white via-accent-blue-50/30 to-accent-purple-50/30">
         <CalendarHeader
           currentDate={currentDate}
           viewMode={viewMode}
@@ -170,18 +170,18 @@ export default function Calendar({
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-4 mt-6 pt-4 border-t border-subtle text-sm">
+        <div className="flex items-center gap-6 mt-6 pt-5 border-t-2 border-accent-blue-200 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-accent-blue-50 to-accent-blue-100 shadow-sm border border-accent-blue-200" />
-            <Caption className={calendarText.gridMuted}>Assigned</Caption>
+            <div className="w-5 h-5 rounded-lg bg-linear-to-br from-accent-blue-400 to-accent-cyan-500 shadow-md border-2 border-accent-blue-500" />
+            <Caption className="font-semibold text-accent-blue-700">Assigned</Caption>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-success-lighter to-accent-green-100 shadow-sm border border-success-light" />
-            <Caption className={calendarText.gridMuted}>Completed</Caption>
+            <div className="w-5 h-5 rounded-lg bg-linear-to-br from-accent-green-400 to-accent-emerald-500 shadow-md border-2 border-accent-green-500" />
+            <Caption className="font-semibold text-accent-green-700">Completed</Caption>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-linear-to-br from-error-lighter to-accent-red-50 shadow-sm border border-error-light" />
-            <Caption className={calendarText.gridMuted}>Overdue</Caption>
+            <div className="w-5 h-5 rounded-lg bg-linear-to-br from-accent-red-400 to-accent-orange-500 shadow-md border-2 border-accent-red-500" />
+            <Caption className="font-semibold text-accent-red-700">Overdue</Caption>
           </div>
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function Calendar({
       {/* Group Move Confirmation Modal */}
       {showMoveConfirmation && pendingMove && (
         <ModalBackdrop isOpen={showMoveConfirmation} onClose={handleCancelMove}>
-          <div className="bg-primary rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-linear-to-br from-white to-accent-purple-50 rounded-2xl shadow-2xl max-w-md w-full border-2 border-accent-purple-300">
             <ModalHeader
               title="Move Group Assignment?"
               icon={<Users className="w-6 h-6" />}
@@ -201,23 +201,23 @@ export default function Calendar({
                 reschedule the workout for{" "}
                 <strong>all athletes in the group</strong>.
               </Body>
-              <div className="bg-secondary p-4 rounded-lg space-y-2 text-sm">
+              <div className="bg-linear-to-br from-accent-purple-100 to-accent-blue-100 p-4 rounded-xl border-2 border-accent-purple-300 shadow-md space-y-2 text-sm">
                 <div>
-                  <Body size="sm" weight="medium" as="span">
+                  <Body size="sm" weight="medium" as="span" className="text-accent-purple-900">
                     Workout:
                   </Body>{" "}
-                  {pendingMove.assignment.workoutPlanName}
+                  <span className="text-accent-purple-700">{pendingMove.assignment.workoutPlanName}</span>
                 </div>
                 <div>
-                  <Body size="sm" weight="medium" as="span">
+                  <Body size="sm" weight="medium" as="span" className="text-accent-purple-900">
                     New Date:
                   </Body>{" "}
-                  {pendingMove.newDate.toLocaleDateString("en-US", {
+                  <span className="text-accent-purple-700">{pendingMove.newDate.toLocaleDateString("en-US", {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
                     year: "numeric",
-                  })}
+                  })}</span>
                 </div>
               </div>
             </ModalContent>
@@ -225,14 +225,14 @@ export default function Calendar({
               <Button
                 onClick={handleCancelMove}
                 variant="secondary"
-                className="px-4 py-2"
+                className="px-4 py-2 bg-linear-to-br from-silver-100 to-silver-50 hover:from-silver-200 hover:to-silver-100 border-2 border-silver-300 hover:border-silver-400"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleConfirmGroupMove}
                 variant="primary"
-                className="px-4 py-2"
+                className="px-4 py-2 bg-linear-to-br from-accent-purple-500 to-accent-blue-500 hover:from-accent-purple-600 hover:to-accent-blue-600 shadow-lg hover:shadow-xl"
               >
                 Move All
               </Button>

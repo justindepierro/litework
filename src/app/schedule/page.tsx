@@ -198,7 +198,8 @@ export default withPageErrorBoundary(function SchedulePage() {
 
   return (
     <PageContainer maxWidth="7xl" background="gradient">
-      <div className="mb-6">
+      {/* Enhanced Header Section */}
+      <div className="mb-6 bg-linear-to-br from-accent-cyan-50 via-accent-blue-50 to-accent-purple-50 rounded-2xl border-2 border-accent-blue-300 shadow-lg p-6">
         <PageHeader
           title="Schedule"
           subtitle="View and manage your workout schedule"
@@ -210,6 +211,7 @@ export default withPageErrorBoundary(function SchedulePage() {
                 onClick={() => (window.location.href = "/dashboard")}
                 variant="secondary"
                 size="sm"
+                className="bg-linear-to-br from-accent-purple-100 to-accent-purple-50 hover:from-accent-purple-200 hover:to-accent-purple-100 border-2 border-accent-purple-400 hover:border-accent-purple-500 shadow-md hover:shadow-lg transition-all"
               >
                 Coach Dashboard
               </Button>
@@ -219,7 +221,7 @@ export default withPageErrorBoundary(function SchedulePage() {
       </div>
 
       {/* Draggable Calendar */}
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="bg-linear-to-br from-white to-silver-50 rounded-2xl shadow-2xl border-2 border-accent-blue-200 hover:border-accent-cyan-400 transition-all duration-500">
         {loadingAssignments ? (
           <div className="p-12 text-center">
             <LoadingSpinner size="lg" message="Loading schedule..." />
@@ -238,17 +240,22 @@ export default withPageErrorBoundary(function SchedulePage() {
 
       {/* Quick Actions for Coaches */}
       {isCoachUser && (
-        <Alert
-          variant="info"
-          icon={<CalendarIcon />}
-          title="Drag and Drop to Reschedule"
-          className="mt-6"
-        >
-          <Body className="text-sm">
-            Click and drag workouts to different dates to reschedule them. Group
-            assignments will prompt for confirmation before moving all athletes.
-          </Body>
-        </Alert>
+        <div className="mt-6 bg-linear-to-br from-accent-cyan-100 via-accent-blue-50 to-accent-purple-50 rounded-xl border-2 border-accent-blue-300 shadow-lg p-5">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-linear-to-br from-accent-cyan-500 to-accent-blue-500 rounded-lg shadow-md">
+              <CalendarIcon className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <Body weight="semibold" className="text-accent-blue-900 mb-1">
+                Drag and Drop to Reschedule
+              </Body>
+              <Body className="text-sm text-accent-blue-700">
+                Click and drag workouts to different dates to reschedule them. Group
+                assignments will prompt for confirmation before moving all athletes.
+              </Body>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Workout Detail Modal */}

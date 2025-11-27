@@ -72,15 +72,15 @@ function DraggableAssignmentComponent({
           onClick();
         }
       }}
-      className={`w-full text-left rounded-lg text-xs transition-all border ${
+      className={`w-full text-left rounded-lg text-xs transition-all border-2 ${
         compact ? "p-1.5" : "p-2.5"
       } ${
         isCompleted
-          ? "bg-success-light border-success text-success-darkest shadow-sm hover:shadow-md"
+          ? "bg-linear-to-br from-accent-green-100 to-accent-emerald-100 border-accent-green-400 text-accent-green-900 shadow-md hover:shadow-xl hover:from-accent-green-200 hover:to-accent-emerald-200"
           : isOverdue
-            ? "bg-error-light border-error text-error-darkest shadow-sm hover:shadow-md"
-            : "bg-info-light border-accent-blue-200 text-info-dark shadow-sm hover:shadow-md"
-      } hover:scale-[1.01] ${isDragging ? "opacity-50 cursor-move" : ""} ${
+            ? "bg-linear-to-br from-accent-red-100 to-accent-orange-100 border-accent-red-400 text-accent-red-900 shadow-md hover:shadow-xl hover:from-accent-red-200 hover:to-accent-orange-200"
+            : "bg-linear-to-br from-accent-blue-100 to-accent-cyan-100 border-accent-blue-400 text-accent-blue-900 shadow-md hover:shadow-xl hover:from-accent-blue-200 hover:to-accent-cyan-200"
+      } hover:scale-[1.03] ${isDragging ? "opacity-50 cursor-move" : ""} ${
         isCoach ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
@@ -89,12 +89,12 @@ function DraggableAssignmentComponent({
       >
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <div
-            className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-sm ${
+            className={`shrink-0 ${compact ? "w-4 h-4" : "w-6 h-6"} rounded-full flex items-center justify-center shadow-md border-2 ${
               isCompleted
-                ? "bg-success"
+                ? "bg-linear-to-br from-accent-green-500 to-accent-emerald-500 border-accent-green-600"
                 : isOverdue
-                  ? "bg-error"
-                  : "bg-accent-blue-500"
+                  ? "bg-linear-to-br from-accent-red-500 to-accent-orange-500 border-accent-red-600"
+                  : "bg-linear-to-br from-accent-blue-500 to-accent-cyan-500 border-accent-blue-600"
             }`}
           >
             {isCompleted ? (
